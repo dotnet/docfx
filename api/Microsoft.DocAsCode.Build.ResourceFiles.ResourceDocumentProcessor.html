@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ResourceDocumentProcessor
    | DocFX website ">
-    <meta name="generator" content="docfx 2.4.0.0">
+    <meta name="generator" content="docfx 2.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -120,8 +120,7 @@
               <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Build.ResourceFiles.dll</h6>
               <h5 id="Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[Export(typeof (IDocumentProcessor))]
-public class ResourceDocumentProcessor : DisposableDocumentProcessor, IDocumentProcessor, IDisposable, ISupportIncrementalBuild</code></pre>
+                <pre><code class="lang-csharp hljs">public class ResourceDocumentProcessor : DisposableDocumentProcessor, IDocumentProcessor, IDisposable</code></pre>
               </div>
               <h3 id="properties">Properties
               </h3>
@@ -130,15 +129,14 @@ public class ResourceDocumentProcessor : DisposableDocumentProcessor, IDocumentP
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_BuildSteps.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.BuildSteps%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L26">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L27">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_BuildSteps" data-uid="Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.BuildSteps">BuildSteps</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[ImportMany(&quot;ResourceDocumentProcessor&quot;)]
-public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -162,15 +160,14 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_Configs.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.Configs%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L21">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L22">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_Configs" data-uid="Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.Configs">Configs</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[ImportMany]
-public IEnumerable&lt;IResourceFileConfig&gt; Configs { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public IEnumerable&lt;IResourceFileConfig&gt; Configs { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -192,7 +189,7 @@ public IEnumerable&lt;IResourceFileConfig&gt; Configs { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L24">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L25">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_Name" data-uid="Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.Name">Name</h4>
               <div class="markdown level1 summary"></div>
@@ -222,89 +219,10 @@ public IEnumerable&lt;IResourceFileConfig&gt; Configs { get; set; }</code></pre>
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L121">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)">CanIncrementalBuild(FileAndType)</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public bool CanIncrementalBuild(FileAndType fileAndType)</code></pre>
-              </div>
-              <h5 class="parameters">Parameters</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileAndType.html#Microsoft_DocAsCode_Plugins_FileAndType">FileAndType</a></td>
-                    <td><em>fileAndType</em></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuild.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuild_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_">ISupportIncrementalBuild.CanIncrementalBuild(FileAndType)</a></div>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_GetIncrementalContextHash.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.GetIncrementalContextHash%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L116">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_GetIncrementalContextHash" data-uid="Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.GetIncrementalContextHash">GetIncrementalContextHash()</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string GetIncrementalContextHash()</code></pre>
-              </div>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuild.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuild_GetIncrementalContextHash">ISupportIncrementalBuild.GetIncrementalContextHash()</a></div>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L29">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L30">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)">GetProcessingPriority(FileAndType)</h4>
               <div class="markdown level1 summary"></div>
@@ -352,7 +270,7 @@ public IEnumerable&lt;IResourceFileConfig&gt; Configs { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.Load(Microsoft.DocAsCode.Plugins.FileAndType%2CSystem.Collections.Immutable.ImmutableDictionary%7BSystem.String%2CSystem.Object%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L48">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L49">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__" data-uid="Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.Load(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})">Load(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</h4>
               <div class="markdown level1 summary"></div>
@@ -405,7 +323,7 @@ public IEnumerable&lt;IResourceFileConfig&gt; Configs { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.Save(Microsoft.DocAsCode.Plugins.FileModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L88">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L89">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_" data-uid="Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor.Save(Microsoft.DocAsCode.Plugins.FileModel)">Save(FileModel)</h4>
               <div class="markdown level1 summary"></div>
@@ -450,7 +368,7 @@ public IEnumerable&lt;IResourceFileConfig&gt; Configs { get; set; }</code></pre>
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_">DisposableDocumentProcessor.Save(FileModel)</a></div>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
-                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
+                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Formatting_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
               </div>
             </article>
           </div>
@@ -463,7 +381,7 @@ public IEnumerable&lt;IResourceFileConfig&gt; Configs { get; set; }</code></pre>
                     <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ResourceFiles_ResourceDocumentProcessor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ResourceFiles.ResourceDocumentProcessor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L18" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ResourceFiles/ResourceDocumentProcessor.cs/#L19" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
@@ -490,8 +408,8 @@ public IEnumerable&lt;IResourceFileConfig&gt; Configs { get; set; }</code></pre>
     </div>
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>

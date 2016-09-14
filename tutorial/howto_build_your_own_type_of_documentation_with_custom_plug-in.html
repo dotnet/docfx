@@ -8,7 +8,7 @@
     <title>How-to: Build your own type of documentation with a custom plug-in | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Build your own type of documentation with a custom plug-in | DocFX website ">
-    <meta name="generator" content="docfx 2.4.0.0">
+    <meta name="generator" content="docfx 2.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,63 +72,63 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <h1 id="how-to-build-your-own-type-of-documentation-with-a-custom-plug-in">How-to: Build your own type of documentation with a custom plug-in</h1>
+              <h1 id="how-to-build-your-own-type-of-documentation-with-a-custom-plug-in" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="1" sourceendlinenumber="2">How-to: Build your own type of documentation with a custom plug-in</h1>
               
-<p>In this topic we will create a plug-in to convert some simple <a href="https://en.wikipedia.org/wiki/Rich_Text_Format">rich text format</a> files to html documents.</p>
-<h2 id="goal-and-limitation">Goal and limitation</h2>
-<ol>
-<li>In scope:<ol>
-<li>Our input will be a set of rtf files with <code>.rtf</code> as the file extension name.</li>
-<li>The rtf files will be built as html document.</li>
+<p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="4" sourceendlinenumber="4">In this topic we will create a plug-in to convert some simple <a href="https://en.wikipedia.org/wiki/Rich_Text_Format" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="4" sourceendlinenumber="4">rich text format</a> files to html documents.</p>
+<h2 id="goal-and-limitation" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="6" sourceendlinenumber="7">Goal and limitation</h2>
+<ol sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="8" sourceendlinenumber="14">
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="8" sourceendlinenumber="10">In scope:<ol sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="9" sourceendlinenumber="10">
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="9" sourceendlinenumber="9">Our input will be a set of rtf files with <code>.rtf</code> as the file extension name.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="10" sourceendlinenumber="10">The rtf files will be built as html document.</li>
 </ol>
 </li>
-<li>Out of scope:<ol>
-<li>Picture or other object in rtf files.</li>
-<li>Hyperlink in rtf files. (in the <a href="advanced_support_hyperlink.html">advanced tutorial</a>, we will describe how to support hyperlinks in a custom plugin.)</li>
-<li>Metadata and title.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="11" sourceendlinenumber="14">Out of scope:<ol sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="12" sourceendlinenumber="14">
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="12" sourceendlinenumber="12">Picture or other object in rtf files.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="13" sourceendlinenumber="13">Hyperlink in rtf files. (in the <a href="advanced_support_hyperlink.html" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="13" sourceendlinenumber="13">advanced tutorial</a>, we will describe how to support hyperlinks in a custom plugin.)</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="14" sourceendlinenumber="14">Metadata and title.</li>
 </ol>
 </li>
 </ol>
-<h2 id="preparation">Preparation</h2>
-<ol>
-<li><p>Create a new C# class library project in <code>Visual Studio</code>.</p>
+<h2 id="preparation" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="16" sourceendlinenumber="17">Preparation</h2>
+<ol sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="18" sourceendlinenumber="34">
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="18" sourceendlinenumber="18"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="18" sourceendlinenumber="18">Create a new C# class library project in <code>Visual Studio</code>.</p>
 </li>
-<li><p>Add nuget packages:  </p>
-<ul>
-<li><code>System.Collections.Immutable</code> with version 1.1.37</li>
-<li><code>Microsoft.Composition</code> with version 1.0.27</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="20" sourceendlinenumber="22"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="20" sourceendlinenumber="20">Add nuget packages:  </p>
+<ul sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="21" sourceendlinenumber="22">
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="21" sourceendlinenumber="21"><code>System.Collections.Immutable</code> with version 1.1.37</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="22" sourceendlinenumber="22"><code>Microsoft.Composition</code> with version 1.0.27</li>
 </ul>
 </li>
-<li><p>Add <code>Microsoft.DocAsCode.Plugins</code><br>If building DocFX from source code then add a reference to the project,
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="24" sourceendlinenumber="26"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="24" sourceendlinenumber="26">Add <code>Microsoft.DocAsCode.Plugins</code><br>If building DocFX from source code then add a reference to the project,
 otherwise add the nuget package <code>Microsoft.DocAsCode.Plugins</code> with the same version as DocFX.</p>
 </li>
-<li><p>Add framework assembly references:
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="28" sourceendlinenumber="29"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="28" sourceendlinenumber="29">Add framework assembly references:
 <code>PresentationCore</code>, <code>PresentationFramework</code>, <code>WindowsBase</code></p>
 </li>
-<li><p>Add a project for converting rtf to html:<br>Clone project <a href="https://github.com/mmanela/MarkupConverter">MarkupConverter</a>, and reference it.</p>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="31" sourceendlinenumber="32"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="31" sourceendlinenumber="32">Add a project for converting rtf to html:<br>Clone project <a href="https://github.com/mmanela/MarkupConverter" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="32" sourceendlinenumber="32">MarkupConverter</a>, and reference it.</p>
 </li>
-<li><p>Copy the code file StaTaskScheduler.cs from <a href="https://code.msdn.microsoft.com/ParExtSamples">ParExtSamples</a></p>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="34" sourceendlinenumber="34"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="34" sourceendlinenumber="34">Copy the code file StaTaskScheduler.cs from <a href="https://code.msdn.microsoft.com/ParExtSamples" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="34" sourceendlinenumber="34">ParExtSamples</a></p>
 </li>
 </ol>
-<h2 id="create-a-document-processor">Create a document processor</h2>
-<h3 id="responsibility-of-the-document-processor">Responsibility of the document processor</h3>
-<ul>
-<li>Declare which file can be handled.</li>
-<li>Load from the file to the object model.</li>
-<li>Provide build steps.</li>
-<li>Report document type, file links and xref links in document.</li>
-<li>Update references.</li>
+<h2 id="create-a-document-processor" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="36" sourceendlinenumber="37">Create a document processor</h2>
+<h3 id="responsibility-of-the-document-processor" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="39" sourceendlinenumber="39">Responsibility of the document processor</h3>
+<ul sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="41" sourceendlinenumber="45">
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="41" sourceendlinenumber="41">Declare which file can be handled.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="42" sourceendlinenumber="42">Load from the file to the object model.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="43" sourceendlinenumber="43">Provide build steps.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="44" sourceendlinenumber="44">Report document type, file links and xref links in document.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="45" sourceendlinenumber="45">Update references.</li>
 </ul>
-<h3 id="create-our-rtfdocumentprocessor">Create our RtfDocumentProcessor</h3>
-<ol>
-<li><p>Create a new class (RtfDocumentProcessor.cs) with the following code:</p>
-<pre><code class="lang-csharp">[Export(typeof(IDocumentProcessor))]
+<h3 id="create-our-rtfdocumentprocessor" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="47" sourceendlinenumber="47">Create our RtfDocumentProcessor</h3>
+<ol sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="49" sourceendlinenumber="82">
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="49" sourceendlinenumber="56"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="49" sourceendlinenumber="49">Create a new class (RtfDocumentProcessor.cs) with the following code:</p>
+<pre sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="50" sourceendlinenumber="56"><code class="lang-csharp">[Export(typeof(IDocumentProcessor))]
 public class RtfDocumentProcessor : IDocumentProcessor
 {
     // todo : implements IDocumentProcessor.
 }
 </code></pre></li>
-<li><p>Declare that we can handle the <code>.rtf</code> file:</p>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="58" sourceendlinenumber="64"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="58" sourceendlinenumber="58">Declare that we can handle the <code>.rtf</code> file:</p>
 <pre><code class="lang-csharp" name="GetProcessingPriority">public ProcessingPriority GetProcessingPriority(FileAndType file)
 {
     if (file.Type == DocumentType.Article &amp;&amp;
@@ -138,11 +138,11 @@ public class RtfDocumentProcessor : IDocumentProcessor
     }
     return ProcessingPriority.NotSupported;
 }
-</code></pre><p>Here we declare this processor can handle any <code>.rtf</code> file in the article category with normal priority.
+</code></pre><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="58" sourceendlinenumber="60">Here we declare this processor can handle any <code>.rtf</code> file in the article category with normal priority.
 When two or more processors compete for the same file, DocFX will give it to the higher priority one.
 <em>Unexpected</em>: two or more processor declare for the same file with same priority.</p>
 </li>
-<li><p>Load our rtf file by reading all text:</p>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="66" sourceendlinenumber="69"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="66" sourceendlinenumber="66">Load our rtf file by reading all text:</p>
 <pre><code class="lang-csharp" name="Load">public FileModel Load(FileAndType file, ImmutableDictionary&lt;string, object&gt; metadata)
 {
     var content = new Dictionary&lt;string, object&gt;
@@ -153,9 +153,9 @@ When two or more processors compete for the same file, DocFX will give it to the
     };
     return new FileModel(file, content);
 }
-</code></pre><p>We use <code>Dictionary&lt;string, object&gt;</code> as the data model, similar to how <a href="https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/ConceptualDocumentProcessor.cs">ConceptualDocumentProcessor</a> stores the content of markdown files.</p>
+</code></pre><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="66" sourceendlinenumber="66">We use <code>Dictionary&lt;string, object&gt;</code> as the data model, similar to how <a href="https://github.com/dotnet/docfx/blob/dev/src/Microsoft.DocAsCode.EntityModel/Plugins/ConceptualDocumentProcessor.cs" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="66" sourceendlinenumber="66">ConceptualDocumentProcessor</a> stores the content of markdown files.</p>
 </li>
-<li><p>Implement <code>Save</code> method as follows:</p>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="71" sourceendlinenumber="72"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="71" sourceendlinenumber="71">Implement <code>Save</code> method as follows:</p>
 <pre><code class="lang-csharp" name="Save">public SaveResult Save(FileModel model)
 {
     return new SaveResult
@@ -166,36 +166,36 @@ When two or more processors compete for the same file, DocFX will give it to the
     };
 }
 </code></pre></li>
-<li><p><code>BuildSteps</code> property can provide several build steps for the model. We suggest implementing this in the following manner:</p>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="74" sourceendlinenumber="75"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="74" sourceendlinenumber="74"><code>BuildSteps</code> property can provide several build steps for the model. We suggest implementing this in the following manner:</p>
 <pre><code class="lang-csharp" name="BuildSteps">[ImportMany(nameof(RtfDocumentProcessor))]
 public IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }
 </code></pre></li>
-<li><p><code>Name</code> property is used to display in the log, so give any constant string you like.<br>e.g.:  </p>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="77" sourceendlinenumber="79"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="77" sourceendlinenumber="78"><code>Name</code> property is used to display in the log, so give any constant string you like.<br>e.g.:  </p>
 <pre><code class="lang-csharp" name="Name">public string Name =&gt; nameof(RtfDocumentProcessor);
 </code></pre></li>
-<li><p>Since we don&#39;t support hyperlink, keep the <code>UpdateHref</code> method empty.</p>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="81" sourceendlinenumber="82"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="81" sourceendlinenumber="81">Since we don&#39;t support hyperlink, keep the <code>UpdateHref</code> method empty.</p>
 <pre><code class="lang-csharp" name="UpdateHref">public void UpdateHref(FileModel model, IDocumentBuildContext context)
 {
 }
 </code></pre></li>
 </ol>
-<p>View the final <a href="../codesnippet/Rtf/RtfDocumentProcessor.cs">RtfDocumentProcessor.cs</a></p>
-<h2 id="create-a-document-build-step">Create a document build step</h2>
-<h3 id="responsibility-of-the-build-step">Responsibility of the build step</h3>
-<ul>
-<li>Reconstruct documents via the <code>Prebuild</code> method, e.g.: remove some document according to a certain rule.</li>
-<li>Transform document content via <code>Build</code> method, e.g.: transform rtf content to html content.</li>
-<li><p>Transform more content required by all document processed via the <code>PostBuild</code> method, e.g.: extract the link text from the title of another document.</p>
+<p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="84" sourceendlinenumber="84">View the final <a href="../codesnippet/Rtf/RtfDocumentProcessor.cs" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="84" sourceendlinenumber="84">RtfDocumentProcessor.cs</a></p>
+<h2 id="create-a-document-build-step" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="87" sourceendlinenumber="88">Create a document build step</h2>
+<h3 id="responsibility-of-the-build-step" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="90" sourceendlinenumber="90">Responsibility of the build step</h3>
+<ul sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="92" sourceendlinenumber="113">
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="92" sourceendlinenumber="92">Reconstruct documents via the <code>Prebuild</code> method, e.g.: remove some document according to a certain rule.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="93" sourceendlinenumber="93">Transform document content via <code>Build</code> method, e.g.: transform rtf content to html content.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="94" sourceendlinenumber="94"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="94" sourceendlinenumber="94">Transform more content required by all document processed via the <code>PostBuild</code> method, e.g.: extract the link text from the title of another document.</p>
 </li>
-<li><p>About build order:</p>
-<ol>
-<li>For all documents in one processor always <code>Prebuild</code> -&gt; <code>Build</code> -&gt; <code>Postbuild</code>.</li>
-<li>For all documents in one processor always invoke <code>Prebuild</code> by <code>BuildOrder</code>.</li>
-<li>For each document in one processor always invoke <code>Build</code> by <code>BuildOrder</code>.</li>
-<li>For all documents in one processor always invoke <code>Postbuild</code> by <code>BuildOrder</code>.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="96" sourceendlinenumber="113"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="96" sourceendlinenumber="96">About build order:</p>
+<ol sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="97" sourceendlinenumber="100">
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="97" sourceendlinenumber="97">For all documents in one processor always <code>Prebuild</code> -&gt; <code>Build</code> -&gt; <code>Postbuild</code>.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="98" sourceendlinenumber="98">For all documents in one processor always invoke <code>Prebuild</code> by <code>BuildOrder</code>.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="99" sourceendlinenumber="99">For each document in one processor always invoke <code>Build</code> by <code>BuildOrder</code>.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="100" sourceendlinenumber="100">For all documents in one processor always invoke <code>Postbuild</code> by <code>BuildOrder</code>.</li>
 </ol>
-<p>e.g.: Document processor <em>X</em> has two steps: A (with BuildOrder=1), B (with BuildOrder=2). When <em>X</em> is handling documents [D1, D2, D3], the invoke order is as follows:</p>
-<pre><code>A.Prebuild([D1, D2, D3]) returns [D1, D2, D3]
+<p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="96" sourceendlinenumber="96">e.g.: Document processor <em>X</em> has two steps: A (with BuildOrder=1), B (with BuildOrder=2). When <em>X</em> is handling documents [D1, D2, D3], the invoke order is as follows:</p>
+<pre sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="103" sourceendlinenumber="113"><code>A.Prebuild([D1, D2, D3]) returns [D1, D2, D3]
 B.Prebuild([D1, D2, D3]) returns [D1, D2, D3]
 Parallel(
   A.Build(D1) -&gt; B.Build(D1),
@@ -206,16 +206,16 @@ A.Postbuild([D1, D2, D3])
 B.Postbuild([D1, D2, D3])
 </code></pre></li>
 </ul>
-<h3 id="create-our-rtfbuildstep">Create our RtfBuildStep:</h3>
-<ol>
-<li><p>Create a new class (RtfBuildStep.cs), and declare it is a build step for <code>RtfDocumentProcessor</code>:</p>
-<pre><code class="lang-csharp">[Export(nameof(RtfDocumentProcessor), typeof(IDocumentBuildStep))]
+<h3 id="create-our-rtfbuildstep" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="115" sourceendlinenumber="115">Create our RtfBuildStep:</h3>
+<ol sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="117" sourceendlinenumber="130">
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="117" sourceendlinenumber="124"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="117" sourceendlinenumber="117">Create a new class (RtfBuildStep.cs), and declare it is a build step for <code>RtfDocumentProcessor</code>:</p>
+<pre sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="118" sourceendlinenumber="124"><code class="lang-csharp">[Export(nameof(RtfDocumentProcessor), typeof(IDocumentBuildStep))]
 public class RtfBuildStep : IDocumentBuildStep
 {
     // todo : implements IDocumentBuildStep.
 }
 </code></pre></li>
-<li><p>In the <code>Build</code> method, convert rtf to html:</p>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="126" sourceendlinenumber="127"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="126" sourceendlinenumber="126">In the <code>Build</code> method, convert rtf to html:</p>
 <pre><code class="lang-csharp" name="Build">private readonly TaskFactory _taskFactory = new TaskFactory(new StaTaskScheduler(1));
 
 public void Build(FileModel model, IHostService host)
@@ -225,7 +225,7 @@ public void Build(FileModel model, IHostService host)
     ((Dictionary&lt;string, object&gt;)model.Content)[&quot;conceptual&quot;] = content;
 }
 </code></pre></li>
-<li><p>Implement other methods:</p>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="129" sourceendlinenumber="130"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="129" sourceendlinenumber="129">Implement other methods:</p>
 <pre><code class="lang-csharp" name="Others">public int BuildOrder =&gt; 0;
 
 public string Name =&gt; nameof(RtfBuildStep);
@@ -240,23 +240,23 @@ public IEnumerable&lt;FileModel&gt; Prebuild(ImmutableList&lt;FileModel&gt; mode
 }
 </code></pre></li>
 </ol>
-<p>View the final <a href="../codesnippet/Rtf/RtfBuildStep.cs">RtfBuildStep.cs</a></p>
-<h2 id="enable-plug-in">Enable plug-in</h2>
-<ol>
-<li>Build our project.</li>
-<li><p>Copy the output dll files to:</p>
-<ul>
-<li>Global: the folder with name <code>Plugins</code> under DocFX.exe</li>
-<li><p>Non-global: the folder with name <code>Plugins</code> under a template folder. Then run <code>DocFX build</code> command with parameter <code>-t {template}</code>.</p>
-<p><em>Hint</em>: DocFX can merge templates so create a template that only contains the <code>Plugins</code> folder, then run the command <code>DocFX build</code> with parameter <code>-t {templateForRender},{templateForPlugins}</code>. </p>
+<p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="132" sourceendlinenumber="132">View the final <a href="../codesnippet/Rtf/RtfBuildStep.cs" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="132" sourceendlinenumber="132">RtfBuildStep.cs</a></p>
+<h2 id="enable-plug-in" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="135" sourceendlinenumber="136">Enable plug-in</h2>
+<ol sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="137" sourceendlinenumber="142">
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="137" sourceendlinenumber="137">Build our project.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="138" sourceendlinenumber="142"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="138" sourceendlinenumber="138">Copy the output dll files to:</p>
+<ul sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="139" sourceendlinenumber="142">
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="139" sourceendlinenumber="139">Global: the folder with name <code>Plugins</code> under DocFX.exe</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="140" sourceendlinenumber="142"><p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="140" sourceendlinenumber="140">Non-global: the folder with name <code>Plugins</code> under a template folder. Then run <code>DocFX build</code> command with parameter <code>-t {template}</code>.</p>
+<p sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="140" sourceendlinenumber="140"><em>Hint</em>: DocFX can merge templates so create a template that only contains the <code>Plugins</code> folder, then run the command <code>DocFX build</code> with parameter <code>-t {templateForRender},{templateForPlugins}</code>. </p>
 </li>
 </ul>
 </li>
 </ol>
-<h2 id="build-document">Build document</h2>
-<ol>
-<li>Run command <code>DocFX init</code> and set the source article with <code>**.rtf</code>.</li>
-<li>Run command <code>DocFX build</code>.</li>
+<h2 id="build-document" sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="144" sourceendlinenumber="145">Build document</h2>
+<ol sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="146" sourceendlinenumber="147">
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="146" sourceendlinenumber="146">Run command <code>DocFX init</code> and set the source article with <code>**.rtf</code>.</li>
+<li sourcefile="tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.md" sourcestartlinenumber="147" sourceendlinenumber="147">Run command <code>DocFX build</code>.</li>
 </ol>
 
             </article>
@@ -294,8 +294,8 @@ public IEnumerable&lt;FileModel&gt; Prebuild(ImmutableList&lt;FileModel&gt; mode
     </div>
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>

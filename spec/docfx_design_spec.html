@@ -8,7 +8,7 @@
     <title>docfx Design Spec | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx Design Spec | DocFX website ">
-    <meta name="generator" content="docfx 2.4.0.0">
+    <meta name="generator" content="docfx 2.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,10 +72,10 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <h1 id="docfx-design-spec"><code>docfx</code> Design Spec</h1>
+              <h1 id="docfx-design-spec" sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="1" sourceendlinenumber="2"><code>docfx</code> Design Spec</h1>
               
-<h2 id="0-terms">0. Terms</h2>
-<table>
+<h2 id="0-terms" sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="3" sourceendlinenumber="4">0. Terms</h2>
+<table sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="5" sourceendlinenumber="9">
 <thead>
 <tr>
 <th>Term</th>
@@ -85,7 +85,7 @@
 <tbody>
 <tr>
 <td>DFM</td>
-<td><a href="docfx_flavored_markdown.html">DocFX Flavored Markdown</a></td>
+<td><a href="docfx_flavored_markdown.html" sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="7" sourceendlinenumber="7">DocFX Flavored Markdown</a></td>
 </tr>
 <tr>
 <td>API</td>
@@ -97,26 +97,26 @@
 </tr>
 </tbody>
 </table>
-<h2 id="1-scenarios">1. Scenarios</h2>
-<p><code>docfx</code> should support the following scenarios:</p>
-<ol>
-<li>Source Code =&gt; Website</li>
-<li>Conceptual =&gt; Website</li>
-<li>YAML files =&gt; Website</li>
+<h2 id="1-scenarios" sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="12" sourceendlinenumber="13">1. Scenarios</h2>
+<p sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="14" sourceendlinenumber="14"><code>docfx</code> should support the following scenarios:</p>
+<ol sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="15" sourceendlinenumber="17">
+<li sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="15" sourceendlinenumber="15">Source Code =&gt; Website</li>
+<li sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="16" sourceendlinenumber="16">Conceptual =&gt; Website</li>
+<li sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="17" sourceendlinenumber="17">YAML files =&gt; Website</li>
 </ol>
-<h2 id="2-architecture">2. Architecture</h2>
-<p><img src="images/docfx_workflow.png" alt="Workflow"></p>
-<h2 id="3-feature-list">3. Feature List</h2>
-<ol>
-<li>Support for <a href="docfx_flavored_markdown.html">DocFX Flavored Markdown</a></li>
-<li>Ability to parse TOC.json/TOC.yml/TOC.md</li>
-<li>Custom template naming: {type}.{extension}.tmpl under folder {templateName} </li>
+<h2 id="2-architecture" sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="19" sourceendlinenumber="20">2. Architecture</h2>
+<p sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="21" sourceendlinenumber="21"><img src="images/docfx_workflow.png" alt="Workflow" sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="21" sourceendlinenumber="21"></p>
+<h2 id="3-feature-list" sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="23" sourceendlinenumber="24">3. Feature List</h2>
+<ol sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="25" sourceendlinenumber="27">
+<li sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="25" sourceendlinenumber="25">Support for <a href="docfx_flavored_markdown.html" sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="25" sourceendlinenumber="25">DocFX Flavored Markdown</a></li>
+<li sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="26" sourceendlinenumber="26">Ability to parse TOC.json/TOC.yml/TOC.md</li>
+<li sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="27" sourceendlinenumber="27">Custom template naming: {type}.{extension}.tmpl under folder {templateName} </li>
 </ol>
-<h2 id="4-open-issues">4. Open Issues</h2>
-<ol>
-<li>Should we support other conceptual file format, for example, RST?
+<h2 id="4-open-issues" sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="29" sourceendlinenumber="30">4. Open Issues</h2>
+<ol sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="31" sourceendlinenumber="34">
+<li sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="31" sourceendlinenumber="32">Should we support other conceptual file format, for example, RST?
 ==&gt; How to parse?</li>
-<li>How do you know which link to replace to html, and which not?
+<li sourcefile="spec/docfx_design_spec.md" sourcestartlinenumber="33" sourceendlinenumber="34">How do you know which link to replace to html, and which not?
 ==&gt; </li>
 </ol>
 
@@ -155,8 +155,8 @@
     </div>
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>

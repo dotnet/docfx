@@ -8,7 +8,7 @@
     <title>&#128295; Advanced: Support Hyperlink | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="&#128295; Advanced: Support Hyperlink | DocFX website ">
-    <meta name="generator" content="docfx 2.4.0.0">
+    <meta name="generator" content="docfx 2.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,81 +72,81 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <h1 id="-advanced-support-hyperlink">🔧 Advanced: Support Hyperlink</h1>
+              <h1 id="-advanced-support-hyperlink" sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="1" sourceendlinenumber="2">🔧 Advanced: Support Hyperlink</h1>
               
-<p>In this topic, we will support hyperlinking in rtf files.</p>
-<p>Create a hyperlink in the rtf file:</p>
-<ol>
-<li>Open <code>foo.rtf</code> by <code>Word</code>.</li>
-<li>Add a hyperlink in content</li>
-<li>Set the link target to an existing <code>bar.rtf</code></li>
-<li>Save the document.</li>
+<p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="4" sourceendlinenumber="4">In this topic, we will support hyperlinking in rtf files.</p>
+<p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="6" sourceendlinenumber="6">Create a hyperlink in the rtf file:</p>
+<ol sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="7" sourceendlinenumber="10">
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="7" sourceendlinenumber="7">Open <code>foo.rtf</code> by <code>Word</code>.</li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="8" sourceendlinenumber="8">Add a hyperlink in content</li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="9" sourceendlinenumber="9">Set the link target to an existing <code>bar.rtf</code></li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="10" sourceendlinenumber="10">Save the document.</li>
 </ol>
-<h2 id="about-link">About link</h2>
-<p>An author can write any valid hyperlink in the document, and then needs to run <code>DocFX build</code> to update file links.</p>
-<h3 id="what-is-file-link">What is file link:</h3>
-<ol>
-<li>The hyperlink must be a relative path and not rooted.<ul>
-<li>valid: <code>foo\bar.rtf</code>, <code>../foobar.rtf</code></li>
-<li>invalid: <code>/foo.rtf</code>, <code>c:\foo\bar.rtf</code>, <code>http://foo.bar/</code>, <code>mailto:foo@bar.foobar</code></li>
+<h2 id="about-link" sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="12" sourceendlinenumber="13">About link</h2>
+<p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="14" sourceendlinenumber="14">An author can write any valid hyperlink in the document, and then needs to run <code>DocFX build</code> to update file links.</p>
+<h3 id="what-is-file-link" sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="16" sourceendlinenumber="16">What is file link:</h3>
+<ol sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="17" sourceendlinenumber="20">
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="17" sourceendlinenumber="19">The hyperlink must be a relative path and not rooted.<ul sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="18" sourceendlinenumber="19">
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="18" sourceendlinenumber="18">valid: <code>foo\bar.rtf</code>, <code>../foobar.rtf</code></li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="19" sourceendlinenumber="19">invalid: <code>/foo.rtf</code>, <code>c:\foo\bar.rtf</code>, <code>http://foo.bar/</code>, <code>mailto:foo@bar.foobar</code></li>
 </ul>
 </li>
-<li>The file must exist.</li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="20" sourceendlinenumber="20">The file must exist.</li>
 </ol>
-<h3 id="why-update-file-link">Why update file link:</h3>
-<p>The story is:</p>
-<ol>
-<li>In <code>foo.rtf</code>, it has a file link to <code>bar.rtf</code>.</li>
-<li>In document build, <code>bar.rtf</code> generates a file with the name <code>bar.html</code>.</li>
-<li>But in <code>foo.rtf</code>, the link target is still <code>bar.rtf</code>, thus in the output folder we cannot find this file and we will get a broken link.</li>
-<li>To resolve the broken link, we need to update the link target from <code>bar.rtf</code> to <code>bar.html</code>.</li>
+<h3 id="why-update-file-link" sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="22" sourceendlinenumber="22">Why update file link:</h3>
+<p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="24" sourceendlinenumber="24">The story is:</p>
+<ol sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="25" sourceendlinenumber="28">
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="25" sourceendlinenumber="25">In <code>foo.rtf</code>, it has a file link to <code>bar.rtf</code>.</li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="26" sourceendlinenumber="26">In document build, <code>bar.rtf</code> generates a file with the name <code>bar.html</code>.</li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="27" sourceendlinenumber="27">But in <code>foo.rtf</code>, the link target is still <code>bar.rtf</code>, thus in the output folder we cannot find this file and we will get a broken link.</li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="28" sourceendlinenumber="28">To resolve the broken link, we need to update the link target from <code>bar.rtf</code> to <code>bar.html</code>.</li>
 </ol>
-<p>File link is a relative path, but we cannot track the relative path easily.
+<p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="30" sourceendlinenumber="31">File link is a relative path, but we cannot track the relative path easily.
 So we track the <em>normalized file path</em> instead.</p>
-<h3 id="what-is-a-normalized-file-path">What is a <em>normalized file path</em>:</h3>
-<ol>
-<li>It always starts from the working folder (the folder that contains <code>docfx.json</code>), and we write it as <code>~/</code>.</li>
-<li>No <code>../</code> or <code>./</code> or <code>//</code></li>
-<li>Replace <code>\</code> with <code>/</code>.</li>
-<li>No url encoding. The path must be same as it in the file system.</li>
-<li>No anchor.</li>
+<h3 id="what-is-a-normalized-file-path" sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="33" sourceendlinenumber="33">What is a <em>normalized file path</em>:</h3>
+<ol sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="34" sourceendlinenumber="38">
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="34" sourceendlinenumber="34">It always starts from the working folder (the folder that contains <code>docfx.json</code>), and we write it as <code>~/</code>.</li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="35" sourceendlinenumber="35">No <code>../</code> or <code>./</code> or <code>//</code></li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="36" sourceendlinenumber="36">Replace <code>\</code> with <code>/</code>.</li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="37" sourceendlinenumber="37">No url encoding. The path must be same as it in the file system.</li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="38" sourceendlinenumber="38">No anchor.</li>
 </ol>
-<p>Finally, a valid <em>normalized file path</em> looks like: <code>~/foo/bar.rtf</code>.</p>
-<ul>
-<li><p>Pros</p>
-<ul>
-<li><p>Same form in different documents when the target is the same file.</p>
-<p>When file structure is:</p>
-<pre><code>z:\a\b\foo.rtf
+<p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="40" sourceendlinenumber="40">Finally, a valid <em>normalized file path</em> looks like: <code>~/foo/bar.rtf</code>.</p>
+<ul sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="42" sourceendlinenumber="59">
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="42" sourceendlinenumber="56"><p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="42" sourceendlinenumber="42">Pros</p>
+<ul sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="43" sourceendlinenumber="56">
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="43" sourceendlinenumber="52"><p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="43" sourceendlinenumber="43">Same form in different documents when the target is the same file.</p>
+<p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="43" sourceendlinenumber="43">When file structure is:</p>
+<pre sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="46" sourceendlinenumber="50"><code>z:\a\b\foo.rtf
 z:\a\b\c\bar.rtf
 z:\a\b\c\foobar.rtf
-</code></pre><p>Link target <code>c/foobar.rtf</code> in <code>foo.rtf</code> and link target <code>foobar.rtf</code> in <code>bar.rtf</code> is the same file.
+</code></pre><p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="43" sourceendlinenumber="44">Link target <code>c/foobar.rtf</code> in <code>foo.rtf</code> and link target <code>foobar.rtf</code> in <code>bar.rtf</code> is the same file.
 When the working folder is <code>z:\a\</code>, the link target is always <code>~/b/c/foobar.rtf</code>.</p>
 </li>
-<li><p>Avoids differences in style when referring to the same file.</p>
-<p>For example, the following hyperlinks target the same file: <code>a/foo.rtf</code>, <code>./a/foo.rtf</code>, <code>a/b/../foo.rtf</code>, <code>a//foo.rtf</code>, <code>a\foo.rtf</code></p>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="54" sourceendlinenumber="56"><p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="54" sourceendlinenumber="54">Avoids differences in style when referring to the same file.</p>
+<p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="54" sourceendlinenumber="54">For example, the following hyperlinks target the same file: <code>a/foo.rtf</code>, <code>./a/foo.rtf</code>, <code>a/b/../foo.rtf</code>, <code>a//foo.rtf</code>, <code>a\foo.rtf</code></p>
 </li>
 </ul>
 </li>
-<li><p>Cons</p>
-<ul>
-<li>A folder with the name <code>~</code> is not supported.</li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="58" sourceendlinenumber="59"><p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="58" sourceendlinenumber="58">Cons</p>
+<ul sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="59" sourceendlinenumber="59">
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="59" sourceendlinenumber="59">A folder with the name <code>~</code> is not supported.</li>
 </ul>
 </li>
 </ul>
-<h2 id="prepare">Prepare</h2>
-<ol>
-<li><p>Open the rtf plug-in library project in <code>Visual Studio</code>.</p>
+<h2 id="prepare" sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="61" sourceendlinenumber="62">Prepare</h2>
+<ol sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="63" sourceendlinenumber="69">
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="63" sourceendlinenumber="63"><p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="63" sourceendlinenumber="63">Open the rtf plug-in library project in <code>Visual Studio</code>.</p>
 </li>
-<li><p>Add nuget packages:<br>for plug-in: <code>Microsoft.DocAsCode.Utility</code></p>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="65" sourceendlinenumber="66"><p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="65" sourceendlinenumber="66">Add nuget packages:<br>for plug-in: <code>Microsoft.DocAsCode.Utility</code></p>
 </li>
-<li><p>Add framework assembly reference:
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="68" sourceendlinenumber="69"><p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="68" sourceendlinenumber="69">Add framework assembly reference:
 <code>System.Core</code>, <code>System.Web</code>, <code>System.Xml.Linq</code></p>
 </li>
 </ol>
-<h2 id="update-rtf-document-processor">Update rtf document processor</h2>
-<ol>
-<li><p>Following the rules for hyperlink, add a <code>FixLink</code> help method:</p>
+<h2 id="update-rtf-document-processor" sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="71" sourceendlinenumber="72">Update rtf document processor</h2>
+<ol sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="73" sourceendlinenumber="82">
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="73" sourceendlinenumber="76"><p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="73" sourceendlinenumber="73">Following the rules for hyperlink, add a <code>FixLink</code> help method:</p>
 <pre><code class="lang-csharp" name="FixLink">private static void FixLink(XAttribute link, RelativePath filePath, HashSet&lt;string&gt; linkToFiles)
 {
     string linkFile;
@@ -173,9 +173,9 @@ When the working folder is <code>z:\a\</code>, the link target is always <code>~
         linkToFiles.Add(HttpUtility.UrlDecode(file));
     }
 }
-</code></pre><p><code>RelativePath</code> helps us generate the links correctly.</p>
+</code></pre><p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="73" sourceendlinenumber="73"><code>RelativePath</code> helps us generate the links correctly.</p>
 </li>
-<li><p>Then add <code>CollectLinksAndFixDocument</code> method:</p>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="78" sourceendlinenumber="79"><p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="78" sourceendlinenumber="78">Then add <code>CollectLinksAndFixDocument</code> method:</p>
 <pre><code class="lang-csharp" name="CollectLinksAndFixDocument">private static HashSet&lt;string&gt; CollectLinksAndFixDocument(FileModel model)
 {
     string content = (string)((Dictionary&lt;string, object&gt;)model.Content)[&quot;conceptual&quot;];
@@ -198,7 +198,7 @@ When the working folder is <code>z:\a\</code>, the link target is always <code>~
     return linkToFiles;
 }
 </code></pre></li>
-<li><p>Modify <code>Save</code> method with report links:</p>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="81" sourceendlinenumber="82"><p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="81" sourceendlinenumber="81">Modify <code>Save</code> method with report links:</p>
 <pre><code class="lang-csharp" name="Save">public SaveResult Save(FileModel model)
 {
     HashSet&lt;string&gt; linkToFiles = CollectLinksAndFixDocument(model);
@@ -213,14 +213,14 @@ When the working folder is <code>z:\a\</code>, the link target is always <code>~
 </code></pre></li>
 </ol>
 <!-- todo : `Update Reference` is preserved for next version of plugin. -->
-<p>View final <a href="../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs">RtfDocumentProcessor.cs</a></p>
-<h2 id="test-and-verify">Test and verify</h2>
-<ol>
-<li>Build project.</li>
-<li>Copy dll to <code>Plugins</code> folder.</li>
-<li>Modify rtf file, create hyperlink, link to another rtf file, and save.</li>
-<li>Build with command <code>DocFX build</code>.</li>
-<li>Verify output html file.</li>
+<p sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="86" sourceendlinenumber="86">View final <a href="../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs" sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="86" sourceendlinenumber="86">RtfDocumentProcessor.cs</a></p>
+<h2 id="test-and-verify" sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="89" sourceendlinenumber="90">Test and verify</h2>
+<ol sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="91" sourceendlinenumber="95">
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="91" sourceendlinenumber="91">Build project.</li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="92" sourceendlinenumber="92">Copy dll to <code>Plugins</code> folder.</li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="93" sourceendlinenumber="93">Modify rtf file, create hyperlink, link to another rtf file, and save.</li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="94" sourceendlinenumber="94">Build with command <code>DocFX build</code>.</li>
+<li sourcefile="tutorial/advanced_support_hyperlink.md" sourcestartlinenumber="95" sourceendlinenumber="95">Verify output html file.</li>
 </ol>
 
             </article>
@@ -258,8 +258,8 @@ When the working folder is <code>z:\a\</code>, the link target is always <code>~
     </div>
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>

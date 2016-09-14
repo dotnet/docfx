@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class FileMapping
    | DocFX website ">
-    <meta name="generator" content="docfx 2.4.0.0">
+    <meta name="generator" content="docfx 2.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -78,9 +78,9 @@
               
               <h1 id="Microsoft_DocAsCode_FileMapping" data-uid="Microsoft.DocAsCode.FileMapping">Class FileMapping
               </h1>
-              <div class="markdown level0 summary"><p>FileMapping supports two forms:</p>
-<ol>
-<li>Array form
+              <div class="markdown level0 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.FileMapping.yml" sourcestartlinenumber="2" sourceendlinenumber="2">FileMapping supports two forms:</p>
+<ol sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.FileMapping.yml" sourcestartlinenumber="3" sourceendlinenumber="17">
+<li sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.FileMapping.yml" sourcestartlinenumber="3" sourceendlinenumber="14">Array form
  This form supports multiple file mappings, and also allows additional properties per mapping.
  e.g. 
  <code>&quot;key&quot;: [
@@ -90,7 +90,7 @@
    {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v1.0&quot;, &quot;dest&quot;:&quot;v1.0/api&quot;, &quot;version&quot;: &quot;v1.0&quot;},
    {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v2.0&quot;, &quot;dest&quot;:&quot;v2.0/api&quot;, &quot;version&quot;: &quot;v2.0&quot;}
  ]</code></li>
-<li>Compact form
+<li sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.FileMapping.yml" sourcestartlinenumber="15" sourceendlinenumber="17">Compact form
  This form supports multiple file patterns in an array
  e.g. <code>projects: [&quot;file1&quot;, &quot;file2&quot;]</code></li>
 </ol>
@@ -129,8 +129,7 @@
               <h6><strong>Assembly</strong>:docfx.dll</h6>
               <h5 id="Microsoft_DocAsCode_FileMapping_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[JsonConverter(typeof (FileMappingConverter))]
-[Serializable]
+                <pre><code class="lang-csharp hljs">[Serializable]
 public class FileMapping</code></pre>
               </div>
               <h3 id="constructors">Constructors
@@ -281,7 +280,7 @@ public class FileMapping</code></pre>
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L57">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_FileMapping_Add_Microsoft_DocAsCode_FileMappingItem_" data-uid="Microsoft.DocAsCode.FileMapping.Add(Microsoft.DocAsCode.FileMappingItem)">Add(FileMappingItem)</h4>
-              <div class="markdown level1 summary"><p>Should not merge FileMappingItems even if they are using the same name, because other propertes also matters, e.g. cwd, exclude.</p>
+              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.FileMapping.yml" sourcestartlinenumber="2" sourceendlinenumber="2">Should not merge FileMappingItems even if they are using the same name, because other propertes also matters, e.g. cwd, exclude.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -307,7 +306,7 @@ public class FileMapping</code></pre>
               </table>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
-                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
+                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Formatting_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
               </div>
             </article>
           </div>
@@ -347,8 +346,8 @@ public class FileMapping</code></pre>
     </div>
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>

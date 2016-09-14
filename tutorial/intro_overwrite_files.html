@@ -8,7 +8,7 @@
     <title>Overwrite Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Overwrite Files | DocFX website ">
-    <meta name="generator" content="docfx 2.4.0.0">
+    <meta name="generator" content="docfx 2.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,58 +72,58 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <h1 id="overwrite-files">Overwrite Files</h1>
+              <h1 id="overwrite-files" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="1" sourceendlinenumber="2">Overwrite Files</h1>
               
-<h2 id="introduction">Introduction</h2>
-<p>DocFX supports processing Markdown files, as well as structured data model in YAML or JSON format.</p>
-<p>We call Markdown files <em>Conceptual File</em>s, and the structured data model files <em>Metadata File</em>s.</p>
-<p>Current supported <em>Metadata File</em>s include:</p>
-<ol>
-<li>YAML files presenting managed reference model following <a href="../spec/metadata_dotnet_spec.html">Metadata Format for .NET Languages</a>.</li>
-<li>Swagger JSON files presenting Swagger REST API model following <a href="http://swagger.io/specification">Swagger Specification Version 2.0</a>.</li>
+<h2 id="introduction" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="4" sourceendlinenumber="5">Introduction</h2>
+<p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="6" sourceendlinenumber="6">DocFX supports processing Markdown files, as well as structured data model in YAML or JSON format.</p>
+<p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="8" sourceendlinenumber="8">We call Markdown files <em>Conceptual File</em>s, and the structured data model files <em>Metadata File</em>s.</p>
+<p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="10" sourceendlinenumber="10">Current supported <em>Metadata File</em>s include:</p>
+<ol sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="11" sourceendlinenumber="12">
+<li sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="11" sourceendlinenumber="11">YAML files presenting managed reference model following <a href="../spec/metadata_dotnet_spec.html" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="11" sourceendlinenumber="11">Metadata Format for .NET Languages</a>.</li>
+<li sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="12" sourceendlinenumber="12">Swagger JSON files presenting Swagger REST API model following <a href="http://swagger.io/specification" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="12" sourceendlinenumber="12">Swagger Specification Version 2.0</a>.</li>
 </ol>
-<p>Inside DocFX, both <em>Conceptual File</em>s and <em>Metadata File</em>s are represented as <em>Model</em>s with different properties. Details on <em>Model</em> structure for these files are described in <a href="#data-model-inside-docfx">Data model inside DocFX</a> section.</p>
-<p>DocFX introduces the concept of <em>Overwrite File</em> to modify or add properties to <em>Model</em>s without changing the input <em>Conceptual File</em>s and <em>Metadata File</em>s.</p>
-<h2 id="the-format-of-overwrite-files">The format of <em>Overwrite File</em>s</h2>
-<p><em>Overwrite File</em>s are Markdown files with multiple <em>Overwrite Section</em>s starting with YAML header block. A valid YAML header for an <em>Overwrite Section</em> <em>MUST</em> take the form of valid <a href="http://www.yaml.org/spec/1.2/spec.html">YAML</a> set between triple-dashed lines and start with property <code>uid</code>. Here is a basic example of an <em>Overwrite Section</em>:</p>
-<pre><code class="lang-md">---
+<p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="14" sourceendlinenumber="14">Inside DocFX, both <em>Conceptual File</em>s and <em>Metadata File</em>s are represented as <em>Model</em>s with different properties. Details on <em>Model</em> structure for these files are described in <a href="#data-model-inside-docfx" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="14" sourceendlinenumber="14">Data model inside DocFX</a> section.</p>
+<p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="16" sourceendlinenumber="16">DocFX introduces the concept of <em>Overwrite File</em> to modify or add properties to <em>Model</em>s without changing the input <em>Conceptual File</em>s and <em>Metadata File</em>s.</p>
+<h2 id="the-format-of-overwrite-files" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="18" sourceendlinenumber="19">The format of <em>Overwrite File</em>s</h2>
+<p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="20" sourceendlinenumber="20"><em>Overwrite File</em>s are Markdown files with multiple <em>Overwrite Section</em>s starting with YAML header block. A valid YAML header for an <em>Overwrite Section</em> <em>MUST</em> take the form of valid <a href="http://www.yaml.org/spec/1.2/spec.html" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="20" sourceendlinenumber="20">YAML</a> set between triple-dashed lines and start with property <code>uid</code>. Here is a basic example of an <em>Overwrite Section</em>:</p>
+<pre sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="22" sourceendlinenumber="28"><code class="lang-md">---
 uid: microsoft.com/docfx/Contacts
 some_property: value
 ---
 Further description for `microsoft.com/docfx/Contacts`
-</code></pre><p>Each <em>Overwrite Section</em> is transformed to <em>Overwrite Model</em> inside DocFX. For the above example, the <em>Overwrite Model</em> represented in YAML format is:</p>
-<pre><code class="lang-yaml">uid: microsoft.com/docfx/Contacts
+</code></pre><p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="30" sourceendlinenumber="30">Each <em>Overwrite Section</em> is transformed to <em>Overwrite Model</em> inside DocFX. For the above example, the <em>Overwrite Model</em> represented in YAML format is:</p>
+<pre sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="32" sourceendlinenumber="36"><code class="lang-yaml">uid: microsoft.com/docfx/Contacts
 some_property: value
 conceptual: &lt;p&gt;&lt;b&gt;Content&lt;/b&gt; in Markdown&lt;/p&gt;
-</code></pre><h3 id="anchor-content">Anchor <code>*content</code></h3>
-<p><code>*content</code> is the keyword invented and used specifically in <em>Overwrite File</em>s to represent the Markdown content following YAML header. We leverage <a href="http://www.yaml.org/spec/1.2/spec.html#id2765878">Anchors</a> syntax in YAML specification for <code>*content</code>.</p>
-<p>The value for <code>*content</code> is always transformed from Markdown content to HTML. When <code>*content</code> is not used, the Markdown content below YAML header will be set to <code>conceptual</code> property; When <code>*content</code> is used, the Markdown content below YAML header will no longer be set to <code>conceptual</code> property. With <code>*content</code>, we can easily add Markdown content to any properties. </p>
-<pre><code class="lang-md">---
+</code></pre><h3 id="anchor-content" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="38" sourceendlinenumber="38">Anchor <code>*content</code></h3>
+<p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="40" sourceendlinenumber="40"><code>*content</code> is the keyword invented and used specifically in <em>Overwrite File</em>s to represent the Markdown content following YAML header. We leverage <a href="http://www.yaml.org/spec/1.2/spec.html#id2765878" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="40" sourceendlinenumber="40">Anchors</a> syntax in YAML specification for <code>*content</code>.</p>
+<p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="42" sourceendlinenumber="42">The value for <code>*content</code> is always transformed from Markdown content to HTML. When <code>*content</code> is not used, the Markdown content below YAML header will be set to <code>conceptual</code> property; When <code>*content</code> is used, the Markdown content below YAML header will no longer be set to <code>conceptual</code> property. With <code>*content</code>, we can easily add Markdown content to any properties. </p>
+<pre sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="44" sourceendlinenumber="50"><code class="lang-md">---
 uid: microsoft.com/docfx/Contacts
 footer: *content
 ---
 Footer for `microsoft.com/docfx/Contacts`
-</code></pre><p>In the above example, the value for <code>*content</code> is <code>&lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt;&lt;/p&gt;</code>, and the <em>Overwrite Model</em> represented in YAML format is:</p>
-<pre><code class="lang-yaml">uid: microsoft.com/docfx/Contacts
+</code></pre><p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="52" sourceendlinenumber="52">In the above example, the value for <code>*content</code> is <code>&lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt;&lt;/p&gt;</code>, and the <em>Overwrite Model</em> represented in YAML format is:</p>
+<pre sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="54" sourceendlinenumber="57"><code class="lang-yaml">uid: microsoft.com/docfx/Contacts
 footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt;&lt;/p&gt;
-</code></pre><p><code>uid</code> for an <em>Overwrite Model</em> stands for the Unique IDentifier of the <em>Model</em> it will overwrite. So it is allowed to have multiple <em>Overwrite Section</em>s with YAML Header containing the same <code>uid</code>. For one <em>Overwrite File</em>, the latter <em>Overwrite Section</em> overwrites the former one with the same <code>uid</code>. For different <em>Overwrite File</em>s, the order of overwrite is <strong>Undetermined</strong>. So it is suggested to have <em>Overwrite Sections</em> with the same <code>uid</code> in the same <em>Overwrite File</em>.</p>
-<p>When processing <em>Conceptual File</em>s and <em>Metadata File</em>s, <em>Overwrite Model</em>s with the same <code>uid</code> are applied to the processed <em>Model</em>s. Different <em>Model</em>s have different overwrite principles, <a href="#overwrite-principles">Overwrite principles</a> section describes the them in detail.</p>
-<h2 id="apply-overwrite-files">Apply <em>Overwrite File</em>s</h2>
-<p>Inside <code>docfx.json</code>, <a href="docfx.exe_user_manual.html#3-2-properties-for-build-"><code>overwrite</code></a> is used to specify the <em>Overwrite File</em>s.</p>
-<h2 id="overwrite-principles">Overwrite principles</h2>
-<p>As a general principle, <code>uid</code> is always the key that an <em>Overwrite Model</em> find the <em>Model</em> it is going to overwrite. So a <em>Model</em> with no <code>uid</code> defined will never get overwritten.</p>
-<p>Different types of files produce different <em>Model</em>s. The quickest way to get an idea of what the <em>Model</em> looks like is to run:</p>
-<pre><code>docfx build --exportRawModel
-</code></pre><p><code>--exportRawModel</code> exports <em>Model</em> in JSON format with <code>.raw.json</code> extension.</p>
-<p>The basic principle of <em>Overwrite Model</em> is:</p>
-<ol>
-<li>It keeps the same data structure as the <em>Model</em> it is going to overwrite</li>
-<li>If the property is defined in <em>Model</em>, please refer <a href="#data-model-inside-docfx">Data model inside DocFX</a> for the specific overwrite behavior for a specific property.</li>
-<li>If the property is not defined in <em>Model</em>, it is added to <em>Model</em></li>
+</code></pre><p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="59" sourceendlinenumber="59"><code>uid</code> for an <em>Overwrite Model</em> stands for the Unique IDentifier of the <em>Model</em> it will overwrite. So it is allowed to have multiple <em>Overwrite Section</em>s with YAML Header containing the same <code>uid</code>. For one <em>Overwrite File</em>, the latter <em>Overwrite Section</em> overwrites the former one with the same <code>uid</code>. For different <em>Overwrite File</em>s, the order of overwrite is <strong>Undetermined</strong>. So it is suggested to have <em>Overwrite Sections</em> with the same <code>uid</code> in the same <em>Overwrite File</em>.</p>
+<p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="61" sourceendlinenumber="61">When processing <em>Conceptual File</em>s and <em>Metadata File</em>s, <em>Overwrite Model</em>s with the same <code>uid</code> are applied to the processed <em>Model</em>s. Different <em>Model</em>s have different overwrite principles, <a href="#overwrite-principles" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="61" sourceendlinenumber="61">Overwrite principles</a> section describes the them in detail.</p>
+<h2 id="apply-overwrite-files" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="63" sourceendlinenumber="64">Apply <em>Overwrite File</em>s</h2>
+<p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="65" sourceendlinenumber="65">Inside <code>docfx.json</code>, <a href="docfx.exe_user_manual.html#3-2-properties-for-build-" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="65" sourceendlinenumber="65"><code>overwrite</code></a> is used to specify the <em>Overwrite File</em>s.</p>
+<h2 id="overwrite-principles" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="67" sourceendlinenumber="68">Overwrite principles</h2>
+<p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="69" sourceendlinenumber="69">As a general principle, <code>uid</code> is always the key that an <em>Overwrite Model</em> find the <em>Model</em> it is going to overwrite. So a <em>Model</em> with no <code>uid</code> defined will never get overwritten.</p>
+<p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="71" sourceendlinenumber="71">Different types of files produce different <em>Model</em>s. The quickest way to get an idea of what the <em>Model</em> looks like is to run:</p>
+<pre sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="72" sourceendlinenumber="74"><code>docfx build --exportRawModel
+</code></pre><p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="75" sourceendlinenumber="75"><code>--exportRawModel</code> exports <em>Model</em> in JSON format with <code>.raw.json</code> extension.</p>
+<p sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="77" sourceendlinenumber="77">The basic principle of <em>Overwrite Model</em> is:</p>
+<ol sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="78" sourceendlinenumber="80">
+<li sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="78" sourceendlinenumber="78">It keeps the same data structure as the <em>Model</em> it is going to overwrite</li>
+<li sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="79" sourceendlinenumber="79">If the property is defined in <em>Model</em>, please refer <a href="#data-model-inside-docfx" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="79" sourceendlinenumber="79">Data model inside DocFX</a> for the specific overwrite behavior for a specific property.</li>
+<li sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="80" sourceendlinenumber="80">If the property is not defined in <em>Model</em>, it is added to <em>Model</em></li>
 </ol>
-<h2 id="data-model-inside-docfx">Data model inside DocFX</h2>
-<h3 id="managed-reference-model">Managed reference model</h3>
-<table>
+<h2 id="data-model-inside-docfx" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="82" sourceendlinenumber="83">Data model inside DocFX</h2>
+<h3 id="managed-reference-model" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="84" sourceendlinenumber="84">Managed reference model</h3>
+<table sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="86" sourceendlinenumber="117">
 <thead>
 <tr>
 <th>Key</th>
@@ -144,7 +144,7 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 <tr>
 <td>attributes</td>
-<td><a href="#attribute">Attribute</a>[]</td>
+<td><a href="#attribute" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="90" sourceendlinenumber="90">Attribute</a>[]</td>
 <td>Ignore.</td>
 </tr>
 <tr>
@@ -154,7 +154,7 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 <tr>
 <td>documentation</td>
-<td><a href="#source">Source</a></td>
+<td><a href="#source" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="92" sourceendlinenumber="92">Source</a></td>
 <td>Merge.</td>
 </tr>
 <tr>
@@ -164,7 +164,7 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 <tr>
 <td>exceptions</td>
-<td><a href="#cref">Cref</a>[]</td>
+<td><a href="#cref" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="94" sourceendlinenumber="94">Cref</a>[]</td>
 <td>Merge keyed list.</td>
 </tr>
 <tr>
@@ -254,22 +254,22 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 <tr>
 <td>see</td>
-<td><a href="#cref">Cref</a>[]</td>
+<td><a href="#cref" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="112" sourceendlinenumber="112">Cref</a>[]</td>
 <td>Merge keyed list.</td>
 </tr>
 <tr>
 <td>seealso</td>
-<td><a href="#cref">Cref</a>[]</td>
+<td><a href="#cref" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="113" sourceendlinenumber="113">Cref</a>[]</td>
 <td>Merge keyed list.</td>
 </tr>
 <tr>
 <td>source</td>
-<td><a href="#source">Source</a></td>
+<td><a href="#source" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="114" sourceendlinenumber="114">Source</a></td>
 <td>Merge.</td>
 </tr>
 <tr>
 <td><em>syntax</em></td>
-<td><a href="#syntax">Syntax</a></td>
+<td><a href="#syntax" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="115" sourceendlinenumber="115">Syntax</a></td>
 <td>Merge.</td>
 </tr>
 <tr>
@@ -284,8 +284,8 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 </tbody>
 </table>
-<h4 id="source">Source</h4>
-<table>
+<h4 id="source" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="119" sourceendlinenumber="119">Source</h4>
+<table sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="120" sourceendlinenumber="130">
 <thead>
 <tr>
 <th>Property</th>
@@ -331,7 +331,7 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 <tr>
 <td>remote</td>
-<td><a href="#gitsource">GitSource</a></td>
+<td><a href="#gitsource" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="129" sourceendlinenumber="129">GitSource</a></td>
 <td>Merge.</td>
 </tr>
 <tr>
@@ -341,8 +341,8 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 </tbody>
 </table>
-<h4 id="gitsource">GitSource</h4>
-<table>
+<h4 id="gitsource" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="132" sourceendlinenumber="132">GitSource</h4>
+<table sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="133" sourceendlinenumber="139">
 <thead>
 <tr>
 <th>Property</th>
@@ -368,7 +368,7 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 <tr>
 <td>commit</td>
-<td><a href="#commit">Commit</a></td>
+<td><a href="#commit" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="138" sourceendlinenumber="138">Commit</a></td>
 <td>Merge.</td>
 </tr>
 <tr>
@@ -378,8 +378,8 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 </tbody>
 </table>
-<h4 id="commit">Commit</h4>
-<table>
+<h4 id="commit" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="141" sourceendlinenumber="141">Commit</h4>
+<table sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="142" sourceendlinenumber="147">
 <thead>
 <tr>
 <th>Property</th>
@@ -390,12 +390,12 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 <tbody>
 <tr>
 <td>committer</td>
-<td><a href="#user">User</a></td>
+<td><a href="#user" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="144" sourceendlinenumber="144">User</a></td>
 <td>Replace.</td>
 </tr>
 <tr>
 <td>author</td>
-<td><a href="#user">User</a></td>
+<td><a href="#user" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="145" sourceendlinenumber="145">User</a></td>
 <td>Replace.</td>
 </tr>
 <tr>
@@ -410,8 +410,8 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 </tbody>
 </table>
-<h4 id="user">User</h4>
-<table>
+<h4 id="user" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="149" sourceendlinenumber="149">User</h4>
+<table sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="150" sourceendlinenumber="154">
 <thead>
 <tr>
 <th>Property</th>
@@ -437,8 +437,8 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 </tbody>
 </table>
-<h4 id="cref">Cref</h4>
-<table>
+<h4 id="cref" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="156" sourceendlinenumber="156">Cref</h4>
+<table sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="157" sourceendlinenumber="161">
 <thead>
 <tr>
 <th>Property</th>
@@ -464,8 +464,8 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 </tbody>
 </table>
-<h4 id="syntax">Syntax</h4>
-<table>
+<h4 id="syntax" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="163" sourceendlinenumber="163">Syntax</h4>
+<table sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="164" sourceendlinenumber="170">
 <thead>
 <tr>
 <th>Property</th>
@@ -486,23 +486,23 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 <tr>
 <td>parameters</td>
-<td><a href="#parameter">Parameter</a>[]</td>
+<td><a href="#parameter" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="168" sourceendlinenumber="168">Parameter</a>[]</td>
 <td>Merge keyed list.</td>
 </tr>
 <tr>
 <td>typeParameters</td>
-<td><a href="#parameter">Parameter</a>[]</td>
+<td><a href="#parameter" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="169" sourceendlinenumber="169">Parameter</a>[]</td>
 <td>Merge keyed list.</td>
 </tr>
 <tr>
 <td>return</td>
-<td><a href="#parameter">Parameter</a></td>
+<td><a href="#parameter" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="170" sourceendlinenumber="170">Parameter</a></td>
 <td>Merge.</td>
 </tr>
 </tbody>
 </table>
-<h4 id="parameter">Parameter</h4>
-<table>
+<h4 id="parameter" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="172" sourceendlinenumber="172">Parameter</h4>
+<table sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="173" sourceendlinenumber="178">
 <thead>
 <tr>
 <th>Property</th>
@@ -523,7 +523,7 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 <tr>
 <td>attributes</td>
-<td><a href="#attribute">Attribute</a>[]</td>
+<td><a href="#attribute" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="177" sourceendlinenumber="177">Attribute</a>[]</td>
 <td>Ignore.</td>
 </tr>
 <tr>
@@ -533,8 +533,8 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 </tbody>
 </table>
-<h4 id="attribute">Attribute</h4>
-<table>
+<h4 id="attribute" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="180" sourceendlinenumber="180">Attribute</h4>
+<table sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="182" sourceendlinenumber="187">
 <thead>
 <tr>
 <th>Property</th>
@@ -545,7 +545,7 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 <tbody>
 <tr>
 <td>arguments</td>
-<td><a href="#argument">Argument</a>[]</td>
+<td><a href="#argument" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="184" sourceendlinenumber="184">Argument</a>[]</td>
 <td>Ignore.</td>
 </tr>
 <tr>
@@ -555,7 +555,7 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 <tr>
 <td>namedArguments</td>
-<td><a href="#namedargument">NamedArgument</a>[]</td>
+<td><a href="#namedargument" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="186" sourceendlinenumber="186">NamedArgument</a>[]</td>
 <td>Ignore.</td>
 </tr>
 <tr>
@@ -565,8 +565,8 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 </tbody>
 </table>
-<h4 id="argument">Argument</h4>
-<table>
+<h4 id="argument" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="189" sourceendlinenumber="189">Argument</h4>
+<table sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="190" sourceendlinenumber="193">
 <thead>
 <tr>
 <th>Property</th>
@@ -587,8 +587,8 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 </tbody>
 </table>
-<h4 id="namedargument">NamedArgument</h4>
-<table>
+<h4 id="namedargument" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="195" sourceendlinenumber="195">NamedArgument</h4>
+<table sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="196" sourceendlinenumber="200">
 <thead>
 <tr>
 <th>Property</th>
@@ -614,8 +614,8 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 </tbody>
 </table>
-<h3 id="rest-api-model">REST API model</h3>
-<table>
+<h3 id="rest-api-model" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="203" sourceendlinenumber="203">REST API model</h3>
+<table sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="204" sourceendlinenumber="208">
 <thead>
 <tr>
 <th>Key</th>
@@ -626,7 +626,7 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 <tbody>
 <tr>
 <td><em>children</em></td>
-<td><a href="#rest-api-item-model">REST API item model</a></td>
+<td><a href="#rest-api-item-model" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="206" sourceendlinenumber="206">REST API item model</a></td>
 <td>Overwrite when <em>uid</em> of the item model matches</td>
 </tr>
 <tr>
@@ -641,8 +641,8 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 </tbody>
 </table>
-<h4 id="rest-api-item-model">REST API item model</h4>
-<table>
+<h4 id="rest-api-item-model" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="210" sourceendlinenumber="210">REST API item model</h4>
+<table sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="211" sourceendlinenumber="213">
 <thead>
 <tr>
 <th>Key</th>
@@ -658,8 +658,8 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 </tbody>
 </table>
-<h3 id="conceptual-model">Conceptual model</h3>
-<table>
+<h3 id="conceptual-model" sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="215" sourceendlinenumber="215">Conceptual model</h3>
+<table sourcefile="tutorial/intro_overwrite_files.md" sourcestartlinenumber="216" sourceendlinenumber="220">
 <thead>
 <tr>
 <th>Key</th>
@@ -721,8 +721,8 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
     </div>
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>

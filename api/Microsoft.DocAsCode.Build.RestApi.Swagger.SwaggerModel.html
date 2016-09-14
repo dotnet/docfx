@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class SwaggerModel
    | DocFX website ">
-    <meta name="generator" content="docfx 2.4.0.0">
+    <meta name="generator" content="docfx 2.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -126,14 +126,12 @@ public class SwaggerModel</code></pre>
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/Swagger/SwaggerModel.cs/#L41">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_RestApi_Swagger_SwaggerModel_BasePath" data-uid="Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.BasePath">BasePath</h4>
-              <div class="markdown level1 summary"><p>The base path on which the API is served, which is relative to the host. If it is not included, the API is served directly under the host. The value MUST start with a leading slash (/). The basePath does not support path templating.</p>
+              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.yml" sourcestartlinenumber="2" sourceendlinenumber="2">The base path on which the API is served, which is relative to the host. If it is not included, the API is served directly under the host. The value MUST start with a leading slash (/). The basePath does not support path templating.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;basePath&quot;)]
-[JsonProperty(&quot;basePath&quot;)]
-public string BasePath { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string BasePath { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -158,14 +156,12 @@ public string BasePath { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/Swagger/SwaggerModel.cs/#L63">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_RestApi_Swagger_SwaggerModel_Defintions" data-uid="Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.Defintions">Defintions</h4>
-              <div class="markdown level1 summary"><p>An object to hold data types produced and consumed by operations.</p>
+              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.yml" sourcestartlinenumber="2" sourceendlinenumber="2">An object to hold data types produced and consumed by operations.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;definitions&quot;)]
-[JsonProperty(&quot;definitions&quot;)]
-public object Defintions { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public object Defintions { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -194,9 +190,7 @@ public object Defintions { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;description&quot;)]
-[JsonProperty(&quot;description&quot;)]
-public string Description { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Description { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -221,14 +215,12 @@ public string Description { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/Swagger/SwaggerModel.cs/#L34">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_RestApi_Swagger_SwaggerModel_Host" data-uid="Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.Host">Host</h4>
-              <div class="markdown level1 summary"><p>The host (name or ip) serving the API. This MUST be the host only and does not include the scheme nor sub-paths. It MAY include a port. If the host is not included, the host serving the documentation is to be used (including the port). The host does not support path templating.</p>
+              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.yml" sourcestartlinenumber="2" sourceendlinenumber="2">The host (name or ip) serving the API. This MUST be the host only and does not include the scheme nor sub-paths. It MAY include a port. If the host is not included, the host serving the documentation is to be used (including the port). The host does not support path templating.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;host&quot;)]
-[JsonProperty(&quot;host&quot;)]
-public string Host { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Host { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -253,14 +245,12 @@ public string Host { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/Swagger/SwaggerModel.cs/#L27">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_RestApi_Swagger_SwaggerModel_Info" data-uid="Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.Info">Info</h4>
-              <div class="markdown level1 summary"><p>Required. Provides metadata about the API. The metadata can be used by the clients if needed.</p>
+              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.yml" sourcestartlinenumber="2" sourceendlinenumber="2">Required. Provides metadata about the API. The metadata can be used by the clients if needed.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;info&quot;)]
-[JsonProperty(&quot;info&quot;)]
-public InfoObject Info { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public InfoObject Info { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -290,7 +280,6 @@ public InfoObject Info { get; set; }</code></pre>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[ExtensibleMember]
-[JsonExtensionData]
 public Dictionary&lt;string, object&gt; Metadata { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
@@ -316,14 +305,12 @@ public Dictionary&lt;string, object&gt; Metadata { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/Swagger/SwaggerModel.cs/#L70">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_RestApi_Swagger_SwaggerModel_Parameters" data-uid="Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.Parameters">Parameters</h4>
-              <div class="markdown level1 summary"><p>An object to hold parameters that can be used across operations. This property does not define global parameters for all operations</p>
+              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.yml" sourcestartlinenumber="2" sourceendlinenumber="2">An object to hold parameters that can be used across operations. This property does not define global parameters for all operations</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;parameters&quot;)]
-[JsonProperty(&quot;parameters&quot;)]
-public object Parameters { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public object Parameters { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -348,14 +335,12 @@ public object Parameters { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/Swagger/SwaggerModel.cs/#L48">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_RestApi_Swagger_SwaggerModel_Paths" data-uid="Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.Paths">Paths</h4>
-              <div class="markdown level1 summary"><p>Required. The available paths and operations for the API.</p>
+              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.yml" sourcestartlinenumber="2" sourceendlinenumber="2">Required. The available paths and operations for the API.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;paths&quot;)]
-[JsonProperty(&quot;paths&quot;)]
-public PathsObject Paths { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public PathsObject Paths { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -380,14 +365,12 @@ public PathsObject Paths { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/Swagger/SwaggerModel.cs/#L20">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_RestApi_Swagger_SwaggerModel_Raw" data-uid="Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.Raw">Raw</h4>
-              <div class="markdown level1 summary"><p>The original swagger.json cpntent</p>
+              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.yml" sourcestartlinenumber="2" sourceendlinenumber="2">The original swagger.json cpntent</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlIgnore]
-[JsonIgnore]
-public string Raw { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Raw { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -412,14 +395,12 @@ public string Raw { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/Swagger/SwaggerModel.cs/#L77">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_RestApi_Swagger_SwaggerModel_Responses" data-uid="Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.Responses">Responses</h4>
-              <div class="markdown level1 summary"><p>An object to hold responses that can be used across operations. This property does not define global responses for all operations.</p>
+              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.yml" sourcestartlinenumber="2" sourceendlinenumber="2">An object to hold responses that can be used across operations. This property does not define global responses for all operations.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;responses&quot;)]
-[JsonProperty(&quot;responses&quot;)]
-public object Responses { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public object Responses { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -448,9 +429,7 @@ public object Responses { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;summary&quot;)]
-[JsonProperty(&quot;summary&quot;)]
-public string Summary { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Summary { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -475,14 +454,12 @@ public string Summary { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/Swagger/SwaggerModel.cs/#L84">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_RestApi_Swagger_SwaggerModel_Tags" data-uid="Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.Tags">Tags</h4>
-              <div class="markdown level1 summary"><p>A list of tags used by the specification with additional metadata. The order of the tags can be used to reflect on their order by the parsing tools.</p>
+              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Build.RestApi.Swagger.SwaggerModel.yml" sourcestartlinenumber="2" sourceendlinenumber="2">A list of tags used by the specification with additional metadata. The order of the tags can be used to reflect on their order by the parsing tools.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;tags&quot;)]
-[JsonProperty(&quot;tags&quot;)]
-public List&lt;TagItemObject&gt; Tags { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public List&lt;TagItemObject&gt; Tags { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -501,7 +478,7 @@ public List&lt;TagItemObject&gt; Tags { get; set; }</code></pre>
               </table>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
-                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
+                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Formatting_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
               </div>
             </article>
           </div>
@@ -541,8 +518,8 @@ public List&lt;TagItemObject&gt; Tags { get; set; }</code></pre>
     </div>
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>

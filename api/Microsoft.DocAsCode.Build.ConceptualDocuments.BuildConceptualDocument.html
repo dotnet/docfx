@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class BuildConceptualDocument
    | DocFX website ">
-    <meta name="generator" content="docfx 2.4.0.0">
+    <meta name="generator" content="docfx 2.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -120,8 +120,7 @@
               <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Build.ConceptualDocuments.dll</h6>
               <h5 id="Microsoft_DocAsCode_Build_ConceptualDocuments_BuildConceptualDocument_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[Export(&quot;ConceptualDocumentProcessor&quot;, typeof (IDocumentBuildStep))]
-public class BuildConceptualDocument : BaseDocumentBuildStep, IDocumentBuildStep, ISupportIncrementalBuild</code></pre>
+                <pre><code class="lang-csharp hljs">public class BuildConceptualDocument : BaseDocumentBuildStep, ISupportIncrementalBuildStep, IDocumentBuildStep</code></pre>
               </div>
               <h3 id="properties">Properties
               </h3>
@@ -130,7 +129,7 @@ public class BuildConceptualDocument : BaseDocumentBuildStep, IDocumentBuildStep
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_BuildConceptualDocument_BuildOrder.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.BuildConceptualDocument.BuildOrder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/BuildConceptualDocument.cs/#L28">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/BuildConceptualDocument.cs/#L27">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_BuildConceptualDocument_BuildOrder" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.BuildConceptualDocument.BuildOrder">BuildOrder</h4>
               <div class="markdown level1 summary"></div>
@@ -156,12 +155,14 @@ public class BuildConceptualDocument : BaseDocumentBuildStep, IDocumentBuildStep
               </table>
               <h5 class="overrides">Overrides</h5>
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_BuildOrder">BaseDocumentBuildStep.BuildOrder</a></div>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html#Microsoft_DocAsCode_Plugins_IDocumentBuildStep_BuildOrder">IDocumentBuildStep.BuildOrder</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_BuildConceptualDocument_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.BuildConceptualDocument.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/BuildConceptualDocument.cs/#L26">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/BuildConceptualDocument.cs/#L25">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_BuildConceptualDocument_Name" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.BuildConceptualDocument.Name">Name</h4>
               <div class="markdown level1 summary"></div>
@@ -187,6 +188,8 @@ public class BuildConceptualDocument : BaseDocumentBuildStep, IDocumentBuildStep
               </table>
               <h5 class="overrides">Overrides</h5>
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Name">BaseDocumentBuildStep.Name</a></div>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html#Microsoft_DocAsCode_Plugins_IDocumentBuildStep_Name">IDocumentBuildStep.Name</a></div>
               <h3 id="methods">Methods
               </h3>
               <span class="small pull-right mobile-hide">
@@ -194,7 +197,7 @@ public class BuildConceptualDocument : BaseDocumentBuildStep, IDocumentBuildStep
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_BuildConceptualDocument_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.BuildConceptualDocument.Build(Microsoft.DocAsCode.Plugins.FileModel%2CMicrosoft.DocAsCode.Plugins.IHostService)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/BuildConceptualDocument.cs/#L30">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/BuildConceptualDocument.cs/#L29">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_BuildConceptualDocument_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.BuildConceptualDocument.Build(Microsoft.DocAsCode.Plugins.FileModel,Microsoft.DocAsCode.Plugins.IHostService)">Build(FileModel, IHostService)</h4>
               <div class="markdown level1 summary"></div>
@@ -227,12 +230,14 @@ public class BuildConceptualDocument : BaseDocumentBuildStep, IDocumentBuildStep
               </table>
               <h5 class="overrides">Overrides</h5>
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_">BaseDocumentBuildStep.Build(FileModel, IHostService)</a></div>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html#Microsoft_DocAsCode_Plugins_IDocumentBuildStep_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_">IDocumentBuildStep.Build(FileModel, IHostService)</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_BuildConceptualDocument_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.BuildConceptualDocument.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/BuildConceptualDocument.cs/#L90">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/BuildConceptualDocument.cs/#L95">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_BuildConceptualDocument_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.BuildConceptualDocument.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)">CanIncrementalBuild(FileAndType)</h4>
               <div class="markdown level1 summary"></div>
@@ -274,13 +279,44 @@ public class BuildConceptualDocument : BaseDocumentBuildStep, IDocumentBuildStep
                 </tbody>
               </table>
               <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuild.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuild_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_">ISupportIncrementalBuild.CanIncrementalBuild(FileAndType)</a></div>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_">ISupportIncrementalBuildStep.CanIncrementalBuild(FileAndType)</a></div>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_BuildConceptualDocument_GetDependencyTypesToRegister.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.BuildConceptualDocument.GetDependencyTypesToRegister%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/BuildConceptualDocument.cs/#L105">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_BuildConceptualDocument_GetDependencyTypesToRegister" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.BuildConceptualDocument.GetDependencyTypesToRegister">GetDependencyTypesToRegister()</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public IEnumerable&lt;DependencyType&gt; GetDependencyTypesToRegister()</code></pre>
+              </div>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.DependencyType.html#Microsoft_DocAsCode_Plugins_DependencyType">DependencyType</a>&gt;</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_GetDependencyTypesToRegister">ISupportIncrementalBuildStep.GetDependencyTypesToRegister()</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_BuildConceptualDocument_GetIncrementalContextHash.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.BuildConceptualDocument.GetIncrementalContextHash%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/BuildConceptualDocument.cs/#L95">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/BuildConceptualDocument.cs/#L100">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_BuildConceptualDocument_GetIncrementalContextHash" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.BuildConceptualDocument.GetIncrementalContextHash">GetIncrementalContextHash()</h4>
               <div class="markdown level1 summary"></div>
@@ -305,10 +341,10 @@ public class BuildConceptualDocument : BaseDocumentBuildStep, IDocumentBuildStep
                 </tbody>
               </table>
               <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuild.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuild_GetIncrementalContextHash">ISupportIncrementalBuild.GetIncrementalContextHash()</a></div>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_GetIncrementalContextHash">ISupportIncrementalBuildStep.GetIncrementalContextHash()</a></div>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
-                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
+                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Formatting_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
               </div>
             </article>
           </div>
@@ -321,7 +357,7 @@ public class BuildConceptualDocument : BaseDocumentBuildStep, IDocumentBuildStep
                     <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_BuildConceptualDocument.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.BuildConceptualDocument%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/BuildConceptualDocument.cs/#L19" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/BuildConceptualDocument.cs/#L18" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
@@ -348,8 +384,8 @@ public class BuildConceptualDocument : BaseDocumentBuildStep, IDocumentBuildStep
     </div>
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>

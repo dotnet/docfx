@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ItemViewModel
    | DocFX website ">
-    <meta name="generator" content="docfx 2.4.0.0">
+    <meta name="generator" content="docfx 2.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -130,9 +130,7 @@ public class ItemViewModel : IOverwriteDocumentViewModel</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;assemblies&quot;)]
-[MergeOption(MergeOption.Ignore)]
-[JsonProperty(&quot;assemblies&quot;)]
+                <pre><code class="lang-csharp hljs">[MergeOption(MergeOption.Ignore)]
 public List&lt;string&gt; AssemblyNameList { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
@@ -162,9 +160,7 @@ public List&lt;string&gt; AssemblyNameList { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;attributes&quot;)]
-[JsonProperty(&quot;attributes&quot;)]
-[MergeOption(MergeOption.Ignore)]
+                <pre><code class="lang-csharp hljs">[MergeOption(MergeOption.Ignore)]
 public List&lt;AttributeInfo&gt; Attributes { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
@@ -194,9 +190,7 @@ public List&lt;AttributeInfo&gt; Attributes { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;children&quot;)]
-[MergeOption(MergeOption.Ignore)]
-[JsonProperty(&quot;children&quot;)]
+                <pre><code class="lang-csharp hljs">[MergeOption(MergeOption.Ignore)]
 public List&lt;string&gt; Children { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
@@ -226,9 +220,7 @@ public List&lt;string&gt; Children { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;commentId&quot;)]
-[JsonProperty(&quot;commentId&quot;)]
-public string CommentId { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string CommentId { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -257,9 +249,7 @@ public string CommentId { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;conceptual&quot;)]
-[JsonProperty(&quot;conceptual&quot;)]
-public string Conceptual { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Conceptual { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -290,9 +280,7 @@ public string Conceptual { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;documentation&quot;)]
-[JsonProperty(&quot;documentation&quot;)]
-public SourceDetail Documentation { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public SourceDetail Documentation { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -323,9 +311,7 @@ public SourceDetail Documentation { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;example&quot;)]
-[JsonProperty(&quot;example&quot;)]
-public List&lt;string&gt; Examples { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public List&lt;string&gt; Examples { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -354,9 +340,7 @@ public List&lt;string&gt; Examples { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;exceptions&quot;)]
-[JsonProperty(&quot;exceptions&quot;)]
-public List&lt;ExceptionInfo&gt; Exceptions { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public List&lt;ExceptionInfo&gt; Exceptions { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -385,9 +369,7 @@ public List&lt;ExceptionInfo&gt; Exceptions { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;extensionMethods&quot;)]
-[JsonProperty(&quot;extensionMethods&quot;)]
-public List&lt;string&gt; ExtensionMethods { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public List&lt;string&gt; ExtensionMethods { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -416,9 +398,7 @@ public List&lt;string&gt; ExtensionMethods { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;fullName&quot;)]
-[JsonProperty(&quot;fullName&quot;)]
-public string FullName { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string FullName { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -447,9 +427,7 @@ public string FullName { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlIgnore]
-[JsonIgnore]
-public string FullNameForCSharp { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string FullNameForCSharp { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -478,9 +456,7 @@ public string FullNameForCSharp { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlIgnore]
-[JsonIgnore]
-public string FullNameForVB { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string FullNameForVB { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -510,7 +486,6 @@ public string FullNameForVB { get; set; }</code></pre>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[ExtensibleMember(&quot;fullName.&quot;)]
-[JsonIgnore]
 public SortedList&lt;string, string&gt; FullNames { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
@@ -540,9 +515,7 @@ public SortedList&lt;string, string&gt; FullNames { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;href&quot;)]
-[JsonProperty(&quot;href&quot;)]
-public string Href { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Href { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -571,9 +544,7 @@ public string Href { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;id&quot;)]
-[JsonProperty(&quot;id&quot;)]
-public string Id { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Id { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -602,9 +573,7 @@ public string Id { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;implements&quot;)]
-[MergeOption(MergeOption.Ignore)]
-[JsonProperty(&quot;implements&quot;)]
+                <pre><code class="lang-csharp hljs">[MergeOption(MergeOption.Ignore)]
 public List&lt;string&gt; Implements { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
@@ -634,9 +603,7 @@ public List&lt;string&gt; Implements { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;inheritance&quot;)]
-[MergeOption(MergeOption.Ignore)]
-[JsonProperty(&quot;inheritance&quot;)]
+                <pre><code class="lang-csharp hljs">[MergeOption(MergeOption.Ignore)]
 public List&lt;string&gt; Inheritance { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
@@ -666,9 +633,7 @@ public List&lt;string&gt; Inheritance { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;inheritedMembers&quot;)]
-[MergeOption(MergeOption.Ignore)]
-[JsonProperty(&quot;inheritedMembers&quot;)]
+                <pre><code class="lang-csharp hljs">[MergeOption(MergeOption.Ignore)]
 public List&lt;string&gt; InheritedMembers { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
@@ -698,9 +663,7 @@ public List&lt;string&gt; InheritedMembers { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;isEii&quot;)]
-[JsonProperty(&quot;isEii&quot;)]
-public bool IsExplicitInterfaceImplementation { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public bool IsExplicitInterfaceImplementation { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -729,9 +692,7 @@ public bool IsExplicitInterfaceImplementation { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;isExtensionMethod&quot;)]
-[JsonProperty(&quot;isExtensionMethod&quot;)]
-public bool IsExtensionMethod { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public bool IsExtensionMethod { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -761,7 +722,6 @@ public bool IsExtensionMethod { get; set; }</code></pre>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[ExtensibleMember]
-[JsonIgnore]
 public Dictionary&lt;string, object&gt; Metadata { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
@@ -793,7 +753,6 @@ public Dictionary&lt;string, object&gt; Metadata { get; set; }</code></pre>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[ExtensibleMember(&quot;modifiers.&quot;)]
 [MergeOption(MergeOption.Ignore)]
-[JsonIgnore]
 public SortedList&lt;string, List&lt;string&gt;&gt; Modifiers { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
@@ -823,9 +782,7 @@ public SortedList&lt;string, List&lt;string&gt;&gt; Modifiers { get; set; }</cod
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;name&quot;)]
-[JsonProperty(&quot;name&quot;)]
-public string Name { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Name { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -854,9 +811,7 @@ public string Name { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlIgnore]
-[JsonIgnore]
-public string NameForCSharp { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string NameForCSharp { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -885,9 +840,7 @@ public string NameForCSharp { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlIgnore]
-[JsonIgnore]
-public string NameForVB { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string NameForVB { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -917,7 +870,6 @@ public string NameForVB { get; set; }</code></pre>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[ExtensibleMember(&quot;name.&quot;)]
-[JsonIgnore]
 public SortedList&lt;string, string&gt; Names { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
@@ -947,9 +899,7 @@ public SortedList&lt;string, string&gt; Names { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;namespace&quot;)]
-[JsonProperty(&quot;namespace&quot;)]
-public string NamespaceName { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string NamespaceName { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -979,7 +929,6 @@ public string NamespaceName { get; set; }</code></pre>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[ExtensibleMember(&quot;nameWithType.&quot;)]
-[JsonIgnore]
 public SortedList&lt;string, string&gt; NamesWithType { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
@@ -1009,9 +958,7 @@ public SortedList&lt;string, string&gt; NamesWithType { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;nameWithType&quot;)]
-[JsonProperty(&quot;nameWithType&quot;)]
-public string NameWithType { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string NameWithType { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1040,9 +987,7 @@ public string NameWithType { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlIgnore]
-[JsonIgnore]
-public string NameWithTypeForCSharp { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string NameWithTypeForCSharp { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1071,9 +1016,7 @@ public string NameWithTypeForCSharp { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlIgnore]
-[JsonIgnore]
-public string NameWithTypeForVB { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string NameWithTypeForVB { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1102,9 +1045,7 @@ public string NameWithTypeForVB { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;overridden&quot;)]
-[JsonProperty(&quot;overridden&quot;)]
-public string Overridden { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Overridden { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1133,9 +1074,7 @@ public string Overridden { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;parent&quot;)]
-[JsonProperty(&quot;parent&quot;)]
-public string Parent { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Parent { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1164,9 +1103,7 @@ public string Parent { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;platform&quot;)]
-[JsonProperty(&quot;platform&quot;)]
-public List&lt;string&gt; Platform { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public List&lt;string&gt; Platform { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1195,9 +1132,7 @@ public List&lt;string&gt; Platform { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;remarks&quot;)]
-[JsonProperty(&quot;remarks&quot;)]
-public string Remarks { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Remarks { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1226,9 +1161,7 @@ public string Remarks { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;seealso&quot;)]
-[JsonProperty(&quot;seealso&quot;)]
-public List&lt;LinkInfo&gt; SeeAlsos { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public List&lt;LinkInfo&gt; SeeAlsos { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1257,9 +1190,7 @@ public List&lt;LinkInfo&gt; SeeAlsos { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;see&quot;)]
-[JsonProperty(&quot;see&quot;)]
-public List&lt;LinkInfo&gt; Sees { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public List&lt;LinkInfo&gt; Sees { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1288,9 +1219,7 @@ public List&lt;LinkInfo&gt; Sees { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;source&quot;)]
-[JsonProperty(&quot;source&quot;)]
-public SourceDetail Source { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public SourceDetail Source { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1319,9 +1248,7 @@ public SourceDetail Source { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;summary&quot;)]
-[JsonProperty(&quot;summary&quot;)]
-public string Summary { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Summary { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1350,9 +1277,7 @@ public string Summary { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;langs&quot;)]
-[JsonProperty(&quot;langs&quot;)]
-public string[] SupportedLanguages { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string[] SupportedLanguages { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1381,9 +1306,7 @@ public string[] SupportedLanguages { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;syntax&quot;)]
-[JsonProperty(&quot;syntax&quot;)]
-public SyntaxDetailViewModel Syntax { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public SyntaxDetailViewModel Syntax { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1412,9 +1335,7 @@ public SyntaxDetailViewModel Syntax { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;type&quot;)]
-[JsonProperty(&quot;type&quot;)]
-public MemberType? Type { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public MemberType? Type { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -1443,9 +1364,7 @@ public MemberType? Type { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;uid&quot;)]
-[JsonProperty(&quot;uid&quot;)]
-[MergeOption(MergeOption.MergeKey)]
+                <pre><code class="lang-csharp hljs">[MergeOption(MergeOption.MergeKey)]
 public string Uid { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
@@ -1467,7 +1386,7 @@ public string Uid { get; set; }</code></pre>
                   <div><a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.IOverwriteDocumentViewModel.html#Microsoft_DocAsCode_DataContracts_Common_IOverwriteDocumentViewModel_Uid">IOverwriteDocumentViewModel.Uid</a></div>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
-                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
+                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Formatting_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
               </div>
             </article>
           </div>
@@ -1507,8 +1426,8 @@ public string Uid { get; set; }</code></pre>
     </div>
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>

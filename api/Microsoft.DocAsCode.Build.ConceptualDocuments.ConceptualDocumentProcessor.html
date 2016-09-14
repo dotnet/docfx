@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ConceptualDocumentProcessor
    | DocFX website ">
-    <meta name="generator" content="docfx 2.4.0.0">
+    <meta name="generator" content="docfx 2.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -120,8 +120,23 @@
               <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Build.ConceptualDocuments.dll</h6>
               <h5 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[Export(typeof (IDocumentProcessor))]
-public class ConceptualDocumentProcessor : DisposableDocumentProcessor, IDocumentProcessor, IDisposable, ISupportIncrementalBuild</code></pre>
+                <pre><code class="lang-csharp hljs">public class ConceptualDocumentProcessor : DisposableDocumentProcessor, IDisposable, ISupportIncrementalDocumentProcessor, IDocumentProcessor</code></pre>
+              </div>
+              <h3 id="constructors">Constructors
+              </h3>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor__ctor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L32">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor__ctor" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.#ctor">ConceptualDocumentProcessor()</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public ConceptualDocumentProcessor()</code></pre>
               </div>
               <h3 id="properties">Properties
               </h3>
@@ -130,15 +145,14 @@ public class ConceptualDocumentProcessor : DisposableDocumentProcessor, IDocumen
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_BuildSteps.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.BuildSteps%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L21">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L41">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_BuildSteps" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.BuildSteps">BuildSteps</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[ImportMany(&quot;ConceptualDocumentProcessor&quot;)]
-public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -157,12 +171,14 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
               </table>
               <h5 class="overrides">Overrides</h5>
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_BuildSteps">DisposableDocumentProcessor.BuildSteps</a></div>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentProcessor.html#Microsoft_DocAsCode_Plugins_IDocumentProcessor_BuildSteps">IDocumentProcessor.BuildSteps</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L24">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L44">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_Name" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.Name">Name</h4>
               <div class="markdown level1 summary"></div>
@@ -188,21 +204,23 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
               </table>
               <h5 class="overrides">Overrides</h5>
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_Name">DisposableDocumentProcessor.Name</a></div>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentProcessor.html#Microsoft_DocAsCode_Plugins_IDocumentProcessor_Name">IDocumentProcessor.Name</a></div>
               <h3 id="methods">Methods
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_DeserializeModel_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.DeserializeModel(System.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L90">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L152">View Source</a>
               </span>
-              <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)">CanIncrementalBuild(FileAndType)</h4>
+              <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_DeserializeModel_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.DeserializeModel(System.IO.Stream)">DeserializeModel(Stream)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public bool CanIncrementalBuild(FileAndType fileAndType)</code></pre>
+                <pre><code class="lang-csharp hljs">protected virtual object DeserializeModel(Stream stream)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -215,8 +233,8 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileAndType.html#Microsoft_DocAsCode_Plugins_FileAndType">FileAndType</a></td>
-                    <td><em>fileAndType</em></td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></td>
+                    <td><em>stream</em></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -231,26 +249,70 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
-              <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuild.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuild_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_">ISupportIncrementalBuild.CanIncrementalBuild(FileAndType)</a></div>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_DeserializeProperties_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.DeserializeProperties(System.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L171">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_DeserializeProperties_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.DeserializeProperties(System.IO.Stream)">DeserializeProperties(Stream)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">protected virtual IDictionary&lt;string, object&gt; DeserializeProperties(Stream stream)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></td>
+                    <td><em>stream</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/s4ys34ea(v=vs.110).aspx">IDictionary</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a>&gt;</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_GetIncrementalContextHash.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.GetIncrementalContextHash%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L95">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L114">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_GetIncrementalContextHash" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.GetIncrementalContextHash">GetIncrementalContextHash()</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string GetIncrementalContextHash()</code></pre>
+                <pre><code class="lang-csharp hljs">public virtual string GetIncrementalContextHash()</code></pre>
               </div>
               <h5 class="returns">Returns</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -268,13 +330,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
                 </tbody>
               </table>
               <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuild.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuild_GetIncrementalContextHash">ISupportIncrementalBuild.GetIncrementalContextHash()</a></div>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalDocumentProcessor_GetIncrementalContextHash">ISupportIncrementalDocumentProcessor.GetIncrementalContextHash()</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L26">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L46">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)">GetProcessingPriority(FileAndType)</h4>
               <div class="markdown level1 summary"></div>
@@ -317,12 +379,43 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
               </table>
               <h5 class="overrides">Overrides</h5>
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_">DisposableDocumentProcessor.GetProcessingPriority(FileAndType)</a></div>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentProcessor.html#Microsoft_DocAsCode_Plugins_IDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_">IDocumentProcessor.GetProcessingPriority(FileAndType)</a></div>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_GetSerializer.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.GetSerializer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L181">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_GetSerializer" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.GetSerializer">GetSerializer()</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">protected virtual JsonSerializer GetSerializer()</code></pre>
+              </div>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="xref">JsonSerializer</span></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.Load(Microsoft.DocAsCode.Plugins.FileAndType%2CSystem.Collections.Immutable.ImmutableDictionary%7BSystem.String%2CSystem.Object%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L39">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L59">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.Load(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})">Load(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</h4>
               <div class="markdown level1 summary"></div>
@@ -370,12 +463,62 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
               </table>
               <h5 class="overrides">Overrides</h5>
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__">DisposableDocumentProcessor.Load(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</a></div>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentProcessor.html#Microsoft_DocAsCode_Plugins_IDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__">IDocumentProcessor.Load(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</a></div>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_LoadIntermediateModel_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.LoadIntermediateModel(System.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L129">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_LoadIntermediateModel_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.LoadIntermediateModel(System.IO.Stream)">LoadIntermediateModel(Stream)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public virtual FileModel LoadIntermediateModel(Stream stream)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></td>
+                    <td><em>stream</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html#Microsoft_DocAsCode_Plugins_FileModel">FileModel</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalDocumentProcessor_LoadIntermediateModel_System_IO_Stream_">ISupportIncrementalDocumentProcessor.LoadIntermediateModel(Stream)</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.Save(Microsoft.DocAsCode.Plugins.FileModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L66">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L86">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.Save(Microsoft.DocAsCode.Plugins.FileModel)">Save(FileModel)</h4>
               <div class="markdown level1 summary"></div>
@@ -418,9 +561,121 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
               </table>
               <h5 class="overrides">Overrides</h5>
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_">DisposableDocumentProcessor.Save(FileModel)</a></div>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentProcessor.html#Microsoft_DocAsCode_Plugins_IDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_">IDocumentProcessor.Save(FileModel)</a></div>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_SaveIntermediateModel_Microsoft_DocAsCode_Plugins_FileModel_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.SaveIntermediateModel(Microsoft.DocAsCode.Plugins.FileModel%2CSystem.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L119">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_SaveIntermediateModel_Microsoft_DocAsCode_Plugins_FileModel_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.SaveIntermediateModel(Microsoft.DocAsCode.Plugins.FileModel,System.IO.Stream)">SaveIntermediateModel(FileModel, Stream)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public virtual void SaveIntermediateModel(FileModel model, Stream stream)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html#Microsoft_DocAsCode_Plugins_FileModel">FileModel</a></td>
+                    <td><em>model</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></td>
+                    <td><em>stream</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalDocumentProcessor_SaveIntermediateModel_Microsoft_DocAsCode_Plugins_FileModel_System_IO_Stream_">ISupportIncrementalDocumentProcessor.SaveIntermediateModel(FileModel, Stream)</a></div>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_SerializeModel_System_Object_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.SerializeModel(System.Object%2CSystem.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L143">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_SerializeModel_System_Object_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.SerializeModel(System.Object,System.IO.Stream)">SerializeModel(Object, Stream)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">protected virtual void SerializeModel(object model, Stream stream)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></td>
+                    <td><em>model</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></td>
+                    <td><em>stream</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_SerializeProperties_System_Collections_Generic_IDictionary_System_String_System_Object__System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.SerializeProperties(System.Collections.Generic.IDictionary%7BSystem.String%2CSystem.Object%7D%2CSystem.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L162">View Source</a>
+              </span>
+              <h4 id="Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor_SerializeProperties_System_Collections_Generic_IDictionary_System_String_System_Object__System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.SerializeProperties(System.Collections.Generic.IDictionary{System.String,System.Object},System.IO.Stream)">SerializeProperties(IDictionary&lt;String, Object&gt;, Stream)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">protected virtual void SerializeProperties(IDictionary&lt;string, object&gt; properties, Stream stream)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/s4ys34ea(v=vs.110).aspx">IDictionary</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a>&gt;</td>
+                    <td><em>properties</em></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></td>
+                    <td><em>stream</em></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
-                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
+                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Formatting_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
               </div>
             </article>
           </div>
@@ -433,7 +688,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
                     <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ConceptualDocuments_ConceptualDocumentProcessor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L18" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ConceptualDocuments/ConceptualDocumentProcessor.cs/#L22" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
@@ -460,8 +715,8 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     </div>
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>

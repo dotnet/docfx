@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class OperationObject
    | DocFX website ">
-    <meta name="generator" content="docfx 2.4.0.0">
+    <meta name="generator" content="docfx 2.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -130,9 +130,7 @@ public class OperationObject</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;description&quot;)]
-[JsonProperty(&quot;description&quot;)]
-public string Description { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Description { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -162,7 +160,6 @@ public string Description { get; set; }</code></pre>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[ExtensibleMember]
-[JsonExtensionData]
 public Dictionary&lt;string, object&gt; Metadata { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
@@ -188,14 +185,12 @@ public Dictionary&lt;string, object&gt; Metadata { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/Swagger/OperationObject.cs/#L20">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_RestApi_Swagger_OperationObject_OperationId" data-uid="Microsoft.DocAsCode.Build.RestApi.Swagger.OperationObject.OperationId">OperationId</h4>
-              <div class="markdown level1 summary"><p>Unique string used to identify the operation. The id MUST be unique among all operations described in the API. Tools and libraries MAY use the operationId to uniquely identify an operation, therefore, it is recommended to follow common programming naming conventions.</p>
+              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Build.RestApi.Swagger.OperationObject.yml" sourcestartlinenumber="2" sourceendlinenumber="2">Unique string used to identify the operation. The id MUST be unique among all operations described in the API. Tools and libraries MAY use the operationId to uniquely identify an operation, therefore, it is recommended to follow common programming naming conventions.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;operationId&quot;)]
-[JsonProperty(&quot;operationId&quot;)]
-public string OperationId { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string OperationId { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -224,9 +219,7 @@ public string OperationId { get; set; }</code></pre>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;parameters&quot;)]
-[JsonProperty(&quot;parameters&quot;)]
-public List&lt;ParameterObject&gt; Parameters { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public List&lt;ParameterObject&gt; Parameters { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -251,14 +244,12 @@ public List&lt;ParameterObject&gt; Parameters { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.RestApi/Swagger/OperationObject.cs/#L39">View Source</a>
               </span>
               <h4 id="Microsoft_DocAsCode_Build_RestApi_Swagger_OperationObject_Responses" data-uid="Microsoft.DocAsCode.Build.RestApi.Swagger.OperationObject.Responses">Responses</h4>
-              <div class="markdown level1 summary"><p>Key: <code>default</code> or HttpStatusCode</p>
+              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Build.RestApi.Swagger.OperationObject.yml" sourcestartlinenumber="2" sourceendlinenumber="2">Key: <code>default</code> or HttpStatusCode</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;responses&quot;)]
-[JsonProperty(&quot;responses&quot;)]
-public Dictionary&lt;string, ResponseObject&gt; Responses { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public Dictionary&lt;string, ResponseObject&gt; Responses { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -287,9 +278,7 @@ public Dictionary&lt;string, ResponseObject&gt; Responses { get; set; }</code></
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;summary&quot;)]
-[JsonProperty(&quot;summary&quot;)]
-public string Summary { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public string Summary { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -308,7 +297,7 @@ public string Summary { get; set; }</code></pre>
               </table>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
-                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
+                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Formatting_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
               </div>
             </article>
           </div>
@@ -348,8 +337,8 @@ public string Summary { get; set; }</code></pre>
     </div>
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>

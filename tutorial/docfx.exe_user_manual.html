@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.4.0.0">
+    <meta name="generator" content="docfx 2.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,70 +72,70 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="user_manual">
-              <h1 id="doc-as-code-docfxexe-user-manual">Doc-as-code: <code>docfx.exe</code> User Manual</h1>
+              <h1 id="doc-as-code-docfxexe-user-manual" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="5" sourceendlinenumber="6">Doc-as-code: <code>docfx.exe</code> User Manual</h1>
               
-<h2 id="0-introduction">0. Introduction</h2>
-<p><code>docfx.exe</code> is used to generate documentation for programs. It has the ability to:</p>
-<ol>
-<li><p>Extract language metadata for programing languages as defined in <a href="../spec/metadata_format_spec.html">Metadata Format Specification</a>. Currently language <code>VB</code> and <code>CSharp</code> are supported. The language metadata will be saved with <code>YAML</code> format as described in <a href="http://yaml.org/">YAML 1.2</a>.</p>
+<h2 id="0-introduction" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="8" sourceendlinenumber="9">0. Introduction</h2>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="10" sourceendlinenumber="10"><code>docfx.exe</code> is used to generate documentation for programs. It has the ability to:</p>
+<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="11" sourceendlinenumber="19">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="11" sourceendlinenumber="11"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="11" sourceendlinenumber="11">Extract language metadata for programing languages as defined in <a href="../spec/metadata_format_spec.html" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="11" sourceendlinenumber="11">Metadata Format Specification</a>. Currently language <code>VB</code> and <code>CSharp</code> are supported. The language metadata will be saved with <code>YAML</code> format as described in <a href="http://yaml.org/" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="11" sourceendlinenumber="11">YAML 1.2</a>.</p>
 </li>
-<li><p>Look for available conceptual files as provided and link it with existing programs with syntax described in <a href="../spec/metadata_format_spec.html">Section 3. Work with Metadata in Markdown</a>. Supported conceptual files are <em>plain text</em> files, <em>html</em> files, and <em>markdown</em> files.</p>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="13" sourceendlinenumber="13"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="13" sourceendlinenumber="13">Look for available conceptual files as provided and link it with existing programs with syntax described in <a href="../spec/metadata_format_spec.html" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="13" sourceendlinenumber="13">Section 3. Work with Metadata in Markdown</a>. Supported conceptual files are <em>plain text</em> files, <em>html</em> files, and <em>markdown</em> files.</p>
 </li>
-<li><p>Generate documentation to</p>
-<p> a. Visualize language metadata, with extra <strong>content</strong> provided by linked conceptual files using syntax described in <a href="../spec/metadata_format_spec.html">Section 3. Work with Metadata in Markdown</a>.</p>
-<p> b. Organize and render available conceptual files. It can be easily cross-referenced with language metadata pages. We support <strong>Docfx Flavored Markdown(DFM)</strong> for writing conceptual files. DFM is <strong>100%</strong> compatible with <em>Github Flavored Markdown(GFM)</em> and add several new features including <em>file inclusion</em>, <em>cross reference</em>, and <em>yaml header</em>. For detailed description about DFM, please refer to <a href="../spec/docfx_flavored_markdown.html">DFM</a>.</p>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="15" sourceendlinenumber="19"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="15" sourceendlinenumber="15">Generate documentation to</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="15" sourceendlinenumber="15"> a. Visualize language metadata, with extra <strong>content</strong> provided by linked conceptual files using syntax described in <a href="../spec/metadata_format_spec.html" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="15" sourceendlinenumber="15">Section 3. Work with Metadata in Markdown</a>.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="15" sourceendlinenumber="15"> b. Organize and render available conceptual files. It can be easily cross-referenced with language metadata pages. We support <strong>Docfx Flavored Markdown(DFM)</strong> for writing conceptual files. DFM is <strong>100%</strong> compatible with <em>Github Flavored Markdown(GFM)</em> and add several new features including <em>file inclusion</em>, <em>cross reference</em>, and <em>yaml header</em>. For detailed description about DFM, please refer to <a href="../spec/docfx_flavored_markdown.html" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="15" sourceendlinenumber="15">DFM</a>.</p>
 </li>
 </ol>
-<p>Currently generating documentations to a <em>client only</em> <strong>website</strong> is supported. The generated <strong>website</strong> can be easily published to whatever platform such as <em>Github Pages</em> and <em>Azure Website</em> with no extra effort.</p>
-<p>Offline documentations such as <strong>pdf</strong> are planned to be supported in the future.</p>
-<h2 id="1-syntax">1. Syntax</h2>
-<pre><code>docfx &lt;command&gt; [&lt;args&gt;]
-</code></pre><h2 id="2-commands">2. Commands</h2>
-<h3 id="20-init-command-docfx-init">2.0 Init command <code>docfx init</code></h3>
-<p><code>docfx init</code> helps generate an <code>docfx.json</code> file.</p>
-<h3 id="21-help-command-docfx-help">2.1 Help command <code>docfx help</code></h3>
-<p><code>docfx help -a</code> list available subcommands.</p>
-<p><code>docfx help &lt;command&gt;</code> to read about a specific subcommand</p>
-<h3 id="22-extract-language-metadata-command-docfx-metadata">2.2 Extract language metadata command <code>docfx metadata</code></h3>
-<p><strong>Syntax</strong></p>
-<pre><code>docfx metadata [&lt;projects&gt;]
-</code></pre><p><strong>Layout</strong></p>
-<pre><code>|-- &lt;metadata folder&gt;
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="21" sourceendlinenumber="21">Currently generating documentations to a <em>client only</em> <strong>website</strong> is supported. The generated <strong>website</strong> can be easily published to whatever platform such as <em>Github Pages</em> and <em>Azure Website</em> with no extra effort.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="23" sourceendlinenumber="23">Offline documentations such as <strong>pdf</strong> are planned to be supported in the future.</p>
+<h2 id="1-syntax" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="26" sourceendlinenumber="27">1. Syntax</h2>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="29" sourceendlinenumber="31"><code>docfx &lt;command&gt; [&lt;args&gt;]
+</code></pre><h2 id="2-commands" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="33" sourceendlinenumber="34">2. Commands</h2>
+<h3 id="20-init-command-docfx-init" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="35" sourceendlinenumber="35">2.0 Init command <code>docfx init</code></h3>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="36" sourceendlinenumber="36"><code>docfx init</code> helps generate an <code>docfx.json</code> file.</p>
+<h3 id="21-help-command-docfx-help" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="38" sourceendlinenumber="38">2.1 Help command <code>docfx help</code></h3>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="40" sourceendlinenumber="40"><code>docfx help -a</code> list available subcommands.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="42" sourceendlinenumber="42"><code>docfx help &lt;command&gt;</code> to read about a specific subcommand</p>
+<h3 id="22-extract-language-metadata-command-docfx-metadata" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="44" sourceendlinenumber="44">2.2 Extract language metadata command <code>docfx metadata</code></h3>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="46" sourceendlinenumber="46"><strong>Syntax</strong></p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="47" sourceendlinenumber="49"><code>docfx metadata [&lt;projects&gt;]
+</code></pre><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="51" sourceendlinenumber="51"><strong>Layout</strong></p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="52" sourceendlinenumber="59"><code>|-- &lt;metadata folder&gt;
       |-- api
       |     |-- &lt;namespace&gt;.yml
       |     |-- &lt;class&gt;.yml
       |-- toc.yml
       |-- index.yml
-</code></pre><h4 id="221-optional-projects-argument">2.2.1 Optional <code>&lt;projects&gt;</code> argument</h4>
-<p><code>&lt;projects&gt;</code> specifies the projects to have metadata extracted. There are several approaches to extract language metadata.</p>
-<ol>
-<li>From a supported project file or project file list
+</code></pre><h4 id="221-optional-projects-argument" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="61" sourceendlinenumber="61">2.2.1 Optional <code>&lt;projects&gt;</code> argument</h4>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="63" sourceendlinenumber="63"><code>&lt;projects&gt;</code> specifies the projects to have metadata extracted. There are several approaches to extract language metadata.</p>
+<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="65" sourceendlinenumber="66">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="65" sourceendlinenumber="66">From a supported project file or project file list
 Supported project file extensions include <code>.csproj</code>, <code>.vbproj</code>, <code>.sln</code>, and <code>project.json</code>.</li>
 </ol>
-<blockquote><p><em>Note</em></p>
-<p><code>project.json</code> (<em>DNX</em> project file) is only supported in <em>DNX</em> version of <em>DocFX</em>. Please refer to <a href="docfx_getting_started.html#4-use-docfx-under-dnx">Getting Started</a> for how to use <em>DocFX</em> in <em>DNX</em>.</p>
+<blockquote sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="68" sourceendlinenumber="68"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="68" sourceendlinenumber="68"><em>Note</em></p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="70" sourceendlinenumber="70"><code>project.json</code> (<em>DNX</em> project file) is only supported in <em>DNX</em> version of <em>DocFX</em>. Please refer to <a href="docfx_getting_started.html#4-use-docfx-under-dnx" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="70" sourceendlinenumber="70">Getting Started</a> for how to use <em>DocFX</em> in <em>DNX</em>.</p>
 </blockquote>
-<p>Files can be combined using <code>,</code> as separator, e.g. <code>docfx metadata a.csproj,b.sln</code>.</p>
-<ol>
-<li><p>From a supported source code file or source code file list
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="72" sourceendlinenumber="72">Files can be combined using <code>,</code> as separator, e.g. <code>docfx metadata a.csproj,b.sln</code>.</p>
+<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="74" sourceendlinenumber="80">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="74" sourceendlinenumber="76"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="74" sourceendlinenumber="76">From a supported source code file or source code file list
 Supported source code file extensions include <code>.cs</code> and <code>.vb</code>.
 Files can be combined using <code>,</code> as separator and <em>search pattern</em>.</p>
 </li>
-<li><p>From <em>docfx.json</em> file, as described in <strong>Section3</strong>.</p>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="78" sourceendlinenumber="78"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="78" sourceendlinenumber="78">From <em>docfx.json</em> file, as described in <strong>Section3</strong>.</p>
 </li>
-<li><p>If the argument is not specified, <code>docfx.exe</code> will try reading <code>docfx.json</code> under current directory.</p>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="80" sourceendlinenumber="80"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="80" sourceendlinenumber="80">If the argument is not specified, <code>docfx.exe</code> will try reading <code>docfx.json</code> under current directory.</p>
 </li>
 </ol>
-<p>The default output folder is <code>_site/</code> folder if it is not specified in <code>docfx.json</code> under current directory.</p>
-<h3 id="23-generate-documentation-command-docfx-build">2.3 Generate documentation command <code>docfx build</code></h3>
-<p><strong>Syntax</strong></p>
-<pre><code>docfx build [-o:&lt;output_path&gt;] [-t:&lt;template folder&gt;]
-</code></pre><p><code>docfx build</code> generates documentation for current folder.</p>
-<p>If <code>toc.yml</code> or <code>toc.md</code> is found in current folder, it will be rendered as the top level TABLE-OF-CONTENT. As in website, it will be rendered as the top navigation bar.</p>
-<p><strong>NOTE</strong> that <code>homepage</code> is not supported in <code>toc.md</code>. And if <code>href</code> is referencing to a <strong>folder</strong>, it must end with <code>/</code>.</p>
-<p><strong>toc.yml syntax</strong>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="82" sourceendlinenumber="82">The default output folder is <code>_site/</code> folder if it is not specified in <code>docfx.json</code> under current directory.</p>
+<h3 id="23-generate-documentation-command-docfx-build" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="84" sourceendlinenumber="84">2.3 Generate documentation command <code>docfx build</code></h3>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="85" sourceendlinenumber="85"><strong>Syntax</strong></p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="86" sourceendlinenumber="88"><code>docfx build [-o:&lt;output_path&gt;] [-t:&lt;template folder&gt;]
+</code></pre><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="89" sourceendlinenumber="89"><code>docfx build</code> generates documentation for current folder.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="91" sourceendlinenumber="91">If <code>toc.yml</code> or <code>toc.md</code> is found in current folder, it will be rendered as the top level TABLE-OF-CONTENT. As in website, it will be rendered as the top navigation bar.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="93" sourceendlinenumber="93"><strong>NOTE</strong> that <code>homepage</code> is not supported in <code>toc.md</code>. And if <code>href</code> is referencing to a <strong>folder</strong>, it must end with <code>/</code>.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="95" sourceendlinenumber="96"><strong>toc.yml syntax</strong>
 <code>toc.yml</code> is an array of items. Each item can have following properties:</p>
-<table>
+<table sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="98" sourceendlinenumber="102">
 <thead>
 <tr>
 <th>Property</th>
@@ -157,24 +157,24 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
 </tr>
 </tbody>
 </table>
-<p><strong>TOC.yml Sample</strong></p>
-<pre><code class="lang-yaml">- name: Home
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="104" sourceendlinenumber="104"><strong>TOC.yml Sample</strong></p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="105" sourceendlinenumber="113"><code class="lang-yaml">- name: Home
   href: articles/Home.md
 - name: Roslyn Wiki
   href: roslyn_wiki/
 - name: Roslyn API
   href: api_roslyn/
   homepage: homepages/roslyn_language_features.md
-</code></pre><p><strong>TOC.md Sample</strong></p>
-<pre><code class="lang-markdown">## [Home](articles/Home.md)
+</code></pre><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="114" sourceendlinenumber="114"><strong>TOC.md Sample</strong></p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="115" sourceendlinenumber="119"><code class="lang-markdown">## [Home](articles/Home.md)
 ## [Roslyn Wiki](roslyn_wiki/)
 ## [Roslyn API](api_roslyn/)
-</code></pre><h4 id="231-optional-outputpath-argument">2.3.1 Optional <code>&lt;output_path&gt;</code> argument</h4>
-<p>The default output folder is <code>_site/</code> folder</p>
-<h4 id="232-optional-template-folder-argument">2.3.2 Optional <code>&lt;template folder&gt;</code> argument</h4>
-<p>If specified, use the template from template folder</p>
-<p><strong>Template Folder Structure</strong></p>
-<pre><code>|-- &lt;template folder&gt;
+</code></pre><h4 id="231-optional-outputpath-argument" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="120" sourceendlinenumber="120">2.3.1 Optional <code>&lt;output_path&gt;</code> argument</h4>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="122" sourceendlinenumber="122">The default output folder is <code>_site/</code> folder</p>
+<h4 id="232-optional-template-folder-argument" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="124" sourceendlinenumber="124">2.3.2 Optional <code>&lt;template folder&gt;</code> argument</h4>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="126" sourceendlinenumber="126">If specified, use the template from template folder</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="128" sourceendlinenumber="128"><strong>Template Folder Structure</strong></p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="129" sourceendlinenumber="141"><code>|-- &lt;template folder&gt;
       |-- index.html
       |-- styles
       |     |-- docascode.css
@@ -185,12 +185,12 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
       |     |-- yamlContent.html
       |-- favicon.ico
       |-- logo.ico
-</code></pre><h2 id="3-docfxjson-format">3. <code>docfx.json</code> Format</h2>
-<p>Top level <code>docfx.json</code> structure is key-value pair. <code>key</code> is the name of the subcommand, current supported subcommands are <code>metadata</code> and <code>build</code>. </p>
-<h3 id="31-properties-for-metadata">3.1 Properties for <code>metadata</code></h3>
-<p><code>Metadata</code> section defines an array of source projects and their output folder. Each item has <code>src</code> and <code>dest</code> property. <code>src</code> defines the source projects to have metadata generated, which is in <code>File Mapping Format</code>. Detailed syntax is described in <strong>4. Supported <code>name-files</code> File Mapping Format</strong> below. <code>dest</code> defines the output folder of the generated metadata files.</p>
-<p><strong>Sample</strong></p>
-<pre><code class="lang-json">{
+</code></pre><h2 id="3-docfxjson-format" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="143" sourceendlinenumber="144">3. <code>docfx.json</code> Format</h2>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="145" sourceendlinenumber="145">Top level <code>docfx.json</code> structure is key-value pair. <code>key</code> is the name of the subcommand, current supported subcommands are <code>metadata</code> and <code>build</code>. </p>
+<h3 id="31-properties-for-metadata" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="147" sourceendlinenumber="147">3.1 Properties for <code>metadata</code></h3>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="149" sourceendlinenumber="149"><code>Metadata</code> section defines an array of source projects and their output folder. Each item has <code>src</code> and <code>dest</code> property. <code>src</code> defines the source projects to have metadata generated, which is in <code>File Mapping Format</code>. Detailed syntax is described in <strong>4. Supported <code>name-files</code> File Mapping Format</strong> below. <code>dest</code> defines the output folder of the generated metadata files.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="151" sourceendlinenumber="151"><strong>Sample</strong></p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="152" sourceendlinenumber="177"><code class="lang-json">{
   &quot;metadata&quot;: [
     {
       &quot;src&quot;: [
@@ -213,8 +213,8 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
     }
   ]
 }
-</code></pre><h3 id="32-properties-for-build">3.2 Properties for <code>build</code></h3>
-<table>
+</code></pre><h3 id="32-properties-for-build" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="179" sourceendlinenumber="179">3.2 Properties for <code>build</code></h3>
+<table sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="181" sourceendlinenumber="204">
 <thead>
 <tr>
 <th>Key</th>
@@ -308,16 +308,16 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
 </tr>
 <tr>
 <td>noLangKeyword</td>
-<td>Disable default lang keyword, it can be downloaded from <a href="http://dotnet.github.io/docfx/langwordmapping/langwordMapping.yml">here</a>.</td>
+<td>Disable default lang keyword, it can be downloaded from <a href="http://dotnet.github.io/docfx/langwordmapping/langwordMapping.yml" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="204" sourceendlinenumber="204">here</a>.</td>
 </tr>
 </tbody>
 </table>
-<h4 id="321-templates-and-themes">3.2.1 <code>Template</code>s and <code>Theme</code>s</h4>
-<p><em>Template</em>s are used to transform <em>YAML</em> files generated by <code>docfx</code> to human-readable <em>page</em>s. A <em>page</em> can be a markdown file, a html file or even a plain text file. Each <em>YAML</em> file will be transformed to ONE <em>page</em> and be exported to the output folder preserving its relative path to <code>src</code>. For example, if <em>page</em>s are in <em>HTML</em> format, a static website will be generated in the output folder.</p>
-<p><em>Theme</em> is to provide general styles for all the generated <em>page</em>s. Files inside a <em>theme</em> will be generally <strong>COPIED</strong> to the output folder. A typical usage is, after <em>YAML</em> files are transformed to <em>HTML</em> pages, well-designed <em>CSS</em> style files in a <em>Theme</em> can then overwrite the default styles defined in <em>template</em>, e.g. <em>main.css</em>.</p>
-<p>There are two ways to use custom templates and themes. </p>
-<p>To use a custom template, one way is to specify template path with <code>--template</code> (or <code>-t</code>) command option, multiple templates must be separated by <code>,</code> with no spaces. The other way is to set key-value mapping in <code>docfx.json</code>:</p>
-<pre><code class="lang-json">{
+<h4 id="321-templates-and-themes" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="206" sourceendlinenumber="206">3.2.1 <code>Template</code>s and <code>Theme</code>s</h4>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="208" sourceendlinenumber="208"><em>Template</em>s are used to transform <em>YAML</em> files generated by <code>docfx</code> to human-readable <em>page</em>s. A <em>page</em> can be a markdown file, a html file or even a plain text file. Each <em>YAML</em> file will be transformed to ONE <em>page</em> and be exported to the output folder preserving its relative path to <code>src</code>. For example, if <em>page</em>s are in <em>HTML</em> format, a static website will be generated in the output folder.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="210" sourceendlinenumber="210"><em>Theme</em> is to provide general styles for all the generated <em>page</em>s. Files inside a <em>theme</em> will be generally <strong>COPIED</strong> to the output folder. A typical usage is, after <em>YAML</em> files are transformed to <em>HTML</em> pages, well-designed <em>CSS</em> style files in a <em>Theme</em> can then overwrite the default styles defined in <em>template</em>, e.g. <em>main.css</em>.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="212" sourceendlinenumber="212">There are two ways to use custom templates and themes. </p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="214" sourceendlinenumber="214">To use a custom template, one way is to specify template path with <code>--template</code> (or <code>-t</code>) command option, multiple templates must be separated by <code>,</code> with no spaces. The other way is to set key-value mapping in <code>docfx.json</code>:</p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="216" sourceendlinenumber="228"><code class="lang-json">{
   ...
   { 
     &quot;build&quot; : 
@@ -328,7 +328,7 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
     }
   ... 
 }
-</code></pre><pre><code class="lang-json">{
+</code></pre><pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="229" sourceendlinenumber="241"><code class="lang-json">{
   ...
   { 
     &quot;build&quot; : 
@@ -339,12 +339,12 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
     }
   ... 
 }
-</code></pre><blockquote><p>The template path could either be a zip file called <code>&lt;template&gt;.zip</code> or a folder called <code>&lt;template&gt;</code>.</p>
+</code></pre><blockquote sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="243" sourceendlinenumber="243"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="243" sourceendlinenumber="243">The template path could either be a zip file called <code>&lt;template&gt;.zip</code> or a folder called <code>&lt;template&gt;</code>.</p>
 </blockquote>
-<p>To custom theme, one way is to specify theme name with <code>--theme</code> command option, multiple themes must be separated by <code>,</code> with no spaces. The other way is to set key-value mapping in <code>docfx.json</code> as similar to defining template. Also, both <code>.zip</code> file and folder are supported.</p>
-<p>Please refer to <a href="howto_create_custom_template.html">How to Create Custom Templates</a> to create custom templates.</p>
-<p><strong>Sample</strong></p>
-<pre><code class="lang-json">{
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="245" sourceendlinenumber="245">To custom theme, one way is to specify theme name with <code>--theme</code> command option, multiple themes must be separated by <code>,</code> with no spaces. The other way is to set key-value mapping in <code>docfx.json</code> as similar to defining template. Also, both <code>.zip</code> file and folder are supported.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="247" sourceendlinenumber="247">Please refer to <a href="howto_create_custom_template.html" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="247" sourceendlinenumber="247">How to Create Custom Templates</a> to create custom templates.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="249" sourceendlinenumber="249"><strong>Sample</strong></p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="250" sourceendlinenumber="281"><code class="lang-json">{
   &quot;build&quot;: {
     &quot;content&quot;:
       [
@@ -374,10 +374,10 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
     &quot;template&quot;: &quot;default&quot;
   }
 }
-</code></pre><h4 id="322-reserved-metadata">3.2.2 Reserved Metadata</h4>
-<p>After passing values through global metadata or file metadata, DocFX can use these metadata in templates to control the output html.
+</code></pre><h4 id="322-reserved-metadata" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="283" sourceendlinenumber="283">3.2.2 Reserved Metadata</h4>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="285" sourceendlinenumber="286">After passing values through global metadata or file metadata, DocFX can use these metadata in templates to control the output html.
 Reserved metadatas:</p>
-<table>
+<table sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="288" sourceendlinenumber="298">
 <thead>
 <tr>
 <th>Metadata Name</th>
@@ -433,25 +433,25 @@ Reserved metadatas:</p>
 </tr>
 </tbody>
 </table>
-<h4 id="323-separated-metadata-files-for-global-metadata-and-file-metadata">3.2.3 Separated metadata files for global metadata and file metadata</h4>
-<p>There&#39;re three ways to set metadata for a file in DocFX:</p>
-<ol>
-<li>using global metadata, it will set metadata for every file.</li>
-<li>using file metadata, it will set metadata for files that match pattern.</li>
-<li>using YAML header, it will set metadata for current file.</li>
+<h4 id="323-separated-metadata-files-for-global-metadata-and-file-metadata" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="300" sourceendlinenumber="300">3.2.3 Separated metadata files for global metadata and file metadata</h4>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="302" sourceendlinenumber="302">There&#39;re three ways to set metadata for a file in DocFX:</p>
+<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="304" sourceendlinenumber="306">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="304" sourceendlinenumber="304">using global metadata, it will set metadata for every file.</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="305" sourceendlinenumber="305">using file metadata, it will set metadata for files that match pattern.</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="306" sourceendlinenumber="306">using YAML header, it will set metadata for current file.</li>
 </ol>
-<p>In above ways, the later way will always overwrite the former way if the same key of metadata is set.</p>
-<p>Here we will show you how to set global metadata and file metadata using separated metadata files. Take global metadata for example, you can set <code>globalMetadataFiles</code> in <code>docfx.json</code> or <code>--globalMetadataFiles</code> in build command line. The usage of <code>fileMetadataFiles</code> is the same as <code>globalMetadataFiles</code>.</p>
-<p>There&#39;re some metadata file examples:</p>
-<ul>
-<li><p>globalMetadata file example </p>
-<pre><code class="lang-json">  {
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="308" sourceendlinenumber="308">In above ways, the later way will always overwrite the former way if the same key of metadata is set.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="310" sourceendlinenumber="310">Here we will show you how to set global metadata and file metadata using separated metadata files. Take global metadata for example, you can set <code>globalMetadataFiles</code> in <code>docfx.json</code> or <code>--globalMetadataFiles</code> in build command line. The usage of <code>fileMetadataFiles</code> is the same as <code>globalMetadataFiles</code>.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="312" sourceendlinenumber="312">There&#39;re some metadata file examples:</p>
+<ul sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="314" sourceendlinenumber="334">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="314" sourceendlinenumber="320"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="314" sourceendlinenumber="314">globalMetadata file example </p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="315" sourceendlinenumber="320"><code class="lang-json">  {
       &quot;_appTitle&quot;: &quot;DocFX website&quot;,
       &quot;_enableSearch&quot;: &quot;true&quot;
   }
 </code></pre></li>
-<li><p>fileMetadata file example</p>
-<pre><code class="lang-json">  {
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="322" sourceendlinenumber="334"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="322" sourceendlinenumber="322">fileMetadata file example</p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="323" sourceendlinenumber="334"><code class="lang-json">  {
       &quot;priority&quot;: {
           &quot;**.md&quot;: 2.5,
           &quot;spec/**.md&quot;: 3
@@ -463,48 +463,48 @@ Reserved metadatas:</p>
   }
 </code></pre></li>
 </ul>
-<p>There&#39;re some examples about how to use separated metadata files.</p>
-<ul>
-<li><p>use <code>globalMetadataFiles</code> in <code>docfx.json</code></p>
-<pre><code class="lang-json">  ...
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="336" sourceendlinenumber="336">There&#39;re some examples about how to use separated metadata files.</p>
+<ul sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="338" sourceendlinenumber="360">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="338" sourceendlinenumber="343"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="338" sourceendlinenumber="338">use <code>globalMetadataFiles</code> in <code>docfx.json</code></p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="339" sourceendlinenumber="343"><code class="lang-json">  ...
   &quot;globalMetadataFiles&quot;: [&quot;global1.json&quot;, &quot;global2.json&quot;],
   ...
 </code></pre></li>
-<li><p>use <code>--globalMetadataFiles</code> in build command line</p>
-<pre><code>  docfx build --globalMetadataFiles global1.json,global2.json
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="345" sourceendlinenumber="348"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="345" sourceendlinenumber="345">use <code>--globalMetadataFiles</code> in build command line</p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="346" sourceendlinenumber="348"><code>  docfx build --globalMetadataFiles global1.json,global2.json
 </code></pre></li>
-<li><p>use <code>fileMetadataFiles</code> in <code>docfx.json</code></p>
-<pre><code class="lang-json">  ...
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="350" sourceendlinenumber="355"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="350" sourceendlinenumber="350">use <code>fileMetadataFiles</code> in <code>docfx.json</code></p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="351" sourceendlinenumber="355"><code class="lang-json">  ...
   &quot;fileMetadataFiles&quot;: [&quot;file1.json&quot;, &quot;file2.json&quot;],
   ...
 </code></pre></li>
-<li><p>use <code>--fileMetadataFiles</code> in build command line</p>
-<pre><code>  docfx build --fileMetadataFiles file1.json,file2.json
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="357" sourceendlinenumber="360"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="357" sourceendlinenumber="357">use <code>--fileMetadataFiles</code> in build command line</p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="358" sourceendlinenumber="360"><code>  docfx build --fileMetadataFiles file1.json,file2.json
 </code></pre></li>
 </ul>
-<p>Note that, metadata set in command line will merge with metadata set in <code>docfx.json</code>. </p>
-<ul>
-<li><p>If same key for global metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
-<ol>
-<li>global metadata from docfx config file</li>
-<li>global metadata from global metadata files</li>
-<li>global metadata from command line</li>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="362" sourceendlinenumber="362">Note that, metadata set in command line will merge with metadata set in <code>docfx.json</code>. </p>
+<ul sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="364" sourceendlinenumber="371">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="364" sourceendlinenumber="367"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="364" sourceendlinenumber="364">If same key for global metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
+<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="365" sourceendlinenumber="367">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="365" sourceendlinenumber="365">global metadata from docfx config file</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="366" sourceendlinenumber="366">global metadata from global metadata files</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="367" sourceendlinenumber="367">global metadata from command line</li>
 </ol>
 </li>
-<li><p>If same file pattern for file metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
-<ol>
-<li>file metadata from docfx config file</li>
-<li>file metadata from file metadata files</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="369" sourceendlinenumber="371"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="369" sourceendlinenumber="369">If same file pattern for file metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
+<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="370" sourceendlinenumber="371">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="370" sourceendlinenumber="370">file metadata from docfx config file</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="371" sourceendlinenumber="371">file metadata from file metadata files</li>
 </ol>
 </li>
 </ul>
-<p>Given multiple metadata files, the behavior would be <strong>undetermined</strong>, if same key is set in these files.</p>
-<h2 id="4-supported-file-mapping-format">4. Supported File Mapping Format</h2>
-<p>There are several ways to define file mapping.</p>
-<h3 id="41-array-format">4.1 Array Format</h3>
-<p>This form supports multiple file mappings, and also allows additional properties per mapping.
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="373" sourceendlinenumber="373">Given multiple metadata files, the behavior would be <strong>undetermined</strong>, if same key is set in these files.</p>
+<h2 id="4-supported-file-mapping-format" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="375" sourceendlinenumber="376">4. Supported File Mapping Format</h2>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="377" sourceendlinenumber="377">There are several ways to define file mapping.</p>
+<h3 id="41-array-format" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="379" sourceendlinenumber="379">4.1 Array Format</h3>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="380" sourceendlinenumber="381">This form supports multiple file mappings, and also allows additional properties per mapping.
 Supported properties:</p>
-<table>
+<table sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="383" sourceendlinenumber="394">
 <thead>
 <tr>
 <th>Property Name</th>
@@ -554,38 +554,38 @@ Supported properties:</p>
 </tr>
 </tbody>
 </table>
-<pre><code class="lang-json">&quot;key&quot;: [
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="396" sourceendlinenumber="404"><code class="lang-json">&quot;key&quot;: [
   {&quot;files&quot;: [&quot;file1&quot;, &quot;file2&quot;], &quot;dest&quot;: &quot;dest1&quot;},
   {&quot;files&quot;: &quot;file3&quot;, &quot;dest&quot;: &quot;dest2&quot;},
   {&quot;files&quot;: [&quot;file4&quot;, &quot;file5&quot;], &quot;exclude&quot;: [&quot;file5&quot;], &quot;src&quot;: &quot;folder1&quot;},
   {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v1.0&quot;, &quot;dest&quot;:&quot;v1.0/api&quot;, &quot;version&quot;: &quot;v1.0&quot;},
   {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v2.0&quot;, &quot;dest&quot;:&quot;v2.0/api&quot;, &quot;version&quot;: &quot;v2.0&quot;}
 ]
-</code></pre><h3 id="42-compact-format">4.2 Compact Format</h3>
-<pre><code class="lang-json">&quot;key&quot;: [&quot;file1&quot;, &quot;file2&quot;]
-</code></pre><h3 id="43-glob-pattern">4.3 Glob Pattern</h3>
-<p><code>DocFX</code> uses <a href="https://github.com/vicancy/Glob">Glob</a> to support <em>glob</em> pattern in file path.
+</code></pre><h3 id="42-compact-format" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="406" sourceendlinenumber="406">4.2 Compact Format</h3>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="407" sourceendlinenumber="409"><code class="lang-json">&quot;key&quot;: [&quot;file1&quot;, &quot;file2&quot;]
+</code></pre><h3 id="43-glob-pattern" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="413" sourceendlinenumber="413">4.3 Glob Pattern</h3>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="414" sourceendlinenumber="415"><code>DocFX</code> uses <a href="https://github.com/vicancy/Glob" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="414" sourceendlinenumber="414">Glob</a> to support <em>glob</em> pattern in file path.
 It offers several options to determine how to parse the Glob pattern:</p>
-<ul>
-<li><code>caseSensitive</code>: Default value is <code>false</code>. If set to <code>true</code>, the glob pattern is case sensitive. e.g. <code>*.txt</code> will not match <code>1.TXT</code>. For OS Windows, file path is case insensitive while for Linux/Unix, file path is case sensitive. This option offers user the flexibility to determine how to search files.</li>
-<li><code>supportBackslash</code>: Default value is <code>true</code>. If set to <code>true</code>, <code>\</code> will be considered as file path separator. Otherwise, <code>\</code> will be considered as normal character if <code>escape</code> is set to <code>true</code> and as escape character if <code>escape</code> is set to <code>false</code>. If <code>escape</code> is set to <code>true</code>, <code>\\</code> should be used to represent file path separator.</li>
-<li><code>escape</code>: Default value is <code>false</code>. If set to <code>true</code>, <code>\</code> character is used as escape character, e.g. <code>\{\}.txt</code> will match <code>{}.txt</code>.</li>
+<ul sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="416" sourceendlinenumber="418">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="416" sourceendlinenumber="416"><code>caseSensitive</code>: Default value is <code>false</code>. If set to <code>true</code>, the glob pattern is case sensitive. e.g. <code>*.txt</code> will not match <code>1.TXT</code>. For OS Windows, file path is case insensitive while for Linux/Unix, file path is case sensitive. This option offers user the flexibility to determine how to search files.</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="417" sourceendlinenumber="417"><code>supportBackslash</code>: Default value is <code>true</code>. If set to <code>true</code>, <code>\</code> will be considered as file path separator. Otherwise, <code>\</code> will be considered as normal character if <code>escape</code> is set to <code>true</code> and as escape character if <code>escape</code> is set to <code>false</code>. If <code>escape</code> is set to <code>true</code>, <code>\\</code> should be used to represent file path separator.</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="418" sourceendlinenumber="418"><code>escape</code>: Default value is <code>false</code>. If set to <code>true</code>, <code>\</code> character is used as escape character, e.g. <code>\{\}.txt</code> will match <code>{}.txt</code>.</li>
 </ul>
-<p>In general, the <em>glob</em> pattern contains the following rules:</p>
-<ol>
-<li><code>*</code> matches any number of characters, but not <code>/</code></li>
-<li><code>?</code> matches a single character, but not <code>/</code></li>
-<li><code>**</code> matches any number of characters, including <code>/</code>, as long as it&#39;s the only thing in a path part</li>
-<li><code>{}</code> allows for a comma-separated list of <strong>OR</strong> expressions</li>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="420" sourceendlinenumber="420">In general, the <em>glob</em> pattern contains the following rules:</p>
+<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="421" sourceendlinenumber="424">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="421" sourceendlinenumber="421"><code>*</code> matches any number of characters, but not <code>/</code></li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="422" sourceendlinenumber="422"><code>?</code> matches a single character, but not <code>/</code></li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="423" sourceendlinenumber="423"><code>**</code> matches any number of characters, including <code>/</code>, as long as it&#39;s the only thing in a path part</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="424" sourceendlinenumber="424"><code>{}</code> allows for a comma-separated list of <strong>OR</strong> expressions</li>
 </ol>
-<p><strong>SAMPLES</strong></p>
-<h2 id="5-q--a">5. Q &amp; A</h2>
-<ol>
-<li>Do we support files outside current project folder(the folder when <code>docfx.json</code> exists)? 
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="426" sourceendlinenumber="426"><strong>SAMPLES</strong></p>
+<h2 id="5-q--a" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="429" sourceendlinenumber="430">5. Q &amp; A</h2>
+<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="431" sourceendlinenumber="436">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="431" sourceendlinenumber="432">Do we support files outside current project folder(the folder when <code>docfx.json</code> exists)? 
 A: YES. DO specify <code>src</code> and files outside of current folder will be copied to output folder keeping the same relative path to <code>src</code>.</li>
-<li>Do we support output folder outside current project folder(the folder when <code>docfx.json</code> exists)?
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="433" sourceendlinenumber="434">Do we support output folder outside current project folder(the folder when <code>docfx.json</code> exists)?
 A: YES.</li>
-<li>Do we support <strong>referencing</strong> files outside of current project folder(the folder when <code>docfx.json</code> exists)?
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="435" sourceendlinenumber="436">Do we support <strong>referencing</strong> files outside of current project folder(the folder when <code>docfx.json</code> exists)?
 A: NO.</li>
 </ol>
 
@@ -624,8 +624,8 @@ A: NO.</li>
     </div>
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>

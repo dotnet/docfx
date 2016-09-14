@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class TocDocumentProcessor
    | DocFX website ">
-    <meta name="generator" content="docfx 2.4.0.0">
+    <meta name="generator" content="docfx 2.5.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -117,8 +117,7 @@
               <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Build.TableOfContents.dll</h6>
               <h5 id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[Export(typeof (IDocumentProcessor))]
-public class TocDocumentProcessor : DisposableDocumentProcessor, IDocumentProcessor, IDisposable, ISupportIncrementalBuild</code></pre>
+                <pre><code class="lang-csharp hljs">public class TocDocumentProcessor : DisposableDocumentProcessor, IDocumentProcessor, IDisposable</code></pre>
               </div>
               <h3 id="properties">Properties
               </h3>
@@ -134,8 +133,7 @@ public class TocDocumentProcessor : DisposableDocumentProcessor, IDocumentProces
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[ImportMany(&quot;TocDocumentProcessor&quot;)]
-public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</code></pre>
+                <pre><code class="lang-csharp hljs">public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -187,85 +185,6 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_Name">DisposableDocumentProcessor.Name</a></div>
               <h3 id="methods">Methods
               </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L216">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)">CanIncrementalBuild(FileAndType)</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public bool CanIncrementalBuild(FileAndType fileAndType)</code></pre>
-              </div>
-              <h5 class="parameters">Parameters</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileAndType.html#Microsoft_DocAsCode_Plugins_FileAndType">FileAndType</a></td>
-                    <td><em>fileAndType</em></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuild.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuild_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_">ISupportIncrementalBuild.CanIncrementalBuild(FileAndType)</a></div>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_GetIncrementalContextHash.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.GetIncrementalContextHash%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L211">View Source</a>
-              </span>
-              <h4 id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_GetIncrementalContextHash" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.GetIncrementalContextHash">GetIncrementalContextHash()</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public string GetIncrementalContextHash()</code></pre>
-              </div>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuild.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuild_GetIncrementalContextHash">ISupportIncrementalBuild.GetIncrementalContextHash()</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
@@ -455,7 +374,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_UpdateHref_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_">DisposableDocumentProcessor.UpdateHref(FileModel, IDocumentBuildContext)</a></div>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
-                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
+                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Formatting_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
               </div>
             </article>
           </div>
@@ -495,8 +414,8 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     </div>
     
     <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <script type="text/javascript" src="../styles/docfx.js"></script>
     <script type="text/javascript" src="../styles/main.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
   </body>
 </html>
