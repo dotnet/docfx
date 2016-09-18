@@ -321,7 +321,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         Target = file,
                         SourceFile = pair.Node.GetAttributeValue("sourceFile", null),
-                        LineNumber = pair.Node.GetAttributeValue("sourceLineNumber", 0),
+                        LineNumber = pair.Node.GetAttributeValue("sourceStartLineNumber", 0),
                     });
                 }
             }
