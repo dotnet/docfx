@@ -4,6 +4,7 @@ v2.6(Pre-Release)
 -----------
 1.  Support attribute filter to filter out attributes.
 2.  Support choosing git URL pattern. (https://github.com/dotnet/docfx/issues/677)
+3.  Fix bug for line number is 0.
 
 v2.5
 -----------
