@@ -76,19 +76,29 @@ blockquote {
 code {
   font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
   font-size: 14px;
-  background-color: rgba(10, 10, 10, 0.4);
-  padding: 16px;
-  display: block;
-  overflow-x: auto;
-  color: #4d4d4c;
-  margin-right: 1em;
-  border-radius: 4px;
   line-height: 19px;
 }
 
 .mac code {
   font-size: 12px;
   line-height: 18px;
+}
+
+code > div {
+  padding: 16px;
+  border-radius: 3px;
+  overflow: auto;
+}
+
+pre {
+  display: block;
+  overflow-x: auto;
+  background: black;
+  color: #eaeaea;
+  padding: 0.5em;
+  margin-right: 1em;
+  border-radius: 4px;
+  -webkit-text-size-adjust: none;
 }
 
 /** Theming */

@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-const minHorizontalSpacing = 6;
+const minHorizontalSpace = 6;
+const selectedGold = "#EDE68A";
+const unSelectedGray = "#d4d4d4";
 
 function buildTree(containerName, treeData) {
   var i = 0;
@@ -25,7 +27,7 @@ function buildTree(containerName, treeData) {
       tmp++;
     // 'while' but not 'if' because it maybe skip the next level
     while (maxLabelLengthOfEachLevel.length <= tmp)
-      maxLabelLengthOfEachLevel.push(minHorizontalSpacing);
+      maxLabelLengthOfEachLevel.push(minHorizontalSpace);
     maxLabelLengthOfEachLevel[tmp] = Math.min(Math.max(maxLabelLengthOfEachLevel[tmp], GetTokenName(d.name).length), 12);
   }, function (d) {
     return d.children && d.children.length > 0 ? d.children : null;
@@ -85,9 +87,9 @@ function buildTree(containerName, treeData) {
           .style("fill", function (d) {
             if (isIntersect(parseInt(GetStartLineNumber(d.name)), parseInt(GetEndLineNumber(d.name)), parseInt(linenumber[0]), parseInt(linenumber[1]))) {    //centerNode(d);
               targetNode = d;
-              return "#EDE68A";
+              return selectedGold
             } else {
-              return d._children ? "lightsteelblue" : "#fff";
+              return d._children ? "lightsteelblue" : "white";
             }
           });
 
@@ -97,9 +99,9 @@ function buildTree(containerName, treeData) {
           .style("fill", function (d) {
             if (isIntersect(parseInt(GetStartLineNumber(d.name)), parseInt(GetEndLineNumber(d.name)), parseInt(linenumber[0]), parseInt(linenumber[1]))) {    //centerNode(d);
               targetNode = d;
-              return "#EDE68A";
+              return selectedGold
             } else {
-              return "#d4d4d4";
+              return unSelectedGray;
             }
           });
       })
@@ -154,7 +156,7 @@ function buildTree(containerName, treeData) {
 
     nodeEnter.append("svg:circle")
       .attr("r", 1e-6)
-      .style("fill", function (d) { return d._children ? "steelblue" : "#fff"; })
+      .style("fill", function (d) { return d._children ? "steelblue" : "white"; })
       .on('click', circleClick);;
 
     nodeEnter.append("svg:text")
@@ -186,7 +188,7 @@ function buildTree(containerName, treeData) {
 
     nodeUpdate.select("circle")
       .attr("r", 4.5)
-      .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+      .style("fill", function (d) { return d._children ? "lightsteelblue" : "white"; });
 
     // Fade the text in
     nodeUpdate.select("text")
