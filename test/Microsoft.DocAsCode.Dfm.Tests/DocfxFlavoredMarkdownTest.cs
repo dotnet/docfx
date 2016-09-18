@@ -754,6 +754,18 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
                     MessageFormatter = "Warning tag({0})!",
                     Behavior = TagValidationBehavior.Warning,
                 },
+                new MarkdownTagValidationRule
+                {
+                    TagNames = new List<string> { "script" },
+                    MessageFormatter = "Warning tag({0})!",
+                    Behavior = TagValidationBehavior.Warning,
+                },
+                new MarkdownTagValidationRule
+                {
+                    TagNames = new List<string> { "code" },
+                    MessageFormatter = "Warning tag({0})!",
+                    Behavior = TagValidationBehavior.Warning,
+                },
             });
             mrb.AddValidators(new[]
             {
@@ -770,12 +782,26 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
             string result;
             using (new LoggerPhaseScope("test!!!!"))
             {
-                result = engine.Markup(@"<div><i>x</i><EM>y</EM><h1>z</h1></div>", "test");
+                result = engine.Markup(@"<div><i>x</i><EM>y</EM><h1>z<code>a*b*c</code></h1></div>
+
+<script>alert(1);</script>", "test");
             }
             Logger.UnregisterListener(listener);
-            Assert.Equal("<div><i>x</i><EM>y</EM><h1>z</h1></div>", result);
-            Assert.Equal(5, listener.Items.Count);
-            Assert.Equal(new[] { HtmlMarkdownTokenValidatorProvider.WarningMessage, "Invalid tag(div)!", "Invalid tag(EM)!", "Warning tag(h1)!", "Warning tag(h1)!" }, from item in listener.Items select item.Message);
+            Assert.Equal(@"<div><i>x</i><EM>y</EM><h1>z<code>a*b*c</code></h1></div>
+
+<script>alert(1);</script>".Replace("\r\n", "\n"), result);
+            Assert.Equal(8, listener.Items.Count);
+            Assert.Equal(new[]
+            {
+                HtmlMarkdownTokenValidatorProvider.WarningMessage,
+                "Invalid tag(div)!",
+                "Invalid tag(EM)!",
+                "Warning tag(h1)!",
+                "Warning tag(code)!",
+                "Warning tag(h1)!",
+                "Html Tag!",
+                "Warning tag(script)!",
+            }, from item in listener.Items select item.Message);
         }
 
         [Fact]

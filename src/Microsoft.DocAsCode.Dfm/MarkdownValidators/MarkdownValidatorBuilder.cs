@@ -203,7 +203,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                     GetEnabledRules().Concat(
                         new[]
                         {
-                            MarkdownTokenValidatorFactory.FromLambda<MarkdownTagInlineToken>(context.Validate)
+                            MarkdownTokenValidatorFactory.FromLambda<IMarkdownToken>(context.Validate)
                         })),
                 MarkdownValidatePhaseName);
         }
@@ -359,6 +359,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
         {
             private static readonly Regex OpeningTag = new Regex(@"^\<(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>$", RegexOptions.Compiled);
             private static readonly Regex ClosingTag = new Regex(@"^\</(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>$", RegexOptions.Compiled);
+            private static readonly Regex OpeningTagMatcher = new Regex(@"^\<(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>", RegexOptions.Compiled);
 
             public MarkdownRewriterContext(CompositionHost host, ImmutableList<MarkdownTagValidationRule> validators)
             {
@@ -370,13 +371,18 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 
             public ImmutableList<MarkdownTagValidationRule> Validators { get; }
 
-            public void Validate(MarkdownTagInlineToken token)
+            public void Validate(IMarkdownToken token)
             {
-                var m = OpeningTag.Match(token.SourceInfo.Markdown);
+                var text = GetTokenText(token);
+                if (string.IsNullOrEmpty(text))
+                {
+                    return;
+                }
+                var m = OpeningTag.Match(text);
                 bool isOpeningTag = true;
                 if (m.Length == 0)
                 {
-                    m = ClosingTag.Match(token.SourceInfo.Markdown);
+                    m = ClosingTag.Match(text);
                     if (m.Length == 0)
                     {
                         return;
@@ -387,7 +393,21 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                 ValidateCore(token, m, isOpeningTag);
             }
 
-            private void ValidateCore(MarkdownTagInlineToken token, Match m, bool isOpeningTag)
+            private string GetTokenText(IMarkdownToken token)
+            {
+                if (token is MarkdownTagInlineToken)
+                {
+                    return token.SourceInfo.Markdown;
+                }
+                if (token is MarkdownRawToken &&
+                    (token.Rule is MarkdownHtmlBlockRule || token.Rule is MarkdownCodeElementInlineRule))
+                {
+                    return OpeningTagMatcher.Match(token.SourceInfo.Markdown).Value;
+                }
+                return null;
+            }
+
+            private void ValidateCore(IMarkdownToken token, Match m, bool isOpeningTag)
             {
                 foreach (var validator in Validators)
                 {
@@ -403,7 +423,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                 return;
             }
 
-            private void ValidateOne(MarkdownTagInlineToken token, Match m, MarkdownTagValidationRule validator)
+            private void ValidateOne(IMarkdownToken token, Match m, MarkdownTagValidationRule validator)
             {
                 if (!string.IsNullOrEmpty(validator.CustomValidatorContractName))
                 {
@@ -434,7 +454,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                     .ToList();
             }
 
-            private void ValidateOneCore(MarkdownTagInlineToken token, Match m, MarkdownTagValidationRule validator)
+            private void ValidateOneCore(IMarkdownToken token, Match m, MarkdownTagValidationRule validator)
             {
                 switch (validator.Behavior)
                 {
