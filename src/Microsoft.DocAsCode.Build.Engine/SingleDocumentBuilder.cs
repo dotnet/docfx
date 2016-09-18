@@ -889,7 +889,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         foreach (var fileLinkSourceFile in list)
                         {
-                            message += $" Referenced by file: {fileLinkSourceFile.SourceFile} at line: {fileLinkSourceFile.LineNumber}.";
+                            message = $" Referenced by file: {fileLinkSourceFile.SourceFile} at line: {fileLinkSourceFile.LineNumber}.";
                             Logger.LogWarning(message);
                         }
                     }
