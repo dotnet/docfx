@@ -3,10 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite.Tests
 {
-    using System.Linq;
-    using System.Collections.Generic;
-    using System.Text.RegularExpressions;
-
     using Microsoft.DocAsCode.MarkdownLite;
 
     using Xunit;
