@@ -118,9 +118,7 @@ namespace Microsoft.DocAsCode.Plugins
             }
             return StringComparer.Equals(File, other.File) &&
                 Type == other.Type &&
-                StringComparer.Equals(BaseDir, other.BaseDir) &&
-                StringComparer.Equals(SourceDir, other.SourceDir) &&
-                StringComparer.Equals(DestinationDir, other.DestinationDir);
+                StringComparer.Equals(BaseDir, other.BaseDir);
         }
 
         public override bool Equals(object obj)
