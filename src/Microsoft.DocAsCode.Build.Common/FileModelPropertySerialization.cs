@@ -130,7 +130,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 yield return new KeyValuePair<string, object>(nameof(Model.FileLinkSources), JsonUtility.ToJsonString(Model.FileLinkSources));
                 yield return new KeyValuePair<string, object>(nameof(Model.UidLinkSources), JsonUtility.ToJsonString(Model.UidLinkSources));
                 yield return new KeyValuePair<string, object>(nameof(Model.Uids), JsonUtility.ToJsonString(Model.Uids));
-                yield return new KeyValuePair<string, object>(nameof(Model.ManifestProperties), JsonUtility.ToJsonString((IDictionary<string, object>)Model.ManifestProperties));
+                yield return new KeyValuePair<string, object>(nameof(Model.ManifestProperties), JsonUtility.ToJsonString(new Dictionary<string, object>((IDictionary<string, object>)Model.ManifestProperties)));
             }
 
             IEnumerator IEnumerable.GetEnumerator()
