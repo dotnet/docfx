@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 new StringReader((string)basicProperties[nameof(FileModel.Uids)])).ToImmutableArray();
 
             foreach (var pair in
-                JsonUtility.Deserialize<Dictionary<string, List<LinkSourceInfo>>>(
+                JsonUtility.Deserialize<Dictionary<string, object>>(
                     new StringReader((string)basicProperties[nameof(FileModel.ManifestProperties)])))
             {
                 result.ManifestProperties[pair.Key] = pair.Value;
