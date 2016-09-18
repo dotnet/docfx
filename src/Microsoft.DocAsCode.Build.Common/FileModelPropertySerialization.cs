@@ -80,21 +80,23 @@ namespace Microsoft.DocAsCode.Build.Common
             result.Uids = JsonUtility.Deserialize<List<UidDefinition>>(
                 new StringReader((string)basicProperties[nameof(FileModel.Uids)])).ToImmutableArray();
 
+            var manifestProperties = (IDictionary<string, object>)result.ManifestProperties;
             foreach (var pair in
                 JsonUtility.Deserialize<Dictionary<string, object>>(
                     new StringReader((string)basicProperties[nameof(FileModel.ManifestProperties)])))
             {
-                result.ManifestProperties[pair.Key] = pair.Value;
+                manifestProperties[pair.Key] = pair.Value;
             }
 
             // Deserialize properties.
             var propertySegment = sd.ReadNext(contentSegment);
+            var properties = (IDictionary<string, object>)result.Properties;
             if (propertyDeserializer != null && propertySegment.ContentType == StreamSegmentType.Binary)
             {
                 var dictionary = propertyDeserializer(sd.ReadBinaryAsStream(propertySegment));
                 foreach (var pair in dictionary)
                 {
-                    ((IDictionary<string, object>)result.Properties)[pair.Key] = pair.Value;
+                    properties[pair.Key] = pair.Value;
                 }
             }
 
