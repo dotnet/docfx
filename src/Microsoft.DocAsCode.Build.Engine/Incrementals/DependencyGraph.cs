@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
@@ -13,17 +14,35 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
     public sealed class DependencyGraph
     {
+        #region Fields
+
+        private static readonly ImmutableList<DependencyType> _defaultTypes = ImmutableList.Create<DependencyType>(
+            new DependencyType
+            {
+                Name = DependencyTypeName.Include,
+                IsTransitive = true,
+                TriggerBuild = true,
+            },
+            new DependencyType
+            {
+                Name = DependencyTypeName.Uid,
+                IsTransitive = false,
+                TriggerBuild = false,
+            });
+
         private readonly HashSet<DependencyItem> _dependencyItems;
         private readonly Dictionary<string, DependencyType> _types;
         private readonly Dictionary<string, HashSet<DependencyItem>> _indexOnFrom = new Dictionary<string, HashSet<DependencyItem>>();
         private readonly Dictionary<string, HashSet<DependencyItem>> _indexOnReportedBy = new Dictionary<string, HashSet<DependencyItem>>();
-        private static IReadOnlyDictionary<string, DependencyType> _defaultTypes = new Dictionary<string, DependencyType>
-        {
-            { DependencyTypeName.Uid, new DependencyType { Name = DependencyTypeName.Uid, IsTransitive = false, TriggerBuild = false } },
-        };
+
+        #endregion
+
+        #region Constuctors
 
         internal DependencyGraph()
-            : this(new HashSet<DependencyItem>(), _defaultTypes.ToDictionary(p => p.Key, p => p.Value))
+            : this(
+                new HashSet<DependencyItem>(),
+                _defaultTypes.ToDictionary(item => item.Name, item => item))
         {
         }
 
@@ -34,6 +53,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             RebuildIndex();
         }
 
+        #endregion
+
+        #region Public Members
+
         public IReadOnlyDictionary<string, DependencyType> DependencyTypes
         {
             get { return _types; }
@@ -41,7 +64,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public void RegisterDependencyType(DependencyType dt)
         {
-            RegisterDependencyType(new List<DependencyType> { dt });
+            if (dt == null)
+            {
+                throw new ArgumentNullException(nameof(dt));
+            }
+            RegisterDependencyTypeCore(dt);
         }
 
         public void RegisterDependencyType(IEnumerable<DependencyType> dts)
@@ -52,25 +79,21 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
             foreach (var dt in dts)
             {
-                DependencyType stored;
-                if (_types.TryGetValue(dt.Name, out stored))
+                if (dt == null)
                 {
-                    if (stored.TriggerBuild != dt.TriggerBuild || stored.IsTransitive != dt.IsTransitive)
-                    {
-                        Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
-                        throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
-                    }
-                    Logger.LogVerbose($"Same dependency type with name {dt.Name} has already been registered, ignored.");
-                    continue;
+                    throw new ArgumentException("Elements cannot contain null.", nameof(dt));
                 }
-                _types[dt.Name] = dt;
-                Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, IsTransitive: {dt.IsTransitive}, TriggerBuild: {dt.TriggerBuild}.");
+                RegisterDependencyTypeCore(dt);
             }
         }
 
         public void ReportDependency(DependencyItem dependency)
         {
-            ReportDependency(new List<DependencyItem> { dependency });
+            if (dependency == null)
+            {
+                throw new ArgumentNullException(nameof(dependency));
+            }
+            ReportDependencyCore(dependency);
         }
 
         public void ReportDependency(IEnumerable<DependencyItem> dependencies)
@@ -81,15 +104,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
             foreach (var dependency in dependencies)
             {
-                if (IsValidDependency(dependency))
+                if (dependency == null)
                 {
-                    if (_dependencyItems.Add(dependency))
-                    {
-                        CreateOrUpdate(_indexOnFrom, dependency.From, dependency);
-                        CreateOrUpdate(_indexOnReportedBy, dependency.ReportedBy, dependency);
-                        Logger.LogDiagnostic($"Dependency item is successfully reported: {JsonUtility.Serialize(dependency)}.");
-                    }
+                    throw new ArgumentException("Elements cannot contain null.", nameof(dependency));
                 }
+                ReportDependencyCore(dependency);
             }
         }
 
@@ -103,21 +122,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return _indexOnFrom.ContainsKey(from);
         }
 
-        public IEnumerable<string> FromNodes
-        {
-            get
-            {
-                return _indexOnFrom.Keys;
-            }
-        }
+        public IEnumerable<string> FromNodes => _indexOnFrom.Keys;
 
-        public IEnumerable<string> ReportedBys
-        {
-            get
-            {
-                return _indexOnReportedBy.Keys;
-            }
-        }
+        public IEnumerable<string> ReportedBys => _indexOnReportedBy.Keys;
 
         public HashSet<DependencyItem> GetDependencyReportedBy(string reportedBy)
         {
@@ -170,6 +177,40 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return new DependencyGraph(dependencies.Item1, dependencies.Item2);
         }
 
+        #endregion
+
+        #region Private Members
+
+        private void RegisterDependencyTypeCore(DependencyType dt)
+        {
+            DependencyType stored;
+            if (_types.TryGetValue(dt.Name, out stored))
+            {
+                if (stored.TriggerBuild != dt.TriggerBuild || stored.IsTransitive != dt.IsTransitive)
+                {
+                    Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
+                    throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
+                }
+                Logger.LogVerbose($"Same dependency type with name {dt.Name} has already been registered, ignored.");
+                return;
+            }
+            _types[dt.Name] = dt;
+            Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, IsTransitive: {dt.IsTransitive}, TriggerBuild: {dt.TriggerBuild}.");
+        }
+
+        private void ReportDependencyCore(DependencyItem dependency)
+        {
+            if (IsValidDependency(dependency))
+            {
+                if (_dependencyItems.Add(dependency))
+                {
+                    CreateOrUpdate(_indexOnFrom, dependency.From, dependency);
+                    CreateOrUpdate(_indexOnReportedBy, dependency.ReportedBy, dependency);
+                    Logger.LogDiagnostic($"Dependency item is successfully reported: {JsonUtility.Serialize(dependency)}.");
+                }
+            }
+        }
+
         private void RebuildIndex()
         {
             foreach (var item in _dependencyItems)
@@ -179,26 +220,27 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
-        private static void CreateOrUpdate(Dictionary<string, HashSet<DependencyItem>> dict, string key, DependencyItem value)
+        private static void CreateOrUpdate(Dictionary<string, HashSet<DependencyItem>> index, string key, DependencyItem value)
         {
             HashSet<DependencyItem> items;
-            if (!dict.TryGetValue(key, out items))
+            if (!index.TryGetValue(key, out items))
             {
                 items = new HashSet<DependencyItem>();
-                dict[key] = items;
+                index[key] = items;
             }
             items.Add(value);
         }
 
         private bool IsValidDependency(DependencyItem dependency)
         {
-            DependencyType dt;
-            if (!_types.TryGetValue(dependency.Type, out dt))
+            if (!_types.ContainsKey(dependency.Type))
             {
                 Logger.LogWarning($"dependency type {dependency.Type} isn't registered yet.");
                 return false;
             }
             return true;
         }
+
+        #endregion
     }
 }

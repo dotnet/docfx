@@ -32,22 +32,13 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
             }
         }
 
-        #region ISupportIncrementalBuild Members
+        #region ISupportIncrementalBuildStep Members
 
-        public bool CanIncrementalBuild(FileAndType fileAndType)
-        {
-            return true;
-        }
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
 
-        public string GetIncrementalContextHash()
-        {
-            return null;
-        }
+        public string GetIncrementalContextHash() => null;
 
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister()
-        {
-            return null;
-        }
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
 
         #endregion
     }

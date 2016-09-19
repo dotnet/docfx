@@ -636,14 +636,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 if (canProcessorIncremental)
                 {
-                    // reregister dependency types from last dependency graph
-                    if (dg != null)
-                    {
-                        using (new LoggerPhaseScope("RegisterDependencyTypeFromLastBuild", true))
-                        {
-                            context.DependencyGraph.RegisterDependencyType(dg.DependencyTypes.Values);
-                        }
-                    }
                     ChangeKindWithDependency ck;
                     string fileKey = ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
                     if (context.ChangeDict.TryGetValue(fileKey, out ck))
@@ -1028,6 +1020,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             var lastManifest = lbvi?.Manifest;
             var lastDependencyGraph = lbvi?.Dependency;
 
+            if (_canIncremental && lastDependencyGraph != null)
+            {
+                // reregister dependency types from last dependency graph
+                using (new LoggerPhaseScope("RegisterDependencyTypeFromLastBuild", true))
+                {
+                    context.DependencyGraph.RegisterDependencyType(lastDependencyGraph.DependencyTypes.Values);
+                }
+            }
+
             foreach (var pair in pairs.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism))
             {
                 var hostService = new HostService(
@@ -1035,7 +1036,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                        pair.item == null
                             ? new FileModel[0]
                             : from file in pair.item
-                              let canIncremental = _canIncremental ? pair.canProcessorIncremental : _canIncremental
+                              let canIncremental = _canIncremental && pair.canProcessorIncremental
                               select Load(pair.processor, parameters.Metadata, parameters.FileMetadata, file.file, canIncremental, lastXRefSpecMap, lastManifest, lastDependencyGraph, context) into model
                               where model != null
                               select model)
