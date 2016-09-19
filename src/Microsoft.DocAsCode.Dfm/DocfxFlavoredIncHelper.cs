@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.Dfm
                     var src = File.ReadAllText(Path.Combine(context.GetBaseFolder(), currentPath));
 
                     dependency = new HashSet<string>();
-                    src = engine.InternalMarkup(src, context.SetFilePathStack(parents).SetDependency(dependency));
+                    src = engine.InternalMarkup(src, context.SetFilePathStack(parents).SetDependency(dependency).SetIsInclude());
 
                     result = UpdateToHrefFromWorkingFolder(src, currentPath);
                     result = GenerateNodeWithCommentWrapper("INCLUDE", $"Include content from \"{currentPath}\"", result);
