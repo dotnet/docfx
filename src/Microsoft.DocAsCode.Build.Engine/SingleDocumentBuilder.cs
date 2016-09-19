@@ -889,9 +889,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         foreach (var fileLinkSourceFile in list)
                         {
-                            message = $" Referenced by file: {fileLinkSourceFile.SourceFile} at line: {fileLinkSourceFile.LineNumber}.";
-                            Logger.LogWarning(message);
+                            Logger.LogWarning(message + $" Referenced by file: {fileLinkSourceFile.SourceFile} at line: {fileLinkSourceFile.LineNumber}.");
                         }
+                    }
+                    else
+                    {
+                        Logger.LogWarning(message);
                     }
                 }
             });
