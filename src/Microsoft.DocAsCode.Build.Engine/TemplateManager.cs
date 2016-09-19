@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Utility;
+    using System.Security.Cryptography;
 
     [Serializable]
     public class TemplateManager
@@ -34,22 +35,35 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public TemplateProcessor GetTemplateProcessor(DocumentBuildContext context, int maxParallelism)
         {
-            return new TemplateProcessor(new CompositeResourceCollectionWithOverridden(_templates.Select(s => _finder.Find(s)).Where(s => s != null)), context, maxParallelism);
+            return new TemplateProcessor(CreateTemplateResource(_templates), context, maxParallelism);
         }
 
         public string GetTemplatesHash()
         {
-            var resources = _templates.Select(s => _finder.Find(s)).Where(s => s != null);
-            var builder = new StringBuilder();
-            foreach (var r in resources)
+            var sb = new StringBuilder();
+            using (var templateResource = CreateTemplateResource(_templates))
+            using (var md5 = MD5.Create())
             {
-                var filesHash = string.Concat(from n in r.Names
-                                              orderby n
-                                              select n + ":" + r.GetResource(n).GetMd5String());
-                builder.AppendLine(r.Name + ":" + filesHash);
+                foreach (var name in from n in templateResource.Names
+                                     orderby n
+                                     select n)
+                {
+                    sb.Append(name);
+                    sb.Append(":");
+                    sb.Append(
+                        Convert.ToBase64String(
+                            md5.ComputeHash(
+                                templateResource.GetResourceStream(
+                                    name))));
+                    sb.Append(";");
+                }
             }
-            return builder.ToString().GetMd5String();
+            return sb.ToString().GetMd5String();
         }
+
+        private CompositeResourceCollectionWithOverridden CreateTemplateResource(IEnumerable<string> resources) =>
+            new CompositeResourceCollectionWithOverridden(
+                resources.Select(s => _finder.Find(s)).Where(s => s != null));
 
         public void ProcessTheme(string outputDirectory, bool overwrite)
         {
@@ -71,7 +85,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             bool isEmpty = true;
 
             using (new LoggerPhaseScope("ExportResourceFiles", true))
-            using (var templateResource = new CompositeResourceCollectionWithOverridden(resourceNames.Select(s => _finder.Find(s)).Where(s => s != null)))
+            using (var templateResource = CreateTemplateResource(resourceNames))
             {
                 if (templateResource.IsEmpty)
                 {
