@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.5.1)
+Version Notes (Current Version: v2.5.2)
 =======================================
+v2.5.2
+-----------
+1.  Fix error message for invalid file link.
+
 v2.5.1
 -----------
 1.  Support attribute filter to filter out attributes.
