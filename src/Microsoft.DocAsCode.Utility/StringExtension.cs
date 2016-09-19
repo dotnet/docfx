@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Utility
     using System.IO;
     using System.Linq;
     using System.Security.Cryptography;
+    using System.Text;
 
     public static class StringExtension
     {
@@ -86,11 +87,15 @@ namespace Microsoft.DocAsCode.Utility
         public static string GetMd5String(this string content)
         {
             using (var ms = new MemoryStream())
-            using (var writer = new StreamWriter(ms))
-            using (var md5 = MD5.Create())
             {
-                writer.Write(content);
-                return Convert.ToBase64String(md5.ComputeHash(ms.ToArray()));
+                using (var writer = new StreamWriter(ms, Encoding.Unicode, 0x100, true))
+                {
+                    writer.Write(content);
+                }
+                using (var md5 = MD5.Create())
+                {
+                    return Convert.ToBase64String(md5.ComputeHash(ms.ToArray()));
+                }
             }
         }
     }

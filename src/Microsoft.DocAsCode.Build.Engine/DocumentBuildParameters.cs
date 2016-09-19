@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         public FileCollection Files { get; set; }
 
-        [IncrementalCheck]
         public string OutputBaseDir { get; set; }
 
         [IncrementalCheck]
@@ -30,10 +29,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         [IncrementalCheck]
         public ImmutableArray<string> PostProcessors { get; set; } = ImmutableArray<string>.Empty;
 
-        [IncrementalCheck]
         public TemplateManager TemplateManager { get; set; }
 
-        [IncrementalCheck]
+        // todo : partial properties should check.
+        //[IncrementalCheck]
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 
         public int MaxParallelism { get; set; }
@@ -46,7 +45,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string VersionName { get; set; }
 
-        [IncrementalCheck]
         public string TemplateDir { get; set; }
 
         public ImmutableDictionary<string, ChangeKindWithDependency> Changes { get; set; } = ImmutableDictionary<string, ChangeKindWithDependency>.Empty;
