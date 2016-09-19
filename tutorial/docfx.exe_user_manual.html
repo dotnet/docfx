@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.5.0.0">
+    <meta name="generator" content="docfx 2.5.1.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -377,7 +377,7 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
 </code></pre><h4 id="322-reserved-metadata" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="283" sourceendlinenumber="283">3.2.2 Reserved Metadata</h4>
 <p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="285" sourceendlinenumber="286">After passing values through global metadata or file metadata, DocFX can use these metadata in templates to control the output html.
 Reserved metadatas:</p>
-<table sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="288" sourceendlinenumber="298">
+<table sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="288" sourceendlinenumber="299">
 <thead>
 <tr>
 <th>Metadata Name</th>
@@ -429,29 +429,34 @@ Reserved metadatas:</p>
 <tr>
 <td>_gitContribute</td>
 <td>object</td>
-<td>Customize the <code>Improve this Doc</code> URL button for public contributors. Use <code>repo</code> to specify the contribution repository URL. Use <code>branch</code> to specify the contribution branch. Use <code>path</code> to specify the folder for new overwrite files .</td>
+<td>Customize the <code>Improve this Doc</code> URL button for public contributors. Use <code>repo</code> to specify the contribution repository URL. Use <code>branch</code> to specify the contribution branch. Use <code>path</code> to specify the folder for new overwrite files. If not set, the git URL and branch of the current git repository will be used.</td>
+</tr>
+<tr>
+<td>_gitUrlPattern</td>
+<td>string</td>
+<td>Choose the URL pattern of the generated link for <code>View Source</code> and <code>Improve this Doc</code>. Supports <code>github</code> and <code>vso</code> currently. If not set, DocFX will try speculating the pattern from domain name of the git URL.</td>
 </tr>
 </tbody>
 </table>
-<h4 id="323-separated-metadata-files-for-global-metadata-and-file-metadata" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="300" sourceendlinenumber="300">3.2.3 Separated metadata files for global metadata and file metadata</h4>
-<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="302" sourceendlinenumber="302">There&#39;re three ways to set metadata for a file in DocFX:</p>
-<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="304" sourceendlinenumber="306">
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="304" sourceendlinenumber="304">using global metadata, it will set metadata for every file.</li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="305" sourceendlinenumber="305">using file metadata, it will set metadata for files that match pattern.</li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="306" sourceendlinenumber="306">using YAML header, it will set metadata for current file.</li>
+<h4 id="323-separated-metadata-files-for-global-metadata-and-file-metadata" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="301" sourceendlinenumber="301">3.2.3 Separated metadata files for global metadata and file metadata</h4>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="303" sourceendlinenumber="303">There&#39;re three ways to set metadata for a file in DocFX:</p>
+<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="305" sourceendlinenumber="307">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="305" sourceendlinenumber="305">using global metadata, it will set metadata for every file.</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="306" sourceendlinenumber="306">using file metadata, it will set metadata for files that match pattern.</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="307" sourceendlinenumber="307">using YAML header, it will set metadata for current file.</li>
 </ol>
-<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="308" sourceendlinenumber="308">In above ways, the later way will always overwrite the former way if the same key of metadata is set.</p>
-<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="310" sourceendlinenumber="310">Here we will show you how to set global metadata and file metadata using separated metadata files. Take global metadata for example, you can set <code>globalMetadataFiles</code> in <code>docfx.json</code> or <code>--globalMetadataFiles</code> in build command line. The usage of <code>fileMetadataFiles</code> is the same as <code>globalMetadataFiles</code>.</p>
-<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="312" sourceendlinenumber="312">There&#39;re some metadata file examples:</p>
-<ul sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="314" sourceendlinenumber="334">
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="314" sourceendlinenumber="320"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="314" sourceendlinenumber="314">globalMetadata file example </p>
-<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="315" sourceendlinenumber="320"><code class="lang-json">  {
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="309" sourceendlinenumber="309">In above ways, the later way will always overwrite the former way if the same key of metadata is set.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="311" sourceendlinenumber="311">Here we will show you how to set global metadata and file metadata using separated metadata files. Take global metadata for example, you can set <code>globalMetadataFiles</code> in <code>docfx.json</code> or <code>--globalMetadataFiles</code> in build command line. The usage of <code>fileMetadataFiles</code> is the same as <code>globalMetadataFiles</code>.</p>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="313" sourceendlinenumber="313">There&#39;re some metadata file examples:</p>
+<ul sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="315" sourceendlinenumber="335">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="315" sourceendlinenumber="321"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="315" sourceendlinenumber="315">globalMetadata file example </p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="316" sourceendlinenumber="321"><code class="lang-json">  {
       &quot;_appTitle&quot;: &quot;DocFX website&quot;,
       &quot;_enableSearch&quot;: &quot;true&quot;
   }
 </code></pre></li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="322" sourceendlinenumber="334"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="322" sourceendlinenumber="322">fileMetadata file example</p>
-<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="323" sourceendlinenumber="334"><code class="lang-json">  {
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="323" sourceendlinenumber="335"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="323" sourceendlinenumber="323">fileMetadata file example</p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="324" sourceendlinenumber="335"><code class="lang-json">  {
       &quot;priority&quot;: {
           &quot;**.md&quot;: 2.5,
           &quot;spec/**.md&quot;: 3
@@ -463,48 +468,48 @@ Reserved metadatas:</p>
   }
 </code></pre></li>
 </ul>
-<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="336" sourceendlinenumber="336">There&#39;re some examples about how to use separated metadata files.</p>
-<ul sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="338" sourceendlinenumber="360">
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="338" sourceendlinenumber="343"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="338" sourceendlinenumber="338">use <code>globalMetadataFiles</code> in <code>docfx.json</code></p>
-<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="339" sourceendlinenumber="343"><code class="lang-json">  ...
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="337" sourceendlinenumber="337">There&#39;re some examples about how to use separated metadata files.</p>
+<ul sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="339" sourceendlinenumber="361">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="339" sourceendlinenumber="344"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="339" sourceendlinenumber="339">use <code>globalMetadataFiles</code> in <code>docfx.json</code></p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="340" sourceendlinenumber="344"><code class="lang-json">  ...
   &quot;globalMetadataFiles&quot;: [&quot;global1.json&quot;, &quot;global2.json&quot;],
   ...
 </code></pre></li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="345" sourceendlinenumber="348"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="345" sourceendlinenumber="345">use <code>--globalMetadataFiles</code> in build command line</p>
-<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="346" sourceendlinenumber="348"><code>  docfx build --globalMetadataFiles global1.json,global2.json
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="346" sourceendlinenumber="349"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="346" sourceendlinenumber="346">use <code>--globalMetadataFiles</code> in build command line</p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="347" sourceendlinenumber="349"><code>  docfx build --globalMetadataFiles global1.json,global2.json
 </code></pre></li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="350" sourceendlinenumber="355"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="350" sourceendlinenumber="350">use <code>fileMetadataFiles</code> in <code>docfx.json</code></p>
-<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="351" sourceendlinenumber="355"><code class="lang-json">  ...
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="351" sourceendlinenumber="356"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="351" sourceendlinenumber="351">use <code>fileMetadataFiles</code> in <code>docfx.json</code></p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="352" sourceendlinenumber="356"><code class="lang-json">  ...
   &quot;fileMetadataFiles&quot;: [&quot;file1.json&quot;, &quot;file2.json&quot;],
   ...
 </code></pre></li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="357" sourceendlinenumber="360"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="357" sourceendlinenumber="357">use <code>--fileMetadataFiles</code> in build command line</p>
-<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="358" sourceendlinenumber="360"><code>  docfx build --fileMetadataFiles file1.json,file2.json
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="358" sourceendlinenumber="361"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="358" sourceendlinenumber="358">use <code>--fileMetadataFiles</code> in build command line</p>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="359" sourceendlinenumber="361"><code>  docfx build --fileMetadataFiles file1.json,file2.json
 </code></pre></li>
 </ul>
-<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="362" sourceendlinenumber="362">Note that, metadata set in command line will merge with metadata set in <code>docfx.json</code>. </p>
-<ul sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="364" sourceendlinenumber="371">
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="364" sourceendlinenumber="367"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="364" sourceendlinenumber="364">If same key for global metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
-<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="365" sourceendlinenumber="367">
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="365" sourceendlinenumber="365">global metadata from docfx config file</li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="366" sourceendlinenumber="366">global metadata from global metadata files</li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="367" sourceendlinenumber="367">global metadata from command line</li>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="363" sourceendlinenumber="363">Note that, metadata set in command line will merge with metadata set in <code>docfx.json</code>. </p>
+<ul sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="365" sourceendlinenumber="372">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="365" sourceendlinenumber="368"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="365" sourceendlinenumber="365">If same key for global metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
+<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="366" sourceendlinenumber="368">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="366" sourceendlinenumber="366">global metadata from docfx config file</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="367" sourceendlinenumber="367">global metadata from global metadata files</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="368" sourceendlinenumber="368">global metadata from command line</li>
 </ol>
 </li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="369" sourceendlinenumber="371"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="369" sourceendlinenumber="369">If same file pattern for file metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
-<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="370" sourceendlinenumber="371">
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="370" sourceendlinenumber="370">file metadata from docfx config file</li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="371" sourceendlinenumber="371">file metadata from file metadata files</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="370" sourceendlinenumber="372"><p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="370" sourceendlinenumber="370">If same file pattern for file metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
+<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="371" sourceendlinenumber="372">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="371" sourceendlinenumber="371">file metadata from docfx config file</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="372" sourceendlinenumber="372">file metadata from file metadata files</li>
 </ol>
 </li>
 </ul>
-<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="373" sourceendlinenumber="373">Given multiple metadata files, the behavior would be <strong>undetermined</strong>, if same key is set in these files.</p>
-<h2 id="4-supported-file-mapping-format" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="375" sourceendlinenumber="376">4. Supported File Mapping Format</h2>
-<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="377" sourceendlinenumber="377">There are several ways to define file mapping.</p>
-<h3 id="41-array-format" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="379" sourceendlinenumber="379">4.1 Array Format</h3>
-<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="380" sourceendlinenumber="381">This form supports multiple file mappings, and also allows additional properties per mapping.
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="374" sourceendlinenumber="374">Given multiple metadata files, the behavior would be <strong>undetermined</strong>, if same key is set in these files.</p>
+<h2 id="4-supported-file-mapping-format" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="376" sourceendlinenumber="377">4. Supported File Mapping Format</h2>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="378" sourceendlinenumber="378">There are several ways to define file mapping.</p>
+<h3 id="41-array-format" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="380" sourceendlinenumber="380">4.1 Array Format</h3>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="381" sourceendlinenumber="382">This form supports multiple file mappings, and also allows additional properties per mapping.
 Supported properties:</p>
-<table sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="383" sourceendlinenumber="394">
+<table sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="384" sourceendlinenumber="395">
 <thead>
 <tr>
 <th>Property Name</th>
@@ -554,38 +559,38 @@ Supported properties:</p>
 </tr>
 </tbody>
 </table>
-<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="396" sourceendlinenumber="404"><code class="lang-json">&quot;key&quot;: [
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="397" sourceendlinenumber="405"><code class="lang-json">&quot;key&quot;: [
   {&quot;files&quot;: [&quot;file1&quot;, &quot;file2&quot;], &quot;dest&quot;: &quot;dest1&quot;},
   {&quot;files&quot;: &quot;file3&quot;, &quot;dest&quot;: &quot;dest2&quot;},
   {&quot;files&quot;: [&quot;file4&quot;, &quot;file5&quot;], &quot;exclude&quot;: [&quot;file5&quot;], &quot;src&quot;: &quot;folder1&quot;},
   {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v1.0&quot;, &quot;dest&quot;:&quot;v1.0/api&quot;, &quot;version&quot;: &quot;v1.0&quot;},
   {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v2.0&quot;, &quot;dest&quot;:&quot;v2.0/api&quot;, &quot;version&quot;: &quot;v2.0&quot;}
 ]
-</code></pre><h3 id="42-compact-format" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="406" sourceendlinenumber="406">4.2 Compact Format</h3>
-<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="407" sourceendlinenumber="409"><code class="lang-json">&quot;key&quot;: [&quot;file1&quot;, &quot;file2&quot;]
-</code></pre><h3 id="43-glob-pattern" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="413" sourceendlinenumber="413">4.3 Glob Pattern</h3>
-<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="414" sourceendlinenumber="415"><code>DocFX</code> uses <a href="https://github.com/vicancy/Glob" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="414" sourceendlinenumber="414">Glob</a> to support <em>glob</em> pattern in file path.
+</code></pre><h3 id="42-compact-format" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="407" sourceendlinenumber="407">4.2 Compact Format</h3>
+<pre sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="408" sourceendlinenumber="410"><code class="lang-json">&quot;key&quot;: [&quot;file1&quot;, &quot;file2&quot;]
+</code></pre><h3 id="43-glob-pattern" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="414" sourceendlinenumber="414">4.3 Glob Pattern</h3>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="415" sourceendlinenumber="416"><code>DocFX</code> uses <a href="https://github.com/vicancy/Glob" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="415" sourceendlinenumber="415">Glob</a> to support <em>glob</em> pattern in file path.
 It offers several options to determine how to parse the Glob pattern:</p>
-<ul sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="416" sourceendlinenumber="418">
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="416" sourceendlinenumber="416"><code>caseSensitive</code>: Default value is <code>false</code>. If set to <code>true</code>, the glob pattern is case sensitive. e.g. <code>*.txt</code> will not match <code>1.TXT</code>. For OS Windows, file path is case insensitive while for Linux/Unix, file path is case sensitive. This option offers user the flexibility to determine how to search files.</li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="417" sourceendlinenumber="417"><code>supportBackslash</code>: Default value is <code>true</code>. If set to <code>true</code>, <code>\</code> will be considered as file path separator. Otherwise, <code>\</code> will be considered as normal character if <code>escape</code> is set to <code>true</code> and as escape character if <code>escape</code> is set to <code>false</code>. If <code>escape</code> is set to <code>true</code>, <code>\\</code> should be used to represent file path separator.</li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="418" sourceendlinenumber="418"><code>escape</code>: Default value is <code>false</code>. If set to <code>true</code>, <code>\</code> character is used as escape character, e.g. <code>\{\}.txt</code> will match <code>{}.txt</code>.</li>
+<ul sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="417" sourceendlinenumber="419">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="417" sourceendlinenumber="417"><code>caseSensitive</code>: Default value is <code>false</code>. If set to <code>true</code>, the glob pattern is case sensitive. e.g. <code>*.txt</code> will not match <code>1.TXT</code>. For OS Windows, file path is case insensitive while for Linux/Unix, file path is case sensitive. This option offers user the flexibility to determine how to search files.</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="418" sourceendlinenumber="418"><code>supportBackslash</code>: Default value is <code>true</code>. If set to <code>true</code>, <code>\</code> will be considered as file path separator. Otherwise, <code>\</code> will be considered as normal character if <code>escape</code> is set to <code>true</code> and as escape character if <code>escape</code> is set to <code>false</code>. If <code>escape</code> is set to <code>true</code>, <code>\\</code> should be used to represent file path separator.</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="419" sourceendlinenumber="419"><code>escape</code>: Default value is <code>false</code>. If set to <code>true</code>, <code>\</code> character is used as escape character, e.g. <code>\{\}.txt</code> will match <code>{}.txt</code>.</li>
 </ul>
-<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="420" sourceendlinenumber="420">In general, the <em>glob</em> pattern contains the following rules:</p>
-<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="421" sourceendlinenumber="424">
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="421" sourceendlinenumber="421"><code>*</code> matches any number of characters, but not <code>/</code></li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="422" sourceendlinenumber="422"><code>?</code> matches a single character, but not <code>/</code></li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="423" sourceendlinenumber="423"><code>**</code> matches any number of characters, including <code>/</code>, as long as it&#39;s the only thing in a path part</li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="424" sourceendlinenumber="424"><code>{}</code> allows for a comma-separated list of <strong>OR</strong> expressions</li>
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="421" sourceendlinenumber="421">In general, the <em>glob</em> pattern contains the following rules:</p>
+<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="422" sourceendlinenumber="425">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="422" sourceendlinenumber="422"><code>*</code> matches any number of characters, but not <code>/</code></li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="423" sourceendlinenumber="423"><code>?</code> matches a single character, but not <code>/</code></li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="424" sourceendlinenumber="424"><code>**</code> matches any number of characters, including <code>/</code>, as long as it&#39;s the only thing in a path part</li>
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="425" sourceendlinenumber="425"><code>{}</code> allows for a comma-separated list of <strong>OR</strong> expressions</li>
 </ol>
-<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="426" sourceendlinenumber="426"><strong>SAMPLES</strong></p>
-<h2 id="5-q--a" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="429" sourceendlinenumber="430">5. Q &amp; A</h2>
-<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="431" sourceendlinenumber="436">
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="431" sourceendlinenumber="432">Do we support files outside current project folder(the folder when <code>docfx.json</code> exists)? 
+<p sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="427" sourceendlinenumber="427"><strong>SAMPLES</strong></p>
+<h2 id="5-q--a" sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="430" sourceendlinenumber="431">5. Q &amp; A</h2>
+<ol sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="432" sourceendlinenumber="437">
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="432" sourceendlinenumber="433">Do we support files outside current project folder(the folder when <code>docfx.json</code> exists)? 
 A: YES. DO specify <code>src</code> and files outside of current folder will be copied to output folder keeping the same relative path to <code>src</code>.</li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="433" sourceendlinenumber="434">Do we support output folder outside current project folder(the folder when <code>docfx.json</code> exists)?
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="434" sourceendlinenumber="435">Do we support output folder outside current project folder(the folder when <code>docfx.json</code> exists)?
 A: YES.</li>
-<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="435" sourceendlinenumber="436">Do we support <strong>referencing</strong> files outside of current project folder(the folder when <code>docfx.json</code> exists)?
+<li sourcefile="tutorial/docfx.exe_user_manual.md" sourcestartlinenumber="436" sourceendlinenumber="437">Do we support <strong>referencing</strong> files outside of current project folder(the folder when <code>docfx.json</code> exists)?
 A: NO.</li>
 </ol>
 

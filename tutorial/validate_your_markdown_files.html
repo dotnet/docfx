@@ -8,7 +8,7 @@
     <title>Validate Your Markdown Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Validate Your Markdown Files | DocFX website ">
-    <meta name="generator" content="docfx 2.5.0.0">
+    <meta name="generator" content="docfx 2.5.1.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -139,7 +139,7 @@ You can create a custom HTML tag rule to achieve this. </p>
 <ol sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="72" sourceendlinenumber="75">
 <li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="72" sourceendlinenumber="72">Create a project in your code editor (e.g. Visual Studio).</li>
 <li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="73" sourceendlinenumber="73">Add nuget package <code>Microsoft.DocAsCode.Plugins</code> and <code>Microsoft.Composition</code>.</li>
-<li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="74" sourceendlinenumber="74">Create a class and implement <a class="xref" href="../api/Microsoft.DocAsCode.Plugins.ICustomMarkdownTagValidator.html#Microsoft_DocAsCode_Plugins_ICustomMarkdownTagValidator">ICustomMarkdownTagValidator</a>.</li>
+<li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="74" sourceendlinenumber="74">Create a class and implement @Microsoft.DocAsCode.Plugins.ICustomMarkdownTagValidator.</li>
 <li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="75" sourceendlinenumber="75">Add ExportAttribute with contract name.</li>
 </ol>
 <p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="77" sourceendlinenumber="77">For example, we require HTML link (<code>&lt;a&gt;</code>) should not contain <code>onclick</code> attribute:</p>
@@ -196,8 +196,8 @@ For more information about template, please refer to our <a href="howto_build_yo
 <ol sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="143" sourceendlinenumber="147">
 <li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="143" sourceendlinenumber="143">Create a project in your code editor (e.g. Visual Studio).</li>
 <li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="144" sourceendlinenumber="144">Add nuget package <code>Microsoft.DocAsCode.MarkdownLite</code> and <code>Microsoft.Composition</code>.</li>
-<li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="145" sourceendlinenumber="146">Create a class and implements <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenValidatorProvider">IMarkdownTokenValidatorProvider</a>
-&gt; <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTokenValidatorFactory">MarkdownTokenValidatorFactory</a> contains some helper methods to create a validator.</li>
+<li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="145" sourceendlinenumber="146">Create a class and implements @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider
+&gt; @Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory contains some helper methods to create a validator.</li>
 <li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="147" sourceendlinenumber="147">Add ExportAttribute with rule name.</li>
 </ol>
 <p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="149" sourceendlinenumber="149">For example, the following rule require all code block to be <code>csharp</code>:</p>
@@ -222,15 +222,15 @@ public class MyMarkdownTokenValidatorProvider : IMarkdownTokenValidatorProvider
 }
 </code></pre><p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="176" sourceendlinenumber="176">Then follow the same steps in <a href="#how-to-enable-custom-html-tag-rules" sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="176" sourceendlinenumber="176">How to enable custom HTML tag rules</a>, run <code>docfx</code> you&#39;ll see your rule executed.</p>
 <h3 id="logging-in-your-rules" sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="178" sourceendlinenumber="178">Logging in your rules</h3>
-<p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="180" sourceendlinenumber="180">As you can see in the above example, you can throw <a class="xref" href="../api/Microsoft.DocAsCode.Plugins.DocumentException.html#Microsoft_DocAsCode_Plugins_DocumentException">DocumentException</a> to raise an error, this will stop the build immediately.</p>
-<p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="182" sourceendlinenumber="182">You can also use <a class="xref" href="../api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogWarning_System_String_System_String_System_String_System_String_">LogWarning(String, String, String, String)</a> and <a class="xref" href="../api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogError_System_String_System_String_System_String_System_String_">LogError(String, String, String, String)</a> to report a warning and an error respectively.</p>
+<p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="180" sourceendlinenumber="180">As you can see in the above example, you can throw @Microsoft.DocAsCode.Plugins.DocumentException to raise an error, this will stop the build immediately.</p>
+<p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="182" sourceendlinenumber="182">You can also use @Microsoft.DocAsCode.Common.Logger.LogWarning(System.String,System.String,System.String,System.String) and @Microsoft.DocAsCode.Common.Logger.LogError(System.String,System.String,System.String,System.String) to report a warning and an error respectively.</p>
 <blockquote sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="184" sourceendlinenumber="184"><p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="184" sourceendlinenumber="184">To use these methods, you need to install nuget package <code>Microsoft.DocAsCode.Common</code> first.</p>
 </blockquote>
 <p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="186" sourceendlinenumber="186">The different between <code>ReportError</code> and throw <code>DocumentException</code> is throwing exception will stop the build immediately but <code>ReportError</code> won&#39;t stop build but will eventually fail the build after rules are run.</p>
 <h3 id="advanced-validating-tokens-with-file-context" sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="188" sourceendlinenumber="188">Advanced: validating tokens with file context</h3>
 <p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="190" sourceendlinenumber="190">For some cases, we need to validate some tokens with file context.</p>
 <p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="192" sourceendlinenumber="193">For example, we want each topic has one title (i.e. h1 written by markdown syntax, e.g. <code># &lt;title&gt;</code>).
-But you cannot count them in <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenValidator">IMarkdownTokenValidator</a>, it is shared by all files, and it will never be hit when there is no heading.</p>
+But you cannot count them in @Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator, it is shared by all files, and it will never be hit when there is no heading.</p>
 <p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="195" sourceendlinenumber="195">For this purpose, we need to create validator like following:</p>
 <pre sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="197" sourceendlinenumber="220"><code class="lang-csharp">MarkdownTokenValidatorFactory.FromLambda&lt;MarkdownHeadingBlockToken&gt;(
     t =&gt;
@@ -254,10 +254,10 @@ But you cannot count them in <a class="xref" href="../api/Microsoft.DocAsCode.Ma
             }
         })
     });
-</code></pre><p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="222" sourceendlinenumber="222">The <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTokenValidatorFactory_FromLambda__1_System_Action___0__System_Action_Microsoft_DocAsCode_MarkdownLite_IMarkdownRewriteEngine__">FromLambda</a> method takes two callbacks:</p>
+</code></pre><p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="222" sourceendlinenumber="222">The <a href="xref:Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.FromLambda``1(System.Action{``0},System.Action{Microsoft.DocAsCode.MarkdownLite.IMarkdownRewriteEngine})" sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="222" sourceendlinenumber="222">FromLambda</a> method takes two callbacks:</p>
 <ul sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="223" sourceendlinenumber="226">
-<li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="223" sourceendlinenumber="224">The first will be invoked on <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownHeadingBlockToken">MarkdownHeadingBlockToken</a> matched in all files.
-And the static property <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorContext.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTokenValidatorContext_CurrentRewriteEngine">CurrentRewriteEngine</a> will provide current context object.</li>
+<li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="223" sourceendlinenumber="224">The first will be invoked on @Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken matched in all files.
+And the static property @Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorContext.CurrentRewriteEngine will provide current context object.</li>
 <li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="225" sourceendlinenumber="226">The second will be invoked on starting a new file.
 And you can initialize some variables for each file, and register some callbacks when the file completed.</li>
 </ul>
@@ -286,7 +286,7 @@ And we allow to add some plug-ins to validate metadata written in markdown files
 <ol sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="261" sourceendlinenumber="263">
 <li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="261" sourceendlinenumber="261">Create a project in your code editor (e.g. Visual Studio).</li>
 <li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="262" sourceendlinenumber="262">Add nuget package <code>Microsoft.DocAsCode.Plugins</code> and <code>Microsoft.Composition</code>.</li>
-<li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="263" sourceendlinenumber="263">Create a class and implement <a class="xref" href="../api/Microsoft.DocAsCode.Plugins.IInputMetadataValidator.html#Microsoft_DocAsCode_Plugins_IInputMetadataValidator">IInputMetadataValidator</a></li>
+<li sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="263" sourceendlinenumber="263">Create a class and implement @Microsoft.DocAsCode.Plugins.IInputMetadataValidator</li>
 </ol>
 <p sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="265" sourceendlinenumber="265">For example, the following validator prohibits any metadata with name <code>hello</code>:</p>
 <pre sourcefile="tutorial/validate_your_markdown_files.md" sourcestartlinenumber="267" sourceendlinenumber="279"><code class="lang-csharp">[Export(typeof(IInputMetadataValidator))]

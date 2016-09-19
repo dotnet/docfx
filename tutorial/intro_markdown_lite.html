@@ -8,7 +8,7 @@
     <title>Markdown Lite | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Markdown Lite | DocFX website ">
-    <meta name="generator" content="docfx 2.5.0.0">
+    <meta name="generator" content="docfx 2.5.1.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -90,36 +90,36 @@ We follow GFM syntax, but when some rules is too hard to implement, just breakin
 Performance is not our major concern.</li>
 </ol>
 <h2 id="steps" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="19" sourceendlinenumber="19">Steps</h2>
-<p sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="21" sourceendlinenumber="21">There are three steps when calling <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownEngine.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownEngine_Markup_System_String_System_String_">markup method</a>:</p>
+<p sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="21" sourceendlinenumber="21">There are three steps when calling <a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownEngine.Markup(System.String,System.String)" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="21" sourceendlinenumber="21">markup method</a>:</p>
 <ul sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="22" sourceendlinenumber="24">
-<li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="22" sourceendlinenumber="22"><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownParser.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownParser">Parse</a></li>
-<li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="23" sourceendlinenumber="23"><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenRewriter">Rewrite</a> or <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownTokenValidator">validate</a></li>
-<li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="24" sourceendlinenumber="24"><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">Render</a></li>
+<li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="22" sourceendlinenumber="22"><a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownParser" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="22" sourceendlinenumber="22">Parse</a></li>
+<li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="23" sourceendlinenumber="23"><a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="23" sourceendlinenumber="23">Rewrite</a> or <a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="23" sourceendlinenumber="23">validate</a></li>
+<li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="24" sourceendlinenumber="24"><a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="24" sourceendlinenumber="24">Render</a></li>
 </ul>
 <h3 id="step-1-parse" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="26" sourceendlinenumber="26">Step 1: Parse</h3>
-<p sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="28" sourceendlinenumber="29">In this step, it will parse markdown text to <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownToken">tokens</a>.
-The parser is based on <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRule.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRule">rules</a>, which make up the <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">context</a>.</p>
+<p sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="28" sourceendlinenumber="29">In this step, it will parse markdown text to <a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownToken" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="28" sourceendlinenumber="28">tokens</a>.
+The parser is based on <a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownRule" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="29" sourceendlinenumber="29">rules</a>, which make up the <a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownContext" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="29" sourceendlinenumber="29">context</a>.</p>
 <p sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="31" sourceendlinenumber="33">For example,
-<a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownHeadingBlockToken">heading token</a> is created by <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownHeadingBlockRule">heading rule</a>,
-the heading rule is belonging to <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext.html#Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext">block context</a>.</p>
+<a href="xref:Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="32" sourceendlinenumber="32">heading token</a> is created by <a href="xref:Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockRule" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="32" sourceendlinenumber="32">heading rule</a>,
+the heading rule is belonging to <a href="xref:Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="33" sourceendlinenumber="33">block context</a>.</p>
 <h3 id="step-2-rewrite-or-validate" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="35" sourceendlinenumber="35">Step 2: Rewrite or validate</h3>
-<p sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="37" sourceendlinenumber="38">In this step, it will walk through all <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownToken">tokens</a>,
+<p sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="37" sourceendlinenumber="38">In this step, it will walk through all <a href="xref:Microsoft.DocAsCode.MarkdownLite.IMarkdownToken" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="37" sourceendlinenumber="37">tokens</a>,
 we can change it to another, or just validate.</p>
 <p sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="40" sourceendlinenumber="40">For example, we can create a rewriter to change all heading token with depth + 1:</p>
 <pre sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="42" sourceendlinenumber="45"><code class="lang-csharp">MarkdownTokenRewriterFactory.FromLambda&lt;IMarkdownRewriteEngine, MarkdownHeadingBlockToken&gt;(
     (engine, token) =&gt; new MarkdownHeadingBlockToken(token.Rule, token.Context, token.Content, token.Id, token.Depth + 1, token.SourceInfo);
 </code></pre><h3 id="step-3-render" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="47" sourceendlinenumber="47">Step 3: Render</h3>
 <p sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="49" sourceendlinenumber="51">In this step, it renders models to text content (html format by default).
-To simplify extension, we created an <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownRendererAdapter.html#Microsoft_DocAsCode_MarkdownLite_MarkdownRendererAdapter">adapter</a>,
+To simplify extension, we created an <a href="xref:Microsoft.DocAsCode.MarkdownLite.MarkdownRendererAdapter" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="50" sourceendlinenumber="50">adapter</a>,
 the adapter invoke methods by following rules:</p>
 <ol sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="53" sourceendlinenumber="60">
 <li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="53" sourceendlinenumber="53">Method name is <code>Render</code></li>
 <li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="54" sourceendlinenumber="54">Instance method</li>
-<li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="55" sourceendlinenumber="55">Return type is <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.StringBuffer.html#Microsoft_DocAsCode_MarkdownLite_StringBuffer">StringBuffer</a></li>
+<li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="55" sourceendlinenumber="55">Return type is @Microsoft.DocAsCode.MarkdownLite.StringBuffer</li>
 <li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="56" sourceendlinenumber="59">The count of parameters is 3, and types are following:<ol sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="57" sourceendlinenumber="59">
-<li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="57" sourceendlinenumber="57"><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer">IMarkdownRenderer</a> or any type implements it.</li>
-<li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="58" sourceendlinenumber="58"><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownToken">IMarkdownToken</a> or any type implements it.</li>
-<li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="59" sourceendlinenumber="59"><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownContext">IMarkdownContext</a> or any type implements it.</li>
+<li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="57" sourceendlinenumber="57">@Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer or any type implements it.</li>
+<li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="58" sourceendlinenumber="58">@Microsoft.DocAsCode.MarkdownLite.IMarkdownToken or any type implements it.</li>
+<li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="59" sourceendlinenumber="59">@Microsoft.DocAsCode.MarkdownLite.IMarkdownContext or any type implements it.</li>
 </ol>
 </li>
 <li sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="60" sourceendlinenumber="60">Always invoke the best overloaded method (The best is defined by <a href="https://msdn.microsoft.com/en-us/library/microsoft.csharp.runtimebinder.binder.invoke(v=vs.110).aspx" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="60" sourceendlinenumber="60">binder</a>).</li>
@@ -128,7 +128,7 @@ the adapter invoke methods by following rules:</p>
 <p sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="64" sourceendlinenumber="66">Engine is a set of parser, rewriter and renderer.
 It can markup a markdown file to html file (or others).
 But it cannot be invoked in parallel.</p>
-<p sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="68" sourceendlinenumber="70">So we create an <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownEngineBuilder.html#Microsoft_DocAsCode_MarkdownLite_MarkdownEngineBuilder">engine builder</a>.
+<p sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="68" sourceendlinenumber="70">So we create an <a href="xref:Microsoft.DocAsCode.MarkdownLite.MarkdownEngineBuilder" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="68" sourceendlinenumber="68">engine builder</a>.
 It defines all the rules of parser, rewriter and renderer.
 It can create instances when needed.</p>
 <h2 id="how-to-customize-markdown-syntax" sourcefile="tutorial/intro_markdown_lite.md" sourcestartlinenumber="72" sourceendlinenumber="72">How to customize markdown syntax</h2>
