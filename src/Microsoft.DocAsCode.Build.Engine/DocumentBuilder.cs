@@ -132,7 +132,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             foreach (var postProcessor in _postProcessors)
             {
-                using (new LoggerPhaseScope(postProcessor.ContractName, true))
+                using (new LoggerPhaseScope($"Prepare metadata in post processor {postProcessor.ContractName}", false))
+                using (new PerformanceScope($"Prepare metadata in post processor {postProcessor.ContractName}", LogLevel.Verbose))
                 {
                     parameters.Metadata = postProcessor.Processor.PrepareMetadata(parameters.Metadata);
                     if (parameters.Metadata == null)
@@ -148,7 +149,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             // post process
             foreach (var postProcessor in _postProcessors)
             {
-                using (new LoggerPhaseScope(postProcessor.ContractName, true))
+                using (new LoggerPhaseScope($"Process in post processor {postProcessor.ContractName}", false))
+                using (new PerformanceScope($"Process in post processor {postProcessor.ContractName}", LogLevel.Verbose))
                 {
                     manifest = postProcessor.Processor.Process(manifest, outputDir);
                     if (manifest == null)
