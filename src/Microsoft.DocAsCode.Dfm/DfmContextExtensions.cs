@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Dfm
         private const string BaseFolderKey = "BaseFolder";
         private const string FilePathStackKey = "FilePathStack";
         private const string DependencyKey = "Dependency";
+        private const string IsIncludeKey = "IsInclude";
 
         public static ImmutableStack<string> GetFilePathStack(this IMarkdownContext context)
         {
@@ -62,6 +63,14 @@ namespace Microsoft.DocAsCode.Dfm
 
         public static void ReportDependency(this IMarkdownContext context, string file)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
             var dependency = (HashSet<string>)context.Variables[DependencyKey];
             if (dependency != null)
             {
@@ -71,11 +80,37 @@ namespace Microsoft.DocAsCode.Dfm
 
         public static void ReportDependency(this IMarkdownContext context, IEnumerable<string> files)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+            if (files == null)
+            {
+                throw new ArgumentNullException(nameof(files));
+            }
             var dependency = (HashSet<string>)context.Variables[DependencyKey];
             if (dependency != null)
             {
                 dependency.UnionWith(files);
             }
+        }
+
+        public static bool GetIsInclude(this IMarkdownContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+            return context.Variables.ContainsKey(IsIncludeKey);
+        }
+
+        public static IMarkdownContext SetIsInclude(this IMarkdownContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+            return context.CreateContext(context.Variables.SetItem(IsIncludeKey, null));
         }
     }
 }

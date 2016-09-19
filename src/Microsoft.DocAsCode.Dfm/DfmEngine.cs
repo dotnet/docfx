@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
@@ -58,13 +59,25 @@ namespace Microsoft.DocAsCode.Dfm
             return null;
         }
 
-        internal string InternalMarkup(string src, IMarkdownContext context) =>
-            Mark(
-                SourceInfo.Create(
-                    Normalize(src),
-                    context.GetFilePathStack().Peek()
-                ),
+        internal string InternalMarkup(string src, IMarkdownContext context)
+        {
+            int lineNumber = 1;
+            var normalized = Normalize(src);
+            string file = context.GetFilePathStack().Peek();
+            if (context.GetIsInclude())
+            {
+                var match = DfmYamlHeaderBlockRule.YamlHeaderRegex.Match(normalized);
+                if (match.Length > 0)
+                {
+                    lineNumber += normalized.Take(match.Length).Count(ch => ch == '\n');
+                    Logger.LogInfo("Remove yaml header for include file.", file: file);
+                    normalized = normalized.Substring(match.Length);
+                }
+            }
+            return Mark(
+                SourceInfo.Create(normalized, file, lineNumber),
                 context
             ).ToString();
+        }
     }
 }
