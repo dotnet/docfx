@@ -105,6 +105,13 @@ foreach ($folder in (dir "src"))
     }
 }
 
+$azureTool = "tools\AzureMarkdownRewriterTool"
+if (Test-Path (Join-Path $azureTool "project.json"))
+{
+    & dotnet pack $azureTool -c $configuration -o artifacts\$configuration
+    if ($lastexitcode -ne 0) { Write-Error "dotnet pack $azureTool error, exit code: $lastexitcode"; Pop-Location }
+}
+
 # Pack docfx.console
 Copy-Item -Path "target\$configuration\docfx\*.dll" -Destination "src\nuspec\docfx.console\tools\"
 Copy-Item -Path "target\$configuration\docfx\*.exe" -Destination "src\nuspec\docfx.console\tools\"
