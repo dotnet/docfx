@@ -19,7 +19,7 @@ We currently support C# and VB projects.
 
 ## How to build?
 #### Prerequisites
-1. [.NET Core SDK for Windows](https://www.microsoft.com/net/core)
+1. [.NET Core 1.0.0 SDK 1.0.0-preview2-003121](https://go.microsoft.com/fwlink/?LinkID=809122)
 2. [Node.js](https://nodejs.org)
 
 #### Steps
