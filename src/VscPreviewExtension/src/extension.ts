@@ -9,14 +9,13 @@ import { TokenTreeCore } from "./tokenTreeCore";
 
 const markdownScheme = "markdown";
 const tokenTreeScheme = "tokenTree";
-const port = 8080;
 
 let startLine = 0;
 let endLine = 0;
 
 export function activate(context: ExtensionContext) {
     let dfmProcess = new PreviewCore(context);
-    let tokenTreeProcess = new TokenTreeCore(context, port);
+    let tokenTreeProcess = new TokenTreeCore(context);
     let previewProviderRegistration = workspace.registerTextDocumentContentProvider(markdownScheme, dfmProcess.provider);
     let tokenTreeProviderRegistration = workspace.registerTextDocumentContentProvider(tokenTreeScheme, tokenTreeProcess.provider);
 
@@ -67,30 +66,52 @@ export function activate(context: ExtensionContext) {
     let server = http.createServer();
     server.on("request", function (req, res) {
         let requestInfo = req.url.split("/");
-        if (requestInfo[1] === "lineNumber") {
+        if (requestInfo[1] === "MatchFromRightToLeft") {
             if (!mapToSelection(parseInt(requestInfo[2]), parseInt(requestInfo[3])))
                 window.showErrorMessage("Selection Range Error");
-        } else {
+        } else if (requestInfo[1] === "MatchFromLeftToRight") {
             res.writeHead(200, { "Content-Type": "text/plain" });
             res.write(startLine + " " + endLine);
             res.end();
         }
     });
-    try {
-        server.listen(port);
-    }
-    catch (e) {
-        window.showErrorMessage(e);
+    let port = getRandomInt(50000, 65535);
+    let isPortOccupied = false;
+    while (true) {
+        server.listen(port)
+            .on("error", function (error) {
+                port = getRandomInt(50000, 65535);
+                isPortOccupied = true;
+            });
+        if (!isPortOccupied) {
+            dfmProcess.provider.port = port;
+            tokenTreeProcess.provider.port = port;
+            break;
+        }
     }
 }
 
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
 function mapToSelection(startLineNumber, endLineNumber) {
-    if (startLineNumber < 1 || startLineNumber > endLineNumber)
+    if (startLineNumber > endLineNumber)
         return false;
-    // Go back to the Source file editor
-    commands.executeCommand("workbench.action.navigateBack").then(() => {
-        window.activeTextEditor.selection = new Selection(startLineNumber - 1, 0, endLineNumber - 1, window.activeTextEditor.document.lineAt(endLineNumber - 1).range.end.character);
-    });
+    // Go back to the Source file editor first
+    if (startLineNumber === 0 && endLineNumber === 0) {
+        // Click the node markdown
+        commands.executeCommand("workbench.action.navigateBack").then(() => {
+            endLineNumber = window.activeTextEditor.document.lineCount;
+            window.activeTextEditor.selection = new Selection(0, 0, endLineNumber - 1, window.activeTextEditor.document.lineAt(endLineNumber - 1).range.end.character);
+        });
+    } else {
+        commands.executeCommand("workbench.action.navigateBack").then(() => {
+            window.activeTextEditor.selection = new Selection(startLineNumber - 1, 0, endLineNumber - 1, window.activeTextEditor.document.lineAt(endLineNumber - 1).range.end.character);
+        });
+    }
     return true;
 }
 
@@ -133,6 +154,12 @@ function showSource() {
 }
 
 function showPreview(dfmPreview: PreviewCore, uri?: Uri, sideBySide: boolean = false) {
+    // Set the filename of provider        
+    let filePath = window.activeTextEditor.document.fileName;
+    let indexOfFilename = filePath.lastIndexOf("\\");
+    let fileName = filePath.substring(indexOfFilename + 1);
+    dfmPreview.provider.fileName = fileName;
+
     dfmPreview.isFirstTime = true;
     let resource = uri;
     if (!(resource instanceof Uri)) {
