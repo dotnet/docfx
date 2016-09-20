@@ -19,8 +19,9 @@ We currently support C# and VB projects.
 
 ## How to build?
 #### Prerequisites
-1. [.NET Core 1.0.0 SDK 1.0.0-preview2-003121](https://go.microsoft.com/fwlink/?LinkID=809122)
-2. [Node.js](https://nodejs.org)
+1. [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159)
+2. [.NET Core 1.0.0 SDK 1.0.0-preview2-003121](https://go.microsoft.com/fwlink/?LinkID=809122)
+3. [Node.js](https://nodejs.org)
 
 #### Steps
 1. Option 1: Run `build.cmd` under *DocFX* code repo.
