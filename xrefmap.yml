@@ -7342,11 +7342,6 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.DfmContextExtensions.html#Microsoft_DocAsCode_Dfm_DfmContextExtensions_GetFilePathStack_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_
   commentId: M:Microsoft.DocAsCode.Dfm.DfmContextExtensions.GetFilePathStack(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
   fullName: Microsoft.DocAsCode.Dfm.DfmContextExtensions.GetFilePathStack(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
-- uid: Microsoft.DocAsCode.Dfm.DfmContextExtensions.GetIsInclude(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
-  name: GetIsInclude(IMarkdownContext)
-  href: api/Microsoft.DocAsCode.Dfm.DfmContextExtensions.html#Microsoft_DocAsCode_Dfm_DfmContextExtensions_GetIsInclude_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_
-  commentId: M:Microsoft.DocAsCode.Dfm.DfmContextExtensions.GetIsInclude(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
-  fullName: Microsoft.DocAsCode.Dfm.DfmContextExtensions.GetIsInclude(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
 - uid: Microsoft.DocAsCode.Dfm.DfmContextExtensions.ReportDependency(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.Collections.Generic.IEnumerable{System.String})
   name: ReportDependency(IMarkdownContext, IEnumerable<String>)
   href: api/Microsoft.DocAsCode.Dfm.DfmContextExtensions.html#Microsoft_DocAsCode_Dfm_DfmContextExtensions_ReportDependency_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_Collections_Generic_IEnumerable_System_String__
@@ -7378,11 +7373,6 @@ references:
   name.vb: SetFilePathStack(IMarkdownContext, ImmutableStack(Of String))
   fullName: Microsoft.DocAsCode.Dfm.DfmContextExtensions.SetFilePathStack(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext, System.Collections.Immutable.ImmutableStack<System.String>)
   fullName.vb: Microsoft.DocAsCode.Dfm.DfmContextExtensions.SetFilePathStack(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext, System.Collections.Immutable.ImmutableStack(Of System.String))
-- uid: Microsoft.DocAsCode.Dfm.DfmContextExtensions.SetIsInclude(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
-  name: SetIsInclude(IMarkdownContext)
-  href: api/Microsoft.DocAsCode.Dfm.DfmContextExtensions.html#Microsoft_DocAsCode_Dfm_DfmContextExtensions_SetIsInclude_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_
-  commentId: M:Microsoft.DocAsCode.Dfm.DfmContextExtensions.SetIsInclude(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
-  fullName: Microsoft.DocAsCode.Dfm.DfmContextExtensions.SetIsInclude(Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
 - uid: Microsoft.DocAsCode.Dfm.DfmEmailInlineRule
   name: DfmEmailInlineRule
   href: api/Microsoft.DocAsCode.Dfm.DfmEmailInlineRule.html#Microsoft_DocAsCode_Dfm_DfmEmailInlineRule
@@ -8170,6 +8160,11 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockRule
   commentId: T:Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule
   fullName: Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule
+- uid: Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule._yamlHeaderRegex
+  name: _yamlHeaderRegex
+  href: api/Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockRule__yamlHeaderRegex
+  commentId: F:Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule._yamlHeaderRegex
+  fullName: Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule._yamlHeaderRegex
 - uid: Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.Name
   name: Name
   href: api/Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockRule_Name
@@ -8185,11 +8180,6 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockRule_YamlHeader
   commentId: P:Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.YamlHeader
   fullName: Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.YamlHeader
-- uid: Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.YamlHeaderRegex
-  name: YamlHeaderRegex
-  href: api/Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockRule_YamlHeaderRegex
-  commentId: F:Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.YamlHeaderRegex
-  fullName: Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.YamlHeaderRegex
 - uid: Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockToken
   name: DfmYamlHeaderBlockToken
   href: api/Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockToken.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockToken
