@@ -120,6 +120,7 @@ if (Test-Path "TEMP/version.txt")
 if ($lastexitcode -ne 0) { Write-Error "nuget pack docfx.console error, exit code: $lastexitcode"; Pop-Location; Pop-Location }
 
 # Pack azure tools
+New-Item -ItemType Directory -Force -Path "src\nuspec\AzureMarkdownRewriterTool\tools\"
 Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.dll" -Destination "src\nuspec\AzureMarkdownRewriterTool\tools\"
 Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.exe" -Destination "src\nuspec\AzureMarkdownRewriterTool\tools\"
 Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.exe.config" -Destination "src\nuspec\AzureMarkdownRewriterTool\tools\"
