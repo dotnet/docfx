@@ -30,7 +30,6 @@
         "Release": {
             "buildOptions": {
                 "define": [
-                    "DEBUG",
                     "TRACE"
                 ],
                 "optimize": true
