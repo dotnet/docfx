@@ -105,13 +105,6 @@ foreach ($folder in (dir "src"))
     }
 }
 
-$azureTool = "tools\AzureMarkdownRewriterTool"
-if (Test-Path (Join-Path $azureTool "project.json"))
-{
-    & dotnet pack $azureTool -c $configuration -o artifacts\$configuration
-    if ($lastexitcode -ne 0) { Write-Error "dotnet pack $azureTool error, exit code: $lastexitcode"; Pop-Location }
-}
-
 # Pack docfx.console
 Copy-Item -Path "target\$configuration\docfx\*.dll" -Destination "src\nuspec\docfx.console\tools\"
 Copy-Item -Path "target\$configuration\docfx\*.exe" -Destination "src\nuspec\docfx.console\tools\"
@@ -125,6 +118,21 @@ if (Test-Path "TEMP/version.txt")
 }
 & $nuget pack "src\nuspec\docfx.console\docfx.console.nuspec" -Version $version -OutputDirectory artifacts\$configuration
 if ($lastexitcode -ne 0) { Write-Error "nuget pack docfx.console error, exit code: $lastexitcode"; Pop-Location; Pop-Location }
+
+# Pack azure tools
+New-Item -ItemType Directory -Force -Path "src\nuspec\AzureMarkdownRewriterTool\tools\"
+Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.dll" -Destination "src\nuspec\AzureMarkdownRewriterTool\tools\"
+Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.exe" -Destination "src\nuspec\AzureMarkdownRewriterTool\tools\"
+Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.exe.config" -Destination "src\nuspec\AzureMarkdownRewriterTool\tools\"
+
+$version = "1.0.0"
+if (Test-Path "TEMP/version.txt")
+{
+    $version = cat "TEMP/version.txt"
+    $version = $version.Substring(1)
+}
+& $nuget pack "src\nuspec\AzureMarkdownRewriterTool\AzureMarkdownRewriterTool.nuspec" -Version $version -OutputDirectory artifacts\$configuration
+if ($lastexitcode -ne 0) { Write-Error "nuget pack AzureMarkdownRewriterTool error, exit code: $lastexitcode"; Pop-Location; Pop-Location }
 
 Write-Host "Build completed."
 Pop-Location
