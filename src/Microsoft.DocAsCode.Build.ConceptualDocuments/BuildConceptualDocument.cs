@@ -90,30 +90,13 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             }
         }
 
-        #region ISupportIncrementalBuild Members
+        #region ISupportIncrementalBuildStep Members
 
-        public bool CanIncrementalBuild(FileAndType fileAndType)
-        {
-            return true;
-        }
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
 
-        public string GetIncrementalContextHash()
-        {
-            return null;
-        }
+        public string GetIncrementalContextHash() => null;
 
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister()
-        {
-            return new []
-            {
-                new DependencyType
-                {
-                    Name = DependencyTypeName.Include,
-                    IsTransitive = true,
-                    TriggerBuild = true,
-                }
-            };
-        }
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
 
         #endregion
 

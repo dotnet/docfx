@@ -34,20 +34,11 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             }
         }
 
-        public string GetIncrementalContextHash()
-        {
-            return null;
-        }
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
 
-        public bool CanIncrementalBuild(FileAndType fileAndType)
-        {
-            return true;
-        }
+        public string GetIncrementalContextHash() => null;
 
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister()
-        {
-            return null;
-        }
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
     }
 
     internal static class WordCounter
