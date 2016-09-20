@@ -26,7 +26,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly object _syncRoot = new object();
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
         private readonly LruList<ModelWithCache> _lru = Environment.Is64BitProcess ? null : LruList<ModelWithCache>.CreateSynchronized(0xC00, OnLruRemoving);
-        private readonly Dictionary<FileAndType, LoadPhase> _modelLoadInfo = new Dictionary<FileAndType, LoadPhase>();
         #endregion
 
         #region Properties
@@ -44,6 +43,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public ImmutableList<IInputMetadataValidator> Validators { get; set; }
 
         public DependencyGraph DependencyGraph { get; set; }
+
+        public Dictionary<FileAndType, LoadPhase> ModelLoadInfo { get; } = new Dictionary<FileAndType, LoadPhase>();
 
         #endregion
 
@@ -470,7 +471,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void ReportModelLoadInfo(FileAndType file, LoadPhase phase)
         {
-            _modelLoadInfo[file] = phase;
+            ModelLoadInfo[file] = phase;
         }
 
         public void ReportModelLoadInfo(IEnumerable<FileAndType> files, LoadPhase phase)
@@ -500,7 +501,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void ReloadUnloadedModels(string intermediateFolder, ModelManifest lmm, LoadPhase phase)
         {
-            ReloadUnloadedModelsPerCondition(intermediateFolder, lmm, phase, f => _modelLoadInfo[f] == LoadPhase.None);
+            ReloadUnloadedModelsPerCondition(intermediateFolder, lmm, phase, f => ModelLoadInfo[f] == LoadPhase.None);
         }
 
         private void ReloadUnloadedModelsPerCondition(string intermediateFolder, ModelManifest lmm, LoadPhase phase, Func<FileAndType, bool> condition)
@@ -509,7 +510,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return;
             }
-            var toLoadList = (from f in _modelLoadInfo.Keys
+            var toLoadList = (from f in ModelLoadInfo.Keys
                               where condition(f)
                               select LoadIntermediateModel(intermediateFolder, lmm, f.File) into m
                               where m != null
@@ -529,7 +530,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return;
             }
 
-            foreach (var pair in _modelLoadInfo)
+            foreach (var pair in ModelLoadInfo)
             {
                 string fileName;
                 do

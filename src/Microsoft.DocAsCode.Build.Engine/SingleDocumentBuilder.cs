@@ -33,6 +33,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         internal string IntermediateFolder { get; set; }
 
         private bool ShouldTraceIncrementalInfo => IntermediateFolder != null;
+        private BuildVersionInfo _cbv;
+        private BuildVersionInfo _lbv;
         private bool _canIncremental;
 
         public Manifest Build(DocumentBuildParameters parameters)
@@ -66,6 +68,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             using (new LoggerPhaseScope(PhaseName, true))
             {
                 _canIncremental = false;
+                _cbv = null;
+                _lbv = null;
                 Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism}.");
                 Directory.CreateDirectory(parameters.OutputBaseDir);
                 var context = new DocumentBuildContext(
@@ -79,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     string configHash = ComputeConfigHash(parameters);
                     var fileAttributes = ComputeFileAttributes(parameters);
-                    CurrentBuildInfo.Versions.Add(new BuildVersionInfo
+                    _cbv = new BuildVersionInfo
                     {
                         VersionName = parameters.VersionName,
                         ConfigHash = configHash,
@@ -88,19 +92,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                         ManifestFile = "manifest",
                         XRefSpecMapFile = "xrefspecmap",
                         BuildModelManifestFile = "buildmodelmanifest",
-                        PostBuildModelManifestFile = "postbuildmodelmanifest",
+                        BuildMessageFile = "buildmessage",
                         Attributes = fileAttributes,
                         Dependency = context.DependencyGraph,
                         //Manifest = context.ManifestItems,
                         //XRefSpecMap = context.XRefSpecMap,
                         BuildModelManifest = new ModelManifest { BaseDir = CreateRandomDir(IntermediateFolder) },
-                        PostBuildModelManifest = new ModelManifest { BaseDir = CreateRandomDir(IntermediateFolder) },
-                    });
+                        BuildMessage = new BuildMessageInfo(),
+                    };
+                    CurrentBuildInfo.Versions.Add(_cbv);
+                    Logger.RegisterListener(_cbv.BuildMessage.GetListener());
                     _canIncremental = GetCanIncremental(configHash, parameters.VersionName);
                     if (_canIncremental)
                     {
                         LoadChanges(parameters, context, fileAttributes);
-                        var dependencyGraph = LastBuildInfo.Versions.Single(v => v.VersionName == parameters.VersionName).Dependency;
+                        var dependencyGraph = _lbv.Dependency;
                         ExpandDependency(dependencyGraph, context, d => dependencyGraph.DependencyTypes[d.Type].TriggerBuild);
                     }
                 }
@@ -124,7 +130,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             hostServices = GetInnerContexts(parameters, Processors, processor, markdownService, context).ToList();
                         }
 
-                        var manifest = new List<ManifestItemWithContext>(BuildCore(hostServices, context, parameters.VersionName));
+                        var manifest = BuildCore(hostServices, context, parameters.VersionName).ToList();
 
                         // Use manifest from now on
                         using (new LoggerPhaseScope("UpdateContext", true))
@@ -207,13 +213,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return false;
             }
-            var version = LastBuildInfo.Versions.SingleOrDefault(v => v.VersionName == versionName);
-            if (version == null)
+            _lbv = LastBuildInfo.Versions.Single(v => v.VersionName == versionName);
+            if (_lbv == null)
             {
                 Logger.LogVerbose($"Cannot build incrementally because last build didn't contain version {versionName}.");
                 return false;
             }
-            if (configHash != version.ConfigHash)
+            if (configHash != _lbv.ConfigHash)
             {
                 Logger.LogVerbose("Cannot build incrementally because config changed.");
                 return false;
@@ -291,7 +297,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             else
             {
                 // get changelist from lastBuildInfo if user doesn't provide changelist
-                var lastFileAttributes = LastBuildInfo.Versions.Single(v => v.VersionName == parameter.VersionName).Attributes;
+                var lastFileAttributes = _lbv.Attributes;
                 DateTime checkTime = LastBuildInfo.BuildStartTime;
                 foreach (var file in fileAttributes.Keys.Intersect(lastFileAttributes.Keys))
                 {
@@ -382,7 +388,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             hostService.Models.RunAll(m => m.Dispose());
         }
 
-        private IEnumerable<ManifestItemWithContext> BuildCore(IEnumerable<HostService> hostServices, DocumentBuildContext context, string versionName)
+        private IEnumerable<ManifestItemWithContext> BuildCore(List<HostService> hostServices, DocumentBuildContext context, string versionName)
         {
             //preparation
             foreach (var hostService in hostServices)
@@ -407,13 +413,27 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             Action<HostService> buildSaver = null;
-            Action loader = null;
+            Action<List<HostService>> loader = null;
             if (ShouldTraceIncrementalInfo)
             {
-                var lbv = LastBuildInfo?.Versions?.SingleOrDefault(v => v.VersionName == versionName);
-                var cbv = CurrentBuildInfo.Versions.Single(v => v.VersionName == versionName);
-                buildSaver = h => h.SaveIntermediateModel(IntermediateFolder, lbv?.BuildModelManifest, cbv.BuildModelManifest);
-                loader = () => UpdateHostServices(hostServices, IntermediateFolder, lbv?.BuildModelManifest, _canIncremental);
+                buildSaver = h => h.SaveIntermediateModel(IntermediateFolder, _lbv?.BuildModelManifest, _cbv.BuildModelManifest);
+                loader = hs =>
+                {
+                    Logger.UnregisterListener(_cbv.BuildMessage.GetListener());
+                    UpdateHostServices(hostServices, IntermediateFolder, _lbv?.BuildModelManifest, _canIncremental);
+                    if (_lbv != null)
+                    {
+                        foreach (var h in hs)
+                        {
+                            foreach (var file in from pair in h.ModelLoadInfo
+                                                 where pair.Value > LoadPhase.None
+                                                 select pair.Key)
+                            {
+                                _lbv.BuildMessage.Replay(file.File);
+                            }
+                        }
+                    }
+                };
             }
 
             BuildCore(hostServices, context.MaxParallelism, buildSaver, loader);
@@ -424,7 +444,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                    select m;
         }
 
-        private static void BuildCore(IEnumerable<HostService> hostServices, int maxParallelism, Action<HostService> buildSaver, Action loader)
+        private static void BuildCore(List<HostService> hostServices, int maxParallelism, Action<HostService> buildSaver, Action<List<HostService>> loader)
         {
             // prebuild and build
             foreach (var hostService in hostServices)
@@ -445,18 +465,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
 
                     // save models
-                    if (buildSaver != null)
-                    {
-                        buildSaver(hostService);
-                    }
+                    buildSaver?.Invoke(hostService);
                 }
             }
 
             // load all unloaded models(to-do: load models according to changes)
-            if (loader != null)
-            {
-                loader();
-            }
+            loader?.Invoke(hostServices);
 
             // postbuild
             foreach (var hostService in hostServices)
@@ -1018,10 +1032,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                         };
 
             // load last xrefspecmap and manifestitems
-            BuildVersionInfo lbvi = LastBuildInfo?.Versions.SingleOrDefault(v => v.VersionName == parameters.VersionName);
-            var lastXRefSpecMap = lbvi?.XRefSpecMap;
-            var lastManifest = lbvi?.Manifest;
-            var lastDependencyGraph = lbvi?.Dependency;
+            var lastXRefSpecMap = _lbv?.XRefSpecMap;
+            var lastManifest = _lbv?.Manifest;
+            var lastDependencyGraph = _lbv?.Dependency;
 
             if (_canIncremental && lastDependencyGraph != null)
             {
@@ -1084,9 +1097,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             var cpi = GetProcessorInfo(processor, versionName);
-            var lpi = LastBuildInfo
-                .Versions
-                ?.Find(v => v.VersionName == versionName)
+            var lpi = _lbv
                 ?.Processors
                 ?.Find(p => p.Name == processor.Name);
             if (lpi == null)
@@ -1131,13 +1142,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     IncrementalContextHash = ((ISupportIncrementalBuildStep)step).GetIncrementalContextHash(),
                 });
             }
-            var cvi = CurrentBuildInfo.Versions.Find(v => v.VersionName == versionName);
-            if (cvi == null)
-            {
-                cvi = new BuildVersionInfo { VersionName = versionName };
-                CurrentBuildInfo.Versions.Add(cvi);
-            }
-            cvi.Processors.Add(cpi);
+            _cbv.Processors.Add(cpi);
             return cpi;
         }
 
