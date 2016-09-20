@@ -3,8 +3,8 @@
     {
       "src": [
         {
-          "files": [ "**/*.csproj" ],
-          "exclude": [ "**/bin/**", "**/obj/**", "**/Microsoft.DocAsCode.EntityModel.csproj" ],
+          "files": [ "**/project.json" ],
+          "exclude": [ "**/bin/**", "**/obj/**" ],
           "cwd": "../src"
         }
       ],
