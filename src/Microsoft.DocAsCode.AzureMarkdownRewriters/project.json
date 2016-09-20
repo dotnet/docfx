@@ -16,6 +16,19 @@
     "Microsoft.DocAsCode.MarkdownLite": "1.0.0",
     "System.Collections.Immutable": "1.2.0"
   },
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ]
+      }
+    },
+    "Release": {
+      "buildOptions": {
+        "define": [ "TRACE" ],
+        "optimize": true
+      }
+    }
+  },
   "frameworks": {
     "net452": {}
   }
