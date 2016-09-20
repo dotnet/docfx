@@ -1,5 +1,10 @@
-Version Notes (Current Version: v2.5.2)
+Version Notes (Current Version: v2.5.3)
 =======================================
+v2.5.3
+-----------
+1.  Update documenation
+2.  Remove debug build option in Release configuration
+
 v2.5.2
 -----------
 1.  Fix error message for invalid file link.
