@@ -14,7 +14,7 @@ If you are interested in creating your own website with your own styles, you can
 *DocFX* also has the following cool features:
 
 * Integration with your source code. You can click "View Source" on an API to navigate to the source code in GitHub (your source code must be pushed to GitHub).
-* Cross-platform support. We have both exe version that runs under Windows and a DNX version that runs cross platform.
+* Cross-platform support. We have both exe version that runs under Windows and a .NET Core version that runs cross platform.
 * Integration with Visual Studio. You can seamlessly use *DocFX* within Visual Studio.
 * Markdown extensions. We introduced *DocFX Flavored Markdown(DFM)* to help you write API documentation. DFM is *100%* compatible with *GitHub Flavored Markdown(GFM)* with some useful extensions, like *file inclusion*, *code snippet*, *cross reference*, and *yaml header*.
 For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored_markdown.md).
@@ -61,68 +61,23 @@ namespace WebApplication1
 
 *Step4.* Right click on the website project, and click *View* -> *View in Browser*, navigate to `/_site` sub URL to view your website!
 
-4. Use *DocFX* under DNX
+4. Build from source code
 ----------------
-As a prerequisite, you need to install [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm) and [DNX](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx).
-
-*Step1.* `SET DNX_FEED=https://www.myget.org/F/aspnetrelease/api/v2/` as we depend upon the release version of ASP.NET 1.0.0-rc1.
-
-*Step2.* `dnvm upgrade` to get the latest dnvm.
-
-*Step3.* Add feed https://www.myget.org/F/aspnetrelease/api/v2/ to NuGet.config.
-> For Windows, the NuGet config file is *%AppData%\NuGet\NuGet.config*.
-
-> For Linux/OSX, the NuGet config file is *~/.config/NuGet/NuGet.config*.
-
-Sample NuGet.config
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <packageSources>
-    <add key="myget.release" value="https://www.myget.org/F/aspnetrelease/api/v2/" />
-    <add key="nuget.org" value="https://www.nuget.org/api/v2/" />
-  </packageSources>
-  <disabledPackageSources />
-  <activePackageSource>
-    <add key="nuget.org" value="https://www.nuget.org/api/v2/" />
-  </activePackageSource>
-</configuration>
-```
-
-*Step4.* `dnu commands install docfx` to install *DocFX* as a command.
-
-*Step5.* `docfx init -q` to generate a sample project.
-
-*Step6.* `docfx docfx_project\docfx.json --serve` to build your project and preview your site at http://localhost:8080.
-
-Please refer to [*DocFX* User Manual](docfx.exe_user_manual.md) for detailed description of `docfx.json`.
-
-5. Build from source code
-----------------
-#### Build without DNX
-There're two options:
-
-1. Run `build nondnx` under *DocFX* code repo
-2. Open `NonDNX.sln` under *DocFX* code repo in Visual Studio and build it.
-
-#### Build with DNX
 As a prerequisite, you need:
 - [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159)
-- [DNVM](http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm)
+- [.NET Core SDK](https://go.microsoft.com/fwlink/?LinkID=809122)
 - [Node.js](https://nodejs.org)
 
 *Step1.* `git clone https://github.com/dotnet/docfx.git` to get the latest code.
 
-*Step2.* `dnvm install 1.0.0-rc1-final`
+*Step2.* Run `build.cmd` under root folder.
 
-*Step3.* Run `build.cmd` under root folder.
-
-*Step4.* Add `artifacts` folder to nuget source by in IDE:
+*Step3.* Add `artifacts` folder to nuget source by in IDE:
   > Tools > NuGet Package Manager > Package Manager Settings > Package Sources
 
-*Step5.* Follow steps in #2, #3, #4 to use *DocFX* in command-line, IDE or DNX.
+*Step4.* Follow steps in #2, #3, #4 to use *DocFX* in command-line, IDE or .NET Core.
 
-6. A seed project to play with *DocFX*
+5. A seed project to play with *DocFX*
 -------------------------
 Here is a seed project https://github.com/docascode/docfx-seed. It contains
 
@@ -135,7 +90,7 @@ Here is a seed project https://github.com/docascode/docfx-seed. It contains
 > Tip:
   It is a good practice to separate files with different type into different folders.
 
-7. Q&A
+6. Q&A
 -------------------------
 1. Q: How do I quickly reference APIs from other APIs or conceptual files?
    A: Use `@uid` syntax.
