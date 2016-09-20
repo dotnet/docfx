@@ -1077,28 +1077,42 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogVerbose($"Processor {processor.Name} cannot suppport incremental build because the following steps don't implement {nameof(ISupportIncrementalBuildStep)} interface: {string.Join(",", processor.BuildSteps.Where(step => !(step is ISupportIncrementalBuildStep)).Select(s => s.Name))}.");
                 return false;
             }
+            if (LastBuildInfo == null)
+            {
+                Logger.LogVerbose($"Processor {processor.Name} disable incremental build because no last build.");
+                return false;
+            }
 
             var cpi = GetProcessorInfo(processor, versionName);
             var lpi = LastBuildInfo
-                ?.Versions
+                .Versions
                 ?.Find(v => v.VersionName == versionName)
                 ?.Processors
                 ?.Find(p => p.Name == processor.Name);
             if (lpi == null)
             {
-                Logger.LogVerbose($"Processor {processor.Name} cannot support incremental build because last build doesn't contain version {versionName}.");
+                Logger.LogVerbose($"Processor {processor.Name} disable incremental build because last build doesn't contain version {versionName}.");
                 return false;
             }
             if (cpi.IncrementalContextHash != lpi.IncrementalContextHash)
             {
-                Logger.LogVerbose($"Processor {processor.Name} cannot support incremental build because incremental context hash changed.");
+                Logger.LogVerbose($"Processor {processor.Name} disable incremental build because incremental context hash changed.");
                 return false;
             }
-            if (!new HashSet<ProcessorStepInfo>(cpi.Steps).SetEquals(lpi.Steps))
+            if (cpi.Steps.Count != lpi.Steps.Count)
             {
-                Logger.LogVerbose($"Processor {processor.Name} cannot support incremental build because steps changed.");
+                Logger.LogVerbose($"Processor {processor.Name} disable incremental build because steps count is different.");
                 return false;
             }
+            for (int i = 0; i < cpi.Steps.Count; i++)
+            {
+                if (object.Equals(cpi.Steps[i], lpi.Steps[i]))
+                {
+                    Logger.LogVerbose($"Processor {processor.Name} disable incremental build because steps changed, from step {lpi.Steps[i].ToJsonString()} to {cpi.Steps[i].ToJsonString()}.");
+                    return false;
+                }
+            }
+            Logger.LogVerbose($"Processor {processor.Name} enable incremental build.");
             return true;
         }
 
