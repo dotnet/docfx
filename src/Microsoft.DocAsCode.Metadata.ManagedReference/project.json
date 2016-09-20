@@ -27,6 +27,19 @@
     "Microsoft.Composition": "1.0.27",
     "System.Collections.Immutable": "1.2.0"
   },
+  "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ]
+      }
+    },
+    "Release": {
+      "buildOptions": {
+        "define": [ "TRACE" ],
+        "optimize": true
+      }
+    }
+  },
   "frameworks": {
     "net452": {
       "frameworkAssemblies": {

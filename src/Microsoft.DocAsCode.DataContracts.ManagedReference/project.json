@@ -25,7 +25,7 @@
     },
     "Release": {
       "buildOptions": {
-        "define": [ "DEBUG", "TRACE" ],
+        "define": [ "TRACE" ],
         "optimize": true
       }
     }
