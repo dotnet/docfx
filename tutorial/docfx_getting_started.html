@@ -84,7 +84,7 @@ If you are interested in creating your own website with your own styles, you can
 <p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="14" sourceendlinenumber="14"><em>DocFX</em> also has the following cool features:</p>
 <ul sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="16" sourceendlinenumber="20">
 <li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="16" sourceendlinenumber="16">Integration with your source code. You can click &quot;View Source&quot; on an API to navigate to the source code in GitHub (your source code must be pushed to GitHub).</li>
-<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="17" sourceendlinenumber="17">Cross-platform support. We have both exe version that runs under Windows and a DNX version that runs cross platform.</li>
+<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="17" sourceendlinenumber="17">Cross-platform support. We have both exe version that runs under Windows and a .NET Core version that runs cross platform.</li>
 <li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="18" sourceendlinenumber="18">Integration with Visual Studio. You can seamlessly use <em>DocFX</em> within Visual Studio.</li>
 <li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="19" sourceendlinenumber="20">Markdown extensions. We introduced <em>DocFX Flavored Markdown(DFM)</em> to help you write API documentation. DFM is <em>100%</em> compatible with <em>GitHub Flavored Markdown(GFM)</em> with some useful extensions, like <em>file inclusion</em>, <em>code snippet</em>, <em>cross reference</em>, and <em>yaml header</em>.
 For detailed description about DFM, please refer to <a href="../spec/docfx_flavored_markdown.html" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="20" sourceendlinenumber="20">DFM</a>.</li>
@@ -109,70 +109,38 @@ For detailed description about DFM, please refer to <a href="../spec/docfx_flavo
     }
 }
 </code></pre><p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="62" sourceendlinenumber="62"><em>Step4.</em> Right click on the website project, and click <em>View</em> -&gt; <em>View in Browser</em>, navigate to <code>/_site</code> sub URL to view your website!</p>
-<h2 id="4-use-docfx-under-dnx" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="64" sourceendlinenumber="65">4. Use <em>DocFX</em> under DNX</h2>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="66" sourceendlinenumber="66">As a prerequisite, you need to install <a href="http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="66" sourceendlinenumber="66">DNVM</a> and <a href="http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-execution-environment-dnx" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="66" sourceendlinenumber="66">DNX</a>.</p>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="68" sourceendlinenumber="68"><em>Step1.</em> <code>SET DNX_FEED=https://www.myget.org/F/aspnetrelease/api/v2/</code> as we depend upon the release version of ASP.NET 1.0.0-rc1.</p>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="70" sourceendlinenumber="70"><em>Step2.</em> <code>dnvm upgrade</code> to get the latest dnvm.</p>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="72" sourceendlinenumber="72"><em>Step3.</em> Add feed <a href="https://www.myget.org/F/aspnetrelease/api/v2/" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="72" sourceendlinenumber="72">https://www.myget.org/F/aspnetrelease/api/v2/</a> to NuGet.config.</p>
-<blockquote sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="73" sourceendlinenumber="73"><p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="73" sourceendlinenumber="73">For Windows, the NuGet config file is <em>%AppData%\NuGet\NuGet.config</em>.</p>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="75" sourceendlinenumber="75">For Linux/OSX, the NuGet config file is <em>~/.config/NuGet/NuGet.config</em>.</p>
-</blockquote>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="77" sourceendlinenumber="77">Sample NuGet.config</p>
-<pre sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="78" sourceendlinenumber="90"><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-&lt;configuration&gt;
-  &lt;packageSources&gt;
-    &lt;add key=&quot;myget.release&quot; value=&quot;https://www.myget.org/F/aspnetrelease/api/v2/&quot; /&gt;
-    &lt;add key=&quot;nuget.org&quot; value=&quot;https://www.nuget.org/api/v2/&quot; /&gt;
-  &lt;/packageSources&gt;
-  &lt;disabledPackageSources /&gt;
-  &lt;activePackageSource&gt;
-    &lt;add key=&quot;nuget.org&quot; value=&quot;https://www.nuget.org/api/v2/&quot; /&gt;
-  &lt;/activePackageSource&gt;
-&lt;/configuration&gt;
-</code></pre><p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="92" sourceendlinenumber="92"><em>Step4.</em> <code>dnu commands install docfx</code> to install <em>DocFX</em> as a command.</p>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="94" sourceendlinenumber="94"><em>Step5.</em> <code>docfx init -q</code> to generate a sample project.</p>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="96" sourceendlinenumber="96"><em>Step6.</em> <code>docfx docfx_project\docfx.json --serve</code> to build your project and preview your site at <a href="http://localhost:8080" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="96" sourceendlinenumber="96">http://localhost:8080</a>.</p>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="98" sourceendlinenumber="98">Please refer to <a href="docfx.exe_user_manual.html" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="98" sourceendlinenumber="98"><em>DocFX</em> User Manual</a> for detailed description of <code>docfx.json</code>.</p>
-<h2 id="5-build-from-source-code" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="100" sourceendlinenumber="101">5. Build from source code</h2>
-<h4 id="build-without-dnx" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="102" sourceendlinenumber="102">Build without DNX</h4>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="103" sourceendlinenumber="103">There&#39;re two options:</p>
-<ol sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="105" sourceendlinenumber="106">
-<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="105" sourceendlinenumber="105">Run <code>build nondnx</code> under <em>DocFX</em> code repo</li>
-<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="106" sourceendlinenumber="106">Open <code>NonDNX.sln</code> under <em>DocFX</em> code repo in Visual Studio and build it.</li>
-</ol>
-<h4 id="build-with-dnx" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="108" sourceendlinenumber="108">Build with DNX</h4>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="109" sourceendlinenumber="109">As a prerequisite, you need:</p>
-<ul sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="110" sourceendlinenumber="112">
-<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="110" sourceendlinenumber="110"><a href="https://www.microsoft.com/en-us/download/details.aspx?id=48159" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="110" sourceendlinenumber="110">Microsoft Build Tools 2015</a></li>
-<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="111" sourceendlinenumber="111"><a href="http://docs.asp.net/en/latest/getting-started/installing-on-windows.html#install-the-net-version-manager-dnvm" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="111" sourceendlinenumber="111">DNVM</a></li>
-<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="112" sourceendlinenumber="112"><a href="https://nodejs.org" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="112" sourceendlinenumber="112">Node.js</a></li>
+<h2 id="4-build-from-source-code" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="64" sourceendlinenumber="65">4. Build from source code</h2>
+<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="66" sourceendlinenumber="66">As a prerequisite, you need:</p>
+<ul sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="67" sourceendlinenumber="69">
+<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="67" sourceendlinenumber="67"><a href="https://www.microsoft.com/en-us/download/details.aspx?id=48159" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="67" sourceendlinenumber="67">Microsoft Build Tools 2015</a></li>
+<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="68" sourceendlinenumber="68"><a href="https://go.microsoft.com/fwlink/?LinkID=809122" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="68" sourceendlinenumber="68">.NET Core SDK</a></li>
+<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="69" sourceendlinenumber="69"><a href="https://nodejs.org" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="69" sourceendlinenumber="69">Node.js</a></li>
 </ul>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="114" sourceendlinenumber="114"><em>Step1.</em> <code>git clone https://github.com/dotnet/docfx.git</code> to get the latest code.</p>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="116" sourceendlinenumber="116"><em>Step2.</em> <code>dnvm install 1.0.0-rc1-final</code></p>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="118" sourceendlinenumber="118"><em>Step3.</em> Run <code>build.cmd</code> under root folder.</p>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="120" sourceendlinenumber="120"><em>Step4.</em> Add <code>artifacts</code> folder to nuget source by in IDE:</p>
-<blockquote sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="121" sourceendlinenumber="121"><p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="121" sourceendlinenumber="121">Tools &gt; NuGet Package Manager &gt; Package Manager Settings &gt; Package Sources</p>
+<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="71" sourceendlinenumber="71"><em>Step1.</em> <code>git clone https://github.com/dotnet/docfx.git</code> to get the latest code.</p>
+<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="73" sourceendlinenumber="73"><em>Step2.</em> Run <code>build.cmd</code> under root folder.</p>
+<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="75" sourceendlinenumber="75"><em>Step3.</em> Add <code>artifacts</code> folder to nuget source by in IDE:</p>
+<blockquote sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="76" sourceendlinenumber="76"><p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="76" sourceendlinenumber="76">Tools &gt; NuGet Package Manager &gt; Package Manager Settings &gt; Package Sources</p>
 </blockquote>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="123" sourceendlinenumber="123"><em>Step5.</em> Follow steps in #2, #3, #4 to use <em>DocFX</em> in command-line, IDE or DNX.</p>
-<h2 id="6-a-seed-project-to-play-with-docfx" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="125" sourceendlinenumber="126">6. A seed project to play with <em>DocFX</em></h2>
-<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="127" sourceendlinenumber="127">Here is a seed project <a href="https://github.com/docascode/docfx-seed" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="127" sourceendlinenumber="127">https://github.com/docascode/docfx-seed</a>. It contains</p>
-<ol sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="129" sourceendlinenumber="133">
-<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="129" sourceendlinenumber="129">A basic C# project under <code>src</code>.</li>
-<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="130" sourceendlinenumber="130">Several conceptual files under <code>articles</code>.</li>
-<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="131" sourceendlinenumber="131">An overwrite file to add extra content to API under <code>specs</code>.</li>
-<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="132" sourceendlinenumber="132"><code>toc.yml</code> under root folder. It renders as the navbar of the website.</li>
-<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="133" sourceendlinenumber="133"><code>docfx.json</code> under root folder. It is the configuration file that <code>docfx</code> depends upon.</li>
+<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="78" sourceendlinenumber="78"><em>Step4.</em> Follow steps in #2, #3, #4 to use <em>DocFX</em> in command-line, IDE or .NET Core.</p>
+<h2 id="5-a-seed-project-to-play-with-docfx" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="80" sourceendlinenumber="81">5. A seed project to play with <em>DocFX</em></h2>
+<p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="82" sourceendlinenumber="82">Here is a seed project <a href="https://github.com/docascode/docfx-seed" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="82" sourceendlinenumber="82">https://github.com/docascode/docfx-seed</a>. It contains</p>
+<ol sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="84" sourceendlinenumber="88">
+<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="84" sourceendlinenumber="84">A basic C# project under <code>src</code>.</li>
+<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="85" sourceendlinenumber="85">Several conceptual files under <code>articles</code>.</li>
+<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="86" sourceendlinenumber="86">An overwrite file to add extra content to API under <code>specs</code>.</li>
+<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="87" sourceendlinenumber="87"><code>toc.yml</code> under root folder. It renders as the navbar of the website.</li>
+<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="88" sourceendlinenumber="88"><code>docfx.json</code> under root folder. It is the configuration file that <code>docfx</code> depends upon.</li>
 </ol>
-<blockquote sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="135" sourceendlinenumber="136"><p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="135" sourceendlinenumber="136">Tip:
+<blockquote sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="90" sourceendlinenumber="91"><p sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="90" sourceendlinenumber="91">Tip:
   It is a good practice to separate files with different type into different folders.</p>
 </blockquote>
-<h2 id="7-qa" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="138" sourceendlinenumber="139">7. Q&amp;A</h2>
-<ol sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="140" sourceendlinenumber="145">
-<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="140" sourceendlinenumber="141">Q: How do I quickly reference APIs from other APIs or conceptual files?
+<h2 id="6-qa" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="93" sourceendlinenumber="94">6. Q&amp;A</h2>
+<ol sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="95" sourceendlinenumber="100">
+<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="95" sourceendlinenumber="96">Q: How do I quickly reference APIs from other APIs or conceptual files?
 A: Use <code>@uid</code> syntax.</li>
-<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="142" sourceendlinenumber="143">Q: What is <code>uid</code> and where do I find <code>uid</code>?
-A: Refer to <a href="../spec/docfx_flavored_markdown.html#cross-reference" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="143" sourceendlinenumber="143">Cross Reference</a> section in <a href="../spec/docfx_flavored_markdown.html" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="143" sourceendlinenumber="143">DFM</a>.</li>
-<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="144" sourceendlinenumber="145">Q: How do I quickly find <code>uid</code> in the website?
+<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="97" sourceendlinenumber="98">Q: What is <code>uid</code> and where do I find <code>uid</code>?
+A: Refer to <a href="../spec/docfx_flavored_markdown.html#cross-reference" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="98" sourceendlinenumber="98">Cross Reference</a> section in <a href="../spec/docfx_flavored_markdown.html" sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="98" sourceendlinenumber="98">DFM</a>.</li>
+<li sourcefile="tutorial/docfx_getting_started.md" sourcestartlinenumber="99" sourceendlinenumber="100">Q: How do I quickly find <code>uid</code> in the website?
 A: In the generated website, hit F12 to view source, and look at the title of an API. You can find <code>uid</code> in <code>data-uid</code> attribute.</li>
 </ol>
 
