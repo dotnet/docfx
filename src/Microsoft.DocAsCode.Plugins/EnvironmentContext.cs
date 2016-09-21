@@ -6,7 +6,5 @@ namespace Microsoft.DocAsCode.Plugins
     public static class EnvironmentContext
     {
         public static string BaseDirectory { get; set; }
-
-        public static string WorkingDirectory { get; set; }
     }
 }
