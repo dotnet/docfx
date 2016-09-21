@@ -20,7 +20,10 @@ namespace Microsoft.DocAsCode.Dfm
             CreateBuilder(baseDir, null, null);
 
         public static DfmEngineBuilder CreateBuilder(string baseDir, string templateDir, Options options) =>
-            new DfmEngineBuilder(options ?? CreateDefaultOptions(), baseDir, templateDir);
+            new DfmEngineBuilder(options ?? CreateDefaultOptions(), baseDir, templateDir, null);
+
+        public static DfmEngineBuilder CreateBuilder(string baseDir, string templateDir, Options options, IReadOnlyList<string> fallbackFolders) =>
+            new DfmEngineBuilder(options ?? CreateDefaultOptions(), baseDir, templateDir, fallbackFolders);
 
         public static string Markup(string src, string path = null, ImmutableDictionary<string, string> tokens = null, HashSet<string> dependency = null)
         {
@@ -32,6 +35,12 @@ namespace Microsoft.DocAsCode.Dfm
         {
             var engine = CreateBuilder(baseDir, templateDir, options ?? CreateDefaultOptions()).CreateDfmEngine(new DfmRenderer() { Tokens = tokens });
             return engine.Markup(src, path, dependency);
+        }
+
+        public static string Markup(string src, IReadOnlyList<string> fallbackFolders, string path = null, ImmutableDictionary<string, string> tokens = null, HashSet<string> dependency = null)
+        {
+            var engine = CreateBuilder(src, null, null, fallbackFolders).CreateDfmEngine(new DfmRenderer() { Tokens = tokens });
+            return engine.Markup(src, path);
         }
     }
 }

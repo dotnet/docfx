@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Dfm
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition.Hosting;
     using System.Linq;
@@ -15,10 +16,13 @@ namespace Microsoft.DocAsCode.Dfm
     public class DfmEngineBuilder : GfmEngineBuilder
     {
         private readonly string _baseDir;
+        private readonly string _workingDir;
+        private IReadOnlyList<string> _fallbackFolders;
 
-        public DfmEngineBuilder(Options options, string baseDir = null, string templateDir = null) : base(options)
+        public DfmEngineBuilder(Options options, string baseDir = null, string templateDir = null, IReadOnlyList<string> fallbackFolders = null) : base(options)
         {
             _baseDir = baseDir ?? string.Empty;
+            _fallbackFolders = fallbackFolders ?? new List<string>();
             var inlineRules = InlineRules.ToList();
 
             // xref auto link must be before MarkdownAutoLinkInlineRule
@@ -112,7 +116,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public DfmEngine CreateDfmEngine(object renderer)
         {
-            return new DfmEngine(CreateParseContext().SetBaseFolder(_baseDir ?? string.Empty), Rewriter, renderer, Options)
+            return new DfmEngine(CreateParseContext().SetBaseFolder(_baseDir ?? string.Empty).SetFallbackFolders(_fallbackFolders), Rewriter, renderer, Options)
             {
                 TokenTreeValidator = TokenTreeValidator,
             };

@@ -6,8 +6,10 @@ namespace Microsoft.DocAsCode.Dfm
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
 
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Utility;
 
     public static class DfmContextExtensions
     {
@@ -15,6 +17,7 @@ namespace Microsoft.DocAsCode.Dfm
         private const string FilePathStackKey = "FilePathStack";
         private const string DependencyKey = "Dependency";
         private const string IsIncludeKey = "IsInclude";
+        private const string FallbackFoldersKey = "FallbackFolders";
 
         public static ImmutableStack<string> GetFilePathStack(this IMarkdownContext context)
         {
@@ -40,7 +43,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 throw new ArgumentNullException(nameof(context));
             }
-            return (string)context.Variables[BaseFolderKey]; ;
+            return (string)context.Variables[BaseFolderKey];
         }
 
         public static IMarkdownContext SetBaseFolder(this IMarkdownContext context, string baseFolder)
@@ -50,6 +53,25 @@ namespace Microsoft.DocAsCode.Dfm
                 throw new ArgumentNullException(nameof(context));
             }
             return context.CreateContext(context.Variables.SetItem(BaseFolderKey, baseFolder));
+        }
+
+        public static IReadOnlyList<string> GetFallbackFolders(this IMarkdownContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+            return (IReadOnlyList<string>)(context.Variables[FallbackFoldersKey]) ?? new List<string>();
+        }
+
+        public static IMarkdownContext SetFallbackFolders(this IMarkdownContext context, IReadOnlyList<string> fallbackFolders)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            return context.CreateContext(context.Variables.SetItem(FallbackFoldersKey, (IReadOnlyList<string>)fallbackFolders.Select(folder => folder.Replace('/', '\\')).ToList()));
         }
 
         public static IMarkdownContext SetDependency(this IMarkdownContext context, HashSet<string> dependency)

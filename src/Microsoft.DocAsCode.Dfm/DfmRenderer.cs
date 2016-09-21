@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Dfm
         {
             lock (_blockInclusionHelper)
             {
-                return _blockInclusionHelper.Load(renderer, token.Src, token.Raw, context, (DfmEngine)renderer.Engine);
+                return _blockInclusionHelper.Load(renderer, token.Src, token.Raw, token.SourceInfo, context, (DfmEngine)renderer.Engine);
             }
         }
 
@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.Dfm
         {
             lock (_inlineInclusionHelper)
             {
-                return _inlineInclusionHelper.Load(renderer, token.Src, token.Raw, context, (DfmEngine)renderer.Engine);
+                return _inlineInclusionHelper.Load(renderer, token.Src, token.Raw, token.SourceInfo, context, (DfmEngine)renderer.Engine);
             }
         }
 
@@ -161,10 +161,39 @@ namespace Microsoft.DocAsCode.Dfm
 
             try
             {
-                var fencesPath = Path.Combine(context.GetBaseFolder(), (RelativePath)context.GetFilePathStack().Peek() + (RelativePath)token.Path);
-                var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, fencesPath);
-                var result = DfmFencesBlockHelper.GetRenderedFencesBlockString(token, renderer.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
+                // Always report original dependency
                 context.ReportDependency(token.Path);
+
+                var originalFencesPath = Path.Combine(context.GetBaseFolder(), (RelativePath)context.GetFilePathStack().Peek() + (RelativePath)token.Path);
+                var acutalFencesPath = originalFencesPath;
+                if (!File.Exists(originalFencesPath))
+                {
+                    var fallbackFolders = context.GetFallbackFolders();
+                    var hitFallback = false;
+                    foreach (var folder in fallbackFolders)
+                    {
+                        var fallbackFilePath = Path.Combine(folder, token.Path);
+                        var fallbackFileRelativePath = PathUtility.MakeRelativePath(Path.GetDirectoryName(originalFencesPath), fallbackFilePath);
+                        context.ReportDependency(fallbackFileRelativePath);
+                        if (!hitFallback && File.Exists(fallbackFilePath))
+                        {
+                            acutalFencesPath = fallbackFilePath;
+                            hitFallback = true;
+                            break;
+                        }
+                    }
+
+                    if (!hitFallback)
+                    {
+                        if (fallbackFolders.Count > 0)
+                        {
+                            throw new FileNotFoundException($"Couldn't find code file {originalFencesPath}. Fallback folders: {string.Join(",", fallbackFolders)}", originalFencesPath);
+                        }
+                        throw new FileNotFoundException($"Couldn't find code file {originalFencesPath}.", originalFencesPath);
+                    }
+                }
+                var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, acutalFencesPath);
+                var result = DfmFencesBlockHelper.GetRenderedFencesBlockString(token, renderer.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
                 return result;
             }
             catch (DirectoryNotFoundException)
