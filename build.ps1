@@ -16,6 +16,43 @@ $ErrorActionPreference = 'Stop'
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptHome = Split-Path $scriptPath
 
+function DotnetBuild {
+    param($folder)
+    if (Test-Path (Join-Path $folder.FullName "project.json"))
+    {
+        & dotnet build $folder.FullName -c $configuration -f net452
+        ProcessLastExitCode($lastexitcode, "dotnet build $folder error")
+    }
+}
+
+function DotnetPublish {
+    param($folder)
+    if (Test-Path (Join-Path $folder.FullName "project.json"))
+    {
+        & dotnet publish $folder.FullName -c $configuration -f net452 -o target\$configuration\$folder
+        ProcessLastExitCode($lastexitcode, "dotnet publish $folder error")
+    }
+}
+
+function DotnetPack {
+    param($folder)
+    if (Test-Path (Join-Path $folder.FullName "project.json"))
+    {
+        & dotnet pack $folder.FullName -c $configuration -o artifacts\$configuration
+        ProcessLastExitCode($lastexitcode, "dotnet pack $folder error")
+    }
+}
+
+function ProcessLastExitCode {
+    param($exitCode, $msg)
+    if ($lastexitcode -ne 0)
+    {
+        Write-Error $msg + ", exit code: $lastexitcode"
+        Pop-Location
+        Exit 1
+    }
+}
+
 Push-Location $scriptHome
 
 # Check if dotnet cli exists globally
@@ -23,6 +60,7 @@ if ((Get-Command "dotnet" -ErrorAction SilentlyContinue) -eq $null)
 {
    Write-Host "dotnet CLI is not successfully configured."
    Write-Host "Please follow https://www.microsoft.com/net/core to install .NET Core."
+   Pop-Location
    Exit 1
 }
 
@@ -39,7 +77,7 @@ if (-not(Test-Path $nuget))
 if ($raw -eq $false)
 {
     & ".\UpdateTemplate.cmd"
-    if ($lastexitcode -ne 0) { Write-Error "Update templte error, exit code: $lastexitcode"; Pop-Location }
+    ProcessLastExitCode($lastexitcode, "Update templte error")
 }
 else
 {
@@ -49,7 +87,7 @@ else
 if ($prod -eq $true)
 {
     & ".\UpdateVersion.cmd"
-    if ($lastexitcode -ne 0) { Write-Error "Update version error, exit code: $lastexitcode"; Pop-Location }
+    ProcessLastExitCode($lastexitcode, "Update version error")
 }
 
 # Restore package
@@ -58,7 +96,7 @@ foreach ($folder in @("src", "test", "tools"))
 {
     Push-Location $folder
     & dotnet restore
-    if ($lastexitcode -ne 0) { Write-Error "dotnet restore $folder error, exit code: $lastexitcode"; Pop-Location }
+    ProcessLastExitCode($lastexitcode, "dotnet restore $folder error")
     Pop-Location
 }
 
@@ -66,20 +104,14 @@ foreach ($folder in @("src", "test", "tools"))
 Write-Host "Start to build project"
 foreach ($folder in (dir "src"))
 {
-    if (Test-Path (Join-Path $folder.FullName "project.json")) {
-        & dotnet build $folder.FullName -c $configuration -f net452
-        if ($lastexitcode -ne 0) { Write-Error "dotnet build $folder error, exit code: $lastexitcode"; Pop-Location }
-    }
+    DotnetBuild($folder)
 }
 
 # Publish project
 Write-Host "Start to publish project"
 foreach ($folder in (dir "src"))
 {
-    if (Test-Path (Join-Path $folder.FullName "project.json")) {
-        & dotnet publish $folder.FullName -c $configuration -f net452 -o target\$configuration\$folder
-        if ($lastexitcode -ne 0) { Write-Error "dotnet publish $folder error, exit code: $lastexitcode"; Pop-Location }
-    }
+    DotnetPublish($folder)
 }
 
 # Run unit test cases
@@ -97,33 +129,21 @@ foreach ($folder in (dir "test"))
 Write-Host "Build tools"
 foreach ($folder in (dir "tools"))
 {
-    if (Test-Path (Join-Path $folder.FullName "project.json"))
-    {
-        & dotnet build $folder.FullName -c $configuration -f net452
-        if ($lastexitcode -ne 0) { Write-Error "dotnet build $folder error, exit code: $lastexitcode"; Pop-Location }
-    }
+    DotnetBuild($folder)
 }
 
 # Publish tools
 Write-Host "Publish tools"
 foreach ($folder in (dir "tools"))
 {
-    if (Test-Path (Join-Path $folder.FullName "project.json"))
-    {
-        & dotnet publish $folder.FullName -c $configuration -f net452 -o target\$configuration\$folder
-        if ($lastexitcode -ne 0) { Write-Error "dotnet publish $folder error, exit code: $lastexitcode"; Pop-Location }
-    }
+    DotnetPublish($folder)
 }
 
 # Pack artifacts
 Write-Host "Publish artifacts"
 foreach ($folder in (dir "src"))
 {
-    if (Test-Path (Join-Path $folder.FullName "project.json"))
-    {
-        & dotnet pack $folder.FullName -c $configuration -o artifacts\$configuration
-        if ($lastexitcode -ne 0) { Write-Error "dotnet pack $folder error, exit code: $lastexitcode"; Pop-Location }
-    }
+    DotnetPack($folder)
 }
 
 # Pack docfx.console
