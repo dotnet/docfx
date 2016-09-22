@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.5.3)
+Version Notes (Current Version: v2.5.4)
 =======================================
+v2.5.4
+-----------
+1.  Fix isssue #719 that assertion failed.
+
 v2.5.3
 -----------
 1.  Update documenation
