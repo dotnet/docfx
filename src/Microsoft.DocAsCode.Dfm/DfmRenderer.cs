@@ -163,36 +163,8 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 // Always report original dependency
                 context.ReportDependency(token.Path);
-
-                var originalFencesPath = Path.Combine(context.GetBaseFolder(), (RelativePath)context.GetFilePathStack().Peek() + (RelativePath)token.Path);
-                var acutalFencesPath = originalFencesPath;
-                if (!File.Exists(originalFencesPath))
-                {
-                    var fallbackFolders = context.GetFallbackFolders();
-                    var hitFallback = false;
-                    foreach (var folder in fallbackFolders)
-                    {
-                        var fallbackFilePath = Path.Combine(folder, token.Path);
-                        var fallbackFileRelativePath = PathUtility.MakeRelativePath(Path.GetDirectoryName(originalFencesPath), fallbackFilePath);
-                        context.ReportDependency(fallbackFileRelativePath);
-                        if (!hitFallback && File.Exists(fallbackFilePath))
-                        {
-                            acutalFencesPath = fallbackFilePath;
-                            hitFallback = true;
-                            break;
-                        }
-                    }
-
-                    if (!hitFallback)
-                    {
-                        if (fallbackFolders.Count > 0)
-                        {
-                            throw new FileNotFoundException($"Couldn't find code file {originalFencesPath}. Fallback folders: {string.Join(",", fallbackFolders)}", originalFencesPath);
-                        }
-                        throw new FileNotFoundException($"Couldn't find code file {originalFencesPath}.", originalFencesPath);
-                    }
-                }
-                var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, acutalFencesPath);
+                var filePathWithStatus = DfmFallbackHelper.GetFilePathWithFallback(token.Path, context);
+                var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, filePathWithStatus.Item1);
                 var result = DfmFencesBlockHelper.GetRenderedFencesBlockString(token, renderer.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
                 return result;
             }

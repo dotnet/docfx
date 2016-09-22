@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             IReadOnlyList<string> fallbackFolders = null;
             object obj;
-            if (parameters.Extensions.TryGetValue("fallbackFolders", out obj))
+            if (parameters.Extensions != null && parameters.Extensions.TryGetValue("fallbackFolders", out obj))
             {
                 try
                 {

@@ -18,16 +18,13 @@ namespace Microsoft.DocAsCode.Dfm
     internal sealed class DocfxFlavoredIncHelper : IDisposable
     {
         private readonly FileCacheLite _cache;
-        private readonly FileCacheLite _fallbackCache;
         private readonly Dictionary<string, HashSet<string>> _dependencyCache = new Dictionary<string, HashSet<string>>();
-        private readonly Dictionary<string, HashSet<string>> _fallbackDependencyCache = new Dictionary<string, HashSet<string>>();
 
         public static readonly string InlineIncRegexString = @"^\[!INCLUDE\s*\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([^)]*?)>?(?:\s+(['""])([\s\S]*?)\3)?\s*\)\]";
 
         public DocfxFlavoredIncHelper()
         {
             _cache = new FileCacheLite(new FilePathComparer());
-            _fallbackCache = new FileCacheLite(new FilePathComparer());
         }
 
         public string Load(IMarkdownRenderer adapter, string currentPath, string raw, SourceInfo sourceInfo, IMarkdownContext context, DfmEngine engine)
@@ -41,7 +38,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 if (!PathUtility.IsRelativePath(currentPath))
                 {
-                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Absolute path \"{currentPath}\" is not supported.", raw);
+                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Absolute path \"{currentPath}\" is not supported.", raw, sourceInfo);
                 }
 
                 // Always report original include file dependency
@@ -60,7 +57,7 @@ namespace Microsoft.DocAsCode.Dfm
 
                 if (parents.Contains(currentPath, FilePathComparer.OSPlatformSensitiveComparer))
                 {
-                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}: Circular dependency found in \"{parent}\"", raw);
+                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}: Circular dependency found in \"{parent}\"", raw, sourceInfo);
                 }
 
                 // Add current file path to chain when entering recursion
@@ -70,63 +67,23 @@ namespace Microsoft.DocAsCode.Dfm
                 if (!_dependencyCache.TryGetValue(currentPath, out dependency) ||
                     !_cache.TryGet(currentPath, out result))
                 {
-                    var originalIncludeFilePath = Path.Combine(context.GetBaseFolder(), currentPath);
-                    var actualIncludeFilePath = originalIncludeFilePath;
-                    var hitFallback = false;
-                    if (!File.Exists(originalIncludeFilePath))
-                    {
-                        // Caution: fallback folder should have order. Such as en-us -> zh-tw -> zh-cn -> ...
-                        var fallbackFolders = context.GetFallbackFolders();
-                        foreach (var folder in fallbackFolders)
-                        {
-                            var fallbackFilePath = Path.Combine(folder, currentPath);
-                            var fallbackFileRelativePath = PathUtility.MakeRelativePath(Path.GetDirectoryName(originalIncludeFilePath), fallbackFilePath);
-                            context.ReportDependency(fallbackFileRelativePath); // All the high priority fallback files should be reported to the dependency.
-                            if (!_fallbackDependencyCache.TryGetValue(fallbackFileRelativePath, out dependency) || !_fallbackCache.TryGet(fallbackFileRelativePath, out result))
-                            {
-                                if (File.Exists(fallbackFilePath))
-                                {
-                                    actualIncludeFilePath = fallbackFilePath;
-                                    hitFallback = true;
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                // If we can get fallback information for both file and dependency, then it means fallback cache hit, just return.
-                                context.ReportDependency(
-                                    from d in dependency
-                                    select (string)((RelativePath)currentPath + (RelativePath)d - (RelativePath)parent));
-                                return result;
-                            }
-                        }
-
-                        if (!hitFallback)
-                        {
-                            if (fallbackFolders.Count > 0)
-                            {
-                                throw new FileNotFoundException($"Couldn't find file {originalIncludeFilePath}. Fallback folders: {string.Join(",", fallbackFolders)}", originalIncludeFilePath);
-                            }
-                            throw new FileNotFoundException($"Couldn't find file {originalIncludeFilePath}.", originalIncludeFilePath);
-                        }
-                    }
-
-                    var src = File.ReadAllText(actualIncludeFilePath);
+                    var filePathWithStatus = DfmFallbackHelper.GetFilePathWithFallback(currentPath, context);
+                    var src = File.ReadAllText(filePathWithStatus.Item1);
                     dependency = new HashSet<string>();
                     src = engine.InternalMarkup(src, context.SetFilePathStack(parents).SetDependency(dependency).SetIsInclude());
 
                     result = UpdateToHrefFromWorkingFolder(src, currentPath);
                     result = GenerateNodeWithCommentWrapper("INCLUDE", $"Include content from \"{currentPath}\"", result);
-                    if (!hitFallback)
+                    if (!filePathWithStatus.Item2)
                     {
                         _cache.Add(currentPath, result);
                         _dependencyCache[currentPath] = dependency;
                     }
                     else
                     {
-                        var fallbackFileRelativePath = PathUtility.MakeRelativePath(Path.GetDirectoryName(originalIncludeFilePath), actualIncludeFilePath);
-                        _fallbackCache.Add(fallbackFileRelativePath, result);
-                        _fallbackDependencyCache[fallbackFileRelativePath] = dependency;
+                        var fallbackFileRelativePath = PathUtility.MakeRelativePath(Path.GetDirectoryName(filePathWithStatus.Item1), Path.Combine(context.GetBaseFolder(), currentPath));
+                        _cache.Add(fallbackFileRelativePath, result);
+                        _dependencyCache[fallbackFileRelativePath] = dependency;
                     }
                 }
                 context.ReportDependency(
@@ -136,13 +93,13 @@ namespace Microsoft.DocAsCode.Dfm
             }
             catch (Exception e)
             {
-                return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}:{e.Message}. at line {sourceInfo.LineNumber}.", raw);
+                return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}:{e.Message}", raw, sourceInfo);
             }
         }
 
-        private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, string html)
+        private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, string html, SourceInfo sourceInfo)
         {
-            Logger.LogError(comment);
+            Logger.LogError(comment + $"at line {sourceInfo.LineNumber}.");
             return GenerateNodeWithCommentWrapper("ERROR " + tag, comment, html);
         }
 
@@ -203,7 +160,6 @@ namespace Microsoft.DocAsCode.Dfm
         public void Dispose()
         {
             _cache.Dispose();
-            _fallbackCache.Dispose();
         }
     }
 }
