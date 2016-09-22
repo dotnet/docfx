@@ -203,7 +203,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private string GetRelativePath(string pathFromWorkingFolder, string relativeToPath)
         {
-            return ((RelativePath)pathFromWorkingFolder).MakeRelativeTo(((RelativePath)relativeToPath).GetPathFromWorkingFolder());
+            return ((RelativePath)pathFromWorkingFolder).MakeRelativeTo((((RelativePath)relativeToPath).UrlDecode()).GetPathFromWorkingFolder());
         }
     }
 }
