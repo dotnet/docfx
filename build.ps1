@@ -67,8 +67,18 @@ Write-Host "Start to build project"
 foreach ($folder in (dir "src"))
 {
     if (Test-Path (Join-Path $folder.FullName "project.json")) {
-        & dotnet publish $folder.FullName -o target\$configuration\$folder
+        & dotnet build $folder.FullName -c $configuration -f net452
         if ($lastexitcode -ne 0) { Write-Error "dotnet build $folder error, exit code: $lastexitcode"; Pop-Location }
+    }
+}
+
+# Publish project
+Write-Host "Start to publish project"
+foreach ($folder in (dir "src"))
+{
+    if (Test-Path (Join-Path $folder.FullName "project.json")) {
+        & dotnet publish $folder.FullName -c $configuration -f net452 -o target\$configuration\$folder
+        if ($lastexitcode -ne 0) { Write-Error "dotnet publish $folder error, exit code: $lastexitcode"; Pop-Location }
     }
 }
 
@@ -89,8 +99,19 @@ foreach ($folder in (dir "tools"))
 {
     if (Test-Path (Join-Path $folder.FullName "project.json"))
     {
-        & dotnet publish $folder.FullName -o target\$configuration\$folder
+        & dotnet build $folder.FullName -c $configuration -f net452
         if ($lastexitcode -ne 0) { Write-Error "dotnet build $folder error, exit code: $lastexitcode"; Pop-Location }
+    }
+}
+
+# Publish tools
+Write-Host "Publish tools"
+foreach ($folder in (dir "tools"))
+{
+    if (Test-Path (Join-Path $folder.FullName "project.json"))
+    {
+        & dotnet publish $folder.FullName -c $configuration -f net452 -o target\$configuration\$folder
+        if ($lastexitcode -ne 0) { Write-Error "dotnet publish $folder error, exit code: $lastexitcode"; Pop-Location }
     }
 }
 
