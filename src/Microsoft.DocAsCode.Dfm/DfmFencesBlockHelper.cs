@@ -34,9 +34,10 @@ namespace Microsoft.DocAsCode.Dfm
 
         public static string GenerateReferenceNotFoundErrorMessage(IMarkdownRenderer renderer, DfmFencesBlockToken token)
         {
-            string errorMessage = $"Can not find reference {token.Path}";
+            var errorMessageInMarkdown = $"Can not find reference {token.Path}";
+            var errorMessage = $"Unable to resolve {token.SourceInfo.Markdown}. {errorMessageInMarkdown}. at line {token.SourceInfo.LineNumber}.";
             Logger.LogError(errorMessage);
-            return GetRenderedFencesBlockString(token, renderer.Options, errorMessage);
+            return GetRenderedFencesBlockString(token, renderer.Options, errorMessageInMarkdown);
         }
     }
 }

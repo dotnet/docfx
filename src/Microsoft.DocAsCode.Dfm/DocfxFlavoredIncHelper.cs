@@ -27,23 +27,25 @@ namespace Microsoft.DocAsCode.Dfm
             _cache = new FileCacheLite(new FilePathComparer());
         }
 
-        public string Load(IMarkdownRenderer adapter, string currentPath, string raw, IMarkdownContext context, DfmEngine engine)
+        public string Load(IMarkdownRenderer adapter, string currentPath, string raw, SourceInfo sourceInfo, IMarkdownContext context, DfmEngine engine)
         {
-            return LoadCore(adapter, currentPath, raw, context, engine);
+            return LoadCore(adapter, currentPath, raw, sourceInfo, context, engine);
         }
 
-        private string LoadCore(IMarkdownRenderer adapter, string currentPath, string raw, IMarkdownContext context, DfmEngine engine)
+        private string LoadCore(IMarkdownRenderer adapter, string currentPath, string raw, SourceInfo sourceInfo, IMarkdownContext context, DfmEngine engine)
         {
             try
             {
                 if (!PathUtility.IsRelativePath(currentPath))
                 {
-                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Absolute path \"{currentPath}\" is not supported.", raw);
+                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Absolute path \"{currentPath}\" is not supported.", raw, sourceInfo);
                 }
 
+                // Always report original include file dependency
+                var originalRelativePath = currentPath;
+                context.ReportDependency(currentPath);
+
                 var parents = context.GetFilePathStack();
-                var originalPath = currentPath;
-                context.ReportDependency(originalPath);
                 string parent = string.Empty;
                 if (parents == null) parents = ImmutableStack<string>.Empty;
 
@@ -56,7 +58,7 @@ namespace Microsoft.DocAsCode.Dfm
 
                 if (parents.Contains(currentPath, FilePathComparer.OSPlatformSensitiveComparer))
                 {
-                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}: Circular dependency found in \"{parent}\"", raw);
+                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}: Circular dependency found in \"{parent}\"", raw, sourceInfo);
                 }
 
                 // Add current file path to chain when entering recursion
@@ -66,14 +68,13 @@ namespace Microsoft.DocAsCode.Dfm
                 if (!_dependencyCache.TryGetValue(currentPath, out dependency) ||
                     !_cache.TryGet(currentPath, out result))
                 {
-                    var src = File.ReadAllText(Path.Combine(context.GetBaseFolder(), currentPath));
-
+                    var filePathWithStatus = DfmFallbackHelper.GetFilePathWithFallback(originalRelativePath, context);
+                    var src = File.ReadAllText(filePathWithStatus.Item1);
                     dependency = new HashSet<string>();
                     src = engine.InternalMarkup(src, context.SetFilePathStack(parents).SetDependency(dependency).SetIsInclude());
 
                     result = UpdateToHrefFromWorkingFolder(src, currentPath);
                     result = GenerateNodeWithCommentWrapper("INCLUDE", $"Include content from \"{currentPath}\"", result);
-
                     _cache.Add(currentPath, result);
                     _dependencyCache[currentPath] = dependency;
                 }
@@ -84,13 +85,13 @@ namespace Microsoft.DocAsCode.Dfm
             }
             catch (Exception e)
             {
-                return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}:{e.Message}", raw);
+                return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}:{e.Message}", raw, sourceInfo);
             }
         }
 
-        private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, string html)
+        private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, string html, SourceInfo sourceInfo)
         {
-            Logger.LogError(comment);
+            Logger.LogError(comment + $"at line {sourceInfo.LineNumber}.");
             return GenerateNodeWithCommentWrapper("ERROR " + tag, comment, html);
         }
 

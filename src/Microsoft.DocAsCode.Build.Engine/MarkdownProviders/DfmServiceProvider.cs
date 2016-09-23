@@ -3,9 +3,11 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
@@ -16,11 +18,26 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
         {
+            IReadOnlyList<string> fallbackFolders = null;
+            object obj;
+            if (parameters.Extensions != null && parameters.Extensions.TryGetValue("fallbackFolders", out obj))
+            {
+                try
+                {
+                    fallbackFolders = ((IEnumerable)obj).Cast<string>().ToList();
+                }
+                catch
+                {
+                    // Swallow cast exception. 
+                }
+            }
+
             return new DfmService(
                 parameters.BasePath,
                 parameters.TemplateDir,
                 parameters.Tokens,
-                MarkdownTokenTreeValidatorFactory.Combine(TokenTreeValidator));
+                MarkdownTokenTreeValidatorFactory.Combine(TokenTreeValidator),
+                fallbackFolders);
         }
 
         [ImportMany]
@@ -32,11 +49,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             private readonly ImmutableDictionary<string, string> _tokens;
 
-            public DfmService(string baseDir, string templateDir, ImmutableDictionary<string, string> tokens, IMarkdownTokenTreeValidator tokenTreeValidator)
+            public DfmService(string baseDir, string templateDir, ImmutableDictionary<string, string> tokens, IMarkdownTokenTreeValidator tokenTreeValidator, IReadOnlyList<string> fallbackFolders = null)
             {
                 var options = DocfxFlavoredMarked.CreateDefaultOptions();
                 options.ShouldExportSourceInfo = true;
-                _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, templateDir, options);
+                _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, templateDir, options, fallbackFolders);
                 _builder.TokenTreeValidator = tokenTreeValidator;
                 _tokens = tokens;
             }

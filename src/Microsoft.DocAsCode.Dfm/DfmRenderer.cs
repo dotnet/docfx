@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Dfm
         {
             lock (_blockInclusionHelper)
             {
-                return _blockInclusionHelper.Load(renderer, token.Src, token.Raw, context, (DfmEngine)renderer.Engine);
+                return _blockInclusionHelper.Load(renderer, token.Src, token.Raw, token.SourceInfo, context, (DfmEngine)renderer.Engine);
             }
         }
 
@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.Dfm
         {
             lock (_inlineInclusionHelper)
             {
-                return _inlineInclusionHelper.Load(renderer, token.Src, token.Raw, context, (DfmEngine)renderer.Engine);
+                return _inlineInclusionHelper.Load(renderer, token.Src, token.Raw, token.SourceInfo, context, (DfmEngine)renderer.Engine);
             }
         }
 
@@ -161,10 +161,11 @@ namespace Microsoft.DocAsCode.Dfm
 
             try
             {
-                var fencesPath = Path.Combine(context.GetBaseFolder(), (RelativePath)context.GetFilePathStack().Peek() + (RelativePath)token.Path);
-                var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, fencesPath);
-                var result = DfmFencesBlockHelper.GetRenderedFencesBlockString(token, renderer.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
+                // Always report original dependency
                 context.ReportDependency(token.Path);
+                var filePathWithStatus = DfmFallbackHelper.GetFilePathWithFallback(token.Path, context);
+                var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, filePathWithStatus.Item1);
+                var result = DfmFencesBlockHelper.GetRenderedFencesBlockString(token, renderer.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
                 return result;
             }
             catch (DirectoryNotFoundException)
