@@ -93,7 +93,18 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var extension = template.Extension;
                 string outputFile = item.FileWithoutExtension + extension;
                 string outputPath = Path.Combine(outputDirectory, outputFile);
-                var dir = Path.GetDirectoryName(outputPath);
+                string dir = null;
+                try
+                {
+                    dir = Path.GetDirectoryName(outputPath);
+                }
+                catch (PathTooLongException e)
+                {
+                    var message = $"Error getting the directory name for {outputPath} when process {item.LocalPathFromRoot}: {e.Message}";
+                    Logger.LogError(message);
+                    throw new PathTooLongException(message, e);
+                }
+
                 if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
                 object viewModel = null;
                 try
