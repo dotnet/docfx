@@ -51,8 +51,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var assemblyList = assemblies?.ToList();
                 _container = GetContainer(assemblyList);
                 _container.SatisfyImports(this);
-                _currentBuildInfo.PluginHash = ComputePluginHash(assemblyList);
-                _currentBuildInfo.TemplateHash = templateHash;
+                if (intermediateFolder != null)
+                {
+                    _currentBuildInfo.PluginHash = ComputePluginHash(assemblyList);
+                    _currentBuildInfo.TemplateHash = templateHash;
+                    _currentBuildInfo.DirectoryName = IncrementalUtility.CreateRandomDir(intermediateFolder);
+                }
             }
             Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
             foreach (var processor in Processors)
@@ -217,7 +221,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 try
                 {
-                    return BuildInfo.Load(Path.Combine(_intermediateFolder, BuildInfo.FileName));
+                    return BuildInfo.Load(_intermediateFolder);
                 }
                 catch (Exception)
                 {
@@ -321,16 +325,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (_intermediateFolder != null)
             {
                 // to-do: add check for build status. if failed, not overwrite buildinfo
-                BuildInfo.Save(
-                    Path.Combine(_intermediateFolder, BuildInfo.FileName),
-                    _currentBuildInfo);
+                _currentBuildInfo.Save(_intermediateFolder);
                 if (_lastBuildInfo != null)
                 {
-                    foreach (var v in _lastBuildInfo.Versions)
-                    {
-                        Directory.Delete(Path.Combine(_intermediateFolder, v.BuildModelManifest.BaseDir), true);
-                        Directory.Delete(Path.Combine(_intermediateFolder, v.PostBuildModelManifest.BaseDir), true);
-                    }
+                    Directory.Delete(Path.Combine(_intermediateFolder, _lastBuildInfo.DirectoryName), true);
                 }
             }
         }

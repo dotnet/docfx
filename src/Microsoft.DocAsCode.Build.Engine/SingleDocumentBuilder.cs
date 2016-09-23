@@ -91,14 +91,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                         DependencyFile = "dependency",
                         ManifestFile = "manifest",
                         XRefSpecMapFile = "xrefspecmap",
-                        BuildModelManifestFile = "buildmodelmanifest",
                         BuildMessageFile = "buildmessage",
                         Attributes = fileAttributes,
                         Dependency = context.DependencyGraph,
-                        //Manifest = context.ManifestItems,
-                        //XRefSpecMap = context.XRefSpecMap,
-                        BuildModelManifest = new ModelManifest { BaseDir = CreateRandomDir(IntermediateFolder) },
-                        BuildMessage = new BuildMessageInfo(),
                     };
                     CurrentBuildInfo.Versions.Add(_cbv);
                     Logger.RegisterListener(_cbv.BuildMessage.GetListener());
@@ -213,7 +208,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return false;
             }
-            _lbv = LastBuildInfo.Versions.Single(v => v.VersionName == versionName);
+            _lbv = LastBuildInfo.Versions.SingleOrDefault(v => v.VersionName == versionName);
             if (_lbv == null)
             {
                 Logger.LogVerbose($"Cannot build incrementally because last build didn't contain version {versionName}.");
@@ -416,11 +411,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             Action<List<HostService>> loader = null;
             if (ShouldTraceIncrementalInfo)
             {
-                buildSaver = h => h.SaveIntermediateModel(IntermediateFolder, _lbv?.BuildModelManifest, _cbv.BuildModelManifest);
+                buildSaver = h => h.SaveIntermediateModel();
                 loader = hs =>
                 {
                     Logger.UnregisterListener(_cbv.BuildMessage.GetListener());
-                    UpdateHostServices(hostServices, IntermediateFolder, _lbv?.BuildModelManifest, _canIncremental);
+                    UpdateHostServices(hostServices);
                     if (_lbv != null)
                     {
                         foreach (var h in hs)
@@ -465,7 +460,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
 
                     // save models
-                    buildSaver?.Invoke(hostService);
+                    hostService.SaveIntermediateModel();
                 }
             }
 
@@ -499,13 +494,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static void UpdateHostServices(IEnumerable<HostService> hostServices, string intermediateFolder, ModelManifest lmm, bool canIncremental)
+        private static void UpdateHostServices(IEnumerable<HostService> hostServices)
         {
-            if (canIncremental && intermediateFolder != null && lmm != null)
+            foreach (var hostService in hostServices)
             {
-                foreach (var hostService in hostServices)
+                if (hostService.CanIncrementalBuild)
                 {
-                    hostService.ReloadUnloadedModels(intermediateFolder, lmm, LoadPhase.PostBuild);
+                    hostService.ReloadUnloadedModels(LoadPhase.PostBuild);
                 }
             }
         }
@@ -1020,17 +1015,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogWarning(sb.ToString());
             }
 
-            // todo : revert until PreProcessor ready
-            var pairs = from processor in processors
-                        join item in toHandleItems on processor equals item.Key into g
-                        from item in g.DefaultIfEmpty()
-                        select new
-                        {
-                            processor,
-                            item,
-                            canProcessorIncremental = CanProcessorIncremental(processor, parameters.VersionName),
-                        };
-
             // load last xrefspecmap and manifestitems
             var lastXRefSpecMap = _lbv?.XRefSpecMap;
             var lastManifest = _lbv?.Manifest;
@@ -1045,15 +1029,27 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            foreach (var pair in pairs.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism))
+            // todo : revert until PreProcessor ready
+            foreach (var pair in (from processor in processors
+                                  join item in toHandleItems on processor equals item.Key into g
+                                  from item in g.DefaultIfEmpty()
+                                  select new
+                                  {
+                                      processor,
+                                      item,
+                                  }).AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism))
             {
+                var processorSupportIncremental = IsProcessorSupportIncremental(pair.processor);
+                ProcessorInfo cpi = null;
+                ProcessorInfo lpi = null;
+                var processorCanIncremental = processorSupportIncremental && CanProcessorIncremental(pair.processor, parameters.VersionName, out cpi, out lpi);
+
                 var hostService = new HostService(
                        parameters.Files.DefaultBaseDir,
                        pair.item == null
                             ? new FileModel[0]
                             : from file in pair.item
-                              let canIncremental = _canIncremental && pair.canProcessorIncremental
-                              select Load(pair.processor, parameters.Metadata, parameters.FileMetadata, file.file, canIncremental, lastXRefSpecMap, lastManifest, lastDependencyGraph, context) into model
+                              select Load(pair.processor, parameters.Metadata, parameters.FileMetadata, file.file, processorCanIncremental, lastXRefSpecMap, lastManifest, lastDependencyGraph, context) into model
                               where model != null
                               select model)
                 {
@@ -1061,11 +1057,24 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Processor = pair.processor,
                     Template = templateProcessor,
                     Validators = MetadataValidators.ToImmutableList(),
+                    ShouldTraceIncrementalInfo = processorSupportIncremental,
+                    CanIncrementalBuild = processorCanIncremental,
                 };
+
+                if (processorSupportIncremental)
+                {
+                    hostService.CurrentIntermediateModelManifest = cpi.IntermediateModelManifest;
+                    hostService.IncrementalBaseDir = Path.Combine(IntermediateFolder, CurrentBuildInfo.DirectoryName);
+                    if (processorCanIncremental)
+                    {
+                        hostService.LastIntermediateModelManifest = lpi?.IntermediateModelManifest;
+                        hostService.LastIncrementalBaseDir = Path.Combine(IntermediateFolder, LastBuildInfo.DirectoryName);
+                    }
+                }
 
                 if (pair.item != null)
                 {
-                    var allFiles = pair.item.Select(f => f.file);
+                    var allFiles = pair.item?.Select(f => f.file) ?? new FileAndType[0];
                     var loadedFiles = hostService.Models.Select(m => m.FileAndType);
                     hostService.ReportModelLoadInfo(allFiles.Except(loadedFiles), LoadPhase.None);
                     hostService.ReportModelLoadInfo(loadedFiles, LoadPhase.PreBuild);
@@ -1074,7 +1083,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private bool CanProcessorIncremental(IDocumentProcessor processor, string versionName)
+        private bool IsProcessorSupportIncremental(IDocumentProcessor processor)
         {
             if (!ShouldTraceIncrementalInfo)
             {
@@ -1090,14 +1099,22 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogVerbose($"Processor {processor.Name} cannot suppport incremental build because the following steps don't implement {nameof(ISupportIncrementalBuildStep)} interface: {string.Join(",", processor.BuildSteps.Where(step => !(step is ISupportIncrementalBuildStep)).Select(s => s.Name))}.");
                 return false;
             }
+            return true;
+        }
+
+        private bool CanProcessorIncremental(IDocumentProcessor processor, string versionName, out ProcessorInfo cpi, out ProcessorInfo lpi)
+        {
+            cpi = null;
+            lpi = null;
+            cpi = CreateProcessorInfo(processor, versionName);
+
             if (LastBuildInfo == null)
             {
                 Logger.LogVerbose($"Processor {processor.Name} disable incremental build because no last build.");
                 return false;
             }
 
-            var cpi = GetProcessorInfo(processor, versionName);
-            var lpi = _lbv
+            lpi = _lbv
                 ?.Processors
                 ?.Find(p => p.Name == processor.Name);
             if (lpi == null)
@@ -1117,7 +1134,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             for (int i = 0; i < cpi.Steps.Count; i++)
             {
-                if (object.Equals(cpi.Steps[i], lpi.Steps[i]))
+                if (!object.Equals(cpi.Steps[i], lpi.Steps[i]))
                 {
                     Logger.LogVerbose($"Processor {processor.Name} disable incremental build because steps changed, from step {lpi.Steps[i].ToJsonString()} to {cpi.Steps[i].ToJsonString()}.");
                     return false;
@@ -1127,7 +1144,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return true;
         }
 
-        private ProcessorInfo GetProcessorInfo(IDocumentProcessor processor, string versionName)
+        private ProcessorInfo CreateProcessorInfo(IDocumentProcessor processor, string versionName)
         {
             var cpi = new ProcessorInfo
             {

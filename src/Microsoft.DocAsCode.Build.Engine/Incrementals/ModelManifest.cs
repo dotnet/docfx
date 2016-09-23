@@ -7,8 +7,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
     public class ModelManifest
     {
-        public string BaseDir { get; set; }
-
         public Dictionary<string, string> Models { get; } = new Dictionary<string, string>();
     }
 }
