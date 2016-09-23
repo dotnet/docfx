@@ -89,74 +89,71 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     continue;
                 }
-
-                var extension = template.Extension;
-                string outputFile = item.FileWithoutExtension + extension;
-                string outputPath = Path.Combine(outputDirectory, outputFile);
-                string dir = null;
                 try
                 {
-                    dir = Path.GetDirectoryName(outputPath);
+                    var extension = template.Extension;
+                    string outputFile = item.FileWithoutExtension + extension;
+                    string outputPath = Path.Combine(outputDirectory, outputFile);
+                    var dir = Path.GetDirectoryName(outputPath);
+                    if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+                    object viewModel = null;
+                    try
+                    {
+                        viewModel = template.TransformModel(model);
+                    }
+                    catch (Exception e)
+                    {
+                        // save raw model for further investigation:
+                        var exportSettings = ApplyTemplateSettings.RawModelExportSettingsForDebug;
+                        var rawModelPath = ExportModel(model, item.FileWithoutExtension, exportSettings);
+                        var message = $"Error transforming model \"{rawModelPath}\" generated from \"{item.LocalPathFromRoot}\" using \"{template.ScriptName}\": {e.Message}";
+                        Logger.LogError(message);
+                        throw new DocumentException(message, e);
+                    }
+
+                    string result;
+                    try
+                    {
+                        result = template.Transform(viewModel);
+                    }
+                    catch (Exception e)
+                    {
+                        // save view model for further investigation:
+                        var exportSettings = ApplyTemplateSettings.ViewModelExportSettingsForDebug;
+                        var viewModelPath = ExportModel(viewModel, outputFile, exportSettings);
+                        var message = $"Error applying template \"{template.Name}\" to view model \"{viewModelPath}\" generated from \"{item.LocalPathFromRoot}\": {e.Message}";
+                        Logger.LogError(message);
+                        throw new DocumentException(message, e);
+                    }
+
+                    if (_settings.Options.HasFlag(ApplyTemplateOptions.ExportViewModel))
+                    {
+                        ExportModel(viewModel, outputFile, _settings.ViewModelExportSettings);
+                    }
+
+                    if (_settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
+                    {
+                        if (string.IsNullOrWhiteSpace(result))
+                        {
+                            // TODO: WHAT to do if is transformed to empty string? STILL creat empty file?
+                            var exportSettings = ApplyTemplateSettings.ViewModelExportSettingsForDebug;
+                            var viewModelPath = ExportModel(viewModel, outputFile, exportSettings);
+                            Logger.LogWarning($"Model \"{viewModelPath}\" is transformed to empty string with template \"{template.Name}\"");
+                            File.WriteAllText(outputPath, string.Empty);
+                        }
+                        else
+                        {
+                            TransformDocument(result, extension, _context, outputPath, outputFile, missingUids, manifestItem);
+                            Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputPath}\".");
+                        }
+                    }
                 }
                 catch (PathTooLongException e)
                 {
-                    var message = $"Error getting the directory name for {outputPath} when process {item.LocalPathFromRoot}: {e.Message}";
-                    Logger.LogError(message);
+                    var message = $"Error processing {item.LocalPathFromRoot}: {e.Message}";
                     throw new PathTooLongException(message, e);
                 }
 
-                if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
-                object viewModel = null;
-                try
-                {
-                    viewModel = template.TransformModel(model);
-                }
-                catch (Exception e)
-                {
-                    // save raw model for further investigation:
-                    var exportSettings = ApplyTemplateSettings.RawModelExportSettingsForDebug;
-                    var rawModelPath = ExportModel(model, item.FileWithoutExtension, exportSettings);
-                    var message = $"Error transforming model \"{rawModelPath}\" generated from \"{item.LocalPathFromRoot}\" using \"{template.ScriptName}\": {e.Message}";
-                    Logger.LogError(message);
-                    throw new DocumentException(message, e);
-                }
-
-                string result;
-                try
-                {
-                    result = template.Transform(viewModel);
-                }
-                catch (Exception e)
-                {
-                    // save view model for further investigation:
-                    var exportSettings = ApplyTemplateSettings.ViewModelExportSettingsForDebug;
-                    var viewModelPath = ExportModel(viewModel, outputFile, exportSettings);
-                    var message = $"Error applying template \"{template.Name}\" to view model \"{viewModelPath}\" generated from \"{item.LocalPathFromRoot}\": {e.Message}";
-                    Logger.LogError(message);
-                    throw new DocumentException(message, e);
-                }
-
-                if (_settings.Options.HasFlag(ApplyTemplateOptions.ExportViewModel))
-                {
-                    ExportModel(viewModel, outputFile, _settings.ViewModelExportSettings);
-                }
-
-                if (_settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
-                {
-                    if (string.IsNullOrWhiteSpace(result))
-                    {
-                        // TODO: WHAT to do if is transformed to empty string? STILL creat empty file?
-                        var exportSettings = ApplyTemplateSettings.ViewModelExportSettingsForDebug;
-                        var viewModelPath = ExportModel(viewModel, outputFile, exportSettings);
-                        Logger.LogWarning($"Model \"{viewModelPath}\" is transformed to empty string with template \"{template.Name}\"");
-                        File.WriteAllText(outputPath, string.Empty);
-                    }
-                    else
-                    {
-                        TransformDocument(result, extension, _context, outputPath, outputFile, missingUids, manifestItem);
-                        Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputPath}\".");
-                    }
-                }
             }
 
             if (missingUids.Count > 0)
