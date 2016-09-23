@@ -37,10 +37,10 @@ namespace Microsoft.DocAsCode.Dfm
             return engine.Markup(src, path, dependency);
         }
 
-        public static string Markup(string src, IReadOnlyList<string> fallbackFolders, string path = null, ImmutableDictionary<string, string> tokens = null, HashSet<string> dependency = null)
+        public static string Markup(string baseDir, string src, IReadOnlyList<string> fallbackFolders, string path = null, ImmutableDictionary<string, string> tokens = null, HashSet<string> dependency = null)
         {
-            var engine = CreateBuilder(src, null, null, fallbackFolders).CreateDfmEngine(new DfmRenderer() { Tokens = tokens });
-            return engine.Markup(src, path);
+            var engine = CreateBuilder(baseDir, null, null, fallbackFolders).CreateDfmEngine(new DfmRenderer() { Tokens = tokens });
+            return engine.Markup(src, path, dependency);
         }
     }
 }

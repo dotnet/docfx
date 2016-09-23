@@ -42,6 +42,7 @@ namespace Microsoft.DocAsCode.Dfm
                 }
 
                 // Always report original include file dependency
+                var originalRelativePath = currentPath;
                 context.ReportDependency(currentPath);
 
                 var parents = context.GetFilePathStack();
@@ -67,24 +68,15 @@ namespace Microsoft.DocAsCode.Dfm
                 if (!_dependencyCache.TryGetValue(currentPath, out dependency) ||
                     !_cache.TryGet(currentPath, out result))
                 {
-                    var filePathWithStatus = DfmFallbackHelper.GetFilePathWithFallback(currentPath, context);
+                    var filePathWithStatus = DfmFallbackHelper.GetFilePathWithFallback(originalRelativePath, context);
                     var src = File.ReadAllText(filePathWithStatus.Item1);
                     dependency = new HashSet<string>();
                     src = engine.InternalMarkup(src, context.SetFilePathStack(parents).SetDependency(dependency).SetIsInclude());
 
                     result = UpdateToHrefFromWorkingFolder(src, currentPath);
                     result = GenerateNodeWithCommentWrapper("INCLUDE", $"Include content from \"{currentPath}\"", result);
-                    if (!filePathWithStatus.Item2)
-                    {
-                        _cache.Add(currentPath, result);
-                        _dependencyCache[currentPath] = dependency;
-                    }
-                    else
-                    {
-                        var fallbackFileRelativePath = PathUtility.MakeRelativePath(Path.GetDirectoryName(filePathWithStatus.Item1), Path.Combine(context.GetBaseFolder(), currentPath));
-                        _cache.Add(fallbackFileRelativePath, result);
-                        _dependencyCache[fallbackFileRelativePath] = dependency;
-                    }
+                    _cache.Add(currentPath, result);
+                    _dependencyCache[currentPath] = dependency;
                 }
                 context.ReportDependency(
                     from d in dependency
