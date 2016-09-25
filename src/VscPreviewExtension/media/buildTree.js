@@ -1,9 +1,5 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-const minHorizontalSpace = 6;
-const selectedGold = "#EDE68A";
-const unSelectedGray = "#d4d4d4";
-
 function buildTree(containerName, treeData) {
   var i = 0;
   var durationTime = 750;
@@ -28,7 +24,7 @@ function buildTree(containerName, treeData) {
     // 'while' but not 'if' because it maybe skip the next level
     while (maxLabelLengthOfEachLevel.length <= tmp)
       maxLabelLengthOfEachLevel.push(minHorizontalSpace);
-    maxLabelLengthOfEachLevel[tmp] = Math.min(Math.max(maxLabelLengthOfEachLevel[tmp], GetTokenName(d.name).length), 12);
+    maxLabelLengthOfEachLevel[tmp] = Math.min(Math.max(maxLabelLengthOfEachLevel[tmp], getTokenName(d.name).length), 12);
   }, function (d) {
     return d.children && d.children.length > 0 ? d.children : null;
   })
@@ -85,7 +81,7 @@ function buildTree(containerName, treeData) {
         vis.selectAll("g.node")
           .select("circle")
           .style("fill", function (d) {
-            if (isIntersect(parseInt(GetStartLineNumber(d.name)), parseInt(GetEndLineNumber(d.name)), parseInt(linenumber[0]), parseInt(linenumber[1]))) {    //centerNode(d);
+            if (isIntersect(parseInt(getStartLineNumber(d.name)), parseInt(getEndLineNumber(d.name)), parseInt(linenumber[0]), parseInt(linenumber[1]))) {    //centerNode(d);
               targetNode = d;
               return selectedGold
             } else {
@@ -97,7 +93,7 @@ function buildTree(containerName, treeData) {
         vis.selectAll("g.node")
           .select("text")
           .style("fill", function (d) {
-            if (isIntersect(parseInt(GetStartLineNumber(d.name)), parseInt(GetEndLineNumber(d.name)), parseInt(linenumber[0]), parseInt(linenumber[1]))) {    //centerNode(d);
+            if (isIntersect(parseInt(getStartLineNumber(d.name)), parseInt(getEndLineNumber(d.name)), parseInt(linenumber[0]), parseInt(linenumber[1]))) {    //centerNode(d);
               targetNode = d;
               return selectedGold
             } else {
@@ -174,12 +170,12 @@ function buildTree(containerName, treeData) {
         else
           return d.children || d._children ? "middle" : "start";
       })
-      .text(function (d) { return GetTokenName(d.name); })
+      .text(function (d) { return getTokenName(d.name); })
       .attr("font-size", function (d) { return (20 - d.depth * 4) < 11 ? 11 : (25 - d.depth * 4); })
       .on('click', textClick);
 
     nodeEnter.append("title")
-      .text(function (d) { return GetAltContent(d.name); });
+      .text(function (d) { return getAltContent(d.name); });
 
     // Transition nodes to their new position.
     var nodeUpdate = node.transition()
@@ -270,38 +266,43 @@ function buildTree(containerName, treeData) {
 
   // Map to left editor when click the text
   function textClick(d) {
-    $.get("http://localhost:" + port.toString() + "/MatchFromRightToLeft/" + GetStartLineNumber(d.name) + "/" + GetEndLineNumber(d.name) + "/");
+    $.get("http://localhost:" + port.toString() + "/MatchFromRightToLeft/" + getStartLineNumber(d.name) + "/" + getEndLineNumber(d.name) + "/");
   }
 }
 
 // Get the token type from name
-function GetTokenName(name) {
+function getTokenName(name) {
   var info = name.split(">");
-  return info[2];
+  if (info.length >= 3)
+    return info[2];
+  return "";
 }
 
 // Get linenum from name
-function GetStartLineNumber(name) {
+function getStartLineNumber(name) {
   var info = name.split(">");
-  return info[0];
+  if (info.length >= 1)
+    return info[0];
+  return "";
 }
 
-function GetEndLineNumber(name) {
+function getEndLineNumber(name) {
   var info = name.split(">");
-  return info[1];
+  if (info.length >= 2)
+    return info[1];
+  return "";
 }
 
 // Get the content from name
-function GetAltContent(name) {
+function getAltContent(name) {
   var info = name.split(">");
   if (info.length >= 4)
-    return info[3].replaceAll("&quot;", "\"").replaceAll("&#39;", "\'");
+    return replaceAllInString(replaceAllInString(info[3], "&quot;", "\""), "&#39;", "\'");
   return info[3];
 }
 
 // For that the function 'replace' of String only replace the first one
-String.prototype.replaceAll = function (search, replacement) {
-  var target = this;
+function replaceAllInString(target, search, replacement) {
   return target.split(search).join(replacement);
 };
 
