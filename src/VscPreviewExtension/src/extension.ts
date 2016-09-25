@@ -6,18 +6,13 @@ import { workspace, window, ExtensionContext, commands, Event, Uri, ViewColumn, 
 import * as path from "path";
 import { PreviewCore } from "./previewCore";
 import { TokenTreeCore } from "./tokenTreeCore";
-
-const markdownScheme = "markdown";
-const tokenTreeScheme = "tokenTree";
-
-let startLine = 0;
-let endLine = 0;
+import * as ConstVariable from "./constVariable";
 
 export function activate(context: ExtensionContext) {
     let dfmProcess = new PreviewCore(context);
     let tokenTreeProcess = new TokenTreeCore(context);
-    let previewProviderRegistration = workspace.registerTextDocumentContentProvider(markdownScheme, dfmProcess.provider);
-    let tokenTreeProviderRegistration = workspace.registerTextDocumentContentProvider(tokenTreeScheme, tokenTreeProcess.provider);
+    let previewProviderRegistration = workspace.registerTextDocumentContentProvider(ConstVariable.markdownScheme, dfmProcess.provider);
+    let tokenTreeProviderRegistration = workspace.registerTextDocumentContentProvider(ConstVariable.tokenTreeScheme, tokenTreeProcess.provider);
 
     // Event register
     let showPreviewRegistration = commands.registerCommand("DFM.showPreview", uri => showPreview(dfmProcess));
@@ -48,13 +43,16 @@ export function activate(context: ExtensionContext) {
 
     workspace.onDidChangeConfiguration(() => {
         workspace.textDocuments.forEach(document => {
-            if (document.uri.scheme === markdownScheme) {
+            if (document.uri.scheme === ConstVariable.markdownScheme) {
                 dfmProcess.callDfm(document.uri);
-            } else if (document.uri.scheme === tokenTreeScheme) {
+            } else if (document.uri.scheme === ConstVariable.tokenTreeScheme) {
                 tokenTreeProcess.callDfm(document.uri);
             }
         });
     });
+
+    let startLine = 0;
+    let endLine = 0;
 
     window.onDidChangeTextEditorSelection(event => {
         startLine = event.selections[0].start.line + 1;
@@ -66,10 +64,10 @@ export function activate(context: ExtensionContext) {
     let server = http.createServer();
     server.on("request", function (req, res) {
         let requestInfo = req.url.split("/");
-        if (requestInfo[1] === "MatchFromRightToLeft") {
+        if (requestInfo[1] === ConstVariable.matchFromR2L) {
             if (!mapToSelection(parseInt(requestInfo[2]), parseInt(requestInfo[3])))
                 window.showErrorMessage("Selection Range Error");
-        } else if (requestInfo[1] === "MatchFromLeftToRight") {
+        } else if (requestInfo[1] === ConstVariable.matchFromL2R) {
             res.writeHead(200, { "Content-Type": "text/plain" });
             res.write(startLine + " " + endLine);
             res.end();
@@ -122,11 +120,11 @@ function isMarkdownFile(document: TextDocument) {
 }
 
 function getMarkdownUri(uri: Uri) {
-    return uri.with({ scheme: markdownScheme, path: uri.path + ".renderedDfm", query: uri.toString() });
+    return uri.with({ scheme: ConstVariable.markdownScheme, path: uri.path + ".renderedDfm", query: uri.toString() });
 }
 
 function getTokenTreeUri(uri: Uri) {
-    return uri.with({ scheme: tokenTreeScheme, path: uri.path + ".renderedTokenTree", query: uri.toString() });
+    return uri.with({ scheme: ConstVariable.tokenTreeScheme, path: uri.path + ".renderedTokenTree", query: uri.toString() });
 }
 
 function getViewColumn(sideBySide): ViewColumn {
@@ -154,7 +152,7 @@ function showSource() {
 }
 
 function showPreview(dfmPreview: PreviewCore, uri?: Uri, sideBySide: boolean = false) {
-    // Set the filename of provider        
+    // Set the filename of provider
     let filePath = window.activeTextEditor.document.fileName;
     let indexOfFilename = filePath.lastIndexOf("\\");
     let fileName = filePath.substring(indexOfFilename + 1);

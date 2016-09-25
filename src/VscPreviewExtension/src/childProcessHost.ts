@@ -36,7 +36,7 @@ export class ChildProcessHost {
                 } else {
                     that._content = dfmResult;
                 }
-                that._isMultipleRead = !(endCharCode === that.ENDCODE);
+                that._isMultipleRead = endCharCode !== that.ENDCODE;
                 if (!that._isMultipleRead) {
                     that.provider.update(that._documentUri, that._content);
                 }
