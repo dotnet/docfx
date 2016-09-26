@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     _currentBuildInfo.PluginHash = ComputePluginHash(assemblyList);
                     _currentBuildInfo.TemplateHash = templateHash;
-                    _currentBuildInfo.DirectoryName = IncrementalUtility.CreateRandomDir(intermediateFolder);
+                    _currentBuildInfo.DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder);
                 }
             }
             Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
