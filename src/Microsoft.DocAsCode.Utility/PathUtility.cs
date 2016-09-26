@@ -7,14 +7,16 @@ namespace Microsoft.DocAsCode.Utility
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Web;
+    using System.Text.RegularExpressions;
 
     /// <summary>
     /// 
     /// </summary>
     public static class PathUtility
     {
-        private static char[] InvalidFilePathChars = Path.GetInvalidFileNameChars();
+        private static readonly Regex UriWithProtocol = new Regex(@"^\w{2,}\:", RegexOptions.Compiled);
+        private static readonly char[] InvalidFilePathChars = Path.GetInvalidFileNameChars();
+
         public static string ToValidFilePath(this string input)
         {
             if (string.IsNullOrEmpty(input))
@@ -197,7 +199,10 @@ namespace Microsoft.DocAsCode.Utility
 
         public static bool IsRelativePath(string path)
         {
-            if (string.IsNullOrEmpty(path)) return false;
+            if (string.IsNullOrEmpty(path))
+            {
+                return false;
+            }
 
             // IsWellFormedUriString does not try to escape characters such as '\' ' ', '(', ')' and etc. first. Use TryCreate instead
             Uri absoluteUri;
@@ -206,9 +211,11 @@ namespace Microsoft.DocAsCode.Utility
                 return false;
             }
 
-            if (path.StartsWith("mailto:", StringComparison.OrdinalIgnoreCase)) return false;
-            // it is possible that mailto: is mangled(encoded) to prevent spammers
-            if (HttpUtility.HtmlDecode(path).StartsWith("mailto:", StringComparison.OrdinalIgnoreCase)) return false;
+            if (UriWithProtocol.IsMatch(path))
+            {
+                return false;
+            }
+
             return !Path.IsPathRooted(path);
         }
 
