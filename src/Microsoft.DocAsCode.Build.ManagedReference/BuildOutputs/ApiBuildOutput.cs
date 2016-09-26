@@ -144,6 +144,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("platform")]
         public List<string> Platform { get; set; }
 
+        [YamlMember(Alias = "attributes")]
+        [JsonProperty("attributes")]
+        public List<AttributeInfo> Attributes { get; set; }
+
         [ExtensibleMember]
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
@@ -229,6 +233,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 ExtensionMethods = GetReferenceList(model.ExtensionMethods, references, model.SupportedLanguages),
                 Conceptual = model.Conceptual,
                 Platform = model.Platform,
+                Attributes = model.Attributes,
                 Metadata = metadata.Concat(model.Metadata.Where(p => !metadata.Keys.Contains(p.Key))).ToDictionary(p => p.Key, p => p.Value),
             };
         }
