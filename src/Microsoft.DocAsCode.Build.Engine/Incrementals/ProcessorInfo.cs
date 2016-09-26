@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (IntermediateModelManifestFile == null)
             {
-                IntermediateModelManifestFile = IncrementalUtility.GetRandomEntry(baseDir);
+                IntermediateModelManifestFile = IncrementalUtility.CreateRandomFileName(baseDir);
             }
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, IntermediateModelManifestFile), IntermediateModelManifest);
         }

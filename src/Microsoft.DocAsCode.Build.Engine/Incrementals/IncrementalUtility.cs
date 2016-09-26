@@ -12,6 +12,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
     public static class IncrementalUtility
     {
+        private const int MaxRetry = 3;
+
         public static T LoadIntermediateFile<T>(string fileName)
         {
             if (string.IsNullOrEmpty(fileName))
@@ -79,12 +81,69 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return name;
         }
 
-        public static string CreateRandomDir(string baseDir)
+        public static string CreateRandomFileName(string baseDir) =>
+            RetryIO(() =>
+            {
+                string fileName = GetRandomEntry(baseDir);
+                using (File.Create(Path.Combine(baseDir, fileName)))
+                {
+                    // create new zero length file.
+                }
+                return fileName;
+            });
+
+        public static FileStream CreateRandomFileStream(string baseDir) =>
+            RetryIO(() =>
+            {
+                string fileName = GetRandomEntry(baseDir);
+                return File.Create(Path.Combine(baseDir, GetRandomEntry(baseDir)));
+            });
+
+        public static string CreateRandomDirectory(string baseDir) =>
+            RetryIO(() =>
+            {
+                var folderName = GetRandomEntry(baseDir);
+                Directory.CreateDirectory(Path.Combine(baseDir, folderName));
+                return folderName;
+            });
+
+        public static T RetryIO<T>(Func<T> func)
         {
-            string folderName = GetRandomEntry(baseDir);
-            Directory.CreateDirectory(Path.Combine(baseDir, folderName));
-            return folderName;
+            var count = 0;
+            while (true)
+            {
+                try
+                {
+                    return func();
+                }
+                catch (IOException)
+                {
+                    if (count++ >= MaxRetry)
+                    {
+                        throw;
+                    }
+                }
+            }
         }
 
+        public static void RetryIO(Action action)
+        {
+            var count = 0;
+            while (true)
+            {
+                try
+                {
+                    action();
+                    return;
+                }
+                catch (IOException)
+                {
+                    if (count++ >= MaxRetry)
+                    {
+                        throw;
+                    }
+                }
+            }
+        }
     }
 }

@@ -542,30 +542,33 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             foreach (var pair in ModelLoadInfo)
             {
-                string fileName = IncrementalUtility.GetRandomEntry(IncrementalBaseDir);
-                if (pair.Value == LoadPhase.None)
+                IncrementalUtility.RetryIO(() =>
                 {
-                    if (LastIntermediateModelManifest == null)
+                    string fileName = IncrementalUtility.GetRandomEntry(IncrementalBaseDir);
+                    if (pair.Value == LoadPhase.None)
                     {
-                        throw new InvalidDataException($"Full build hasn't loaded model {pair.Key.FullPath}");
+                        if (LastIntermediateModelManifest == null)
+                        {
+                            throw new InvalidDataException($"Full build hasn't loaded model {pair.Key.FullPath}");
+                        }
+                        string lfn;
+                        if (!LastIntermediateModelManifest.Models.TryGetValue(pair.Key.File, out lfn))
+                        {
+                            throw new InvalidDataException($"Last build hasn't loaded model {pair.Key.FullPath}");
+                        }
+                        File.Move(Path.Combine(LastIncrementalBaseDir, lfn), Path.Combine(IncrementalBaseDir, fileName));
                     }
-                    string lfn;
-                    if (!LastIntermediateModelManifest.Models.TryGetValue(pair.Key.File, out lfn))
+                    else
                     {
-                        throw new InvalidDataException($"Last build hasn't loaded model {pair.Key.FullPath}");
+                        var key = RelativePath.NormalizedWorkingFolder + pair.Key.File;
+                        var model = Models.Find(m => m.Key == key);
+                        using (var stream = File.Create(Path.Combine(IncrementalBaseDir, fileName)))
+                        {
+                            processor.SaveIntermediateModel(model, stream);
+                        }
                     }
-                    File.Move(Path.Combine(LastIncrementalBaseDir, lfn), Path.Combine(IncrementalBaseDir, fileName));
-                }
-                else
-                {
-                    var key = RelativePath.NormalizedWorkingFolder + pair.Key.File;
-                    var model = Models.Find(m => m.Key == key);
-                    using (var stream = new FileStream(Path.Combine(IncrementalBaseDir, fileName), FileMode.Create, FileAccess.Write))
-                    {
-                        processor.SaveIntermediateModel(model, stream);
-                    }
-                }
-                CurrentIntermediateModelManifest.Models.Add(pair.Key.File, fileName);
+                    CurrentIntermediateModelManifest.Models.Add(pair.Key.File, fileName);
+                });
             }
         }
 
@@ -575,7 +578,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return null;
             }
-            var processor = (ISupportIncrementalDocumentProcessor)Processor ;
+            var processor = (ISupportIncrementalDocumentProcessor)Processor;
             string cfn;
             if (!CurrentIntermediateModelManifest.Models.TryGetValue(fileName, out cfn))
             {
