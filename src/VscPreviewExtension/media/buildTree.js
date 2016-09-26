@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 function buildTree(containerName, treeData) {
-  var i = 0;
-  var durationTime = 750;
+  var nodeCount = 0;
+  var durationTimeInMilliSecond = 750;
   var maxLabelLengthOfEachLevel = [0];
   var port = document.body.childNodes[1].data;
 
@@ -21,10 +21,10 @@ function buildTree(containerName, treeData) {
     // If the node has children , the text(node's name) will be displayed on the head of node , or on the right
     if (!(d.children && d.children.length > 0))
       tmp++;
-    // 'while' but not 'if' because it maybe skip the next level
+    // 'while' but not 'if' because it may skip the next level
     while (maxLabelLengthOfEachLevel.length <= tmp)
       maxLabelLengthOfEachLevel.push(minHorizontalSpace);
-    maxLabelLengthOfEachLevel[tmp] = Math.min(Math.max(maxLabelLengthOfEachLevel[tmp], getTokenName(d.name).length), 12);
+    maxLabelLengthOfEachLevel[tmp] = Math.min(Math.max(maxLabelLengthOfEachLevel[tmp], getTokenName(d.name).length), maxHorizontalSpace);
   }, function (d) {
     return d.children && d.children.length > 0 ? d.children : null;
   })
@@ -143,7 +143,7 @@ function buildTree(containerName, treeData) {
 
     // Update the nodes...
     node = vis.selectAll("g.node")
-      .data(nodes, function (d) { return d.id || (d.id = ++i); });
+      .data(nodes, function (d) { return d.id || (d.id = ++nodeCount); });
 
     // Enter any new nodes at the parent's previous position.
     var nodeEnter = node.enter().append("svg:g")
@@ -179,7 +179,7 @@ function buildTree(containerName, treeData) {
 
     // Transition nodes to their new position.
     var nodeUpdate = node.transition()
-      .duration(durationTime)
+      .duration(durationTimeInMilliSecond)
       .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
 
     nodeUpdate.select("circle")
@@ -192,7 +192,7 @@ function buildTree(containerName, treeData) {
 
     // Transition exiting nodes to the parent's new position.
     var nodeExit = node.exit().transition()
-      .duration(durationTime)
+      .duration(durationTimeInMilliSecond)
       .attr("transform", function (d) { return "translate(" + source.y + "," + source.x + ")"; })
       .remove();
 
@@ -218,12 +218,12 @@ function buildTree(containerName, treeData) {
 
     // Transition links to their new position.
     link.transition()
-      .duration(durationTime)
+      .duration(durationTimeInMilliSecond)
       .attr("d", diagonal);
 
     // Transition exiting nodes to the parent's new position.
     link.exit().transition()
-      .duration(durationTime)
+      .duration(durationTimeInMilliSecond)
       .attr("d", function (d) {
         var o = { x: source.x, y: source.y };
         return diagonal({ source: o, target: o });
@@ -245,7 +245,7 @@ function buildTree(containerName, treeData) {
     x = x * scale + width / 3 + source.depth * 100;   // Center of different level will be different
     y = y * scale + height / 2;
     d3.select('g').transition()
-      .duration(durationTime)
+      .duration(durationTimeInMilliSecond)
       .attr("transform", "translate(" + x + "," + y + ")scale(" + scale + ")");
     zoomListener.scale(scale)
       .translate([x, y]);
@@ -266,7 +266,7 @@ function buildTree(containerName, treeData) {
 
   // Map to left editor when click the text
   function textClick(d) {
-    $.get("http://localhost:" + port.toString() + "/MatchFromRightToLeft/" + getStartLineNumber(d.name) + "/" + getEndLineNumber(d.name) + "/");
+    $.get("http://localhost:" + [port.toString(), "MatchFromRightToLeft", getStartLineNumber(d.name), getEndLineNumber(d.name)].join("/"));
   }
 }
 
@@ -298,7 +298,7 @@ function getAltContent(name) {
   var info = name.split(">");
   if (info.length >= 4)
     return replaceAllInString(replaceAllInString(info[3], "&quot;", "\""), "&#39;", "\'");
-  return info[3];
+  return "";
 }
 
 // For that the function 'replace' of String only replace the first one
