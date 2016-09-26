@@ -93,11 +93,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             });
 
         public static FileStream CreateRandomFileStream(string baseDir) =>
-            RetryIO(() =>
-            {
-                string fileName = GetRandomEntry(baseDir);
-                return File.Create(Path.Combine(baseDir, GetRandomEntry(baseDir)));
-            });
+            RetryIO(() => File.Create(Path.Combine(baseDir, GetRandomEntry(baseDir))));
 
         public static string CreateRandomDirectory(string baseDir) =>
             RetryIO(() =>
