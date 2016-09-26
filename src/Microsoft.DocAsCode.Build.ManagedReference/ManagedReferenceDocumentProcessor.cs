@@ -144,7 +144,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 FileLinkSources = model.FileLinkSources,
                 UidLinkSources = model.UidLinkSources,
                 XRefSpecs = (from item in vm.Items
-                             select GetXRefInfo(item, model.Key)).ToImmutableArray(),
+                             from xref in GetXRefInfo(item, model.Key)
+                             select xref).ToImmutableArray(),
                 ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray(),
             };
         }
@@ -215,7 +216,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
         }
 
-        private static XRefSpec GetXRefInfo(ItemViewModel item, string key)
+        private static IEnumerable<XRefSpec> GetXRefInfo(ItemViewModel item, string key)
         {
             var result = new XRefSpec
             {
@@ -243,6 +244,117 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             if (!string.IsNullOrEmpty(item.FullNameForVB))
             {
                 result["fullName.vb"] = item.FullNameForVB;
+            }
+            yield return result;
+            // generate overload xref spec.
+            // todo : remove when overload is ready in yaml file.
+            if (item.Type != null)
+            {
+                switch (item.Type.Value)
+                {
+                    case MemberType.Property:
+                    case MemberType.Constructor:
+                    case MemberType.Method:
+                    case MemberType.Operator:
+                        yield return GenerateOverloadXrefSpec(item, key, result);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Work around, remove when overload is ready in yaml file.
+        /// </summary>
+        private static XRefSpec GenerateOverloadXrefSpec(ItemViewModel item, string key, XRefSpec result)
+        {
+            var uidBody = item.Uid;
+            {
+                var index = uidBody.IndexOf('(');
+                if (index != -1)
+                {
+                    uidBody = uidBody.Remove(index);
+                }
+            }
+            uidBody = System.Text.RegularExpressions.Regex.Replace(uidBody, @"``\d+$", string.Empty);
+            var overload = new XRefSpec
+            {
+                Uid = uidBody + "*",
+                Href = key,
+                CommentId = "Overload:" + uidBody,
+            };
+            {
+                var index = item.Name.IndexOfAny(new char[] { '(', '[' });
+                if (index != -1)
+                {
+                    result.Name = item.Name.Remove(index);
+                }
+                else
+                {
+                    result.Name = item.Name;
+                }
+            }
+            if (!string.IsNullOrEmpty(item.NameForCSharp))
+            {
+                var index = item.NameForCSharp.IndexOfAny(new char[] { '(', '[' });
+                if (index != -1)
+                {
+                    result["name.csharp"] = item.NameForCSharp.Remove(index);
+                }
+                else
+                {
+                    result["name.csharp"] = item.NameForCSharp;
+                }
+            }
+            if (!string.IsNullOrEmpty(item.NameForVB))
+            {
+                var index = item.NameForVB.IndexOfAny(new char[] { '(', '[' });
+                if (index != -1)
+                {
+                    result["name.vb"] = item.NameForVB.Remove(index);
+                }
+                else
+                {
+                    result["name.vb"] = item.NameForVB;
+                }
+            }
+            if (!string.IsNullOrEmpty(item.FullName))
+            {
+                var index = item.FullName.IndexOfAny(new char[] { '(', '[' });
+                if (index != -1)
+                {
+                    result["fullName"] = item.FullName.Remove(index);
+                }
+                else
+                {
+                    result["fullName"] = item.FullName;
+                }
+                result["fullName"] = item.FullName;
+            }
+            if (!string.IsNullOrEmpty(item.FullNameForCSharp))
+            {
+                var index = item.FullNameForCSharp.IndexOfAny(new char[] { '(', '[' });
+                if (index != -1)
+                {
+                    result["fullName.csharp"] = item.FullNameForCSharp.Remove(index);
+                }
+                else
+                {
+                    result["fullName.csharp"] = item.FullNameForCSharp;
+                }
+            }
+            if (!string.IsNullOrEmpty(item.FullNameForVB))
+            {
+                var index = item.FullNameForVB.IndexOfAny(new char[] { '(', '[' });
+                if (index != -1)
+                {
+                    result["fullName.vb"] = item.FullNameForVB.Remove(index);
+                }
+                else
+                {
+                    result["fullName.vb"] = item.FullNameForVB;
+                }
             }
             return result;
         }
