@@ -3,33 +3,35 @@
 import { workspace, window, ExtensionContext, Uri } from "vscode";
 import * as childProcess from "child_process";
 import { ContentProvider } from "./contentProvider";
+import * as ConstVariable from "./constVariable";
 
 export class ChildProcessHost {
     public provider: ContentProvider;
 
     protected _spawn: childProcess.ChildProcess;
     protected _waiting: boolean;
+    protected _documentUri: Uri;
+
     private _content: string;
     private _isMultipleRead = false;
-    protected _documentUri: Uri;
     private ENDCODE = 7; // '\a'
 
     constructor(context: ExtensionContext) {
         // TODO: make path configurable
-        let extpath = context.asAbsolutePath("./DfmParse/Microsoft.DocAsCode.Dfm.VscPreview.exe");
-        this._spawn = childProcess.spawn(extpath);
+        let exePath = context.asAbsolutePath("./DfmParse/Microsoft.DocAsCode.Dfm.VscPreview.exe");
+        this._spawn = childProcess.spawn(exePath);
         if (!this._spawn.pid) {
             window.showErrorMessage("Error:DfmProcess lost!");
             return;
         }
         this._waiting = false;
-        this.initialProvider(context);
+        this.initializeProvider(context);
         let that = this;
 
         this._spawn.stdout.on("data", function (data) {
             // The output of child process will be cut if it is too long
             let dfmResult = data.toString();
-            if (dfmResult.length !== 0) {
+            if (dfmResult.length > 0) {
                 let endCharCode = dfmResult.charCodeAt(dfmResult.length - 1);
                 if (that._isMultipleRead) {
                     that._content += dfmResult;
@@ -52,7 +54,7 @@ export class ChildProcessHost {
         });
     }
 
-    protected initialProvider(context) { }
+    protected initializeProvider(context: ExtensionContext) { }
 
     protected sendMessage() {
         let editor = window.activeTextEditor;
@@ -73,13 +75,13 @@ export class ChildProcessHost {
             let rootPathLength = rootPath.length;
             filePath = fileName.substr(rootPathLength + 1, fileName.length - rootPathLength);
         }
-        if (doc.languageId === "markdown") {
+        if (doc.languageId === ConstVariable.languageId) {
             let numOfRow = doc.lineCount;
             this.writeToStdin(rootPath, filePath, numOfRow, docContent);
         }
     }
 
-    protected writeToStdin(rootPath, filePath, numOfRow, docContent) { }
+    protected writeToStdin(rootPath: string, filePath: string, numOfRow: number, docContent: string) { }
 
     protected appendWrap(content) {
         return content + "\n";

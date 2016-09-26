@@ -13,7 +13,7 @@ export class ContentProvider implements TextDocumentContentProvider {
         this._context = context;
     }
 
-    protected getMediaPath(mediaFile): string {
+    protected getMediaPath(mediaFile: string): string {
         return this._context.asAbsolutePath(path.join("media", mediaFile));
     }
 

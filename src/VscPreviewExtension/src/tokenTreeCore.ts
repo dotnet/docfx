@@ -1,14 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Uri } from "vscode";
+import { Uri, ExtensionContext } from "vscode";
 import { TokenTreeContentProvider } from "./tokenTreeContentProvider";
 import { ChildProcessHost } from "./childProcessHost"
 
 // Create a child process(DfmRender) by "_spawn" to render a html
-export class TokenTreeCore extends ChildProcessHost{
+export class TokenTreeCore extends ChildProcessHost {
     public provider: TokenTreeContentProvider;
 
-    protected initialProvider(context) {
+    protected initializeProvider(context: ExtensionContext) {
         this.provider = new TokenTreeContentProvider(context);
     }
 

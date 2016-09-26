@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Uri } from "vscode";
+import { Uri, ExtensionContext } from "vscode";
 import { MarkdownDocumentContentProvider } from "./markdownDocumentContentProvider";
 import { ChildProcessHost } from "./childProcessHost"
 
@@ -9,11 +9,11 @@ export class PreviewCore extends ChildProcessHost {
     public isFirstTime: boolean;
     public provider: MarkdownDocumentContentProvider;
 
-    protected initialProvider(context) {
+    protected initializeProvider(context: ExtensionContext) {
         this.provider = new MarkdownDocumentContentProvider(context);
     }
 
-    protected writeToStdin(rootPath, filePath, numOfRow, docContent) {
+    protected writeToStdin(rootPath: string, filePath: string, numOfRow: number, docContent: string) {
         this._spawn.stdin.write(this.appendWrap("dfmmarkup"));
         this._spawn.stdin.write(this.appendWrap(rootPath));
         this._spawn.stdin.write(this.appendWrap(filePath));

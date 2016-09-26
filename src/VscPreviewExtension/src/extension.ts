@@ -89,13 +89,13 @@ export function activate(context: ExtensionContext) {
     }
 }
 
-function getRandomInt(min, max) {
+function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function mapToSelection(startLineNumber, endLineNumber) {
+function mapToSelection(startLineNumber: number, endLineNumber: number) {
     if (startLineNumber > endLineNumber)
         return false;
     // Go back to the Source file editor first
@@ -127,7 +127,7 @@ function getTokenTreeUri(uri: Uri) {
     return uri.with({ scheme: ConstVariable.tokenTreeScheme, path: uri.path + ".renderedTokenTree", query: uri.toString() });
 }
 
-function getViewColumn(sideBySide): ViewColumn {
+function getViewColumn(sideBySide: boolean): ViewColumn {
     const active = window.activeTextEditor;
     if (!active) {
         return ViewColumn.One;
