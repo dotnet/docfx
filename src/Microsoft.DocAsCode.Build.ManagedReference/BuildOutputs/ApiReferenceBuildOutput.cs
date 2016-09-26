@@ -138,6 +138,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("conceptual")]
         public string Conceptual { get; set; }
 
+        [YamlMember(Alias = "attributes")]
+        [JsonProperty("attributes")]
+        public List<AttributeInfo> Attributes { get; set; }
+
         [YamlMember(Alias = "index")]
         [JsonProperty("index")]
         public int? Index { get; set; }
@@ -241,6 +245,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Modifiers = vm.Modifiers,
                 Conceptual = vm.Conceptual,
                 Metadata = vm.Metadata,
+                Attributes = vm.Attributes,
                 Syntax = ApiSyntaxBuildOutput.FromModel(vm.Syntax, vm.SupportedLanguages),
                 Exceptions = vm.Exceptions?.Select(s => ApiExceptionInfoBuildOutput.FromModel(s)).ToList(),
             };
