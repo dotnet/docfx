@@ -68,5 +68,23 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
             return ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
         }
+
+        public static string GetRandomEntry(string baseDir)
+        {
+            string name;
+            do
+            {
+                name = Path.GetRandomFileName();
+            } while (Directory.Exists(Path.Combine(baseDir, name)) || File.Exists(Path.Combine(baseDir, name)));
+            return name;
+        }
+
+        public static string CreateRandomDir(string baseDir)
+        {
+            string folderName = GetRandomEntry(baseDir);
+            Directory.CreateDirectory(Path.Combine(baseDir, folderName));
+            return folderName;
+        }
+
     }
 }

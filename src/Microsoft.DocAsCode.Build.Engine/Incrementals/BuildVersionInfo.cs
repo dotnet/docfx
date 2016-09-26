@@ -5,9 +5,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System.Collections.Generic;
     using System.IO;
-    using System.Runtime.Serialization;
 
     using Microsoft.DocAsCode.Plugins;
+
     using Newtonsoft.Json;
 
     public class BuildVersionInfo
@@ -47,13 +47,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// </summary>
         public string XRefSpecMapFile { get; set; }
         /// <summary>
-        /// The file link for the BuildModel manifest file(type is <see cref="ModelManifest"/>).
+        /// The file link for the build message file (type is <see cref="BuildMessageInfo"/>).
         /// </summary>
-        public string BuildModelManifestFile { get; set; }
-        /// <summary>
-        /// The file link for the PostBuildModel manifest file(type is <see cref="ModelManifest"/>).
-        /// </summary>
-        public string PostBuildModelManifestFile { get; set; }
+        public string BuildMessageFile { get; set; }
 
         #region Deserialized content
         /// <summary>
@@ -77,35 +73,30 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         [JsonIgnore]
         public IDictionary<string, XRefSpec> XRefSpecMap { get; set; }
         /// <summary>
-        /// deserialized build model manifest
+        /// deserialized build messages.
         /// </summary>
         [JsonIgnore]
-        public ModelManifest BuildModelManifest { get; set; }
-        /// <summary>
-        /// deserialized postbuild model manifest
-        /// </summary>
-        [JsonIgnore]
-        public ModelManifest PostBuildModelManifest { get; set; }
+        public BuildMessageInfo BuildMessage { get; } = new BuildMessageInfo();
         #endregion
 
         internal void Load(string baseDir)
         {
             Dependency = IncrementalUtility.LoadDependency(Path.Combine(baseDir, DependencyFile));
             Attributes = IncrementalUtility.LoadIntermediateFile<IDictionary<string, FileAttributeItem>>(Path.Combine(baseDir, AttributesFile));
-            //Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(Path.Combine(baseDir, ManifestFile));
-            //XRefSpecMap = IncrementalUtility.LoadIntermediateFile<IDictionary<string, XRefSpec>>(Path.Combine(baseDir, XRefSpecMapFile));
-            BuildModelManifest = IncrementalUtility.LoadIntermediateFile<ModelManifest>(Path.Combine(baseDir, BuildModelManifestFile));
-            PostBuildModelManifest = IncrementalUtility.LoadIntermediateFile<ModelManifest>(Path.Combine(baseDir, PostBuildModelManifestFile));
+            foreach (var processor in Processors)
+            {
+                processor.Load(baseDir);
+            }
         }
 
         internal void Save(string baseDir)
         {
             IncrementalUtility.SaveDependency(Path.Combine(baseDir, DependencyFile), Dependency);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, AttributesFile), Attributes);
-            //IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestFile), Manifest);
-            //IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, XRefSpecMapFile), XRefSpecMap);
-            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, BuildModelManifestFile), BuildModelManifest);
-            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, PostBuildModelManifestFile), PostBuildModelManifest);
+            foreach (var processor in Processors)
+            {
+                processor.Save(baseDir);
+            }
         }
     }
 }

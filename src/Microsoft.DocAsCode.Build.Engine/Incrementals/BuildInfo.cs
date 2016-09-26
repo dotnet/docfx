@@ -14,6 +14,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         public const string FileName = "build.info";
 
         /// <summary>
+        /// The directory name from base dir.
+        /// </summary>
+        public string DirectoryName { get; set; }
+        /// <summary>
         /// The build start time for this build.
         /// </summary>
         public DateTime BuildStartTime { get; set; }
@@ -34,25 +38,23 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// </summary>
         public List<BuildVersionInfo> Versions { get; } = new List<BuildVersionInfo>();
 
-        public static BuildInfo Load(string jsonFilePath)
+        public static BuildInfo Load(string baseDir)
         {
-            var buildInfo = JsonUtility.Deserialize<BuildInfo>(jsonFilePath);
-            var baseDir = Path.GetDirectoryName(jsonFilePath);
+            var buildInfo = JsonUtility.Deserialize<BuildInfo>(Path.Combine(baseDir, FileName));
             foreach (var version in buildInfo.Versions)
             {
-                version.Load(baseDir);
+                version.Load(Path.Combine(baseDir, buildInfo.DirectoryName));
             }
             return buildInfo;
         }
 
-        public static void Save(string jsonFilePath, BuildInfo buildInfo)
+        public void Save(string baseDir)
         {
-            var baseDir = Path.GetDirectoryName(jsonFilePath);
-            foreach (var version in buildInfo.Versions)
+            foreach (var version in Versions)
             {
-                version.Save(baseDir);
+                version.Save(Path.Combine(baseDir, DirectoryName));
             }
-            JsonUtility.Serialize(jsonFilePath, buildInfo);
+            JsonUtility.Serialize(Path.Combine(baseDir, FileName), this);
         }
     }
 }
