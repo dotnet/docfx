@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.Dfm
             inlineRules[index] = new DfmTextInlineRule();
 
             var blockRules = BlockRules.ToList();
-            index = blockRules.FindLastIndex(s => s is MarkdownNewLineBlockRule);
+            index = blockRules.FindLastIndex(s => s is MarkdownCodeBlockRule);
             if (index < 0)
             {
                 throw new ArgumentException("MarkdownNewLineBlockRule should exist!");
