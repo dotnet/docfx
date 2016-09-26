@@ -73,11 +73,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         [JsonIgnore]
         public IDictionary<string, XRefSpec> XRefSpecMap { get; set; }
         /// <summary>
-        /// deserialized build model manifest
-        /// </summary>
-        [JsonIgnore]
-        public ModelManifest BuildModelManifest { get; } = new ModelManifest();
-        /// <summary>
         /// deserialized build messages.
         /// </summary>
         [JsonIgnore]
