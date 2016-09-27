@@ -96,7 +96,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 originalSymbol = reducedFrom;
             }
-            reference.IsDefinition = (originalSymbol == symbol) && (id == rawId) && symbol.IsDefinition;
+            reference.IsDefinition = (originalSymbol == symbol) && (id == rawId) && (symbol.IsDefinition || VisitorHelper.GetId(symbol.OriginalDefinition) == rawId);
 
             if (!reference.IsDefinition.Value && rawId != null)
             {
