@@ -83,15 +83,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     string configHash = ComputeConfigHash(parameters);
                     var fileAttributes = ComputeFileAttributes(parameters);
+                    var baseDir = Path.Combine(IntermediateFolder, CurrentBuildInfo.DirectoryName);
                     _cbv = new BuildVersionInfo
                     {
                         VersionName = parameters.VersionName,
                         ConfigHash = configHash,
-                        AttributesFile = "attributes",
-                        DependencyFile = "dependency",
-                        ManifestFile = "manifest",
-                        XRefSpecMapFile = "xrefspecmap",
-                        BuildMessageFile = "buildmessage",
+                        AttributesFile = IncrementalUtility.CreateRandomFileName(baseDir),
+                        DependencyFile = IncrementalUtility.CreateRandomFileName(baseDir),
+                        ManifestFile = IncrementalUtility.CreateRandomFileName(baseDir),
+                        XRefSpecMapFile = IncrementalUtility.CreateRandomFileName(baseDir),
+                        BuildMessageFile = IncrementalUtility.CreateRandomFileName(baseDir),
                         Attributes = fileAttributes,
                         Dependency = context.DependencyGraph,
                     };
