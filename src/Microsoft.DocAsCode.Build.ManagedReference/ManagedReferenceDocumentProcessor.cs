@@ -267,7 +267,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         /// <summary>
         /// Work around, remove when overload is ready in yaml file.
         /// </summary>
-        private static XRefSpec GenerateOverloadXrefSpec(ItemViewModel item, string key, XRefSpec result)
+        private static XRefSpec GenerateOverloadXrefSpec(ItemViewModel item, string key)
         {
             var uidBody = item.Uid;
             {
@@ -278,7 +278,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 }
             }
             uidBody = System.Text.RegularExpressions.Regex.Replace(uidBody, @"``\d+$", string.Empty);
-            var overload = new XRefSpec
+            var result = new XRefSpec
             {
                 Uid = uidBody + "*",
                 Href = key,
