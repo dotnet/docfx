@@ -256,7 +256,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     case MemberType.Constructor:
                     case MemberType.Method:
                     case MemberType.Operator:
-                        yield return GenerateOverloadXrefSpec(item, key, result);
+                        yield return GenerateOverloadXrefSpec(item, key);
                         break;
                     default:
                         break;
