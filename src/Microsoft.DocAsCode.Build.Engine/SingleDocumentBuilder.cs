@@ -415,7 +415,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 buildSaver = h => h.SaveIntermediateModel();
                 loader = hs =>
                 {
-                    Logger.UnregisterListener(_cbv.BuildMessage.GetListener());
                     UpdateHostServices(hostServices);
                     if (_lbv != null)
                     {
@@ -429,6 +428,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             }
                         }
                     }
+                    Logger.UnregisterListener(_cbv.BuildMessage.GetListener());
                 };
             }
 

@@ -76,13 +76,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// deserialized build messages.
         /// </summary>
         [JsonIgnore]
-        public BuildMessageInfo BuildMessage { get; } = new BuildMessageInfo();
+        public BuildMessageInfo BuildMessage { get; set; } = new BuildMessageInfo();
         #endregion
 
         internal void Load(string baseDir)
         {
             Dependency = IncrementalUtility.LoadDependency(Path.Combine(baseDir, DependencyFile));
             Attributes = IncrementalUtility.LoadIntermediateFile<IDictionary<string, FileAttributeItem>>(Path.Combine(baseDir, AttributesFile));
+            BuildMessage = BuildMessageInfo.Load(Path.Combine(baseDir, BuildMessageFile));
             foreach (var processor in Processors)
             {
                 processor.Load(baseDir);
@@ -93,6 +94,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             IncrementalUtility.SaveDependency(Path.Combine(baseDir, DependencyFile), Dependency);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, AttributesFile), Attributes);
+            BuildMessage.Save(Path.Combine(baseDir, BuildMessageFile));
             foreach (var processor in Processors)
             {
                 processor.Save(baseDir);
