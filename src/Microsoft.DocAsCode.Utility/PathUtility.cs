@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.Utility
     {
         private static readonly Regex UriWithProtocol = new Regex(@"^\w{2,}\:", RegexOptions.Compiled);
         private static readonly char[] InvalidFilePathChars = Path.GetInvalidFileNameChars();
+        private static readonly char[] InvalidPathChars = Path.GetInvalidPathChars();
 
         public static string ToValidFilePath(this string input)
         {
@@ -214,6 +215,14 @@ namespace Microsoft.DocAsCode.Utility
             if (UriWithProtocol.IsMatch(path))
             {
                 return false;
+            }
+
+            foreach (var ch in InvalidPathChars)
+            {
+                if (path.Contains(ch))
+                {
+                    return false;
+                }
             }
 
             return !Path.IsPathRooted(path);
