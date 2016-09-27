@@ -189,7 +189,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             if (href == null)
             {
-                Logger.LogWarning($"Unable to find file \"{originalPathToFile}\" for {propertyName} referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
+                Logger.LogInfo($"Unable to find file \"{originalPathToFile}\" for {propertyName} referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
                 return originalPathToFile;
             }
 
