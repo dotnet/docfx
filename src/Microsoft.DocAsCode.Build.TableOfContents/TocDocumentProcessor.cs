@@ -96,10 +96,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             // Have to register TocMap after uid is resolved
             RegisterTocMap(toc, model.Key, context);
 
-            toc.Homepage = ResolveHref(toc.Homepage, toc.OriginalHomepage, model, context);
-            toc.Href = ResolveHref(toc.Href, toc.OriginalHref, model, context);
-            toc.TocHref = ResolveHref(toc.TocHref, toc.OriginalTocHref, model, context);
-            toc.TopicHref = ResolveHref(toc.TopicHref, toc.OriginalTopicHref, model, context);
+            toc.Homepage = ResolveHref(toc.Homepage, toc.OriginalHomepage, model, context, nameof(toc.Homepage));
+            toc.Href = ResolveHref(toc.Href, toc.OriginalHref, model, context, nameof(toc.Href));
+            toc.TocHref = ResolveHref(toc.TocHref, toc.OriginalTocHref, model, context, nameof(toc.TocHref));
+            toc.TopicHref = ResolveHref(toc.TopicHref, toc.OriginalTopicHref, model, context, nameof(toc.TopicHref));
+
             if (toc.Items != null && toc.Items.Count > 0)
             {
                 foreach (var item in toc.Items)
@@ -169,7 +170,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private string ResolveHref(string pathToFile, string originalPathToFile, FileModel model, IDocumentBuildContext context)
+        private string ResolveHref(string pathToFile, string originalPathToFile, FileModel model, IDocumentBuildContext context, string propertyName)
         {
             if (!Utility.IsSupportedRelativeHref(pathToFile))
             {
@@ -179,7 +180,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var index = pathToFile.IndexOf('#');
             if (index == 0)
             {
-                throw new DocumentException($"Invalid toc link: {originalPathToFile}.");
+                throw new DocumentException($"Invalid toc link for {propertyName}: {originalPathToFile}.");
             }
             string href = index == -1
                 ? context.GetFilePath(pathToFile)
@@ -188,7 +189,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             if (href == null)
             {
-                Logger.LogWarning($"Unable to find file \"{originalPathToFile}\" referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
+                Logger.LogInfo($"Unable to find file \"{originalPathToFile}\" for {propertyName} referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
                 return originalPathToFile;
             }
 
