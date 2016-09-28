@@ -4,15 +4,12 @@
 namespace Microsoft.DocAsCode.Dfm.VscPreview
 {
     using System;
-    using System.IO;
     using System.Text;
 
     using Microsoft.DocAsCode.Build.Engine;
-    using Microsoft.DocAsCode.Dfm;
-    using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
-    internal class Program
+    internal class DfmProcess
     {
         static void Main(string[] args)
         {

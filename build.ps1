@@ -166,6 +166,12 @@ Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.dll" -Destina
 Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.exe" -Destination "src\nuspec\AzureMarkdownRewriterTool\tools\"
 Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.exe.config" -Destination "src\nuspec\AzureMarkdownRewriterTool\tools\"
 
+# Build VscPreviewExe
+Write-Host "Build VscPreviewExe to the target folder"
+$VscPreviewFolder = "src/VscPreviewExtension"
+& dotnet build "$VscPreviewFolder/Microsoft.DocAsCode.Dfm.VscPreview" -f net452 -o "$VscPreviewFolder/DfmParse"
+Remove-Item "$VscPreviewFolder/DfmParse/*.pdb"
+
 $version = "1.0.0"
 if (Test-Path "TEMP/version.txt")
 {
