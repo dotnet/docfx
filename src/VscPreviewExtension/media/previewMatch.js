@@ -24,7 +24,7 @@ setInterval(function () {
         var centerLocation = currentLocation;
         var selectItem = $("[sourcefile='" + fileName + "']").filter(function (index) { return $(this).attr('sourcestartlinenumber') <= centerLocation && $(this).attr('sourceendlinenumber') >= centerLocation }).last();
         // If result of selection is empty selection, focus on the end of last node
-        while (selectItem.length == 0) {
+        while (selectItem.length === 0) {
           centerLocation--;
           selectItem = $("[sourcefile='" + fileName + "']").filter(function (index) { return $(this).attr('sourcestartlinenumber') <= centerLocation && $(this).attr('sourceendlinenumber') >= centerLocation }).last();
         }
@@ -38,9 +38,9 @@ setInterval(function () {
 
 $(document).ready(function () {
   $("[sourcefile]").click(function () {
-    if ($(this).attr('sourcefile') == fileName) {
+    if ($(this).attr('sourcefile') === fileName) {
       rightClick = true;
-      $.get("http://localhost:" + port.toString() + "/MatchFromRightToLeft/" + $(this).attr('sourcestartlinenumber') + "/" + $(this).attr('sourceendlinenumber') + "/");
+      $.get("http://localhost:" + [port.toString(), "MatchFromRightToLeft", $(this).attr('sourcestartlinenumber'), $(this).attr('sourceendlinenumber')].join("/"));
     }
     else {
       // TODO: add the lineNumber information of file include in Html
