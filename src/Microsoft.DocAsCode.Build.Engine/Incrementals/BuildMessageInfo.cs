@@ -31,6 +31,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             _logs = new ConcurrentDictionary<string, List<LogItem>>(logs);
         }
 
+        /// <summary>
+        /// Get messages logged for file
+        /// </summary>
+        /// <param name="file">file path from working directory</param>
+        /// <returns>logged messages</returns>
         public IEnumerable<ILogItem> GetMessages(string file)
         {
             List<LogItem> messages;
@@ -50,6 +55,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return _listener;
         }
 
+        /// <summary>
+        /// relay messages for file
+        /// </summary>
+        /// <param name="file">file path from working directory</param>
         public void Replay(string file)
         {
             foreach (var item in GetMessages(file))
@@ -64,15 +73,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new ArgumentNullException(nameof(item));
             }
+            string fileFromWorkingDir = item.File;
+            if (!PathUtility.IsRelativePath(item.File))
+            {
+                fileFromWorkingDir = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, item.File);
+            }
             List<LogItem> logsPerFile;
-            string fileFromWorkingDir = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, item.File);
             if (!_logs.TryGetValue(fileFromWorkingDir, out logsPerFile))
             {
                 logsPerFile = _logs[fileFromWorkingDir] = new List<LogItem>();
             }
             logsPerFile.Add(new LogItem
             {
-                FileFromWorkingDir = fileFromWorkingDir,
                 File = item.File,
                 Line = item.Line,
                 LogLevel = item.LogLevel,
@@ -124,8 +136,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private sealed class LogItem : ILogItem
         {
-            public string FileFromWorkingDir { get; set; }
-
             public string File { get; set; }
 
             public string Line { get; set; }
