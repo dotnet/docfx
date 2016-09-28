@@ -4,21 +4,15 @@ import { workspace, ExtensionContext, TextDocumentContentProvider, EventEmitter,
 import * as path from "path";
 
 export class ContentProvider implements TextDocumentContentProvider {
+    public port;
+
+    protected _content: string;
+
     private _context: ExtensionContext;
     private _onDidChange = new EventEmitter<Uri>();
-    protected _content: string;
-    public port;
 
     constructor(context: ExtensionContext) {
         this._context = context;
-    }
-
-    protected getMediaPath(mediaFile: string): string {
-        return this._context.asAbsolutePath(path.join("media", mediaFile));
-    }
-
-    protected getNodeModulesPath(resourceName: string): string {
-        return this._context.asAbsolutePath(path.join("node_modules", resourceName));
     }
 
     public provideTextDocumentContent(uri: Uri): Thenable<string> {
@@ -35,5 +29,13 @@ export class ContentProvider implements TextDocumentContentProvider {
     public update(uri: Uri, content: string) {
         this._content = content;
         this._onDidChange.fire(uri);
+    }
+
+    protected getMediaPath(mediaFile: string): string {
+        return this._context.asAbsolutePath(path.join("media", mediaFile));
+    }
+
+    protected getNodeModulesPath(resourceName: string): string {
+        return this._context.asAbsolutePath(path.join("node_modules", resourceName));
     }
 }

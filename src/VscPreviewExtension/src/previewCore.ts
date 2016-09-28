@@ -9,18 +9,6 @@ export class PreviewCore extends ChildProcessHost {
     public isFirstTime: boolean;
     public provider: MarkdownDocumentContentProvider;
 
-    protected initializeProvider(context: ExtensionContext) {
-        this.provider = new MarkdownDocumentContentProvider(context);
-    }
-
-    protected writeToStdin(rootPath: string, filePath: string, numOfRow: number, docContent: string) {
-        this._spawn.stdin.write(this.appendWrap("dfmmarkup"));
-        this._spawn.stdin.write(this.appendWrap(rootPath));
-        this._spawn.stdin.write(this.appendWrap(filePath));
-        this._spawn.stdin.write(this.appendWrap(numOfRow));
-        this._spawn.stdin.write(this.appendWrap(docContent));
-    }
-
     public callDfm(uri: Uri) {
         this._documentUri = uri;
         if (this.isFirstTime) {
@@ -34,5 +22,17 @@ export class PreviewCore extends ChildProcessHost {
                 this.sendMessage();
             }, 300);
         }
+    }
+
+    protected initializeProvider(context: ExtensionContext) {
+        this.provider = new MarkdownDocumentContentProvider(context);
+    }
+
+    protected writeToStdin(rootPath: string, filePath: string, numOfRow: number, docContent: string) {
+        this._spawn.stdin.write(this.appendWrap("dfmmarkup"));
+        this._spawn.stdin.write(this.appendWrap(rootPath));
+        this._spawn.stdin.write(this.appendWrap(filePath));
+        this._spawn.stdin.write(this.appendWrap(numOfRow));
+        this._spawn.stdin.write(this.appendWrap(docContent));
     }
 }

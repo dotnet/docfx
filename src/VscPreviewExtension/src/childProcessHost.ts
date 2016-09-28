@@ -54,6 +54,11 @@ export class ChildProcessHost {
         });
     }
 
+    public callDfm(uri: Uri) {
+        this._documentUri = uri;
+        this.sendMessage();
+    }
+
     protected initializeProvider(context: ExtensionContext) { }
 
     protected sendMessage() {
@@ -85,10 +90,5 @@ export class ChildProcessHost {
 
     protected appendWrap(content) {
         return content + "\n";
-    }
-
-    public callDfm(uri: Uri) {
-        this._documentUri = uri;
-        this.sendMessage();
     }
 }
