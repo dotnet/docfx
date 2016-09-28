@@ -73,6 +73,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new ArgumentNullException(nameof(item));
             }
+            if (item.File == null)
+            {
+                return;
+            }
             string fileFromWorkingDir = item.File;
             if (!PathUtility.IsRelativePath(item.File))
             {
