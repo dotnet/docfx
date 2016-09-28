@@ -6,3 +6,4 @@ src/**
 **/*.map
 .gitignore
 tsconfig.json
+img/**
