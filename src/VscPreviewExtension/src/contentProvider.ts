@@ -17,8 +17,7 @@ export class ContentProvider implements TextDocumentContentProvider {
 
     public provideTextDocumentContent(uri: Uri): Thenable<string> {
         return workspace.openTextDocument(Uri.parse(uri.query)).then(document => {
-            const content = "";
-            return content;
+            return "";
         });
     }
 
