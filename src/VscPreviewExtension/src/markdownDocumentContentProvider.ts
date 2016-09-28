@@ -1,21 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { workspace, ExtensionContext, TextDocumentContentProvider, EventEmitter, Event, Uri } from "vscode";
+import { workspace, Uri } from "vscode";
 import * as path from "path";
+import { ContentProvider } from "./contentProvider";
 
-export class MarkdownDocumentContentProvider implements TextDocumentContentProvider {
-    // TODO: extract the common pattern from this class with TokenTreeContentProvider
-    private _context: ExtensionContext;
-    private _onDidChange = new EventEmitter<Uri>();
-    private _htmlContent: string;
-
-    constructor(context: ExtensionContext) {
-        this._context = context;
-    }
-
-    private getMediaPath(mediaFile): string {
-        return this._context.asAbsolutePath(path.join("media", mediaFile));
-    }
+export class MarkdownDocumentContentProvider extends ContentProvider {
+    public fileName;
 
     public provideTextDocumentContent(uri: Uri): Thenable<string> {
         return workspace.openTextDocument(Uri.parse(uri.query)).then(document => {
@@ -24,16 +14,18 @@ export class MarkdownDocumentContentProvider implements TextDocumentContentProvi
                 "<html>",
                 "<head>",
                 `<meta http-equiv="Content-type" content="text/html;charset=UTF-8">`,
-                `<link rel="stylesheet" type="text/css" href="${this.getMediaPath("tomorrow.css")}" >`,
+                `<link rel="stylesheet" type="text/css" href="${this.getNodeModulesPath(path.join("highlightjs", "styles", "tomorrow-night-bright.css"))}" >`,
                 `<link rel="stylesheet" type="text/css" href="${this.getMediaPath("markdown.css")}" >`,
                 `<base href="${document.uri.toString(true)}">`,
                 "</head>",
-                "<body>"].join("\n");
+                `<body><!--` + this.port.toString() + `--><!--` + this.fileName + `-->`].join("\n");
 
-            const body = this._htmlContent || "";
+            const body = this._content || "";
 
             const tail = [
-                `<script type="text/javascript" src="${this.getMediaPath("highlight.pack.js")}"></script>`,
+                `<script type="text/javascript" src="${this.getNodeModulesPath(path.join('jquery', 'dist', 'jquery.min.js'))}"></script>`,
+                `<script type="text/javascript" src="${this.getNodeModulesPath(path.join("highlightjs", "highlight.pack.js"))}"></script>`,
+                `<script type="text/javascript" src="${this.getMediaPath("previewMatch.js")}"></script>`,
                 `<script>hljs.initHighlightingOnLoad();</script>`,
                 "</body>",
                 "</html>"
@@ -41,14 +33,5 @@ export class MarkdownDocumentContentProvider implements TextDocumentContentProvi
 
             return head + body + tail;
         });
-    }
-
-    get onDidChange(): Event<Uri> {
-        return this._onDidChange.event;
-    }
-
-    public update(uri: Uri, previewContent: string) {
-        this._htmlContent = previewContent;
-        this._onDidChange.fire(uri);
     }
 }

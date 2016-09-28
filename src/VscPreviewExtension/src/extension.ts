@@ -6,19 +6,13 @@ import { workspace, window, ExtensionContext, commands, Event, Uri, ViewColumn, 
 import * as path from "path";
 import { PreviewCore } from "./previewCore";
 import { TokenTreeCore } from "./tokenTreeCore";
-
-const markdownScheme = "markdown";
-const tokenTreeScheme = "tokenTree";
-const port = 8080;
-
-let startLine = 0;
-let endLine = 0;
+import * as ConstVariable from "./constVariable";
 
 export function activate(context: ExtensionContext) {
     let dfmProcess = new PreviewCore(context);
-    let tokenTreeProcess = new TokenTreeCore(context, port);
-    let previewProviderRegistration = workspace.registerTextDocumentContentProvider(markdownScheme, dfmProcess.provider);
-    let tokenTreeProviderRegistration = workspace.registerTextDocumentContentProvider(tokenTreeScheme, tokenTreeProcess.provider);
+    let tokenTreeProcess = new TokenTreeCore(context);
+    let previewProviderRegistration = workspace.registerTextDocumentContentProvider(ConstVariable.markdownScheme, dfmProcess.provider);
+    let tokenTreeProviderRegistration = workspace.registerTextDocumentContentProvider(ConstVariable.tokenTreeScheme, tokenTreeProcess.provider);
 
     // Event register
     let showPreviewRegistration = commands.registerCommand("DFM.showPreview", uri => showPreview(dfmProcess));
@@ -49,13 +43,16 @@ export function activate(context: ExtensionContext) {
 
     workspace.onDidChangeConfiguration(() => {
         workspace.textDocuments.forEach(document => {
-            if (document.uri.scheme === markdownScheme) {
+            if (document.uri.scheme === ConstVariable.markdownScheme) {
                 dfmProcess.callDfm(document.uri);
-            } else if (document.uri.scheme === tokenTreeScheme) {
+            } else if (document.uri.scheme === ConstVariable.tokenTreeScheme) {
                 tokenTreeProcess.callDfm(document.uri);
             }
         });
     });
+
+    let startLine = 0;
+    let endLine = 0;
 
     window.onDidChangeTextEditorSelection(event => {
         startLine = event.selections[0].start.line + 1;
@@ -67,30 +64,52 @@ export function activate(context: ExtensionContext) {
     let server = http.createServer();
     server.on("request", function (req, res) {
         let requestInfo = req.url.split("/");
-        if (requestInfo[1] === "lineNumber") {
+        if (requestInfo[1] === ConstVariable.matchFromR2L) {
             if (!mapToSelection(parseInt(requestInfo[2]), parseInt(requestInfo[3])))
                 window.showErrorMessage("Selection Range Error");
-        } else {
+        } else if (requestInfo[1] === ConstVariable.matchFromL2R) {
             res.writeHead(200, { "Content-Type": "text/plain" });
             res.write(startLine + " " + endLine);
             res.end();
         }
     });
-    try {
-        server.listen(port);
-    }
-    catch (e) {
-        window.showErrorMessage(e);
+    let port = getRandomInt(50000, 65535);
+    let isPortOccupied = false;
+    while (true) {
+        server.listen(port)
+            .on("error", function (error) {
+                port = getRandomInt(50000, 65535);
+                isPortOccupied = true;
+            });
+        if (!isPortOccupied) {
+            dfmProcess.provider.port = port;
+            tokenTreeProcess.provider.port = port;
+            break;
+        }
     }
 }
 
-function mapToSelection(startLineNumber, endLineNumber) {
-    if (startLineNumber < 1 || startLineNumber > endLineNumber)
+function getRandomInt(min: number, max: number) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function mapToSelection(startLineNumber: number, endLineNumber: number) {
+    if (startLineNumber > endLineNumber)
         return false;
-    // Go back to the Source file editor
-    commands.executeCommand("workbench.action.navigateBack").then(() => {
-        window.activeTextEditor.selection = new Selection(startLineNumber - 1, 0, endLineNumber - 1, window.activeTextEditor.document.lineAt(endLineNumber - 1).range.end.character);
-    });
+    // Go back to the Source file editor first
+    if (startLineNumber === 0 && endLineNumber === 0) {
+        // Click the node markdown
+        commands.executeCommand("workbench.action.navigateBack").then(() => {
+            endLineNumber = window.activeTextEditor.document.lineCount;
+            window.activeTextEditor.selection = new Selection(0, 0, endLineNumber - 1, window.activeTextEditor.document.lineAt(endLineNumber - 1).range.end.character);
+        });
+    } else {
+        commands.executeCommand("workbench.action.navigateBack").then(() => {
+            window.activeTextEditor.selection = new Selection(startLineNumber - 1, 0, endLineNumber - 1, window.activeTextEditor.document.lineAt(endLineNumber - 1).range.end.character);
+        });
+    }
     return true;
 }
 
@@ -101,14 +120,14 @@ function isMarkdownFile(document: TextDocument) {
 }
 
 function getMarkdownUri(uri: Uri) {
-    return uri.with({ scheme: markdownScheme, path: uri.path + ".renderedDfm", query: uri.toString() });
+    return uri.with({ scheme: ConstVariable.markdownScheme, path: uri.path + ".renderedDfm", query: uri.toString() });
 }
 
 function getTokenTreeUri(uri: Uri) {
-    return uri.with({ scheme: tokenTreeScheme, path: uri.path + ".renderedTokenTree", query: uri.toString() });
+    return uri.with({ scheme: ConstVariable.tokenTreeScheme, path: uri.path + ".renderedTokenTree", query: uri.toString() });
 }
 
-function getViewColumn(sideBySide): ViewColumn {
+function getViewColumn(sideBySide: boolean): ViewColumn {
     const active = window.activeTextEditor;
     if (!active) {
         return ViewColumn.One;
@@ -133,6 +152,12 @@ function showSource() {
 }
 
 function showPreview(dfmPreview: PreviewCore, uri?: Uri, sideBySide: boolean = false) {
+    // Set the filename of provider
+    let filePath = window.activeTextEditor.document.fileName;
+    let indexOfFilename = filePath.lastIndexOf("\\");
+    let fileName = filePath.substring(indexOfFilename + 1);
+    dfmPreview.provider.fileName = fileName;
+
     dfmPreview.isFirstTime = true;
     let resource = uri;
     if (!(resource instanceof Uri)) {
