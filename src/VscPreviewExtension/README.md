@@ -23,13 +23,13 @@ An extension to support [**DFM**](https://dotnet.github.io/docfx/spec/docfx_flav
 For further information and details about DocFX Flavored Markdown, please reference [DocFX Flavored Markdown](https://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html)
 
 # Feature Details
-## Live preview  
+## Live preview
 | Shortcuts | command title | command |
 |:-------|:--------|:--------|
 | `ctrl+shift+q` | `Toggle Dfm Preview` | Preview  |
 | `ctrl+k q` | `Open Dfm Preview to the side` | Preview to side |
 |  | `show Dfm Show` | Show Source |
-  
+
   ![PreviewToside](img/previewToSide.gif)
 
 ## Token tree
@@ -58,7 +58,7 @@ Please file any issue through the [Github Issue](https://github.com/dotnet/docfx
   * Visual Studio Code(above 1.3.0)
   * Node.js(Npm included)
 
-* To run and develop do the following:  
+* To run and develop do the following:
   * Run  `npm install` under the root dir of this extension
   * Open in Visual Studio Code(run `code .` under the root dir of this extension)
     > Cannot find module 'vscode'? Run `npm run postinstall` under the root dir of this extension, according to [Cannot find module 'vscode' – where is vscode.d.ts now installed? #2810](https://github.com/Microsoft/vscode/issues/2810)
@@ -75,7 +75,7 @@ Please file any issue through the [Github Issue](https://github.com/dotnet/docfx
 * **0.0.21**
   * Bug fix: remove background block of the inline code
 * **0.0.20**
-  * Improve: remove the `img` folder in the publish version 
+  * Improve: remove the `img` folder in the publish version
 * **0.0.19**
   * Bug fix: background block of the code snippets missed
 * **0.0.18**
