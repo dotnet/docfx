@@ -238,9 +238,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             return true;
         }
 
-        private static IEnumerable<string> ExpandDependency(DependencyGraph dependencyGraph, DocumentBuildContext context, Func<DependencyItem, bool> triggerBuild)
+        private static List<string> ExpandDependency(DependencyGraph dependencyGraph, DocumentBuildContext context, Func<DependencyItem, bool> triggerBuild)
         {
             var changeItems = context.ChangeDict;
+            var newChanges = new List<string>();
 
             if (dependencyGraph != null)
             {
@@ -251,19 +252,20 @@ namespace Microsoft.DocAsCode.Build.Engine
                         if (!changeItems.ContainsKey(from))
                         {
                             changeItems[from] = ChangeKindWithDependency.DependencyUpdated;
-                            yield return from;
+                            newChanges.Add(from);
                         }
                         else
                         {
                             if (changeItems[from] == ChangeKindWithDependency.None)
                             {
-                                yield return from;
+                                newChanges.Add(from);
                             }
                             changeItems[from] |= ChangeKindWithDependency.DependencyUpdated;
                         }
                     }
                 }
             }
+            return newChanges;
         }
 
         private Dictionary<string, FileAttributeItem> ComputeFileAttributes(DocumentBuildParameters parameters)
