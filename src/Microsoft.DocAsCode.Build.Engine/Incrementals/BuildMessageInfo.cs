@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -15,11 +14,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     public sealed class BuildMessageInfo
     {
         private Listener _listener;
-        private readonly ConcurrentDictionary<string, List<LogItem>> _logs;
+        private readonly Dictionary<string, List<LogItem>> _logs;
 
         public BuildMessageInfo()
         {
-            _logs = new ConcurrentDictionary<string, List<LogItem>>();
+            _logs = new Dictionary<string, List<LogItem>>();
         }
 
         private BuildMessageInfo(IDictionary<string, List<LogItem>> logs)
@@ -28,7 +27,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new ArgumentNullException(nameof(logs));
             }
-            _logs = new ConcurrentDictionary<string, List<LogItem>>(logs);
+            _logs = new Dictionary<string, List<LogItem>>(logs);
         }
 
         /// <summary>
