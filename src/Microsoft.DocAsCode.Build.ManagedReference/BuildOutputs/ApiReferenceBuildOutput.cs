@@ -98,6 +98,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("overridden")]
         public ApiNames Overridden { get; set; }
 
+        [YamlMember(Alias = "overload")]
+        [JsonProperty("overload")]
+        public ApiNames Overload { get; set; }
+
         [YamlMember(Alias = "exceptions")]
         [JsonProperty("exceptions")]
         public List<ApiExceptionInfoBuildOutput> Exceptions { get; set; }
@@ -236,6 +240,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Remarks = vm.Remarks,
                 Examples = vm.Examples,
                 Overridden = ApiNames.FromUid(vm.Overridden),
+                Overload = ApiNames.FromUid(vm.Overload),
                 SeeAlsos = vm.SeeAlsos?.Select(s => ApiLinkInfoBuildOutput.FromModel(s)).ToList(),
                 Sees = vm.Sees?.Select(s => ApiLinkInfoBuildOutput.FromModel(s)).ToList(),
                 Inheritance = vm.Inheritance?.Select(i => FromUid(i)).ToList(),
