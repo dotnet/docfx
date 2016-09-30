@@ -102,8 +102,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                     if (_canIncremental)
                     {
                         LoadChanges(parameters, context, fileAttributes);
+                        Logger.LogDiagnostic($"Before expanding dependency before build, changes: {JsonUtility.Serialize(context.ChangeDict)}");
                         var dependencyGraph = _lbv.Dependency;
                         ExpandDependency(dependencyGraph, context, d => dependencyGraph.DependencyTypes[d.Type].TriggerBuild);
+                        Logger.LogDiagnostic($"After expanding dependency before build, changes: {JsonUtility.Serialize(context.ChangeDict)}");
                     }
                 }
 
@@ -490,6 +492,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (canIncremental && intermediateFolder != null && lmm != null)
             {
                 var newChanges = ExpandDependency(context.DependencyGraph, context, d => true);
+                Logger.LogDiagnostic($"After expanding dependency before postbuild, changes: {JsonUtility.Serialize(context.ChangeDict)}");
                 foreach (var hostService in hostServices)
                 {
                     hostService.ReloadModelsPerIncrementalChanges(newChanges, intermediateFolder, lmm, LoadPhase.PostBuild);
