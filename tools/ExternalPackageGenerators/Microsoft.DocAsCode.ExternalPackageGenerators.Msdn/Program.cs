@@ -27,6 +27,8 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
     {
 
         #region Fields
+        private static readonly Regex GenericMethodPostFix = new Regex(@"``\d+$", RegexOptions.Compiled);
+
         private static string MsdnUrlTemplate = "https://msdn.microsoft.com/en-us/library/{0}(v={1}).aspx";
         private static string MtpsApiUrlTemplate = "http://services.mtps.microsoft.com/ServiceAPI/content/{0}/en-us;{1}/common/mtps.links";
         private static int HttpMaxConcurrency = 64;
@@ -360,7 +362,6 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                 result.Add(typeSpec);
             }
             int size = 0;
-
             foreach (var specsTask in
                 from block in
                     (from item in entry.Items
@@ -370,6 +371,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             {
                 result.AddRange(await specsTask);
             }
+            result.AddRange(await GetOverloadXRefSpecAsync(result));
             if (typeSpec != null && typeSpec.Href != null)
             {
                 // handle enum field, or other one-page-member
@@ -423,6 +425,57 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             };
         }
 
+        private async Task<XRefSpec[]> GetOverloadXRefSpecAsync(List<XRefSpec> specs)
+        {
+            var pairs = (from spec in specs
+                         let overload = GetOverloadIdBody(spec)
+                         where overload != null
+                         group Tuple.Create(spec, overload) by overload.Uid into g
+                         select g.First());
+            return await Task.WhenAll(from pair in pairs select GetOverloadXRefSpecCoreAsync(pair));
+        }
+
+        private async Task<XRefSpec> GetOverloadXRefSpecCoreAsync(Tuple<XRefSpec, CommentIdAndUid> pair)
+        {
+            var dict = await _commentIdToShortIdMapCache.GetAsync(pair.Item1.CommentId);
+            string shortId;
+            if (dict.TryGetValue(pair.Item2.CommentId, out shortId))
+            {
+                return new XRefSpec
+                {
+                    Uid = pair.Item2.Uid,
+                    CommentId = pair.Item2.CommentId,
+                    Href = string.Format(MsdnUrlTemplate, shortId, _msdnVersion),
+                };
+            }
+            else
+            {
+                return new XRefSpec(pair.Item1)
+                {
+                    Uid = pair.Item2.Uid
+                };
+            }
+        }
+
+        private static CommentIdAndUid GetOverloadIdBody(XRefSpec pair)
+        {
+            switch (pair.CommentId[0])
+            {
+                case 'M':
+                case 'P':
+                    var body = pair.Uid;
+                    var index = body.IndexOf('(');
+                    if (index != -1)
+                    {
+                        body = body.Remove(index);
+                    }
+                    body = GenericMethodPostFix.Replace(body, string.Empty);
+                    return new CommentIdAndUid("Overload:" + body, body + "*");
+                default:
+                    return null;
+            }
+        }
+
         private string GetContainingCommentId(string commentId)
         {
             var result = commentId;
@@ -442,6 +495,8 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                     case 'M':
                     case 'P':
                         return "T" + result.Substring(1);
+                    case 'O':
+                        return "T" + result.Substring("Overload".Length);
                     default:
                         return "N" + result.Substring(1);
                 }
