@@ -166,6 +166,9 @@ Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.dll" -Destina
 Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.exe" -Destination "src\nuspec\AzureMarkdownRewriterTool\tools\"
 Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.exe.config" -Destination "src\nuspec\AzureMarkdownRewriterTool\tools\"
 
+# Build VscPreviewExe
+src\VscPreviewExtension\buildVscPreviewExe.cmd -c $configuration
+
 $version = "1.0.0"
 if (Test-Path "TEMP/version.txt")
 {
