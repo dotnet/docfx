@@ -100,6 +100,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 yield return current.Overridden;
             }
 
+            if (current.Overload != null)
+            {
+                yield return current.Overload;
+            }
+
             if (current.Inheritance?.Count > 0)
             {
                 foreach (var item in current.Inheritance)

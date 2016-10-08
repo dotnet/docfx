@@ -274,6 +274,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result.Overridden = AddSpecReference(symbol.OverriddenMethod, typeGenericParameters, methodGenericParameters);
             }
 
+            result.Overload = AddOverloadReference(symbol.OriginalDefinition);
+
             AddMemberImplements(symbol, result, typeGenericParameters, methodGenericParameters);
 
             result.Attributes = GetAttributeInfo(symbol.GetAttributes());
@@ -395,6 +397,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 result.Overridden = AddSpecReference(symbol.OverriddenProperty, typeGenericParameters);
             }
 
+            result.Overload = AddOverloadReference(symbol.OriginalDefinition);
+
             _generator.GenerateProperty(symbol, result, this);
 
             AddMemberImplements(symbol, result, typeGenericParameters);
@@ -424,6 +428,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public string AddReference(string id, string commentId)
         {
             return _generator.AddReference(id, commentId, _references);
+        }
+
+        public string AddOverloadReference(ISymbol symbol)
+        {
+            var memberType = GetMemberTypeFromSymbol(symbol);
+            switch (memberType)
+            {
+                case MemberType.Property:
+                case MemberType.Constructor:
+                case MemberType.Method:
+                case MemberType.Operator:
+                    return _generator.AddOverloadReference(symbol, _references, this);
+                default:
+                    Debug.Fail("Unexpected membertype.");
+                    throw new InvalidOperationException("Unexpected membertype.");
+            }
         }
 
         public string AddSpecReference(

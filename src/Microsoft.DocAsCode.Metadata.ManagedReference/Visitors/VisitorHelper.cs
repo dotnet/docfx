@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System;
     using System.Diagnostics;
     using System.Linq;
+    using System.Text.RegularExpressions;
 
     using Microsoft.CodeAnalysis;
 
@@ -15,6 +16,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     public static class VisitorHelper
     {
+        private static readonly Regex GenericMethodPostFix = new Regex(@"``\d+$", RegexOptions.Compiled);
+
         public static void FeedComments(MetadataItem item, ITripleSlashCommentParserContext context)
         {
             if (!string.IsNullOrEmpty(item.RawComment))
@@ -69,6 +72,26 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return "T:" + typeof(object).FullName;
             }
             return symbol.GetDocumentationCommentId();
+        }
+
+        public static string GetOverloadId(ISymbol symbol)
+        {
+            return GetOverloadIdBody(symbol) + "*";
+        }
+
+        public static string GetOverloadIdBody(ISymbol symbol)
+        {
+            var id = GetId(symbol);
+            var uidBody = id;
+            {
+                var index = uidBody.IndexOf('(');
+                if (index != -1)
+                {
+                    uidBody = uidBody.Remove(index);
+                }
+            }
+            uidBody = GenericMethodPostFix.Replace(uidBody, string.Empty);
+            return uidBody;
         }
 
         public static ApiParameter GetParameterDescription(ISymbol symbol, MetadataItem item, string id, bool isReturn, ITripleSlashCommentParserContext context)
