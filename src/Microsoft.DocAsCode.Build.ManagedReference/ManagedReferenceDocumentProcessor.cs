@@ -145,7 +145,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 UidLinkSources = model.UidLinkSources,
                 XRefSpecs = (from item in vm.Items
                              from xref in GetXRefInfo(item, model.Key)
-                             select xref).ToImmutableArray(),
+                             group xref by xref.Uid into g
+                             select g.First()).ToImmutableArray(),
                 ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray(),
             };
         }
@@ -247,7 +248,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
             yield return result;
             // generate overload xref spec.
-            // todo : remove when overload is ready in yaml file.
             if (item.Type != null)
             {
                 switch (item.Type.Value)
