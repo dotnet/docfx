@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.SubCommands
         public bool AllowReplay => true;
 
         public MetadataJsonConfig Config { get; }
-        public IEnumerable<Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel> InputModels { get; }
+        public IEnumerable<ExtractMetadataInputModel> InputModels { get; }
 
         public MetadataCommand(MetadataCommandOptions options)
         {
@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.SubCommands
             foreach (var inputModel in InputModels)
             {
                 // TODO: Use plugin to generate metadata for files with different extension?
-                using (var worker = new Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataWorker(inputModel, inputModel.ForceRebuild, inputModel.UseCompatibilityFileName))
+                using (var worker = new ExtractMetadataWorker(inputModel, inputModel.ForceRebuild, inputModel.UseCompatibilityFileName))
                 {
                     // Use task.run to get rid of current context (causing deadlock in xunit)
                     var task = Task.Run(worker.ExtractMetadataAsync);
@@ -75,7 +75,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private IEnumerable<Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel> GetInputModels(MetadataJsonConfig configs)
+        private IEnumerable<ExtractMetadataInputModel> GetInputModels(MetadataJsonConfig configs)
         {
             foreach (var config in configs)
             {
@@ -85,12 +85,12 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel ConvertToInputModel(MetadataJsonItemConfig configModel)
+        private ExtractMetadataInputModel ConvertToInputModel(MetadataJsonItemConfig configModel)
         {
             var projects = configModel.Source;
             // If Root Output folder is specified from command line, use it instead of the base directory
             var outputFolder = Path.Combine(Config.OutputFolder ?? Config.BaseDirectory ?? string.Empty, configModel.Destination ?? DocAsCode.Constants.DefaultMetadataOutputFolderName);
-            var inputModel = new Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel
+            var inputModel = new ExtractMetadataInputModel
             {
                 PreserveRawInlineComments = configModel?.Raw ?? false,
                 ForceRebuild = configModel?.Force ?? false,

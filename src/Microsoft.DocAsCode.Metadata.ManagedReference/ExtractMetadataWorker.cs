@@ -19,23 +19,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Utility;
-#if NETCore
     using Microsoft.DotNet.ProjectModel.Workspaces;
-#endif
 
     public sealed class ExtractMetadataWorker : IDisposable
     {
         private readonly Lazy<MSBuildWorkspace> _workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create());
-        private static string[] SupportedSolutionExtensions = { ".sln" };
-#if NETCore
-        private static string[] SupportedProjectName = { "project.json" };
-#else
-        private static string[] SupportedProjectName = { };
-#endif
-        private static string[] SupportedProjectExtensions = { ".csproj", ".vbproj" };
-        private static string[] SupportedSourceFileExtensions = { ".cs", ".vb" };
-        private static string[] SupportedVBSourceFileExtensions = { ".vb" };
-        private static string[] SupportedCSSourceFileExtensions = { ".cs" };
+        private static readonly string[] SupportedSolutionExtensions = { ".sln" };
+        private static readonly string[] SupportedProjectName = { "project.json" };
+        private static readonly string[] SupportedProjectExtensions = { ".csproj", ".vbproj" };
+        private static readonly string[] SupportedSourceFileExtensions = { ".cs", ".vb" };
+        private static readonly string[] SupportedVBSourceFileExtensions = { ".vb" };
+        private static readonly string[] SupportedCSSourceFileExtensions = { ".cs" };
         private static List<string> SupportedExtensions = new List<string>();
         private readonly ExtractMetadataInputModel _validInput;
         private readonly ExtractMetadataInputModel _rawInput;
