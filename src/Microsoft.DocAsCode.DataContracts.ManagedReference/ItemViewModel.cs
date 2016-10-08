@@ -257,6 +257,10 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty("overridden")]
         public string Overridden { get; set; }
 
+        [YamlMember(Alias = "overload")]
+        [JsonProperty("overload")]
+        public string Overload { get; set; }
+
         [YamlMember(Alias = "exceptions")]
         [JsonProperty("exceptions")]
         public List<ExceptionInfo> Exceptions { get; set; }

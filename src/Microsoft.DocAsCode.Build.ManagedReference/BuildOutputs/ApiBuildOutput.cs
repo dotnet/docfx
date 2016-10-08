@@ -103,6 +103,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("overridden")]
         public ApiNames Overridden { get; set; }
 
+        [YamlMember(Alias = "overload")]
+        [JsonProperty("overload")]
+        public ApiNames Overload { get; set; }
+
         [YamlMember(Alias = "exceptions")]
         [JsonProperty("exceptions")]
         public List<ApiExceptionInfoBuildOutput> Exceptions { get; set; }
@@ -224,6 +228,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Examples = model.Examples,
                 Syntax = ApiSyntaxBuildOutput.FromModel(model.Syntax, references, model.SupportedLanguages),
                 Overridden = ApiBuildOutputUtility.GetApiNames(model.Overridden, references, model.SupportedLanguages),
+                Overload = ApiBuildOutputUtility.GetApiNames(model.Overload, references, model.SupportedLanguages),
                 Exceptions = GetCrefInfoList(model.Exceptions, references, model.SupportedLanguages),
                 SeeAlsos = GetLinkInfoList(model.SeeAlsos, references, model.SupportedLanguages),
                 Sees = GetLinkInfoList(model.Sees, references, model.SupportedLanguages),
