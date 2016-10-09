@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 if (!string.IsNullOrWhiteSpace(logOption.LogFilePath) && Logger.FindListener(l => l is ReportLogListener) == null)
                 {
-                    Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath));
+                    Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath, logOption.FolderPrefix));
                 }
 
                 if (logOption.LogLevel.HasValue)
