@@ -97,6 +97,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [JsonProperty("syntax")]
         public SyntaxDetail Syntax { get; set; }
 
+        [YamlMember(Alias = "overload")]
+        [JsonProperty("overload")]
+        public string Overload { get; set; }
+
         [YamlMember(Alias = "overridden")]
         [JsonProperty("overridden")]
         public string Overridden { get; set; }

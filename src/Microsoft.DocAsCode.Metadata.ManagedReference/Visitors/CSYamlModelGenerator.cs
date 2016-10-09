@@ -290,9 +290,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        protected override void GenerateReference(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter)
+        protected override void GenerateReference(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter, bool asOverload)
         {
-            symbol.Accept(new CSReferenceItemVisitor(reference));
+            symbol.Accept(new CSReferenceItemVisitor(reference, asOverload));
         }
 
         #endregion

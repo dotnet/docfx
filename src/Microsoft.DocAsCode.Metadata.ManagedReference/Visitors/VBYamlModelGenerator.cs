@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
-    using Microsoft.DocAsCode.Utility;
 
     public class VBYamlModelGenerator : SimpleYamlModelGenerator
     {
@@ -313,9 +312,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        protected override void GenerateReference(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter)
+        protected override void GenerateReference(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter, bool asOverload)
         {
-            symbol.Accept(new VBReferenceItemVisitor(reference));
+            symbol.Accept(new VBReferenceItemVisitor(reference, asOverload));
         }
 
         #endregion

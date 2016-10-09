@@ -74,6 +74,29 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return id;
         }
 
+        internal string AddOverloadReference(ISymbol symbol, Dictionary<string, ReferenceItem> references, SymbolVisitorAdapter adapter)
+        {
+            string uidBody = VisitorHelper.GetOverloadIdBody(symbol);
+
+            ReferenceItem reference = new ReferenceItem();
+            reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
+            reference.IsDefinition = true;
+            reference.CommentId = "Overload:" + uidBody;
+            GenerateReferenceInternal(symbol, reference, adapter, true);
+
+            var uid = uidBody + "*";
+            if (!references.ContainsKey(uid))
+            {
+                references[uid] = reference;
+            }
+            else
+            {
+                references[uid].Merge(reference);
+            }
+
+            return uid;
+        }
+
         internal string AddSpecReference(
             ISymbol symbol,
             IReadOnlyList<string> typeGenericParameters,
@@ -153,7 +176,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return (symbol as INamespaceSymbol)?.IsGlobalNamespace == true;
         }
 
-        internal abstract void GenerateReferenceInternal(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter);
+        internal abstract void GenerateReferenceInternal(ISymbol symbol, ReferenceItem reference, SymbolVisitorAdapter adapter, bool asOverload = false);
 
         internal abstract void GenerateSyntax(MemberType type, ISymbol symbol, SyntaxDetail syntax, SymbolVisitorAdapter adapter);
     }
