@@ -7,6 +7,13 @@ $(function () {
   var show = 'show';
   var hide = 'hide';
 
+  // Enable highlight.js
+  (function () {
+    $('pre code').each(function(i, block) {
+      hljs.highlightBlock(block);
+    });
+  })();
+
   // Line highlight for code snippet
   (function () {
     $('pre code[highlight-lines]').each(function (i, block) {
