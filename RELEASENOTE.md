@@ -1,5 +1,8 @@
-Version Notes (Current Version: v2.6)
+Version Notes (Current Version: v2.7)
 =======================================
+v2.7(Pre-Release)
+-----------
+
 v2.6
 -----------
 1.  Remove rest resolved cache.
