@@ -27,6 +27,12 @@
     }
   },
   "frameworks": {
-    "net452": {}
+    "net452": {},
+    "netstandard1.3": {
+      "dependencies": {
+        "System.Text.RegularExpressions": "4.1.0",
+        "Microsoft.CSharp": "4.0.1"
+      }
+    }
   }
 }
