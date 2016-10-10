@@ -137,6 +137,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
+        [Serializable]
         private sealed class LogItem : ILogItem
         {
             public string File { get; set; }
