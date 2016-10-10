@@ -26,5 +26,6 @@ Push-Location $scriptHome
 Write-Host "Build VscPreviewExe to the target folder"
 & dotnet build ".\Microsoft.DocAsCode.Dfm.VscPreview" -c $configuration -f net452 
 ProcessLastExitCode($lastexitcode, "previewExe build error")
+MD DfmParse -force
 Copy-Item -Path ".\Microsoft.DocAsCode.Dfm.VscPreview\bin\$configuration\net452\win7-x64\*.dll" -Destination ".\DfmParse\"
 Copy-Item -Path ".\Microsoft.DocAsCode.Dfm.VscPreview\bin\$configuration\net452\win7-x64\*.exe" -Destination ".\DfmParse\"
