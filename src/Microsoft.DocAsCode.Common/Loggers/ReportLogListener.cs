@@ -10,12 +10,12 @@ namespace Microsoft.DocAsCode.Common
 
     public sealed class ReportLogListener : ILoggerListener
     {
-        private readonly string _folderPrefix;
+        private readonly string _repoRoot;
         private readonly StreamWriter _writer;
 
         private const LogLevel LogLevelThreshold = LogLevel.Diagnostic;
 
-        public ReportLogListener(string reportPath, string folderPrefix)
+        public ReportLogListener(string reportPath, string repoRoot)
         {
             var dir = Path.GetDirectoryName(reportPath);
             if (!string.IsNullOrEmpty(dir))
@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Common
                 Directory.CreateDirectory(dir);
             }
             _writer = new StreamWriter(reportPath, true);
-            _folderPrefix = folderPrefix;
+            _repoRoot = repoRoot;
         }
 
         public ReportLogListener(StreamWriter writer, string folderPrefix)
@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(writer));
             }
             _writer = writer;
-            _folderPrefix = folderPrefix;
+            _repoRoot = folderPrefix;
         }
 
         public void WriteLine(ILogItem item)
@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Common
                 Severity = GetSeverity(level),
                 Message = message,
                 Source = phase,
-                File = file, // todo : combine with folderPrefix
+                File = file, // todo : combine with repo root.
                 Line = line,
                 DateTime = DateTime.UtcNow,
             };

@@ -9,6 +9,6 @@ namespace Microsoft.DocAsCode
     {
         string LogFilePath { get; }
         LogLevel? LogLevel { get; }
-        string FolderPrefix { get; }
+        string RepoRoot { get; }
     }
 }
