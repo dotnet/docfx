@@ -179,6 +179,7 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             var parameters = new DocumentBuildParameters();
             parameters.OutputBaseDir = outputDirectory;
+            parameters.ForceRebuild = config.Force ?? false;
             if (config.GlobalMetadata != null)
             {
                 parameters.Metadata = config.GlobalMetadata.ToImmutableDictionary();
