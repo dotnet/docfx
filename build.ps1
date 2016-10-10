@@ -45,9 +45,9 @@ function DotnetPack {
 
 function ProcessLastExitCode {
     param($exitCode, $msg)
-    if ($lastexitcode -ne 0)
+    if ($exitCode.Equals(0))
     {
-        Write-Error $msg + ", exit code: $lastexitcode"
+        Write-Error "$msg, exit code: $exitCode"
         Pop-Location
         Exit 1
     }
