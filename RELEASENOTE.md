@@ -1,10 +1,23 @@
 Version Notes (Current Version: v2.6)
 =======================================
-v2.6(Pre-Release)
+v2.6
 -----------
 1.  Remove rest resolved cache.
 2.  Fix assert fail in metadata. (https://github.com/dotnet/docfx/issues/741)
 3.  Add new command option: repositoryRoot.
+
+v2.5.4
+-----------
+1.  Fix isssue #719 that assertion failed.
+
+v2.5.3
+-----------
+1.  Update documenation
+2.  Remove debug build option in Release configuration
+
+v2.5.2
+-----------
+1.  Fix error message for invalid file link.
 
 v2.5.1
 -----------
