@@ -27,6 +27,9 @@ namespace Microsoft.DocAsCode
         [Option("logLevel", HelpText = "Specify to which log level will be logged. By default log level >= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.")]
         public LogLevel? LogLevel { get; set; }
 
+        [Option("repositoryRoot", HelpText = "Specify the GIT repository root folder.")]
+        public string RepoRoot { get; set; }
+
         [OptionList("content", Separator = ',', HelpText = "Specify content files for generating documentation.")]
         public List<string> Content { get; set; }
 

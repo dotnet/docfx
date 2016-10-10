@@ -19,21 +19,34 @@ namespace Microsoft.DocAsCode.SubCommands
         private static readonly TOptions DefaultOption = Activator.CreateInstance<TOptions>();
         
         private static readonly string HelpText = GetDefaultHelpText(DefaultOption);
+
         public virtual ISubCommand Create(string[] args, ISubCommandController controller, SubCommandParseOption option)
         {
-            
             var parser = CommandUtility.GetParser(option);
             var options = Activator.CreateInstance<TOptions>();
             bool parsed = parser.ParseArguments(args, options);
-            if (!parsed && option == SubCommandParseOption.Strict) throw new OptionParserException();
+            if (!parsed && option == SubCommandParseOption.Strict)
+            {
+                throw new OptionParserException();
+            }
             var helpOption = options as ICanPrintHelpMessage;
-            if (helpOption != null && helpOption.PrintHelpMessage) return new HelpCommand(GetHelpText());
+            if (helpOption != null && helpOption.PrintHelpMessage)
+            {
+                return new HelpCommand(GetHelpText());
+            }
             var logOption = options as ILoggable;
             if (logOption != null)
             {
                 if (!string.IsNullOrWhiteSpace(logOption.LogFilePath) && Logger.FindListener(l => l is ReportLogListener) == null)
                 {
-                    Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath));
+                    if (string.IsNullOrWhiteSpace(logOption.RepoRoot))
+                    {
+                        Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath, string.Empty));
+                    }
+                    else
+                    {
+                        Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath, logOption.RepoRoot));
+                    }
                 }
 
                 if (logOption.LogLevel.HasValue)

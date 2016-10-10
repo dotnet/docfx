@@ -10,12 +10,12 @@ namespace Microsoft.DocAsCode.Common
 
     public sealed class ReportLogListener : ILoggerListener
     {
+        private readonly string _repoRoot;
         private readonly StreamWriter _writer;
 
         private const LogLevel LogLevelThreshold = LogLevel.Diagnostic;
 
-#if !NetCore
-        public ReportLogListener(string reportPath)
+        public ReportLogListener(string reportPath, string repoRoot)
         {
             var dir = Path.GetDirectoryName(reportPath);
             if (!string.IsNullOrEmpty(dir))
@@ -23,16 +23,17 @@ namespace Microsoft.DocAsCode.Common
                 Directory.CreateDirectory(dir);
             }
             _writer = new StreamWriter(reportPath, true);
+            _repoRoot = repoRoot;
         }
-#endif
 
-        public ReportLogListener(StreamWriter writer)
+        public ReportLogListener(StreamWriter writer, string repoRoot)
         {
             if (writer == null)
             {
                 throw new ArgumentNullException(nameof(writer));
             }
             _writer = writer;
+            _repoRoot = repoRoot;
         }
 
         public void WriteLine(ILogItem item)
@@ -53,9 +54,9 @@ namespace Microsoft.DocAsCode.Common
                 Severity = GetSeverity(level),
                 Message = message,
                 Source = phase,
-                File = file,
+                File = file, // todo : combine with repo root.
                 Line = line,
-                DateTime = DateTime.UtcNow
+                DateTime = DateTime.UtcNow,
             };
 
             _writer.WriteLine(JsonUtility.Serialize(reportItem));
