@@ -99,6 +99,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     CurrentBuildInfo.Versions.Add(_cbv);
                     Logger.RegisterListener(_cbv.BuildMessage.GetListener());
                     _canIncremental = GetCanIncremental(configHash, parameters.VersionName);
+                    if (_canIncremental && parameters.ForceRebuild)
+                    {
+                        _canIncremental = false;
+                        Logger.LogVerbose($"Disable incremental build by force rebuild option.");
+                    }
                     if (_canIncremental)
                     {
                         LoadChanges(parameters, context, fileAttributes);
