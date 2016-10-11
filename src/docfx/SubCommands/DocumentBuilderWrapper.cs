@@ -390,10 +390,9 @@ namespace Microsoft.DocAsCode.SubCommands
             foreach (ChangeItem change in changeList)
             {
                 string fileKey = ((RelativePath)change.FilePath).GetPathFromWorkingFolder().ToString();
-                if (dict.ContainsKey(fileKey))
-                {
-                    dict[fileKey] = change.Kind;
-                }
+
+                // always put the change into dict because docfx could access files outside its own scope, like tokens.
+                dict[fileKey] = change.Kind;
             }
             return dict.ToImmutableDictionary();
         }
