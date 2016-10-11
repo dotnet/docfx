@@ -1,5 +1,11 @@
-Version Notes (Current Version: v2.6)
+Version Notes (Current Version: v2.6.1)
 =======================================
+v2.6.1
+-----------
+1.  Fix argumentnullexception for generating overload item.
+2.  Add serializable attribute.
+3.  Use mark.js to highlight keywords.
+
 v2.6
 -----------
 1.  Remove rest resolved cache.
@@ -46,7 +52,7 @@ v2.3
 2.  Upgrade yamldotnet to 3.9.
 3.  Refine markdown validation.
 4.  Support separated meta json file.
-5.  Change `hightlight.js` theme to `github-gist`.
+5.  Change `highlight.js` theme to `github-gist`.
 6.  Support '.json' as supported swagger file extension.
 7.  Support `topicHref` and `tocHref` to specify homepage toc.
 8.  Support customized contribute repository and branch for "Improve this Doc" button. (https://github.com/dotnet/docfx/issues/482)
