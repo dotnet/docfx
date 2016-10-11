@@ -285,14 +285,17 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 CommentId = "Overload:" + uidBody,
             };
             {
-                var index = item.Name.IndexOfAny(new char[] { '(', '[' });
-                if (index != -1)
+                if (!string.IsNullOrEmpty(item.Name))
                 {
-                    result.Name = item.Name.Remove(index);
-                }
-                else
-                {
-                    result.Name = item.Name;
+                    var index = item.Name.IndexOfAny(new char[] { '(', '[' });
+                    if (index != -1)
+                    {
+                        result.Name = item.Name.Remove(index);
+                    }
+                    else
+                    {
+                        result.Name = item.Name;
+                    }
                 }
             }
             if (!string.IsNullOrEmpty(item.NameForCSharp))

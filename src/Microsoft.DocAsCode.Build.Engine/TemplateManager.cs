@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             using (var templateResource = CreateTemplateResource(_templates))
             using (var md5 = MD5.Create())
             {
-                foreach (var name in from n in templateResource.Names
+                foreach (var name in from n in templateResource.Names ?? Enumerable.Empty<string>()
                                      orderby n
                                      select n)
                 {
