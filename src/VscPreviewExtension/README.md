@@ -101,7 +101,7 @@ Please file any issue through the [Github Issue](https://github.com/dotnet/docfx
 * **0.0.9**
   * Bug fix: can't preview a single file(not in a open folder)
   * Bug fix: throw an error if it is not a markdown file
-*  **0.0.8**
+* **0.0.8**
   * Bug fix: open other preview window
   * Bug fix: some css and JavaScript files to show the html
 * **0.0.7**
