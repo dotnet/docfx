@@ -5,9 +5,9 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public class DfmFencesBlockToken : IMarkdownToken
+    public class DfmFencesToken : IMarkdownToken
     {
-        public DfmFencesBlockToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo sourceInfo, string lang = null, string title = null, IDfmFencesBlockPathQueryOption pathQueryOption = null)
+        public DfmFencesToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo sourceInfo, string lang = null, string title = null, IDfmFencesBlockPathQueryOption pathQueryOption = null)
         {
             Rule = rule;
             Context = context;

@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Dfm
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Common;
 
-    public class DfmFencesBlockRule : IMarkdownRule
+    public class DfmFencesRule : IMarkdownRule
     {
         private const string StartLineQueryStringKey = "start";
         private const string EndLineQueryStringKey = "end";
@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Dfm
             var title = match.Groups["title"]?.Value;
             var pathQueryOption = ParsePathQueryString(match.Groups["option"]?.Value, match.Groups["optionValue"]?.Value);
 
-            return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption);
+            return new DfmFencesToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption);
         }
 
         private static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
