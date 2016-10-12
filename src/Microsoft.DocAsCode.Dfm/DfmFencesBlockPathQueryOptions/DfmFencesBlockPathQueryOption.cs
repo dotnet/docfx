@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public string ErrorMessage { get; protected set; }
 
-        public abstract bool ValidateAndPrepare(string[] lines, DfmFencesBlockToken token);
+        public abstract bool ValidateAndPrepare(string[] lines, DfmFencesToken token);
 
         public abstract IEnumerable<string> GetQueryLines(string[] lines);
 
@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Dfm
                 int tempStartLine, tempEndLine;
                 foreach (var range in ranges)
                 {
-                    var match = DfmFencesBlockRule._dfmFencesRangeQueryStringRegex.Match(range);
+                    var match = DfmFencesRule._dfmFencesRangeQueryStringRegex.Match(range);
                     if (match.Success)
                     {
                         // consider region as `{startlinenumber}-{endlinenumber}`, in which {endlinenumber} is optional
