@@ -40,6 +40,7 @@ namespace Microsoft.DocAsCode.Dfm
             }
             inlineRules.Insert(index + 1, new DfmXrefShortcutInlineRule());
             inlineRules.Insert(index + 1, new DfmEmailInlineRule());
+            inlineRules.Insert(index + 1, new DfmFencesRule());
 
             // xref link inline rule must be before MarkdownLinkInlineRule
             inlineRules.Insert(index, new DfmIncludeInlineRule());
@@ -66,7 +67,7 @@ namespace Microsoft.DocAsCode.Dfm
                     new DfmVideoBlockRule(),
                     new DfmYamlHeaderBlockRule(),
                     new DfmSectionBlockRule(),
-                    new DfmFencesBlockRule(),
+                    new DfmFencesRule(),
                     new DfmNoteBlockRule()
                 });
 

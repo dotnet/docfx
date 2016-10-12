@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.Dfm
             return Insert(token, ExposeTokenNameInDfm(token), content);
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmFencesBlockToken token, MarkdownBlockContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmFencesToken token, MarkdownBlockContext context)
         {
             return Insert(token, ExposeTokenNameInDfm(token));
         }

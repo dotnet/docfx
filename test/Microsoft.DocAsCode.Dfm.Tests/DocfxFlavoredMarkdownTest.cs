@@ -862,6 +862,90 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
                 dependency.OrderBy(x => x));
         }
 
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfmFencesInlineLevel()
+        {
+            var root = @"
+| Code in table | Header1 |
+ ----------------- | ----------------------------
+| [!code-FakeREST[REST](api.json)] | [!Code-FakeREST-i[REST-i](api.json ""This is root"")]
+| [!CODE[No Language](api.json)] | [!code-js[empty](api.json)]
+";
+
+            var apiJsonContent = @"
+{
+   ""method"": ""GET"",
+   ""resourceFormat"": ""https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End"",
+   ""requestUrl"": ""https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End"",
+   ""requestHeaders"": {
+                ""Accept"": ""application/json""
+   }
+}";
+            File.WriteAllText("api.json", apiJsonContent.Replace("\r\n", "\n"));
+            var dependency = new HashSet<string>();
+            var marked = DocfxFlavoredMarked.Markup(root, "api.json", dependency: dependency);
+            const string expected = @"<table>
+<thead>
+<tr>
+<th>Code in table</th>
+<th>Header1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><pre><code class=""lang-FakeREST"" name=""REST"">
+{
+   &quot;method&quot;: &quot;GET&quot;,
+   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,
+   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,
+   &quot;requestHeaders&quot;: {
+                &quot;Accept&quot;: &quot;application/json&quot;
+   }
+}
+</code></pre></td>
+<td><pre><code class=""lang-FakeREST-i"" name=""REST-i"" title=""This is root"">
+{
+   &quot;method&quot;: &quot;GET&quot;,
+   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,
+   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,
+   &quot;requestHeaders&quot;: {
+                &quot;Accept&quot;: &quot;application/json&quot;
+   }
+}
+</code></pre></td>
+</tr>
+<tr>
+<td><pre><code name=""No Language"">
+{
+   &quot;method&quot;: &quot;GET&quot;,
+   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,
+   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,
+   &quot;requestHeaders&quot;: {
+                &quot;Accept&quot;: &quot;application/json&quot;
+   }
+}
+</code></pre></td>
+<td><pre><code class=""lang-js"" name=""empty"">
+{
+   &quot;method&quot;: &quot;GET&quot;,
+   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,
+   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,
+   &quot;requestHeaders&quot;: {
+                &quot;Accept&quot;: &quot;application/json&quot;
+   }
+}
+</code></pre></td>
+</tr>
+</tbody>
+</table>
+";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+            Assert.Equal(
+                new[] { "api.json" },
+                dependency.OrderBy(x => x));
+        }
+
         [Theory]
         [Trait("Owner", "humao")]
         [Trait("Related", "DfmMarkdown")]
