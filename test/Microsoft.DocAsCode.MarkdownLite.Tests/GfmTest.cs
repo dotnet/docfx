@@ -506,6 +506,10 @@ aaa",
             @"<h1 id=""测试用例"">测试。用例</h1>
 <h1 id=""测试用例-1"">测试。用例</h1>
 ")]
+        [InlineData(
+            @"**this is bold and *italic** *",
+            @"<p><strong>this is bold and *italic</strong> *</p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
