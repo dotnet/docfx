@@ -13,9 +13,9 @@ $scriptHome = Split-Path $scriptPath
 
 function ProcessLastExitCode {
     param($exitCode, $msg)
-    if ($lastexitcode -ne 0)
+    if ($exitCode -ne 0)
     {
-        Write-Error "$msg, exit code: $lastexitcode"
+        Write-Error "$msg, exit code: $exitCode"
         Pop-Location
         Exit 1
     }
@@ -24,7 +24,9 @@ function ProcessLastExitCode {
 Push-Location $scriptHome
 
 Write-Host "Build VscPreviewExe to the target folder"
-& dotnet build ".\Microsoft.DocAsCode.Dfm.VscPreview" -c $configuration -f net452 
+& dotnet build ".\Microsoft.DocAsCode.Dfm.VscPreview" -c $configuration -f net452
 ProcessLastExitCode($lastexitcode, "previewExe build error")
+MD DfmParse -force
 Copy-Item -Path ".\Microsoft.DocAsCode.Dfm.VscPreview\bin\$configuration\net452\win7-x64\*.dll" -Destination ".\DfmParse\"
 Copy-Item -Path ".\Microsoft.DocAsCode.Dfm.VscPreview\bin\$configuration\net452\win7-x64\*.exe" -Destination ".\DfmParse\"
+Pop-Location
