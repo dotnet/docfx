@@ -150,7 +150,7 @@ namespace Microsoft.DocAsCode.Dfm
             return content;
         }
 
-        public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmFencesToken token, IMarkdownContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmFencesBlockToken token, IMarkdownContext context)
         {
             if (!PathUtility.IsRelativePath(token.Path))
             {

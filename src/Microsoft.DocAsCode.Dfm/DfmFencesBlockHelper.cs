@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     public static class DfmFencesBlockHelper
     {
-        public static string GetRenderedFencesBlockString(DfmFencesToken token, Options options, string errorMessage, string[] codeLines = null)
+        public static string GetRenderedFencesBlockString(DfmFencesBlockToken token, Options options, string errorMessage, string[] codeLines = null)
         {
             string renderedErrorMessage = string.Empty;
             string renderedCodeLines = string.Empty;
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Dfm
             return $"{renderedErrorMessage}{renderedCodeLines}";
         }
 
-        public static string GenerateReferenceNotFoundErrorMessage(IMarkdownRenderer renderer, DfmFencesToken token)
+        public static string GenerateReferenceNotFoundErrorMessage(IMarkdownRenderer renderer, DfmFencesBlockToken token)
         {
             var errorMessageInMarkdown = $"Can not find reference {token.Path}";
             var errorMessage = $"Unable to resolve {token.SourceInfo.Markdown}. {errorMessageInMarkdown}. at line {token.SourceInfo.LineNumber}.";

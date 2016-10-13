@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public string ErrorMessage { get; protected set; }
 
-        public abstract bool ValidateAndPrepare(string[] lines, DfmFencesToken token);
+        public abstract bool ValidateAndPrepare(string[] lines, DfmFencesBlockToken token);
 
         public abstract IEnumerable<string> GetQueryLines(string[] lines);
 

@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public int? EndLine { get; set; }
 
-        public override bool ValidateAndPrepare(string[] lines, DfmFencesToken token)
+        public override bool ValidateAndPrepare(string[] lines, DfmFencesBlockToken token)
         {
             return CheckLineRange(lines.Length, StartLine, EndLine);
         }

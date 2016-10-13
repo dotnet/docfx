@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Dfm
     {
         public List<Tuple<int?, int?>> LinePairs { get; set; } = new List<Tuple<int?, int?>>();
 
-        public override bool ValidateAndPrepare(string[] lines, DfmFencesToken token)
+        public override bool ValidateAndPrepare(string[] lines, DfmFencesBlockToken token)
         {
             foreach (var pair in LinePairs)
             {
