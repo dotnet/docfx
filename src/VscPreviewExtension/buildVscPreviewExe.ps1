@@ -13,7 +13,7 @@ $scriptHome = Split-Path $scriptPath
 
 function ProcessLastExitCode {
     param($exitCode, $msg)
-    if ($exitCode -ne 0)
+    if ($exitCode.Equals(0))
     {
         Write-Error "$msg, exit code: $exitCode"
         Pop-Location
