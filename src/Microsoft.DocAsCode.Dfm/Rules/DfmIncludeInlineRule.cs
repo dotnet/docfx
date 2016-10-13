@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.MarkdownLite;
@@ -10,7 +11,7 @@ namespace Microsoft.DocAsCode.Dfm
     public class DfmIncludeInlineRule : IMarkdownRule
     {
         public virtual string Name => "DfmIncludeInline";
-        private static readonly Regex _inlineIncludeRegex = new Regex(DocfxFlavoredIncHelper.InlineIncRegexString, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex _inlineIncludeRegex = new Regex(DocfxFlavoredIncHelper.InlineIncRegexString, RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
         public virtual Regex Include => _inlineIncludeRegex;
 
         public IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
