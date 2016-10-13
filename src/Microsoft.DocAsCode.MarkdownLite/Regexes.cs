@@ -87,11 +87,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static readonly Regex RefLink = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\[([^\]]*)\]", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex NoLink = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex Strong = new Regex(@"^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)", RegexOptionCompiled, RegexTimeOut);
-            public static readonly Regex Em = new Regex(@"^\b_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex Em = new Regex(@"^_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex Code = new Regex(@"^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex Br = new Regex(@"^ {2,}\n(?!\s*$)", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex EscapedText = new Regex(@"^\\([`~!#^&*_=+?.<>(){}\-\\\[\]])", RegexOptionCompiled, RegexTimeOut);
-            public static readonly Regex Text = new Regex(@"^[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$)", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex Text = new Regex(@"^[\s\S]+?(?=[\\<!\[*`]|\b_| {2,}\n|$)", RegexOptionCompiled, RegexTimeOut);
 
             public static class Pedantic
             {
@@ -105,8 +105,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 public static readonly Regex Url = new Regex(@"^(https?:\/\/[^\s<]+[^<.,:;""')\]\s])", RegexOptionCompiled, RegexTimeOut);
                 public static readonly Regex Del = new Regex(@"^~~(?=\S)([\s\S]*?\S)~~", RegexOptionCompiled, RegexTimeOut);
                 public static readonly Regex StrongEm = new Regex(@"^(\**?)\*{3}(?!\*)(?=\S)([\s\S]*?\S)\*([\s\S]*?(?<=\S))?\*{2}", RegexOptionCompiled, RegexTimeOut);
-                public static readonly Regex Strong = new Regex(@"^__([\s\S]+?)__(?!_)|^\*{2}(?!\*|\s)((?:\*?[^*]+)+)(?<!\*|\s])\*{2}", RegexOptionCompiled, RegexTimeOut);
-                public static readonly Regex Em = new Regex(@"^\b_((?:__|[\s\S])+?)_\b|^\*((?:\**(?!\s)[^\*]+(?:\s+\*[^\*]*)*(?<!\s)))\*", RegexOptionCompiled, RegexTimeOut);
+                public static readonly Regex Strong = new Regex(@"^__([\s\S]+?)__(?!_)|^\*{2}(?!\*|\s)((?:[^*]|\*(?!\*))+)(?<!\*|\s)\*{2}", RegexOptionCompiled, RegexTimeOut);
+                public static readonly Regex Em = new Regex(@"^_((?:__|[\s\S])+?)_\b|^\*((?:\**(?!\s)[^\*]+(?:\s+\*[^\*]*)*(?<!\s)))\*", RegexOptionCompiled, RegexTimeOut);
                 public static readonly Regex Emoji = new Regex(@"^\:([a-z0-9_\+\-]+)\:", RegexOptionCompiled, RegexTimeOut);
                 public static readonly Regex Text = new Regex(@"^[\s\S]+?(?=[\\<!\[*`~\:]|\b_|\bhttps?:\/\/| {2,}\n|$)", RegexOptionCompiled, RegexTimeOut);
             }
@@ -114,7 +114,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static class Breaks
             {
                 public static readonly Regex Br = new Regex(@"^ *\n(?!\s*$)", RegexOptionCompiled, RegexTimeOut);
-                public static readonly Regex Text = new Regex(@"^[\s\S]+?(?=[\\<!\[_*`~]|https?:\/\/| *\n|$)", RegexOptionCompiled, RegexTimeOut);
+                public static readonly Regex Text = new Regex(@"^[\s\S]+?(?=[\\<!\[*`~]|\b_|\bhttps?:\/\/| *\n|$)", RegexOptionCompiled, RegexTimeOut);
             }
 
             public static class Smartypants
