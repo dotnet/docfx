@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.Collections.Immutable;
     using System.Text.RegularExpressions;
 
@@ -18,8 +19,8 @@ namespace Microsoft.DocAsCode.Dfm
         public static readonly string XrefAutoLinkRegexString = @"(<xref:([^ >]+)>)";
         public static readonly string XrefAutoLinkRegexWithQuoteString = @"<xref:(['""])(\s*?\S+?[\s\S]*?)\1>";
 
-        private static readonly Regex XrefAutoLinkRegex = new Regex("^" + XrefAutoLinkRegexString, RegexOptions.Compiled);
-        private static readonly Regex XrefAutoLinkRegexWithQuote = new Regex("^" + XrefAutoLinkRegexWithQuoteString, RegexOptions.Compiled);
+        private static readonly Regex XrefAutoLinkRegex = new Regex("^" + XrefAutoLinkRegexString, RegexOptions.Compiled, TimeSpan.FromSeconds(10));
+        private static readonly Regex XrefAutoLinkRegexWithQuote = new Regex("^" + XrefAutoLinkRegexWithQuoteString, RegexOptions.Compiled, TimeSpan.FromSeconds(10));
 
         public string Name => "DfmXrefAutoLink";
 

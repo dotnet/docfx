@@ -3,13 +3,14 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmVideoBlockRule : IMarkdownRule
     {
-        private static readonly Regex _videoRegex = new Regex(@"^ *\[\!Video +(?<link>https?\:\/\/.+?) *\] *(\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex _videoRegex = new Regex(@"^ *\[\!Video +(?<link>https?\:\/\/.+?) *\] *(\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
         public virtual string Name => "DfmVideoBlock";
         public virtual Regex VideoRegex => _videoRegex;
 
