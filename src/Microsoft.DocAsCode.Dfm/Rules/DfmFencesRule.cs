@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Dfm
             var title = match.Groups["title"]?.Value;
             var pathQueryOption = ParsePathQueryString(match.Groups["option"]?.Value, match.Groups["optionValue"]?.Value);
 
-            return new DfmFencesToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption);
+            return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption);
         }
 
         private static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)

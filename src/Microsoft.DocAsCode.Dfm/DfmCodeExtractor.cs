@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Dfm
     {
         private static readonly string RemoveIndentSpacesRegexString = @"^[ \t]{{1,{0}}}";
 
-        public DfmExtractCodeResult ExtractFencesCode(DfmFencesToken token, string fencesPath)
+        public DfmExtractCodeResult ExtractFencesCode(DfmFencesBlockToken token, string fencesPath)
         {
             if (token == null)
             {

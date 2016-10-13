@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class FullFileBlockPathQueryOption : DfmFencesBlockPathQueryOption
     {
-        public override bool ValidateAndPrepare(string[] lines, DfmFencesToken token)
+        public override bool ValidateAndPrepare(string[] lines, DfmFencesBlockToken token)
         {
             return true;
         }
