@@ -33,6 +33,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             GC.Collect();
         }
 
+        [Fact]
         [Trait("Related", "Markdown")]
         [Trait("Related", "Perf")]
         public void TestAlice()

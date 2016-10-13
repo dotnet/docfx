@@ -3,13 +3,14 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmEmailInlineRule : IMarkdownRule
     {
-        private static readonly Regex _emailRegex = new Regex(@"^\s*[\w._%+-]*[\w_%+-]@[\w.-]+\.[\w]{2,}\b", RegexOptions.Compiled);
+        private static readonly Regex _emailRegex = new Regex(@"^\s*[\w._%+-]*[\w_%+-]@[\w.-]+\.[\w]{2,}\b", RegexOptions.Compiled, TimeSpan.FromSeconds(10));
         public string Name => "DfmEmail";
 
         public virtual Regex Xref => _emailRegex;

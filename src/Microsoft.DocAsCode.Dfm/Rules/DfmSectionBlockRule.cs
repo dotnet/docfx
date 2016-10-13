@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Web;
@@ -15,7 +16,7 @@ namespace Microsoft.DocAsCode.Dfm
     {
         public string Name => "DfmSection";
 
-        public static readonly Regex _sectionRegex = new Regex(@"^(?<rawmarkdown> *\[\!div( +(?<quote>`?)(?<attributes>.*?)(\k<quote>))?\]\s*\n?)(?<text>.*)(?:\n|$)", RegexOptions.Compiled);
+        private static readonly Regex _sectionRegex = new Regex(@"^(?<rawmarkdown> *\[\!div( +(?<quote>`?)(?<attributes>.*?)(\k<quote>))?\]\s*\n?)(?<text>.*)(?:\n|$)", RegexOptions.Compiled, TimeSpan.FromSeconds(10));
 
         private const string SectionReplacementHtmlTag = "div";
 

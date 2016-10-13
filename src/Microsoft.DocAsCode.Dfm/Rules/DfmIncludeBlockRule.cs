@@ -3,13 +3,14 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmIncludeBlockRule : IMarkdownRule
     {
-        private static readonly Regex _incRegex = new Regex($"{DocfxFlavoredIncHelper.InlineIncRegexString}\\s*(\\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex _incRegex = new Regex($"{DocfxFlavoredIncHelper.InlineIncRegexString}\\s*(\\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
         public virtual string Name => "DfmIncludeBlock";
         public virtual Regex Include => _incRegex;
 

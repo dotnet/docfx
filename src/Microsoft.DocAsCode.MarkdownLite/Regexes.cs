@@ -108,7 +108,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 public static readonly Regex Strong = new Regex(@"^__([\s\S]+?)__(?!_)|^\*{2}(?!\*|\s)((?:\*?[^*]+)+)(?<!\*|\s])\*{2}", RegexOptionCompiled, RegexTimeOut);
                 public static readonly Regex Em = new Regex(@"^\b_((?:__|[\s\S])+?)_\b|^\*((?:\**(?!\s)[^\*]+(?:\s+\*[^\*]*)*(?<!\s)))\*", RegexOptionCompiled, RegexTimeOut);
                 public static readonly Regex Emoji = new Regex(@"^\:([a-z0-9_\+\-]+)\:", RegexOptionCompiled, RegexTimeOut);
-                public static readonly Regex Text = new Regex(@"^[\s\S]+?(?=[\\<!\[_*`~\:]|https?:\/\/| {2,}\n|$)", RegexOptionCompiled, RegexTimeOut);
+                public static readonly Regex Text = new Regex(@"^[\s\S]+?(?=[\\<!\[*`~\:]|\b_|\bhttps?:\/\/| {2,}\n|$)", RegexOptionCompiled, RegexTimeOut);
             }
 
             public static class Breaks

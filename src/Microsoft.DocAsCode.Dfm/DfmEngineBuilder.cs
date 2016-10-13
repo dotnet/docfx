@@ -16,7 +16,6 @@ namespace Microsoft.DocAsCode.Dfm
     public class DfmEngineBuilder : GfmEngineBuilder
     {
         private readonly string _baseDir;
-        private readonly string _workingDir;
         private IReadOnlyList<string> _fallbackFolders;
 
         public DfmEngineBuilder(Options options, string baseDir = null, string templateDir = null, IReadOnlyList<string> fallbackFolders = null) : base(options)

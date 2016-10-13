@@ -343,7 +343,7 @@ Skip the note",
         [InlineData(
              @"tag started with non-alphabet should be encoded <1-100>, <_hello>, <?world>, <1_2 href=""good"">, <1 att='bcd'>.
 tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b href=""good""> <AC att='bcd'>",
-             "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>2>Paragraph\",\"children\":[{\"name\":\"1>1>Text>tag started with non-alphabet should be encoded \"},{\"name\":\"1>1>Text>&lt;1-100&gt;, \"},{\"name\":\"1>1>Text>&lt;\"},{\"name\":\"1>1>Text>_hello&gt;, \"},{\"name\":\"1>1>Text>&lt;?world&gt;, \"},{\"name\":\"1>1>Text>&lt;1\"},{\"name\":\"1>1>Text>_2 href=&quot;good&quot;&gt;, \"},{\"name\":\"1>2>Text>&lt;1 att=&#39;bcd&#39;&gt;.\\ntag started with alphabet should not be encode\"},{\"name\":\"2>2>Text>: \"},{\"name\":\"2>2>Tag\"},{\"name\":\"2>2>Text> \"},{\"name\":\"2>2>Tag\"},{\"name\":\"2>2>Text> \"},{\"name\":\"2>2>Tag\"},{\"name\":\"2>2>Text> \"},{\"name\":\"2>2>Tag\"},{\"name\":\"2>2>Text> \"},{\"name\":\"2>2>Tag\"}]}]}"
+             "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>2>Paragraph\",\"children\":[{\"name\":\"1>1>Text>tag started with non-alphabet should be encoded \"},{\"name\":\"1>1>Text>&lt;1-100&gt;, \"},{\"name\":\"1>1>Text>&lt;\"},{\"name\":\"1>1>Text>_hello&gt;, \"},{\"name\":\"1>1>Text>&lt;?world&gt;, \"},{\"name\":\"1>1>Text>&lt;1_2 href=&quot;good&quot;&gt;, \"},{\"name\":\"1>2>Text>&lt;1 att=&#39;bcd&#39;&gt;.\\ntag started with alphabet should not be encode\"},{\"name\":\"2>2>Text>: \"},{\"name\":\"2>2>Tag\"},{\"name\":\"2>2>Text> \"},{\"name\":\"2>2>Tag\"},{\"name\":\"2>2>Text> \"},{\"name\":\"2>2>Tag\"},{\"name\":\"2>2>Text> \"},{\"name\":\"2>2>Tag\"},{\"name\":\"2>2>Text> \"},{\"name\":\"2>2>Tag\"}]}]}"
          )]
         public void TestDfm_EncodeInStrongEM(string source, string expected)
         {
@@ -410,7 +410,8 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
             DfmJsonTokenTreeServiceProvider dfmJsonTokenTreeServiceProvider = new DfmJsonTokenTreeServiceProvider();
             IMarkdownService dfmMarkdownService =
                 dfmJsonTokenTreeServiceProvider.CreateMarkdownService(new MarkdownServiceParameters());
-            Assert.Equal(expected, dfmMarkdownService.Markup(source, null).Html);
+            var result = dfmMarkdownService.Markup(source, null).Html;
+            Assert.Equal(expected, result);
         }
     }
 }
