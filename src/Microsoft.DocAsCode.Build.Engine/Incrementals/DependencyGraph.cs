@@ -166,6 +166,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return result;
         }
 
+        public HashSet<string> GetAllDependentNodes()
+        {
+            return new HashSet<string>(from item in _dependencyItems
+                                       select item.To);
+        }
+
         public void Save(TextWriter writer)
         {
             JsonUtility.Serialize(writer, Tuple.Create(_dependencyItems, _types));

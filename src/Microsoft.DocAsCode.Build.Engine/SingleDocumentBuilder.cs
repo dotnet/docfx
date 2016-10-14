@@ -82,8 +82,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (ShouldTraceIncrementalInfo)
                 {
                     string configHash = ComputeConfigHash(parameters);
-                    var fileAttributes = ComputeFileAttributes(parameters);
                     var baseDir = Path.Combine(IntermediateFolder, CurrentBuildInfo.DirectoryName);
+                    _lbv = LastBuildInfo?.Versions?.SingleOrDefault(v => v.VersionName == parameters.VersionName);
+                    var fileAttributes = ComputeFileAttributes(parameters, _lbv?.Dependency);
                     _cbv = new BuildVersionInfo
                     {
                         VersionName = parameters.VersionName,
@@ -211,7 +212,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return false;
             }
-            _lbv = LastBuildInfo.Versions.SingleOrDefault(v => v.VersionName == versionName);
             if (_lbv == null)
             {
                 Logger.LogVerbose($"Cannot build incrementally because last build didn't contain version {versionName}.");
@@ -270,11 +270,31 @@ namespace Microsoft.DocAsCode.Build.Engine
             return newChanges;
         }
 
-        private Dictionary<string, FileAttributeItem> ComputeFileAttributes(DocumentBuildParameters parameters)
+        private Dictionary<string, FileAttributeItem> ComputeFileAttributes(DocumentBuildParameters parameters, DependencyGraph dg)
         {
-            return (from f in parameters.Files.EnumerateFiles()
-                    let fileKey = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString()
-                    group f by fileKey into g
+            var filesInScope = from f in parameters.Files.EnumerateFiles()
+                               let fileKey = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString()
+                               select new
+                               {
+                                   PathFromWorkingFolder = fileKey,
+                                   FullPath = f.FullPath
+                               };
+            var files = filesInScope;
+            if (dg != null)
+            {
+                var filesFromDependency = from node in dg.GetAllDependentNodes()
+                                          let fullPath = Path.Combine(EnvironmentContext.BaseDirectory, ((RelativePath)node).RemoveWorkingFolder())
+                                          select new
+                                          {
+                                              PathFromWorkingFolder = node,
+                                              FullPath = fullPath
+                                          };
+                files = filesInScope.Concat(filesFromDependency);
+            }
+
+
+            return (from item in files
+                    group item by item.PathFromWorkingFolder into g
                     select new FileAttributeItem
                     {
                         File = g.Key,
@@ -379,7 +399,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 MarkdownService = markdownService,
                 DependencyGraph = new DependencyGraph(),
             };
-            BuildCore(new List<HostService> { hostService }, parameters.MaxParallelism, null, null);
+            BuildCore(new List<HostService> { hostService }, parameters.MaxParallelism, null, null, null);
             return hostService.Models;
         }
 
@@ -414,6 +434,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             Action<HostService> buildSaver = null;
             Action<List<HostService>> loader = null;
+            Action updater = null;
             if (ShouldTraceIncrementalInfo)
             {
                 buildSaver = h => h.SaveIntermediateModel();
@@ -434,9 +455,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     Logger.UnregisterListener(_cbv.BuildMessage.GetListener());
                 };
+                updater = () =>
+                {
+                    UpdateBuildVersionInfoPerDependencyGraph(_cbv);
+                };
             }
 
-            BuildCore(hostServices, context.MaxParallelism, buildSaver, loader);
+            BuildCore(hostServices, context.MaxParallelism, buildSaver, loader, updater);
 
             // export manifest
             return from h in hostServices
@@ -444,7 +469,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                    select m;
         }
 
-        private static void BuildCore(List<HostService> hostServices, int maxParallelism, Action<HostService> buildSaver, Action<List<HostService>> loader)
+        private static void BuildCore(List<HostService> hostServices, int maxParallelism, Action<HostService> buildSaver, Action<List<HostService>> loader, Action updater)
         {
             // prebuild and build
             foreach (var hostService in hostServices)
@@ -483,6 +508,29 @@ namespace Microsoft.DocAsCode.Build.Engine
                         Postbuild(hostService);
                     }
                 }
+            }
+
+            // update Attributes
+            updater?.Invoke();
+        }
+
+        private static void UpdateBuildVersionInfoPerDependencyGraph(BuildVersionInfo bvi)
+        {
+            if (bvi.Dependency == null)
+            {
+                return;
+            }
+            var fileAttributes = bvi.Attributes;
+            var nodesToUpdate = bvi.Dependency.GetAllDependentNodes().Except(fileAttributes.Keys);
+            foreach (var node in nodesToUpdate)
+            {
+                string fullPath = Path.Combine(EnvironmentContext.BaseDirectory, ((RelativePath)node).RemoveWorkingFolder());
+                fileAttributes[node] = new FileAttributeItem
+                {
+                    File = node,
+                    LastModifiedTime = File.GetLastWriteTimeUtc(fullPath),
+                    MD5 = File.ReadAllText(fullPath).GetMd5String(),
+                };
             }
         }
 
