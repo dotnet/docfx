@@ -6,7 +6,7 @@ var lastLocation = 0;
 
 var fileName = document.body.childNodes[1].data;
 
-var fileNameEscape = replaceAllInString(fileName, "\\", "\\\\");
+var fileNameEscape = fileName.replace(/\\/g,"\\\\");
 
 var rightClick = false;
 

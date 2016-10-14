@@ -297,7 +297,7 @@ function getEndLineNumber(name) {
 function getAltContent(name) {
   var info = name.split(">");
   if (info.length >= 4)
-    return replaceAllInString(replaceAllInString(info[3], "&quot;", "\""), "&#39;", "\'");
+    return info[3].replace(/&quot;/g, "\"").replace(/&#39/g, "\'");
   return "";
 }
 

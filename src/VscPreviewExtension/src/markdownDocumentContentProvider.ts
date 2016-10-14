@@ -25,7 +25,6 @@ export class MarkdownDocumentContentProvider extends ContentProvider {
             const tail = [
                 `<script type="text/javascript" src="${this.getNodeModulesPath(path.join('jquery', 'dist', 'jquery.min.js'))}"></script>`,
                 `<script type="text/javascript" src="${this.getNodeModulesPath(path.join("highlightjs", "highlight.pack.js"))}"></script>`,
-                `<script type="text/javascript" src="${this.getMediaJsPath("common.js")}"></script>`,
                 `<script type="text/javascript" src="${this.getMediaJsPath("previewMatch.js")}"></script>`,
                 `<script>hljs.initHighlightingOnLoad();</script>`,
                 "</body>",

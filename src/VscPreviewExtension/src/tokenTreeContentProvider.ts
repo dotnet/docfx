@@ -20,7 +20,6 @@ export class TokenTreeContentProvider extends ContentProvider {
                 `<script type="text/javascript" src="${this.getNodeModulesPath(path.join('jquery', 'dist', 'jquery.min.js'))}"></script>`,
                 `<script type="text/javascript" src="${this.getNodeModulesPath(path.join('d3', 'd3.min.js'))}"></script>`,
                 `<script type="text/javascript" src="${this.getMediaJsPath(`constVariable.js`)}"></script>`,
-                `<script type="text/javascript" src="${this.getMediaJsPath("common.js")}"></script>`,
                 `<script type="text/javascript" src="${this.getMediaJsPath(`buildTree.js`)}"></script>`,
                 `<script>`,
                 `var Jsonstr = document.body.firstChild.nodeValue;`,
