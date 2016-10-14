@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Net;
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Web;
@@ -408,7 +407,41 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var lineInfo = node as IXmlLineInfo;
             int column = lineInfo.HasLineInfo() ? lineInfo.LinePosition - 2 : 0;
 
-            return NormalizeXml(node.InnerXml, column);
+            return NormalizeXml(RemoveLeadingSpaces(node.InnerXml), column);
+        }
+
+        /// <summary>
+        /// Remove least common whitespces in each line of xml
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <returns>xml after removing least common whitespaces</returns>
+        private static string RemoveLeadingSpaces(string xml)
+        {
+            var lines = LineBreakRegex.Split(xml);
+            var normalized = new List<string>();
+
+            var preIndex = 0;
+            var leadingSpaces = from line in lines
+                where !string.IsNullOrWhiteSpace(line)
+                select line.TakeWhile(char.IsWhiteSpace).Count();
+
+            if (leadingSpaces.Any())
+            {
+                preIndex = leadingSpaces.Min();
+            }
+
+            foreach (var line in lines)
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    normalized.Add(string.Empty);
+                }
+                else
+                {
+                    normalized.Add(line.Substring(preIndex));
+                }
+            }
+            return string.Join("\n", normalized);
         }
 
         /// <summary>
