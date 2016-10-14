@@ -510,6 +510,14 @@ aaa",
             @"**this is bold and *italic** *",
             @"<p><strong>this is bold and *italic</strong> *</p>
 ")]
+        [InlineData(
+            @"**aaa*aa **aaa a *a aaa **",
+            @"<p><em>*aaa</em>aa **aaa a *a aaa **</p>
+")]
+        [InlineData(
+            @"__aaa_aa __aaa a _a aaa __a",
+            @"<p>__aaa_aa __aaa a _a aaa __a</p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
