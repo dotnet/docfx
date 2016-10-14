@@ -518,6 +518,10 @@ aaa",
             @"__aaa_aa __aaa a _a aaa __a",
             @"<p>__aaa_aa __aaa a _a aaa __a</p>
 ")]
+        [InlineData(
+            @"***A*B*C*D**",
+            @"<p><strong><em>A</em>B<em>C</em>D</strong></p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
