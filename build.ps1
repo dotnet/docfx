@@ -21,7 +21,7 @@ function DotnetBuild {
     if (Test-Path (Join-Path $folder.FullName "project.json"))
     {
         & dotnet build $folder.FullName -c $configuration -f net452
-        ProcessLastExitCode($lastexitcode, "dotnet build $folder error")
+        ProcessLastExitCode $lastexitcode "dotnet build $folder error"
     }
 }
 
@@ -30,7 +30,7 @@ function DotnetPublish {
     if (Test-Path (Join-Path $folder.FullName "project.json"))
     {
         & dotnet publish $folder.FullName -c $configuration -f net452 -o target\$configuration\$folder
-        ProcessLastExitCode($lastexitcode, "dotnet publish $folder error")
+        ProcessLastExitCode $lastexitcode "dotnet publish $folder error"
     }
 }
 
@@ -39,13 +39,13 @@ function DotnetPack {
     if (Test-Path (Join-Path $folder.FullName "project.json"))
     {
         & dotnet pack $folder.FullName -c $configuration -o artifacts\$configuration
-        ProcessLastExitCode($lastexitcode, "dotnet pack $folder error")
+        ProcessLastExitCode $lastexitcode "dotnet pack $folder error"
     }
 }
 
 function ProcessLastExitCode {
     param($exitCode, $msg)
-    if ($exitCode.Equals(0))
+    if ($exitCode -ne 0)
     {
         Write-Error "$msg, exit code: $exitCode"
         Pop-Location
@@ -77,7 +77,7 @@ if (-not(Test-Path $nuget))
 if ($raw -eq $false)
 {
     & ".\UpdateTemplate.cmd"
-    ProcessLastExitCode($lastexitcode, "Update templte error")
+    ProcessLastExitCode $lastexitcode "Update templte error"
 }
 else
 {
@@ -87,7 +87,7 @@ else
 if ($prod -eq $true)
 {
     & ".\UpdateVersion.cmd"
-    ProcessLastExitCode($lastexitcode, "Update version error")
+    ProcessLastExitCode $lastexitcode "Update version error"
 }
 
 # Restore package
@@ -96,7 +96,7 @@ foreach ($folder in @("src", "test", "tools"))
 {
     CD $folder
     & dotnet restore
-    ProcessLastExitCode($lastexitcode, "dotnet restore $folder error")
+    ProcessLastExitCode $lastexitcode "dotnet restore $folder error"
     CD ..
 }
 
@@ -121,7 +121,7 @@ foreach ($folder in (dir "test"))
     if ((Test-Path (Join-Path $folder.FullName "project.json")) -and ($folder.Name -ne "Shared") -and ($folder.Name -ne "docfx.E2E.Tests"))
     {
         & dotnet test test\$folder
-        ProcessLastExitCode($lastexitcode, "dotnet test $folder error")
+        ProcessLastExitCode $lastexitcode "dotnet test $folder error"
     }
 }
 
@@ -158,7 +158,7 @@ if (Test-Path "TEMP/version.txt")
     $version = $version.Substring(1)
 }
 & $nuget pack "src\nuspec\docfx.console\docfx.console.nuspec" -Version $version -OutputDirectory artifacts\$configuration
-ProcessLastExitCode($lastexitcode, "nuget pack docfx.console error")
+ProcessLastExitCode $lastexitcode "nuget pack docfx.console error"
 
 # Pack azure tools
 $null = New-Item -ItemType Directory -Force -Path "src\nuspec\AzureMarkdownRewriterTool\tools\"
@@ -168,7 +168,7 @@ Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.exe.config" -
 
 # Build VscPreviewExe
 src\VscPreviewExtension\buildVscPreviewExe.cmd -c $configuration
-ProcessLastExitCode($lastexitcode, "build VscPreviewExe error")
+ProcessLastExitCode $lastexitcode "build VscPreviewExe error"
 
 $version = "1.0.0"
 if (Test-Path "TEMP/version.txt")
@@ -177,7 +177,7 @@ if (Test-Path "TEMP/version.txt")
     $version = $version.Substring(1)
 }
 & $nuget pack "src\nuspec\AzureMarkdownRewriterTool\AzureMarkdownRewriterTool.nuspec" -Version $version -OutputDirectory artifacts\$configuration
-ProcessLastExitCode($lastexitcode, "nuget pack AzureMarkdownRewriterTool error")
+ProcessLastExitCode $lastexitcode "nuget pack AzureMarkdownRewriterTool error"
 
 Write-Host "Build completed."
 Pop-Location
