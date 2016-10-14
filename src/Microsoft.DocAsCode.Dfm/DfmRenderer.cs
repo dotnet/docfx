@@ -178,6 +178,11 @@ namespace Microsoft.DocAsCode.Dfm
             }
         }
 
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmFencesBlockToken token, MarkdownBlockContext context)
+        {
+            return Render(renderer, token, (IMarkdownContext)context);
+        }
+
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmNoteBlockToken token, MarkdownBlockContext context)
         {
             return token.Content;
