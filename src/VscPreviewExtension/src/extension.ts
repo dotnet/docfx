@@ -152,12 +152,6 @@ function showSource() {
 }
 
 function showPreview(dfmPreview: PreviewCore, uri?: Uri, sideBySide: boolean = false) {
-    // Set the filename of provider
-    let filePath = window.activeTextEditor.document.fileName;
-    let indexOfFilename = filePath.lastIndexOf("\\");
-    let fileName = filePath.substring(indexOfFilename + 1);
-    dfmPreview.provider.fileName = fileName;
-
     dfmPreview.isFirstTime = true;
     let resource = uri;
     if (!(resource instanceof Uri)) {

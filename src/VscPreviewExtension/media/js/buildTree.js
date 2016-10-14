@@ -301,11 +301,6 @@ function getAltContent(name) {
   return "";
 }
 
-// For that the function 'replace' of String only replace the first one
-function replaceAllInString(target, search, replacement) {
-  return target.split(search).join(replacement);
-};
-
 function visit(parent, level, visitFn, childrenFn) {
   if (!parent)
     return;

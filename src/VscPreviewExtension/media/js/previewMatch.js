@@ -6,6 +6,8 @@ var lastLocation = 0;
 
 var fileName = document.body.childNodes[1].data;
 
+var fileNameEscape = replaceAllInString(fileName, "\\", "\\\\");
+
 var rightClick = false;
 
 // Communication with extension to get the selection range of activeEditor
@@ -22,11 +24,11 @@ setInterval(function () {
           return;
         }
         var centerLocation = currentLocation;
-        var selectItem = $("[sourcefile='" + fileName + "']").filter(function (index) { return $(this).attr('sourcestartlinenumber') <= centerLocation && $(this).attr('sourceendlinenumber') >= centerLocation }).last();
+        var selectItem = $("[sourcefile='" + fileNameEscape + "']").filter(function (index) { return $(this).attr('sourcestartlinenumber') <= centerLocation && $(this).attr('sourceendlinenumber') >= centerLocation }).last();
         // If result of selection is empty selection, focus on the end of last node
         while (selectItem.length === 0) {
           centerLocation--;
-          selectItem = $("[sourcefile='" + fileName + "']").filter(function (index) { return $(this).attr('sourcestartlinenumber') <= centerLocation && $(this).attr('sourceendlinenumber') >= centerLocation }).last();
+          selectItem = $("[sourcefile='" + fileNameEscape + "']").filter(function (index) { return $(this).attr('sourcestartlinenumber') <= centerLocation && $(this).attr('sourceendlinenumber') >= centerLocation }).last();
         }
         $("body,html").animate({
           scrollTop: selectItem.offset().top

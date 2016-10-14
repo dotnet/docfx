@@ -29,6 +29,7 @@ export class PreviewCore extends ChildProcessHost {
     }
 
     protected writeToStdin(rootPath: string, filePath: string, numOfRow: number, docContent: string) {
+        this.provider.fileName = filePath;
         this._spawn.stdin.write(this.appendWrap("dfmmarkup"));
         this._spawn.stdin.write(this.appendWrap(rootPath));
         this._spawn.stdin.write(this.appendWrap(filePath));
