@@ -108,10 +108,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                     if (_canIncremental)
                     {
                         LoadChanges(parameters, context, fileAttributes);
-                        Logger.LogVerbose($"Before expanding dependency before build, changes: {JsonUtility.Serialize(context.ChangeDict)}");
+                        Logger.LogVerbose($"Before expanding dependency before build, changes: {JsonUtility.Serialize(context.ChangeDict, Formatting.Indented)}");
                         var dependencyGraph = _lbv.Dependency;
                         ExpandDependency(dependencyGraph, context, d => dependencyGraph.DependencyTypes[d.Type].TriggerBuild);
-                        Logger.LogVerbose($"After expanding dependency before build, changes: {JsonUtility.Serialize(context.ChangeDict)}");
+                        Logger.LogVerbose($"After expanding dependency before build, changes: {JsonUtility.Serialize(context.ChangeDict, Formatting.Indented)}");
                     }
                 }
 
