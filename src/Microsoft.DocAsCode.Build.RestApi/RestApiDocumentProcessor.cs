@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using Microsoft.DocAsCode.Exceptions;
+
 namespace Microsoft.DocAsCode.Build.RestApi
 {
     using System;
@@ -27,6 +29,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
     {
         private const string RestApiDocumentType = "RestApi";
         private const string DocumentTypeKey = "documentType";
+        private const string OperationIdKey = "operationId";
 
         // To keep backward compatibility, still support and change previous file endings by first mapping sequence.
         // Take 'a.b_swagger2.json' for an example, the json file name would be changed to 'a.b', then the html file name would be 'a.b.html'.
@@ -76,6 +79,8 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     var swagger = SwaggerJsonParser.Parse(swaggerContent);
                     swagger.Metadata[DocumentTypeKey] = RestApiDocumentType;
                     swagger.Raw = swaggerContent;
+                    CheckOperationId(swagger, file.File);
+
                     var repoInfo = GitUtility.GetGitDetail(filePath);
                     if (repoInfo != null)
                     {
@@ -169,6 +174,24 @@ namespace Microsoft.DocAsCode.Build.RestApi
             }
 
             return false;
+        }
+
+        private static void CheckOperationId(SwaggerModel swagger, string fileName)
+        {
+            if (swagger.Paths != null)
+            {
+                foreach (var path in swagger.Paths)
+                {
+                    foreach (var operation in path.Value.Metadata)
+                    {
+                        JToken operationId;
+                        if (!((JObject)operation.Value).TryGetValue(OperationIdKey, out operationId))
+                        {
+                            throw new DocfxException($"{OperationIdKey} should exist in operation '{operation.Key}' of path '{path.Key}' for swagger file '{fileName}'");
+                        }
+                    }
+                }
+            }
         }
 
         private static string ChangeFileExtension(string file)
