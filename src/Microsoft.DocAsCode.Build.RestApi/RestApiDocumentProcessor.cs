@@ -184,7 +184,8 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     foreach (var operation in path.Value.Metadata)
                     {
                         JToken operationId;
-                        if (!((JObject)operation.Value).TryGetValue(OperationIdKey, out operationId))
+                        var jObject = operation.Value as JObject;
+                        if (jObject != null && !jObject.TryGetValue(OperationIdKey, out operationId))
                         {
                             throw new DocfxException($"{OperationIdKey} should exist in operation '{operation.Key}' of path '{path.Key}' for swagger file '{fileName}'");
                         }
