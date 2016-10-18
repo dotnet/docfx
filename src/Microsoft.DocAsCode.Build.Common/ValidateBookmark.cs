@@ -33,9 +33,9 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 throw new ArgumentNullException("Base directory can not be null");
             }
-            var registeredBookmarks = new Dictionary<string, HashSet<string>>();
-            var bookmarks = new Dictionary<string, List<Tuple<string, string>>>();
-            var fileMapping = new Dictionary<string, string>();
+            var registeredBookmarks = new Dictionary<string, HashSet<string>>(new FilePathComparer());
+            var bookmarks = new Dictionary<string, List<Tuple<string, string>>>(new FilePathComparer());
+            var fileMapping = new Dictionary<string, string>(new FilePathComparer());
 
             foreach (var p in from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
                                          from output in item.OutputFiles
@@ -72,7 +72,7 @@ namespace Microsoft.DocAsCode.Build.Common
                                                    HttpUtility.UrlDecode(link.Remove(index)),
                                                    link.Substring(index))).ToList();
                     var anchors = GetNodeAttribute(html, "id").Concat(GetNodeAttribute(html, "name"));
-                    registeredBookmarks[relativePath] = new HashSet<string>(anchors);
+                    registeredBookmarks[relativePath] = new HashSet<string>(anchors, StringComparer.OrdinalIgnoreCase);
                 }
             }
 
