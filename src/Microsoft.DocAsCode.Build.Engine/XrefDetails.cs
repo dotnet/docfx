@@ -23,11 +23,14 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string Uid { get; private set; }
         public string Anchor { get; private set; }
-        public string PlainTextDisplayName { get; private set; }
-        public string AnchorDisplayName { get; private set; }
         public string Title { get; private set; }
         public string Href { get; private set; }
         public string Raw { get; private set; }
+        public string DisplayProperty { get; private set; }
+        public string AltProperty { get; private set; }
+        public string InnerHtml { get; private set; }
+        public string Text { get; private set; }
+        public string Alt { get; private set; }
         public XRefSpec Spec { get; private set; }
         public bool ThrowIfNotResolved { get; private set; }
 
@@ -54,19 +57,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            var overrideName = node.InnerText;
-            if (!string.IsNullOrEmpty(overrideName))
-            {
-                xref.AnchorDisplayName = overrideName;
-                xref.PlainTextDisplayName = overrideName;
-            }
-            else
-            {
-                // If name | fullName exists, use the one from xref because spec name is different from name for generic types
-                // e.g. return type: IEnumerable<T>, spec name should be IEnumerable
-                xref.AnchorDisplayName = node.GetAttributeValue("name", null);
-                xref.PlainTextDisplayName = node.GetAttributeValue("fullName", null);
-            }
+            xref.InnerHtml = node.InnerHtml;
+            xref.DisplayProperty = node.GetAttributeValue("displayProperty", XRefSpec.NameKey);
+            xref.AltProperty = node.GetAttributeValue("altProperty", "fullname");
+            xref.Text = node.GetAttributeValue("text", node.GetAttributeValue("name", null));
+            xref.Alt = node.GetAttributeValue("alt", node.GetAttributeValue("fullname", null));
 
             xref.Title = node.GetAttributeValue("title", null);
 
@@ -89,7 +84,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void ApplyXrefSpec(XRefSpec spec)
         {
-            if (spec == null) return;
+            if (spec == null)
+            {
+                return;
+            }
             var href = spec.Href;
             if (PathUtility.IsRelativePath(href))
             {
@@ -102,14 +100,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             Href = HttpUtility.UrlDecode(href);
             Spec = spec;
-            if (string.IsNullOrEmpty(AnchorDisplayName))
-            {
-                AnchorDisplayName = StringHelper.HtmlEncode(spec.Name);
-            }
-            if (string.IsNullOrEmpty(PlainTextDisplayName))
-            {
-                PlainTextDisplayName = StringHelper.HtmlEncode(spec.Name);
-            }
         }
 
         /// <summary>
@@ -121,13 +111,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             // If href exists, return anchor else return text
             if (!string.IsNullOrEmpty(Href))
             {
-                string value = AnchorDisplayName;
+                string value = InnerHtml;
                 if (string.IsNullOrEmpty(value))
                 {
-                    value = PlainTextDisplayName ?? Uid;
-                    if (Spec != null)
+                    value = StringHelper.HtmlEncode(Text);
+                    if (string.IsNullOrEmpty(value) && Spec != null)
                     {
-                        value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, value, "name"));
+                        value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, Uid, DisplayProperty, "name"));
                     }
                 }
                 return GetAnchorNode(Href, Anchor, Title, value);
@@ -139,13 +129,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     return HtmlAgilityPack.HtmlNode.CreateNode(Raw);
                 }
 
-                string value = PlainTextDisplayName;
+                string value = InnerHtml;
                 if (string.IsNullOrEmpty(value))
                 {
-                    value = AnchorDisplayName ?? Uid;
-                    if (Spec != null)
+                    value = StringHelper.HtmlEncode(Alt);
+                    if (string.IsNullOrEmpty(value) && Spec != null)
                     {
-                        value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, value, "fullName", "name"));
+                        value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, Uid, AltProperty, "name"));
                     }
                 }
 
@@ -186,7 +176,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (keyInFallbackOrder == null || keyInFallbackOrder.Length == 0) throw new ArgumentException("key must be provided!", nameof(keyInFallbackOrder));
             string suffix = string.Empty;
-            if (!string.IsNullOrEmpty(language)) suffix = "." + language;
+            if (!string.IsNullOrEmpty(language))
+            {
+                suffix = "." + language;
+            }
             foreach (var key in keyInFallbackOrder)
             {
                 string value;
