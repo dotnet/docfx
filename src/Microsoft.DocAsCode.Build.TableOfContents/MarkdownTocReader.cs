@@ -190,7 +190,7 @@
         internal sealed class TopicXrefAutoLinkTocParseRule : ParseRule
         {
             public static readonly Regex XrefAutoLinkTocRegex =
-                new Regex($@"^(#+)(?: |\t)*{DfmXrefAutoLinkInlineRule.XrefAutoLinkRegexString}( |\t)*#*( |\t)*(\r?\n|$)", RegexOptions.Compiled);
+                new Regex($@"^(#+)(?: |\t)*{DfmXrefAutoLinkInlineRule.XrefAutoLinkRegexString}( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
             public static readonly Regex XrefAutoLinkWithQuoteTocRegex =
                 new Regex($@"^(#+)(?: |\t)*{DfmXrefAutoLinkInlineRule.XrefAutoLinkRegexWithQuoteString}( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
 
@@ -214,7 +214,7 @@
         internal sealed class TopicXrefShortcutTocParseRule : ParseRule
         {
             public static readonly Regex XrefShortcutTocRegex =
-                new Regex($@"^(#+)(?: |\t)*{DfmXrefShortcutInlineRule.XrefShortcutRegexString}( |\t)*#*( |\t)*(\r?\n|$)", RegexOptions.Compiled);
+                new Regex($@"^(#+)(?: |\t)*{DfmXrefShortcutInlineRule.XrefShortcutRegexString}( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
             public static readonly Regex XrefShortcutTocWithQuoteTocRegex =
                 new Regex($@"^(#+)(?: |\t)*{DfmXrefShortcutInlineRule.XrefShortcutRegexWithQuoteString}( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
 
