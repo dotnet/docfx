@@ -104,12 +104,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
             var summary = commentModel.Summary;
             Assert.Equal(@"
-    Parital classes <xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref><xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref>can not cross assemblies, Test <xref uid=""langword_csharp_null"" name=""null"" href=""""></xref>
+Parital classes <xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref><xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref>can not cross assemblies, Test <xref uid=""langword_csharp_null"" name=""null"" href=""""></xref>
 
 
-    ```
-    Classes in assemblies are by definition complete.
-    ```
+```
+Classes in assemblies are by definition complete.
+```
 ".Replace("\r\n", "\n"), summary);
 
             var returns = commentModel.Returns;
