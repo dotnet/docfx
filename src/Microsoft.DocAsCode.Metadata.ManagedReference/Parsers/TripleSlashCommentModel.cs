@@ -430,6 +430,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 preIndex = leadingSpaces.Min();
             }
 
+            if (preIndex == 0)
+            {
+                return xml;
+            }
+
             foreach (var line in lines)
             {
                 if (string.IsNullOrWhiteSpace(line))
