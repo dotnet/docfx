@@ -12,28 +12,28 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         {
             if (string.IsNullOrEmpty(key)) return null;
 
-            ApiReferenceBuildOutput ervm;
-            if (!references.TryGetValue(key, out ervm))
+            ApiReferenceBuildOutput arbo;
+            if (!references.TryGetValue(key, out arbo))
             {
                 var spec = GetXref(key);
-                ervm = new ApiReferenceBuildOutput
+                arbo = new ApiReferenceBuildOutput
                 {
                     Spec = ApiReferenceBuildOutput.GetSpecNames(GetXref(key), supportedLanguages),
                 };
             }
             else
             {
-                ervm.Expand(references, supportedLanguages);
+                arbo.Expand(references, supportedLanguages);
             }
 
-            return ervm;
+            return arbo;
         }
 
         public static ApiReferenceBuildOutput GetReferenceViewModel(string key, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages, int index)
         {
-            var ervm = GetReferenceViewModel(key, references, supportedLanguages);
-            ervm.Index = index;
-            return ervm;
+            var arbo = GetReferenceViewModel(key, references, supportedLanguages);
+            arbo.Index = index;
+            return arbo;
         }
 
         public static ApiNames GetApiNames(string key, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
@@ -41,14 +41,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             if (string.IsNullOrEmpty(key)) return null;
 
             var result = ApiNames.FromUid(key);
-            ApiReferenceBuildOutput ervm;
-            if (references.TryGetValue(key, out ervm))
+            ApiReferenceBuildOutput arbo;
+            if (references.TryGetValue(key, out arbo))
             {
-                result.Definition = ervm.Definition;
-                result.Name = ervm.Name;
-                result.NameWithType = ervm.NameWithType;
-                result.FullName = ervm.FullName;
-                result.Spec = ervm.Spec;
+                result.Definition = arbo.Definition;
+                result.Name = arbo.Name;
+                result.NameWithType = arbo.NameWithType;
+                result.FullName = arbo.FullName;
+                result.Spec = arbo.Spec;
             }
 
             return result;

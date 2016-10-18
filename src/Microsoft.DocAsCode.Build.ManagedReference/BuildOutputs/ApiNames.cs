@@ -16,6 +16,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("uid")]
         public string Uid { get; set; }
 
+        [YamlMember(Alias = "id")]
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
         [YamlMember(Alias = "definition")]
         [JsonProperty("definition")]
         public string Definition { get; set; }
@@ -43,6 +47,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             return new ApiNames
             {
                 Uid = uid,
+                Id = Utility.GetHtmlId(uid),
             };
         }
     }
