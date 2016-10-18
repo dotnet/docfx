@@ -120,6 +120,9 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
 
+            // always enable validating bookmark
+            postProcessorNames = postProcessorNames.Add(nameof(ValidateBookmark));
+
             using (var builder = new DocumentBuilder(assemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder))
             using (new PerformanceScope("building documents", LogLevel.Info))
             {
