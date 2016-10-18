@@ -101,7 +101,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             Assert.Equal(@"Invalid toc file: test.md, Details: Unknown syntax at line 3:
 [bad]()
 >_<
->_<".Replace("\r\n", "\n"), ex.Message);
+>_<", ex.Message);
         }
     }
 }
