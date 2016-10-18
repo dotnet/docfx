@@ -1,4 +1,7 @@
-﻿namespace Microsoft.DocAsCode.Build.Common
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Microsoft.DocAsCode.Build.Common
 {
     using System;
     using System.Collections.Generic;
@@ -86,7 +89,7 @@
                     {
                         string currentFileSrc = fileMapping[path];
                         string linkedToFileSrc = fileMapping[linkedToFile];
-                        Logger.LogWarning($"File {currentFileSrc} contains illegal link {linkedToFileSrc + anchor}: the file {linkedToFileSrc} doesn't contain a bookmark named {anchor}.");
+                        Logger.LogWarning($"Output file {path} which is built from src file {currentFileSrc} contains illegal link {linkedToFile + anchor}: the file {linkedToFile} which is built from src {linkedToFileSrc} doesn't contain a bookmark named {anchor}.");
                     }
                 }
             }
@@ -96,7 +99,12 @@
 
         private static IEnumerable<string> GetNodeAttribute(HtmlDocument html, string attribute)
         {
-            return html.DocumentNode.SelectNodes(string.Format(XpathTemplate, attribute)).Select(n => n.GetAttributeValue(attribute, null));
+            var nodes = html.DocumentNode.SelectNodes(string.Format(XpathTemplate, attribute));
+            if (nodes == null)
+            {
+                return Enumerable.Empty<string>();
+            }
+            return nodes.Select(n => n.GetAttributeValue(attribute, null));
         }
     }
 }
