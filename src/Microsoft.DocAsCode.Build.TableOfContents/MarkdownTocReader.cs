@@ -24,7 +24,7 @@
                 new CommentParseRule(),
                 new WhitespaceParseRule(),
             };
-            var content = tocContent;
+            var content = tocContent.Replace("\r\n", "\n").Replace("\r", "\n");
             int lineNumber = 1;
             while (content.Length > 0)
             {
@@ -52,7 +52,7 @@
                         return rule.Apply(this, m);
                     }
                 }
-                var message = string.Join("\n", input.Split('\n').Take(3)).TrimEnd('\r','\n');
+                var message = string.Join("\n", input.Split('\n').Take(3)).TrimEnd('\n');
                 return new ErrorState(this, Level, $"Unknown syntax at line {lineNumber}:{Environment.NewLine}{message}");
             }
         }
@@ -164,7 +164,7 @@
         {
             private static readonly Regex UidRegex = new Regex(@"^\s*(?:xref:|@)(\s*?\S+?[\s\S]*?)\s*$", RegexOptions.Compiled);
             public static readonly Regex TocRegex =
-                new Regex(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+)\]\((?<tocLink>(?!http[s]?://).*?)\)( |\t)*#*( |\t)*(\r?\n|$)", RegexOptions.Compiled);
+                new Regex(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+)\]\((?<tocLink>(?!http[s]?://).*?)\)( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
 
             public override Match Match(string text) => TocRegex.Match(text);
 
@@ -190,9 +190,9 @@
         internal sealed class TopicXrefAutoLinkTocParseRule : ParseRule
         {
             public static readonly Regex XrefAutoLinkTocRegex =
-                new Regex($@"^(#+)(?: |\t)*{DfmXrefAutoLinkInlineRule.XrefAutoLinkRegexString}( |\t)*#*( |\t)*(\r?\n|$)", RegexOptions.Compiled);
+                new Regex($@"^(#+)(?: |\t)*{DfmXrefAutoLinkInlineRule.XrefAutoLinkRegexString}( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
             public static readonly Regex XrefAutoLinkWithQuoteTocRegex =
-                new Regex($@"^(#+)(?: |\t)*{DfmXrefAutoLinkInlineRule.XrefAutoLinkRegexWithQuoteString}( |\t)*#*( |\t)*(\r?\n|$)", RegexOptions.Compiled);
+                new Regex($@"^(#+)(?: |\t)*{DfmXrefAutoLinkInlineRule.XrefAutoLinkRegexWithQuoteString}( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
 
             public override Match Match(string text)
             {
@@ -214,9 +214,9 @@
         internal sealed class TopicXrefShortcutTocParseRule : ParseRule
         {
             public static readonly Regex XrefShortcutTocRegex =
-                new Regex($@"^(#+)(?: |\t)*{DfmXrefShortcutInlineRule.XrefShortcutRegexString}( |\t)*#*( |\t)*(\r?\n|$)", RegexOptions.Compiled);
+                new Regex($@"^(#+)(?: |\t)*{DfmXrefShortcutInlineRule.XrefShortcutRegexString}( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
             public static readonly Regex XrefShortcutTocWithQuoteTocRegex =
-                new Regex($@"^(#+)(?: |\t)*{DfmXrefShortcutInlineRule.XrefShortcutRegexWithQuoteString}( |\t)*#*( |\t)*(\r?\n|$)", RegexOptions.Compiled);
+                new Regex($@"^(#+)(?: |\t)*{DfmXrefShortcutInlineRule.XrefShortcutRegexWithQuoteString}( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
 
             public override Match Match(string text)
             {
@@ -238,7 +238,7 @@
         internal sealed class ExternalLinkTocParseRule : ParseRule
         {
             public static readonly Regex TocRegex =
-                new Regex(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+?)\]\((?<tocLink>(http[s]?://).*?)\)( |\t)*#*( |\t)*(\r?\n|$)", RegexOptions.Compiled);
+                new Regex(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+?)\]\((?<tocLink>(http[s]?://).*?)\)( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
 
             public override Match Match(string text) => TocRegex.Match(text);
 
@@ -251,7 +251,7 @@
         internal sealed class ContainerParseRule : ParseRule
         {
             public static readonly Regex ContainerRegex =
-                new Regex(@"^(?<headerLevel>#+)(( |\t)*)(?<tocTitle>.+?)( |\t)*#*( |\t)*(\r?\n|$)", RegexOptions.Compiled);
+                new Regex(@"^(?<headerLevel>#+)(( |\t)*)(?<tocTitle>.+?)( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
 
             public override Match Match(string text) => ContainerRegex.Match(text);
 
@@ -264,7 +264,7 @@
         internal sealed class CommentParseRule : ParseRule
         {
             public static readonly Regex CommentRegex =
-                new Regex(@"^\s*<!--[\s\S]*?-->\s*(\r?\n|$)", RegexOptions.Compiled);
+                new Regex(@"^\s*<!--[\s\S]*?-->\s*(\n|$)", RegexOptions.Compiled);
 
             public override Match Match(string text) => CommentRegex.Match(text);
 
@@ -274,7 +274,7 @@
         internal sealed class WhitespaceParseRule : ParseRule
         {
             public static readonly Regex WhitespaceRegex =
-                new Regex(@"^\s*(\r?\n|$)", RegexOptions.Compiled);
+                new Regex(@"^\s*(\n|$)", RegexOptions.Compiled);
 
             public override Match Match(string text) => WhitespaceRegex.Match(text);
 
