@@ -96,6 +96,7 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
                     Path.Combine(model.OriginalFileAndType.BaseDir, model.OriginalFileAndType.File),
                     targetFile,
                     true);
+                File.SetAttributes(targetFile, FileAttributes.Normal);
             }
             var result = new SaveResult
             {
