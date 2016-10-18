@@ -52,7 +52,7 @@
                         return rule.Apply(this, m);
                     }
                 }
-                var message = string.Join("\n", input.Split('\n').Take(3)).TrimEnd('\n');
+                var message = string.Join(Environment.NewLine, input.Split('\n').Take(3));
                 return new ErrorState(this, Level, $"Unknown syntax at line {lineNumber}:{Environment.NewLine}{message}");
             }
         }
