@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
+    using System.Linq;
     using System.Runtime.Remoting.Lifetime;
     using System.Reflection;
 
@@ -106,7 +107,9 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 assemblies = LoadPluginAssemblies(pluginDirectory);
             }
-            var postProcessorNames = config.PostProcessors.ToImmutableArray();
+
+            // always enable validating bookmark
+            var postProcessorNames = new List<string> { nameof(ValidateBookmark) }.Concat(config.PostProcessors).ToImmutableArray();
             var metadata = config.GlobalMetadata?.ToImmutableDictionary();
 
             // For backward compatible, retain "_enableSearch" to globalMetadata though it's deprecated
@@ -119,9 +122,6 @@ namespace Microsoft.DocAsCode.SubCommands
                     postProcessorNames = postProcessorNames.Add("ExtractSearchIndex");
                 }
             }
-
-            // always enable validating bookmark
-            postProcessorNames = postProcessorNames.Add(nameof(ValidateBookmark));
 
             using (var builder = new DocumentBuilder(assemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder))
             using (new PerformanceScope("building documents", LogLevel.Info))

@@ -29,6 +29,10 @@ namespace Microsoft.DocAsCode.Build.Common
 
         public Manifest Process(Manifest manifest, string outputFolder)
         {
+            if (manifest == null)
+            {
+                throw new ArgumentNullException(nameof(manifest));
+            }
             if (outputFolder == null)
             {
                 throw new ArgumentNullException("Base directory can not be null");
@@ -38,18 +42,18 @@ namespace Microsoft.DocAsCode.Build.Common
             var fileMapping = new Dictionary<string, string>(new FilePathComparer());
 
             foreach (var p in from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
-                                         from output in item.OutputFiles
-                                         where output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
-                                         select new
-                                         {
-                                             RelativePath = output.Value.RelativePath,
-                                             SrcRelativePath = item.SourceRelativePath,
-                                         })
+                              from output in item.OutputFiles
+                              where output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
+                              select new
+                              {
+                                  RelativePath = output.Value.RelativePath,
+                                  SrcRelativePath = item.SourceRelativePath,
+                              })
             {
                 string srcRelativePath = p.SrcRelativePath;
                 string relativePath = p.RelativePath;
                 var filePath = Path.Combine(outputFolder, relativePath);
-                fileMapping[relativePath] = srcRelativePath;
+
                 var html = new HtmlDocument();
 
                 if (File.Exists(filePath))
@@ -63,16 +67,16 @@ namespace Microsoft.DocAsCode.Build.Common
                         Logger.LogWarning($"Warning: Can't load content from {filePath}: {ex.Message}");
                         continue;
                     }
-
+                    fileMapping[relativePath] = srcRelativePath;
                     var links = GetNodeAttribute(html, "src").Concat(GetNodeAttribute(html, "href"));
                     bookmarks[relativePath] = (from link in links
                                                let index = link.IndexOf("#")
                                                where index != -1 && PathUtility.IsRelativePath(link)
                                                select Tuple.Create(
                                                    HttpUtility.UrlDecode(link.Remove(index)),
-                                                   link.Substring(index))).ToList();
+                                                   link.Substring(index + 1))).ToList();
                     var anchors = GetNodeAttribute(html, "id").Concat(GetNodeAttribute(html, "name"));
-                    registeredBookmarks[relativePath] = new HashSet<string>(anchors, StringComparer.OrdinalIgnoreCase);
+                    registeredBookmarks[relativePath] = new HashSet<string>(anchors);
                 }
             }
 
@@ -89,7 +93,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     {
                         string currentFileSrc = fileMapping[path];
                         string linkedToFileSrc = fileMapping[linkedToFile];
-                        Logger.LogWarning($"Output file {path} which is built from src file {currentFileSrc} contains illegal link {linkedToFile + anchor}: the file {linkedToFile} which is built from src {linkedToFileSrc} doesn't contain a bookmark named {anchor}.");
+                        Logger.LogWarning($"Output file {path} which is built from src file {currentFileSrc} contains illegal link {linkedToFile}#{anchor}: the file {linkedToFile} which is built from src {linkedToFileSrc} doesn't contain a bookmark named {anchor}.");
                     }
                 }
             }
