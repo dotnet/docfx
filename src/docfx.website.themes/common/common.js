@@ -117,11 +117,15 @@ function getNewFileUrl(uid, gitContribute, gitUrlPattern) {
 }
 
 function getRemoteUrl(remote, startLine, gitContribute, gitUrlPattern) {
-    if (!remote || !remote.repo) return '';
-    var repo = remote.repo;
+    var repo = undefined;
+    var branch = undefined;
     if (gitContribute && gitContribute.repo) repo = gitContribute.repo;
-    var branch = remote.branch;
+    if (repo == undefined && remote && remote.repo) repo = remote.repo;
     if (gitContribute && gitContribute.branch) branch = gitContribute.branch;
+    if (branch == undefined && remote && remote.branch) branch = remote.branch;
+
+    if (repo == undefined || branch == undefined) return '';
+
     if (repo.substr(-4) === '.git') {
         repo = repo.substr(0, repo.length - 4);
     }
