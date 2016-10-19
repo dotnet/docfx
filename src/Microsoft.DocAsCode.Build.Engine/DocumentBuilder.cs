@@ -100,6 +100,16 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             // Save to manifest.json
             SaveManifest(generatedManifest, outputDirectory);
+
+            // overwrite intermediate cache files
+            if (_intermediateFolder != null)
+            {
+                _currentBuildInfo.Save(_intermediateFolder);
+                if (_lastBuildInfo != null)
+                {
+                    Directory.Delete(Path.Combine(_intermediateFolder, _lastBuildInfo.DirectoryName), true);
+                }
+            }
         }
 
         internal Manifest BuildCore(DocumentBuildParameters parameter)
@@ -321,15 +331,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Logger.LogVerbose($"Disposing processor {processor.ContractName} ...");
                 (processor.Processor as IDisposable)?.Dispose();
-            }
-            if (_intermediateFolder != null)
-            {
-                // to-do: add check for build status. if failed, not overwrite buildinfo
-                _currentBuildInfo.Save(_intermediateFolder);
-                if (_lastBuildInfo != null)
-                {
-                    Directory.Delete(Path.Combine(_intermediateFolder, _lastBuildInfo.DirectoryName), true);
-                }
             }
         }
 
