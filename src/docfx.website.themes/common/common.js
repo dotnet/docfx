@@ -122,7 +122,7 @@ function getRemoteUrl(remote, startLine, gitContribute, gitUrlPattern) {
     if (gitContribute && gitContribute.repo) repo = gitContribute.repo;
     if (repo == undefined && remote && remote.repo) repo = remote.repo;
     if (gitContribute && gitContribute.branch) branch = gitContribute.branch;
-    if (repo == undefined && remote && remote.branch) branch = remote.branch;
+    if (branch == undefined && remote && remote.branch) branch = remote.branch;
 
     if (repo == undefined || branch == undefined) return '';
 
