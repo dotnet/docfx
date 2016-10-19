@@ -15,7 +15,7 @@ export class MarkdownDocumentContentProvider extends ContentProvider {
                 "<head>",
                 `<meta http-equiv="Content-type" content="text/html;charset=UTF-8">`,
                 `<link rel="stylesheet" type="text/css" href="${this.getNodeModulesPath(path.join("highlightjs", "styles", "tomorrow-night-bright.css"))}" >`,
-                `<link rel="stylesheet" type="text/css" href="${this.getMediaPath("markdown.css")}" >`,
+                `<link rel="stylesheet" type="text/css" href="${this.getMediaCssPath("markdown.css")}" >`,
                 `<base href="${document.uri.toString(true)}">`,
                 "</head>",
                 `<body><!--` + this.port.toString() + `--><!--` + this.fileName + `-->`].join("\n");
@@ -25,7 +25,7 @@ export class MarkdownDocumentContentProvider extends ContentProvider {
             const tail = [
                 `<script type="text/javascript" src="${this.getNodeModulesPath(path.join('jquery', 'dist', 'jquery.min.js'))}"></script>`,
                 `<script type="text/javascript" src="${this.getNodeModulesPath(path.join("highlightjs", "highlight.pack.js"))}"></script>`,
-                `<script type="text/javascript" src="${this.getMediaPath("previewMatch.js")}"></script>`,
+                `<script type="text/javascript" src="${this.getMediaJsPath("previewMatch.js")}"></script>`,
                 `<script>hljs.initHighlightingOnLoad();</script>`,
                 "</body>",
                 "</html>"

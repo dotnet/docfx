@@ -30,8 +30,12 @@ export class ContentProvider implements TextDocumentContentProvider {
         this._onDidChange.fire(uri);
     }
 
-    protected getMediaPath(mediaFile: string): string {
-        return this._context.asAbsolutePath(path.join("media", mediaFile));
+    protected getMediaJsPath(mediaFile: string): string {
+        return this._context.asAbsolutePath(path.join("media", "js", mediaFile));
+    }
+
+    protected getMediaCssPath(mediaFile: string): string {
+        return this._context.asAbsolutePath(path.join("media", "css", mediaFile));
     }
 
     protected getNodeModulesPath(resourceName: string): string {
