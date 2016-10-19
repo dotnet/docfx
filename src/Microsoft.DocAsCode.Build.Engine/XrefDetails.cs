@@ -114,6 +114,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 string value = InnerHtml;
                 if (string.IsNullOrEmpty(value))
                 {
+                    value = Text;
                     if (string.IsNullOrEmpty(value) && Spec != null)
                     {
                         value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, Uid, DisplayProperty, "name"));
@@ -131,7 +132,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 string value = InnerHtml;
                 if (string.IsNullOrEmpty(value))
                 {
-                    value = StringHelper.HtmlEncode(Alt);
+                    value = Alt;
                     if (string.IsNullOrEmpty(value) && Spec != null)
                     {
                         value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, Uid, AltProperty, "name"));
