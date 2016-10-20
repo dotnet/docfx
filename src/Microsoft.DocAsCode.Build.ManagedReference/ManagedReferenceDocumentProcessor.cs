@@ -246,6 +246,18 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 result["fullName.vb"] = item.FullNameForVB;
             }
+            if (!string.IsNullOrEmpty(item.NameWithType))
+            {
+                result["nameWithType"] = item.NameWithType;
+            }
+            if (!string.IsNullOrEmpty(item.NameWithTypeForCSharp))
+            {
+                result["nameWithType.csharp"] = item.NameWithTypeForCSharp;
+            }
+            if (!string.IsNullOrEmpty(item.NameWithTypeForVB))
+            {
+                result["nameWithType.vb"] = item.NameWithTypeForVB;
+            }
             yield return result;
             // generate overload xref spec.
             if (item.Type != null)
