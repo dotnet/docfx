@@ -247,6 +247,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [YamlMember(Alias = "example")]
         [JsonProperty("example")]
+        [MergeOption(MergeOption.Replace)]
         public List<string> Examples { get; set; }
 
         [YamlMember(Alias = "syntax")]
@@ -289,6 +290,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         public List<string> InheritedMembers { get; set; }
 
         [YamlMember(Alias = "extensionMethods")]
+        [MergeOption(MergeOption.Ignore)] // todo : merge more children
         [JsonProperty("extensionMethods")]
         public List<string> ExtensionMethods { get; set; }
 
@@ -303,6 +305,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [YamlMember(Alias = "platform")]
         [JsonProperty("platform")]
+        [MergeOption(MergeOption.Replace)]
         public List<string> Platform { get; set; }
 
         [YamlMember(Alias = "attributes")]
