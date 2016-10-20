@@ -160,6 +160,12 @@ namespace Microsoft.DocAsCode.SubCommands
                         Logger.LogWarning("Skipping assembly: Microsoft.DocAsCode.EntityModel.");
                         continue;
                     }
+                    if (assemblyName == "Microsoft.DocAsCode.Build.Common")
+                    {
+                        // work around, don't load assembly Microsoft.DocAsCode.Build.Common.
+                        Logger.LogWarning("Skipping assembly: Microsoft.DocAsCode.Build.Common.");
+                        continue;
+                    }
                     try
                     {
                         assembly = Assembly.Load(assemblyName);
