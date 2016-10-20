@@ -27,6 +27,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public string File => _file;
 
+        public SourceInfo ToSourceInfo()
+        {
+            return SourceInfo.Create(CurrentMarkdown, _file, _lineNumber);
+        }
+
         public SourceInfo Consume(int charCount)
         {
             var offset = CalcLineNumber();
