@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode.Build.Common
     public class ValidateBookmark : IPostProcessor
     {
         private static readonly string XpathTemplate = "//*/@{0}";
+        private static readonly HashSet<string> WhiteList = new HashSet<string> { "top" };
 
         public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)
         {
@@ -71,7 +72,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     var links = GetNodeAttribute(html, "src").Concat(GetNodeAttribute(html, "href"));
                     bookmarks[relativePath] = (from link in links
                                                let index = link.IndexOf("#")
-                                               where index != -1 && PathUtility.IsRelativePath(link)
+                                               where index != -1 && PathUtility.IsRelativePath(link) && !WhiteList.Contains(link.Substring(index + 1))
                                                select Tuple.Create(
                                                    HttpUtility.UrlDecode(link.Remove(index)),
                                                    link.Substring(index + 1))).ToList();

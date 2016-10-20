@@ -3,8 +3,10 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
 
     using Microsoft.DocAsCode.Build.Common;
@@ -16,7 +18,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     public class ValidateBookmarkTest
     {
         private static ValidateBookmark _validator = new ValidateBookmark();
-        private LoggerListener _listener = new LoggerListener();
+        private LoggerListener _listener = new LoggerListener("validate_bookmark");
 
         [Fact]
         public void TestBasicFeature()
@@ -37,8 +39,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             File.WriteAllText(Path.Combine(outputFolder, "b.html"), @"<a href='a.html#b1'>bookmark existed</a> <a href='a.html#b2'>bookmark nonexisted</a>");
 
             Logger.RegisterListener(_listener);
-            _validator.Process(manifest, outputFolder);
+            using (new LoggerPhaseScope("validate_bookmark"))
+            {
+                _validator.Process(manifest, outputFolder);
+            }
             var logs = _listener.Items;
+            Console.WriteLine(string.Concat(logs.Select(l => l.Message)));
             Assert.Equal(1, logs.Count);
             Assert.Equal(
                 @"Output file b.html which is built from src file b.md contains illegal link a.html#b2: the file a.html which is built from src a.md doesn't contain a bookmark named b2.",
@@ -48,7 +54,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
         private class LoggerListener : ILoggerListener
         {
+            public string Phase { get; }
+
             public List<ILogItem> Items { get; } = new List<ILogItem>();
+
+            public LoggerListener(string phase)
+            {
+                Phase = phase;
+            }
 
             public void Dispose()
             {
@@ -60,7 +73,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             public void WriteLine(ILogItem item)
             {
-                Items.Add(item);
+                if (item.Phase == Phase)
+                {
+                    Items.Add(item);
+                }
             }
         }
     }
