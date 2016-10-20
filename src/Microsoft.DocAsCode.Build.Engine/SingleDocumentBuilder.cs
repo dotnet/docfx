@@ -466,7 +466,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                 };
             }
 
-            BuildCore(hostServices, context.MaxParallelism, buildSaver, loader, updater);
+            try
+            {
+                BuildCore(hostServices, context.MaxParallelism, buildSaver, loader, updater);
+            }
+            catch (BuildCacheException e)
+            {
+                var message = $"Build Cache is corrupted, please clear the cache: {e.Message}.";
+                Logger.LogError(message);
+                throw new DocumentException(message, e);
+            }
 
             // export manifest
             return from h in hostServices
@@ -495,7 +504,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
 
                     // save models
-                    hostService.SaveIntermediateModel();
+                    buildSaver?.Invoke(hostService);
                 }
             }
 
