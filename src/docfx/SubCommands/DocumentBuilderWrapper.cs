@@ -160,6 +160,12 @@ namespace Microsoft.DocAsCode.SubCommands
                         Logger.LogWarning("Skipping assembly: Microsoft.DocAsCode.EntityModel.");
                         continue;
                     }
+                    if (assemblyName == typeof(ValidateBookmark).Assembly.GetName().Name)
+                    {
+                        // work around, don't load assembly that has ValidateBookmark.
+                        Logger.LogWarning($"Skipping assembly: {assemblyName}.");
+                        continue;
+                    }
                     try
                     {
                         assembly = Assembly.Load(assemblyName);
