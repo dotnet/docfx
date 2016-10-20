@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
+    using System.Collections.Specialized;
     using System.Text.RegularExpressions;
     using System.Web;
 
@@ -42,28 +43,40 @@ namespace Microsoft.DocAsCode.Build.Engine
             var xref = new XRefDetails();
 
             var rawUid = GetRawUid(node);
+            NameValueCollection queryString = null;
             if (!string.IsNullOrEmpty(rawUid))
             {
+                string others;
                 var anchorIndex = rawUid.IndexOf("#");
                 if (anchorIndex == -1)
                 {
                     xref.Anchor = string.Empty;
-                    xref.Uid = HttpUtility.UrlDecode(rawUid);
+                    others = rawUid;
                 }
                 else
                 {
                     xref.Anchor = rawUid.Substring(anchorIndex);
-                    xref.Uid = HttpUtility.UrlDecode(rawUid.Remove(anchorIndex));
+                    others = rawUid.Remove(anchorIndex);
+                }
+                var queryIndex = others.IndexOf("?");
+                if (queryIndex == -1)
+                {
+                    xref.Uid = HttpUtility.UrlDecode(others);
+                }
+                else
+                {
+                    xref.Uid = HttpUtility.UrlDecode(others.Remove(queryIndex));
+                    queryString = HttpUtility.ParseQueryString(others.Substring(queryIndex));
                 }
             }
 
             xref.InnerHtml = node.InnerHtml;
-            xref.DisplayProperty = node.GetAttributeValue("displayProperty", XRefSpec.NameKey);
-            xref.AltProperty = node.GetAttributeValue("altProperty", "fullname");
-            xref.Text = node.GetAttributeValue("text", node.GetAttributeValue("name", null));
-            xref.Alt = node.GetAttributeValue("alt", node.GetAttributeValue("fullname", null));
+            xref.DisplayProperty = node.GetAttributeValue("displayProperty", queryString?.Get("displayProperty") ?? XRefSpec.NameKey);
+            xref.AltProperty = node.GetAttributeValue("altProperty", queryString?.Get("altProperty") ?? "fullname");
+            xref.Text = node.GetAttributeValue("text", node.GetAttributeValue("name", queryString?.Get("text")));
+            xref.Alt = node.GetAttributeValue("alt", node.GetAttributeValue("fullname", queryString?.Get("alt")));
 
-            xref.Title = node.GetAttributeValue("title", null);
+            xref.Title = node.GetAttributeValue("title", queryString?.Get("title"));
 
             // Both `data-raw-html` and `data-raw` are html encoded. Use `data-raw-html` with higher priority.
             // `data-raw-html` will be decoded then displayed, while `data-raw` will be displayed directly.
