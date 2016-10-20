@@ -60,15 +60,34 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var tokens = new List<IMarkdownToken>();
             while (pc.CurrentMarkdown.Length > 0)
             {
-                var token = (from r in Context.Rules
-                             select r.TryMatch(this, pc)).FirstOrDefault(t => t != null);
+                var token = ApplyRules(pc);
                 if (token == null)
                 {
-                    throw new InvalidOperationException($"Cannot parse markdown for file {sourceInfo.File}, line {pc.LineNumber}.");
+                    throw new MarkdownParsingException("Cannot parse markdown: No rule match.", pc.ToSourceInfo());
                 }
                 tokens.Add(token);
             }
             return tokens;
+        }
+
+        private IMarkdownToken ApplyRules(MarkdownParsingContext pc)
+        {
+            foreach (var r in Context.Rules)
+            {
+                try
+                {
+                    var token = r.TryMatch(this, pc);
+                    if (token != null)
+                    {
+                        return token;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new MarkdownParsingException($"Cannot parse markdown: Rule {r.Name} is fault.", pc.ToSourceInfo(), ex);
+                }
+            }
+            return null;
         }
     }
 }
