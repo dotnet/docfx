@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             if (sourceInfo.LineNumber > 0)
             {
-                sb = sb + " at " + sourceInfo.LineNumber.ToString();
+                sb = sb + " at line " + sourceInfo.LineNumber.ToString();
             }
             sb += " with following markdown content:";
             sb += Environment.NewLine;
