@@ -147,8 +147,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.Fail("Markup failed!");
-                Logger.LogWarning($"Markup failed:{Environment.NewLine}  Markdown: {markdown}{Environment.NewLine}  Details:{ex.ToString()}");
-                return new MarkupResult { Html = markdown };
+                var message = $"Markup failed: {ex.Message}.";
+                Logger.LogError(message);
+                throw new DocumentException(message, ex);
             }
         }
 
