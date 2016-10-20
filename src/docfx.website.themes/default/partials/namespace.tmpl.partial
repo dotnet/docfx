@@ -7,7 +7,7 @@
 {{#children}}
   <h3 id="{{id}}">{{>partials/namespaceSubtitle}}</h3>
   {{#children}}
-    <h4><xref href="{{uid}}" fullName="{{fullName.0.value}}" name="{{name.0.value}}"/></h4>
+    <h4><xref href="{{uid}}" altProperty="fullName" displayProperty="name"/></h4>
     <section>{{{summary}}}</section>
   {{/children}}
 {{/children}}
