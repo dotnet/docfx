@@ -461,7 +461,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                 };
             }
 
-            BuildCore(hostServices, context.MaxParallelism, buildSaver, loader, updater);
+            try
+            {
+                BuildCore(hostServices, context.MaxParallelism, buildSaver, loader, updater);
+            }
+            catch (BuildCacheException e)
+            {
+                var message = $"Build cache was corrupted, please try force rebuild `build --force` or clear the cache files in the path: {IntermediateFolder}. Detail error: {e.Message}.";
+                Logger.LogError(message);
+                throw new DocfxException(message, e);
+            }
 
             // export manifest
             return from h in hostServices
@@ -490,7 +499,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
 
                     // save models
-                    hostService.SaveIntermediateModel();
+                    buildSaver?.Invoke(hostService);
                 }
             }
 

@@ -550,12 +550,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         if (LastIntermediateModelManifest == null)
                         {
-                            throw new InvalidDataException($"Full build hasn't loaded model {pair.Key.FullPath}");
+                            throw new BuildCacheException($"Full build hasn't loaded model {pair.Key.FullPath}");
                         }
                         string lfn;
                         if (!LastIntermediateModelManifest.Models.TryGetValue(pair.Key.File, out lfn))
                         {
-                            throw new InvalidDataException($"Last build hasn't loaded model {pair.Key.FullPath}");
+                            throw new BuildCacheException($"Last build hasn't loaded model {pair.Key.FullPath}");
                         }
                         File.Move(Path.Combine(LastIncrementalBaseDir, lfn), Path.Combine(IncrementalBaseDir, fileName));
                     }
@@ -583,7 +583,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             string cfn;
             if (!CurrentIntermediateModelManifest.Models.TryGetValue(fileName, out cfn))
             {
-                throw new InvalidDataException($"Last build hasn't loaded model {fileName}");
+                throw new BuildCacheException($"Last build hasn't loaded model {fileName}");
             }
             using (var stream = File.OpenRead(Path.Combine(IncrementalBaseDir, cfn)))
             {
