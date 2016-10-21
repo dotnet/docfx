@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System;
 
+    [Serializable]
     public class BuildCacheException : Exception
     {
         public BuildCacheException()

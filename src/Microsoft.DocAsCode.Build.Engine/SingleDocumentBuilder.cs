@@ -472,9 +472,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             catch (BuildCacheException e)
             {
-                var message = $"Build Cache is corrupted, please clear the cache: {e.Message}.";
+                var message = $"Build cache was corrupted, please clear the cache: {e.Message}.";
                 Logger.LogError(message);
-                throw new DocumentException(message, e);
+                throw new DocfxException(message, e);
             }
 
             // export manifest
