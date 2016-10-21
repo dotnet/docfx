@@ -1,5 +1,13 @@
 Version Notes (Current Version: v2.6.1)
 =======================================
+v2.6.2
+-----------
+1.  Improve markdown engine performance.
+    - Improve regex.
+    - Add regex timeout.
+2.  Fix bugs in markdown parser.
+3.  DFM: Support code in table
+
 v2.6.1
 -----------
 1.  Fix argumentnullexception for generating overload item.
