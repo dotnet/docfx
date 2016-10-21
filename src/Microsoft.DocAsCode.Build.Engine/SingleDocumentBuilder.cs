@@ -472,7 +472,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             catch (BuildCacheException e)
             {
-                var message = $"Build cache was corrupted, please clear the cache: {e.Message}.";
+                var message = $"Build cache was corrupted, please try force rebuild `build --force` or clear the cache files in the path: {IntermediateFolder}. Detail error: {e.Message}.";
                 Logger.LogError(message);
                 throw new DocfxException(message, e);
             }
