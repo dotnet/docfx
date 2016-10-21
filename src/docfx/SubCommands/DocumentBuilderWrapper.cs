@@ -157,13 +157,13 @@ namespace Microsoft.DocAsCode.SubCommands
                     if (assemblyName == "Microsoft.DocAsCode.EntityModel")
                     {
                         // work around, don't load assembly Microsoft.DocAsCode.EntityModel.
-                        Logger.LogWarning("Skipping assembly: Microsoft.DocAsCode.EntityModel.");
+                        Logger.LogVerbose("Skipping assembly: Microsoft.DocAsCode.EntityModel.");
                         continue;
                     }
                     if (assemblyName == typeof(ValidateBookmark).Assembly.GetName().Name)
                     {
                         // work around, don't load assembly that has ValidateBookmark.
-                        Logger.LogWarning($"Skipping assembly: {assemblyName}.");
+                        Logger.LogVerbose($"Skipping assembly: {assemblyName}.");
                         continue;
                     }
                     try
