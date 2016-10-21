@@ -3423,6 +3423,31 @@ references:
   href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.html#Microsoft_DocAsCode_Build_Engine_Incrementals
   commentId: N:Microsoft.DocAsCode.Build.Engine.Incrementals
   fullName: Microsoft.DocAsCode.Build.Engine.Incrementals
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException
+  name: BuildCacheException
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildCacheException
+  commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.#ctor
+  name: BuildCacheException()
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildCacheException__ctor
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.#ctor
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.BuildCacheException()
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.#ctor(System.String)
+  name: BuildCacheException(String)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildCacheException__ctor_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.#ctor(System.String)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.BuildCacheException(System.String)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.#ctor(System.String,System.Exception)
+  name: BuildCacheException(String, Exception)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildCacheException__ctor_System_String_System_Exception_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.#ctor(System.String,System.Exception)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.BuildCacheException(System.String, System.Exception)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.#ctor*
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildCacheException__ctor_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.#ctor
+  name: BuildCacheException
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildCacheException.BuildCacheException()
 - uid: Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo
   name: BuildInfo
   href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.BuildInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildInfo
@@ -3975,6 +4000,16 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllDependencyFrom
   name: GetAllDependencyFrom
   fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllDependencyFrom(System.String)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllDependentNodes
+  name: GetAllDependentNodes()
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_GetAllDependentNodes
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllDependentNodes
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllDependentNodes()
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllDependentNodes*
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_GetAllDependentNodes_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllDependentNodes
+  name: GetAllDependentNodes
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllDependentNodes()
 - uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetDependencyFrom(System.String)
   name: GetDependencyFrom(String)
   href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_GetDependencyFrom_System_String_
@@ -13229,46 +13264,6 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.ValidateHighlightLinesAndDedentLength
   name: ValidateHighlightLinesAndDedentLength
   fullName: Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.ValidateHighlightLinesAndDedentLength(System.Int32)
-- uid: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule
-  name: DfmFencesBlockRule
-  href: api/Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockRule
-  commentId: T:Microsoft.DocAsCode.Dfm.DfmFencesBlockRule
-  fullName: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule
-- uid: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule._dfmFencesRangeQueryStringRegex
-  name: _dfmFencesRangeQueryStringRegex
-  href: api/Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockRule__dfmFencesRangeQueryStringRegex
-  commentId: F:Microsoft.DocAsCode.Dfm.DfmFencesBlockRule._dfmFencesRangeQueryStringRegex
-  fullName: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule._dfmFencesRangeQueryStringRegex
-- uid: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule._dfmFencesRegex
-  name: _dfmFencesRegex
-  href: api/Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockRule__dfmFencesRegex
-  commentId: F:Microsoft.DocAsCode.Dfm.DfmFencesBlockRule._dfmFencesRegex
-  fullName: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule._dfmFencesRegex
-- uid: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule._dfmFencesSharpQueryStringRegex
-  name: _dfmFencesSharpQueryStringRegex
-  href: api/Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockRule__dfmFencesSharpQueryStringRegex
-  commentId: F:Microsoft.DocAsCode.Dfm.DfmFencesBlockRule._dfmFencesSharpQueryStringRegex
-  fullName: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule._dfmFencesSharpQueryStringRegex
-- uid: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.Name
-  name: Name
-  href: api/Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockRule_Name
-  commentId: P:Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.Name
-  fullName: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.Name
-- uid: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.Name*
-  href: api/Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockRule_Name_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.Name
-  name: Name
-  fullName: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.Name
-- uid: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
-  name: TryMatch(IMarkdownParser, IMarkdownParsingContext)
-  href: api/Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_
-  commentId: M:Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
-  fullName: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser, Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
-- uid: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.TryMatch*
-  href: api/Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockRule_TryMatch_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.TryMatch
-  name: TryMatch
-  fullName: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser, Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
 - uid: Microsoft.DocAsCode.Dfm.DfmFencesBlockToken
   name: DfmFencesBlockToken
   href: api/Microsoft.DocAsCode.Dfm.DfmFencesBlockToken.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockToken
@@ -13364,6 +13359,31 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Dfm.DfmFencesBlockToken.Title
   name: Title
   fullName: Microsoft.DocAsCode.Dfm.DfmFencesBlockToken.Title
+- uid: Microsoft.DocAsCode.Dfm.DfmFencesRule
+  name: DfmFencesRule
+  href: api/Microsoft.DocAsCode.Dfm.DfmFencesRule.html#Microsoft_DocAsCode_Dfm_DfmFencesRule
+  commentId: T:Microsoft.DocAsCode.Dfm.DfmFencesRule
+  fullName: Microsoft.DocAsCode.Dfm.DfmFencesRule
+- uid: Microsoft.DocAsCode.Dfm.DfmFencesRule.Name
+  name: Name
+  href: api/Microsoft.DocAsCode.Dfm.DfmFencesRule.html#Microsoft_DocAsCode_Dfm_DfmFencesRule_Name
+  commentId: P:Microsoft.DocAsCode.Dfm.DfmFencesRule.Name
+  fullName: Microsoft.DocAsCode.Dfm.DfmFencesRule.Name
+- uid: Microsoft.DocAsCode.Dfm.DfmFencesRule.Name*
+  href: api/Microsoft.DocAsCode.Dfm.DfmFencesRule.html#Microsoft_DocAsCode_Dfm_DfmFencesRule_Name_
+  commentId: Overload:Microsoft.DocAsCode.Dfm.DfmFencesRule.Name
+  name: Name
+  fullName: Microsoft.DocAsCode.Dfm.DfmFencesRule.Name
+- uid: Microsoft.DocAsCode.Dfm.DfmFencesRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
+  name: TryMatch(IMarkdownParser, IMarkdownParsingContext)
+  href: api/Microsoft.DocAsCode.Dfm.DfmFencesRule.html#Microsoft_DocAsCode_Dfm_DfmFencesRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_
+  commentId: M:Microsoft.DocAsCode.Dfm.DfmFencesRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
+  fullName: Microsoft.DocAsCode.Dfm.DfmFencesRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser, Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
+- uid: Microsoft.DocAsCode.Dfm.DfmFencesRule.TryMatch*
+  href: api/Microsoft.DocAsCode.Dfm.DfmFencesRule.html#Microsoft_DocAsCode_Dfm_DfmFencesRule_TryMatch_
+  commentId: Overload:Microsoft.DocAsCode.Dfm.DfmFencesRule.TryMatch
+  name: TryMatch
+  fullName: Microsoft.DocAsCode.Dfm.DfmFencesRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser, Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
 - uid: Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule
   name: DfmIncludeBlockRule
   href: api/Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.html#Microsoft_DocAsCode_Dfm_DfmIncludeBlockRule
@@ -13799,11 +13819,6 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.DfmParagraphBlockRule.html#Microsoft_DocAsCode_Dfm_DfmParagraphBlockRule
   commentId: T:Microsoft.DocAsCode.Dfm.DfmParagraphBlockRule
   fullName: Microsoft.DocAsCode.Dfm.DfmParagraphBlockRule
-- uid: Microsoft.DocAsCode.Dfm.DfmParagraphBlockRule._paragraph
-  name: _paragraph
-  href: api/Microsoft.DocAsCode.Dfm.DfmParagraphBlockRule.html#Microsoft_DocAsCode_Dfm_DfmParagraphBlockRule__paragraph
-  commentId: F:Microsoft.DocAsCode.Dfm.DfmParagraphBlockRule._paragraph
-  fullName: Microsoft.DocAsCode.Dfm.DfmParagraphBlockRule._paragraph
 - uid: Microsoft.DocAsCode.Dfm.DfmParagraphBlockRule.Paragraph
   name: Paragraph
   href: api/Microsoft.DocAsCode.Dfm.DfmParagraphBlockRule.html#Microsoft_DocAsCode_Dfm_DfmParagraphBlockRule_Paragraph
@@ -13819,11 +13834,11 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.DfmRenderer.html#Microsoft_DocAsCode_Dfm_DfmRenderer
   commentId: T:Microsoft.DocAsCode.Dfm.DfmRenderer
   fullName: Microsoft.DocAsCode.Dfm.DfmRenderer
-- uid: Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.Dfm.DfmFencesBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
-  name: Render(IMarkdownRenderer, DfmFencesBlockToken, MarkdownBlockContext)
-  href: api/Microsoft.DocAsCode.Dfm.DfmRenderer.html#Microsoft_DocAsCode_Dfm_DfmRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_Dfm_DfmFencesBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
-  commentId: M:Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.Dfm.DfmFencesBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
-  fullName: Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.Dfm.DfmFencesBlockToken, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+- uid: Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.Dfm.DfmFencesBlockToken,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
+  name: Render(IMarkdownRenderer, DfmFencesBlockToken, IMarkdownContext)
+  href: api/Microsoft.DocAsCode.Dfm.DfmRenderer.html#Microsoft_DocAsCode_Dfm_DfmRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_Dfm_DfmFencesBlockToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_
+  commentId: M:Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.Dfm.DfmFencesBlockToken,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
+  fullName: Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.Dfm.DfmFencesBlockToken, Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
 - uid: Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.Dfm.DfmIncludeBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
   name: Render(IMarkdownRenderer, DfmIncludeBlockToken, MarkdownBlockContext)
   href: api/Microsoft.DocAsCode.Dfm.DfmRenderer.html#Microsoft_DocAsCode_Dfm_DfmRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_Dfm_DfmIncludeBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
@@ -13879,11 +13894,6 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.DfmSectionBlockRule.html#Microsoft_DocAsCode_Dfm_DfmSectionBlockRule
   commentId: T:Microsoft.DocAsCode.Dfm.DfmSectionBlockRule
   fullName: Microsoft.DocAsCode.Dfm.DfmSectionBlockRule
-- uid: Microsoft.DocAsCode.Dfm.DfmSectionBlockRule._sectionRegex
-  name: _sectionRegex
-  href: api/Microsoft.DocAsCode.Dfm.DfmSectionBlockRule.html#Microsoft_DocAsCode_Dfm_DfmSectionBlockRule__sectionRegex
-  commentId: F:Microsoft.DocAsCode.Dfm.DfmSectionBlockRule._sectionRegex
-  fullName: Microsoft.DocAsCode.Dfm.DfmSectionBlockRule._sectionRegex
 - uid: Microsoft.DocAsCode.Dfm.DfmSectionBlockRule.Name
   name: Name
   href: api/Microsoft.DocAsCode.Dfm.DfmSectionBlockRule.html#Microsoft_DocAsCode_Dfm_DfmSectionBlockRule_Name
@@ -18823,6 +18833,31 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownEscapeInlineToken.SourceInfo
   name: SourceInfo
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownEscapeInlineToken.SourceInfo
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownException
+  name: MarkdownException
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownException.html#Microsoft_DocAsCode_MarkdownLite_MarkdownException
+  commentId: T:Microsoft.DocAsCode.MarkdownLite.MarkdownException
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownException
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownException.#ctor
+  name: MarkdownException()
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownException.html#Microsoft_DocAsCode_MarkdownLite_MarkdownException__ctor
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownException.#ctor
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownException.MarkdownException()
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownException.#ctor(System.String)
+  name: MarkdownException(String)
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownException.html#Microsoft_DocAsCode_MarkdownLite_MarkdownException__ctor_System_String_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownException.#ctor(System.String)
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownException.MarkdownException(System.String)
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownException.#ctor(System.String,System.Exception)
+  name: MarkdownException(String, Exception)
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownException.html#Microsoft_DocAsCode_MarkdownLite_MarkdownException__ctor_System_String_System_Exception_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownException.#ctor(System.String,System.Exception)
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownException.MarkdownException(System.String, System.Exception)
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownException.#ctor*
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownException.html#Microsoft_DocAsCode_MarkdownLite_MarkdownException__ctor_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownException.#ctor
+  name: MarkdownException
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownException.MarkdownException()
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockRule
   name: MarkdownHeadingBlockRule
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownHeadingBlockRule
@@ -20370,6 +20405,51 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownParsingContext.LineNumber
   name: LineNumber
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingContext.LineNumber
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingContext.ToSourceInfo
+  name: ToSourceInfo()
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownParsingContext.html#Microsoft_DocAsCode_MarkdownLite_MarkdownParsingContext_ToSourceInfo
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownParsingContext.ToSourceInfo
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingContext.ToSourceInfo()
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingContext.ToSourceInfo*
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownParsingContext.html#Microsoft_DocAsCode_MarkdownLite_MarkdownParsingContext_ToSourceInfo_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownParsingContext.ToSourceInfo
+  name: ToSourceInfo
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingContext.ToSourceInfo()
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException
+  name: MarkdownParsingException
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.html#Microsoft_DocAsCode_MarkdownLite_MarkdownParsingException
+  commentId: T:Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.#ctor(Microsoft.DocAsCode.MarkdownLite.SourceInfo)
+  name: MarkdownParsingException(SourceInfo)
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.html#Microsoft_DocAsCode_MarkdownLite_MarkdownParsingException__ctor_Microsoft_DocAsCode_MarkdownLite_SourceInfo_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.#ctor(Microsoft.DocAsCode.MarkdownLite.SourceInfo)
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.MarkdownParsingException(Microsoft.DocAsCode.MarkdownLite.SourceInfo)
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.#ctor(System.String,Microsoft.DocAsCode.MarkdownLite.SourceInfo)
+  name: MarkdownParsingException(String, SourceInfo)
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.html#Microsoft_DocAsCode_MarkdownLite_MarkdownParsingException__ctor_System_String_Microsoft_DocAsCode_MarkdownLite_SourceInfo_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.#ctor(System.String,Microsoft.DocAsCode.MarkdownLite.SourceInfo)
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.MarkdownParsingException(System.String, Microsoft.DocAsCode.MarkdownLite.SourceInfo)
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.#ctor(System.String,Microsoft.DocAsCode.MarkdownLite.SourceInfo,System.Exception)
+  name: MarkdownParsingException(String, SourceInfo, Exception)
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.html#Microsoft_DocAsCode_MarkdownLite_MarkdownParsingException__ctor_System_String_Microsoft_DocAsCode_MarkdownLite_SourceInfo_System_Exception_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.#ctor(System.String,Microsoft.DocAsCode.MarkdownLite.SourceInfo,System.Exception)
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.MarkdownParsingException(System.String, Microsoft.DocAsCode.MarkdownLite.SourceInfo, System.Exception)
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.#ctor*
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.html#Microsoft_DocAsCode_MarkdownLite_MarkdownParsingException__ctor_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.#ctor
+  name: MarkdownParsingException
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.MarkdownParsingException(Microsoft.DocAsCode.MarkdownLite.SourceInfo)
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.SourceInfo
+  name: SourceInfo
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.html#Microsoft_DocAsCode_MarkdownLite_MarkdownParsingException_SourceInfo
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.SourceInfo
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.SourceInfo
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.SourceInfo*
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.html#Microsoft_DocAsCode_MarkdownLite_MarkdownParsingException_SourceInfo_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.SourceInfo
+  name: SourceInfo
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownParsingException.SourceInfo
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownRawToken
   name: MarkdownRawToken
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownRawToken.html#Microsoft_DocAsCode_MarkdownLite_MarkdownRawToken
