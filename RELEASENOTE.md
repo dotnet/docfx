@@ -2,6 +2,13 @@ Version Notes (Current Version: v2.7)
 =======================================
 v2.7(Pre-Release)
 -----------
+1.  Improve markdown engine performance.
+    - Improve regex.
+    - Add regex timeout.
+2.  Fix bugs in markdown parser.
+3.  Refine xref.
+    - Provide more options.
+    - Support options in query string.
 
 v2.6
 -----------
