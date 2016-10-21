@@ -204,7 +204,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Name = ApiBuildOutputUtility.TransformToLanguagePairList(vm.Name, vm.NameInDevLangs, supportedLanguages),
                 NameWithType = ApiBuildOutputUtility.TransformToLanguagePairList(vm.NameWithType, vm.NameWithTypeInDevLangs, supportedLanguages),
                 FullName = ApiBuildOutputUtility.TransformToLanguagePairList(vm.FullName, vm.FullNameInDevLangs, supportedLanguages),
-                Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid, vm.FullName, vm.Name), supportedLanguages, vm.Specs),
+                Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid), supportedLanguages, vm.Specs),
                 Metadata = vm.Additional,
             };
             object syntax;
@@ -232,7 +232,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Name = ApiBuildOutputUtility.TransformToLanguagePairList(vm.Name, vm.Names, vm.SupportedLanguages),
                 NameWithType = ApiBuildOutputUtility.TransformToLanguagePairList(vm.NameWithType, vm.NamesWithType, vm.SupportedLanguages),
                 FullName = ApiBuildOutputUtility.TransformToLanguagePairList(vm.FullName, vm.FullNames, vm.SupportedLanguages),
-                Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid, vm.FullName, vm.Name), vm.SupportedLanguages),
+                Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid), vm.SupportedLanguages),
                 Source = vm.Source,
                 Documentation = vm.Documentation,
                 AssemblyNameList = vm.AssemblyNameList,
@@ -241,10 +241,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Examples = vm.Examples,
                 Overridden = ApiNames.FromUid(vm.Overridden),
                 Overload = ApiNames.FromUid(vm.Overload),
-                SeeAlsos = vm.SeeAlsos?.Select(s => ApiLinkInfoBuildOutput.FromModel(s)).ToList(),
-                Sees = vm.Sees?.Select(s => ApiLinkInfoBuildOutput.FromModel(s)).ToList(),
-                Inheritance = vm.Inheritance?.Select(i => FromUid(i)).ToList(),
-                Implements = vm.Implements?.Select(i => ApiNames.FromUid(i)).ToList(),
+                SeeAlsos = vm.SeeAlsos?.Select(ApiLinkInfoBuildOutput.FromModel).ToList(),
+                Sees = vm.Sees?.Select(ApiLinkInfoBuildOutput.FromModel).ToList(),
+                Inheritance = vm.Inheritance?.Select(FromUid).ToList(),
+                Implements = vm.Implements?.Select(ApiNames.FromUid).ToList(),
                 InheritedMembers = vm.InheritedMembers,
                 ExtensionMethods = vm.ExtensionMethods,
                 Modifiers = vm.Modifiers,
@@ -252,7 +252,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Metadata = vm.Metadata,
                 Attributes = vm.Attributes,
                 Syntax = ApiSyntaxBuildOutput.FromModel(vm.Syntax, vm.SupportedLanguages),
-                Exceptions = vm.Exceptions?.Select(s => ApiExceptionInfoBuildOutput.FromModel(s)).ToList(),
+                Exceptions = vm.Exceptions?.Select(ApiExceptionInfoBuildOutput.FromModel).ToList(),
             };
             output.Metadata["type"] = vm.Type;
             output.Metadata["summary"] = vm.Summary;
@@ -300,7 +300,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             if (string.IsNullOrEmpty(svm.Uid)) { return System.Web.HttpUtility.HtmlEncode(svm.FullName); }
 
             // If href exists, return name with href
-            return ApiBuildOutputUtility.GetXref(svm.Uid, svm.FullName, svm.Name);
+            return ApiBuildOutputUtility.GetXref(svm.Uid);
         }
     }
 }
