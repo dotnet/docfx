@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode
         public bool Force { get; set; }
 
         [JsonIgnore]
-        public bool IsSkipMarkup { get; set; }
+        public bool ShouldSkipMarkup { get; set; }
 
         [JsonIgnore]
         public bool Raw { get; set; }

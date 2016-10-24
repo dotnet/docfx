@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public bool ForceRebuild { get; set; }
 
-        public bool IsSkipMarkup { get; set; }
+        public bool ShouldSkipMarkup { get; set; }
 
         public string FilterConfigFile { get; set; }
 

@@ -16,8 +16,8 @@ namespace Microsoft.DocAsCode
         [Option('f', "force", HelpText = "Force re-generate all the metadata")]
         public bool ForceRebuild { get; set; }
 
-        [Option("skipMarkup", HelpText = "Skip to markup the triple slash comments")]
-        public bool IsSkipMarkup { get; set; }
+        [Option("shouldSkipMarkup", HelpText = "Skip to markup the triple slash comments")]
+        public bool ShouldSkipMarkup { get; set; }
 
         public string OutputFolder { get; set; }
 

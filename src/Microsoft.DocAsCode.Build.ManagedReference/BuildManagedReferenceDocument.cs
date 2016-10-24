@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         {
             var linkToUids = new HashSet<string>();
             var pageViewModel = model.Content as PageViewModel;
-            var skip = pageViewModel?.IsSkipMarkup;
+            var skip = pageViewModel?.ShouldSkipMarkup;
 
             if (skip != true)
             {

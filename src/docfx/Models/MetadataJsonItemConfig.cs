@@ -16,8 +16,8 @@ namespace Microsoft.DocAsCode
         [JsonProperty("force")]
         public bool? Force { get; set; }
 
-        [JsonProperty("skipMarkup")]
-        public bool? IsSkipMarkup { get; set; }
+        [JsonProperty("shouldSkipMarkup")]
+        public bool? ShouldSkipMarkup { get; set; }
 
         [JsonProperty("raw")]
         public bool? Raw { get; set; }
