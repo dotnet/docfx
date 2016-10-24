@@ -15,5 +15,5 @@ exports.transform = function (model) {
 
   model = extension.postSteps(model);
 
-  return model;
+  return {item: model};
 }

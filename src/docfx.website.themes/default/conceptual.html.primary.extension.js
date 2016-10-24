@@ -5,6 +5,5 @@ exports.preSteps = function (model) {
 }
 
 exports.postSteps = function (model) {
-  model.test = "success!";
   return model;
 }
