@@ -5,83 +5,49 @@ namespace Microsoft.DocAsCode.Build.Common
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Composition;
-    using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Web;
+
+    using HtmlAgilityPack;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
-    using HtmlAgilityPack;
 
-    [Export(nameof(ValidateBookmark), typeof(IPostProcessor))]
-    public class ValidateBookmark : IPostProcessor
+    public class ValidateBookmark : IHtmlDocumentHandler
     {
         private static readonly string XpathTemplate = "//*/@{0}";
         private static readonly HashSet<string> WhiteList = new HashSet<string> { "top" };
+        private Dictionary<string, HashSet<string>> registeredBookmarks;
+        private Dictionary<string, List<Tuple<string, string>>> bookmarks;
+        private Dictionary<string, string> fileMapping;
 
-        public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)
+        #region IHtml
+
+        public Manifest PreHandle(Manifest manifest)
         {
-            return metadata;
+            registeredBookmarks = new Dictionary<string, HashSet<string>>(new FilePathComparer());
+            bookmarks = new Dictionary<string, List<Tuple<string, string>>>(new FilePathComparer());
+            fileMapping = new Dictionary<string, string>(new FilePathComparer());
+            return manifest;
         }
 
-        public Manifest Process(Manifest manifest, string outputFolder)
+        public void Handle(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
         {
-            if (manifest == null)
-            {
-                throw new ArgumentNullException(nameof(manifest));
-            }
-            if (outputFolder == null)
-            {
-                throw new ArgumentNullException("Base directory can not be null");
-            }
-            var registeredBookmarks = new Dictionary<string, HashSet<string>>(new FilePathComparer());
-            var bookmarks = new Dictionary<string, List<Tuple<string, string>>>(new FilePathComparer());
-            var fileMapping = new Dictionary<string, string>(new FilePathComparer());
+            fileMapping[outputFile] = inputFile;
+            bookmarks[outputFile] =
+                (from link in GetNodeAttribute(document, "src").Concat(GetNodeAttribute(document, "href"))
+                 let index = link.IndexOf("#")
+                 where index != -1 && PathUtility.IsRelativePath(link)
+                 select Tuple.Create(HttpUtility.UrlDecode(link.Remove(index)), link.Substring(index + 1)) into pair
+                 where !WhiteList.Contains(pair.Item2)
+                 select pair).ToList();
+            var anchors = GetNodeAttribute(document, "id").Concat(GetNodeAttribute(document, "name"));
+            registeredBookmarks[outputFile] = new HashSet<string>(anchors);
+        }
 
-            foreach (var p in from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
-                              from output in item.OutputFiles
-                              where output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
-                              select new
-                              {
-                                  RelativePath = output.Value.RelativePath,
-                                  SrcRelativePath = item.SourceRelativePath,
-                              })
-            {
-                string srcRelativePath = p.SrcRelativePath;
-                string relativePath = p.RelativePath;
-                var filePath = Path.Combine(outputFolder, relativePath);
-
-                var html = new HtmlDocument();
-
-                if (File.Exists(filePath))
-                {
-                    try
-                    {
-                        html.Load(filePath, Encoding.UTF8);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogWarning($"Warning: Can't load content from {filePath}: {ex.Message}");
-                        continue;
-                    }
-                    fileMapping[relativePath] = srcRelativePath;
-                    var links = GetNodeAttribute(html, "src").Concat(GetNodeAttribute(html, "href"));
-                    bookmarks[relativePath] = (from link in links
-                                               let index = link.IndexOf("#")
-                                               where index != -1 && PathUtility.IsRelativePath(link) && !WhiteList.Contains(link.Substring(index + 1))
-                                               select Tuple.Create(
-                                                   HttpUtility.UrlDecode(link.Remove(index)),
-                                                   link.Substring(index + 1))).ToList();
-                    var anchors = GetNodeAttribute(html, "id").Concat(GetNodeAttribute(html, "name"));
-                    registeredBookmarks[relativePath] = new HashSet<string>(anchors);
-                }
-            }
-
-            // validate bookmarks
+        public Manifest PostHandle(Manifest manifest)
+        {
             foreach (var item in bookmarks)
             {
                 string path = item.Key;
@@ -98,9 +64,10 @@ namespace Microsoft.DocAsCode.Build.Common
                     }
                 }
             }
-
             return manifest;
         }
+
+        #endregion
 
         private static IEnumerable<string> GetNodeAttribute(HtmlDocument html, string attribute)
         {

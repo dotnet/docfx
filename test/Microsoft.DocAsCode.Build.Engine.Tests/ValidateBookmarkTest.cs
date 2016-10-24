@@ -41,15 +41,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Logger.RegisterListener(_listener);
             using (new LoggerPhaseScope("validate_bookmark"))
             {
-                _validator.Process(manifest, outputFolder);
+                new HtmlPostProcessor
+                {
+                    Handlers = { new ValidateBookmark() }
+                }.Process(manifest, outputFolder);
             }
+            Logger.UnregisterListener(_listener);
             var logs = _listener.Items;
             Console.WriteLine(string.Concat(logs.Select(l => l.Message)));
             Assert.Equal(1, logs.Count);
             Assert.Equal(
                 @"Output file b.html which is built from src file b.md contains illegal link a.html#b2: the file a.html which is built from src a.md doesn't contain a bookmark named b2.",
                 logs[0].Message);
-            Logger.UnregisterListener(_listener);
         }
 
         private class LoggerListener : ILoggerListener
