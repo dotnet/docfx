@@ -26,9 +26,9 @@ namespace Microsoft.DocAsCode.Build.Common
 
         public Manifest PreHandle(Manifest manifest)
         {
-            registeredBookmarks = new Dictionary<string, HashSet<string>>(new FilePathComparer());
-            bookmarks = new Dictionary<string, List<Tuple<string, string>>>(new FilePathComparer());
-            fileMapping = new Dictionary<string, string>(new FilePathComparer());
+            registeredBookmarks = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
+            bookmarks = new Dictionary<string, List<Tuple<string, string>>>(FilePathComparer.OSPlatformSensitiveStringComparer);
+            fileMapping = new Dictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
             return manifest;
         }
 
