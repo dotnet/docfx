@@ -299,6 +299,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
 
             return (from item in files
+                    where File.Exists(item.FullPath)
                     group item by item.PathFromWorkingFolder into g
                     select new FileAttributeItem
                     {
@@ -539,12 +540,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var node in nodesToUpdate)
             {
                 string fullPath = Path.Combine(EnvironmentContext.BaseDirectory, ((RelativePath)node).RemoveWorkingFolder());
-                fileAttributes[node] = new FileAttributeItem
+                if (File.Exists(fullPath))
                 {
-                    File = node,
-                    LastModifiedTime = File.GetLastWriteTimeUtc(fullPath),
-                    MD5 = File.ReadAllText(fullPath).GetMd5String(),
-                };
+                    fileAttributes[node] = new FileAttributeItem
+                    {
+                        File = node,
+                        LastModifiedTime = File.GetLastWriteTimeUtc(fullPath),
+                        MD5 = File.ReadAllText(fullPath).GetMd5String(),
+                    };
+                }
             }
         }
 
