@@ -13839,6 +13839,11 @@ references:
   href: api/Microsoft.DocAsCode.Dfm.DfmRenderer.html#Microsoft_DocAsCode_Dfm_DfmRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_Dfm_DfmFencesBlockToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_
   commentId: M:Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.Dfm.DfmFencesBlockToken,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
   fullName: Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.Dfm.DfmFencesBlockToken, Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)
+- uid: Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.Dfm.DfmFencesBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  name: Render(IMarkdownRenderer, DfmFencesBlockToken, MarkdownBlockContext)
+  href: api/Microsoft.DocAsCode.Dfm.DfmRenderer.html#Microsoft_DocAsCode_Dfm_DfmRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_Dfm_DfmFencesBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
+  commentId: M:Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.Dfm.DfmFencesBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
+  fullName: Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer, Microsoft.DocAsCode.Dfm.DfmFencesBlockToken, Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
 - uid: Microsoft.DocAsCode.Dfm.DfmRenderer.Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.Dfm.DfmIncludeBlockToken,Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext)
   name: Render(IMarkdownRenderer, DfmIncludeBlockToken, MarkdownBlockContext)
   href: api/Microsoft.DocAsCode.Dfm.DfmRenderer.html#Microsoft_DocAsCode_Dfm_DfmRenderer_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_Dfm_DfmIncludeBlockToken_Microsoft_DocAsCode_MarkdownLite_MarkdownBlockContext_
