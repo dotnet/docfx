@@ -23,6 +23,10 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty("references")]
         public List<ReferenceViewModel> References { get; set; } = new List<ReferenceViewModel>();
 
+        [YamlMember(Alias = "isSkipMarkup")]
+        [JsonProperty("isSkipMarkup")]
+        public bool IsSkipMarkup { get; set; }
+
         [ExtensibleMember]
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();

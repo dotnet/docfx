@@ -18,6 +18,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public string OutputFolder { get; set; }
 
+        public bool IsSkipMarkup { get; set; }
+
         public IEnumerable<string> RelatvieOutputFiles { get; set; }
 
         /// <summary>
