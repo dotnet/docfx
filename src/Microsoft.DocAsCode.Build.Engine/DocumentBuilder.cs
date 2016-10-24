@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Reflection;
     using System.Text;
 
+    using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
@@ -243,6 +244,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private List<PostProcessor> GetPostProcessor(ImmutableArray<string> processors)
         {
             var processorList = new List<PostProcessor>();
+            AddBuildInPostProcessor(processorList);
             foreach (var processor in processors)
             {
                 var p = GetExport(typeof(IPostProcessor), processor) as IPostProcessor;
@@ -261,6 +263,22 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
             return processorList;
+        }
+
+        private static void AddBuildInPostProcessor(List<PostProcessor> processorList)
+        {
+            processorList.Add(
+                new PostProcessor
+                {
+                    ContractName = "html",
+                    Processor = new HtmlPostProcessor
+                    {
+                        Handlers =
+                        {
+                            new ValidateBookmark(),
+                        },
+                    }
+                });
         }
 
         private object GetExport(Type type, string name)

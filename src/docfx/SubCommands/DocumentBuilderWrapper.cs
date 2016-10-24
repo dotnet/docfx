@@ -108,8 +108,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 assemblies = LoadPluginAssemblies(pluginDirectory);
             }
 
-            // always enable validating bookmark
-            var postProcessorNames = new List<string> { nameof(ValidateBookmark) }.Concat(config.PostProcessors).ToImmutableArray();
+            var postProcessorNames = config.PostProcessors.ToImmutableArray();
             var metadata = config.GlobalMetadata?.ToImmutableDictionary();
 
             // For backward compatible, retain "_enableSearch" to globalMetadata though it's deprecated
