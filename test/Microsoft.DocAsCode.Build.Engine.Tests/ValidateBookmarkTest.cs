@@ -17,7 +17,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     public class ValidateBookmarkTest
     {
-        private static ValidateBookmark _validator = new ValidateBookmark();
         private LoggerListener _listener = new LoggerListener("validate_bookmark");
 
         [Fact]

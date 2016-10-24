@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.Build.Common
         private Dictionary<string, List<Tuple<string, string>>> bookmarks;
         private Dictionary<string, string> fileMapping;
 
-        #region IHtml
+        #region IHtmlDocumentHandler members
 
         public Manifest PreHandle(Manifest manifest)
         {
