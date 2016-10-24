@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             ApiReferenceBuildOutput arbo;
             if (!references.TryGetValue(key, out arbo))
             {
-                var spec = GetXref(key);
                 arbo = new ApiReferenceBuildOutput
                 {
                     Spec = ApiReferenceBuildOutput.GetSpecNames(GetXref(key), supportedLanguages),
@@ -86,13 +85,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             return result;
         }
 
-        public static string GetXref(string uid, string fullName = null, string name = null)
+        public static string GetXref(string uid)
         {
-            var xref = $"<xref href=\"{HttpUtility.HtmlEncode(uid)}\"";
-            if (!string.IsNullOrEmpty(fullName)) xref += $" fullName=\"{HttpUtility.HtmlEncode(fullName)}\"";
-            if (!string.IsNullOrEmpty(name)) xref += $" name=\"{HttpUtility.HtmlEncode(name)}\"";
-            xref += "/>";
-            return xref;
+            return $"<xref href=\"{HttpUtility.HtmlEncode(uid)}\" altProperty=\"fullName\" displayProperty=\"name\"/>";
         }
 
         public static string GetHref(string url, string altText = null)
