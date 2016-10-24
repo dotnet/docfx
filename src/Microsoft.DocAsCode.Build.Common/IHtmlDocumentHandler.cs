@@ -7,9 +7,10 @@ namespace Microsoft.DocAsCode.Build.Common
 
     using Microsoft.DocAsCode.Plugins;
 
-    internal interface IHtmlDocumentHandler
+    public interface IHtmlDocumentHandler
     {
+        Manifest PreHandle(Manifest manifest);
         void Handle(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile);
-        Manifest Complete(Manifest manifest);
+        Manifest PostHandle(Manifest manifest);
     }
 }
