@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.6.2)
+Version Notes (Current Version: v2.6.3)
 =======================================
+v2.6.3
+-----------
+1.  minor: fix the Renderer
+
 v2.6.2
 -----------
 1.  Improve markdown engine performance.
