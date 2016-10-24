@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var pageViewModel = model.Content as PageViewModel;
             var skip = pageViewModel?.IsSkipMarkup;
 
-            if (skip == null || skip.Value != true)
+            if (skip != true)
             {
                 item.Summary = Markup(host, item.Summary, model, filter);
                 item.Remarks = Markup(host, item.Remarks, model, filter);
@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             if (item.Syntax?.Return != null)
             {
-                if (item.Syntax.Return.Description != null && skip == null || skip.Value != true)
+                if (item.Syntax.Return.Description != null && skip != true)
                 {
                     item.Syntax.Return.Description = Markup(host, item.Syntax?.Return?.Description, model, filter);
                 }
@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 foreach (var parameter in parameters)
                 {
-                    if (skip == null || skip.Value != true)
+                    if (skip != true)
                     {
                         parameter.Description = Markup(host, parameter.Description, model, filter);
                     }
@@ -97,7 +97,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 foreach (var exception in item.Exceptions)
                 {
-                    if (skip == null || skip.Value != true)
+                    if (skip != true)
                     {
                         exception.Description = Markup(host, exception.Description, model, filter);
                     }
