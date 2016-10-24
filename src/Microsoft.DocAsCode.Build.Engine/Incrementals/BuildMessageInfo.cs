@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return;
             }
-            string fileFromWorkingDir = item.File;
+            string fileFromWorkingDir = item.File.BackSlashToForwardSlash();
             if (!PathUtility.IsRelativePath(item.File))
             {
                 fileFromWorkingDir = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, item.File);
