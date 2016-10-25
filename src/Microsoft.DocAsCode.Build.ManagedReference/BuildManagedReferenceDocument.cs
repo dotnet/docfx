@@ -47,12 +47,19 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         public static ItemViewModel BuildItem(IHostService host, ItemViewModel item, FileModel model, Func<string, bool> filter = null)
         {
             var linkToUids = new HashSet<string>();
-            item.Summary = Markup(host, item.Summary, model, filter);
-            item.Remarks = Markup(host, item.Remarks, model, filter);
-            if (model.Type != DocumentType.Overwrite)
+            var pageViewModel = model.Content as PageViewModel;
+            var skip = pageViewModel?.ShouldSkipMarkup;
+
+            if (skip != true)
             {
-                item.Conceptual = Markup(host, item.Conceptual, model, filter);
+                item.Summary = Markup(host, item.Summary, model, filter);
+                item.Remarks = Markup(host, item.Remarks, model, filter);
+                if (model.Type != DocumentType.Overwrite)
+                {
+                    item.Conceptual = Markup(host, item.Conceptual, model, filter);
+                }
             }
+
             linkToUids.UnionWith(item.Inheritance ?? EmptyEnumerable);
             linkToUids.UnionWith(item.InheritedMembers ?? EmptyEnumerable);
             linkToUids.UnionWith(item.Implements ?? EmptyEnumerable);
@@ -66,7 +73,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             if (item.Syntax?.Return != null)
             {
-                if (item.Syntax.Return.Description != null)
+                if (item.Syntax.Return.Description != null && skip != true)
                 {
                     item.Syntax.Return.Description = Markup(host, item.Syntax?.Return?.Description, model, filter);
                 }
@@ -79,7 +86,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 foreach (var parameter in parameters)
                 {
-                    parameter.Description = Markup(host, parameter.Description, model, filter);
+                    if (skip != true)
+                    {
+                        parameter.Description = Markup(host, parameter.Description, model, filter);
+                    }
                     linkToUids.Add(parameter.Type);
                 }
             }
@@ -87,7 +97,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 foreach (var exception in item.Exceptions)
                 {
-                    exception.Description = Markup(host, exception.Description, model, filter);
+                    if (skip != true)
+                    {
+                        exception.Description = Markup(host, exception.Description, model, filter);
+                    }
                     linkToUids.Add(exception.Type);
                 }
             }

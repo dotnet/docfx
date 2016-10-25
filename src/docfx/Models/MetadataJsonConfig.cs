@@ -19,6 +19,9 @@ namespace Microsoft.DocAsCode
         public bool Force { get; set; }
 
         [JsonIgnore]
+        public bool ShouldSkipMarkup { get; set; }
+
+        [JsonIgnore]
         public bool Raw { get; set; }
 
         public MetadataJsonConfig(IEnumerable<MetadataJsonItemConfig> configs) : base(configs) { }

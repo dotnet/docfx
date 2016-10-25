@@ -56,6 +56,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     item.Raw |= options.PreserveRawInlineComments;
                     item.Force |= options.ForceRebuild;
+                    item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
                     item.FilterConfigFile = options.FilterConfigFile ?? item.FilterConfigFile;
                 }
                 return config;
@@ -66,6 +67,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 config.Add(new MetadataJsonItemConfig
                 {
                     Force = options.ForceRebuild,
+                    ShouldSkipMarkup = options.ShouldSkipMarkup,
                     Destination = options.OutputFolder,
                     Raw = options.PreserveRawInlineComments,
                     Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = true },
@@ -81,6 +83,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.Raw |= configs.Raw;
                 config.Force |= configs.Force;
+                config.ShouldSkipMarkup |= configs.ShouldSkipMarkup;
                 yield return ConvertToInputModel(config);
             }
         }
@@ -94,6 +97,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 PreserveRawInlineComments = configModel?.Raw ?? false,
                 ForceRebuild = configModel?.Force ?? false,
+                ShouldSkipMarkup = configModel?.ShouldSkipMarkup ?? false,
                 ApiFolderName = string.Empty,
                 FilterConfigFile = configModel?.FilterConfigFile,
                 UseCompatibilityFileName = configModel?.UseCompatibilityFileName ?? false,
