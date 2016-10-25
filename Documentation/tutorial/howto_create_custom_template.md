@@ -94,6 +94,7 @@ Open http://localhost:8080/toc.html and you can see a toc web page.
 Extension for *Preprocessor* file
 ----------------------------------
 If you want to modify some properties based on DocFX `default` template's *Preprocessor*, you can use *Preprocessor* extension file to achieve this.
+
 For example, if you want to add a property to the managed reference's data model after `default` template's *Preprocessor*, you can update the file `ManagedReference.extension.js` in your customized template with the following content:
 ```
 /**
