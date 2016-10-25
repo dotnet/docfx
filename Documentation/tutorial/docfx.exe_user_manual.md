@@ -77,6 +77,12 @@ Files can be combined using `,` as separator and *search pattern*.
 
 The default output folder is `_site/` folder if it is not specified in `docfx.json` under current directory.
 
+####2.2.1 Command option `--shouldSkipMarkup`
+
+If adding option `--shouldSkipMarkup` in metadata command, it means that DocFx would not render triple-slash-comments in source code as markdown.
+
+e.g. `docfx metadata --shouldSkipMarkup`
+
 ###2.3 Generate documentation command `docfx build`
 **Syntax**
 ```
