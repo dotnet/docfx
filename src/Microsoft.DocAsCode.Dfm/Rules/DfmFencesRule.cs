@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Dfm
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Common;
 
-    public class DfmFencesRule : IMarkdownRule
+    public abstract class DfmFencesRule : IMarkdownRule
     {
         private const string StartLineQueryStringKey = "start";
         private const string EndLineQueryStringKey = "end";
@@ -20,32 +20,14 @@ namespace Microsoft.DocAsCode.Dfm
         private const string DedentQueryStringKey = "dedent";
         private const char RegionSeparatorInRangeQueryString = ',';
 
-        public string Name => "DfmFences";
+        public abstract string Name { get; }
 
-        private static readonly Regex _dfmFencesRegex = new Regex(@"^ *\[\!((?i)code(\-(?<lang>[\w|\-]+))?)\s*\[(?<name>(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?(?<path>[^\n]*?)((?<option>[\#|\?])(?<optionValue>\S+))?>?(?:\s+(?<quote>['""])(?<title>[\s\S]*?)\k<quote>)?\s*\)\]\s*(\n|$)", RegexOptions.Compiled, TimeSpan.FromSeconds(10));
         private static readonly Regex _dfmFencesSharpQueryStringRegex = new Regex(@"^L(?<start>\d+)\-L(?<end>\d+)$", RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
         internal static readonly Regex _dfmFencesRangeQueryStringRegex = new Regex(@"^(?<start>\d+)\-(?<end>\d+)?$", RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
-        {
-            var match = _dfmFencesRegex.Match(context.CurrentMarkdown);
-            if (match.Length == 0)
-            {
-                return null;
-            }
-            var sourceInfo = context.Consume(match.Length);
+        public abstract IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context);
 
-            // [!code-REST-i[name](path "optionalTitle")]
-            var name = match.Groups["name"].Value;
-            var path = match.Groups["path"].Value;
-            var lang = match.Groups["lang"]?.Value;
-            var title = match.Groups["title"]?.Value;
-            var pathQueryOption = ParsePathQueryString(match.Groups["option"]?.Value, match.Groups["optionValue"]?.Value);
-
-            return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption);
-        }
-
-        private static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
+        protected static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
         {
             if (string.IsNullOrEmpty(queryOption) || string.IsNullOrEmpty(queryString))
             {

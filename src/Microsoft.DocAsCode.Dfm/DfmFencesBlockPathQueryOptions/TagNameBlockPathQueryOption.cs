@@ -198,7 +198,7 @@ namespace Microsoft.DocAsCode.Dfm
         private readonly ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, DfmTagNameResolveResult>>> _dfmTagNameLineRangeCache
             = new ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, DfmTagNameResolveResult>>>(StringComparer.OrdinalIgnoreCase);
 
-        public override bool ValidateAndPrepare(string[] lines, DfmFencesBlockToken token)
+        public override bool ValidateAndPrepare(string[] lines, DfmFencesToken token)
         {
             // NOTE: Parsing language and removing comment lines only do for tag name representation
             var lang = GetCodeLanguageOrExtension(token);
@@ -253,7 +253,7 @@ namespace Microsoft.DocAsCode.Dfm
         }
 
 
-        private static string GetCodeLanguageOrExtension(DfmFencesBlockToken token)
+        private static string GetCodeLanguageOrExtension(DfmFencesToken token)
         {
             return !string.IsNullOrEmpty(token.Lang) ? token.Lang : Path.GetExtension(token.Path);
         }
