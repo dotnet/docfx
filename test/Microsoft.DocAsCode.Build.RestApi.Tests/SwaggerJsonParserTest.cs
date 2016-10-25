@@ -103,12 +103,12 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal(2, parameters.Count);
 
             // $ref parameter
-            Assert.Equal("api-version", parameters[0].Metadata["name"]);
+            Assert.Equal("api-version", parameters[0].Name);
             Assert.Equal(false, parameters[0].Metadata["required"]);
             Assert.Equal("api version description", parameters[0].Description);
 
             // self defined parameter
-            Assert.Equal("subscriptionId", parameters[1].Metadata["name"]);
+            Assert.Equal("subscriptionId", parameters[1].Name);
             Assert.Equal(true, parameters[1].Metadata["required"]);
             Assert.Equal("subscription id", parameters[1].Description);
         }
