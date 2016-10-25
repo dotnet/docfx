@@ -72,7 +72,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             xref.InnerHtml = node.InnerHtml;
             xref.DisplayProperty = node.GetAttributeValue("displayProperty", queryString?.Get("displayProperty") ?? XRefSpec.NameKey);
-            xref.AltProperty = node.GetAttributeValue("altProperty", queryString?.Get("altProperty") ?? "fullname");
+            xref.AltProperty = node.GetAttributeValue("altProperty", queryString?.Get("altProperty") ?? "fullName");
             xref.Text = node.GetAttributeValue("text", node.GetAttributeValue("name", StringHelper.HtmlEncode(queryString?.Get("text"))));
             xref.Alt = node.GetAttributeValue("alt", node.GetAttributeValue("fullname", StringHelper.HtmlEncode(queryString?.Get("alt"))));
 
