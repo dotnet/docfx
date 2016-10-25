@@ -99,14 +99,14 @@ For example, if you want to add a property to the managed reference's data model
 /**
  * This method will be called at the start of exports.transform in ManagedReference.html.primary.js
  */
-exports.preSteps = function (model) {
+exports.preTransform = function (model) {
   return model;
 }
 
 /**
  * This method will be called at the end of exports.transform in ManagedReference.html.primary.js
  */
-exports.postSteps = function (model) {
+exports.postTransform = function (model) {
   model._extra_property = "Hello world";
   return model;
 }

@@ -4,12 +4,12 @@ var common = require('./common.js');
 var extension = require('./conceptual.extension.js')
 
 exports.transform = function (model) {
-  model = extension.preSteps(model);
+  model = extension.preTransform(model);
 
   model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
   model.docurl = model.docurl || common.getViewSourceHref(model, model._gitContribute, model._gitUrlPattern);
 
-  model = extension.postSteps(model);
+  model = extension.postTransform(model);
 
   return model;
 }
