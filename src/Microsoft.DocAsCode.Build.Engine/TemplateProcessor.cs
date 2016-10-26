@@ -160,10 +160,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             items.RunAll(
                 item =>
                 {
-                    var manifestItem = transformer.Transform(item);
-                    if (manifestItem.OutputFiles?.Count > 0)
+                    using (new LoggerFileScope(item.LocalPathFromRoot))
                     {
-                        manifest.Add(manifestItem);
+                        var manifestItem = transformer.Transform(item);
+                        if (manifestItem.OutputFiles?.Count > 0)
+                        {
+                            manifest.Add(manifestItem);
+                        }
                     }
                 },
                 context.MaxParallelism);
