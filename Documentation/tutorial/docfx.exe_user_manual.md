@@ -77,6 +77,12 @@ Files can be combined using `,` as separator and *search pattern*.
 
 The default output folder is `_site/` folder if it is not specified in `docfx.json` under current directory.
 
+####2.2.2 Command option `--shouldSkipMarkup`
+
+If adding option `--shouldSkipMarkup` in metadata command, it means that DocFX would not render triple-slash-comments in source code as markdown.
+
+e.g. `docfx metadata --shouldSkipMarkup`
+
 ###2.3 Generate documentation command `docfx build`
 **Syntax**
 ```
@@ -144,6 +150,15 @@ Top level `docfx.json` structure is key-value pair. `key` is the name of the sub
 
 `Metadata` section defines an array of source projects and their output folder. Each item has `src` and `dest` property. `src` defines the source projects to have metadata generated, which is in `File Mapping Format`. Detailed syntax is described in **4. Supported `name-files` File Mapping Format** below. `dest` defines the output folder of the generated metadata files.
 
+Key                      | Description
+-------------------------|-----------------------------
+src                      | Defines the source projects to have metadata generated, which is in `File Mapping Format`.
+dest                     | Defines the output folder of the generated metadata files.
+force                    | If set to true, it would disable incremental build.
+shouldSkipMarkup         | If set to true, DocFX would not render triple-slash-comments in source code as markdown.
+filter                   | Defines the filter configuration file, please go to [How to filter out unwanted apis attributes](./howto_filter_out_unwanted_apis_attributes.md) for more details.
+useCompatibilityFileName | If set to true, DocFX would keep '`' in comment id instead of replacing it with '-'.
+
 **Sample**
 ```json
 {
@@ -156,7 +171,8 @@ Top level `docfx.json` structure is key-value pair. `key` is the name of the sub
           "src": "../src"
         }
       ],
-      "dest": "obj/docfx/api/dotnet"
+      "dest": "obj/docfx/api/dotnet",
+      "shouldSkipMarkup": true
     },
     {
       "src": [
@@ -165,7 +181,8 @@ Top level `docfx.json` structure is key-value pair. `key` is the name of the sub
           "src": "../src"
         }
       ],
-      "dest": "obj/docfx/api/js" 
+      "dest": "obj/docfx/api/js",
+      "useCompatibilityFileName": true
     }
   ]
 }
