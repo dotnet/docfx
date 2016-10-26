@@ -82,9 +82,9 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 {
                     if (string.Equals(attribute.Name, "pageTitle", StringComparison.OrdinalIgnoreCase))
                     {
-                        // Per Azure's request, migration script should convert "| Microsoft Azure" to "| Microsoft Docs" in title.
+                        // Per Azure's request, migration script should convert "| Microsoft Azure" at the end of title to "| Microsoft Docs".
                         var title = attribute.Value;
-                        if (title != null && title.Contains("| Microsoft Azure"))
+                        if (title != null && title.EndsWith("| Microsoft Azure"))
                         {
                             title = title.Replace("| Microsoft Azure", "| Microsoft Docs");
                         }
