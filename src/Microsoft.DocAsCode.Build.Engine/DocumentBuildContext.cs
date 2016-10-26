@@ -64,6 +64,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public HashSet<string> XRef { get; } = new HashSet<string>();
 
+        internal IncrementalBuildContext IncrementalBuildContext { get; set; }
+
         internal DependencyGraph DependencyGraph { get; } = new DependencyGraph();
 
         internal Dictionary<string, ChangeKindWithDependency> ChangeDict { get; } = new Dictionary<string, ChangeKindWithDependency>();
