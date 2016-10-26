@@ -961,7 +961,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         foreach (var fileLinkSourceFile in list)
                         {
-                            Logger.LogWarning($"Invalid file link:({fileLinkSourceFile.Target}{fileLinkSourceFile.Anchor}). Referenced by file: {fileLinkSourceFile.SourceFile} at line: {fileLinkSourceFile.LineNumber}.");
+                            Logger.LogWarning($"Invalid file link:({fileLinkSourceFile.Target}{fileLinkSourceFile.Anchor}).", null, fileLinkSourceFile.SourceFile, fileLinkSourceFile.LineNumber.ToString());
                         }
                     }
                     else

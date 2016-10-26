@@ -159,7 +159,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (missingUids.Count > 0)
             {
                 var uids = string.Join(", ", missingUids.Select(s => $"\"{s}\""));
-                Logger.LogWarning($"Unable to resolve cross-reference {uids}. Referenced by file: {item.LocalPathFromRoot}");
+                Logger.LogWarning($"Invalid cross reference {uids}.", null, item.LocalPathFromRoot);
             }
 
             return manifestItem;
