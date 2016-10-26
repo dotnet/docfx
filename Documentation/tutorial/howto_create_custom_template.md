@@ -90,3 +90,26 @@ Open http://localhost:8080/toc.html and you can see a toc web page.
 > Tip: Run `docfx template export default` to view what's inside the default template.
 
 > NOTE: It is possible that DocFX updates its embedded templates when a new version is released. So please make sure to re-export the template if you overwrite or are dependent on it in your custom template.
+
+Extension for *Preprocessor* file
+----------------------------------
+If you want to modify some properties based on DocFX `default` template's *Preprocessor*, you can use *Preprocessor* extension file to achieve this.
+
+For example, if you want to add a property to the managed reference's data model after `default` template's *Preprocessor*, you can update the file `ManagedReference.extension.js` in your custom template with the following content:
+```
+/**
+ * This method will be called at the start of exports.transform in ManagedReference.html.primary.js
+ */
+exports.preTransform = function (model) {
+  return model;
+}
+
+/**
+ * This method will be called at the end of exports.transform in ManagedReference.html.primary.js
+ */
+exports.postTransform = function (model) {
+  model._extra_property = "Hello world";
+  return model;
+}
+```
+Compared with modifying `ManagedReference.html.primary.js` directely, you needn't worry about merging your custom templates with DocFX's embedded templates when DocFX updates.
