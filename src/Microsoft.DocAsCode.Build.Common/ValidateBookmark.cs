@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Build.Common
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
-    public class ValidateBookmark : IHtmlDocumentHandler
+    public class ValidateBookmark : HtmlDocumentHandler
     {
         private static readonly string XPathTemplate = "//*/@{0}";
         private static readonly HashSet<string> WhiteList = new HashSet<string> { "top" };
@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
         #region IHtmlDocumentHandler members
 
-        public Manifest PreHandle(Manifest manifest)
+        public override Manifest PreHandle(Manifest manifest)
         {
             _registeredBookmarks = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
             _bookmarks = new Dictionary<string, List<Tuple<string, string>>>(FilePathComparer.OSPlatformSensitiveStringComparer);
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Build.Common
             return manifest;
         }
 
-        public void Handle(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
+        public override void Handle(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
         {
             _fileMapping[outputFile] = inputFile;
             _bookmarks[outputFile] =
@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.Build.Common
             _registeredBookmarks[outputFile] = new HashSet<string>(anchors);
         }
 
-        public Manifest PostHandle(Manifest manifest)
+        public override Manifest PostHandle(Manifest manifest)
         {
             foreach (var item in _bookmarks)
             {
@@ -60,7 +60,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     {
                         string currentFileSrc = _fileMapping[path];
                         string linkedToFileSrc = _fileMapping[linkedToFile];
-                        Logger.LogWarning($"Output file {path} which is built from src file {currentFileSrc} contains illegal link {linkedToFile}#{anchor}: the file {linkedToFile} which is built from src {linkedToFileSrc} doesn't contain a bookmark named {anchor}.");
+                        Logger.LogWarning($"Output file {path} which is built from src file {currentFileSrc} contains illegal link {linkedToFile}#{anchor}: the file {linkedToFile} which is built from src {linkedToFileSrc} doesn't contain a bookmark named {anchor}.", file: path);
                     }
                 }
             }

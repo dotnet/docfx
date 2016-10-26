@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal sealed class HtmlPostProcessor : IPostProcessor
     {
-        public List<IHtmlDocumentHandler> Handlers { get; } = new List<IHtmlDocumentHandler>();
+        public List<HtmlDocumentHandler> Handlers { get; } = new List<HtmlDocumentHandler>();
 
         public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)
         {
@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             foreach (var handler in Handlers)
             {
-                manifest = handler.PreHandle(manifest);
+                manifest = handler.PreHandleWithScopeWrapper(manifest);
             }
             foreach (var tuple in from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
                                   from output in item.OutputFiles
@@ -66,13 +66,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 foreach (var handler in Handlers)
                 {
-                    handler.Handle(document, tuple.Item, tuple.InputFile, tuple.OutputFile);
+                    handler.HandleWithScopeWrapper(document, tuple.Item, tuple.InputFile, tuple.OutputFile);
                 }
                 document.Save(filePath, Encoding.UTF8);
             }
             foreach (var handler in Handlers)
             {
-                manifest = handler.PostHandle(manifest);
+                manifest = handler.PostHandleWithScopeWrapper(manifest);
             }
             return manifest;
         }

@@ -7,14 +7,14 @@ namespace Microsoft.DocAsCode.Build.Common
 
     using Microsoft.DocAsCode.Plugins;
 
-    public class RemoveDebugInfo : IHtmlDocumentHandler
+    public class RemoveDebugInfo : HtmlDocumentHandler
     {
-        public Manifest PreHandle(Manifest manifest)
+        public override Manifest PreHandle(Manifest manifest)
         {
             return manifest;
         }
 
-        public void Handle(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
+        public override void Handle(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
         {
             foreach (var node in document.DocumentNode.Descendants())
             {
@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.Common
             }
         }
 
-        public Manifest PostHandle(Manifest manifest)
+        public override Manifest PostHandle(Manifest manifest)
         {
             return manifest;
         }
