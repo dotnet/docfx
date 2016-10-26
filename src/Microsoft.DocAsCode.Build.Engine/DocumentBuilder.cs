@@ -276,6 +276,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         Handlers =
                         {
                             new ValidateBookmark(),
+                            new RemoveDebugInfo(),
                         },
                     }
                 });

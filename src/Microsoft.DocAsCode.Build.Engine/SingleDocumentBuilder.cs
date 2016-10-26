@@ -956,18 +956,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (!hostService.SourceFiles.ContainsKey(fileLink))
                 {
-                    var message = $"Invalid file link:({fileLink}).";
                     ImmutableList<LinkSourceInfo> list;
                     if (result.FileLinkSources.TryGetValue(fileLink, out list))
                     {
                         foreach (var fileLinkSourceFile in list)
                         {
-                            Logger.LogWarning($"{message} Referenced by file: {fileLinkSourceFile.SourceFile} at line: {fileLinkSourceFile.LineNumber}.");
+                            Logger.LogWarning($"Invalid file link:({fileLinkSourceFile.Target}{fileLinkSourceFile.Anchor}). Referenced by file: {fileLinkSourceFile.SourceFile} at line: {fileLinkSourceFile.LineNumber}.");
                         }
                     }
                     else
                     {
-                        Logger.LogWarning(message);
+                        Logger.LogWarning($"Invalid file link:({fileLink}).");
                     }
                 }
             });

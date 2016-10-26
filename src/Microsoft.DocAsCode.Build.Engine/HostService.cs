@@ -224,6 +224,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     sources.Add(new LinkSourceInfo
                     {
                         Target = file,
+                        Anchor = anchor,
                         SourceFile = pair.Node.GetAttributeValue("sourceFile", null),
                         LineNumber = pair.Node.GetAttributeValue("sourceLineNumber", 0),
                     });
@@ -334,6 +335,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     sources.Add(new LinkSourceInfo
                     {
                         Target = file,
+                        Anchor = anchor,
                         SourceFile = pair.Node.GetAttributeValue("sourceFile", null),
                         LineNumber = pair.Node.GetAttributeValue("sourceStartLineNumber", 0),
                     });

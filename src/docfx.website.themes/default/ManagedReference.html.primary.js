@@ -4,7 +4,7 @@ var mrefCommon = require('./ManagedReference.common.js');
 var extension = require('./ManagedReference.extension.js')
 
 exports.transform = function (model) {
-  model = extension.preSteps(model);
+  model = extension.preTransform(model);
 
   model = mrefCommon.transform(model);
   if (model.type.toLowerCase() === "enum") {
@@ -13,7 +13,7 @@ exports.transform = function (model) {
   }
   model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
 
-  model = extension.postSteps(model);
+  model = extension.postTransform(model);
 
   return {item: model};
 }
