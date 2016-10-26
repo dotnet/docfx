@@ -3,10 +3,10 @@
 
 namespace Microsoft.DocAsCode.Build.RestApi.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
+    using System.Linq;
 
     using Newtonsoft.Json.Linq;
     using Xunit;
@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.RestApi;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
     using Microsoft.DocAsCode.Tests.Common;
 
     [Trait("Owner", "lianwei")]
@@ -92,28 +91,28 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             // Verify path parameters
             // Path parameter applicable for get operation
             Assert.Equal(2, item1.Parameters.Count);
-            Assert.Equal("object_id", item1.Parameters[0].Metadata["name"]);
-            Assert.Equal("api-version", item1.Parameters[1].Metadata["name"]);
+            Assert.Equal("object_id", item1.Parameters[0].Name);
+            Assert.Equal("api-version", item1.Parameters[1].Name);
             Assert.Equal(true, item1.Parameters[1].Metadata["required"]);
 
             // Override ""api-version" parameters by $ref for patch operation
             var item2 = model.Children[2];
             Assert.Equal(3, item2.Parameters.Count);
-            Assert.Equal("object_id", item2.Parameters[0].Metadata["name"]);
-            Assert.Equal("api-version", item2.Parameters[1].Metadata["name"]);
+            Assert.Equal("object_id", item2.Parameters[0].Name);
+            Assert.Equal("api-version", item2.Parameters[1].Name);
             Assert.Equal(false, item2.Parameters[1].Metadata["required"]);
 
             // Override ""api-version" parameters by self definition for delete operation
             var item3 = model.Children[3];
             Assert.Equal(2, item3.Parameters.Count);
-            Assert.Equal("object_id", item3.Parameters[0].Metadata["name"]);
-            Assert.Equal("api-version", item3.Parameters[1].Metadata["name"]);
+            Assert.Equal("object_id", item3.Parameters[0].Name);
+            Assert.Equal("api-version", item3.Parameters[1].Name);
             Assert.Equal(false, item3.Parameters[1].Metadata["required"]);
 
             // When operation parameters is not set, inherit from th parameters for post operation
             var item4 = model.Children[4];
             Assert.Equal(1, item4.Parameters.Count);
-            Assert.Equal("api-version", item4.Parameters[0].Metadata["name"]);
+            Assert.Equal("api-version", item4.Parameters[0].Name);
             Assert.Equal(true, item4.Parameters[0].Metadata["required"]);
 
             // When 'definitions' has direct child with $ref defined, should resolve it
@@ -170,6 +169,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
             Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.simple.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Overwrite content</p>\n", model.Summary);
             Assert.Null(model.Conceptual);
+
+            // Verify overwrite parameters
+            var parametersForUpdate = model.Children.Single(c => c.OperationId == "update contact").Parameters;
+            Assert.Equal("The new object_id description", parametersForUpdate.Single(p => p.Name == "object_id").Description);
+            Assert.Equal("The new bodyparam description", parametersForUpdate.Single(p => p.Name == "bodyparam").Description);
         }
 
         [Fact]

@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
                 var builder = new SwaggerJsonBuilder();
                 var swagger = builder.Read(reader);
 
-                // Serialze to JToken
+                // Serialize to JToken
                 var token = JToken.FromObject(swagger, _serializer.Value);
 
                 // Convert to swagger model
