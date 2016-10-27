@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         string ErrorMessage { get; }
 
-        bool ValidateAndPrepare(string[] lines, DfmFencesBlockToken token);
+        bool ValidateAndPrepare(string[] lines, DfmFencesToken token);
 
         bool ValidateHighlightLinesAndDedentLength(int totalLines);
 
