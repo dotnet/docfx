@@ -476,6 +476,36 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
         }
 
         [Fact]
+        public void RelativePathToTocShouldChooseTheNearestReferenceToc()
+        {
+            // |-toc.md
+            // |-sub1
+            //    |-sub2
+            //       |-file
+            //       |-sub3
+            //           |-toc.md
+
+            // Arrange
+            const string fileFolder = "sub1/sub2";
+            var file = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, fileFolder);
+            var toc1 = _fileCreator.CreateFile($"#[Topic]({file})", FileType.MarkdownToc);
+            const string toc2Folder = "sub1/sub2/sub3";
+            var filePathRelativeToToc2 = ((RelativePath) file).MakeRelativeTo((RelativePath)toc2Folder);
+            var toc2 = _fileCreator.CreateFile($"#[Same Topic]({filePathRelativeToToc2.FileName}", FileType.MarkdownToc, toc2Folder);
+            var files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { file, toc1, toc2 });
+
+            // Act
+            BuildDocument(files);
+
+            // Assert
+            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension(file, RawModelFileExtension));
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
+            Assert.Equal("../../toc.md", model["_tocRel"]);
+        }
+
+        [Fact]
         public void ProcessYamlTocWithTocHrefAndHomepageShouldFail()
         {
 
