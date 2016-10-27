@@ -44,7 +44,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             IEnumerable<Assembly> assemblies,
             ImmutableArray<string> postProcessorNames,
             string templateHash,
-            string intermediateFolder = null)
+            string intermediateFolder = null,
+            string commitFromSHA = null,
+            string commitToSHA = null)
         {
             Logger.LogVerbose("Loading plug-in...");
             using (new LoggerPhaseScope("ImportPlugins", true))
@@ -52,6 +54,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var assemblyList = assemblies?.ToList();
                 _container = GetContainer(assemblyList);
                 _container.SatisfyImports(this);
+                _currentBuildInfo.CommitFromSHA = commitFromSHA;
+                _currentBuildInfo.CommitToSHA = commitToSHA;
                 if (intermediateFolder != null)
                 {
                     _currentBuildInfo.PluginHash = ComputePluginHash(assemblyList);

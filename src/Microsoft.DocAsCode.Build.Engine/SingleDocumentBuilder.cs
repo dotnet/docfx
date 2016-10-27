@@ -222,6 +222,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogVerbose("Cannot build incrementally because template changed.");
                 return false;
             }
+            if (CurrentBuildInfo.CommitFromSHA != LastBuildInfo.CommitToSHA)
+            {
+                Logger.LogVerbose($"Cannot build incrementally because commit SHA doesn't match. Last build commit: {LastBuildInfo.CommitToSHA}. Current build commit base: {CurrentBuildInfo.CommitFromSHA}.");
+                return false;
+            }
             return true;
         }
 
