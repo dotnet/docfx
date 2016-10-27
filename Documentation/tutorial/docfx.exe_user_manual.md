@@ -157,7 +157,7 @@ dest                     | Defines the output folder of the generated metadata f
 force                    | If set to true, it would disable incremental build.
 shouldSkipMarkup         | If set to true, DocFX would not render triple-slash-comments in source code as markdown.
 filter                   | Defines the filter configuration file, please go to [How to filter out unwanted apis attributes](./howto_filter_out_unwanted_apis_attributes.md) for more details.
-useCompatibilityFileName | If set to true, DocFX would keep '`' in comment id instead of replacing it with '-'.
+useCompatibilityFileName | If set to true, DocFX would keep `` ` `` in comment id instead of replacing it with `-`.
 
 **Sample**
 ```json

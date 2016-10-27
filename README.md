@@ -10,10 +10,6 @@
 
 ## What is it?
 *DocFX* makes it extremely easy to generate your developer hub with API reference, landing page, and how-to.
-There are currently two versions of the tool:
-
-1. Exe version which can be used as a command-line tool or inside VS IDE.
-2. DNX version which can be run cross platform.
 
 We currently support C# and VB projects.
 
