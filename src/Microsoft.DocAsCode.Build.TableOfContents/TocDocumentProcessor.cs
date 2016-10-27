@@ -18,6 +18,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     [Export(typeof(IDocumentProcessor))]
     public class TocDocumentProcessor : DisposableDocumentProcessor
     {
+        private static readonly char[] QueryStringOrAnchor = new[] { '#', '?' };
+
         public override string Name => nameof(TocDocumentProcessor);
 
         [ImportMany(nameof(TocDocumentProcessor))]
@@ -177,11 +179,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 return pathToFile;
             }
 
-            var index = pathToFile.IndexOf('#');
+            var index = pathToFile.IndexOfAny(QueryStringOrAnchor);
             if (index == 0)
             {
                 throw new DocumentException($"Invalid toc link for {propertyName}: {originalPathToFile}.");
             }
+
             string href = index == -1
                 ? context.GetFilePath(pathToFile)
                 : context.GetFilePath(pathToFile.Remove(index));
