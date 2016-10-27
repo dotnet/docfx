@@ -451,9 +451,8 @@ aaa",
         [InlineData(
             @"<!--a-->[b](c)<!--d-->e
 <!--f-->",
-            @"<p><!--a--><a href=""c"">b</a><!--d-->e
-<!--f--></p>
-")]
+            @"<p><!--a--><a href=""c"">b</a><!--d-->e</p>
+<!--f-->")]
         [InlineData(
             @"aabbcc:smile:ddee",
             @"<p>aabbcc<span class=""emoji"" shortCode=""smile"">😄</span>ddee</p>

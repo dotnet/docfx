@@ -70,13 +70,6 @@ namespace Microsoft.DocAsCode.Dfm
                     new DfmNoteBlockRule()
                 });
 
-            var gfmIndex = blockRules.FindIndex(item => item is GfmParagraphBlockRule);
-            if (gfmIndex < 0)
-            {
-                throw new ArgumentException("GfmParagraphBlockRule should exist!");
-            }
-            blockRules[gfmIndex] = new DfmParagraphBlockRule();
-
             var markdownBlockQuoteIndex = blockRules.FindIndex(item => item is MarkdownBlockquoteBlockRule);
             if (markdownBlockQuoteIndex < 0)
             {

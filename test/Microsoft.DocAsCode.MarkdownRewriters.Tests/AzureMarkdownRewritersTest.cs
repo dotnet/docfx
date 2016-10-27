@@ -555,11 +555,34 @@ _Em Text_
 - Simple text";
             var expected = @"# Test Complex String Em Del
 **Strong Text**
-
 <div>
 *Em Text*
-
 <div>
+
+* ~~Del Text~~
+* Simple text
+
+";
+            var result = AzureMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "AzureMarkdownRewriters")]
+        public void TestAzureMarkdownRewriters_ComplexStrongEmDel2()
+        {
+            var source = @"# Test Complex String Em Del
+__Strong Text__
+<div>
+_Em Text_
+</div>
+- ~~Del Text~~
+- Simple text";
+            var expected = @"# Test Complex String Em Del
+**Strong Text**
+<div>
+*Em Text*
+</div>
 
 * ~~Del Text~~
 * Simple text

@@ -61,9 +61,6 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             }
             blockRules.Insert(index - 1, new AzureHtmlMetadataBlockRule());
 
-            var gfmIndex = blockRules.FindIndex(item => item is GfmParagraphBlockRule);
-            blockRules[gfmIndex] = new AzureParagraphBlockRule();
-
             var markdownBlockQuoteIndex = blockRules.FindIndex(item => item is MarkdownBlockquoteBlockRule);
             blockRules[markdownBlockQuoteIndex] = new AzureBlockquoteBlockRule();
             blockRules.Insert(markdownBlockQuoteIndex, new AzureVideoBlockRule());

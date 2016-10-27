@@ -90,9 +90,9 @@ b:
             var linkAndRefRoot = @"
 Paragraph1
 [link](a.md)
-[!include[link2](../link/link2.md)]
+[!include-[link2](../link/link2.md)]
 ![Image](img/img.jpg)
-[!include[root](../root.md)]";
+[!include-[root](../root.md)]";
             var link2 = @"[link](md/c.md)";
             var refc = @"[!include[c](../c/c.md ""This is root"")]";
             var c = @"**Hello**";
@@ -109,7 +109,7 @@ Paragraph1
 <a href=""~/r/b/a.md"">link</a>
 <!-- BEGIN INCLUDE: Include content from &quot;r/link/link2.md&quot; --><a href=""~/r/link/md/c.md"">link</a><!--END INCLUDE -->
 <img src=""~/r/b/img/img.jpg"" alt=""Image"">
-<!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](../root.md)]: Circular dependency found in &quot;r/b/linkAndRefRoot.md&quot; -->[!include[root](../root.md)]<!--END ERROR INCLUDE --></p>
+<!-- BEGIN ERROR INCLUDE: Unable to resolve [!include-[root](../root.md)]: Circular dependency found in &quot;r/b/linkAndRefRoot.md&quot; -->[!include-[root](../root.md)]<!--END ERROR INCLUDE --></p>
 <!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>
 <!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>
 <!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/empty.md&quot; --><!--END INCLUDE --><!-- BEGIN ERROR INCLUDE: Absolute path &quot;http://microsoft.com/a.md&quot; is not supported. -->[!include[external](http://microsoft.com/a.md)]<!--END ERROR INCLUDE -->".Replace("\r\n", "\n"), marked);

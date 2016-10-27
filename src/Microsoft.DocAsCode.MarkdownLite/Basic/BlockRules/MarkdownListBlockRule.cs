@@ -72,29 +72,22 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     if (!loose) loose = next;
                 }
 
-                tokens.Add(
-                    new TwoPhaseBlockToken(
-                        this,
-                        parser.Context,
-                        sourceInfo.Copy(item, lineOffset),
-                        (p, t) =>
-                        {
-                            var c = p.SwitchContext(MarkdownBlockContext.IsTop, false);
-                            if (!loose)
-                            {
-                                var bc = (MarkdownBlockContext)p.Context;
-                                c = p.SwitchContext(
-                                    bc.SetRules(
-                                        ImmutableList.Create<IMarkdownRule>(
-                                            this,
-                                            new MarkdownNewLineBlockRule(),
-                                            new MarkdownTextBlockRule())));
-                            }
-                            var blockTokens = p.Tokenize(t.SourceInfo.Copy(item));
-                            p.SwitchContext(c);
-                            blockTokens = TokenHelper.ParseInlineToken(p, this, blockTokens, loose, t.SourceInfo);
-                            return new MarkdownListItemBlockToken(t.Rule, t.Context, blockTokens, loose, t.SourceInfo);
-                        }));
+                var c = parser.SwitchContext(MarkdownBlockContext.IsTop, false);
+                if (!loose)
+                {
+                    var bc = (MarkdownBlockContext)parser.Context;
+                    c = parser.SwitchContext(
+                        bc.SetRules(
+                            ImmutableList.Create<IMarkdownRule>(
+                                this,
+                                new MarkdownNewLineBlockRule(),
+                                new MarkdownTextBlockRule())));
+                }
+                var itemSourceInfo = sourceInfo.Copy(item, lineOffset);
+                var blockTokens = parser.Tokenize(itemSourceInfo);
+                parser.SwitchContext(c);
+                blockTokens = TokenHelper.CreateParagraghs(parser, this, blockTokens, loose, itemSourceInfo);
+                tokens.Add(new MarkdownListItemBlockToken(this, parser.Context, blockTokens, loose, itemSourceInfo));
                 lineOffset += lines;
             }
 

@@ -57,7 +57,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 parser.SwitchContext(context);
             }
-            var tokens = parser.Tokenize(sourceInfo.Copy(Preprocess(sourceInfo.Markdown)));
+            var preprocessedSourceInfo = sourceInfo.Copy(Preprocess(sourceInfo.Markdown));
+
+            var tokens = parser.Tokenize(preprocessedSourceInfo);
+            if (parser.Context is MarkdownBlockContext)
+            {
+                tokens = TokenHelper.CreateParagraghs(
+                    parser,
+                    MarkdownParagraphBlockRule.Instance,
+                    tokens,
+                    true,
+                    preprocessedSourceInfo);
+            }
+
             var internalRewriteEngine =
                 new MarkdownRewriteEngine(
                     this,

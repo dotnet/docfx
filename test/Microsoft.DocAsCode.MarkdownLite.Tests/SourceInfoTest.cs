@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite.Tests
 {
+    using System.Collections.Immutable;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
     using Xunit;
@@ -14,45 +16,32 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         public void TestSourceInfo_Basic()
         {
             const string File = "test.md";
-            var gfm = new GfmEngineBuilder(new Options()).CreateEngine(new HtmlRenderer());
-            var tokens = gfm.Parser.Tokenize(
-                SourceInfo.Create(@"
+            var tokens = Tokenize(@"
 
 # HEAD1
 First line.  
 More line.
 ## HEAD2
-Yeah!".Replace("\r\n", "\n"), File));
-            var rewriter =
-                new MarkdownRewriteEngine(
-                    gfm,
-                    MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, TwoPhaseBlockToken>(
-                        (e, t) => t.Extract(gfm.Parser)));
-            tokens = rewriter.Rewrite(tokens);
+Yeah!", File);
 
-            Assert.Equal(5, tokens.Length);
-            Assert.IsType<MarkdownNewLineBlockToken>(tokens[0]);
-            Assert.IsType<MarkdownHeadingBlockToken>(tokens[1]);
-            Assert.IsType<MarkdownParagraphBlockToken>(tokens[2]);
-            Assert.IsType<MarkdownHeadingBlockToken>(tokens[3]);
-            Assert.IsType<MarkdownParagraphBlockToken>(tokens[4]);
-            var para = (MarkdownParagraphBlockToken)tokens[2];
+            Assert.Equal(4, tokens.Length);
+            Assert.IsType<MarkdownHeadingBlockToken>(tokens[0]);
+            Assert.IsType<MarkdownParagraphBlockToken>(tokens[1]);
+            Assert.IsType<MarkdownHeadingBlockToken>(tokens[2]);
+            Assert.IsType<MarkdownParagraphBlockToken>(tokens[3]);
+            var para = (MarkdownParagraphBlockToken)tokens[1];
             Assert.Equal(3, para.InlineTokens.Tokens.Length);
             Assert.IsType<MarkdownTextToken>(para.InlineTokens.Tokens[0]);
             Assert.IsType<MarkdownBrInlineToken>(para.InlineTokens.Tokens[1]);
             Assert.IsType<MarkdownTextToken>(para.InlineTokens.Tokens[2]);
 
-            Assert.Equal(1, tokens[0].SourceInfo.LineNumber);
+            Assert.Equal(3, tokens[0].SourceInfo.LineNumber);
             Assert.Equal(File, tokens[0].SourceInfo.File);
-            Assert.Equal("\n\n", tokens[0].SourceInfo.Markdown);
+            Assert.Equal("# HEAD1\n", tokens[0].SourceInfo.Markdown);
 
-            Assert.Equal(3, tokens[1].SourceInfo.LineNumber);
+            Assert.Equal(4, tokens[1].SourceInfo.LineNumber);
             Assert.Equal(File, tokens[1].SourceInfo.File);
-            Assert.Equal("# HEAD1\n", tokens[1].SourceInfo.Markdown);
-
-            Assert.Equal(4, tokens[2].SourceInfo.LineNumber);
-            Assert.Equal(File, tokens[2].SourceInfo.File);
-            Assert.Equal("First line.  \nMore line.\n", tokens[2].SourceInfo.Markdown);
+            Assert.Equal("First line.  \nMore line.", tokens[1].SourceInfo.Markdown);
 
             Assert.Equal(4, para.InlineTokens.Tokens[0].SourceInfo.LineNumber);
             Assert.Equal(File, para.InlineTokens.Tokens[0].SourceInfo.File);
@@ -66,13 +55,36 @@ Yeah!".Replace("\r\n", "\n"), File));
             Assert.Equal(File, para.InlineTokens.Tokens[2].SourceInfo.File);
             Assert.Equal("More line.", para.InlineTokens.Tokens[2].SourceInfo.Markdown);
 
-            Assert.Equal(6, tokens[3].SourceInfo.LineNumber);
-            Assert.Equal(File, tokens[3].SourceInfo.File);
-            Assert.Equal("## HEAD2\n", tokens[3].SourceInfo.Markdown);
+            Assert.Equal(6, tokens[2].SourceInfo.LineNumber);
+            Assert.Equal(File, tokens[2].SourceInfo.File);
+            Assert.Equal("## HEAD2\n", tokens[2].SourceInfo.Markdown);
 
-            Assert.Equal(7, tokens[4].SourceInfo.LineNumber);
-            Assert.Equal(File, tokens[4].SourceInfo.File);
-            Assert.Equal("Yeah!", tokens[4].SourceInfo.Markdown);
+            Assert.Equal(7, tokens[3].SourceInfo.LineNumber);
+            Assert.Equal(File, tokens[3].SourceInfo.File);
+            Assert.Equal("Yeah!", tokens[3].SourceInfo.Markdown);
+        }
+
+        private static ImmutableArray<IMarkdownToken> Tokenize(string markdown, string file)
+        {
+            var gfm = new GfmEngineBuilder(new Options()).CreateEngine(new HtmlRenderer());
+            var sourceInfo = SourceInfo.Create(markdown.Replace("\r\n", "\n"), file);
+
+            var tokens = gfm.Parser.Tokenize(sourceInfo);
+
+            tokens = TokenHelper.CreateParagraghs(
+                gfm.Parser,
+                MarkdownParagraphBlockRule.Instance,
+                tokens,
+                true,
+                sourceInfo);
+
+            var rewriter =
+                new MarkdownRewriteEngine(
+                    gfm,
+                    MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, TwoPhaseBlockToken>(
+                        (e, t) => t.Extract(gfm.Parser)));
+            tokens = rewriter.Rewrite(tokens);
+            return tokens;
         }
 
         [Fact]
@@ -80,9 +92,7 @@ Yeah!".Replace("\r\n", "\n"), File));
         public void TestSourceInfo_BlockquoteAndList()
         {
             const string File = "test.md";
-            var gfm = new GfmEngineBuilder(new Options()).CreateEngine(new HtmlRenderer());
-            var tokens = gfm.Parser.Tokenize(
-                SourceInfo.Create(@"> blockquote
+            var tokens = Tokenize(@"> blockquote
 > [link text](sometarget)
 > 
 > - list item 1
@@ -91,13 +101,7 @@ Yeah!".Replace("\r\n", "\n"), File));
 > - list item 2
 >
 > more para.
-".Replace("\r\n", "\n"), File));
-            var rewriter =
-                new MarkdownRewriteEngine(
-                    gfm,
-                    MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, TwoPhaseBlockToken>(
-                        (e, t) => t.Extract(gfm.Parser)));
-            tokens = rewriter.Rewrite(tokens);
+", File);
 
             Assert.Equal(1, tokens.Length);
             Assert.IsType<MarkdownBlockquoteBlockToken>(tokens[0]);
@@ -183,24 +187,16 @@ Yeah!".Replace("\r\n", "\n"), File));
         public void TestSourceInfo_Table()
         {
             const string File = "test.md";
-            var gfm = new GfmEngineBuilder(new Options()).CreateEngine(new HtmlRenderer());
-            var tokens = gfm.Parser.Tokenize(
-                SourceInfo.Create(@"
+            var tokens = Tokenize(@"
 | H1 | H2 |
 |----|----|
 |R1C1|R1C2|
 |R2C1|R2C2|
-".Replace("\r\n", "\n"), File));
-            var rewriter =
-                new MarkdownRewriteEngine(
-                    gfm,
-                    MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, TwoPhaseBlockToken>(
-                        (e, t) => t.Extract(gfm.Parser)));
-            tokens = rewriter.Rewrite(tokens);
+", File);
 
-            Assert.Equal(2, tokens.Length);
-            Assert.IsType<MarkdownTableBlockToken>(tokens[1]);
-            var table = (MarkdownTableBlockToken)tokens[1];
+            Assert.Equal(1, tokens.Length);
+            Assert.IsType<MarkdownTableBlockToken>(tokens[0]);
+            var table = (MarkdownTableBlockToken)tokens[0];
             Assert.Equal(2, table.Header.Length);
             Assert.Equal(2, table.Cells.Length);
 

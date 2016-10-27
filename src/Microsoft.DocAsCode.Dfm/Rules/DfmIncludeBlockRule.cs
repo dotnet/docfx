@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmIncludeBlockRule : IMarkdownRule
     {
-        private static readonly Regex _incRegex = new Regex($"{DocfxFlavoredIncHelper.InlineIncRegexString}\\s*(\\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
+        private static readonly Regex _incRegex = new Regex(@"^\[!INCLUDE\s*\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([^)]*?)>?(?:\s+(['""])([\s\S]*?)\3)?\s*\)\]\s*(\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
         public virtual string Name => "DfmIncludeBlock";
         public virtual Regex Include => _incRegex;
 
