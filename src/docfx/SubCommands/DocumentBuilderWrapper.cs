@@ -122,10 +122,16 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
 
-            using (var builder = new DocumentBuilder(assemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder))
+            ChangeList changeList = null;
+            if (config.ChangesFile != null)
+            {
+                changeList = ChangeList.Parse(config.ChangesFile, config.BaseDirectory);
+            }
+
+            using (var builder = new DocumentBuilder(assemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder, changeList?.From, changeList?.To))
             using (new PerformanceScope("building documents", LogLevel.Info))
             {
-                builder.Build(ConfigToParameter(config, templateManager, baseDirectory, outputDirectory, templateDirectory), outputDirectory);
+                builder.Build(ConfigToParameter(config, templateManager, changeList, baseDirectory, outputDirectory, templateDirectory), outputDirectory);
             }
         }
 
@@ -183,7 +189,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private static IEnumerable<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory, string templateDir)
+        private static IEnumerable<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, TemplateManager templateManager, ChangeList changeList, string baseDirectory, string outputDirectory, string templateDir)
         {
             var parameters = new DocumentBuildParameters();
             parameters.OutputBaseDir = outputDirectory;
@@ -251,12 +257,6 @@ namespace Microsoft.DocAsCode.SubCommands
             }
 
             parameters.TemplateDir = templateDir;
-
-            ChangeList changeList = null;
-            if (config.ChangesFile != null)
-            {
-                changeList = ChangeList.Parse(config.ChangesFile, config.BaseDirectory);
-            }
 
             var fileMappingParametersDictionary = GroupFileMappings(config.Content, config.Overwrite, config.Resource);
 

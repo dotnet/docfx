@@ -34,6 +34,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// </summary>
         public string TemplateHash { get; set; }
         /// <summary>
+        /// The SHA of the current commit from.
+        /// </summary>
+        public string CommitFromSHA { get; set; }
+        /// <summary>
+        /// The SHA of the current commit to.
+        /// </summary>
+        public string CommitToSHA { get; set; }
+        /// <summary>
         /// The file info for each version.
         /// </summary>
         public List<BuildVersionInfo> Versions { get; } = new List<BuildVersionInfo>();

@@ -17,6 +17,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     {
         private readonly List<ChangeItem> _list = new List<ChangeItem>();
 
+        public string From { get; set; }
+
+        public string To { get; set; }
+
         public static ChangeList Parse(string tsvFile, string baseDir)
         {
             if (tsvFile == null)
@@ -85,6 +89,16 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 var columns = line.Split('\t');
                 if (columns.Length >= 2)
                 {
+                    if (string.Equals(columns[0], "<from>", StringComparison.OrdinalIgnoreCase))
+                    {
+                        result.From = columns[1];
+                        continue;
+                    }
+                    if (string.Equals(columns[0], "<to>", StringComparison.OrdinalIgnoreCase))
+                    {
+                        result.To = columns[1];
+                        continue;
+                    }
                     string path;
                     if (PathUtility.IsRelativePath(columns[0]))
                     {
