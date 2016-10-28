@@ -3,11 +3,18 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
+
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
 
     public static class DfmFencesBlockHelper
     {
+        [Obsolete]
+        public static string GetRenderedFencesBlockString(DfmFencesBlockToken token, Options options,
+            string errorMessage, string[] codeLines = null)
+            => GetRenderedFencesBlockString((DfmFencesToken)token, options, errorMessage, codeLines);
+
         public static string GetRenderedFencesBlockString(DfmFencesToken token, Options options, string errorMessage, string[] codeLines = null)
         {
             string renderedErrorMessage = string.Empty;
