@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             catch (Exception e)
             {
-                throw new ExtractMetadataException($"Error extracting metadata for {_rawInput}: {e}", e);
+                throw new ExtractMetadataException($"Error extracting metadata for {_rawInput}: {e.Message}", e);
             }
         }
 
@@ -445,8 +445,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var compilations = new ConcurrentDictionary<string, Compilation>();
             foreach (var project in projectCache)
             {
-                var compilation = await project.Value.GetCompilationAsync();
-                compilations.GetOrAdd(project.Key, compilation);
+                try
+                {
+                    var compilation = await project.Value.GetCompilationAsync();
+                    compilations.GetOrAdd(project.Key, compilation);
+                }
+                catch (Exception e)
+                {
+                    throw new ExtractMetadataException($"Error extracting metadata for project \"{project.Key}\": {e.Message}", e);
+                }
             }
             return compilations;
         }

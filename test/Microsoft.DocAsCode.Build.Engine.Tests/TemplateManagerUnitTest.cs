@@ -89,7 +89,14 @@ name2={{name2}};
                }
             };
             var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_NoScript.yml");
-            var item = new InternalManifestItem { DocumentType = string.Empty, Key = modelFileName, FileWithoutExtension = Path.ChangeExtension(modelFileName, null), ResourceFile = modelFileName };
+            var item = new InternalManifestItem
+            {
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                ResourceFile = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create("default.tmpl", template));
 
             var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
@@ -131,7 +138,14 @@ name2=test2;
                }
             };
             var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_NoScriptWithPartial.yml");
-            var item = new InternalManifestItem { DocumentType = string.Empty, Key = modelFileName, FileWithoutExtension = Path.ChangeExtension(modelFileName, null), ResourceFile = modelFileName };
+            var item = new InternalManifestItem
+            {
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                ResourceFile = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
             ProcessTemplate(
                 templateName,
                 null,
@@ -162,7 +176,13 @@ test2
             var templateName = "InvalidTemplate.html";
             string inputFolder = null;
             var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_InvalidTemplate.yml");
-            var item = new InternalManifestItem { FileWithoutExtension = Path.ChangeExtension(modelFileName, null), DocumentType = string.Empty, Key = modelFileName };
+            var item = new InternalManifestItem
+            {
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
             ProcessTemplate(templateName, inputFolder, new[] { item }, new object(), _outputFolder,
                 Tuple.Create("default.invalidtmpl", string.Empty),
                 Tuple.Create("default.js", string.Empty),
@@ -201,7 +221,13 @@ exports.transform = function (model){
 
             var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_WithIncludes.yml");
             string inputFolder = null;
-            var item = new InternalManifestItem { FileWithoutExtension = Path.ChangeExtension(modelFileName, null), DocumentType = string.Empty, Key = modelFileName };
+            var item = new InternalManifestItem
+            {
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
             ProcessTemplate(templateName, inputFolder, new[] { item }, model, _outputFolder,
                 Tuple.Create("default.html.tmpl", template),
                 Tuple.Create("default.html.js", script),
@@ -251,8 +277,20 @@ exports.transform = function (model){
             };
 
             string inputFolder = null;
-            var item1 = new InternalManifestItem { FileWithoutExtension = "TestTemplateProcessor_TemplateFolderWithDifferentType1", Key = "x.yml", DocumentType = "Conceptual" };
-            var item2 = new InternalManifestItem { DocumentType = string.Empty, FileWithoutExtension = "TestTemplateProcessor_TemplateFolderWithDifferentType2", Key = "y.yml" };
+            var item1 = new InternalManifestItem
+            {
+                FileWithoutExtension = "TestTemplateProcessor_TemplateFolderWithDifferentType1",
+                Key = "x.yml",
+                DocumentType = "Conceptual",
+                LocalPathFromRoot = "TestTemplateProcessor_TemplateFolderWithDifferentType1.md",
+            };
+            var item2 = new InternalManifestItem
+            {
+                DocumentType = string.Empty,
+                FileWithoutExtension = "TestTemplateProcessor_TemplateFolderWithDifferentType2",
+                Key = "y.yml",
+                LocalPathFromRoot = "TestTemplateProcessor_TemplateFolderWithDifferentType2.md",
+            };
             ProcessTemplate(templateName, inputFolder, new[] { item1, item2 }, model, _outputFolder,
                 Tuple.Create("default.html.tmpl", defaultTemplate),
                 Tuple.Create($"{templateName}/conceptual.md.tmpl", conceptualTemplate),
@@ -300,7 +338,14 @@ test2
                }
             };
             var modelFileName = Path.Combine(_inputFolder, "TestLiquidTemplateProcessor_NoScript.yml");
-            var item = new InternalManifestItem { DocumentType = string.Empty, Key = modelFileName, FileWithoutExtension = Path.ChangeExtension(modelFileName, null), ResourceFile = modelFileName };
+            var item = new InternalManifestItem
+            {
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                ResourceFile = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
             ProcessTemplate(templateName, null, new[] { item }, model, _outputFolder, Tuple.Create("default.liquid", template));
 
             var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
@@ -340,7 +385,14 @@ test2
                }
             };
             var modelFileName = Path.Combine(_inputFolder, "TestLiquidTemplateProcessor_NoScriptWithPartial.yml");
-            var item = new InternalManifestItem { DocumentType = string.Empty, Key = modelFileName, FileWithoutExtension = Path.ChangeExtension(modelFileName, null), ResourceFile = modelFileName };
+            var item = new InternalManifestItem
+            {
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                ResourceFile = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
             ProcessTemplate(
                 templateName,
                 null,
@@ -393,7 +445,13 @@ exports.transform = function (model){
 
             var modelFileName = Path.Combine(_inputFolder, "TestLiquidTemplateProcessor_WithIncludes.yml");
             string inputFolder = null;
-            var item = new InternalManifestItem { FileWithoutExtension = Path.ChangeExtension(modelFileName, null), DocumentType = string.Empty, Key = modelFileName };
+            var item = new InternalManifestItem
+            {
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
             ProcessTemplate(templateName, inputFolder, new[] { item }, model, _outputFolder,
                 Tuple.Create("default.html.liquid", template),
                 Tuple.Create("default.html.js", script),
@@ -448,8 +506,20 @@ exports.transform = function (model){
             };
 
             string inputFolder = null;
-            var item1 = new InternalManifestItem { FileWithoutExtension = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType1", Key = "x.yml", DocumentType = "Conceptual" };
-            var item2 = new InternalManifestItem { DocumentType = string.Empty, FileWithoutExtension = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType2", Key = "y.yml" };
+            var item1 = new InternalManifestItem
+            {
+                FileWithoutExtension = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType1",
+                Key = "x.yml",
+                DocumentType = "Conceptual",
+                LocalPathFromRoot = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType1.md",
+            };
+            var item2 = new InternalManifestItem
+            {
+                DocumentType = string.Empty,
+                FileWithoutExtension = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType2",
+                Key = "y.yml",
+                LocalPathFromRoot = "TestLiquidTemplateProcessor_TemplateFolderWithDifferentType2.md",
+            };
             ProcessTemplate(templateName, inputFolder, new[] { item1, item2 }, model, _outputFolder,
                 Tuple.Create("default.html.liquid", defaultTemplate),
                 Tuple.Create($"{templateName}/conceptual.md.liquid", conceptualTemplate),
