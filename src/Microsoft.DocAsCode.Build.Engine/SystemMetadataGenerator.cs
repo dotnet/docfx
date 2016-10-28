@@ -69,11 +69,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             //    a. If toc can be found in TocMap, return that toc
             //    b. Elsewise, get the nearest toc, **nearest** means nearest toc in **OUTPUT** folder
             var parentTocFiles = _context.GetTocFileKeySet(key)?.Select(s => new FileInfo(s, (RelativePath)_context.GetFilePath(s)));
-            var parentToc = GetNearestToc(parentTocFiles);
-            if (parentToc == null)
-            {
-                parentToc = GetDefaultToc(key);
-            }
+            var parentToc = GetNearestToc(parentTocFiles, file) ?? GetDefaultToc(key);
 
             if (parentToc != null)
             {
@@ -106,12 +102,23 @@ namespace Microsoft.DocAsCode.Build.Engine
             return parentTocs.FirstOrDefault();
         }
 
-        private static FileInfo GetNearestToc(IEnumerable<FileInfo> tocFiles)
+        /// <summary>
+        /// return the nearest toc relative to the current file
+        /// "near" means less subdirectory count
+        /// when subdirectory counts are same, "near" means less parent directory count
+        /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md"
+        /// </summary>
+        private static FileInfo GetNearestToc(IEnumerable<FileInfo> tocFiles, RelativePath file)
         {
-            // Get the deepest toc as default parent toc
-            return tocFiles?
-                .Where(s => s.File != null)
-                .OrderByDescending(s => s.File.SubdirectoryCount)
+            if (tocFiles == null)
+            {
+                return null;
+            }
+            return (from toc in tocFiles
+                where toc.File != null
+                let relativePath = toc.File.RemoveWorkingFolder() - file
+                orderby relativePath.SubdirectoryCount, relativePath.ParentDirectoryCount
+                select toc)
                 .FirstOrDefault();
         }
 
