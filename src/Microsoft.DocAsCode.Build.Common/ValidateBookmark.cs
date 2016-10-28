@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.Common
                         string linkedToFileSrc = _fileMapping[linkedToFile];
                         if (linkItem.SourceLineNumber == 0)
                         {
-                            Logger.LogWarning($"{currentFile} contains illegal link: {linkItem.Href}#{bookmark}. The file {linkedToFile} doesn't contain a bookmark named {bookmark}, please check the template you applied.", file: currentFile, line: linkItem.TargetLineNumber.ToString());
+                            Logger.LogWarning($"{currentFile} contains illegal link: {linkItem.Href}#{bookmark}. The file {linkedToFile} doesn't contain a bookmark named {bookmark}, please check the src file {currentFileSrc} and src linkedTo file {linkedToFileSrc} or the template you applied.", file: currentFile, line: linkItem.TargetLineNumber.ToString());
                         }
                         else
                         {
@@ -80,21 +80,14 @@ namespace Microsoft.DocAsCode.Build.Common
 
         private static IEnumerable<string> GetNodeAttribute(HtmlDocument html, string attribute)
         {
-            var nodes = html.DocumentNode.SelectNodes(string.Format(XPathTemplate, attribute));
-            if (nodes == null)
-            {
-                return Enumerable.Empty<string>();
-            }
+            var nodes = GetNodesWithAttribute(html, attribute);
+
             return nodes.Select(n => n.GetAttributeValue(attribute, null));
         }
 
         private static IEnumerable<HtmlNode> GetNodesWithAttribute(HtmlDocument html, string attribute)
         {
-            var nodes = html.DocumentNode.SelectNodes(string.Format(XPathTemplate, attribute));
-            foreach (var n in nodes ?? Enumerable.Empty<HtmlNode>())
-            {
-                yield return n;
-            }
+            return html.DocumentNode.SelectNodes(string.Format(XPathTemplate, attribute)) ?? Enumerable.Empty<HtmlNode>();
         }
 
         private class LinkItem
