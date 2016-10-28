@@ -9,6 +9,8 @@ v2.7(Pre-Release)
 3.  Refine xref.
     - Provide more options.
     - Support options in query string.
+4.  Support query string in toc href.
+5.  Remove debug information in html.
 
 v2.6
 -----------
