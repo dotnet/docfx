@@ -11,6 +11,7 @@ v2.7(Pre-Release)
     - Support options in query string.
 4.  Support query string in toc href.
 5.  Remove debug information in html.
+6.  Add metadata command option to disable rendering triple-slash-comments as markdown.
 
 v2.6
 -----------
