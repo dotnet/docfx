@@ -449,7 +449,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     var compilation = await project.Value.GetCompilationAsync();
                     compilations.GetOrAdd(project.Key, compilation);
-                    throw new DocfxException("test it!!!");
                 }
                 catch (Exception e)
                 {
