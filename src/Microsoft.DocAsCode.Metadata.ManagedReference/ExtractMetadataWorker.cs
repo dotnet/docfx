@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             catch (Exception e)
             {
-                throw new ExtractMetadataException($"Error extracting metadata for {_rawInput}: {e}", e);
+                throw new ExtractMetadataException($"Error extracting metadata for {_rawInput}: {e.Message}", e);
             }
         }
 
@@ -449,10 +449,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     var compilation = await project.Value.GetCompilationAsync();
                     compilations.GetOrAdd(project.Key, compilation);
+                    throw new DocfxException("test it!!!");
                 }
                 catch (Exception e)
                 {
-                    throw new ExtractMetadataException($"Error extracting metadata for project \"{project.Key}\": {e}", e);
+                    throw new ExtractMetadataException($"Error extracting metadata for project \"{project.Key}\": {e.Message}", e);
                 }
             }
             return compilations;
