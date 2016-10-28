@@ -110,10 +110,15 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// </summary>
         private static FileInfo GetNearestToc(IEnumerable<FileInfo> tocFiles, RelativePath file)
         {
-            return tocFiles?
-                .Where(s => s.File != null)
-                .OrderBy(s => s.File.RemoveWorkingFolder().MakeRelativeTo(file).SubdirectoryCount)
-                .ThenBy(s => s.File.RemoveWorkingFolder().MakeRelativeTo(file).ParentDirectoryCount)
+            if (tocFiles == null)
+            {
+                return null;
+            }
+            return (from toc in tocFiles
+                where toc.File != null
+                let relativePath = toc.File.RemoveWorkingFolder() - file
+                orderby relativePath.SubdirectoryCount, relativePath.ParentDirectoryCount
+                select toc)
                 .FirstOrDefault();
         }
 
