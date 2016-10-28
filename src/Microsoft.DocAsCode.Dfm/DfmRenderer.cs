@@ -106,8 +106,9 @@ namespace Microsoft.DocAsCode.Dfm
                     var noteToken = (DfmNoteBlockToken)splitToken.Token;
                     content += "<div class=\"";
                     content += noteToken.NoteType.ToUpper();
+                    content += "\"";
                     content = AppendSourceInfo(content, renderer, splitToken.Token);
-                    content += "\">";
+                    content += ">";
                     string heading;
                     if (Tokens != null && Tokens.TryGetValue(noteToken.NoteType.ToLower(), out heading))
                     {
