@@ -1,5 +1,8 @@
-Version Notes (Current Version: v2.7)
+Version Notes (Current Version: v2.8)
 =======================================
+v2.8(Pre-Release)
+-----------
+
 v2.7
 -----------
 1.  Improve markdown engine performance.
