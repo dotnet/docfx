@@ -12,6 +12,9 @@ v2.7(Pre-Release)
 4.  Support query string in toc href.
 5.  Remove debug information in html.
 6.  Add metadata command option to disable rendering triple-slash-comments as markdown.
+7.  Fix bug in merging properties.
+8.  Support extension for preprocessor file in default template. (https://github.com/dotnet/docfx/issues/662)
+9.  Improve error/warning message.
 
 v2.6
 -----------
