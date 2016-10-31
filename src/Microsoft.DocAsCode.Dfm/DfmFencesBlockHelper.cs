@@ -39,6 +39,10 @@ namespace Microsoft.DocAsCode.Dfm
             return $"{renderedErrorMessage}{renderedCodeLines}";
         }
 
+        [Obsolete]
+        public static string GenerateReferenceNotFoundErrorMessage(IMarkdownRenderer renderer, DfmFencesBlockToken token)
+            => GenerateReferenceNotFoundErrorMessage(renderer, (DfmFencesToken)token);
+
         public static string GenerateReferenceNotFoundErrorMessage(IMarkdownRenderer renderer, DfmFencesToken token)
         {
             var errorMessageInMarkdown = $"Can not find reference {token.Path}";
