@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   
@@ -8,7 +8,7 @@
     <title>Engineering Guidelines | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Engineering Guidelines | DocFX website ">
-    <meta name="generator" content="docfx 2.6.3.0">
+    <meta name="generator" content="docfx 2.7.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,55 +72,55 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="engineering_guideline">
-              <h1 id="engineering-guidelines" sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="5" sourceendlinenumber="6">Engineering Guidelines</h1>
+              <h1 id="engineering-guidelines">Engineering Guidelines</h1>
               
-<h2 id="basics" sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="8" sourceendlinenumber="9">Basics</h2>
-<h3 id="copyright-header-and-license-notice" sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="11" sourceendlinenumber="11">Copyright header and license notice</h3>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="12" sourceendlinenumber="12">All source code files require the following exact header according to its language (please do not make any changes to it).</p>
-<blockquote sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="14" sourceendlinenumber="14"><p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="14" sourceendlinenumber="14">extension: <strong>.cs</strong></p>
-<pre sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="16" sourceendlinenumber="19"><code class="lang-csharp">// Copyright (c) Microsoft. All rights reserved.
+<h2 id="basics">Basics</h2>
+<h3 id="copyright-header-and-license-notice">Copyright header and license notice</h3>
+<p>All source code files require the following exact header according to its language (please do not make any changes to it).</p>
+<blockquote><p>extension: <strong>.cs</strong></p>
+<pre><code class="lang-csharp">// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
-</code></pre><p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="21" sourceendlinenumber="21">extension: <strong>.js</strong></p>
-<pre sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="23" sourceendlinenumber="25"><code class="lang-js">// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
-</code></pre><p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="27" sourceendlinenumber="27">extension: <strong>.css</strong></p>
-<pre sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="29" sourceendlinenumber="31"><code class="lang-css">/* Copyright (c) Microsoft Corporation. All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information. */
-</code></pre><p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="33" sourceendlinenumber="33">extension: <strong>.tmpl</strong>, <strong>.tmpl.partial</strong></p>
-<pre sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="35" sourceendlinenumber="37"><code class="lang-mustache">{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+</code></pre><p>extension: <strong>.js</strong></p>
+<pre><code class="lang-js">// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
+</code></pre><p>extension: <strong>.css</strong></p>
+<pre><code class="lang-css">/* Copyright (c) Microsoft Corporation. All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information. */
+</code></pre><p>extension: <strong>.tmpl</strong>, <strong>.tmpl.partial</strong></p>
+<pre><code class="lang-mustache">{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
 </code></pre></blockquote>
-<h3 id="external-dependencies" sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="39" sourceendlinenumber="39">External dependencies</h3>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="40" sourceendlinenumber="40">This refers to dependencies on projects (that is, NuGet packages) outside of the <code>docfx</code> repo, and especially outside of Microsoft. Adding new dependencies requires additional approval.</p>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="42" sourceendlinenumber="42">Current approved dependencies are:</p>
-<ul sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="43" sourceendlinenumber="47">
-<li sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="43" sourceendlinenumber="43">Newtonsoft.Json</li>
-<li sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="44" sourceendlinenumber="44">Jint</li>
-<li sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="45" sourceendlinenumber="45">HtmlAgilityPack</li>
-<li sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="46" sourceendlinenumber="46">Nustache</li>
-<li sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="47" sourceendlinenumber="47">YamlDotNet</li>
+<h3 id="external-dependencies">External dependencies</h3>
+<p>This refers to dependencies on projects (that is, NuGet packages) outside of the <code>docfx</code> repo, and especially outside of Microsoft. Adding new dependencies requires additional approval.</p>
+<p>Current approved dependencies are:</p>
+<ul>
+<li>Newtonsoft.Json</li>
+<li>Jint</li>
+<li>HtmlAgilityPack</li>
+<li>Nustache</li>
+<li>YamlDotNet</li>
 </ul>
-<h3 id="code-reviews-and-checkins" sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="49" sourceendlinenumber="49">Code reviews and checkins</h3>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="50" sourceendlinenumber="50">To help ensure that only the highest quality code makes its way into the project, please submit all your code changes to GitHub as PRs. This includes runtime code changes, unit test updates, and deployment scripts. For example, sending a PR for just an update to a unit test might seem like a waste of time but the unit tests are just as important as the product code. As such, reviewing changes to unit tests is just as important.</p>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="52" sourceendlinenumber="52">The advantages are numerous: Improving code quality; increasing visibility on changes and their potential impact; avoiding duplication of effort; and creating general awareness of progress being made in various areas.</p>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="54" sourceendlinenumber="54">In general a PR should be signed off(using the <span class="emoji" shortcode="+1">👍</span> emoticon) by the owner of that code.</p>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="56" sourceendlinenumber="56">To commit the PR to the repo, <strong>do not use the Big Green Button</strong>. Instead, do a typical push that you would use with Git (for example, local pull, rebase, merge or push).</p>
-<h2 id="source-code-management" sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="58" sourceendlinenumber="59">Source Code Management</h2>
-<h3 id="branch-strategy" sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="61" sourceendlinenumber="61">Branch strategy</h3>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="62" sourceendlinenumber="62">In general:</p>
-<ul sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="64" sourceendlinenumber="65">
-<li sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="64" sourceendlinenumber="64"><code>master</code> has the code for the latest release on NuGet.org. (e.g. <code>1.0.0</code>, <code>1.1.0</code>)</li>
-<li sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="65" sourceendlinenumber="65"><code>dev</code> has the code that is being worked on but that we have not yet released. This is the branch into which developers normally submit pull requests and merge changes into. We run daily CI towards <code>dev</code> branch and generate pre-release nuget package, e.g. <code>1.0.1-alpha-9-abcdefsd</code>.</li>
+<h3 id="code-reviews-and-checkins">Code reviews and checkins</h3>
+<p>To help ensure that only the highest quality code makes its way into the project, please submit all your code changes to GitHub as PRs. This includes runtime code changes, unit test updates, and deployment scripts. For example, sending a PR for just an update to a unit test might seem like a waste of time but the unit tests are just as important as the product code. As such, reviewing changes to unit tests is just as important.</p>
+<p>The advantages are numerous: Improving code quality; increasing visibility on changes and their potential impact; avoiding duplication of effort; and creating general awareness of progress being made in various areas.</p>
+<p>In general a PR should be signed off(using the <span class="emoji" shortcode="+1">👍</span> emoticon) by the owner of that code.</p>
+<p>To commit the PR to the repo, <strong>do not use the Big Green Button</strong>. Instead, do a typical push that you would use with Git (for example, local pull, rebase, merge or push).</p>
+<h2 id="source-code-management">Source Code Management</h2>
+<h3 id="branch-strategy">Branch strategy</h3>
+<p>In general:</p>
+<ul>
+<li><code>master</code> has the code for the latest release on NuGet.org. (e.g. <code>1.0.0</code>, <code>1.1.0</code>)</li>
+<li><code>dev</code> has the code that is being worked on but that we have not yet released. This is the branch into which developers normally submit pull requests and merge changes into. We run daily CI towards <code>dev</code> branch and generate pre-release nuget package, e.g. <code>1.0.1-alpha-9-abcdefsd</code>.</li>
 </ul>
-<h3 id="solution-and-project-folder-structure-and-naming" sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="67" sourceendlinenumber="67">Solution and project folder structure and naming</h3>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="68" sourceendlinenumber="68">Solution files go in the repo root. The default entry point is <code>All.sln</code>.</p>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="70" sourceendlinenumber="70">Every project also needs a <code>project.json</code> and a matching <code>.xproj</code> file. This <code>project.json</code> is the source of truth for a project&#39;s dependencies and configuration options.</p>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="72" sourceendlinenumber="72">The solution needs to contain solution folders that match the physical folder (<code>src</code>, <code>test</code>, <code>tools</code>, etc.).</p>
-<h3 id="assembly-naming-pattern" sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="74" sourceendlinenumber="74">Assembly naming pattern</h3>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="75" sourceendlinenumber="75">The general naming pattern is <code>Microsoft.DocAsCode.&lt;area&gt;.&lt;subarea&gt;</code>.</p>
-<h3 id="unit-tests" sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="77" sourceendlinenumber="77">Unit tests</h3>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="78" sourceendlinenumber="78">We use <em>xUnit.net</em> for all unit testing.</p>
-<h2 id="coding-standards" sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="80" sourceendlinenumber="81">Coding Standards</h2>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="82" sourceendlinenumber="82">Please refer to <a href="csharp_coding_standards.html" sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="82" sourceendlinenumber="82">C# Coding standards</a> for detailed guideline for C# coding standards.</p>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="84" sourceendlinenumber="84"><strong>TODO</strong> Template Coding standards</p>
-<p sourcefile="guideline/engineering_guidelines.md" sourcestartlinenumber="86" sourceendlinenumber="86"><strong>TODO</strong> Template Preprocess JS Coding standards</p>
+<h3 id="solution-and-project-folder-structure-and-naming">Solution and project folder structure and naming</h3>
+<p>Solution files go in the repo root. The default entry point is <code>All.sln</code>.</p>
+<p>Every project also needs a <code>project.json</code> and a matching <code>.xproj</code> file. This <code>project.json</code> is the source of truth for a project&#39;s dependencies and configuration options.</p>
+<p>The solution needs to contain solution folders that match the physical folder (<code>src</code>, <code>test</code>, <code>tools</code>, etc.).</p>
+<h3 id="assembly-naming-pattern">Assembly naming pattern</h3>
+<p>The general naming pattern is <code>Microsoft.DocAsCode.&lt;area&gt;.&lt;subarea&gt;</code>.</p>
+<h3 id="unit-tests">Unit tests</h3>
+<p>We use <em>xUnit.net</em> for all unit testing.</p>
+<h2 id="coding-standards">Coding Standards</h2>
+<p>Please refer to <a href="csharp_coding_standards.html">C# Coding standards</a> for detailed guideline for C# coding standards.</p>
+<p><strong>TODO</strong> Template Coding standards</p>
+<p><strong>TODO</strong> Template Preprocess JS Coding standards</p>
 
             </article>
           </div>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   
@@ -8,7 +8,7 @@
     <title>DocFX Flavored Markdown | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFX Flavored Markdown | DocFX website ">
-    <meta name="generator" content="docfx 2.6.3.0">
+    <meta name="generator" content="docfx 2.7.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,68 +72,68 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <h1 id="docfx-flavored-markdown" sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="1" sourceendlinenumber="2">DocFX Flavored Markdown</h1>
+              <h1 id="docfx-flavored-markdown">DocFX Flavored Markdown</h1>
               
-<p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="4" sourceendlinenumber="4">DocFX supports &quot;DocFX Flavored Markdown,&quot; or DFM. It is 100% compatible with <a href="https://guides.github.com/features/mastering-markdown/" sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="4" sourceendlinenumber="4">GitHub Flavored Markdown</a>, and adds some additional functionality, including cross reference and file inclusion.</p>
-<h3 id="yaml-header" sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="6" sourceendlinenumber="6">Yaml Header</h3>
-<p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="8" sourceendlinenumber="9">Yaml header in DFM is considered as the metadata for the Markdown file. It will transform to <code>yamlheader</code> tag when processed.
+<p>DocFX supports &quot;DocFX Flavored Markdown,&quot; or DFM. It is 100% compatible with <a href="https://guides.github.com/features/mastering-markdown/">GitHub Flavored Markdown</a>, and adds some additional functionality, including cross reference and file inclusion.</p>
+<h3 id="yaml-header">Yaml Header</h3>
+<p>Yaml header in DFM is considered as the metadata for the Markdown file. It will transform to <code>yamlheader</code> tag when processed.
 Yaml header MUST be the first thing in the file and MUST take the form of valid YAML set between triple-dashed lines. Here is a basic example:</p>
-<pre sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="11" sourceendlinenumber="16"><code class="lang-md">---
+<pre><code class="lang-md">---
 uid: A.md
 title: A
 ---
-</code></pre><h3 id="cross-reference" sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="18" sourceendlinenumber="18">Cross Reference</h3>
-<p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="20" sourceendlinenumber="20">Cross reference allows you to link to another topic by using its unique identifier (called UID) instead of using its file path.</p>
-<p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="22" sourceendlinenumber="22">For conceptual Markdown files UID can be defined by adding a <code>uid</code> metadata in YAML header:</p>
-<pre sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="24" sourceendlinenumber="30"><code class="lang-md">---
+</code></pre><h3 id="cross-reference">Cross Reference</h3>
+<p>Cross reference allows you to link to another topic by using its unique identifier (called UID) instead of using its file path.</p>
+<p>For conceptual Markdown files UID can be defined by adding a <code>uid</code> metadata in YAML header:</p>
+<pre><code class="lang-md">---
 uid: uid_of_the_file
 ---
 
 This is a conceptual topic with `uid` specified.
-</code></pre><p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="32" sourceendlinenumber="32">For reference topics, UIDs are auto generated from source code and can be found in generated YAML files.</p>
-<p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="34" sourceendlinenumber="34">You can use one of the following syntax to cross reference a topic with UID defined:</p>
-<ol sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="36" sourceendlinenumber="38">
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="36" sourceendlinenumber="36">Markdown link: <code>[link_text](xref:uid_of_the_topic)</code></li>
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="37" sourceendlinenumber="37">Auto link: <code>&lt;xref:uid_of_the_topic&gt;</code></li>
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="38" sourceendlinenumber="38">Shorthand form: <code>@uid_of_the_topic</code></li>
+</code></pre><p>For reference topics, UIDs are auto generated from source code and can be found in generated YAML files.</p>
+<p>You can use one of the following syntax to cross reference a topic with UID defined:</p>
+<ol>
+<li>Markdown link: <code>[link_text](xref:uid_of_the_topic)</code></li>
+<li>Auto link: <code>&lt;xref:uid_of_the_topic&gt;</code></li>
+<li>Shorthand form: <code>@uid_of_the_topic</code></li>
 </ol>
-<p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="40" sourceendlinenumber="40">All will render to:</p>
-<pre sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="42" sourceendlinenumber="44"><code class="lang-html">&lt;a href=&quot;url_of_the_topic&quot;&gt;link_text&lt;/a&gt;
-</code></pre><p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="46" sourceendlinenumber="46">If <code>link_text</code> is not specified, DocFX will extract the title from the target topic and use it as the link text.</p>
-<p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="48" sourceendlinenumber="48">For more information, see <a href="../tutorial/links_and_cross_references.html#using-cross-reference" sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="48" sourceendlinenumber="48">cross reference</a>.</p>
-<h3 id="file-inclusion" sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="51" sourceendlinenumber="51">File Inclusion</h3>
-<p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="52" sourceendlinenumber="53">DFM adds syntax to include other file parts into current file, the included file will also be considered as in DFM syntax. <em>NOTE</em> that YAML header is <strong>NOT</strong> supported when the file is an inclusion.
+<p>All will render to:</p>
+<pre><code class="lang-html">&lt;a href=&quot;url_of_the_topic&quot;&gt;link_text&lt;/a&gt;
+</code></pre><p>If <code>link_text</code> is not specified, DocFX will extract the title from the target topic and use it as the link text.</p>
+<p>For more information, see <a href="../tutorial/links_and_cross_references.html#using-cross-reference">cross reference</a>.</p>
+<h3 id="file-inclusion">File Inclusion</h3>
+<p>DFM adds syntax to include other file parts into current file, the included file will also be considered as in DFM syntax. <em>NOTE</em> that YAML header is <strong>NOT</strong> supported when the file is an inclusion.
 There are two types of file inclusion: Inline and block, as similar to inline code span and block code.</p>
-<h4 id="inline" sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="55" sourceendlinenumber="55">Inline</h4>
-<p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="56" sourceendlinenumber="56">Inline file inclusion is in the following syntax, in which <code>&lt;title&gt;</code> stands for the title of the included file, and <code>&lt;filepath&gt;</code> stands for the file path of the included file. The file path can be either absolute or relative.<code>&lt;filepath&gt;</code> can be wrapped by <code>&#39;</code> or <code>&quot;</code>. <em>NOTE</em> that for inline file inclusion, the file included will be considered as containing only inline tags, for example, <code>###header</code> inside the file will not transfer since <code>&lt;h3&gt;</code> is a block tag, while <code>[a](b)</code> will transform to <code>&lt;a href=&#39;b&#39;&gt;a&lt;/a&gt;</code> since <code>&lt;a&gt;</code> is an inline tag.</p>
-<pre sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="57" sourceendlinenumber="59"><code class="lang-md">...Other inline contents... [!include[&lt;title&gt;](&lt;filepath&gt;)]
-</code></pre><h4 id="block" sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="60" sourceendlinenumber="60">Block</h4>
-<p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="61" sourceendlinenumber="61">Block file inclusion must be in a single line and with no prefix characters before the start <code>[</code>. Content inside the included file will transform using DFM syntax.</p>
-<pre sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="62" sourceendlinenumber="64"><code class="lang-md">[!include[&lt;title&gt;](&lt;filepath&gt;)]
-</code></pre><h3 id="section-definition" sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="66" sourceendlinenumber="66">Section definition</h3>
-<p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="67" sourceendlinenumber="68">User may need to define section. Mostly used for code table.
+<h4 id="inline">Inline</h4>
+<p>Inline file inclusion is in the following syntax, in which <code>&lt;title&gt;</code> stands for the title of the included file, and <code>&lt;filepath&gt;</code> stands for the file path of the included file. The file path can be either absolute or relative.<code>&lt;filepath&gt;</code> can be wrapped by <code>&#39;</code> or <code>&quot;</code>. <em>NOTE</em> that for inline file inclusion, the file included will be considered as containing only inline tags, for example, <code>###header</code> inside the file will not transfer since <code>&lt;h3&gt;</code> is a block tag, while <code>[a](b)</code> will transform to <code>&lt;a href=&#39;b&#39;&gt;a&lt;/a&gt;</code> since <code>&lt;a&gt;</code> is an inline tag.</p>
+<pre><code class="lang-md">...Other inline contents... [!include[&lt;title&gt;](&lt;filepath&gt;)]
+</code></pre><h4 id="block">Block</h4>
+<p>Block file inclusion must be in a single line and with no prefix characters before the start <code>[</code>. Content inside the included file will transform using DFM syntax.</p>
+<pre><code class="lang-md">[!include[&lt;title&gt;](&lt;filepath&gt;)]
+</code></pre><h3 id="section-definition">Section definition</h3>
+<p>User may need to define section. Mostly used for code table.
 Give an example below.</p>
-<pre sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="70" sourceendlinenumber="76"><code>&gt; [!div class=&quot;tabbedCodeSnippets&quot; data-resources=&quot;OutlookServices.Calendar&quot;]
+<pre><code>&gt; [!div class=&quot;tabbedCodeSnippets&quot; data-resources=&quot;OutlookServices.Calendar&quot;]
 &gt; ```cs
 &gt; &lt;cs code text&gt;
 &gt; ```
 &gt; ```javascript
 &gt; &lt;js code text&gt;
 &gt; ```
-</code></pre><p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="78" sourceendlinenumber="78">The above blockquote Markdown text will transform to section html as in the following:</p>
-<pre sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="79" sourceendlinenumber="84"><code class="lang-html">&lt;div class=&quot;tabbedCodeSnippets&quot; data-resources=&quot;OutlookServices.Calendar&quot;&gt;
+</code></pre><p>The above blockquote Markdown text will transform to section html as in the following:</p>
+<pre><code class="lang-html">&lt;div class=&quot;tabbedCodeSnippets&quot; data-resources=&quot;OutlookServices.Calendar&quot;&gt;
   &lt;pre&gt;&lt;code&gt;cs code text&lt;/code&gt;&lt;/pre&gt;
   &lt;pre&gt;&lt;code&gt;js code text&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-</code></pre><h3 id="code-snippet" sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="86" sourceendlinenumber="86">Code Snippet</h3>
-<p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="87" sourceendlinenumber="87">Allows you to insert code with code language specified. The content of specified code path will expand.</p>
-<pre sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="89" sourceendlinenumber="91"><code class="lang-md">[!code-&lt;language&gt;[&lt;name&gt;](&lt;codepath&gt;&lt;queryoption&gt;&lt;queryoptionvalue&gt; &quot;&lt;title&gt;&quot;)]
-</code></pre><ul sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="93" sourceendlinenumber="95">
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="93" sourceendlinenumber="93"><strong><code>&lt;language&gt;</code></strong> can be made up of any number of character and &#39;-&#39;. However, the recommended value should follow <a href="http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases" sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="93" sourceendlinenumber="93">Highlight.js language names and aliases</a>.</li>
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="94" sourceendlinenumber="94"><strong><code>&lt;codepath&gt;</code></strong> is the relative path in file system which indicates the code snippet file that you want to expand.</li>
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="95" sourceendlinenumber="95"><strong><code>&lt;queryoption&gt;</code></strong> and <strong><code>&lt;queryoptionvalue&gt;</code></strong> are used together to retrieve part of the code snippet file in the line range or tag name way. We have 2 query string options to represent these two ways:</li>
+</code></pre><h3 id="code-snippet">Code Snippet</h3>
+<p>Allows you to insert code with code language specified. The content of specified code path will expand.</p>
+<pre><code class="lang-md">[!code-&lt;language&gt;[&lt;name&gt;](&lt;codepath&gt;&lt;queryoption&gt;&lt;queryoptionvalue&gt; &quot;&lt;title&gt;&quot;)]
+</code></pre><ul>
+<li><strong><code>&lt;language&gt;</code></strong> can be made up of any number of character and &#39;-&#39;. However, the recommended value should follow <a href="http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases">Highlight.js language names and aliases</a>.</li>
+<li><strong><code>&lt;codepath&gt;</code></strong> is the relative path in file system which indicates the code snippet file that you want to expand.</li>
+<li><strong><code>&lt;queryoption&gt;</code></strong> and <strong><code>&lt;queryoptionvalue&gt;</code></strong> are used together to retrieve part of the code snippet file in the line range or tag name way. We have 2 query string options to represent these two ways:</li>
 </ul>
-<table sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="97" sourceendlinenumber="103">
+<table>
 <thead>
 <tr>
 <th></th>
@@ -169,13 +169,13 @@ Give an example below.</p>
 </tr>
 </tbody>
 </table>
-<ul sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="104" sourceendlinenumber="106">
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="104" sourceendlinenumber="104">In <code>?</code> query string, the whole file will be included if none of the first three option is specified.</li>
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="105" sourceendlinenumber="105">If <code>dedent</code> isn&#39;t specified, the maximum common indent will be trimmed automatically.</li>
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="106" sourceendlinenumber="106"><strong><code>&lt;title&gt;</code></strong> can be omitted.</li>
+<ul>
+<li>In <code>?</code> query string, the whole file will be included if none of the first three option is specified.</li>
+<li>If <code>dedent</code> isn&#39;t specified, the maximum common indent will be trimmed automatically.</li>
+<li><strong><code>&lt;title&gt;</code></strong> can be omitted.</li>
 </ul>
-<h4 id="code-snippet-sample" sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="108" sourceendlinenumber="108">Code Snippet Sample</h4>
-<pre sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="109" sourceendlinenumber="119"><code class="lang-md">[!code-csharp[Main](Program.cs)]
+<h4 id="code-snippet-sample">Code Snippet Sample</h4>
+<pre><code class="lang-md">[!code-csharp[Main](Program.cs)]
 
 [!code[Main](Program.cs#L12-L16 &quot;This is source file&quot;)]
 [!code-vb[Main](../Application/Program.vb#testsnippet &quot;This is source file&quot;)]
@@ -184,26 +184,26 @@ Give an example below.</p>
 [!code-javascript[Main](../jquery.js?name=testsnippet)]
 [!code[Main](index.xml?range=2,5-7,9-) &quot;This includes the lines 2, 5, 6, 7 and lines 9 to the last line&quot;]
 [!code[Main](index.xml?highlight=2,5-7,9-) &quot;This includes the whole file with lines 2,5-7,9- highlighted&quot;]
-</code></pre><h4 id="tag-name-representation-in-code-snippet-source-file" sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="121" sourceendlinenumber="121">Tag Name Representation in Code Snippet Source File</h4>
-<p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="122" sourceendlinenumber="122">DFM currently only supports the following <strong><code>&lt;language&gt;</code></strong> values to be able to retrieve by tag name:</p>
-<ul sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="123" sourceendlinenumber="130">
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="123" sourceendlinenumber="123">C#: cs, csharp</li>
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="124" sourceendlinenumber="124">VB: vb, vbnet</li>
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="125" sourceendlinenumber="125">C++: cpp, c++</li>
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="126" sourceendlinenumber="126">F#: fsharp</li>
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="127" sourceendlinenumber="127">XML: xml</li>
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="128" sourceendlinenumber="128">Html: html</li>
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="129" sourceendlinenumber="129">SQL: sql</li>
-<li sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="130" sourceendlinenumber="130">Javascript: javascript</li>
+</code></pre><h4 id="tag-name-representation-in-code-snippet-source-file">Tag Name Representation in Code Snippet Source File</h4>
+<p>DFM currently only supports the following <strong><code>&lt;language&gt;</code></strong> values to be able to retrieve by tag name:</p>
+<ul>
+<li>C#: cs, csharp</li>
+<li>VB: vb, vbnet</li>
+<li>C++: cpp, c++</li>
+<li>F#: fsharp</li>
+<li>XML: xml</li>
+<li>Html: html</li>
+<li>SQL: sql</li>
+<li>Javascript: javascript</li>
 </ul>
-<h3 id="note-warningtipimportant" sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="133" sourceendlinenumber="133">Note (Warning/Tip/Important)</h3>
-<p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="134" sourceendlinenumber="134">Using specific syntax inside block quote to indicate the following content is Note.</p>
-<pre sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="136" sourceendlinenumber="141"><code>&gt; [!NOTE]
+<h3 id="note-warningtipimportant">Note (Warning/Tip/Important)</h3>
+<p>Using specific syntax inside block quote to indicate the following content is Note.</p>
+<pre><code>&gt; [!NOTE]
 &gt; &lt;note content&gt;
 &gt; [!WARNING]
 &gt; &lt;warning content&gt;
-</code></pre><p sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="143" sourceendlinenumber="143">The above content will be transformed to the following html:</p>
-<pre sourcefile="spec/docfx_flavored_markdown.md" sourcestartlinenumber="145" sourceendlinenumber="154"><code>&lt;div class=&quot;NOTE&quot;&gt;
+</code></pre><p>The above content will be transformed to the following html:</p>
+<pre><code>&lt;div class=&quot;NOTE&quot;&gt;
   &lt;h5&gt;NOTE&lt;/h5&gt;
   &lt;p&gt;note content&lt;/p&gt;
 &lt;/div&gt;

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   
@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Interface ISupportIncrementalBuildStep
    | DocFX website ">
-    <meta name="generator" content="docfx 2.6.3.0">
+    <meta name="generator" content="docfx 2.7.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -78,7 +78,7 @@
               
               <h1 id="Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep" data-uid="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep">Interface ISupportIncrementalBuildStep
               </h1>
-              <div class="markdown level0 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.yml" sourcestartlinenumber="2" sourceendlinenumber="2">Declare a build step can support incremental build.</p>
+              <div class="markdown level0 summary"><p>Declare a build step can support incremental build.</p>
 </div>
               <div class="markdown level0 conceptual"></div>
               <div class="inheritedMembers">
@@ -114,8 +114,9 @@
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ISupportIncrementalBuildStep.cs/#L23">View Source</a>
               </span>
+              <a id="Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_CanIncrementalBuild_" data-uid="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.CanIncrementalBuild*"></a>
               <h4 id="Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)">CanIncrementalBuild(FileAndType)</h4>
-              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.yml" sourcestartlinenumber="2" sourceendlinenumber="2">Check each file, when incremental context hash is same.</p>
+              <div class="markdown level1 summary"><p>Check each file, when incremental context hash is same.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -135,7 +136,7 @@
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileAndType.html#Microsoft_DocAsCode_Plugins_FileAndType">FileAndType</a></td>
                     <td><em>fileAndType</em></td>
-                    <td><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.yml" sourcestartlinenumber="1" sourceendlinenumber="1">the file and type information</p>
+                    <td><p>the file and type information</p>
 </td>
                   </tr>
                 </tbody>
@@ -151,7 +152,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
-                    <td><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.yml" sourcestartlinenumber="1" sourceendlinenumber="1">Can use incremental build for this file.</p>
+                    <td><p>Can use incremental build for this file.</p>
 </td>
                   </tr>
                 </tbody>
@@ -163,8 +164,9 @@
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ISupportIncrementalBuildStep.cs/#L28">View Source</a>
               </span>
+              <a id="Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_GetDependencyTypesToRegister_" data-uid="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.GetDependencyTypesToRegister*"></a>
               <h4 id="Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_GetDependencyTypesToRegister" data-uid="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.GetDependencyTypesToRegister">GetDependencyTypesToRegister()</h4>
-              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.yml" sourcestartlinenumber="2" sourceendlinenumber="2">Get dependency types to register</p>
+              <div class="markdown level1 summary"><p>Get dependency types to register</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -181,8 +183,8 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.DependencyType.html#Microsoft_DocAsCode_Plugins_DependencyType">DependencyType</a>&gt;</td>
-                    <td><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.yml" sourcestartlinenumber="1" sourceendlinenumber="1">dependency types to register</p>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable&lt;T&gt;</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.DependencyType.html#Microsoft_DocAsCode_Plugins_DependencyType">DependencyType</a>&gt;</td>
+                    <td><p>dependency types to register</p>
 </td>
                   </tr>
                 </tbody>
@@ -194,8 +196,9 @@
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ISupportIncrementalBuildStep.cs/#L17">View Source</a>
               </span>
+              <a id="Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_GetIncrementalContextHash_" data-uid="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.GetIncrementalContextHash*"></a>
               <h4 id="Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_GetIncrementalContextHash" data-uid="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.GetIncrementalContextHash">GetIncrementalContextHash()</h4>
-              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.yml" sourcestartlinenumber="2" sourceendlinenumber="2">Get the hash of incremental context, if it is different from latest one then full build.</p>
+              <div class="markdown level1 summary"><p>Get the hash of incremental context, if it is different from latest one then full build.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -213,14 +216,14 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.yml" sourcestartlinenumber="1" sourceendlinenumber="1">the hash.</p>
+                    <td><p>the hash.</p>
 </td>
                   </tr>
                 </tbody>
               </table>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
-                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
+                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
               </div>
             </article>
           </div>

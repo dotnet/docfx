@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   
@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Namespace Microsoft.DocAsCode.Dfm
    | DocFX website ">
-    <meta name="generator" content="docfx 2.6.3.0">
+    <meta name="generator" content="docfx 2.7.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -106,9 +106,17 @@
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockPathQueryOption">DfmFencesBlockPathQueryOption</a></h4>
                   <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockRule">DfmFencesBlockRule</a></h4>
+                  <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesBlockToken.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockToken">DfmFencesBlockToken</a></h4>
                   <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesInlineRule.html#Microsoft_DocAsCode_Dfm_DfmFencesInlineRule">DfmFencesInlineRule</a></h4>
+                  <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesInlineToken.html#Microsoft_DocAsCode_Dfm_DfmFencesInlineToken">DfmFencesInlineToken</a></h4>
+                  <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesRule.html#Microsoft_DocAsCode_Dfm_DfmFencesRule">DfmFencesRule</a></h4>
+                  <section></section>
+                  <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesToken.html#Microsoft_DocAsCode_Dfm_DfmFencesToken">DfmFencesToken</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.html#Microsoft_DocAsCode_Dfm_DfmIncludeBlockRule">DfmIncludeBlockRule</a></h4>
                   <section></section>
@@ -143,25 +151,27 @@
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmVideoBlockToken.html#Microsoft_DocAsCode_Dfm_DfmVideoBlockToken">DfmVideoBlockToken</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmXrefAutoLinkInlineRule.html#Microsoft_DocAsCode_Dfm_DfmXrefAutoLinkInlineRule">DfmXrefAutoLinkInlineRule</a></h4>
-                  <section><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Dfm.DfmXrefAutoLinkInlineRule.yml" sourcestartlinenumber="2" sourceendlinenumber="2">Xref auto link syntax: </p>
-<ol sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Dfm.DfmXrefAutoLinkInlineRule.yml" sourcestartlinenumber="3" sourceendlinenumber="4">
-<li sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Dfm.DfmXrefAutoLinkInlineRule.yml" sourcestartlinenumber="3" sourceendlinenumber="3"><code>&amp;lt;xref:uid&amp;gt;</code></li>
-<li sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Dfm.DfmXrefAutoLinkInlineRule.yml" sourcestartlinenumber="4" sourceendlinenumber="4"><code>&amp;lt;xref:&quot;uid with space&quot;&amp;gt;</code></li>
+                  <section><p>Xref auto link syntax: </p>
+<ol>
+<li><code>&amp;lt;xref:uid&amp;gt;</code></li>
+<li><code>&amp;lt;xref:&quot;uid with space&quot;&amp;gt;</code></li>
 </ol>
 </section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmXrefInlineToken.html#Microsoft_DocAsCode_Dfm_DfmXrefInlineToken">DfmXrefInlineToken</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule.html#Microsoft_DocAsCode_Dfm_DfmXrefShortcutInlineRule">DfmXrefShortcutInlineRule</a></h4>
-                  <section><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule.yml" sourcestartlinenumber="2" sourceendlinenumber="2">XREF regex:</p>
-<pre sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Dfm.DfmXrefShortcutInlineRule.yml" sourcestartlinenumber="3" sourceendlinenumber="10"><code>1. If content after `@` is wrapped by `&#39;` or `&quot;`,  it contains any character including white space
-2. If content after `@` is not wrapped by `&#39;` or `&quot;`,
-   It must start with word character `a-z` or `A-Z`
-   It ends when
-    a. line ends
-    b. meets whitespaces
-    c. line ends with `.`, `,`, `;`, `:`, `!`, `?` and `~`
-    d. meets 2 times or more `.`, `,`, `;`, `:`, `!`, `?` and `~`
-</code></pre></section>
+                  <section><p>XREF regex:</p>
+<ol>
+<li>If content after <code>@</code> is wrapped by <code>&#39;</code> or <code>&quot;</code>,  it contains any character including white space</li>
+<li>If content after <code>@</code> is not wrapped by <code>&#39;</code> or <code>&quot;</code>,
+It must start with word character <code>a-z</code> or <code>A-Z</code>
+It ends when
+ a. line ends
+ b. meets whitespaces
+ c. line ends with <code>.</code>, <code>,</code>, <code>;</code>, <code>:</code>, <code>!</code>, <code>?</code> and <code>~</code>
+ d. meets 2 times or more <code>.</code>, <code>,</code>, <code>;</code>, <code>:</code>, <code>!</code>, <code>?</code> and <code>~</code></li>
+</ol>
+</section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockRule">DfmYamlHeaderBlockRule</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockToken.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockToken">DfmYamlHeaderBlockToken</a></h4>
@@ -171,7 +181,7 @@
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.FileCacheLite.html#Microsoft_DocAsCode_Dfm_FileCacheLite">FileCacheLite</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.FlatNameCodeSnippetExtractor.html#Microsoft_DocAsCode_Dfm_FlatNameCodeSnippetExtractor">FlatNameCodeSnippetExtractor</a></h4>
-                  <section><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Dfm.FlatNameCodeSnippetExtractor.yml" sourcestartlinenumber="2" sourceendlinenumber="3">Flat name extrator works for snippet name exists in both start and end line representations
+                  <section><p>Flat name extrator works for snippet name exists in both start and end line representations
 E.g., comment representation needs snippet name exists in both start and end line comment</p>
 </section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.FullFileBlockPathQueryOption.html#Microsoft_DocAsCode_Dfm_FullFileBlockPathQueryOption">FullFileBlockPathQueryOption</a></h4>
@@ -181,7 +191,7 @@ E.g., comment representation needs snippet name exists in both start and end lin
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.MultipleLineRangeBlockPathQueryOption.html#Microsoft_DocAsCode_Dfm_MultipleLineRangeBlockPathQueryOption">MultipleLineRangeBlockPathQueryOption</a></h4>
                   <section></section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.RecursiveNameCodeSnippetExtractor.html#Microsoft_DocAsCode_Dfm_RecursiveNameCodeSnippetExtractor">RecursiveNameCodeSnippetExtractor</a></h4>
-                  <section><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.Dfm.RecursiveNameCodeSnippetExtractor.yml" sourcestartlinenumber="2" sourceendlinenumber="3">Recursive name extrator works for snippet name only exists in start line representation
+                  <section><p>Recursive name extrator works for snippet name only exists in start line representation
 E.g., C# region representation only has snippet name in start line representation</p>
 </section>
                   <h4><a class="xref" href="Microsoft.DocAsCode.Dfm.SplitToken.html#Microsoft_DocAsCode_Dfm_SplitToken">SplitToken</a></h4>

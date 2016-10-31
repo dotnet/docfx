@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   
@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class FileMapping
    | DocFX website ">
-    <meta name="generator" content="docfx 2.6.3.0">
+    <meta name="generator" content="docfx 2.7.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -78,21 +78,21 @@
               
               <h1 id="Microsoft_DocAsCode_FileMapping" data-uid="Microsoft.DocAsCode.FileMapping">Class FileMapping
               </h1>
-              <div class="markdown level0 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.FileMapping.yml" sourcestartlinenumber="2" sourceendlinenumber="2">FileMapping supports two forms:</p>
-<ol sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.FileMapping.yml" sourcestartlinenumber="3" sourceendlinenumber="17">
-<li sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.FileMapping.yml" sourcestartlinenumber="3" sourceendlinenumber="14">Array form
- This form supports multiple file mappings, and also allows additional properties per mapping.
- e.g. 
- <code>&quot;key&quot;: [
-   {&quot;files&quot;: [&quot;file1&quot;, &quot;file2&quot;], &quot;dest&quot;: &quot;dest1&quot;},
-   {&quot;files&quot;: &quot;file3&quot;, &quot;dest&quot;: &quot;dest2&quot;},
-   {&quot;files&quot;: [&quot;file4&quot;, &quot;file5&quot;], &quot;exclude&quot;: [&quot;file5&quot;], &quot;src&quot;: &quot;folder1&quot;},
-   {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v1.0&quot;, &quot;dest&quot;:&quot;v1.0/api&quot;, &quot;version&quot;: &quot;v1.0&quot;},
-   {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v2.0&quot;, &quot;dest&quot;:&quot;v2.0/api&quot;, &quot;version&quot;: &quot;v2.0&quot;}
- ]</code></li>
-<li sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.FileMapping.yml" sourcestartlinenumber="15" sourceendlinenumber="17">Compact form
- This form supports multiple file patterns in an array
- e.g. <code>projects: [&quot;file1&quot;, &quot;file2&quot;]</code></li>
+              <div class="markdown level0 summary"><p>FileMapping supports two forms:</p>
+<ol>
+<li>Array form
+This form supports multiple file mappings, and also allows additional properties per mapping.
+e.g. 
+<code>&quot;key&quot;: [
+{&quot;files&quot;: [&quot;file1&quot;, &quot;file2&quot;], &quot;dest&quot;: &quot;dest1&quot;},
+{&quot;files&quot;: &quot;file3&quot;, &quot;dest&quot;: &quot;dest2&quot;},
+{&quot;files&quot;: [&quot;file4&quot;, &quot;file5&quot;], &quot;exclude&quot;: [&quot;file5&quot;], &quot;src&quot;: &quot;folder1&quot;},
+{&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v1.0&quot;, &quot;dest&quot;:&quot;v1.0/api&quot;, &quot;version&quot;: &quot;v1.0&quot;},
+{&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v2.0&quot;, &quot;dest&quot;:&quot;v2.0/api&quot;, &quot;version&quot;: &quot;v2.0&quot;}
+]</code></li>
+<li>Compact form
+This form supports multiple file patterns in an array
+e.g. <code>projects: [&quot;file1&quot;, &quot;file2&quot;]</code></li>
 </ol>
 </div>
               <div class="markdown level0 conceptual"></div>
@@ -142,6 +142,7 @@ public class FileMapping</code></pre>
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L42">View Source</a>
               </span>
+              <a id="Microsoft_DocAsCode_FileMapping__ctor_" data-uid="Microsoft.DocAsCode.FileMapping.#ctor*"></a>
               <h4 id="Microsoft_DocAsCode_FileMapping__ctor" data-uid="Microsoft.DocAsCode.FileMapping.#ctor">FileMapping()</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
@@ -156,6 +157,7 @@ public class FileMapping</code></pre>
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L48">View Source</a>
               </span>
+              <a id="Microsoft_DocAsCode_FileMapping__ctor_" data-uid="Microsoft.DocAsCode.FileMapping.#ctor*"></a>
               <h4 id="Microsoft_DocAsCode_FileMapping__ctor_Microsoft_DocAsCode_FileMappingItem_" data-uid="Microsoft.DocAsCode.FileMapping.#ctor(Microsoft.DocAsCode.FileMappingItem)">FileMapping(FileMappingItem)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
@@ -187,6 +189,7 @@ public class FileMapping</code></pre>
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L44">View Source</a>
               </span>
+              <a id="Microsoft_DocAsCode_FileMapping__ctor_" data-uid="Microsoft.DocAsCode.FileMapping.#ctor*"></a>
               <h4 id="Microsoft_DocAsCode_FileMapping__ctor_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_FileMappingItem__" data-uid="Microsoft.DocAsCode.FileMapping.#ctor(System.Collections.Generic.IEnumerable{Microsoft.DocAsCode.FileMappingItem})">FileMapping(IEnumerable&lt;FileMappingItem&gt;)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
@@ -205,7 +208,7 @@ public class FileMapping</code></pre>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.FileMappingItem.html#Microsoft_DocAsCode_FileMappingItem">FileMappingItem</a>&gt;</td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable&lt;T&gt;</a>&lt;<a class="xref" href="Microsoft.DocAsCode.FileMappingItem.html#Microsoft_DocAsCode_FileMappingItem">FileMappingItem</a>&gt;</td>
                     <td><em>items</em></td>
                     <td></td>
                   </tr>
@@ -220,6 +223,7 @@ public class FileMapping</code></pre>
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L35">View Source</a>
               </span>
+              <a id="Microsoft_DocAsCode_FileMapping_Expanded_" data-uid="Microsoft.DocAsCode.FileMapping.Expanded*"></a>
               <h4 id="Microsoft_DocAsCode_FileMapping_Expanded" data-uid="Microsoft.DocAsCode.FileMapping.Expanded">Expanded</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
@@ -249,6 +253,7 @@ public class FileMapping</code></pre>
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L37">View Source</a>
               </span>
+              <a id="Microsoft_DocAsCode_FileMapping_Items_" data-uid="Microsoft.DocAsCode.FileMapping.Items*"></a>
               <h4 id="Microsoft_DocAsCode_FileMapping_Items" data-uid="Microsoft.DocAsCode.FileMapping.Items">Items</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
@@ -266,7 +271,7 @@ public class FileMapping</code></pre>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/hh192385(v=vs.110).aspx">IReadOnlyList</a>&lt;<a class="xref" href="Microsoft.DocAsCode.FileMappingItem.html#Microsoft_DocAsCode_FileMappingItem">FileMappingItem</a>&gt;</td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/hh192385(v=vs.110).aspx">IReadOnlyList&lt;T&gt;</a>&lt;<a class="xref" href="Microsoft.DocAsCode.FileMappingItem.html#Microsoft_DocAsCode_FileMappingItem">FileMappingItem</a>&gt;</td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -280,8 +285,9 @@ public class FileMapping</code></pre>
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/docfx/Models/FileMapping.cs/#L57">View Source</a>
               </span>
+              <a id="Microsoft_DocAsCode_FileMapping_Add_" data-uid="Microsoft.DocAsCode.FileMapping.Add*"></a>
               <h4 id="Microsoft_DocAsCode_FileMapping_Add_Microsoft_DocAsCode_FileMappingItem_" data-uid="Microsoft.DocAsCode.FileMapping.Add(Microsoft.DocAsCode.FileMappingItem)">Add(FileMappingItem)</h4>
-              <div class="markdown level1 summary"><p sourcefile="obj/temp/docfxapi/Microsoft.DocAsCode.FileMapping.yml" sourcestartlinenumber="2" sourceendlinenumber="2">Should not merge FileMappingItems even if they are using the same name, because other propertes also matters, e.g. cwd, exclude.</p>
+              <div class="markdown level1 summary"><p>Should not merge FileMappingItems even if they are using the same name, because other propertes also matters, e.g. cwd, exclude.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -307,7 +313,7 @@ public class FileMapping</code></pre>
               </table>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
-                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Formatting, JsonSerializer)</a>
+                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
               </div>
             </article>
           </div>

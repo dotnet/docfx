@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   
@@ -8,7 +8,7 @@
     <title>Doc-as-Code: Metadata Format Specification | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Doc-as-Code: Metadata Format Specification | DocFX website ">
-    <meta name="generator" content="docfx 2.6.3.0">
+    <meta name="generator" content="docfx 2.7.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,59 +72,59 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <h1 id="doc-as-code-metadata-format-specification" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="1" sourceendlinenumber="2">Doc-as-Code: Metadata Format Specification</h1>
+              <h1 id="doc-as-code-metadata-format-specification">Doc-as-Code: Metadata Format Specification</h1>
               
-<h2 id="0-introduction" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="4" sourceendlinenumber="5">0. Introduction</h2>
-<h3 id="01-goals-and-non-goals" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="7" sourceendlinenumber="7">0.1 Goals and Non-goals</h3>
-<ol sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="9" sourceendlinenumber="12">
-<li sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="9" sourceendlinenumber="9">The goal of this document is to define a general format to describe language metadata for programming languages.</li>
-<li sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="10" sourceendlinenumber="10">The language metadata is designed to be language agnostic and support multiple programming language in a single metadata file.</li>
-<li sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="11" sourceendlinenumber="11">The main user scenario for language metadata is to generate reference documentation, so this document will discuss how to optimize metadata format for documentation rendering.</li>
-<li sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="12" sourceendlinenumber="12">This document does <strong>NOT</strong> discuss details of metadata format implementation of a specific programming language.</li>
+<h2 id="0-introduction">0. Introduction</h2>
+<h3 id="01-goals-and-non-goals">0.1 Goals and Non-goals</h3>
+<ol>
+<li>The goal of this document is to define a general format to describe language metadata for programming languages.</li>
+<li>The language metadata is designed to be language agnostic and support multiple programming language in a single metadata file.</li>
+<li>The main user scenario for language metadata is to generate reference documentation, so this document will discuss how to optimize metadata format for documentation rendering.</li>
+<li>This document does <strong>NOT</strong> discuss details of metadata format implementation of a specific programming language.</li>
 </ol>
-<h3 id="02-terminology" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="14" sourceendlinenumber="14">0.2 Terminology</h3>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="16" sourceendlinenumber="16">The key words <strong>MUST</strong>, <strong>MUST NOT</strong>, <strong>REQUIRED</strong>, <strong>SHALL</strong>, <strong>SHALL NOT</strong>, <strong>SHOULD</strong>, <strong>SHOULD NOT</strong>, <strong>RECOMMENDED</strong>,  <strong>MAY</strong>, and <strong>OPTIONAL</strong> in this document are to be interpreted as described in <a href="https://www.ietf.org/rfc/rfc2119.txt" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="16" sourceendlinenumber="16">RFC 2119</a>.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="18" sourceendlinenumber="18">Words in <em>italic</em> imply they are terms defined in an earlier section of this document.</p>
-<h2 id="1-items-and-identifiers" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="20" sourceendlinenumber="21">1. Items and Identifiers</h2>
-<h3 id="11-items" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="23" sourceendlinenumber="23">1.1 Items</h3>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="25" sourceendlinenumber="25"><em>Item</em> is the basic unit of metadata format. From documentation perspective, each <em>item</em> represents a &quot;section&quot; in the reference documentation. This &quot;section&quot; is the minimum unit that you can cross reference to, or customize in layout and content.</p>
-<blockquote sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="27" sourceendlinenumber="27"><p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="27" sourceendlinenumber="27">When implementing the metadata format for your own language, you can decide which elements are <em>items</em>. For example, usually namespaces, classes, and methods are <em>items</em>. However, you can also make smaller elements such as parameters be items if you want them to be referenceable and customizable.</p>
+<h3 id="02-terminology">0.2 Terminology</h3>
+<p>The key words <strong>MUST</strong>, <strong>MUST NOT</strong>, <strong>REQUIRED</strong>, <strong>SHALL</strong>, <strong>SHALL NOT</strong>, <strong>SHOULD</strong>, <strong>SHOULD NOT</strong>, <strong>RECOMMENDED</strong>,  <strong>MAY</strong>, and <strong>OPTIONAL</strong> in this document are to be interpreted as described in <a href="https://www.ietf.org/rfc/rfc2119.txt">RFC 2119</a>.</p>
+<p>Words in <em>italic</em> imply they are terms defined in an earlier section of this document.</p>
+<h2 id="1-items-and-identifiers">1. Items and Identifiers</h2>
+<h3 id="11-items">1.1 Items</h3>
+<p><em>Item</em> is the basic unit of metadata format. From documentation perspective, each <em>item</em> represents a &quot;section&quot; in the reference documentation. This &quot;section&quot; is the minimum unit that you can cross reference to, or customize in layout and content.</p>
+<blockquote><p>When implementing the metadata format for your own language, you can decide which elements are <em>items</em>. For example, usually namespaces, classes, and methods are <em>items</em>. However, you can also make smaller elements such as parameters be items if you want them to be referenceable and customizable.</p>
 </blockquote>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="29" sourceendlinenumber="29"><em>Items</em> can be hierarchical. One <em>item</em> can have other <em>items</em> as <em>children</em>. For example, in C#, namespaces and classes can have classes and/or methods as <em>children</em>.</p>
-<h3 id="12-identifiers" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="31" sourceendlinenumber="31">1.2 Identifiers</h3>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="33" sourceendlinenumber="33">Each <em>item</em> has an identifier (ID) which is unique under its parent.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="35" sourceendlinenumber="35">As we&#39;re targeting to support multiple languages, there is no restrictions as to which characters are not allowed in identifiers. However, to make identifiers easier to recognize and resolve in Markdown, it&#39;s not <strong>RECOMMENDED</strong> to have whitespaces in identifiers. Markdown processor <strong>MAY</strong> implement some algorithm to tolerate whitespaces in handwritten Markdown. (Leading and trailing spaces <strong>MUST</strong> be removed from identifier.)</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="37" sourceendlinenumber="37">Identifier <strong>MUST</strong> be treated as case-sensitive when comparing equality.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="39" sourceendlinenumber="39">Each <em>item</em> has a unique identifier (UID) which is globally unique. A <em>UID</em> is defined as follows:</p>
-<ol sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="40" sourceendlinenumber="41">
-<li sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="40" sourceendlinenumber="40">If an <em>item</em> does not have a <em>parent</em>, its <em>UID</em> is its <em>ID</em>.</li>
-<li sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="41" sourceendlinenumber="41">Otherwise, its <em>UID</em> is the combination of the <em>UID</em> of its <em>parent</em>, a separator and the <em>ID</em> of the <em>item</em> itself.</li>
+<p><em>Items</em> can be hierarchical. One <em>item</em> can have other <em>items</em> as <em>children</em>. For example, in C#, namespaces and classes can have classes and/or methods as <em>children</em>.</p>
+<h3 id="12-identifiers">1.2 Identifiers</h3>
+<p>Each <em>item</em> has an identifier (ID) which is unique under its parent.</p>
+<p>As we&#39;re targeting to support multiple languages, there is no restrictions as to which characters are not allowed in identifiers. However, to make identifiers easier to recognize and resolve in Markdown, it&#39;s not <strong>RECOMMENDED</strong> to have whitespaces in identifiers. Markdown processor <strong>MAY</strong> implement some algorithm to tolerate whitespaces in handwritten Markdown. (Leading and trailing spaces <strong>MUST</strong> be removed from identifier.)</p>
+<p>Identifier <strong>MUST</strong> be treated as case-sensitive when comparing equality.</p>
+<p>Each <em>item</em> has a unique identifier (UID) which is globally unique. A <em>UID</em> is defined as follows:</p>
+<ol>
+<li>If an <em>item</em> does not have a <em>parent</em>, its <em>UID</em> is its <em>ID</em>.</li>
+<li>Otherwise, its <em>UID</em> is the combination of the <em>UID</em> of its <em>parent</em>, a separator and the <em>ID</em> of the <em>item</em> itself.</li>
 </ol>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="43" sourceendlinenumber="43">Valid separators are <code>.</code>, <code>:</code>, <code>/</code> and <code>\</code>.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="45" sourceendlinenumber="45">For example, for a class <code>String</code> under namespace <code>System</code>, its ID is <code>String</code> and UID is <code>System.String</code>.</p>
-<blockquote sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="47" sourceendlinenumber="47"><p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="47" sourceendlinenumber="47">Given the above definition, an <em>item</em>&#39;s UID <strong>MUST</strong> starts with the <em>UID</em> of its parent (and any of its ancestors) and ends with the <em>ID</em> of itself. This is useful to quickly determine whether an <em>item</em> is under another <em>item</em>.</p>
+<p>Valid separators are <code>.</code>, <code>:</code>, <code>/</code> and <code>\</code>.</p>
+<p>For example, for a class <code>String</code> under namespace <code>System</code>, its ID is <code>String</code> and UID is <code>System.String</code>.</p>
+<blockquote><p>Given the above definition, an <em>item</em>&#39;s UID <strong>MUST</strong> starts with the <em>UID</em> of its parent (and any of its ancestors) and ends with the <em>ID</em> of itself. This is useful to quickly determine whether an <em>item</em> is under another <em>item</em>.</p>
 </blockquote>
-<h3 id="13-alias" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="49" sourceendlinenumber="49">1.3 Alias</h3>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="51" sourceendlinenumber="51"><em>Identifier</em> could be very long, which makes it difficult to write by hand in Markdown. For example, it&#39;s easy to create a long <em>ID</em> in C# like this:</p>
-<pre sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="53" sourceendlinenumber="55"><code class="lang-markdown">Format(System.IFormatProvider,System.String,System.Object,System.Object)
-</code></pre><p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="57" sourceendlinenumber="57">We can create short <em>alias</em> for <em>items</em> so that they can be referenced easily.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="59" sourceendlinenumber="59"><em>Alias</em> is same as <em>ID</em>, except:</p>
-<ol sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="61" sourceendlinenumber="62">
-<li sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="61" sourceendlinenumber="61">It doesn&#39;t have to be unique.</li>
-<li sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="62" sourceendlinenumber="62">One <em>item</em> can have multiple <em>aliases</em>.</li>
+<h3 id="13-alias">1.3 Alias</h3>
+<p><em>Identifier</em> could be very long, which makes it difficult to write by hand in Markdown. For example, it&#39;s easy to create a long <em>ID</em> in C# like this:</p>
+<pre><code class="lang-markdown">Format(System.IFormatProvider,System.String,System.Object,System.Object)
+</code></pre><p>We can create short <em>alias</em> for <em>items</em> so that they can be referenced easily.</p>
+<p><em>Alias</em> is same as <em>ID</em>, except:</p>
+<ol>
+<li>It doesn&#39;t have to be unique.</li>
+<li>One <em>item</em> can have multiple <em>aliases</em>.</li>
 </ol>
-<blockquote sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="64" sourceendlinenumber="65"><p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="64" sourceendlinenumber="65">It&#39;s not <strong>RECOMMENDED</strong> to create an <em>alias</em> that has nothing to do with an <em>item&#39;s</em> <em>ID</em>. Usually an <em>item</em>&#39;s <em>alias</em> is part of its <em>ID</em> so it&#39;s easy to recognize and memorize.<br>For example, for the case above, we usually create an alias <code>Format()</code>.</p>
+<blockquote><p>It&#39;s not <strong>RECOMMENDED</strong> to create an <em>alias</em> that has nothing to do with an <em>item&#39;s</em> <em>ID</em>. Usually an <em>item</em>&#39;s <em>alias</em> is part of its <em>ID</em> so it&#39;s easy to recognize and memorize.<br>For example, for the case above, we usually create an alias <code>Format()</code>.</p>
 </blockquote>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="67" sourceendlinenumber="67">We can easily get a &quot;global&quot; alias for an <em>item</em> by replacing the <em>ID</em> part of its <em>UID</em> with its alias.</p>
-<h2 id="2-file-structure" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="69" sourceendlinenumber="70">2. File Structure</h2>
-<h3 id="21-file-format" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="72" sourceendlinenumber="72">2.1 File Format</h3>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="74" sourceendlinenumber="74">You can use any file format that can represent structural data to store metadata. However, we recommend using <a href="http://www.yaml.org/" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="74" sourceendlinenumber="74">YAML</a> or <a href="http://www.json.org/" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="74" sourceendlinenumber="74">JSON</a>. In this document, we use YAML in examples, but all YAML can be converted to JSON easily.</p>
-<h3 id="22-file-layout" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="76" sourceendlinenumber="76">2.2 File Layout</h3>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="78" sourceendlinenumber="78">A metadata file consists of two parts: An &quot;item&quot; section and a &quot;reference&quot; section. Each section is a list of objects and each object is a key-value pair (hereafter referred to as &quot;property&quot;) list that represents an <em>item</em>.</p>
-<h3 id="23-item-section" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="80" sourceendlinenumber="80">2.3 Item Section</h3>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="82" sourceendlinenumber="82">Though <em>items</em> can be hierarchical, they are flat in an <em>item</em> section. Instead, each <em>item</em> has a &quot;children&quot; <em>property</em> indicating its <em>children</em> and a &quot;parent&quot; <em>property</em> indicating its parent.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="84" sourceendlinenumber="84">An <em>item</em> object has some basic properties:</p>
-<table sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="86" sourceendlinenumber="90">
+<p>We can easily get a &quot;global&quot; alias for an <em>item</em> by replacing the <em>ID</em> part of its <em>UID</em> with its alias.</p>
+<h2 id="2-file-structure">2. File Structure</h2>
+<h3 id="21-file-format">2.1 File Format</h3>
+<p>You can use any file format that can represent structural data to store metadata. However, we recommend using <a href="http://www.yaml.org/">YAML</a> or <a href="http://www.json.org/">JSON</a>. In this document, we use YAML in examples, but all YAML can be converted to JSON easily.</p>
+<h3 id="22-file-layout">2.2 File Layout</h3>
+<p>A metadata file consists of two parts: An &quot;item&quot; section and a &quot;reference&quot; section. Each section is a list of objects and each object is a key-value pair (hereafter referred to as &quot;property&quot;) list that represents an <em>item</em>.</p>
+<h3 id="23-item-section">2.3 Item Section</h3>
+<p>Though <em>items</em> can be hierarchical, they are flat in an <em>item</em> section. Instead, each <em>item</em> has a &quot;children&quot; <em>property</em> indicating its <em>children</em> and a &quot;parent&quot; <em>property</em> indicating its parent.</p>
+<p>An <em>item</em> object has some basic properties:</p>
+<table>
 <thead>
 <tr>
 <th>Property</th>
@@ -146,8 +146,8 @@
 </tr>
 </tbody>
 </table>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="92" sourceendlinenumber="92">Here is an example of a YAML format metadata file for C# Object class:</p>
-<pre sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="94" sourceendlinenumber="128"><code class="lang-yaml">items:
+<p>Here is an example of a YAML format metadata file for C# Object class:</p>
+<pre><code class="lang-yaml">items:
 - uid: System.Object
   parent: System
   children:
@@ -180,11 +180,11 @@
   parent: System.Object
 references:
 ...
-</code></pre><blockquote sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="130" sourceendlinenumber="130"><p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="130" sourceendlinenumber="130"><em>Items</em> <strong>SHOULD</strong> be organized based upon how they will display in documentation. For example, if you want all members of a class be displayed in a single page, put all members in a single metadata file.</p>
+</code></pre><blockquote><p><em>Items</em> <strong>SHOULD</strong> be organized based upon how they will display in documentation. For example, if you want all members of a class be displayed in a single page, put all members in a single metadata file.</p>
 </blockquote>
-<h3 id="23-item-object" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="132" sourceendlinenumber="132">2.3 Item Object</h3>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="133" sourceendlinenumber="133">In additional to the <em>properties</em> listed in last section, <em>item object</em> also has some <strong>OPTIONAL</strong> <em>properties</em>:</p>
-<table sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="135" sourceendlinenumber="143">
+<h3 id="23-item-object">2.3 Item Object</h3>
+<p>In additional to the <em>properties</em> listed in last section, <em>item object</em> also has some <strong>OPTIONAL</strong> <em>properties</em>:</p>
+<table>
 <thead>
 <tr>
 <th>Property</th>
@@ -222,8 +222,8 @@ references:
 </tr>
 </tbody>
 </table>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="145" sourceendlinenumber="145">Here is an example of a C# Dictionary class:</p>
-<pre sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="147" sourceendlinenumber="164"><code class="lang-yaml">- uid: System.Collections.Generic.Dictionary`2
+<p>Here is an example of a C# Dictionary class:</p>
+<pre><code class="lang-yaml">- uid: System.Collections.Generic.Dictionary`2
   id: Dictionary`2
   alias:
   - Dictionary
@@ -239,15 +239,15 @@ references:
     path: src/system/collections/generic/dictionary.cs
     startLine: 1
     endLine: 100
-</code></pre><h3 id="24-custom-properties" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="166" sourceendlinenumber="166">2.4 Custom Properties</h3>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="167" sourceendlinenumber="167">Besides the predefined <em>properties</em>, <em>item</em> can have its own <em>properties</em>. One restriction is <em>property</em> name <strong>MUST NOT</strong> contains dots, as dot in <em>property</em> name will have special meaning (described in later section).</p>
-<h3 id="25-reference-section" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="169" sourceendlinenumber="169">2.5 Reference Section</h3>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="171" sourceendlinenumber="171">Reference section also contains a list of <em>items</em>. These <em>items</em> serve as the references by <em>items</em> in <em>item section</em> and won&#39;t show up in documentation. Also, reference <em>item</em> doesn&#39;t need to have full <em>properties</em>, it just contains necessary information needed by its referrer (for example, name or URL).</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="173" sourceendlinenumber="173">In metadata file, all <em>items</em> <strong>MUST</strong> be referenced by <em>UID</em>.</p>
-<blockquote sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="175" sourceendlinenumber="175"><p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="175" sourceendlinenumber="175">It&#39;s <strong>RECOMMENDED</strong> to include all referenced <em>items</em> in reference section. This makes the file self-contained and easy to render at runtime.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="177" sourceendlinenumber="177">Many programming languages have the concept of &quot;template instantiation&quot;. For example, in C#, you can create a new type <code>List&lt;int&gt;</code> from <code>List&lt;T&gt;</code> with argument <code>int</code>. You can create a reference for &quot;template instances&quot;. For example, for a class inherited from <code>List&lt;int&gt;</code>:</p>
+</code></pre><h3 id="24-custom-properties">2.4 Custom Properties</h3>
+<p>Besides the predefined <em>properties</em>, <em>item</em> can have its own <em>properties</em>. One restriction is <em>property</em> name <strong>MUST NOT</strong> contains dots, as dot in <em>property</em> name will have special meaning (described in later section).</p>
+<h3 id="25-reference-section">2.5 Reference Section</h3>
+<p>Reference section also contains a list of <em>items</em>. These <em>items</em> serve as the references by <em>items</em> in <em>item section</em> and won&#39;t show up in documentation. Also, reference <em>item</em> doesn&#39;t need to have full <em>properties</em>, it just contains necessary information needed by its referrer (for example, name or URL).</p>
+<p>In metadata file, all <em>items</em> <strong>MUST</strong> be referenced by <em>UID</em>.</p>
+<blockquote><p>It&#39;s <strong>RECOMMENDED</strong> to include all referenced <em>items</em> in reference section. This makes the file self-contained and easy to render at runtime.</p>
+<p>Many programming languages have the concept of &quot;template instantiation&quot;. For example, in C#, you can create a new type <code>List&lt;int&gt;</code> from <code>List&lt;T&gt;</code> with argument <code>int</code>. You can create a reference for &quot;template instances&quot;. For example, for a class inherited from <code>List&lt;int&gt;</code>:</p>
 </blockquote>
-<pre sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="179" sourceendlinenumber="193"><code class="lang-yaml">items:
+<pre><code class="lang-yaml">items:
 - uid: NumberList
   inherits:
   - System.Collections.Generic.List&lt;System.Int32&gt;
@@ -260,56 +260,56 @@ references:
 - uid: System.Int32
   name: int
   url: system.int32.yml
-</code></pre><h3 id="26-multiple-language-support" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="195" sourceendlinenumber="195">2.6 Multiple Language Support</h3>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="196" sourceendlinenumber="196">An <em>item</em> may need to support multiple languages. For example, in .NET, a class can be used in C#, VB, managed C++ and F#. Different languages may have differences in <em>properties</em>. For example, a list of string is displayed as <code>List&lt;string&gt;</code> in C#, while <code>List(Of string)</code> in VB.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="198" sourceendlinenumber="198">To support this scenario, we introduce a concept of language context to allow defining different <em>property</em> values in different languages.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="200" sourceendlinenumber="200">If a <em>property</em> name is in the form of <code>property_name.language_name</code>, it defines the value of <code>property_name</code> under <code>language_name</code>. For example:</p>
-<pre sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="202" sourceendlinenumber="206"><code class="lang-yaml">- uid: System.Collections.Generic.Dictionary`2
+</code></pre><h3 id="26-multiple-language-support">2.6 Multiple Language Support</h3>
+<p>An <em>item</em> may need to support multiple languages. For example, in .NET, a class can be used in C#, VB, managed C++ and F#. Different languages may have differences in <em>properties</em>. For example, a list of string is displayed as <code>List&lt;string&gt;</code> in C#, while <code>List(Of string)</code> in VB.</p>
+<p>To support this scenario, we introduce a concept of language context to allow defining different <em>property</em> values in different languages.</p>
+<p>If a <em>property</em> name is in the form of <code>property_name.language_name</code>, it defines the value of <code>property_name</code> under <code>language_name</code>. For example:</p>
+<pre><code class="lang-yaml">- uid: System.Collections.Generic.Dictionary`2
   name.csharp: Dictionary&lt;TKey, TValue&gt;
   name.vb: Dictionary(Of TKey, TValue)
-</code></pre><p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="208" sourceendlinenumber="208">This means the name of dictionary is <code>Dictionary&lt;TKey, TValue&gt;</code> in C# and <code>Dictionary(Of TKey, TValue)</code> in VB.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="210" sourceendlinenumber="210">The following <em>properties</em> <strong>SHALL NOT</strong> be overridden in language context: uid, id, alias, children, and parent.</p>
-<h2 id="3-work-with-metadata-in-markdown-" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="212" sourceendlinenumber="213">3. Work with Metadata in Markdown </h2>
-<h3 id="31-yaml-metadata-section" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="215" sourceendlinenumber="215">3.1 YAML Metadata Section</h3>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="217" sourceendlinenumber="218">In a Markdown file, you can also define <em>items</em> using the same metadata syntax. The metadata definition <strong>MUST</strong> be in YAML format and enclosed by triple-dash lines (<code>---</code>).
+</code></pre><p>This means the name of dictionary is <code>Dictionary&lt;TKey, TValue&gt;</code> in C# and <code>Dictionary(Of TKey, TValue)</code> in VB.</p>
+<p>The following <em>properties</em> <strong>SHALL NOT</strong> be overridden in language context: uid, id, alias, children, and parent.</p>
+<h2 id="3-work-with-metadata-in-markdown-">3. Work with Metadata in Markdown </h2>
+<h3 id="31-yaml-metadata-section">3.1 YAML Metadata Section</h3>
+<p>In a Markdown file, you can also define <em>items</em> using the same metadata syntax. The metadata definition <strong>MUST</strong> be in YAML format and enclosed by triple-dash lines (<code>---</code>).
 Here is an example:</p>
-<pre sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="220" sourceendlinenumber="227"><code class="lang-markdown">---
+<pre><code class="lang-markdown">---
 uid: System.String
 summary: String class
 ---
 
 This is a **string** class.
-</code></pre><p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="229" sourceendlinenumber="229">You can have multiple YAML sections inside a single Markdown file, but in a single YAML section, there <strong>MUST</strong> be only one <em>item</em>.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="231" sourceendlinenumber="231">The YAML metadata section does not have to contain all <em>properties</em>. The only <em>property</em> that <strong>MUST</strong> appear is &quot;uid&quot;, which is used to match the same <em>item</em> in metadata file.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="233" sourceendlinenumber="233">The most common scenario for using YAML section is to specify which <em>item</em> the markdown doc belongs to. But you can also overwrite <em>item</em> <em>property</em> by defining one with the same name in YAML section. In the above example, the <em>property</em> &quot;summary&quot; will overwrite the same one in metadata.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="235" sourceendlinenumber="235">As with language context, the following <em>properties</em> <strong>SHALL NOT</strong> be overridden: uid, id, alias, children, and parent.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="237" sourceendlinenumber="237">You <strong>SHALL NOT</strong> define new <em>item</em> in Markdown.</p>
-<h3 id="32-reference-items-in-markdown" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="239" sourceendlinenumber="239">3.2 Reference Items in Markdown</h3>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="241" sourceendlinenumber="242">To cross reference an <em>item</em>, you can use URI with <code>xref</code> scheme. You can either use <a href="https://daringfireball.net/projects/markdown/syntax#link" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="241" sourceendlinenumber="241">standard link</a> or <a href="https://daringfireball.net/projects/markdown/syntax#autolink" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="241" sourceendlinenumber="241">automatic link</a> with the above URI.
+</code></pre><p>You can have multiple YAML sections inside a single Markdown file, but in a single YAML section, there <strong>MUST</strong> be only one <em>item</em>.</p>
+<p>The YAML metadata section does not have to contain all <em>properties</em>. The only <em>property</em> that <strong>MUST</strong> appear is &quot;uid&quot;, which is used to match the same <em>item</em> in metadata file.</p>
+<p>The most common scenario for using YAML section is to specify which <em>item</em> the markdown doc belongs to. But you can also overwrite <em>item</em> <em>property</em> by defining one with the same name in YAML section. In the above example, the <em>property</em> &quot;summary&quot; will overwrite the same one in metadata.</p>
+<p>As with language context, the following <em>properties</em> <strong>SHALL NOT</strong> be overridden: uid, id, alias, children, and parent.</p>
+<p>You <strong>SHALL NOT</strong> define new <em>item</em> in Markdown.</p>
+<h3 id="32-reference-items-in-markdown">3.2 Reference Items in Markdown</h3>
+<p>To cross reference an <em>item</em>, you can use URI with <code>xref</code> scheme. You can either use <a href="https://daringfireball.net/projects/markdown/syntax#link">standard link</a> or <a href="https://daringfireball.net/projects/markdown/syntax#autolink">automatic link</a> with the above URI.
 For example, to cross reference <code>System.String</code>:</p>
-<pre sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="243" sourceendlinenumber="247"><code class="lang-markdown">[System.String](xref:System.String)
+<pre><code class="lang-markdown">[System.String](xref:System.String)
 
 &lt;xref:System.String&gt;
-</code></pre><blockquote sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="249" sourceendlinenumber="249"><p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="249" sourceendlinenumber="249">Since <em>item</em> reference is a URI, special characters (like <code>#</code>, <code>?</code>) <strong>MUST</strong> be <a href="https://tools.ietf.org/html/rfc3986#section-2.1" sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="249" sourceendlinenumber="249">encoded</a>.</p>
+</code></pre><blockquote><p>Since <em>item</em> reference is a URI, special characters (like <code>#</code>, <code>?</code>) <strong>MUST</strong> be <a href="https://tools.ietf.org/html/rfc3986#section-2.1">encoded</a>.</p>
 </blockquote>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="251" sourceendlinenumber="251">We also introduce a shorthand markdown syntax to cross reference easily:</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="253" sourceendlinenumber="253">If a string starts with <code>@</code>, and followed by a string enclosed by quotes <code>&#39;</code> or double quotes <code>&quot;</code>, it will be treated as an <em>item</em> reference. The string inside <code>&quot;&quot;</code> or <code>&#39;&#39;</code> is the <em>UID</em> of the <em>item</em>. Here is one example:</p>
-<pre sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="255" sourceendlinenumber="257"><code class="lang-markdown">@&quot;System.String&quot;
-</code></pre><blockquote sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="259" sourceendlinenumber="259"><p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="259" sourceendlinenumber="259">Markdown processor <strong>MAY</strong> implement some algorithm to allow omit curly braces if <em>ID</em> is simple enough. For example, For reference like <code>@&quot;int&quot;</code>, we may also want to allow <code>@int</code>.</p>
+<p>We also introduce a shorthand markdown syntax to cross reference easily:</p>
+<p>If a string starts with <code>@</code>, and followed by a string enclosed by quotes <code>&#39;</code> or double quotes <code>&quot;</code>, it will be treated as an <em>item</em> reference. The string inside <code>&quot;&quot;</code> or <code>&#39;&#39;</code> is the <em>UID</em> of the <em>item</em>. Here is one example:</p>
+<pre><code class="lang-markdown">@&quot;System.String&quot;
+</code></pre><blockquote><p>Markdown processor <strong>MAY</strong> implement some algorithm to allow omit curly braces if <em>ID</em> is simple enough. For example, For reference like <code>@&quot;int&quot;</code>, we may also want to allow <code>@int</code>.</p>
 </blockquote>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="261" sourceendlinenumber="261">When rendering references in Markdown, they will expand into a link with the <em>item</em>&#39;s name as link title. You can also customize the link title using the standard syntax of Markdown:</p>
-<pre sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="263" sourceendlinenumber="265"><code class="lang-markdown">[Dictionary](xref:System.Collections.Generic.Dictionary`2)&lt;[String](xref:System.String), [String](xref:System.String)&gt;
-</code></pre><p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="267" sourceendlinenumber="268">Will be rendered to:
+<p>When rendering references in Markdown, they will expand into a link with the <em>item</em>&#39;s name as link title. You can also customize the link title using the standard syntax of Markdown:</p>
+<pre><code class="lang-markdown">[Dictionary](xref:System.Collections.Generic.Dictionary`2)&lt;[String](xref:System.String), [String](xref:System.String)&gt;
+</code></pre><p>Will be rendered to:
 <a class="xref" href="https://msdn.microsoft.com/en-us/library/xfhwa508(v=vs.110).aspx">Dictionary</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="270" sourceendlinenumber="270">Besides <em>UID</em>, we also allow referencing items using <em>ID</em> and <em>alias</em>, in the Markdown processor, the below algorithm <strong>SHOULD</strong> be implemented to resolve references.</p>
-<p sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="272" sourceendlinenumber="272">Check whether the reference matches:</p>
-<ol sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="274" sourceendlinenumber="279">
-<li sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="274" sourceendlinenumber="274">Any <em>identifier</em> of current <em>item</em>&#39;s children.</li>
-<li sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="275" sourceendlinenumber="275">Any <em>alias</em> of current <em>item</em>&#39;s children.</li>
-<li sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="276" sourceendlinenumber="276">Any <em>identifier</em> of current <em>item</em>&#39;s silbings.</li>
-<li sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="277" sourceendlinenumber="277">Any <em>alias</em> of current <em>item</em>&#39;s silbings.</li>
-<li sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="278" sourceendlinenumber="278">A <em>UID</em>.</li>
-<li sourcefile="spec/metadata_format_spec.md" sourcestartlinenumber="279" sourceendlinenumber="279">A <em>global alias</em>.</li>
+<p>Besides <em>UID</em>, we also allow referencing items using <em>ID</em> and <em>alias</em>, in the Markdown processor, the below algorithm <strong>SHOULD</strong> be implemented to resolve references.</p>
+<p>Check whether the reference matches:</p>
+<ol>
+<li>Any <em>identifier</em> of current <em>item</em>&#39;s children.</li>
+<li>Any <em>alias</em> of current <em>item</em>&#39;s children.</li>
+<li>Any <em>identifier</em> of current <em>item</em>&#39;s silbings.</li>
+<li>Any <em>alias</em> of current <em>item</em>&#39;s silbings.</li>
+<li>A <em>UID</em>.</li>
+<li>A <em>global alias</em>.</li>
 </ol>
 
             </article>

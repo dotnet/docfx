@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--[if IE]><![endif]-->
 <html>
   
@@ -8,7 +8,7 @@
     <title>How-to: Filter Out Unwanted APIs or Attributes  | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Filter Out Unwanted APIs or Attributes  | DocFX website ">
-    <meta name="generator" content="docfx 2.6.3.0">
+    <meta name="generator" content="docfx 2.7.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -72,18 +72,18 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <h1 id="how-to-filter-out-unwanted-apis-or-attributes-" sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="1" sourceendlinenumber="2">How-to: Filter Out Unwanted APIs or Attributes </h1>
+              <h1 id="how-to-filter-out-unwanted-apis-or-attributes-">How-to: Filter Out Unwanted APIs or Attributes </h1>
               
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="4" sourceendlinenumber="4">A filter configuration file is in <a href="http://www.yaml.org/spec/1.2/spec.html" sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="4" sourceendlinenumber="4">YAML</a> format. You may filter out unwanted APIs or attributes by providing a filter configuration file and specifying its path.</p>
-<h2 id="specifying-the-filter-configuration-file-path" sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="6" sourceendlinenumber="7">Specifying the filter configuration file path</h2>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="9" sourceendlinenumber="9">The path of the configuration file is specified in the following two ways. Option 1 could overwrite option 2.</p>
-<ol sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="11" sourceendlinenumber="38">
-<li sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="11" sourceendlinenumber="13"><p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="11" sourceendlinenumber="11">docfx.exe metadata command argument.</p>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="11" sourceendlinenumber="11"><code>docfx.exe metadata -filter &lt;path relative to baseDir or absolutepath&gt;</code></p>
+<p>A filter configuration file is in <a href="http://www.yaml.org/spec/1.2/spec.html">YAML</a> format. You may filter out unwanted APIs or attributes by providing a filter configuration file and specifying its path.</p>
+<h2 id="specifying-the-filter-configuration-file-path">Specifying the filter configuration file path</h2>
+<p>The path of the configuration file is specified in the following two ways. Option 1 could overwrite option 2.</p>
+<ol>
+<li><p>docfx.exe metadata command argument.</p>
+<p><code>docfx.exe metadata -filter &lt;path relative to baseDir or absolutepath&gt;</code></p>
 </li>
-<li sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="15" sourceendlinenumber="38"><p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="15" sourceendlinenumber="15">docfx.json metadata section <code>filter</code> property.</p>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="15" sourceendlinenumber="15"><strong>Sample</strong></p>
-<pre sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="18" sourceendlinenumber="38"><code>{
+<li><p>docfx.json metadata section <code>filter</code> property.</p>
+<p><strong>Sample</strong></p>
+<pre><code>{
   &quot;metadata&quot;: [
     {
       &quot;src&quot;: [
@@ -104,71 +104,71 @@
 }
 </code></pre></li>
 </ol>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="40" sourceendlinenumber="40">DocFX has a <a href="#3-default-filter-configuration" sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="40" sourceendlinenumber="40">default filter configuration</a>. If the user doesn&#39;t specify the filter configuration file path, default filter configuration would be used. Otherwise, user provided filter configuration would merge with the default one. If there is a conflict, user specified would overwrite the default one.</p>
-<h2 id="the-format-of-the-filter-configuration-file" sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="43" sourceendlinenumber="44">The format of the filter configuration file</h2>
-<h3 id="1-api-filter-rules" sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="46" sourceendlinenumber="46">1. API Filter Rules</h3>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="48" sourceendlinenumber="48">To filter out APIs, you could specify <code>apiRules</code> with a list of <code>exclude</code> or <code>include</code> rules.</p>
-<blockquote sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="50" sourceendlinenumber="50"><p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="50" sourceendlinenumber="50"><em>Note</em></p>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="52" sourceendlinenumber="53">The rules would be executed sequentially and the matching process would stop once one rule is matched. 
+<p>DocFX has a <a href="#3-default-filter-configuration">default filter configuration</a>. If the user doesn&#39;t specify the filter configuration file path, default filter configuration would be used. Otherwise, user provided filter configuration would merge with the default one. If there is a conflict, user specified would overwrite the default one.</p>
+<h2 id="the-format-of-the-filter-configuration-file">The format of the filter configuration file</h2>
+<h3 id="1-api-filter-rules">1. API Filter Rules</h3>
+<p>To filter out APIs, you could specify <code>apiRules</code> with a list of <code>exclude</code> or <code>include</code> rules.</p>
+<blockquote><p><em>Note</em></p>
+<p>The rules would be executed sequentially and the matching process would stop once one rule is matched. 
 Namely, you need to put the most detailed rule in the top.</p>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="55" sourceendlinenumber="55">If no rule is matched the API would be included by default.</p>
+<p>If no rule is matched the API would be included by default.</p>
 </blockquote>
-<h4 id="1-exclude-or-include-apis-by-matching-their-uid-with-the-regex-uidregex" sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="58" sourceendlinenumber="58">1) <code>exclude</code> or <code>include</code> APIs by matching their uid with the Regex <code>uidRegex</code>.</h4>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="60" sourceendlinenumber="60">The sample below excludes all APIs whose uids start with &#39;Microsoft.DevDiv&#39; except those that start with &#39;Microsoft.DevDiv.SpecialCase&#39;.</p>
-<pre sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="62" sourceendlinenumber="67"><code>  - include:
+<h4 id="1-exclude-or-include-apis-by-matching-their-uid-with-the-regex-uidregex">1) <code>exclude</code> or <code>include</code> APIs by matching their uid with the Regex <code>uidRegex</code>.</h4>
+<p>The sample below excludes all APIs whose uids start with &#39;Microsoft.DevDiv&#39; except those that start with &#39;Microsoft.DevDiv.SpecialCase&#39;.</p>
+<pre><code>  - include:
       uidRegex: ^Microsoft\.DevDiv\.SpecialCase
   - exclude:
       uidRegex: ^Microsoft\.DevDiv
-</code></pre><h4 id="2-exclude-or-include-apis-by-matching-its-type-this-is-often-combined-with-uidregex" sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="69" sourceendlinenumber="69">2) <code>exclude</code> or <code>include</code> APIs by matching its <code>type</code>, this is often combined with <code>uidRegex</code>.</h4>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="71" sourceendlinenumber="71">Supported <code>type</code>:</p>
-<ul sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="72" sourceendlinenumber="83">
-<li sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="72" sourceendlinenumber="72"><code>Namespace</code></li>
-<li sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="73" sourceendlinenumber="73"><code>Type</code></li>
-<li sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="74" sourceendlinenumber="74"><code>Class</code></li>
-<li sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="75" sourceendlinenumber="75"><code>Struct</code></li>
-<li sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="76" sourceendlinenumber="76"><code>Enum</code></li>
-<li sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="77" sourceendlinenumber="77"><code>Interface</code></li>
-<li sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="78" sourceendlinenumber="78"><code>Delegate</code></li>
-<li sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="79" sourceendlinenumber="79"><code>Member</code></li>
-<li sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="80" sourceendlinenumber="80"><code>Event</code></li>
-<li sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="81" sourceendlinenumber="81"><code>Field</code></li>
-<li sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="82" sourceendlinenumber="82"><code>Method</code></li>
-<li sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="83" sourceendlinenumber="83"><code>Property</code></li>
+</code></pre><h4 id="2-exclude-or-include-apis-by-matching-its-type-this-is-often-combined-with-uidregex">2) <code>exclude</code> or <code>include</code> APIs by matching its <code>type</code>, this is often combined with <code>uidRegex</code>.</h4>
+<p>Supported <code>type</code>:</p>
+<ul>
+<li><code>Namespace</code></li>
+<li><code>Type</code></li>
+<li><code>Class</code></li>
+<li><code>Struct</code></li>
+<li><code>Enum</code></li>
+<li><code>Interface</code></li>
+<li><code>Delegate</code></li>
+<li><code>Member</code></li>
+<li><code>Event</code></li>
+<li><code>Field</code></li>
+<li><code>Method</code></li>
+<li><code>Property</code></li>
 </ul>
-<blockquote sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="85" sourceendlinenumber="85"><p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="85" sourceendlinenumber="85"><em>Note</em></p>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="87" sourceendlinenumber="87"><code>Type</code> could be <code>Class</code>, <code>Struct</code>, <code>Enum</code>, <code>Interface</code>, or <code>Delegate</code>. <code>Member</code> could be <code>Event</code>, <code>Field</code>, <code>Method</code>, or <code>Property</code>.</p>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="89" sourceendlinenumber="89"><code>Namespace</code> is flattened. Namely, excluding namespace &#39;A.B&#39; has nothing to do with namespace &#39;A.B.C&#39;.</p>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="91" sourceendlinenumber="92">If a namespace is excluded, all types/members defined in the namespace would also be excluded.
+<blockquote><p><em>Note</em></p>
+<p><code>Type</code> could be <code>Class</code>, <code>Struct</code>, <code>Enum</code>, <code>Interface</code>, or <code>Delegate</code>. <code>Member</code> could be <code>Event</code>, <code>Field</code>, <code>Method</code>, or <code>Property</code>.</p>
+<p><code>Namespace</code> is flattened. Namely, excluding namespace &#39;A.B&#39; has nothing to do with namespace &#39;A.B.C&#39;.</p>
+<p>If a namespace is excluded, all types/members defined in the namespace would also be excluded.
 If a type is excluded, all members defined in the type would also be excluded.</p>
 </blockquote>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="94" sourceendlinenumber="95">The below sample would exclude all APIs whose uid starts with &#39;Microsoft.DevDiv&#39; and type is <code>Type</code>, namely <code>Class</code>, <code>Struct</code>,
+<p>The below sample would exclude all APIs whose uid starts with &#39;Microsoft.DevDiv&#39; and type is <code>Type</code>, namely <code>Class</code>, <code>Struct</code>,
 <code>Enum</code>, <code>Interface</code>, or <code>Delegate</code>.</p>
-<pre sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="97" sourceendlinenumber="101"><code>  - exclude:
+<pre><code>  - exclude:
       uidRegex: ^Microsoft\.DevDiv
       type: Type
-</code></pre><h4 id="3-exclude-or-include-apis-by-containing-matched-attributes" sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="103" sourceendlinenumber="103">3) <code>exclude</code> or <code>include</code> APIs by containing matched attributes.</h4>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="105" sourceendlinenumber="105">You can specify an attribute by its <code>uid</code>, <code>ctorArguments</code> and <code>ctorNamedArguments</code>.</p>
-<blockquote sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="107" sourceendlinenumber="107"><p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="107" sourceendlinenumber="107"><em>Note</em></p>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="109" sourceendlinenumber="110"><code>ctorArguments</code> requires a full match of the attribute&#39;s constructor arguments, while <code>ctorNamedArguments</code> supports a partial match.
+</code></pre><h4 id="3-exclude-or-include-apis-by-containing-matched-attributes">3) <code>exclude</code> or <code>include</code> APIs by containing matched attributes.</h4>
+<p>You can specify an attribute by its <code>uid</code>, <code>ctorArguments</code> and <code>ctorNamedArguments</code>.</p>
+<blockquote><p><em>Note</em></p>
+<p><code>ctorArguments</code> requires a full match of the attribute&#39;s constructor arguments, while <code>ctorNamedArguments</code> supports a partial match.
 Namely, <code>ctorArguments</code> should contain all the arguments while <code>ctorNamedArguments</code> could contain a subset of the named arguments. </p>
 </blockquote>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="112" sourceendlinenumber="112">The sample below excludes all APIs which have EditorBrowsableAttribute and its constructor argument is EditorBrowsableState.Never.</p>
-<pre sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="114" sourceendlinenumber="120"><code>  - exclude:
+<p>The sample below excludes all APIs which have EditorBrowsableAttribute and its constructor argument is EditorBrowsableState.Never.</p>
+<pre><code>  - exclude:
       hasAttribute:
         uid: System.ComponentModel.EditorBrowsableAttribute
         ctorArguments:
         - System.ComponentModel.EditorBrowsableState.Never
-</code></pre><p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="122" sourceendlinenumber="123">The sample below excludes all APIs which have AttributeUsageAttribute and its constructor argument is AttributeTargets.Class
+</code></pre><p>The sample below excludes all APIs which have AttributeUsageAttribute and its constructor argument is AttributeTargets.Class
  and its constructor has named argument [Inherited] = true</p>
-<pre sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="125" sourceendlinenumber="133"><code>  - exclude:
+<pre><code>  - exclude:
     hasAttribute:
       uid: System.AttributeUsageAttribute
       ctorArguments:
       - System.AttributeTargets.Class
       ctorNamedArguments:
         Inherited: &quot;true&quot;
-</code></pre><p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="135" sourceendlinenumber="135">A complete <strong>Sample</strong> of the filter configuration file for filtering out APIs follows:</p>
-<pre sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="137" sourceendlinenumber="154"><code class="lang-yaml">apiRules:
+</code></pre><p>A complete <strong>Sample</strong> of the filter configuration file for filtering out APIs follows:</p>
+<pre><code class="lang-yaml">apiRules:
 - exclude:
     uidRegex: ^Microsoft\.TeamFoundation\.WorkItemTracking\.Proxy\.IRowSetsNative$
 - exclude:
@@ -184,11 +184,11 @@ Namely, <code>ctorArguments</code> should contain all the arguments while <code>
       uid: System.ComponentModel.EditorBrowsableAttribute
       ctorArguments:
       - System.ComponentModel.EditorBrowsableState.Never
-</code></pre><h3 id="2-attribute-filter-rules" sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="156" sourceendlinenumber="156">2. Attribute Filter Rules</h3>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="158" sourceendlinenumber="158">To filter out Attributes, you could specify <code>attributeRules</code> with a list of <code>exclude</code> or <code>include</code> rules.</p>
-<p sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="160" sourceendlinenumber="160">The rules are similar to API filter. Please refer to <a href="#1-api-filter-rules" sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="160" sourceendlinenumber="160">API Filter Rules</a> section.</p>
-<h3 id="3-default-filter-configuration" sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="162" sourceendlinenumber="162">3. Default Filter Configuration</h3>
-<pre sourcefile="tutorial/howto_filter_out_unwanted_apis_attributes.md" sourcestartlinenumber="164" sourceendlinenumber="244"><code class="lang-yaml">apiRules:
+</code></pre><h3 id="2-attribute-filter-rules">2. Attribute Filter Rules</h3>
+<p>To filter out Attributes, you could specify <code>attributeRules</code> with a list of <code>exclude</code> or <code>include</code> rules.</p>
+<p>The rules are similar to API filter. Please refer to <a href="#1-api-filter-rules">API Filter Rules</a> section.</p>
+<h3 id="3-default-filter-configuration">3. Default Filter Configuration</h3>
+<pre><code class="lang-yaml">apiRules:
 - exclude:
     hasAttribute:
       uid: System.ComponentModel.EditorBrowsableAttribute
