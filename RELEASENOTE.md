@@ -1,6 +1,6 @@
 Version Notes (Current Version: v2.7)
 =======================================
-v2.7(Pre-Release)
+v2.7
 -----------
 1.  Improve markdown engine performance.
     - Improve regex.
@@ -15,6 +15,24 @@ v2.7(Pre-Release)
 7.  Fix bug in merging properties.
 8.  Support extension for preprocessor file in default template. (https://github.com/dotnet/docfx/issues/662)
 9.  Improve error/warning message.
+
+v2.6.3
+-----------
+1.  minor: fix the Renderer
+
+v2.6.2
+-----------
+1.  Improve markdown engine performance.
+    - Improve regex.
+    - Add regex timeout.
+2.  Fix bugs in markdown parser.
+3.  DFM: Support code in table
+
+v2.6.1
+-----------
+1.  Fix argumentnullexception for generating overload item.
+2.  Add serializable attribute.
+3.  Use mark.js to highlight keywords.
 
 v2.6
 -----------
