@@ -1,5 +1,10 @@
-Version Notes (Current Version: v2.7)
+Version Notes (Current Version: v2.7.1)
 =======================================
+
+v2.7.1
+-----------
+1.  Search embedded resource prior to local resource
+
 v2.7
 -----------
 1.  Improve markdown engine performance.
@@ -15,6 +20,7 @@ v2.7
 7.  Fix bug in merging properties.
 8.  Support extension for preprocessor file in default template. (https://github.com/dotnet/docfx/issues/662)
 9.  Improve error/warning message.
+10. Support bookmark validation.
 
 v2.6.3
 -----------
