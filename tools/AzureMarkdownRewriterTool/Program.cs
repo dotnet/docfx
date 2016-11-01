@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using System.Web;
 
@@ -20,6 +20,10 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
 
     internal sealed class Program
     {
+        private static readonly Regex _azureHtmlIncludeRegex = new Regex(@"^(\<br\s*\/\>)(\s*\r?\n\[AZURE\.INCLUDE)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+        public static readonly Regex _azureHtmlDefinitionRegex = new Regex(@"^( +)(\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\r?\n+|$))", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
         public static IReadOnlyList<string> SystemMarkdownFileName = new List<string> { "TOC.md" };
 
         public readonly bool _isMigration;
@@ -342,6 +346,18 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
             return true;
         }
 
+        // Removes "<br/>" or "<br />" before "[AZURE.INCLUDE".
+        private string FixAzureIncludeSyntax(string source)
+        {
+            return _azureHtmlIncludeRegex.Replace(source, "$2");
+        }
+
+        // Removes all leading white-spaces for definition.
+        private string FixAzureDefinitionSyntax(string source)
+        {
+            return _azureHtmlDefinitionRegex.Replace(source, "$2");
+        }
+
         private int Rewrite()
         {
             var exitCode = 0;
@@ -369,6 +385,10 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                             string result;
                             if (_isMigration)
                             {
+                                // Fixs Azure articles first in order to let docfx parse them correctly.
+                                source = FixAzureIncludeSyntax(source);
+                                source = FixAzureDefinitionSyntax(source);
+
                                 result = AzureMigrationMarked.Markup(
                                     source,
                                     fileInfo.FullName,
