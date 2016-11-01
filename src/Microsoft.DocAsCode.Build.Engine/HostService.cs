@@ -239,7 +239,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                      where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
                                      let target = attr.Value
                                      where !string.IsNullOrWhiteSpace(target)
-                                     let queryIndex = target.IndexOf("?")
+                                     let queryIndex = target.IndexOfAny(new[] { '?', '#' })
                                      let targetUid = queryIndex == -1 ? target : target.Remove(queryIndex)
                                      select new LinkSourceInfo
                                      {
@@ -353,7 +353,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                      where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
                                      let target = attr.Value
                                      where !string.IsNullOrWhiteSpace(target)
-                                     let queryIndex = target.IndexOf("?")
+                                     let queryIndex = target.IndexOfAny(new[] { '?', '#' })
                                      let targetUid = queryIndex == -1 ? target : target.Remove(queryIndex)
                                      select new LinkSourceInfo
                                      {
