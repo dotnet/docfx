@@ -38,17 +38,25 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         /// <summary>
         /// Search in order:
-        /// 1. Inside OverrideFolder, *NOTE* sub-folders are **NOT** included
+        /// 1. Inside Embedded Resources
+        ///     a. ZIP file with provided name
+        /// 2. Inside OverrideFolder, *NOTE* sub-folders are **NOT** included
         ///     a. Folder with provided name
         ///     b. ZIP file with provided name
-        /// 2. Inside Embedded Resources
-        ///     a. ZIP file with provided name
         /// </summary>
         /// <param name="name">The resource name provided</param>
         /// <returns>If found, return the resource collection; if not, return null</returns>
         public ResourceCollection Find(string name)
         {
             if (string.IsNullOrEmpty(name)) return null;
+
+            var resourceName = _embeddedResourceNames.FirstOrDefault(s => resourceNamePredicator(s, name, _resourcePrefix));
+            if (resourceName != null)
+            {
+                Logger.LogVerbose($"Resource {name} is found in embedded resources.");
+                return new ArchiveResourceCollection(_assembly.GetManifestResourceStream(resourceName),
+                    $"embedded resource {resourceName}");
+            }
 
             var directory = Path.Combine(_baseDirectory, name);
             if (Directory.Exists(directory))
@@ -64,17 +72,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return new ArchiveResourceCollection(new FileStream(fileName, FileMode.Open, FileAccess.Read), fileName);
             }
 
-            var resourceName = _embeddedResourceNames.FirstOrDefault(s => resourceNamePredicator(s, name, _resourcePrefix));
-            if (resourceName == null)
-            {
-                Logger.LogWarning($"Unable to find matching resource {name}.");
-                return null;
-            }
-            else
-            {
-                Logger.LogVerbose($"Resource {name} is found in embedded resources.");
-                return new ArchiveResourceCollection(_assembly.GetManifestResourceStream(resourceName), $"embedded resource {resourceName}");
-            }
+            Logger.LogWarning($"Unable to find matching resource {name}.");
+            return null;
         }
     }
 }
