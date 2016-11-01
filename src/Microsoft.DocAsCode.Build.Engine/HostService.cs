@@ -237,10 +237,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                                      where string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
                                      from attr in n.Attributes
                                      where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
-                                     where !string.IsNullOrWhiteSpace(attr.Value)
+                                     let target = attr.Value
+                                     where !string.IsNullOrWhiteSpace(target)
+                                     let queryIndex = target.IndexOf("?")
+                                     let targetUid = queryIndex == -1 ? target : target.Remove(queryIndex)
                                      select new LinkSourceInfo
                                      {
-                                         Target = attr.Value,
+                                         Target = Uri.UnescapeDataString(targetUid),
                                          SourceFile = n.GetAttributeValue("sourceFile", null),
                                          LineNumber = n.GetAttributeValue("sourceLineNumber", 0),
                                      } into lsi
@@ -348,10 +351,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                                      where string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
                                      from attr in n.Attributes
                                      where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
-                                     where !string.IsNullOrWhiteSpace(attr.Value)
+                                     let target = attr.Value
+                                     where !string.IsNullOrWhiteSpace(target)
+                                     let queryIndex = target.IndexOf("?")
+                                     let targetUid = queryIndex == -1 ? target : target.Remove(queryIndex)
                                      select new LinkSourceInfo
                                      {
-                                         Target = attr.Value,
+                                         Target = Uri.UnescapeDataString(targetUid),
                                          SourceFile = n.GetAttributeValue("sourceFile", null),
                                          LineNumber = n.GetAttributeValue("sourceLineNumber", 0),
                                      } into lsi
