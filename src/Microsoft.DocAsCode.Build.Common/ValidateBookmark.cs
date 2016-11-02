@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.Build.Common
                  let link = node.GetAttributeValue("href", null)
                  let index = link.IndexOf("#")
                  where index != -1 && PathUtility.IsRelativePath(link)
-                 select new LinkItem { Href = HttpUtility.UrlDecode(link.Remove(index)), Bookmark = link.Substring(index + 1), SourceLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0), TargetLineNumber = node.Line } into item
+                 select new LinkItem { Href = TransformPath(outputFile, HttpUtility.UrlDecode(link.Remove(index))), Bookmark = link.Substring(index + 1), SourceLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0), TargetLineNumber = node.Line } into item
                  where !WhiteList.Contains(item.Bookmark)
                  select item).ToList();
             var anchors = GetNodeAttribute(document, "id").Concat(GetNodeAttribute(document, "name"));
@@ -88,6 +88,11 @@ namespace Microsoft.DocAsCode.Build.Common
         private static IEnumerable<HtmlNode> GetNodesWithAttribute(HtmlDocument html, string attribute)
         {
             return html.DocumentNode.SelectNodes(string.Format(XPathTemplate, attribute)) ?? Enumerable.Empty<HtmlNode>();
+        }
+
+        private static string TransformPath(string basePathFromRoot, string relativePath)
+        {
+            return ((RelativePath)basePathFromRoot + (RelativePath)relativePath).RemoveWorkingFolder();
         }
 
         private class LinkItem
