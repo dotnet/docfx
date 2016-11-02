@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode
 
             if (patterns.Any(s => s.Contains("../")))
             {
-                Logger.LogWarning("NOTE that `../` is currently not supported in glob pattern, please use `../` in `cwd` option instead.");
+                Logger.LogWarning("NOTE that `../` is currently not supported in glob pattern, please use `../` in `src` option instead.");
             }
         }
     }

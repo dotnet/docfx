@@ -32,7 +32,7 @@ For a *TOC Item*, it can be either plain text, or a [Markdown inline link](http:
 Three kinds of links are supported:
 
 1. Absolute path, for example, `http://example.net`.
-2. Relative path, for example, `../example.md`. This kind of link has several advanced usages and is described in detail [below](#relative-path-in-detail).
+2. Relative path, for example, `../example.md`. This kind of link has several advanced usages and is described in detail [below](#href-in-detail).
 3. URI with `xref` scheme, for example, `xref:System.String`, the value is the `uid` of the file to be [cross-referenced](../spec/docfx_flavored_markdown.md#cross-reference).
 
 ### YAML format TOC `toc.yml`

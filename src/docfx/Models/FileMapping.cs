@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode
         }
 
         /// <summary>
-        /// Should not merge FileMappingItems even if they are using the same name, because other propertes also matters, e.g. cwd, exclude.
+        /// Should not merge FileMappingItems even if they are using the same name, because other propertes also matters, e.g. src, exclude.
         /// </summary>
         /// <param name="item"></param>
         public void Add(FileMappingItem item)

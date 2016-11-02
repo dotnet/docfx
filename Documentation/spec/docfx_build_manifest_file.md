@@ -27,8 +27,8 @@ Current supported properties for the Object model is listed as below:
 
 Property Name | Type              | Description
 ------------- | ----------------- | ---------------------------
-*files*       | Array of *Manifest Item* | Array of [*Manifest Item* model](#-manifest-item-model)
-*homepages*   | Array of *Homepage* | Array of [*Homepage* model](#-homepage-model)
+*files*       | Array of *Manifest Item* | Array of [*Manifest Item* model](#manifest-item-model)
+*homepages*   | Array of *Homepage* | Array of [*Homepage* model](#homepage-model)
 
 *Manifest Item* model
 -----------------------
