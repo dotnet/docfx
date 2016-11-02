@@ -1,9 +1,14 @@
-Version Notes (Current Version: v2.7.1)
+Version Notes (Current Version: v2.7.2)
 =======================================
+
+v2.7.2
+-----------
+1.  Fix xref with query string not resolved.
+2.  Fix relative path when validating bookmark.
 
 v2.7.1
 -----------
-1.  Search embedded resource prior to local resource
+1.  Search embedded resource prior to local resource.
 
 v2.7
 -----------
