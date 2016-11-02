@@ -75,12 +75,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var linkToFiles = new HashSet<string>();
             if (Utility.IsSupportedRelativeHref(item.Href))
             {
-                linkToFiles.Add(item.Href.Split('#')[0]);
+                linkToFiles.Add(ParseFile(item.Href));
             }
 
             if (Utility.IsSupportedRelativeHref(item.Homepage))
             {
-                linkToFiles.Add(item.Homepage.Split('#')[0]);
+                linkToFiles.Add(ParseFile(item.Homepage));
             }
 
             if (!string.IsNullOrEmpty(item.TopicUid))
@@ -98,6 +98,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                     BuildCore(i, model, hostService);
                 }
             }
+        }
+
+        private static string ParseFile(string link)
+        {
+            var queryIndex = link.IndexOfAny(new[] { '?', '#' });
+            return queryIndex == -1 ? link : link.Remove(queryIndex);
         }
 
         #region ISupportIncrementalBuildStep Members
