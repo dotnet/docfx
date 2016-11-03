@@ -20,11 +20,13 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
 
     internal sealed class Program
     {
-        private static readonly Regex _azureHtmlIncludeRegex = new Regex(@"^(\<br\s*\/\>)(\s*\r?\n\[AZURE\.INCLUDE)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        private static readonly Regex _azureHtmlIncludeWithPrefixRegex = new Regex(@"^(\<br\s*\/\>)(\s*\r?\n\[AZURE\.INCLUDE)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
-        public static readonly Regex _azureHtmlDefinitionRegex = new Regex(@"^( +)(\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\r?\n+|$))", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        private static readonly Regex _azureHtmlIncludeWithPostfixRegex = new Regex(@"^(\[AZURE\.INCLUDE\s*\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([^)]*?)>?(?:\s+(['""])([\s\S]*?)\3)?\s*\)\])[\t\f ]*(\S.*)$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
-        public static IReadOnlyList<string> SystemMarkdownFileName = new List<string> { "TOC.md" };
+        private static readonly Regex _azureHtmlDefinitionWithLeadingWhitespacesRegex = new Regex(@"^( +)(\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\r?\n+|$))", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+        private static IReadOnlyList<string> SystemMarkdownFileName = new List<string> { "TOC.md" };
 
         public readonly bool _isMigration;
         public readonly string _srcDirectory;
@@ -347,15 +349,24 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
         }
 
         // Removes "<br/>" or "<br />" before "[AZURE.INCLUDE".
-        private string FixAzureIncludeSyntax(string source)
+        private string FixAzureIncludeWithPrefixSyntax(string source)
         {
-            return _azureHtmlIncludeRegex.Replace(source, "$2");
+            return _azureHtmlIncludeWithPrefixRegex.Replace(source, "$2");
+        }
+
+        // Moves the content after "[AZURE.INCLUDE" section to the next line.
+        // For example, "[AZURE.INCLUDE [active-directory-devquickstarts-switcher](../../includes/active-directory-devquickstarts-switcher.md)] test"
+        // should be converted to 
+        // "[AZURE.INCLUDE [active-directory-devquickstarts-switcher](../../includes/active-directory-devquickstarts-switcher.md)]\r\ntest"
+        private string FixAzureIncludeWithPostfixSyntax(string source)
+        {
+            return _azureHtmlIncludeWithPostfixRegex.Replace(source, $"$1{Environment.NewLine}$6");
         }
 
         // Removes all leading white-spaces for definition.
-        private string FixAzureDefinitionSyntax(string source)
+        private string FixAzureDefinitionWithLeadingWhitespacesSyntax(string source)
         {
-            return _azureHtmlDefinitionRegex.Replace(source, "$2");
+            return _azureHtmlDefinitionWithLeadingWhitespacesRegex.Replace(source, "$2");
         }
 
         private int Rewrite()
@@ -386,8 +397,9 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                             if (_isMigration)
                             {
                                 // Fixs Azure articles first in order to let docfx parse them correctly.
-                                source = FixAzureIncludeSyntax(source);
-                                source = FixAzureDefinitionSyntax(source);
+                                source = FixAzureIncludeWithPrefixSyntax(source);
+                                source = FixAzureIncludeWithPostfixSyntax(source);
+                                source = FixAzureDefinitionWithLeadingWhitespacesSyntax(source);
 
                                 result = AzureMigrationMarked.Markup(
                                     source,
