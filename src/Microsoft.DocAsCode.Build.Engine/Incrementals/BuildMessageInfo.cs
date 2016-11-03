@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
             logsPerFile.Add(new LogItem
             {
-                File = item.File,
+                File = item.File.BackSlashToForwardSlash(),
                 Line = item.Line,
                 LogLevel = item.LogLevel,
                 Message = item.Message,
