@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 
         private readonly Cache<string> _shortIdCache;
         private readonly Cache<Dictionary<string, string>> _commentIdToShortIdMapCache;
-        private readonly Cache<StrongBox<bool>> _checkUrlCache;
+        private readonly Cache<StrongBox<bool?>> _checkUrlCache;
 
         private readonly string _packageFile;
         private readonly string _baseDirectory;
@@ -150,7 +150,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 
             _shortIdCache = new Cache<string>(nameof(_shortIdCache), LoadShortIdAsync);
             _commentIdToShortIdMapCache = new Cache<Dictionary<string, string>>(nameof(_commentIdToShortIdMapCache), LoadCommentIdToShortIdMapAsync);
-            _checkUrlCache = new Cache<StrongBox<bool>>(nameof(_checkUrlCache), IsUrlOkAsync);
+            _checkUrlCache = new Cache<StrongBox<bool?>>(nameof(_checkUrlCache), IsUrlOkAsync);
 
             _maxHttp = HttpMaxConcurrency;
             _maxEntry = (int)(HttpMaxConcurrency * 1.1) + 1;
@@ -359,7 +359,10 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             if (type != null)
             {
                 typeSpec = await GetXRefSpecAsync(type);
-                result.Add(typeSpec);
+                if (typeSpec != null)
+                {
+                    result.Add(typeSpec);
+                }
             }
             int size = 0;
             foreach (var specsTask in
@@ -369,7 +372,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                      select item).BlockBuffer(() => size = size * 2 + 1)
                 select Task.WhenAll(from item in block select GetXRefSpecAsync(item)))
             {
-                result.AddRange(await specsTask);
+                result.AddRange(from s in await specsTask where s != null select s);
             }
             result.AddRange(await GetOverloadXRefSpecAsync(result));
             if (typeSpec != null && typeSpec.Href != null)
@@ -398,7 +401,8 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             {
                 var url = string.Format(MsdnUrlTemplate, alias, _msdnVersion);
                 // verify alias exists
-                if ((await _checkUrlCache.GetAsync(url)).Value)
+                var vr = (await _checkUrlCache.GetAsync(pair.CommentId + "||||" + url)).Value;
+                if (vr == true)
                 {
                     return new XRefSpec
                     {
@@ -407,15 +411,15 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                         Href = url,
                     };
                 }
+                if (vr == false)
+                {
+                    return null;
+                }
             }
             var shortId = await _shortIdCache.GetAsync(pair.CommentId);
             if (string.IsNullOrEmpty(shortId))
             {
-                return new XRefSpec
-                {
-                    Uid = pair.Uid,
-                    CommentId = pair.CommentId,
-                };
+                return null;
             }
             return new XRefSpec
             {
@@ -631,9 +635,10 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
         private IEnumerable<ClassEntry> GetAllCommentId(string file)
         {
             return from commentId in GetAllCommentIdCore(file)
-                   where commentId.StartsWith("T:") || commentId.StartsWith("E:") || commentId.StartsWith("F:") || commentId.StartsWith("M:") || commentId.StartsWith("P:")
+                   where commentId.StartsWith("N:") || commentId.StartsWith("T:") || commentId.StartsWith("E:") || commentId.StartsWith("F:") || commentId.StartsWith("M:") || commentId.StartsWith("P:")
                    let uid = commentId.Substring(2)
-                   group new CommentIdAndUid(commentId, uid) by commentId.StartsWith("T:") ? uid : uid.Remove(uid.Split('(')[0].LastIndexOf('.')) into g
+                   let lastDot = uid.Split('(')[0].LastIndexOf('.')
+                   group new CommentIdAndUid(commentId, uid) by commentId.StartsWith("N:") || commentId.StartsWith("T:") || lastDot == -1 ? uid : uid.Remove(lastDot) into g
                    select new ClassEntry(g.Key, g.ToList());
         }
 
@@ -672,11 +677,30 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                    select commentId;
         }
 
-        private async Task<StrongBox<bool>> IsUrlOkAsync(string url)
+        private async Task<StrongBox<bool?>> IsUrlOkAsync(string pair)
         {
+            var index = pair.IndexOf("||||");
+            var commentId = pair.Remove(index);
+            var url = pair.Substring(index + "||||".Length);
+
             using (var response = await _client.GetWithRetryAsync(url, _semaphoreForHttp, RetryDelay))
             {
-                return new StrongBox<bool>(response.StatusCode == HttpStatusCode.OK);
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    return new StrongBox<bool?>(null);
+                }
+                using (var stream = await response.Content.ReadAsStreamAsync())
+                using (var xr = XmlReader.Create(stream, new XmlReaderSettings { DtdProcessing = DtdProcessing.Ignore }))
+                {
+                    while (xr.ReadToFollowing("meta"))
+                    {
+                        if (xr.GetAttribute("name") == "ms.assetid")
+                        {
+                            return new StrongBox<bool?>(commentId.Equals(xr.GetAttribute("content"), StringComparison.OrdinalIgnoreCase));
+                        }
+                    }
+                }
+                return new StrongBox<bool?>(false);
             }
         }
 
