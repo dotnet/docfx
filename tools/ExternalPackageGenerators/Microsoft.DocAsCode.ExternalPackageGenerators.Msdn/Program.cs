@@ -419,11 +419,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             var shortId = await _shortIdCache.GetAsync(pair.CommentId);
             if (string.IsNullOrEmpty(shortId))
             {
-                return new XRefSpec
-                {
-                    Uid = pair.Uid,
-                    CommentId = pair.CommentId,
-                };
+                return null;
             }
             return new XRefSpec
             {
@@ -641,7 +637,8 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             return from commentId in GetAllCommentIdCore(file)
                    where commentId.StartsWith("N:") || commentId.StartsWith("T:") || commentId.StartsWith("E:") || commentId.StartsWith("F:") || commentId.StartsWith("M:") || commentId.StartsWith("P:")
                    let uid = commentId.Substring(2)
-                   group new CommentIdAndUid(commentId, uid) by commentId.StartsWith("N:") || commentId.StartsWith("T:") ? uid : uid.Remove(uid.Split('(')[0].LastIndexOf('.')) into g
+                   let lastDot = uid.Split('(')[0].LastIndexOf('.')
+                   group new CommentIdAndUid(commentId, uid) by commentId.StartsWith("N:") || commentId.StartsWith("T:") || lastDot == -1 ? uid : uid.Remove(lastDot) into g
                    select new ClassEntry(g.Key, g.ToList());
         }
 
