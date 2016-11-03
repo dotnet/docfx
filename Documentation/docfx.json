@@ -5,7 +5,7 @@
         {
           "files": [ "**/project.json" ],
           "exclude": [ "**/bin/**", "**/obj/**" ],
-          "cwd": "../src"
+          "src": "../src"
         }
       ],
       "dest": "obj/temp/docfxapi"

@@ -96,7 +96,7 @@ DocFX introduces the following syntax to define the dependency for the *Renderer
 `docfx` copies these dependencies to output folder preserving its relative path to the *Renderer* file.
 
 
-> Tips: Mustache is logic-less, and for a specific `{{name}}` tag, Mustache searches its context and its parent context recursively. So most of the time [*Preprocessor File*](#-preprocessor-file-) is used to re-define the data model used by the Mustache *Renderer*.
+> Tips: Mustache is logic-less, and for a specific `{{name}}` tag, Mustache searches its context and its parent context recursively. So most of the time [*Preprocessor File*](#preprocessor) is used to re-define the data model used by the Mustache *Renderer*.
 
 ### *Renderer* in Liquid syntax
 

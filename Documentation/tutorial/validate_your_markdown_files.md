@@ -54,7 +54,7 @@ You can use the following proprties to configure the HTML tag rule:
     For example, the `messageFormatter` is `{0} is the tag name of {1}.`, and the tag is `<H1 class="heading">` match the rule, then it will output following message: `H1 is the tag name of <H1 class="heading">.`
 5.  `customValidatorContractName` is an extension tag rule contract name for complex validation rule, *optional*.
 
-    see [How to create a custom html tag validator](#how-to-create-a-custom-html-tag-validator).
+    see [Create a custom HTML tag rule](#create-a-custom-html-tag-rule).
 6.  `openingTagOnly` is a boolean, *option*, default is `false`
 
     if `true`, it will only apply to opening tag, e.g. `<H1>`, otherwise, it will also apply to closing tag, e.g. `</H1>`.
