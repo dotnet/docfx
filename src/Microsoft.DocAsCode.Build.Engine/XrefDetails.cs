@@ -130,7 +130,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     value = Text;
                     if (string.IsNullOrEmpty(value) && Spec != null)
                     {
-                        value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, Uid, DisplayProperty, "name"));
+                        value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, DisplayProperty, "name"));
+                    }
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        value = Uid;
                     }
                 }
                 return GetAnchorNode(Href, Anchor, Title, value);
@@ -148,7 +152,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     value = Alt;
                     if (string.IsNullOrEmpty(value) && Spec != null)
                     {
-                        value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, Uid, AltProperty, "name"));
+                        value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, AltProperty, "name"));
+                    }
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        value = Uid;
                     }
                 }
 
@@ -185,7 +193,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return HtmlAgilityPack.HtmlNode.CreateNode(spanNode);
         }
 
-        private static string GetLanguageSpecificAttribute(XRefSpec spec, string language, string defaultValue, params string[] keyInFallbackOrder)
+        private static string GetLanguageSpecificAttribute(XRefSpec spec, string language, params string[] keyInFallbackOrder)
         {
             if (keyInFallbackOrder == null || keyInFallbackOrder.Length == 0) throw new ArgumentException("key must be provided!", nameof(keyInFallbackOrder));
             string suffix = string.Empty;
@@ -206,8 +214,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     return value;
                 }
             }
-
-            return defaultValue;
+            return null;
         }
 
         private static string GetRawUid(HtmlAgilityPack.HtmlNode node)
