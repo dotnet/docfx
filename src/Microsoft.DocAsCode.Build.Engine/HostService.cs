@@ -359,7 +359,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                      {
                                          Target = Uri.UnescapeDataString(targetUid),
                                          SourceFile = n.GetAttributeValue("sourceFile", null),
-                                         LineNumber = n.GetAttributeValue("sourceLineNumber", 0),
+                                         LineNumber = n.GetAttributeValue("sourceStartLineNumber", 0),
                                      } into lsi
                                      group lsi by lsi.Target into g
                                      select new KeyValuePair<string, ImmutableList<LinkSourceInfo>>(g.Key, g.ToImmutableList())).ToImmutableDictionary();
