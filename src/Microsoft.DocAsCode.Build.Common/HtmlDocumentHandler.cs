@@ -18,7 +18,6 @@ namespace Microsoft.DocAsCode.Build.Common
         {
             string phase = this.GetType().Name;
             using (new LoggerPhaseScope(phase, false))
-            using (new PerformanceScope(phase, LogLevel.Verbose))
             {
                 Handle(document, manifestItem, inputFile, outputFile);
             }
@@ -28,7 +27,6 @@ namespace Microsoft.DocAsCode.Build.Common
         {
             string phase = this.GetType().Name;
             using (new LoggerPhaseScope(phase, false))
-            using (new PerformanceScope(phase, LogLevel.Verbose))
             {
                 return PostHandle(manifest);
             }
@@ -38,7 +36,6 @@ namespace Microsoft.DocAsCode.Build.Common
         {
             string phase = this.GetType().Name;
             using (new LoggerPhaseScope(phase, false))
-            using (new PerformanceScope(phase, LogLevel.Verbose))
             {
                 return PreHandle(manifest);
             }
