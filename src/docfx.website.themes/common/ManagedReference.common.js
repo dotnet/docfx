@@ -63,6 +63,8 @@ exports.getBookmarks = function (model)  {
       bookmarks[item.uid] = common.getHtmlId(item.uid);
     });
   }
+
+  return bookmarks;
 }
 
 function groupChildren(model, typeChildrenItems) {
