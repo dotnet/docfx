@@ -39,14 +39,14 @@ namespace Microsoft.DocAsCode.Build.Common
             // RFC 3986: relative-ref = relative-part [ "?" query ] [ "#" fragment ]
             _linksWithBookmark[outputFile] =
                 (from node in GetNodesWithAttribute(document, "href")
-                 let link = HttpUtility.UrlDecode(node.GetAttributeValue("href", null))
-                 let title = node.InnerText
+                 let link = node.GetAttributeValue("href", null)
                  let bookmarkIndex = link.IndexOf("#")
-                 where bookmarkIndex != -1 && PathUtility.IsRelativePath(link)
+                 where bookmarkIndex != -1
+                 let bookmark = link.Substring(bookmarkIndex + 1)
                  let index = link.IndexOfAny(new[] { '?', '#' })
-                 select new LinkItem { Title = title, Href = TransformPath(outputFile, link.Remove(index)), Bookmark = link.Substring(bookmarkIndex + 1), SourceFile = node.GetAttributeValue("sourceFile", null), SourceLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0), TargetLineNumber = node.Line } into item
-                 where !WhiteList.Contains(item.Bookmark)
-                 select item).ToList();
+                 let decodedLink = HttpUtility.UrlDecode(link.Remove(index))
+                 where !WhiteList.Contains(bookmark) && PathUtility.IsRelativePath(decodedLink)
+                 select new LinkItem { Title = node.InnerText, Href = TransformPath(outputFile, decodedLink), Bookmark = bookmark, SourceFile = node.GetAttributeValue("sourceFile", null), SourceLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0), TargetLineNumber = node.Line }).ToList();
             var anchors = GetNodeAttribute(document, "id").Concat(GetNodeAttribute(document, "name"));
             _registeredBookmarks[outputFile] = new HashSet<string>(anchors);
         }
