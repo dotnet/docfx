@@ -40,10 +40,11 @@ namespace Microsoft.DocAsCode.Build.Common
             _linksWithBookmark[outputFile] =
                 (from node in GetNodesWithAttribute(document, "href")
                  let link = node.GetAttributeValue("href", null)
+                 let title = node.InnerText
                  let bookmarkIndex = link.IndexOf("#")
                  where bookmarkIndex != -1 && PathUtility.IsRelativePath(link)
                  let index = link.IndexOfAny(new[] { '?', '#' })
-                 select new LinkItem { Href = TransformPath(outputFile, HttpUtility.UrlDecode(link.Remove(index))), Bookmark = link.Substring(bookmarkIndex + 1), SourceLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0), TargetLineNumber = node.Line } into item
+                 select new LinkItem { Title = title, Href = TransformPath(outputFile, HttpUtility.UrlDecode(link.Remove(index))), Bookmark = link.Substring(bookmarkIndex + 1), SourceFile = node.GetAttributeValue("sourceFile", null), SourceLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0), TargetLineNumber = node.Line } into item
                  where !WhiteList.Contains(item.Bookmark)
                  select item).ToList();
             var anchors = GetNodeAttribute(document, "id").Concat(GetNodeAttribute(document, "name"));
@@ -57,21 +58,22 @@ namespace Microsoft.DocAsCode.Build.Common
                 string currentFile = pair.Key;
                 foreach (var linkItem in pair.Value)
                 {
+                    string title = linkItem.Title;
                     string linkedToFile = linkItem.Href == string.Empty ? currentFile : linkItem.Href;
                     string bookmark = linkItem.Bookmark;
                     HashSet<string> bookmarks;
                     if (_registeredBookmarks.TryGetValue(linkedToFile, out bookmarks) && !bookmarks.Contains(bookmark))
                     {
-                        string currentFileSrc = _fileMapping[currentFile];
+                        string currentFileSrc = linkItem.SourceFile ?? _fileMapping[currentFile];
                         string linkedToFileSrc = _fileMapping[linkedToFile];
                         if (linkItem.SourceLineNumber == 0)
                         {
-                            Logger.LogWarning($"{currentFile} contains illegal link: {linkItem.Href}#{bookmark}. The file {linkedToFile} doesn't contain a bookmark named {bookmark}, please check the src file {currentFileSrc} and src linkedTo file {linkedToFileSrc} or the template you applied.", file: currentFile, line: linkItem.TargetLineNumber.ToString());
+                            Logger.LogWarning($"{currentFile} contains illegal link: {linkItem.Href}#{bookmark}. Link text is `{title}`. The file {linkedToFile} doesn't contain a bookmark named {bookmark}, please check the src file {currentFileSrc} and src linkedTo file {linkedToFileSrc} or the template you applied.", file: currentFile, line: linkItem.TargetLineNumber.ToString());
                         }
                         else
                         {
                             string link = linkItem.Href == string.Empty ? $"#{bookmark}" : $"{linkedToFileSrc}#{bookmark}";
-                            Logger.LogWarning($"{currentFileSrc} contains illegal link: {link}. The file {linkedToFileSrc} doesn't contain a bookmark named {bookmark}.", file: currentFileSrc, line: linkItem.SourceLineNumber.ToString());
+                            Logger.LogWarning($"{currentFileSrc} contains illegal link: {link}. Link text is `{title}`. The file {linkedToFileSrc} doesn't contain a bookmark named {bookmark}.", file: currentFileSrc, line: linkItem.SourceLineNumber.ToString());
                         }
                     }
                 }
@@ -100,9 +102,13 @@ namespace Microsoft.DocAsCode.Build.Common
 
         private class LinkItem
         {
+            public string Title { get; set; }
+
             public string Href { get; set; }
 
             public string Bookmark { get; set; }
+
+            public string SourceFile { get; set; }
 
             public int SourceLineNumber { get; set; }
 

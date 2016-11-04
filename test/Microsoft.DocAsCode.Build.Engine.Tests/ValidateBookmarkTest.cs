@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             };
 
             File.WriteAllText(Path.Combine(outputFolder, "a.html"), @"<a href='http://bing.com#top'>Microsoft Bing</a> <p id='b1'>section</p><a href='#b1'/>");
-            File.WriteAllText(Path.Combine(outputFolder, "b.html"), @"<a href='a.html#b1' sourceStartLineNumber='23'>bookmark existed</a> <a href='a.html#b2' sourceStartLineNumber='24'>bookmark nonexisted</a><a href='a.html#b3'>bookmark nonexisted</a>");
+            File.WriteAllText(Path.Combine(outputFolder, "b.html"), @"<a href='a.html#b1' sourceFile='b.md' sourceStartLineNumber='1'>bookmark existed</a><a href='a.html#b2' sourceFile='b.md' sourceStartLineNumber='1'>link with source info</a> <a href='a.html#b3' sourceFile='token.md' sourceStartLineNumber='1'>link in token file</a><a href='a.html#b4'>link without source info</a>");
 
             Logger.RegisterListener(_listener);
             using (new LoggerPhaseScope("validate_bookmark"))
@@ -48,11 +48,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Logger.UnregisterListener(_listener);
             var logs = _listener.Items;
             Console.WriteLine(string.Concat(logs.Select(l => l.Message)));
-            Assert.Equal(2, logs.Count);
+            Assert.Equal(3, logs.Count);
             var expected = new[]
             {
-                @"b.md contains illegal link: a.md#b2. The file a.md doesn't contain a bookmark named b2.",
-                @"b.html contains illegal link: a.html#b3. The file a.html doesn't contain a bookmark named b3, please check the src file b.md and src linkedTo file a.md or the template you applied."
+                @"b.md contains illegal link: a.md#b2. Link text is `link with source info`. The file a.md doesn't contain a bookmark named b2.",
+                @"token.md contains illegal link: a.md#b3. Link text is `link in token file`. The file a.md doesn't contain a bookmark named b3.",
+                @"b.html contains illegal link: a.html#b4. Link text is `link without source info`. The file a.html doesn't contain a bookmark named b4, please check the src file b.md and src linkedTo file a.md or the template you applied."
             };
             var actual = logs.Select(l => l.Message).ToList();
             Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);
