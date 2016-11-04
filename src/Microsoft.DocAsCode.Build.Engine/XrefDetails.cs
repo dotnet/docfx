@@ -101,17 +101,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return;
             }
-            var href = spec.Href;
-            if (PathUtility.IsRelativePath(href))
+
+            // TODO: What if href is not html?
+            if (string.IsNullOrEmpty(Anchor) && !string.IsNullOrEmpty(spec.Href))
             {
-                if (string.IsNullOrEmpty(Anchor))
-                {
-                    // TODO: hashtag from tempalte
-                    // TODO: What if href is not html?
-                    Anchor = "#" + GetHtmlId(Uid);
-                }
+                Anchor = UriUtility.GetFragment(spec.Href);
             }
-            Href = HttpUtility.UrlDecode(href);
+            if (!string.IsNullOrEmpty(spec.Href))
+            {
+                Href = UriUtility.GetNonFragment(spec.Href);
+            }
             Spec = spec;
         }
 
@@ -154,12 +153,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 return GetDefaultPlainTextNode(value);
             }
-        }
-
-        public static string GetHtmlId(string id)
-        {
-            if (string.IsNullOrEmpty(id)) return null;
-            return HtmlEncodeRegex.Replace(id, "_");
         }
 
         private static HtmlAgilityPack.HtmlNode GetAnchorNode(string href, string anchor, string title, string value)

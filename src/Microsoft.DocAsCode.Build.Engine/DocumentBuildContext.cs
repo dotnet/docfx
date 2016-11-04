@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
@@ -234,6 +235,23 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (string.IsNullOrEmpty(xrefSpec.Href)) throw new ArgumentException("Href for xref spec must contain value");
             if (!PathUtility.IsRelativePath(xrefSpec.Href)) throw new ArgumentException("Only relative href path is supported");
             XRefSpecMap[xrefSpec.Uid] = xrefSpec;
+        }
+
+        public void RegisterInternalXrefSpecBookmark(string uid, string bookmark)
+        {
+            if (string.IsNullOrEmpty(uid)) throw new ArgumentNullException(nameof(uid));
+            if (bookmark == null) throw new ArgumentNullException(nameof(uid));
+            if (bookmark == string.Empty) return;
+
+            XRefSpec xref;
+            if (XRefSpecMap.TryGetValue(uid, out xref))
+            {
+                xref.Href = UriUtility.GetNonFragment(xref.Href) + "#" + bookmark;
+            }
+            else
+            {
+                throw new DocfxException($"Xref spec with uid {uid} not found. Can't register bookmark {bookmark} to it.");
+            }
         }
 
         public XRefSpec GetXrefSpec(string uid)

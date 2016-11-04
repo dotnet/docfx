@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+var common = require('./common.js')
 var mrefCommon = require('./ManagedReference.common.js');
 var extension = require('./ManagedReference.extension.js')
 
@@ -15,5 +16,9 @@ exports.transform = function (model) {
 
   model = extension.postTransform(model);
 
-  return {item: model};
+  return { item: model };
+}
+
+exports.getOptions = function (model) {
+  return { "bookmarks": mrefCommon.getBookmarks(model) };
 }
