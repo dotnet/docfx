@@ -124,16 +124,23 @@ namespace Microsoft.DocAsCode.Build.Engine
             // If href exists, return anchor else return text
             if (!string.IsNullOrEmpty(Href))
             {
-                string value = InnerHtml;
-                if (string.IsNullOrEmpty(value))
+                if (!string.IsNullOrEmpty(InnerHtml))
                 {
-                    value = Text;
-                    if (string.IsNullOrEmpty(value) && Spec != null)
+                    return GetAnchorNode(Href, Anchor, Title, InnerHtml);
+                }
+                if (!string.IsNullOrEmpty(Text))
+                {
+                    return GetAnchorNode(Href, Anchor, Title, Text);
+                }
+                if (Spec != null)
+                {
+                    var value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, DisplayProperty, "name"));
+                    if (!string.IsNullOrEmpty(value))
                     {
-                        value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, Uid, DisplayProperty, "name"));
+                        return GetAnchorNode(Href, Anchor, Title, value);
                     }
                 }
-                return GetAnchorNode(Href, Anchor, Title, value);
+                return GetAnchorNode(Href, Anchor, Title, Uid);
             }
             else
             {
@@ -141,18 +148,23 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     return HtmlAgilityPack.HtmlNode.CreateNode(Raw);
                 }
-
-                string value = InnerHtml;
-                if (string.IsNullOrEmpty(value))
+                if (!string.IsNullOrEmpty(InnerHtml))
                 {
-                    value = Alt;
-                    if (string.IsNullOrEmpty(value) && Spec != null)
+                    return GetDefaultPlainTextNode(InnerHtml);
+                }
+                if (!string.IsNullOrEmpty(Alt))
+                {
+                    return GetDefaultPlainTextNode(Alt);
+                }
+                if (Spec != null)
+                {
+                    var value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, AltProperty, "name"));
+                    if (!string.IsNullOrEmpty(value))
                     {
-                        value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, Uid, AltProperty, "name"));
+                        return GetDefaultPlainTextNode(value);
                     }
                 }
-
-                return GetDefaultPlainTextNode(value);
+                return GetDefaultPlainTextNode(Uid);
             }
         }
 
@@ -185,7 +197,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return HtmlAgilityPack.HtmlNode.CreateNode(spanNode);
         }
 
-        private static string GetLanguageSpecificAttribute(XRefSpec spec, string language, string defaultValue, params string[] keyInFallbackOrder)
+        private static string GetLanguageSpecificAttribute(XRefSpec spec, string language, params string[] keyInFallbackOrder)
         {
             if (keyInFallbackOrder == null || keyInFallbackOrder.Length == 0) throw new ArgumentException("key must be provided!", nameof(keyInFallbackOrder));
             string suffix = string.Empty;
@@ -206,8 +218,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     return value;
                 }
             }
-
-            return defaultValue;
+            return null;
         }
 
         private static string GetRawUid(HtmlAgilityPack.HtmlNode node)
