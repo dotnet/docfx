@@ -1,5 +1,10 @@
-Version Notes (Current Version: v2.7.2)
+Version Notes (Current Version: v2.7.3)
 =======================================
+
+v2.7.3
+-----------
+1.  Fix bookmark validation failed when link contains illegal characters.
+2.  Fix xref to fall back to uid.
 
 v2.7.2
 -----------
