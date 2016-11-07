@@ -6,6 +6,11 @@ exports.transform = function (model) {
   return model;
 
   function transformItem(item, level) {
+    // set to null incase mustache looks up
+    item.topicHref = item.topicHref || null;
+    item.tocHref = item.tocHref || null;
+    item.name = item.name || null;
+
     item.level = level;
     if (item.items && item.items.length > 0) {
       var length = item.items.length;
