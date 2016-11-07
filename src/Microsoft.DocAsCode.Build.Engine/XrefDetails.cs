@@ -103,13 +103,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             // TODO: What if href is not html?
-            if (string.IsNullOrEmpty(Anchor) && !string.IsNullOrEmpty(spec.Href))
-            {
-                Anchor = UriUtility.GetFragment(spec.Href);
-            }
             if (!string.IsNullOrEmpty(spec.Href))
             {
                 Href = UriUtility.GetNonFragment(spec.Href);
+                if (string.IsNullOrEmpty(Anchor))
+                {
+                    Anchor = UriUtility.GetFragment(spec.Href);
+                }
             }
             Spec = spec;
         }
