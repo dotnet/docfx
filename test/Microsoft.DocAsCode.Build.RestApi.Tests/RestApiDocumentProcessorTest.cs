@@ -120,6 +120,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var parameter2 = (JObject)item5.Parameters[2].Metadata["schema"];
             Assert.Equal("string", parameter2["type"]);
             Assert.Equal("uri", parameter2["format"]);
+            // Verify markup result of parameters
+            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">The request body <em>contains</em> a single property that specifies the URL of the user or contact to add as manager.</p>\n",
+                item5.Parameters[2].Description);
+            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><strong>uri</strong> description.</p>\n", 
+                ((string)parameter2["description"]));
         }
 
         [Fact]
@@ -172,8 +177,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
 
             // Verify overwrite parameters
             var parametersForUpdate = model.Children.Single(c => c.OperationId == "update contact").Parameters;
-            Assert.Equal("The new object_id description", parametersForUpdate.Single(p => p.Name == "object_id").Description);
-            Assert.Equal("The new bodyparam description", parametersForUpdate.Single(p => p.Name == "bodyparam").Description);
+            Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.simple.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">The new object_id description</p>\n",
+                parametersForUpdate.Single(p => p.Name == "object_id").Description);
+            Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.simple.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">The new bodyparam description</p>\n",
+                parametersForUpdate.Single(p => p.Name == "bodyparam").Description);
         }
 
         [Fact]

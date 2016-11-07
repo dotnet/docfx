@@ -4,9 +4,9 @@
 namespace Microsoft.DocAsCode.Build.RestApi
 {
     using System;
-    using System.Collections.Generic;
     using System.Composition;
     using System.Collections.Immutable;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
@@ -14,12 +14,13 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using Microsoft.DocAsCode.DataContracts.RestApi;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
-    using Microsoft.DocAsCode.Utility.EntityMergers;
+
+    using Newtonsoft.Json.Linq;
 
     [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
     public class BuildRestApiDocument : BaseDocumentBuildStep
     {
-        private readonly ReflectionEntityMerger Merger = new ReflectionEntityMerger();
+        private static readonly HashSet<string> MarkupKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "description" };
 
         public override string Name => nameof(BuildRestApiDocument);
 
@@ -63,7 +64,50 @@ namespace Microsoft.DocAsCode.Build.RestApi
             {
                 item.Conceptual = Markup(host, item.Conceptual, model, filter);
             }
+
+            var childModel = item as RestApiChildItemViewModel;
+            if (childModel?.Parameters != null)
+            {
+                foreach (var param in childModel.Parameters)
+                {
+                    param.Description = Markup(host, param.Description, model, filter);
+
+                    foreach (var jToken in param.Metadata.Values.OfType<JToken>())
+                    {
+                        MarkupRecursive(jToken, host, model, filter);
+                    }
+                }
+            }
             return item;
+        }
+
+        private static void MarkupRecursive(JToken jToken, IHostService host, FileModel model, Func<string, bool> filter = null)
+        {
+            var jArray = jToken as JArray;
+            if (jArray != null)
+            {
+                foreach (var item in jArray)
+                {
+                    MarkupRecursive(item, host, model, filter);
+                }
+            }
+
+            var jObject = jToken as JObject;
+            if (jObject != null)
+            {
+                foreach (var pair in jObject)
+                {
+                    if (MarkupKeys.Contains(pair.Key) && pair.Value != null)
+                    {
+                        var jValue = pair.Value as JValue;
+                        if (jValue != null && jValue.Type == JTokenType.String)
+                        {
+                            jObject[pair.Key] = Markup(host, (string)jValue, model, filter);
+                        }
+                    }
+                    MarkupRecursive(jObject[pair.Key], host, model, filter);
+                }
+            }
         }
 
         private static void BuildItem(IHostService host, FileModel model)

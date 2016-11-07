@@ -259,7 +259,7 @@
           },
           {
             "in": "body",
-            "description": "The request body contains a single property that specifies the URL of the user or contact to add as manager.",
+            "description": "The request body *contains* a single property that specifies the URL of the user or contact to add as manager.",
             "name": "bodyparam",
             "required": true,
             "schema": {
@@ -589,7 +589,8 @@
     },
     "url": {
       "type": "string",
-      "format": "uri"
+      "format": "uri",
+      "description": "**uri** description."
     },
     "containerUrl": {
       "$ref": "#/definitions/url",
