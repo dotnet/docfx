@@ -29,6 +29,5 @@ namespace Microsoft.DocAsCode.Utility
             var index = uriString.IndexOf(FragmentMarker);
             return index == -1 ? uriString : uriString.Remove(index);
         }
-
     }
 }
