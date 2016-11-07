@@ -1170,6 +1170,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             lpi = null;
             cpi = CreateProcessorInfo(incrementalContext, processor, versionName);
 
+            if (!incrementalContext.CanVersionIncremental)
+            {
+                return false;
+            }
+
             if (LastBuildInfo == null)
             {
                 Logger.LogVerbose($"Processor {processor.Name} disable incremental build because no last build.");
