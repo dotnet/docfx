@@ -106,15 +106,24 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         {
                             continue;
                         }
-                        Debug.Assert(sourceParts.Count == targetParts.Count);
-                        for (int i = 0; i < sourceParts.Count; i++)
+                        if (targetParts.Count == 0)
                         {
-                            Debug.Assert(sourceParts[i].Name == targetParts[i].Name);
-                            // Disable for now as it will fail for .NET Core project
-                            // Debug.Assert(sourceParts[i].DisplayName == targetParts[i].DisplayName);
-                            // Debug.Assert(sourceParts[i].DisplayQualifiedNames == targetParts[i].DisplayQualifiedNames);
-                            targetParts[i].IsExternalPath &= sourceParts[i].IsExternalPath;
-                            targetParts[i].Href = targetParts[i].Href ?? sourceParts[i].Href;
+                            targetParts.AddRange(sourceParts);
+                            continue;
+                        }
+
+                        Debug.Assert(sourceParts.Count == targetParts.Count);
+
+                        if (sourceParts.Count == targetParts.Count)
+                        {
+                            for (int i = 0; i < sourceParts.Count; i++)
+                            {
+                                Debug.Assert(sourceParts[i].Name == targetParts[i].Name);
+                                Debug.Assert(sourceParts[i].DisplayName == targetParts[i].DisplayName);
+                                Debug.Assert(sourceParts[i].DisplayQualifiedNames == targetParts[i].DisplayQualifiedNames);
+                                targetParts[i].IsExternalPath &= sourceParts[i].IsExternalPath;
+                                targetParts[i].Href = targetParts[i].Href ?? sourceParts[i].Href;
+                            }
                         }
                     }
                     else
