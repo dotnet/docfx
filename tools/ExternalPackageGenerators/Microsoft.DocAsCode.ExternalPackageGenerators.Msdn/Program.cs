@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 
         private static readonly Stopwatch Stopwatch = Stopwatch.StartNew();
 
-        private readonly Regex NormalUid = new Regex(@"^[a-zA-Z0-9\.]+$", RegexOptions.Compiled);
+        private readonly Regex NormalUid = new Regex(@"^[a-zA-Z0-9_\.]+$", RegexOptions.Compiled);
         private readonly HttpClient _client = new HttpClient();
 
         private readonly Cache<string> _shortIdCache;
@@ -396,7 +396,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 
         private async Task<XRefSpec> GetXRefSpecAsync(CommentIdAndUid pair)
         {
-            var alias = GetAlias(pair.CommentId);
+            var alias = GetAliasWithMember(pair.CommentId);
             if (alias != null)
             {
                 var url = string.Format(MsdnUrlTemplate, alias, _msdnVersion);
@@ -410,10 +410,6 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                         CommentId = pair.CommentId,
                         Href = url,
                     };
-                }
-                if (vr == false)
-                {
-                    return null;
                 }
             }
             var shortId = await _shortIdCache.GetAsync(pair.CommentId);
@@ -515,6 +511,22 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                 return null;
             }
             var uid = commentId.Substring(2);
+            if (NormalUid.IsMatch(uid))
+            {
+                return uid.ToLower();
+            }
+            return null;
+        }
+
+        private string GetAliasWithMember(string commentId)
+        {
+            var uid = commentId.Substring(2);
+            var parameterIndex = uid.IndexOf('(');
+            if (parameterIndex != -1)
+            {
+                uid = uid.Remove(parameterIndex);
+            }
+            uid = GenericMethodPostFix.Replace(uid, string.Empty);
             if (NormalUid.IsMatch(uid))
             {
                 return uid.ToLower();
