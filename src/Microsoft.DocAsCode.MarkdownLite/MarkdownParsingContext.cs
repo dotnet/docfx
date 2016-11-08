@@ -23,6 +23,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public string CurrentMarkdown { get; private set; }
 
+        public bool IsInParagraph { get; set; }
+
         public int LineNumber => _lineNumber;
 
         public string File => _file;

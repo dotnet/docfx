@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
         public override Regex LeadingBlockquote => _azureLeadingBlankRegex;
 
-        public override IMarkdownToken TryMatch(IMarkdownParser engine, IMarkdownParsingContext context)
+        public override IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             var match = Blockquote.Match(context.CurrentMarkdown);
             if (match.Length == 0)
@@ -23,19 +23,16 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 return null;
             }
             var sourceInfo = context.Consume(match.Length);
-            return new TwoPhaseBlockToken(
+            var c = parser.SwitchContext(MarkdownBlockContext.IsBlockQuote, true);
+            var capStr = LeadingBlockquote.Replace(sourceInfo.Markdown, string.Empty);
+            var blockTokens = parser.Tokenize(sourceInfo.Copy(capStr));
+            blockTokens = TokenHelper.CreateParagraghs(parser, this, blockTokens, true, sourceInfo);
+            parser.SwitchContext(c);
+            return new MarkdownBlockquoteBlockToken(
                 this,
-                engine.Context,
-                sourceInfo,
-                (p, t) =>
-                {
-                    var capStr = LeadingBlockquote.Replace(t.SourceInfo.Markdown, string.Empty);
-                    var c = p.SwitchContext(MarkdownBlockContext.IsBlockQuote, true);
-                    var tokens = p.Tokenize(t.SourceInfo.Copy(capStr));
-                    tokens = TokenHelper.ParseInlineToken(p, t.Rule, tokens, true, t.SourceInfo);
-                    p.SwitchContext(c);
-                    return new AzureBlockquoteBlockToken(this, t.Context, tokens, t.SourceInfo);
-                });
+                parser.Context,
+                blockTokens,
+                sourceInfo);
         }
     }
 }

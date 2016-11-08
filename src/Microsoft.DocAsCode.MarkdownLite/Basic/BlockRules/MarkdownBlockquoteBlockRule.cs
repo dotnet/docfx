@@ -21,17 +21,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return null;
             }
             var sourceInfo = context.Consume(match.Length);
-            return new TwoPhaseBlockToken(
+            var capStr = LeadingBlockquote.Replace(sourceInfo.Markdown, string.Empty);
+            var blockTokens = parser.Tokenize(sourceInfo.Copy(capStr));
+            blockTokens = TokenHelper.CreateParagraghs(parser, this, blockTokens, true, sourceInfo);
+            return new MarkdownBlockquoteBlockToken(
                 this,
                 parser.Context,
-                sourceInfo,
-                (p, t) =>
-                {
-                    var capStr = LeadingBlockquote.Replace(t.SourceInfo.Markdown, string.Empty);
-                    var blockTokens = p.Tokenize(t.SourceInfo.Copy(capStr));
-                    blockTokens = TokenHelper.ParseInlineToken(p, t.Rule, blockTokens, true, t.SourceInfo);
-                    return new MarkdownBlockquoteBlockToken(t.Rule, t.Context, blockTokens, t.SourceInfo);
-                });
+                blockTokens,
+                sourceInfo);
         }
     }
 }

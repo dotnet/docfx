@@ -7,34 +7,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownParagraphBlockRule : IMarkdownRule
     {
-        public virtual string Name => "Paragraph";
+        public static readonly MarkdownParagraphBlockRule Instance = new MarkdownParagraphBlockRule();
 
-        public virtual Regex Paragraph => Regexes.Block.Paragraph;
+        private MarkdownParagraphBlockRule() { }
 
-        public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
+        public string Name => "Paragraph";
+
+        public IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            if (!(bool)parser.Context.Variables[MarkdownBlockContext.IsTop])
-            {
-                return null;
-            }
-            var match = Paragraph.Match(context.CurrentMarkdown);
-            if (match.Length == 0)
-            {
-                return null;
-            }
-            var sourceInfo = context.Consume(match.Length);
-            var content = match.Groups[1].Value[match.Groups[1].Value.Length - 1] == '\n'
-                ? match.Groups[1].Value.Substring(0, match.Groups[1].Value.Length - 1)
-                : match.Groups[1].Value;
-            return new TwoPhaseBlockToken(
-                this,
-                parser.Context,
-                sourceInfo,
-                (p, t) => new MarkdownParagraphBlockToken(
-                    t.Rule,
-                    t.Context,
-                    p.TokenizeInline(t.SourceInfo.Copy(content)),
-                    t.SourceInfo));
+            return null;
         }
     }
 }

@@ -220,11 +220,12 @@ Skip the note",
              "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>1>Paragraph\",\"children\":[{\"name\":\"1>1>Text>the following is not note type\"}]},{\"name\":\"2>6>Blockquote\",\"children\":[{\"name\":\"2>2>Paragraph\",\"children\":[{\"name\":\"2>2>Text>no-note text 1-1\"}]},{\"name\":\"4>4>NOTE\"},{\"name\":\"5>6>Paragraph\",\"children\":[{\"name\":\"5>5>Text>no-note text 2-1\"},{\"name\":\"5>5>Br\"},{\"name\":\"6>6>Text>no-note text 2-2\"}]}]}]}"
          )]
         [InlineData(@"the following is code
+
     > code text 1-1
     > [!NOTE]
     > code text 1-2  
     > code text 2-1",
-             "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>1>Paragraph\",\"children\":[{\"name\":\"1>1>Text>the following is code\"}]},{\"name\":\"2>5>Code>&gt; code text 1-1\\n&gt; [!NOTE]\\n&gt; code text 1-2  \\n&gt; code text 2-1\"}]}"
+             "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>1>Paragraph\",\"children\":[{\"name\":\"1>1>Text>the following is code\"}]},{\"name\":\"3>6>Code>&gt; code text 1-1\\n&gt; [!NOTE]\\n&gt; code text 1-2  \\n&gt; code text 2-1\"}]}"
          )]
         public void TestSectionNoteInBlockQuote(string source, string expected)
         {

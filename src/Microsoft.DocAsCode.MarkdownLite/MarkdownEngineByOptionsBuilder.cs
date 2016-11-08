@@ -52,14 +52,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 builder.Add(new MarkdownTableBlockRule());
             }
-            if (Options.Gfm)
-            {
-                builder.Add(new GfmParagraphBlockRule());
-            }
-            else
-            {
-                builder.Add(new MarkdownParagraphBlockRule());
-            }
             builder.Add(new MarkdownTextBlockRule());
             BlockRules = builder.ToImmutable();
         }

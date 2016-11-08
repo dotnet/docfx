@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     public interface IMarkdownParsingContext
     {
         string CurrentMarkdown { get; }
+        bool IsInParagraph { get; set; }
 
         SourceInfo Consume(int charCount);
     }

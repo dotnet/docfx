@@ -190,7 +190,7 @@ tagRules : [
                         string.Join(
                             "\n",
                             "",
-                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"8\" sourceendlinenumber=\"25\">Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef1\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"8\" sourceendlinenumber=\"8\"></xref>",
+                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"8\" sourceendlinenumber=\"27\">Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw=\"@XRef1\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"8\" sourceendlinenumber=\"8\"></xref>",
                             $"Test link: <a href=\"~/{_inputFolder}/test/test.md\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"9\" sourceendlinenumber=\"9\">link text</a>",
                             $"Test link: <a href=\"~/{resourceFile}\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"10\" sourceendlinenumber=\"10\">link text 2</a>",
                             $"Test link style xref: <a href=\"xref:XRef2\" title=\"title\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\">link text 3</a>",
@@ -207,8 +207,8 @@ tagRules : [
                             "Test xref with attribute: <xref href=\"XRef2\" text=\"Foo&lt;T&gt;\"></xref>",
                             "Test xref with attribute: <xref href=\"XRef2\" name=\"Foo&lt;T&gt;\"></xref>",
                             "Test invalid xref with attribute: <xref href=\"invalid\" alt=\"Foo&lt;T&gt;\"></xref>",
-                            "Test invalid xref with attribute: <xref href=\"invalid\" fullname=\"Foo&lt;T&gt;\"></xref></p>",
-                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"26\" sourceendlinenumber=\"27\"><p>",
+                            "Test invalid xref with attribute: <xref href=\"invalid\" fullname=\"Foo&lt;T&gt;\"></xref>",
+                            "<p>",
                             "test</p>",
                             ""),
                         model[Constants.PropertyName.Conceptual]);
@@ -233,8 +233,8 @@ tagRules : [
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
-                            "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span></p>",
-                            "<p><p>",
+                            "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
+                            "<p>",
                             "test</p>",
                             ""),
                         File.ReadAllText(conceptualOutputPath));

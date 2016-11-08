@@ -20,8 +20,6 @@ namespace Microsoft.DocAsCode.Dfm
         private readonly FileCacheLite _cache;
         private readonly Dictionary<string, HashSet<string>> _dependencyCache = new Dictionary<string, HashSet<string>>();
 
-        public static readonly string InlineIncRegexString = @"^\[!INCLUDE\s*\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?([^)]*?)>?(?:\s+(['""])([\s\S]*?)\3)?\s*\)\]";
-
         public DocfxFlavoredIncHelper()
         {
             _cache = new FileCacheLite(new FilePathComparer());

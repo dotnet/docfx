@@ -132,11 +132,13 @@ code
 <li>asdf</li>
 <li>sdfa</li>
 <li><p>adsf</p>
-<pre><code>- j
-- j
-
-    ![](a)
-</code></pre></li>
+<ul>
+<li>j</li>
+<li><p>j</p>
+<p>  <img src=""a"" alt=""""></p>
+</li>
+</ul>
+</li>
 </ol>
 ")]
         [InlineData(@"1. asdf
@@ -451,9 +453,8 @@ aaa",
         [InlineData(
             @"<!--a-->[b](c)<!--d-->e
 <!--f-->",
-            @"<p><!--a--><a href=""c"">b</a><!--d-->e
-<!--f--></p>
-")]
+            @"<p><!--a--><a href=""c"">b</a><!--d-->e</p>
+<!--f-->")]
         [InlineData(
             @"aabbcc:smile:ddee",
             @"<p>aabbcc<span class=""emoji"" shortCode=""smile"">😄</span>ddee</p>
