@@ -51,6 +51,22 @@ exports.transform = function (model)  {
   return model;
 }
 
+exports.getBookmarks = function (model)  {
+  if (!model) return null;
+
+  var bookmarks = {};
+  // Reference's first level bookmark should have no anchor
+  bookmarks[model.uid] = "";
+
+  if (model.children) {
+    model.children.forEach(function (item) {
+      bookmarks[item.uid] = common.getHtmlId(item.uid);
+    });
+  }
+
+  return bookmarks;
+}
+
 function groupChildren(model, typeChildrenItems) {
   var grouped = {};
 
@@ -115,6 +131,9 @@ function handleItem(vm, gitContribute, gitUrlPattern) {
   vm.syntax = vm.syntax || null;
   vm.implements = vm.implements || null;
   common.processSeeAlso(vm);
+
+  // id is used as default template's bookmark
+  vm.id = common.getHtmlId(vm.uid);
 
   if (vm.supported_platforms) {
       vm.supported_platforms = transformDictionaryToArray(vm.supported_platforms);

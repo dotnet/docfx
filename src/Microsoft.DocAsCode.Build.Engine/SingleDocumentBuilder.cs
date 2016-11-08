@@ -580,8 +580,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
                 {
                     Logger.LogDiagnostic($"Feed xref map from template for {m.Item.DocumentType}...");
-                    var bookmarks = m.Options.Bookmarks;
-                    // TODO: Add bookmarks to xref
+                    // TODO: use m.Options.Bookmarks directly after all templates report bookmarks
+                    var bookmarks = m.Options.Bookmarks ?? m.FileModel.Bookmarks;
+                    foreach (var pair in bookmarks)
+                    {
+                        context.RegisterInternalXrefSpecBookmark(pair.Key, pair.Value);
+                    }
                 }
             });
         }
@@ -1005,7 +1009,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     else
                     {
-                        context.XRefSpecMap[spec.Uid] = spec.ToReadOnly();
+                        context.RegisterInternalXrefSpec(spec);
                     }
                 }
             }
@@ -1252,7 +1256,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                  select new XRefSpec(xref)
                  {
-                     Href = ((RelativePath)context.FileMap[xref.Href]).RemoveWorkingFolder().ToString() + "#" + XRefDetails.GetHtmlId(xref.Uid),
+                     Href = ((RelativePath)context.FileMap[UriUtility.GetNonFragment(xref.Href)]).RemoveWorkingFolder(),
                  }).ToList();
             xrefMap.Sort();
             string xrefMapFileNameWithVersion = string.IsNullOrEmpty(parameters.VersionName) ?

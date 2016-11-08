@@ -34,9 +34,15 @@ namespace Microsoft.DocAsCode.Plugins
         /// <summary>
         /// Register internal xref spec
         /// </summary>
-        /// <param name="uid">The uid of current file</param>
-        /// <param name="fileKey">The file key of current file</param>
+        /// <param name="xrefSpec">The xref spec to be registered</param>
         void RegisterInternalXrefSpec(XRefSpec xrefSpec);
+
+        /// <summary>
+        /// Register internal xref spec bookmark
+        /// </summary>
+        /// <param name="uid">The uid of the xref spec to be registered the bookmark</param>
+        /// <param name="bookmark">The bookmark to be registered</param>
+        void RegisterInternalXrefSpecBookmark(string uid, string bookmark);
 
         /// <summary>
         /// Get a set of file key for the toc files that current file belongs to

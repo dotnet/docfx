@@ -186,7 +186,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         protected virtual void UpdateModelContent(FileModel model)
         {
-            model.Content = ApiBuildOutput.FromModel((PageViewModel)model.Content); // Fill in details
+            var apiModel = ApiBuildOutput.FromModel((PageViewModel)model.Content); // Fill in details
+            model.Content = apiModel;
+
+            // Fill in bookmarks if template doesn't generate them.
+            // TODO: remove these
+            model.Bookmarks[apiModel.Uid] = string.Empty; // Reference's first level bookmark should have no anchor
+            apiModel.Children?.ForEach(c => model.Bookmarks[c.Uid] = c.Id);
         }
 
         private IEnumerable<XRefSpec> GetXRefFromReference(PageViewModel vm)

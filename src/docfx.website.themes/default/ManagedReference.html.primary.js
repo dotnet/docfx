@@ -15,5 +15,9 @@ exports.transform = function (model) {
 
   model = extension.postTransform(model);
 
-  return {item: model};
+  return { item: model };
+}
+
+exports.getOptions = function (model) {
+  return { "bookmarks": mrefCommon.getBookmarks(model) };
 }
