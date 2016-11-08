@@ -129,7 +129,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
 
             // Get the first docfx.json config file
-            var configFiles = projects.FindAll(s => Path.GetFileName(s).Equals(DocAsCode.Constants.ConfigFileName, StringComparison.OrdinalIgnoreCase));
+            var configFiles = projects.FindAll(s => Path.GetExtension(s).Equals(Constants.ConfigFileExtension, StringComparison.OrdinalIgnoreCase) && !Path.GetFileName(s).Equals(Constants.SupportedProjectName));
             var otherFiles = projects.Except(configFiles).ToList();
 
             // Load and ONLY load docfx.json when it exists
