@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Utility.Tests
     using System;
     using Xunit;
 
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     [Trait("Owner", "vwxyzh")]
     [Trait("Related", "RelativePath")]

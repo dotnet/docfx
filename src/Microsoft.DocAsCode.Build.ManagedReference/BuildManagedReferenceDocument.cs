@@ -11,9 +11,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using System.Collections.Immutable;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
     using Microsoft.DocAsCode.Utility.EntityMergers;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]

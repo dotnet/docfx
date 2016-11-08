@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using System;
     using System.Linq;
 
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     public static class RestApiHelper
     {

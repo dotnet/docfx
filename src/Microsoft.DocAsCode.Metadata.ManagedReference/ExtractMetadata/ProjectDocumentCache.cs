@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Collections.Generic;
     using System.Linq;
 
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     internal class ProjectDocumentCache
     {

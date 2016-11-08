@@ -10,10 +10,10 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using HtmlAgilityPack;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
     public class BuildConceptualDocument : BaseDocumentBuildStep, ISupportIncrementalBuildStep
