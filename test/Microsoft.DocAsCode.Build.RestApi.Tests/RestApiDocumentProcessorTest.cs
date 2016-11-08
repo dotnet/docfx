@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             _inputFolder = GetRandomFolder();
             _templateFolder = GetRandomFolder();
             _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
-            _defaultFiles.Add(DocumentType.Article, new[] { "TestData/contacts.json" }, "TestData/", null);
+            _defaultFiles.Add(DocumentType.Article, new[] { "TestData/contacts.json" }, "TestData/");
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
             _applyTemplateSettings.RawModelExportSettings.Export = true;
         }
@@ -120,6 +120,30 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var parameter2 = (JObject)item5.Parameters[2].Metadata["schema"];
             Assert.Equal("string", parameter2["type"]);
             Assert.Equal("uri", parameter2["format"]);
+        }
+
+        [Fact]
+        public void ProcessSwaggerWithXRefMap()
+        {
+            var files = new FileCollection(_defaultFiles);
+            BuildDocument(files);
+
+            var xrefMapPath = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder, XRefArchive.MajorFileName);
+            var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapPath);
+
+            Assert.NotNull(xrefMap.References);
+            var rootItem = xrefMap.References[0];
+            Assert.Equal("graph.windows.net/myorganization/Contacts/1.0", rootItem.Uid);
+            Assert.Equal("Contacts", rootItem.Name);
+            Assert.Equal("contacts.json", rootItem.Href);
+            var childItem1 = xrefMap.References[1];
+            Assert.Equal("graph.windows.net/myorganization/Contacts/1.0/delete contact", childItem1.Uid);
+            Assert.Equal("delete contact", childItem1.Name);
+            Assert.Equal("contacts.json", childItem1.Href);
+            var tagItem1 = xrefMap.References[9];
+            Assert.Equal("graph.windows.net/myorganization/Contacts/1.0/tag/contact", tagItem1.Uid);
+            Assert.Equal("contact", tagItem1.Name);
+            Assert.Equal("contacts.json", tagItem1.Href);
         }
 
         [Fact]

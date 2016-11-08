@@ -129,10 +129,47 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 LinkToUids = model.LinkToUids,
                 FileLinkSources = model.FileLinkSources,
                 UidLinkSources = model.UidLinkSources,
+                XRefSpecs = GetXRefInfo(vm, model.Key).ToImmutableArray()
             };
         }
 
         #region Private methods
+
+        private static IEnumerable<XRefSpec> GetXRefInfo(RestApiRootItemViewModel rootItem, string key)
+        {
+            yield return new XRefSpec
+            {
+                Uid = rootItem.Uid,
+                Name = rootItem.Name,
+                Href = key,
+            };
+
+            if (rootItem.Children != null)
+            {
+                foreach (var child in rootItem.Children)
+                {
+                    yield return new XRefSpec
+                    {
+                        Uid = child.Uid,
+                        Name = child.OperationId,
+                        Href = key,
+                    };
+                }
+            }
+
+            if (rootItem.Tags != null)
+            {
+                foreach (var tag in rootItem.Tags)
+                {
+                    yield return new XRefSpec
+                    {
+                        Uid = tag.Uid,
+                        Name = tag.Name,
+                        Href = key,
+                    };
+                }
+            }
+        }
 
         private static bool IsSupportedFile(string filePath)
         {
