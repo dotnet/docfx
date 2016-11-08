@@ -955,7 +955,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         foreach (var fileLinkSourceFile in list)
                         {
-                            Logger.LogWarning($"Invalid file link:({fileLinkSourceFile.Target}{fileLinkSourceFile.Anchor}).", null, fileLinkSourceFile.SourceFile, fileLinkSourceFile.LineNumber.ToString());
+                            //TO-DO: after fix the transform of pathfromRepoRoot and pathfromRoot, pass in fileLinkSourceFile.SourceFile as logitem.File property.
+                            Logger.LogWarning($"Invalid file link:({fileLinkSourceFile.Target}{fileLinkSourceFile.Anchor}).", null, null, fileLinkSourceFile.LineNumber.ToString());
                         }
                     }
                     else
