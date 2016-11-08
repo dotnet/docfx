@@ -52,7 +52,7 @@ exports.transform = function (model)  {
 }
 
 exports.getBookmarks = function (model)  {
-  if (!model) return null;
+  if (!model || !model.type || model.type.toLowerCase() === "namespace") return null;
 
   var bookmarks = {};
   // Reference's first level bookmark should have no anchor
