@@ -156,6 +156,19 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     };
                 }
             }
+
+            if (rootItem.Tags != null)
+            {
+                foreach (var tag in rootItem.Tags)
+                {
+                    yield return new XRefSpec
+                    {
+                        Uid = tag.Uid,
+                        Name = tag.Name,
+                        Href = key,
+                    };
+                }
+            }
         }
 
         private static bool IsSupportedFile(string filePath)

@@ -140,6 +140,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal("graph.windows.net/myorganization/Contacts/1.0/delete contact", childItem1.Uid);
             Assert.Equal("delete contact", childItem1.Name);
             Assert.Equal("contacts.json", childItem1.Href);
+            var tagItem1 = xrefMap.References[9];
+            Assert.Equal("graph.windows.net/myorganization/Contacts/1.0/tag/contact", tagItem1.Uid);
+            Assert.Equal("contact", tagItem1.Name);
+            Assert.Equal("contacts.json", tagItem1.Href);
         }
 
         [Fact]
