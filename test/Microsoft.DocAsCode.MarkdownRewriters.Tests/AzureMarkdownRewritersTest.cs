@@ -1162,8 +1162,8 @@ This command must be run in the context of each domain user that has signed into
      This process must be repeated for each domain user that has signed into the machine and has been automatically workplace joined.
 * Option 2: Unregister a Windows 8.1 domain joined device using a script
   
-      1. Open a command prompt on the Windows 8.1 machine and execute the following command:
-   ` %SystemRoot%\System32\AutoWorkplace.exe leave`
+  1. Open a command prompt on the Windows 8.1 machine and execute the following command:
+     ` %SystemRoot%\System32\AutoWorkplace.exe leave`
 
 This command must be run in the context of each domain user that has signed into the machine.
 

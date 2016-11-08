@@ -132,11 +132,13 @@ code
 <li>asdf</li>
 <li>sdfa</li>
 <li><p>adsf</p>
-<pre><code>- j
-- j
-
-    ![](a)
-</code></pre></li>
+<ul>
+<li>j</li>
+<li><p>j</p>
+<p>  <img src=""a"" alt=""""></p>
+</li>
+</ul>
+</li>
 </ol>
 ")]
         [InlineData(@"1. asdf

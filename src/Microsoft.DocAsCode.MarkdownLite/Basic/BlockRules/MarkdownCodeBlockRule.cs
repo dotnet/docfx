@@ -13,6 +13,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
+            if (context.IsInParagraph)
+            {
+                return null;
+            }
             var match = Code.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {

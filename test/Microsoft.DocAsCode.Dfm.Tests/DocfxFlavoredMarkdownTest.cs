@@ -490,6 +490,7 @@ This is also note<br/>This is also note with br</p>
 </div>
 ")]
         [InlineData(@"the following is code
+
     > code text 1-1
     > [!NOTE]
     > code text 1-2  

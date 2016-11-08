@@ -78,5 +78,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return ~index;
             }
         }
+
+        public bool IsInParagraph { get; set; }
     }
 }

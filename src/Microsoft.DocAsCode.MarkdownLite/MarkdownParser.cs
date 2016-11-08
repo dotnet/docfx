@@ -65,6 +65,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 {
                     throw new MarkdownParsingException("Cannot parse markdown: No rule match.", pc.ToSourceInfo());
                 }
+                else if (token.Rule is MarkdownTextBlockRule)
+                {
+                    pc.IsInParagraph = true;
+                }
+                else if (!(token.Rule is MarkdownNewLineBlockRule) ||
+                    token.SourceInfo.Markdown.Length > 1)
+                {
+                    pc.IsInParagraph = false;
+                }
                 tokens.Add(token);
             }
             return tokens;
