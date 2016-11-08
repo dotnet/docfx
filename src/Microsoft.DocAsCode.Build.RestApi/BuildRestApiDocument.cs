@@ -4,9 +4,9 @@
 namespace Microsoft.DocAsCode.Build.RestApi
 {
     using System;
-    using System.Composition;
-    using System.Collections.Immutable;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Composition;
     using System.IO;
     using System.Linq;
 
@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
     [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
     public class BuildRestApiDocument : BaseDocumentBuildStep
     {
-        private static readonly HashSet<string> MarkupKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "description" };
+        private static readonly HashSet<string> MarkupKeys = new HashSet<string> { "description" };
 
         public override string Name => nameof(BuildRestApiDocument);
 
