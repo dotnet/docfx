@@ -11,9 +11,9 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.RestApi;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     using Newtonsoft.Json.Linq;
 

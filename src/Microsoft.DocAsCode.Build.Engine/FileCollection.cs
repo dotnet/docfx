@@ -8,8 +8,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     public class FileCollection
     {

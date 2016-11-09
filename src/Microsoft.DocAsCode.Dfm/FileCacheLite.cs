@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Dfm
     using System.IO;
     using System.Text;
 
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     public class FileCacheLite : IDisposable
     {
