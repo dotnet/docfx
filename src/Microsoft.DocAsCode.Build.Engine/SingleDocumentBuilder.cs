@@ -1257,7 +1257,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                  select new XRefSpec(xref)
                  {
-                     Href = ((RelativePath)context.FileMap[UriUtility.GetNonFragment(xref.Href)]).RemoveWorkingFolder(),
+                     Href = ((RelativePath)context.FileMap[UriUtility.GetNonFragment(xref.Href)]).RemoveWorkingFolder() + UriUtility.GetFragment(xref.Href)
                  }).ToList();
             xrefMap.Sort();
             string xrefMapFileNameWithVersion = string.IsNullOrEmpty(parameters.VersionName) ?
