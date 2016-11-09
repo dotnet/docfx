@@ -121,6 +121,11 @@ namespace Microsoft.DocAsCode.Build.RestApi
             }
 
             model.File = ChangeFileExtension(model.File);
+
+            // Fill in bookmarks if template doesn't generate them.
+            // TODO: remove these
+            FillInBookmarks(model, vm);
+
             return new SaveResult
             {
                 DocumentType = documentType ?? RestApiDocumentType,
@@ -169,6 +174,13 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     };
                 }
             }
+        }
+
+        private static void FillInBookmarks(FileModel model, RestApiRootItemViewModel restModel)
+        {
+            model.Bookmarks[restModel.Uid] = string.Empty;
+            restModel.Children?.ForEach(c => model.Bookmarks[c.Uid] = c.HtmlId);
+            restModel.Tags?.ForEach(t => model.Bookmarks[t.Uid] = t.HtmlId);
         }
 
         private static bool IsSupportedFile(string filePath)

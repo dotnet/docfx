@@ -1,11 +1,13 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 var common = require('./common.js');
+
 exports.transform = function (model) {
     var _fileNameWithoutExt = common.path.getFileNameWithoutExtension(model._path);
     model._jsonPath = _fileNameWithoutExt + ".swagger.json";
     model.title = model.title || model.name;
     model.docurl = model.docurl || common.getImproveTheDocHref(model, model._gitContribute, model._gitUrlPattern);
     model.sourceurl = model.sourceurl || common.getViewSourceHref(model, null, model._gitUrlPattern);
+    model.htmlId = common.getHtmlId(model.uid);
     if (model.children) {
         for (var i = 0; i < model.children.length; i++) {
             var child = model.children[i];
@@ -17,6 +19,7 @@ exports.transform = function (model) {
             child.sourceurl = child.sourceurl || common.getViewSourceHref(child, null, model._gitUrlPattern);
             child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
             child.footer = child.footer || ''; // set to empty incase mustache looks up
+            child.htmlId = common.getHtmlId(child.uid);
 
             formatExample(child.responses);
             resolveAllOf(child);
@@ -53,6 +56,7 @@ exports.transform = function (model) {
                     model.tags[i].children = children;
                 }
                 model.tags[i].conceptual = model.tags[i].conceptual || ''; // set to empty incase mustache looks up
+                model.tags[i].htmlId = model.tags[i]["x-bookmark-id"] ? model.tags[i]["x-bookmark-id"] : common.getHtmlId(model.tags[i].uid);
             }
             for (var i = 0; i < model.children.length; i++) {
                 var child = model.children[i];
@@ -245,4 +249,24 @@ exports.transform = function (model) {
         }
         return path;
     }
+}
+
+exports.getBookmarks = function (model) {
+    if (!model) return null;
+
+    var bookmarks = {};
+
+    bookmarks[model.uid] = "";
+    if (model.tags) {
+        model.tags.forEach(function (tag) {
+            bookmarks[tag.uid] = tag["x-bookmark-id"] ? tag["x-bookmark-id"] : common.getHtmlId(tag.uid);
+        });
+    }
+    if (model.children) {
+        model.children.forEach(function (child) {
+            bookmarks[child.uid] = common.getHtmlId(child.uid);
+        });
+    }
+
+    return bookmarks;
 }
