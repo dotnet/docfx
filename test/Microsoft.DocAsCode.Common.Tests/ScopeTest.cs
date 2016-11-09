@@ -87,23 +87,23 @@ namespace Microsoft.DocAsCode.Common.Tests
         [Fact]
         public void TestFileScope()
         {
-            var listener = new TestLoggerListener();
+            var listener = new TestLoggerListener("TestFileScope");
             try
             {
                 Logger.RegisterListener(listener);
                 Action callback;
 
-                Logger.LogInfo("Not in file scope.");
+                Logger.LogInfo("Not in file scope.", phase: "TestFileScope");
                 Assert.Null(listener.TakeAndRemove().File);
 
                 using (new LoggerFileScope("A"))
                 {
-                    Logger.LogInfo("In file A");
+                    Logger.LogInfo("In file A", phase: "TestFileScope");
                     Assert.Equal("A", listener.TakeAndRemove().File);
 
                     using (new LoggerFileScope("B"))
                     {
-                        Logger.LogInfo("In file B");
+                        Logger.LogInfo("In file B", phase: "TestFileScope");
                         Assert.Equal("B", listener.TakeAndRemove().File);
 
                         var captured = LoggerFileScope.Capture();
@@ -111,23 +111,23 @@ namespace Microsoft.DocAsCode.Common.Tests
                         {
                             using (LoggerFileScope.Restore(captured))
                             {
-                                Logger.LogInfo("In captured file B");
+                                Logger.LogInfo("In captured file B", phase: "TestFileScope");
                             }
                         };
                     }
 
-                    Logger.LogInfo("In file A");
+                    Logger.LogInfo("In file A", phase: "TestFileScope");
                     Assert.Equal("A", listener.TakeAndRemove().File);
 
                     callback();
                     Assert.Equal("B", listener.TakeAndRemove().File);
 
-                    Logger.LogInfo("In file A");
+                    Logger.LogInfo("In file A", phase: "TestFileScope");
                     Assert.Equal("A", listener.TakeAndRemove().File);
 
                     using (new LoggerFileScope("C"))
                     {
-                        Logger.LogInfo("In file C");
+                        Logger.LogInfo("In file C", phase: "TestFileScope");
                         Assert.Equal("C", listener.TakeAndRemove().File);
 
                         callback();
@@ -135,13 +135,13 @@ namespace Microsoft.DocAsCode.Common.Tests
                     }
                 }
 
-                Logger.LogInfo("Not in file scope.");
+                Logger.LogInfo("Not in file scope.", phase: "TestFileScope");
                 Assert.Null(listener.TakeAndRemove().File);
 
                 callback();
                 Assert.Equal("B", listener.TakeAndRemove().File);
 
-                Logger.LogInfo("Not in file scope.");
+                Logger.LogInfo("Not in file scope.", phase: "TestFileScope");
                 Assert.Null(listener.TakeAndRemove().File);
             }
             finally

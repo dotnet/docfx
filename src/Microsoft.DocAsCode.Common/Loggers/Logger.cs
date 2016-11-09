@@ -20,7 +20,10 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(listener));
             }
 
-            _listeners = _listeners.Add(listener);
+            lock (_sync)
+            {
+                _listeners = _listeners.Add(listener);
+            }
         }
 
         public static ILoggerListener FindListener(Predicate<ILoggerListener> predicate)
@@ -40,13 +43,16 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(listener));
             }
 
-            listener.Dispose();
-            _listeners = _listeners.Remove(listener);
+            lock(_sync)
+            {
+                listener.Dispose();
+                _listeners = _listeners.Remove(listener);
+            }
         }
 
         public static void UnregisterAllListeners()
         {
-            foreach(var i in _listeners)
+            foreach (var i in _listeners)
             {
                 i.Dispose();
             }
