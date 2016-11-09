@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.Build.Common
                  let index = link.IndexOfAny(new[] { '?', '#' })
                  let decodedLink = HttpUtility.UrlDecode(link.Remove(index))
                  where !WhiteList.Contains(bookmark) && PathUtility.IsRelativePath(decodedLink)
-                 select new LinkItem { Title = node.InnerText, Href = TransformPath(outputFile, decodedLink), Bookmark = bookmark, SourceFile = node.GetAttributeValue("sourceFile", null), SourceLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0), TargetLineNumber = node.Line }).ToList();
+                 select new LinkItem { Title = node.InnerText, Href = TransformPath(outputFile, decodedLink), Bookmark = bookmark, SourceFile = HttpUtility.UrlDecode(node.GetAttributeValue("sourceFile", null)), SourceLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0), TargetLineNumber = node.Line }).ToList();
             var anchors = GetNodeAttribute(document, "id").Concat(GetNodeAttribute(document, "name"));
             _registeredBookmarks[outputFile] = new HashSet<string>(anchors);
         }
@@ -66,15 +66,14 @@ namespace Microsoft.DocAsCode.Build.Common
                     {
                         string currentFileSrc = linkItem.SourceFile ?? _fileMapping[currentFile];
                         string linkedToFileSrc = _fileMapping[linkedToFile];
+                        string link = linkItem.Href == string.Empty ? $"#{bookmark}" : $"{linkedToFileSrc}#{bookmark}";
+                        string content = $"[{title}]({link})";
                         if (linkItem.SourceLineNumber == 0)
                         {
-                            Logger.LogWarning($"{currentFile} contains illegal link: {linkItem.Href}#{bookmark}. Link text is `{title}`. The file {linkedToFile} doesn't contain a bookmark named {bookmark}, please check the src file {currentFileSrc} and src linkedTo file {linkedToFileSrc} or the template you applied.", file: currentFile, line: linkItem.TargetLineNumber.ToString());
+                            // Invalid bookmarks introduced from templates is a corner case, ignored.
+                            content = $"<a href=\"{link}\">{title}</a>";
                         }
-                        else
-                        {
-                            string link = linkItem.Href == string.Empty ? $"#{bookmark}" : $"{linkedToFileSrc}#{bookmark}";
-                            Logger.LogWarning($"{currentFileSrc} contains illegal link: {link}. Link text is `{title}`. The file {linkedToFileSrc} doesn't contain a bookmark named {bookmark}.", file: currentFileSrc, line: linkItem.SourceLineNumber.ToString());
-                        }
+                        Logger.LogWarning($"Illegal link: `{content}` -- missing bookmark. The file {linkedToFileSrc} doesn't contain a bookmark named {bookmark}.", file: currentFileSrc, line: linkItem.SourceLineNumber.ToString());
                     }
                 }
             }

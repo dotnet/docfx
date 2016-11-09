@@ -49,15 +49,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             }
             Logger.UnregisterListener(_listener);
             var logs = _listener.Items;
-            Console.WriteLine(string.Concat(logs.Select(l => l.Message)));
+            Console.WriteLine(string.Concat(logs.Select(l => Tuple.Create(l.Message, l.File))));
             Assert.Equal(3, logs.Count);
             var expected = new[]
             {
-                @"b.md contains illegal link: a.md#b2. Link text is `link with source info`. The file a.md doesn't contain a bookmark named b2.",
-                @"token.md contains illegal link: a.md#b3. Link text is `link in token file`. The file a.md doesn't contain a bookmark named b3.",
-                @"b.html contains illegal link: a.html#b4. Link text is `link without source info`. The file a.html doesn't contain a bookmark named b4, please check the src file b.md and src linkedTo file a.md or the template you applied.",
+                Tuple.Create(@"Illegal link: `[link with source info](a.md#b2)` -- missing bookmark. The file a.md doesn't contain a bookmark named b2.", "b.md"),
+                Tuple.Create(@"Illegal link: `[link in token file](a.md#b3)` -- missing bookmark. The file a.md doesn't contain a bookmark named b3.", "token.md"),
+                Tuple.Create(@"Illegal link: `<a href=""a.md#b4"">link without source info</a>` -- missing bookmark. The file a.md doesn't contain a bookmark named b4.", "b.md"),
             };
-            var actual = logs.Select(l => l.Message).ToList();
+            var actual = logs.Select(l => Tuple.Create(l.Message, l.File)).ToList();
             Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);
         }
 
