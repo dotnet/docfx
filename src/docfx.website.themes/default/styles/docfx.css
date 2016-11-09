@@ -806,3 +806,20 @@ footer {
 pre > code .line-highlight {
   background-color: #ffffcc;
 }
+
+/* For printer */
+@media print{
+  .article.grid-right {
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+  .sideaffix {
+    display: none;
+  }
+  .mobile-hide {
+    display: none;
+  }
+  .footer {
+    display: none;
+  }
+}
