@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0",
   "testRunner": "xunit",
   "dependencies": {
@@ -10,7 +10,8 @@
     "Microsoft.Owin.Hosting": "3.0.1",
     "Microsoft.Owin.StaticFiles": "3.0.1",
     "Microsoft.Owin.Host.HttpListener": "3.0.1",
-    "Newtonsoft.Json": "9.0.1"
+    "Newtonsoft.Json": "9.0.1",
+    "YamlDotNet.Signed": "3.9.0"
   },
   "buildOptions": {
     "copyToOutput": {

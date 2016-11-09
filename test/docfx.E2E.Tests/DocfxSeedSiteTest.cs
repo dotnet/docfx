@@ -5,19 +5,24 @@ namespace Microsoft.DocAsCode.E2E.Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
+    using System.Net;
 
     using OpenQA.Selenium;
     using Xunit;
+    using YamlDotNet.Serialization;
 
     public class DocfxSeedSiteTest : IClassFixture<DocfxSeedSiteFixture>
     {
-        private IWebDriver _driver;
-        private string _urlHomepage;
+        private readonly IWebDriver _driver;
+        private readonly string _urlHomepage;
+        private readonly string _urlXrefMap;
 
         public DocfxSeedSiteTest(DocfxSeedSiteFixture fixture)
         {
             _driver = fixture.Driver;
             _urlHomepage = fixture.Url + @"/index.html";
+            _urlXrefMap = fixture.Url + @"/xrefmap.yml";
         }
 
         [Fact]
@@ -214,6 +219,48 @@ namespace Microsoft.DocAsCode.E2E.Tests
             Assert.NotEmpty(results);
             var href = results[0].GetAttribute("href");
             Assert.True(CheckIfLinkValid(href));
+        }
+
+        [Fact]
+        [Trait("Related", "E2Etest")]
+        public void TestXRefMap()
+        {
+            _driver.Navigate().GoToUrl(_urlXrefMap);
+            var deserializer = new Deserializer();
+            string contents;
+            using (var wc = new WebClient())
+            {
+                contents = wc.DownloadString(_urlXrefMap);
+            }
+            Assert.NotEmpty(contents);
+            var xrefMap = deserializer.Deserialize<Dictionary<string, object>>(new StringReader(contents));
+            Assert.NotEmpty(xrefMap);
+            var references = (List<object>)xrefMap["references"];
+            Assert.NotEmpty(references);
+
+            var namespaceItem = (Dictionary<object, object>)references[0];
+            Assert.Equal("CatLibrary", namespaceItem["uid"]);
+            Assert.Equal("api/CatLibrary.html", namespaceItem["href"]);
+
+            var classItem = (Dictionary<object, object>)references[1];
+            Assert.Equal("CatLibrary.Cat`2", "CatLibrary.Cat`2");
+            Assert.Equal("api/CatLibrary.Cat-2.html", classItem["href"]);
+
+            var methodItem = (Dictionary<object, object>)references[8];
+            Assert.Equal("CatLibrary.Cat`2.CalculateFood(System.DateTime)", methodItem["uid"]);
+            Assert.Equal("api/CatLibrary.Cat-2.html#CatLibrary_Cat_2_CalculateFood_System_DateTime_", methodItem["href"]);
+
+            var restRootItem = (Dictionary<object, object>)references[93];
+            Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0", restRootItem["uid"]);
+            Assert.Equal("restapi/petstore.html", restRootItem["href"]);
+
+            var restChildItem = (Dictionary<object, object>)references[98];
+            Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/deleteOrder", restChildItem["uid"]);
+            Assert.Equal("restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_deleteOrder", restChildItem["href"]);
+
+            var restTagItem = (Dictionary<object, object>)references[110];
+            Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet", restTagItem["uid"]);
+            Assert.Equal("restapi/petstore.html#petstore_swagger_io_v2_Swagger_Petstore_1_0_0_tag_pet", restTagItem["href"]);
         }
 
         private void TestPageCommon()
