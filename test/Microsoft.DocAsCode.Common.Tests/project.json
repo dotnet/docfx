@@ -22,6 +22,11 @@
     "System.Collections.Immutable": "1.2.0",
     "Microsoft.Composition": "1.0.27"
   },
+  "buildOptions": {
+    "compile": {
+      "includeFiles": "../Shared/TestBase.cs"
+    }
+  },
   "frameworks": {
     "net452": {}
   }

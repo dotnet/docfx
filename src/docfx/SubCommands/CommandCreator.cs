@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.IO;
 
     using CommandLine;
 
@@ -34,6 +35,12 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 return new HelpCommand(GetHelpText());
             }
+            string root = string.Empty;
+            var buildOption = options as BuildCommandOptions;
+            if (buildOption != null)
+            {
+                root = Path.GetDirectoryName(buildOption.ConfigFile);
+            }
             var logOption = options as ILoggable;
             if (logOption != null)
             {
@@ -41,11 +48,11 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     if (string.IsNullOrWhiteSpace(logOption.RepoRoot))
                     {
-                        Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath, string.Empty));
+                        Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath, string.Empty, root));
                     }
                     else
                     {
-                        Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath, logOption.RepoRoot));
+                        Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath, logOption.RepoRoot, root));
                     }
                 }
 

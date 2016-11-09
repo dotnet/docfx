@@ -121,7 +121,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             model.Uids = (from item in overwrites
                           select new UidDefinition(
                               item.Uid,
-                              model.LocalPathFromRepoRoot,
+                              model.LocalPathFromRoot,
                               item.Documentation.StartLine + 1)).ToImmutableArray();
         }
 

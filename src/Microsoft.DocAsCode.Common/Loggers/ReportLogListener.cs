@@ -11,11 +11,12 @@ namespace Microsoft.DocAsCode.Common
     public sealed class ReportLogListener : ILoggerListener
     {
         private readonly string _repoRoot;
+        private readonly string _root;
         private readonly StreamWriter _writer;
 
         private const LogLevel LogLevelThreshold = LogLevel.Diagnostic;
 
-        public ReportLogListener(string reportPath, string repoRoot)
+        public ReportLogListener(string reportPath, string repoRoot, string root)
         {
             var dir = Path.GetDirectoryName(reportPath);
             if (!string.IsNullOrEmpty(dir))
@@ -24,9 +25,10 @@ namespace Microsoft.DocAsCode.Common
             }
             _writer = new StreamWriter(reportPath, true);
             _repoRoot = repoRoot;
+            _root = root;
         }
 
-        public ReportLogListener(StreamWriter writer, string repoRoot)
+        public ReportLogListener(StreamWriter writer, string repoRoot, string root)
         {
             if (writer == null)
             {
@@ -34,6 +36,7 @@ namespace Microsoft.DocAsCode.Common
             }
             _writer = writer;
             _repoRoot = repoRoot;
+            _root = root;
         }
 
         public void WriteLine(ILogItem item)
@@ -54,7 +57,7 @@ namespace Microsoft.DocAsCode.Common
                 Severity = GetSeverity(level),
                 Message = message,
                 Source = phase,
-                File = file, // todo : combine with repo root.
+                File = TransformFile(file),
                 Line = line,
                 DateTime = DateTime.UtcNow,
             };
@@ -84,6 +87,19 @@ namespace Microsoft.DocAsCode.Common
                 default:
                     throw new NotSupportedException(level.ToString());
             }
+        }
+
+        private string TransformFile(string fileFromRoot)
+        {
+            if (fileFromRoot == null)
+            {
+                return null;
+            }
+
+            string file = ((RelativePath)fileFromRoot).RemoveWorkingFolder();
+            string basePath = Path.GetFullPath(_repoRoot);
+            string fullPath = Path.GetFullPath(Path.Combine(_root, file));
+            return PathUtility.MakeRelativePath(basePath, fullPath);
         }
 
         public void Flush()

@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                         var uid = item.Value as string;
                         if (!string.IsNullOrWhiteSpace(uid))
                         {
-                            model.Uids = new[] { new UidDefinition(uid, model.LocalPathFromRepoRoot) }.ToImmutableArray();
+                            model.Uids = new[] { new UidDefinition(uid, model.LocalPathFromRoot) }.ToImmutableArray();
                             content[Constants.PropertyName.Uid] = item.Value;
                         }
                     }

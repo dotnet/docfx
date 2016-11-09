@@ -146,7 +146,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var xref = context.GetXrefSpec(uid);
             if (xref == null)
             {
-                Logger.LogWarning($"Unable to find file with uid \"{uid}\" referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
+                Logger.LogWarning($"Unable to find file with uid \"{uid}\" referenced by TOC file \"{model.LocalPathFromRoot}\"");
             }
             return xref;
         }
@@ -192,7 +192,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             if (href == null)
             {
-                Logger.LogInfo($"Unable to find file \"{originalPathToFile}\" for {propertyName} referenced by TOC file \"{model.LocalPathFromRepoRoot}\"");
+                Logger.LogInfo($"Unable to find file \"{originalPathToFile}\" for {propertyName} referenced by TOC file \"{model.LocalPathFromRoot}\"");
                 return originalPathToFile;
             }
 

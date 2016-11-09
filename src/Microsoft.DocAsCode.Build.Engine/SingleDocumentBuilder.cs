@@ -577,7 +577,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     return;
                 }
 
-                using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
+                using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
                 {
                     Logger.LogDiagnostic($"Feed xref map from template for {m.Item.DocumentType}...");
                     // TODO: use m.Options.Bookmarks directly after all templates report bookmarks
@@ -600,7 +600,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     return;
                 }
 
-                using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
+                using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
                 {
                     Logger.LogDiagnostic($"Feed options from template for {m.Item.DocumentType}...");
                     m.Options = m.TemplateBundle.GetOptions(m.Item, context);
@@ -617,7 +617,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             manifest.RunAll(m =>
             {
-                using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
+                using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
                 {
                     Logger.LogDiagnostic("Generating system metadata...");
 
@@ -664,7 +664,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     return;
                 }
 
-                using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
+                using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
                 {
                     Logger.LogDiagnostic($"Load shared model from template for {m.Item.DocumentType}...");
                     if (m.Options.IsShared)
@@ -683,7 +683,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             Logger.LogVerbose("Updating href...");
             manifest.RunAll(m =>
             {
-                using (new LoggerFileScope(m.FileModel.LocalPathFromRepoRoot))
+                using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
                 {
                     Logger.LogDiagnostic($"Plug-in {m.Processor.Name}: Updating href...");
                     m.Processor.UpdateHref(m.FileModel, context);
@@ -846,7 +846,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             hostService.Models.RunAll(
                 m =>
                 {
-                    using (new LoggerFileScope(m.LocalPathFromRepoRoot))
+                    using (new LoggerFileScope(m.LocalPathFromRoot))
                     {
                         Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Building...");
                         RunBuildSteps(
@@ -887,7 +887,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     if (m.Type != DocumentType.Overwrite)
                     {
-                        using (new LoggerFileScope(m.LocalPathFromRepoRoot))
+                        using (new LoggerFileScope(m.LocalPathFromRoot))
                         {
                             Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Saving...");
                             m.BaseDir = context.BuildOutputFolder;
@@ -955,8 +955,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         foreach (var fileLinkSourceFile in list)
                         {
-                            //TO-DO: after fix the transform of pathfromRepoRoot and pathfromRoot, pass in fileLinkSourceFile.SourceFile as logitem.File property.
-                            Logger.LogWarning($"Invalid file link:({fileLinkSourceFile.Target}{fileLinkSourceFile.Anchor}).", null, null, fileLinkSourceFile.LineNumber.ToString());
+                            Logger.LogWarning($"Invalid file link:({fileLinkSourceFile.Target}{fileLinkSourceFile.Anchor}).", null, fileLinkSourceFile.SourceFile, fileLinkSourceFile.LineNumber.ToString());
                         }
                     }
                     else
