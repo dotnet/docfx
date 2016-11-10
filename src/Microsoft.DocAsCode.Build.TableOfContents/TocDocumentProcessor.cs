@@ -15,6 +15,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
+    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+
     [Export(typeof(IDocumentProcessor))]
     public class TocDocumentProcessor : DisposableDocumentProcessor
     {
@@ -45,7 +48,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             };
 
             var repoDetail = GitUtility.GetGitDetail(filePath);
-            var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
+            var displayLocalPath = TypeForwardedToPathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
             // todo : metadata.
             return new FileModel(file, toc)
@@ -73,15 +76,15 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var key = model.Key;
 
             // Add current folder to the toc mapping, e.g. `a/` maps to `a/toc`
-            var directory = ((RelativePath)key).GetPathFromWorkingFolder().GetDirectoryPath();
+            var directory = ((TypeForwardedToRelativePath)key).GetPathFromWorkingFolder().GetDirectoryPath();
             context.RegisterToc(key, directory);
             UpdateTocItemHref(toc, model, context);
             var tocInfo = new TocInfo(key);
             if (toc.Homepage != null)
             {
-                if (PathUtility.IsRelativePath(toc.Homepage))
+                if (TypeForwardedToPathUtility.IsRelativePath(toc.Homepage))
                 {
-                    var pathToRoot = ((RelativePath)model.File + (RelativePath)toc.Homepage).GetPathFromWorkingFolder();
+                    var pathToRoot = ((TypeForwardedToRelativePath)model.File + (TypeForwardedToRelativePath)toc.Homepage).GetPathFromWorkingFolder();
                     tocInfo.Homepage = pathToRoot;
                 }
             }
@@ -197,7 +200,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
 
             var relativePath = GetRelativePath(href, model.File);
-            var path = ((RelativePath)relativePath).UrlEncode().ToString();
+            var path = ((TypeForwardedToRelativePath)relativePath).UrlEncode().ToString();
             if (index >= 0)
             {
                 path += pathToFile.Substring(index);
@@ -207,7 +210,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private string GetRelativePath(string pathFromWorkingFolder, string relativeToPath)
         {
-            return ((RelativePath)pathFromWorkingFolder).MakeRelativeTo((((RelativePath)relativeToPath).UrlDecode()).GetPathFromWorkingFolder());
+            return ((TypeForwardedToRelativePath)pathFromWorkingFolder).MakeRelativeTo((((TypeForwardedToRelativePath)relativeToPath).UrlDecode()).GetPathFromWorkingFolder());
         }
     }
 }

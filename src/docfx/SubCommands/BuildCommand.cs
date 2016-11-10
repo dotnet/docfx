@@ -18,6 +18,8 @@ namespace Microsoft.DocAsCode.SubCommands
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+
     internal sealed class BuildCommand : ISubCommand
     {
         private readonly string _version;
@@ -258,7 +260,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             config.GlobalMetadataFilePaths =
                 new ListWithStringFallback(config.GlobalMetadataFilePaths.Select(
-                    path => PathUtility.IsRelativePath(path) ? Path.Combine(config.BaseDirectory, path) : path).Reverse());
+                    path => TypeForwardedToPathUtility.IsRelativePath(path) ? Path.Combine(config.BaseDirectory, path) : path).Reverse());
 
             if (options.FileMetadataFilePaths != null && options.FileMetadataFilePaths.Any())
             {
@@ -267,7 +269,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             config.FileMetadataFilePaths =
                 new ListWithStringFallback(config.FileMetadataFilePaths.Select(
-                    path => PathUtility.IsRelativePath(path) ? Path.Combine(config.BaseDirectory, path) : path).Reverse());
+                    path => TypeForwardedToPathUtility.IsRelativePath(path) ? Path.Combine(config.BaseDirectory, path) : path).Reverse());
 
             config.FileMetadata = GetFileMetadataFromOption(config.FileMetadata, options.FileMetadataFilePath, config.FileMetadataFilePaths);
             config.GlobalMetadata = GetGlobalMetadataFromOption(config.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadataFilePaths, options.GlobalMetadata);

@@ -21,6 +21,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.Utility;
     using Microsoft.DotNet.ProjectModel.Workspaces;
 
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
+
     public sealed class ExtractMetadataWorker : IDisposable
     {
         private readonly Lazy<MSBuildWorkspace> _workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create());
@@ -53,7 +56,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _rebuild = rebuild;
             _shouldSkipMarkup = input.ShouldSkipMarkup;
             _preserveRawInlineComments = input.PreserveRawInlineComments;
-            _filterConfigFile = input.FilterConfigFile?.ToNormalizedFullPath();
+            _filterConfigFile = TypeForwardedToStringExtension.ToNormalizedFullPath(input.FilterConfigFile);
             _useCompatibilityFileName = useCompatibilityFileName;
         }
 
@@ -202,7 +205,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         {
                             if (IsSupported(inputFilePath))
                             {
-                                var path = inputFilePath.ToNormalizedFullPath();
+                                var path = TypeForwardedToStringExtension.ToNormalizedFullPath(inputFilePath);
                                 validFilePath.Add(path);
                             }
                             else
@@ -266,7 +269,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         // If the project is csproj/vbproj, add to project dictionary, otherwise, ignore
                         if (IsSupportedProject(filePath))
                         {
-                            projectCache.GetOrAdd(project.FilePath.ToNormalizedFullPath(), s => project);
+                            projectCache.GetOrAdd(TypeForwardedToStringExtension.ToNormalizedFullPath(project.FilePath), s => project);
                         }
                         else
                         {
@@ -320,7 +323,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         // e.g. <Compile Include="*.cs* /> and file added/deleted
                         foreach (var project in projectCache.Values)
                         {
-                            var key = project.FilePath.ToNormalizedFullPath();
+                            var key = TypeForwardedToStringExtension.ToNormalizedFullPath(project.FilePath);
                             IEnumerable<string> currentContainedFiles = documentCache.GetDocuments(project.FilePath);
                             var previousDocumentCache = new ProjectDocumentCache(buildInfo.ContainedFiles);
 
@@ -401,7 +404,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (allMemebers == null || allMemebers.Count == 0)
             {
-                var value = projectMetadataList.Select(s => s.Name).ToDelimitedString();
+                var value = TypeForwardedToStringExtension.ToDelimitedString(projectMetadataList.Select(s => s.Name));
                 Logger.Log(LogLevel.Warning, $"No metadata is generated for {value}.");
                 applicationCache.SaveToCache(inputs, null, triggeredTime, outputFolder, null, _shouldSkipMarkup);
             }
@@ -416,7 +419,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static void FillProjectDependencyGraph(ConcurrentDictionary<string, Project> projectCache, ConcurrentDictionary<string, List<string>> projectDependencyGraph, Project project)
         {
-            projectDependencyGraph.GetOrAdd(project.FilePath.ToNormalizedFullPath(), GetTransitiveProjectReferences(projectCache, project).Distinct().ToList());
+            projectDependencyGraph.GetOrAdd(TypeForwardedToStringExtension.ToNormalizedFullPath(project.FilePath), GetTransitiveProjectReferences(projectCache, project).Distinct().ToList());
         }
 
         private static IEnumerable<string> GetTransitiveProjectReferences(ConcurrentDictionary<string, Project> projectCache, Project project)
@@ -425,7 +428,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             foreach (var pr in project.ProjectReferences)
             {
                 var refProject = solution.GetProject(pr.ProjectId);
-                var path = refProject.FilePath.ToNormalizedFullPath();
+                var path = TypeForwardedToStringExtension.ToNormalizedFullPath(refProject.FilePath);
                 if (projectCache.ContainsKey(path))
                 {
                     yield return path;
@@ -500,12 +503,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var relativeFiles = buildInfo.RelatvieOutputFiles;
             if (relativeFiles == null)
             {
-                Logger.Log(LogLevel.Warning, $"No metadata is generated for '{inputs.ToDelimitedString()}'.");
+                Logger.Log(LogLevel.Warning, $"No metadata is generated for '{TypeForwardedToStringExtension.ToDelimitedString(inputs)}'.");
                 return;
             }
 
-            Logger.Log(LogLevel.Info, $"'{inputs.ToDelimitedString()}' keep up-to-date since '{buildInfo.TriggeredUtcTime.ToString()}', cached result from '{buildInfo.OutputFolder}' is used.");
-            relativeFiles.Select(s => Path.Combine(outputFolderSource, s)).CopyFilesToFolder(outputFolderSource, outputFolder, true, s => Logger.Log(LogLevel.Info, s), null);
+            Logger.Log(LogLevel.Info, $"'{TypeForwardedToStringExtension.ToDelimitedString(inputs)}' keep up-to-date since '{buildInfo.TriggeredUtcTime.ToString()}', cached result from '{buildInfo.OutputFolder}' is used.");
+            TypeForwardedToPathUtility.CopyFilesToFolder(relativeFiles.Select(s => Path.Combine(outputFolderSource, s)), outputFolderSource, outputFolder, true, s => Logger.Log(LogLevel.Info, s), null);
         }
 
         private static Task<Tuple<MetadataItem, bool>> GetProjectMetadataFromCacheAsync(Project project, Compilation compilation, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild, bool shouldSkipMarkup, bool preserveRawInlineComments, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods, bool isReferencedProjectRebuilt)
@@ -519,7 +522,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 s => Task.FromResult(compilation),
                 s =>
                 {
-                    return new Dictionary<string, List<string>> { { s.FilePath.ToNormalizedFullPath(), k.ToList() } };
+                    return new Dictionary<string, List<string>> { { TypeForwardedToStringExtension.ToNormalizedFullPath(s.FilePath), k.ToList() } };
                 },
                 outputFolder,
                 preserveRawInlineComments,

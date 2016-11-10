@@ -10,6 +10,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
+    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
+
     public static class IncrementalUtility
     {
         private const int MaxRetry = 3;
@@ -68,7 +70,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return null;
             }
-            return ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
+            return ((TypeForwardedToRelativePath)file.File).GetPathFromWorkingFolder().ToString();
         }
 
         public static string GetRandomEntry(string baseDir)

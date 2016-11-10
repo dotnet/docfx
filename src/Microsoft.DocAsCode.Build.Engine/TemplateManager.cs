@@ -14,6 +14,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Utility;
     using System.Security.Cryptography;
 
+    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
+
     [Serializable]
     public class TemplateManager
     {
@@ -58,7 +60,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     sb.Append(";");
                 }
             }
-            return sb.ToString().GetMd5String();
+            return TypeForwardedToStringExtension.GetMd5String(sb.ToString());
         }
 
         private CompositeResourceCollectionWithOverridden CreateTemplateResource(IEnumerable<string> resources) =>
@@ -89,7 +91,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (templateResource.IsEmpty)
                 {
-                    Logger.Log(LogLevel.Warning, $"No resource found for [{resourceNames.ToDelimitedString()}].");
+                    Logger.Log(LogLevel.Warning, $"No resource found for [{TypeForwardedToStringExtension.ToDelimitedString(resourceNames)}].");
                 }
                 else
                 {

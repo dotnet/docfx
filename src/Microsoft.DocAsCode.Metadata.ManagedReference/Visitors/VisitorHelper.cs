@@ -15,6 +15,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Utility;
 
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+
     public static class VisitorHelper
     {
         private static readonly Regex GenericMethodPostFix = new Regex(@"``\d+$", RegexOptions.Compiled);
@@ -148,7 +150,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 source.Remote = GitUtility.GetGitDetail(source.Path);
                 if (source.Remote != null)
                 {
-                    source.Path = source.Path.FormatPath(UriKind.Relative, source.Remote.LocalWorkingDirectory);
+                    source.Path = TypeForwardedToPathUtility.FormatPath(source.Path, UriKind.Relative, source.Remote.LocalWorkingDirectory);
                 }
                 return source;
             }

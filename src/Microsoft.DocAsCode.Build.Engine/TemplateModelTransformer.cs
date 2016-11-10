@@ -13,6 +13,9 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
+    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
+    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
+
     public class TemplateModelTransformer
     {
         private const string GlobalVariableKey = "__global";
@@ -208,7 +211,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             string modelPath = Path.Combine(outputFolder ?? string.Empty, settings.PathRewriter(modelFileRelativePath));
 
             JsonUtility.Serialize(modelPath, model);
-            return modelPath.ToDisplayPath();
+            return TypeForwardedToStringExtension.ToDisplayPath(modelPath);
         }
 
         private static void TransformDocument(string result, string extension, IDocumentBuildContext context, string outputPath, string relativeOutputPath, HashSet<string> missingUids, ManifestItem manifestItem)
@@ -345,14 +348,14 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             var key = link.GetAttributeValue(attribute, null);
             string path;
-            if (RelativePath.TryGetPathWithoutWorkingFolderChar(key, out path))
+            if (TypeForwardedToRelativePath.TryGetPathWithoutWorkingFolderChar(key, out path))
             {
                 var href = context.GetFilePath(key);
                 var anchor = link.GetAttributeValue("anchor", null);
 
                 if (href != null)
                 {
-                    href = ((RelativePath)UpdateFilePath(href, relativePath)).UrlEncode();
+                    href = ((TypeForwardedToRelativePath)UpdateFilePath(href, relativePath)).UrlEncode();
 
                     if (!string.IsNullOrEmpty(anchor))
                     {
@@ -378,9 +381,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string UpdateFilePath(string path, string modelFilePathToRoot)
         {
-            if (RelativePath.IsPathFromWorkingFolder(path))
+            if (TypeForwardedToRelativePath.IsPathFromWorkingFolder(path))
             {
-                return ((RelativePath)path).RemoveWorkingFolder().MakeRelativeTo((RelativePath)modelFilePathToRoot);
+                return ((TypeForwardedToRelativePath)path).RemoveWorkingFolder().MakeRelativeTo((TypeForwardedToRelativePath)modelFilePathToRoot);
             }
 
             return path;

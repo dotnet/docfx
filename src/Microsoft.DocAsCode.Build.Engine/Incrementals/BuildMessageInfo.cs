@@ -11,6 +11,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
+
     public sealed class BuildMessageInfo
     {
         private Listener _listener;
@@ -76,10 +79,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return;
             }
-            string fileFromWorkingDir = item.File.BackSlashToForwardSlash();
-            if (!PathUtility.IsRelativePath(item.File))
+            string fileFromWorkingDir = TypeForwardedToStringExtension.BackSlashToForwardSlash(item.File);
+            if (!TypeForwardedToPathUtility.IsRelativePath(item.File))
             {
-                fileFromWorkingDir = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, item.File);
+                fileFromWorkingDir = TypeForwardedToPathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, item.File);
             }
             List<LogItem> logsPerFile;
             if (!_logs.TryGetValue(fileFromWorkingDir, out logsPerFile))
@@ -88,7 +91,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
             logsPerFile.Add(new LogItem
             {
-                File = item.File.BackSlashToForwardSlash(),
+                File = TypeForwardedToStringExtension.BackSlashToForwardSlash(item.File),
                 Line = item.Line,
                 LogLevel = item.LogLevel,
                 Message = item.Message,

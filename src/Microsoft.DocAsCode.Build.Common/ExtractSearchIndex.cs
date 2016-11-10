@@ -20,6 +20,8 @@ namespace Microsoft.DocAsCode.Build.Common
     using HtmlAgilityPack;
     using Newtonsoft.Json;
 
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+
     [Export(nameof(ExtractSearchIndex), typeof(IPostProcessor))]
     public class ExtractSearchIndex : IPostProcessor
     {
@@ -90,7 +92,7 @@ namespace Microsoft.DocAsCode.Build.Common
             };
             manifestItem.OutputFiles.Add("resource", new OutputFileInfo
             {
-                RelativePath = PathUtility.MakeRelativePath(outputFolder, indexDataFilePath),
+                RelativePath = TypeForwardedToPathUtility.MakeRelativePath(outputFolder, indexDataFilePath),
             });
 
             manifest.Files?.Add(manifestItem);
