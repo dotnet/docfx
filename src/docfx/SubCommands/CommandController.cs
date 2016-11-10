@@ -72,8 +72,14 @@ namespace Microsoft.DocAsCode.SubCommands
             var options = new CompositeOptions();
             var parser = CommandUtility.GetParser(SubCommandParseOption.Loose);
             bool parsed = parser.ParseArguments(args, options);
+            if (options.ShouldShowVersion) return new HelpCommand(GetVersionText());
             if (options.IsHelp) return new HelpCommand(GetHelpText());
             return new CompositeCommand(args, this, options);
+        }
+
+        public string GetVersionText()
+        {
+            return HelpTextGenerator.GetVersion();
         }
 
         public string GetHelpText()
