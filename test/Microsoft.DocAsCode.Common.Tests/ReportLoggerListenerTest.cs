@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Xunit;
 
+    [Collection("docfx STA")]
     public class ReportLoggerListenerTest : TestBase
     {
         private string _workingDirectory;
