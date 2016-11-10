@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Build.Common
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net;
     using System.Web;
 
     using HtmlAgilityPack;
@@ -46,7 +47,7 @@ namespace Microsoft.DocAsCode.Build.Common
                  let index = link.IndexOfAny(new[] { '?', '#' })
                  let decodedLink = HttpUtility.UrlDecode(link.Remove(index))
                  where !WhiteList.Contains(bookmark) && PathUtility.IsRelativePath(decodedLink)
-                 select new LinkItem { Title = node.InnerText, Href = TransformPath(outputFile, decodedLink), Bookmark = bookmark, SourceFile = HttpUtility.UrlDecode(node.GetAttributeValue("sourceFile", null)), SourceLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0), TargetLineNumber = node.Line }).ToList();
+                 select new LinkItem { Title = node.InnerText, Href = TransformPath(outputFile, decodedLink), Bookmark = bookmark, SourceFile = WebUtility.HtmlDecode(node.GetAttributeValue("sourceFile", null)), SourceLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0), TargetLineNumber = node.Line }).ToList();
             var anchors = GetNodeAttribute(document, "id").Concat(GetNodeAttribute(document, "name"));
             _registeredBookmarks[outputFile] = new HashSet<string>(anchors);
         }
