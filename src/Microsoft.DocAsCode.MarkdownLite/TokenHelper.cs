@@ -23,29 +23,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 var text = token as MarkdownTextToken;
                 if (text != null)
                 {
-                    if (textContent != StringBuffer.Empty)
-                    {
-                        textContent += "\n";
-                    }
-                    else
+                    if (textContent == StringBuffer.Empty)
                     {
                         si = text.SourceInfo;
                     }
                     textContent += text.Content;
                     continue;
                 }
-                var newLine = token as MarkdownNewLineBlockToken;
-                if (newLine?.SourceInfo.Markdown.Length == 1)
-                {
-                    continue;
-                }
                 if (textContent != StringBuffer.Empty)
                 {
-                    var rawMarkdown = textContent.ToString();
-                    result.Add(CreateTwoPhaseToken(parser, rule, wrapParagraph, si.Copy(rawMarkdown)));
+                    result.Add(GroupTextTokens(parser, rule, wrapParagraph, textContent, si));
                     textContent = StringBuffer.Empty;
                 }
-                if (newLine != null)
+                if (token is MarkdownNewLineBlockToken)
                 {
                     continue;
                 }
@@ -53,10 +43,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             if (textContent != StringBuffer.Empty)
             {
-                var rawMarkdown = textContent.ToString();
-                result.Add(CreateTwoPhaseToken(parser, rule, wrapParagraph, si.Copy(rawMarkdown)));
+                result.Add(GroupTextTokens(parser, rule, wrapParagraph, textContent, si));
             }
             return result.ToImmutableArray();
+        }
+
+        private static IMarkdownToken GroupTextTokens(IMarkdownParser parser, IMarkdownRule rule, bool wrapParagraph, StringBuffer textContent, SourceInfo si)
+        {
+            if (textContent.EndsWith('\n'))
+            {
+                textContent = textContent.Substring(0, textContent.GetLength() - 1);
+            }
+            var rawMarkdown = textContent.ToString();
+            return CreateTwoPhaseToken(parser, rule, wrapParagraph, si.Copy(rawMarkdown));
         }
 
         private static TwoPhaseBlockToken CreateTwoPhaseToken(IMarkdownParser parser, IMarkdownRule rule, bool wrapParagraph, SourceInfo sourceInfo)
