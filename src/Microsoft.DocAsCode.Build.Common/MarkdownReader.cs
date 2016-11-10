@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.Common
             return new OverwriteDocumentModel
             {
                 Uid = properties[Constants.PropertyName.Uid].ToString(),
-                LinkToFiles = part.LinkToFiles,
+                LinkToFiles = part.LinkToFiles.ToImmutableHashSet(),
                 LinkToUids = part.LinkToUids,
                 Metadata = overriden,
                 Conceptual = part.Conceptual,

@@ -130,7 +130,7 @@ uid: Test2
             Assert.Equal("<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">This is unit test!</p>\n", results[0].Conceptual);
             File.Delete(fileName);
 
-            // Test link to files and Uids in overwrite documents
+            // Test link to files and Uids in overwrite document
             content = @"---
 uid: Test
 remarks: Hello
@@ -148,8 +148,8 @@ This is unit test!";
             Assert.Equal(1, results.Count);
             Assert.Equal("Test", results[0].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal(1, results[0].LinkToFiles.Length);
-            Assert.Equal("~/link.md", results[0].LinkToFiles[0]);
+            Assert.Equal(1, results[0].LinkToFiles.Count);
+            Assert.Equal("~/link.md", results[0].LinkToFiles.ElementAt(0));
             Assert.Equal(1, results[0].LinkToUids.Count);
             Assert.Equal("NotExistUid", results[0].LinkToUids.ElementAt(0));
             Assert.Equal(@"<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""5"" sourceendlinenumber=""5""><xref href=""NotExistUid"" data-throw-if-not-resolved=""False"" data-raw=""@NotExistUid"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""5"" sourceendlinenumber=""5""></xref></p>

@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.Build.Common
         /// </summary>
         [YamlIgnore]
         [JsonIgnore]
-        public ImmutableArray<string> LinkToFiles { get; set; } = ImmutableArray<string>.Empty;
+        public ImmutableHashSet<string> LinkToFiles { get; set; } = ImmutableHashSet<string>.Empty;
 
         /// <summary>
         /// Links to other Uids
