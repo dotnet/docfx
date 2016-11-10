@@ -17,14 +17,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public IMarkdownToken Rewrite(IMarkdownRewriteEngine engine, IMarkdownToken token)
         {
-            using (new MarkdownTokenValidatorContext(engine))
+            foreach (var validator in Validators)
             {
-                foreach (var validator in Validators)
-                {
-                    validator.Validate(token);
-                }
+                validator.Validate(token);
             }
-            return null;
+            return token;
         }
 
         public void Initialize(IMarkdownRewriteEngine rewriteEngine)

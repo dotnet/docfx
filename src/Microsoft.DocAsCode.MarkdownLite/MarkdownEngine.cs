@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
 
     public class MarkdownEngine : IMarkdownEngine
     {
@@ -70,30 +71,32 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     preprocessedSourceInfo);
             }
 
-            var internalRewriteEngine =
+            // resolve two phase token
+            tokens = RewriteTokens(
+                tokens,
+                sourceInfo.File,
                 new MarkdownRewriteEngine(
                     this,
                     MarkdownTokenRewriterFactory.Loop(
                         MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, TwoPhaseBlockToken>(
                             (e, t) => t.Extract(parser)),
-                    MaxExtractCount + 1));
-            internalRewriteEngine.Initialize();
-            tokens = internalRewriteEngine.Rewrite(tokens);
-            internalRewriteEngine.Complete();
+                    MaxExtractCount + 1)));
 
+            // fix id.
             var idTable = new Dictionary<string, int>();
-            var idRewriteEngine = new MarkdownRewriteEngine(
+            tokens = RewriteTokens(
+                tokens,
+                sourceInfo.File,
+                new MarkdownRewriteEngine(
                 this,
                 MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownHeadingBlockToken>(
-                    (e, t) => t.RewriteId(idTable)));
-            idRewriteEngine.Initialize();
-            tokens = idRewriteEngine.Rewrite(tokens);
-            idRewriteEngine.Complete();
+                    (e, t) => t.RewriteId(idTable))));
 
-            var rewriteEngine = RewriteEngine;
-            rewriteEngine.Initialize();
-            tokens = rewriteEngine.Rewrite(tokens);
-            rewriteEngine.Complete();
+            // customized rewriter.
+            tokens = RewriteTokens(
+                tokens,
+                sourceInfo.File,
+                RewriteEngine);
 
             if (TokenTreeValidator != null)
             {
@@ -105,6 +108,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 result += renderer.Render(token);
             }
             return result;
+        }
+
+        private static ImmutableArray<IMarkdownToken> RewriteTokens(ImmutableArray<IMarkdownToken> tokens, string file, IMarkdownRewriteEngine rewriteEngine)
+        {
+            using (new MarkdownTokenValidatorContext(rewriteEngine, file))
+            {
+                rewriteEngine.Initialize();
+                tokens = rewriteEngine.Rewrite(tokens);
+                rewriteEngine.Complete();
+            }
+            return tokens;
         }
 
         public virtual string Markup(string markdown, string file)
