@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Common
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
 
     using Newtonsoft.Json;
@@ -39,6 +40,20 @@ namespace Microsoft.DocAsCode.Build.Common
         [YamlMember(Alias = Constants.PropertyName.Documentation)]
         [JsonProperty(Constants.PropertyName.Documentation)]
         public SourceDetail Documentation { get; set; }
+
+        /// <summary>
+        /// Links to other files
+        /// </summary>
+        [YamlIgnore]
+        [JsonIgnore]
+        public ImmutableArray<string> LinkToFiles { get; set; } = ImmutableArray<string>.Empty;
+
+        /// <summary>
+        /// Links to other Uids
+        /// </summary>
+        [YamlIgnore]
+        [JsonIgnore]
+        public ImmutableHashSet<string> LinkToUids { get; set; } = ImmutableHashSet<string>.Empty;
 
         public T ConvertTo<T>() where T : class
         {
