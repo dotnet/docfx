@@ -13,3 +13,7 @@ exports.transform = function (model) {
 
   return model;
 }
+
+exports.getOptions = function (model) {
+  return { "bookmarks": restApiCommon.getBookmarks(model) };
+}
