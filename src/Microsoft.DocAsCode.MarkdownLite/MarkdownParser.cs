@@ -69,8 +69,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 {
                     pc.IsInParagraph = true;
                 }
-                else if (!(token.Rule is MarkdownNewLineBlockRule) ||
-                    token.SourceInfo.Markdown.Length > 1)
+                else
                 {
                     pc.IsInParagraph = false;
                 }
