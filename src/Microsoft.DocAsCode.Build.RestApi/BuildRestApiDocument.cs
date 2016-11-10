@@ -119,7 +119,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             model.Uids = (from item in overwrites
                           select new UidDefinition(
                               item.Uid,
-                              model.LocalPathFromRepoRoot,
+                              model.LocalPathFromRoot,
                               item.Documentation.StartLine + 1)).ToImmutableArray();
         }
 
