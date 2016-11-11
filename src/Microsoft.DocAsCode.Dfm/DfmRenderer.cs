@@ -11,6 +11,8 @@ namespace Microsoft.DocAsCode.Dfm
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Utility;
 
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+
     public class DfmRenderer : HtmlRenderer
     {
         private static readonly DocfxFlavoredIncHelper _inlineInclusionHelper = new DocfxFlavoredIncHelper();
@@ -153,7 +155,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmFencesToken token, IMarkdownContext context)
         {
-            if (!PathUtility.IsRelativePath(token.Path))
+            if (!TypeForwardedToPathUtility.IsRelativePath(token.Path))
             {
                 string errorMessage = $"Code absolute path: {token.Path} is not supported in file {context.GetFilePathStack().Peek()}";
                 Logger.LogError(errorMessage);

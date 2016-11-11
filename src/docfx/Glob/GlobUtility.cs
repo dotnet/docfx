@@ -12,6 +12,8 @@ namespace Microsoft.DocAsCode
     using Microsoft.DocAsCode.Glob;
     using Microsoft.DocAsCode.Utility;
 
+    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
+
     internal class GlobUtility
     {
         public static FileMapping ExpandFileMapping(string baseDirectory, FileMapping fileMapping)
@@ -33,7 +35,7 @@ namespace Microsoft.DocAsCode
                 if (files.Length == 0)
                 {
                     var currentSrcFullPath = string.IsNullOrEmpty(src) ? Directory.GetCurrentDirectory() : Path.GetFullPath(src);
-                    Logger.LogInfo($"No files are found with glob pattern {item.Files.ToDelimitedString() ?? "<none>"}, excluding {item.Exclude.ToDelimitedString() ?? "<none>"}, under directory \"{currentSrcFullPath}\"");
+                    Logger.LogInfo($"No files are found with glob pattern {TypeForwardedToStringExtension.ToDelimitedString(item.Files) ?? "<none>"}, excluding {TypeForwardedToStringExtension.ToDelimitedString(item.Exclude) ?? "<none>"}, under directory \"{currentSrcFullPath}\"");
                     CheckPatterns(item.Files);
                 }
                 expandedFileMapping.Add(

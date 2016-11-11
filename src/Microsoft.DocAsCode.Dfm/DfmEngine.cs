@@ -11,6 +11,8 @@ namespace Microsoft.DocAsCode.Dfm
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Utility;
 
+    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
+
     public class DfmEngine : MarkdownEngine
     {
         public DfmEngine(IMarkdownContext context, IMarkdownTokenRewriter rewriter, object renderer, Options options)
@@ -48,7 +50,7 @@ namespace Microsoft.DocAsCode.Dfm
         {
             if (!parents.IsEmpty)
             {
-                var path = parents.Peek().ToDisplayPath();
+                var path = TypeForwardedToStringExtension.ToDisplayPath(parents.Peek());
 
                 if (!string.IsNullOrEmpty(path))
                 {

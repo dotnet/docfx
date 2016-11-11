@@ -19,6 +19,9 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
+
     [Export(typeof(IHostService))]
     internal sealed class HostService : IHostService, IDisposable
     {
@@ -186,7 +189,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 string linkFile;
                 string anchor = null;
                 var link = pair.Attr;
-                if (PathUtility.IsRelativePath(link.Value))
+                if (TypeForwardedToPathUtility.IsRelativePath(link.Value))
                 {
                     var index = link.Value.IndexOf('#');
                     if (index == -1)
@@ -202,7 +205,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         linkFile = link.Value.Remove(index);
                         anchor = link.Value.Substring(index);
                     }
-                    var path = (RelativePath)ft.File + (RelativePath)linkFile;
+                    var path = (TypeForwardedToRelativePath)ft.File + (TypeForwardedToRelativePath)linkFile;
                     var file = path.GetPathFromWorkingFolder();
                     if (SourceFiles.ContainsKey(file))
                     {
@@ -300,7 +303,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 string linkFile;
                 string anchor = null;
                 var link = pair.Attr;
-                if (PathUtility.IsRelativePath(link.Value))
+                if (TypeForwardedToPathUtility.IsRelativePath(link.Value))
                 {
                     var index = link.Value.IndexOf('#');
                     if (index == -1)
@@ -316,7 +319,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         linkFile = link.Value.Remove(index);
                         anchor = link.Value.Substring(index);
                     }
-                    var path = (RelativePath)ft.File + (RelativePath)linkFile;
+                    var path = (TypeForwardedToRelativePath)ft.File + (TypeForwardedToRelativePath)linkFile;
                     var file = path.GetPathFromWorkingFolder();
                     if (SourceFiles.ContainsKey(file))
                     {
@@ -370,7 +373,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 result.Dependency =
                     (from d in result.Dependency
                      select
-                        ((RelativePath)ft.File + (RelativePath)d)
+                        ((TypeForwardedToRelativePath)ft.File + (TypeForwardedToRelativePath)d)
                             .GetPathFromWorkingFolder()
                             .ToString()
                     ).ToImmutableArray();
@@ -400,7 +403,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             lock (DependencyGraph)
             {
                 string fromKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
-                string toKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)to));
+                string toKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((TypeForwardedToRelativePath)currentFileModel.OriginalFileAndType.File + (TypeForwardedToRelativePath)to));
                 ReportDependencyCore(fromKey, toKey, fromKey, type);
             }
         }
@@ -421,7 +424,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             lock (DependencyGraph)
             {
-                string fromKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)from));
+                string fromKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((TypeForwardedToRelativePath)currentFileModel.OriginalFileAndType.File + (TypeForwardedToRelativePath)from));
                 string toKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
                 ReportDependencyCore(fromKey, toKey, toKey, type);
             }
@@ -513,7 +516,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 phase,
                 f =>
                 {
-                    var key = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString();
+                    var key = ((TypeForwardedToRelativePath)f.File).GetPathFromWorkingFolder().ToString();
                     return changes.Contains(key);
                 });
         }
@@ -569,7 +572,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     else
                     {
-                        var key = RelativePath.NormalizedWorkingFolder + pair.Key.File;
+                        var key = TypeForwardedToRelativePath.NormalizedWorkingFolder + pair.Key.File;
                         var model = Models.Find(m => m.Key == key);
                         using (var stream = File.Create(Path.Combine(IncrementalBaseDir, fileName)))
                         {

@@ -16,6 +16,8 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Utility;
 
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+
     public class AzureEngineBuilder : GfmEngineBuilder
     {
         private const string MarkdownExtension = ".md";
@@ -141,7 +143,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         private string AppendDefaultExtension(string href, string defaultExtension, out bool isHrefRelativeNonMdFile)
         {
             isHrefRelativeNonMdFile = false;
-            if (!PathUtility.IsRelativePath(href))
+            if (!TypeForwardedToPathUtility.IsRelativePath(href))
             {
                 return href;
             }
@@ -193,7 +195,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         private string FixNonMdRelativeFileHref(string nonMdHref, IMarkdownContext context, string rawMarkdown)
         {
             // If the context doesn't have necessary info or nonMdHref is not a relative path, return the original href
-            if (!context.Variables.ContainsKey("path") || !PathUtility.IsRelativePath(nonMdHref))
+            if (!context.Variables.ContainsKey("path") || !TypeForwardedToPathUtility.IsRelativePath(nonMdHref))
             {
                 return nonMdHref;
             }
@@ -205,7 +207,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             {
                 // if the relative path (not from azure resource file info mapping) is under docset. Just return it.
                 var nonMdHrefFullPath = Path.GetFullPath(Path.Combine(currentFolderPath, nonMdHref));
-                if (PathUtility.IsPathUnderSpecificFolder(nonMdHrefFullPath, currentFolderPath))
+                if (TypeForwardedToPathUtility.IsPathUnderSpecificFolder(nonMdHrefFullPath, currentFolderPath))
                 {
                     return nonMdHref;
                 }
@@ -231,7 +233,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 }
 
                 // If the nonMdHref is under same docset with current file. No need to fix that.
-                if (PathUtility.IsPathUnderSpecificFolder(azureResourceFileInfo.FilePath, currentFolderPath))
+                if (TypeForwardedToPathUtility.IsPathUnderSpecificFolder(azureResourceFileInfo.FilePath, currentFolderPath))
                 {
                     return nonMdHref;
                 }
@@ -248,7 +250,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 var exResourceDir = Directory.CreateDirectory(Path.Combine(currentFolderPath, ExternalResourceFolderName));
                 var resDestPath = Path.Combine(exResourceDir.FullName, Path.GetFileName(azureResourceFileInfo.FilePath));
                 File.Copy(azureResourceFileInfo.FilePath, resDestPath, true);
-                return PathUtility.MakeRelativePath(currentFolderPath, resDestPath);
+                return TypeForwardedToPathUtility.MakeRelativePath(currentFolderPath, resDestPath);
             }
             catch (NotSupportedException nse)
             {
@@ -300,7 +302,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             }
 
             // if the href is not relative path, return it
-            if (!PathUtility.IsRelativePath(href))
+            if (!TypeForwardedToPathUtility.IsRelativePath(href))
             {
                 return href;
             }
@@ -345,12 +347,12 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 var hrefPath = hrefFileInfo.FilePath;
 
                 // It is correct for Azure strucuture. Azure articles are all under same folder
-                var isHrefInsameDocset = PathUtility.IsPathUnderSpecificFolder(hrefPath, Path.GetDirectoryName(currentFilePath));
+                var isHrefInsameDocset = TypeForwardedToPathUtility.IsPathUnderSpecificFolder(hrefPath, Path.GetDirectoryName(currentFilePath));
 
                 // In same docset with current file, use relative path. Otherwise, use docset link prefix
                 if (isHrefInsameDocset)
                 {
-                    azureHref = string.Format("{0}{1}", PathUtility.MakeRelativePath(Path.GetDirectoryName(currentFilePath), hrefFileInfo.FilePath), anchor);
+                    azureHref = string.Format("{0}{1}", TypeForwardedToPathUtility.MakeRelativePath(Path.GetDirectoryName(currentFilePath), hrefFileInfo.FilePath), anchor);
                 }
                 else
                 {

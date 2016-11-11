@@ -15,6 +15,10 @@ namespace Microsoft.DocAsCode.Dfm
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Utility;
 
+    using TypeForwardedToFilePathComparer = Microsoft.DocAsCode.Common.FilePathComparer;
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
+
     internal sealed class DocfxFlavoredIncHelper : IDisposable
     {
         private readonly FileCacheLite _cache;
@@ -22,7 +26,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public DocfxFlavoredIncHelper()
         {
-            _cache = new FileCacheLite(new FilePathComparer());
+            _cache = new FileCacheLite(new TypeForwardedToFilePathComparer());
         }
 
         public string Load(IMarkdownRenderer adapter, string currentPath, string raw, SourceInfo sourceInfo, IMarkdownContext context, DfmEngine engine)
@@ -34,7 +38,7 @@ namespace Microsoft.DocAsCode.Dfm
         {
             try
             {
-                if (!PathUtility.IsRelativePath(currentPath))
+                if (!TypeForwardedToPathUtility.IsRelativePath(currentPath))
                 {
                     return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Absolute path \"{currentPath}\" is not supported.", raw, sourceInfo);
                 }
@@ -51,10 +55,10 @@ namespace Microsoft.DocAsCode.Dfm
                 else if (!parents.IsEmpty)
                 {
                     parent = parents.Peek();
-                    currentPath = ((RelativePath)currentPath).BasedOn((RelativePath)parent);
+                    currentPath = ((TypeForwardedToRelativePath)currentPath).BasedOn((TypeForwardedToRelativePath)parent);
                 }
 
-                if (parents.Contains(currentPath, FilePathComparer.OSPlatformSensitiveComparer))
+                if (parents.Contains(currentPath, TypeForwardedToFilePathComparer.OSPlatformSensitiveComparer))
                 {
                     return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}: Circular dependency found in \"{parent}\"", raw, sourceInfo);
                 }
@@ -78,7 +82,7 @@ namespace Microsoft.DocAsCode.Dfm
                 }
                 context.ReportDependency(
                     from d in dependency
-                    select (string)((RelativePath)currentPath + (RelativePath)d - (RelativePath)parent));
+                    select (string)((TypeForwardedToRelativePath)currentPath + (TypeForwardedToRelativePath)d - (TypeForwardedToRelativePath)parent));
                 return result;
             }
             catch (Exception e)
@@ -109,9 +113,9 @@ namespace Microsoft.DocAsCode.Dfm
             foreach (var pair in GetHrefNodes(html))
             {
                 var link = pair.Attr;
-                if (PathUtility.IsRelativePath(link.Value) && !RelativePath.IsPathFromWorkingFolder(link.Value) && !link.Value.StartsWith("#"))
+                if (TypeForwardedToPathUtility.IsRelativePath(link.Value) && !TypeForwardedToRelativePath.IsPathFromWorkingFolder(link.Value) && !link.Value.StartsWith("#"))
                 {
-                    link.Value = ((RelativePath)filePath + (RelativePath)link.Value).GetPathFromWorkingFolder();
+                    link.Value = ((TypeForwardedToRelativePath)filePath + (TypeForwardedToRelativePath)link.Value).GetPathFromWorkingFolder();
                 }
             }
         }

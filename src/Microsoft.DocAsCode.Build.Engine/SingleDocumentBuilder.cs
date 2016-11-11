@@ -19,6 +19,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Newtonsoft.Json;
 
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
+    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
+
     public class SingleDocumentBuilder : IDisposable
     {
         private const string PhaseName = "Build Document";
@@ -172,7 +176,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Files = context.ManifestItems.ToList(),
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context),
-                            SourceBasePath = EnvironmentContext.BaseDirectory?.ToNormalizedPath()
+                            SourceBasePath = TypeForwardedToStringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory)
                         };
                     }
                 }
@@ -263,7 +267,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private Dictionary<string, FileAttributeItem> ComputeFileAttributes(DocumentBuildParameters parameters, DependencyGraph dg)
         {
             var filesInScope = from f in parameters.Files.EnumerateFiles()
-                               let fileKey = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString()
+                               let fileKey = ((TypeForwardedToRelativePath)f.File).GetPathFromWorkingFolder().ToString()
                                select new
                                {
                                    PathFromWorkingFolder = fileKey,
@@ -273,7 +277,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (dg != null)
             {
                 var filesFromDependency = from node in dg.GetAllDependentNodes()
-                                          let fullPath = Path.Combine(EnvironmentContext.BaseDirectory, ((RelativePath)node).RemoveWorkingFolder())
+                                          let fullPath = Path.Combine(EnvironmentContext.BaseDirectory, ((TypeForwardedToRelativePath)node).RemoveWorkingFolder())
                                           select new
                                           {
                                               PathFromWorkingFolder = node,
@@ -290,7 +294,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         File = g.Key,
                         LastModifiedTime = File.GetLastWriteTimeUtc(g.First().FullPath),
-                        MD5 = File.ReadAllText(g.First().FullPath).GetMd5String(),
+                        MD5 = TypeForwardedToStringExtension.GetMd5String(File.ReadAllText(g.First().FullPath)),
                     }).ToDictionary(a => a.File);
         }
 
@@ -349,7 +353,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     if (m.LinkToUids.Count != 0)
                     {
-                        string fromNode = ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
+                        string fromNode = ((TypeForwardedToRelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
                         var dps = from f in GetFilesFromUids(context, m.LinkToUids)
                                   select new DependencyItem(fromNode, f, fromNode, DependencyTypeName.Uid);
                         context.DependencyGraph.ReportDependency(dps);
@@ -412,11 +416,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     if (m.LocalPathFromRepoRoot == null)
                     {
-                        m.LocalPathFromRepoRoot = Path.Combine(m.BaseDir, m.File).ToDisplayPath();
+                        m.LocalPathFromRepoRoot = TypeForwardedToStringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
                     }
                     if (m.LocalPathFromRoot == null)
                     {
-                        m.LocalPathFromRoot = Path.Combine(m.BaseDir, m.File).ToDisplayPath();
+                        m.LocalPathFromRoot = TypeForwardedToStringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
                     }
                 }
                 using (new LoggerPhaseScope(hostService.Processor.Name, true))
@@ -529,14 +533,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             var nodesToUpdate = bvi.Dependency.GetAllDependentNodes().Except(fileAttributes.Keys);
             foreach (var node in nodesToUpdate)
             {
-                string fullPath = Path.Combine(EnvironmentContext.BaseDirectory, ((RelativePath)node).RemoveWorkingFolder());
+                string fullPath = Path.Combine(EnvironmentContext.BaseDirectory, ((TypeForwardedToRelativePath)node).RemoveWorkingFolder());
                 if (File.Exists(fullPath))
                 {
                     fileAttributes[node] = new FileAttributeItem
                     {
                         File = node,
                         LastModifiedTime = File.GetLastWriteTimeUtc(fullPath),
-                        MD5 = File.ReadAllText(fullPath).GetMd5String(),
+                        MD5 = TypeForwardedToStringExtension.GetMd5String(File.ReadAllText(fullPath)),
                     };
                 }
             }
@@ -712,7 +716,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (canProcessorIncremental)
                 {
                     ChangeKindWithDependency ck;
-                    string fileKey = ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
+                    string fileKey = ((TypeForwardedToRelativePath)file.File).GetPathFromWorkingFolder().ToString();
                     if (context.ChangeDict.TryGetValue(fileKey, out ck))
                     {
                         Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}, ChangeType {ck}.");
@@ -729,7 +733,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                                 // to-do: remove filemap/xrefmap/manifestitem restore after processor.LoadIntermediateModel is implemented
                                 // restore filemap
-                                context.FileMap[fileKey] = ((RelativePath)file.File).GetPathFromWorkingFolder();
+                                context.FileMap[fileKey] = ((TypeForwardedToRelativePath)file.File).GetPathFromWorkingFolder();
 
                                 // restore xrefspec
                                 var specs = xrefSpecMap?.Values?.Where(spec => spec.Href == fileKey);
@@ -782,17 +786,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (fileMetadata == null || fileMetadata.Count == 0) return metadata;
             var result = new Dictionary<string, object>(metadata);
             var baseDir = string.IsNullOrEmpty(fileMetadata.BaseDir) ? Directory.GetCurrentDirectory() : fileMetadata.BaseDir;
-            var relativePath = PathUtility.MakeRelativePath(baseDir, file);
+            var TypeForwardedToRelativePath = TypeForwardedToPathUtility.MakeRelativePath(baseDir, file);
             foreach (var item in fileMetadata)
             {
                 // As the latter one overrides the former one, match the pattern from latter to former
                 for (int i = item.Value.Length - 1; i >= 0; i--)
                 {
-                    if (item.Value[i].Glob.Match(relativePath))
+                    if (item.Value[i].Glob.Match(TypeForwardedToRelativePath))
                     {
                         // override global metadata if metadata is defined in file metadata
                         result[item.Value[i].Key] = item.Value[i].Value;
-                        Logger.LogVerbose($"{relativePath} matches file metadata with glob pattern {item.Value[i].Glob.Raw} for property {item.Value[i].Key}");
+                        Logger.LogVerbose($"{TypeForwardedToRelativePath} matches file metadata with glob pattern {item.Value[i].Glob.Raw} for property {item.Value[i].Key}");
                         break;
                     }
                 }
@@ -897,7 +901,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             }
                             if (m.FileAndType.SourceDir != m.FileAndType.DestinationDir)
                             {
-                                m.File = (RelativePath)m.FileAndType.DestinationDir + (((RelativePath)m.File) - (RelativePath)m.FileAndType.SourceDir);
+                                m.File = (TypeForwardedToRelativePath)m.FileAndType.DestinationDir + (((TypeForwardedToRelativePath)m.File) - (TypeForwardedToRelativePath)m.FileAndType.SourceDir);
                             }
                             var result = hostService.Processor.Save(m);
                             if (result != null)
@@ -934,7 +938,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             FileModel model,
             SaveResult result)
         {
-            context.FileMap[model.Key] = ((RelativePath)model.File).GetPathFromWorkingFolder();
+            context.FileMap[model.Key] = ((TypeForwardedToRelativePath)model.File).GetPathFromWorkingFolder();
             DocumentException.RunAll(
                 () => CheckFileLink(hostService, result),
                 () => HandleUids(context, result),
@@ -1005,7 +1009,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     XRefSpec xref;
                     if (context.XRefSpecMap.TryGetValue(spec.Uid, out xref))
                     {
-                        Logger.LogWarning($"Uid({spec.Uid}) has already been defined in {((RelativePath)xref.Href).RemoveWorkingFolder()}.");
+                        Logger.LogWarning($"Uid({spec.Uid}) has already been defined in {((TypeForwardedToRelativePath)xref.Href).RemoveWorkingFolder()}.");
                     }
                     else
                     {
@@ -1240,8 +1244,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 .Where(s => !string.IsNullOrEmpty(s.Homepage))
                 .Select(s => new HomepageInfo
                 {
-                    Homepage = RelativePath.GetPathWithoutWorkingFolderChar(s.Homepage),
-                    TocPath = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(s.TocFileKey))
+                    Homepage = TypeForwardedToRelativePath.GetPathWithoutWorkingFolderChar(s.Homepage),
+                    TocPath = TypeForwardedToRelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(s.TocFileKey))
                 }).ToList();
         }
 
@@ -1256,7 +1260,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                  select new XRefSpec(xref)
                  {
-                     Href = ((RelativePath)context.FileMap[UriUtility.GetNonFragment(xref.Href)]).RemoveWorkingFolder() + UriUtility.GetFragment(xref.Href)
+                     Href = ((TypeForwardedToRelativePath)context.FileMap[UriUtility.GetNonFragment(xref.Href)]).RemoveWorkingFolder() + UriUtility.GetFragment(xref.Href)
                  }).ToList();
             xrefMap.Sort();
             string xrefMapFileNameWithVersion = string.IsNullOrEmpty(parameters.VersionName) ?
@@ -1293,12 +1297,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string ComputeConfigHash(DocumentBuildParameters parameter)
         {
-            return JsonConvert.SerializeObject(
+            return TypeForwardedToStringExtension.GetMd5String(JsonConvert.SerializeObject(
                 parameter,
                 new JsonSerializerSettings
                 {
                     ContractResolver = new IncrementalCheckPropertiesResolver()
-                }).GetMd5String();
+                }));
         }
 
         public void Dispose()

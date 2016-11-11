@@ -23,6 +23,9 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
+
     [Export(typeof(IDocumentProcessor))]
     public class RestApiDocumentProcessor : DisposableDocumentProcessor
     {
@@ -88,14 +91,14 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
                     swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);
                     var vm = SwaggerModelConverter.FromSwaggerModel(swagger);
-                    var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
+                    var displayLocalPath = TypeForwardedToPathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
                     return new FileModel(file, vm, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
                     {
                         Uids = new[] { new UidDefinition(vm.Uid, displayLocalPath) }
                             .Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath))
                             .Concat(from tag in vm.Tags select new UidDefinition(tag.Uid, displayLocalPath)).ToImmutableArray(),
-                        LocalPathFromRepoRoot = repoInfo?.RelativePath ?? filePath.ToDisplayPath(),
+                        LocalPathFromRepoRoot = repoInfo?.RelativePath ?? TypeForwardedToStringExtension.ToDisplayPath(filePath),
                         LocalPathFromRoot = displayLocalPath
                     };
                 case DocumentType.Overwrite:

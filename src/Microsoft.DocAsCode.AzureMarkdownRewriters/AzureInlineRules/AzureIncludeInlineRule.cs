@@ -10,6 +10,8 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Utility;
 
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+
     public class AzureIncludeInlineRule : IMarkdownRule
     {
         public virtual string Name => "AZURE.INCLUDE.INLINE";
@@ -35,7 +37,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             var value = match.Groups[1].Value;
             var title = match.Groups[4].Value;
 
-            if (!PathUtility.IsRelativePath(path))
+            if (!TypeForwardedToPathUtility.IsRelativePath(path))
             {
                 Logger.LogWarning($"Azure inline include path {path} is not a relative path, can't expand it");
                 return new MarkdownTextToken(this, engine.Context, match.Value, sourceInfo);
@@ -49,7 +51,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                 return new MarkdownTextToken(this, engine.Context, match.Value, sourceInfo);
             }
 
-            var includeFilePath = PathUtility.NormalizePath(Path.Combine(Path.GetDirectoryName(currentFilePath.ToString()), path));
+            var includeFilePath = TypeForwardedToPathUtility.NormalizePath(Path.Combine(Path.GetDirectoryName(currentFilePath.ToString()), path));
             if (!File.Exists(includeFilePath))
             {
                 Logger.LogWarning($"Can't get include file path {includeFilePath} in the file {currentFilePath}, return MarkdownTextToken. Raw: {match.Value}");

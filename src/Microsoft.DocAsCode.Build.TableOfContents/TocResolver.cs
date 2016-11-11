@@ -11,6 +11,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
+    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
+
     internal sealed class TocResolver
     {
         private readonly IHostService _host;
@@ -86,7 +88,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             TocItemInfo tocFileModel = null;
             if (!string.IsNullOrEmpty(item.TocHref) && (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile))
             {
-                var tocFilePath = (RelativePath)file.File + (RelativePath)item.TocHref;
+                var tocFilePath = (TypeForwardedToRelativePath)file.File + (TypeForwardedToRelativePath)item.TocHref;
                 var tocFile = file.ChangeFile(tocFilePath);
                 if (!_collection.TryGetValue(tocFile.FullPath, out tocFileModel))
                 {
@@ -152,8 +154,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         }
                         else
                         {
-                            var relativeFolder = (RelativePath)file.File + (RelativePath)item.Href;
-                            var tocFilePath = relativeFolder + (RelativePath)Constants.YamlTocFileName;
+                            var relativeFolder = (TypeForwardedToRelativePath)file.File + (TypeForwardedToRelativePath)item.Href;
+                            var tocFilePath = relativeFolder + (TypeForwardedToRelativePath)Constants.YamlTocFileName;
 
                             var tocFile = file.ChangeFile(tocFilePath);
 
@@ -161,7 +163,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                             // Second, try finding toc.md under the relative folder
                             if (!_collection.TryGetValue(tocFile.FullPath, out tocFileModel))
                             {
-                                tocFilePath = relativeFolder + (RelativePath)Constants.MarkdownTocFileName;
+                                tocFilePath = relativeFolder + (TypeForwardedToRelativePath)Constants.MarkdownTocFileName;
                                 tocFile = file.ChangeFile(tocFilePath);
                                 if (!_collection.TryGetValue(tocFile.FullPath, out tocFileModel))
                                 {
@@ -172,7 +174,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                                 }
                             }
 
-                            item.TocHref = tocFilePath - (RelativePath)file.File;
+                            item.TocHref = tocFilePath - (TypeForwardedToRelativePath)file.File;
                         }
 
                         // Get homepage from TocHref if TopicHref/TopicUid is not specified
@@ -201,7 +203,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 case HrefType.MarkdownTocFile:
                 case HrefType.YamlTocFile:
                     {
-                        var tocFilePath = (RelativePath)file.File + (RelativePath)item.Href;
+                        var tocFilePath = (TypeForwardedToRelativePath)file.File + (TypeForwardedToRelativePath)item.Href;
                         var tocFile = file.ChangeFile(tocFilePath);
                         TocItemInfo referencedTocFileModel;
                         TocItemViewModel referencedToc;
@@ -235,7 +237,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                     break;
             }
 
-            var relativeToFile = (RelativePath)file.File;
+            var relativeToFile = (TypeForwardedToRelativePath)file.File;
 
             item.OriginalHref = item.Href;
             item.OriginalTocHref = item.TocHref;
@@ -258,14 +260,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return wrapper;
         }
 
-        private string NormalizeHref(string href, RelativePath relativeToFile)
+        private string NormalizeHref(string href, TypeForwardedToRelativePath relativeToFile)
         {
             if (!Utility.IsSupportedRelativeHref(href))
             {
                 return href;
             }
 
-            return (relativeToFile + (RelativePath)href).GetPathFromWorkingFolder();
+            return (relativeToFile + (TypeForwardedToRelativePath)href).GetPathFromWorkingFolder();
         }
 
         private TocItemViewModel GetDefaultHomepageItem(TocItemViewModel toc)

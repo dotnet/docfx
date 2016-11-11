@@ -11,6 +11,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.Utility;
     using Microsoft.DocAsCode.Plugins;
 
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+
     internal static class Utility
     {
         public static bool IsSupportedFile(string file)
@@ -64,7 +66,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         public static HrefType GetHrefType(string href)
         {
-            if (!PathUtility.IsRelativePath(href))
+            if (!TypeForwardedToPathUtility.IsRelativePath(href))
             {
                 return HrefType.AbsolutePath;
             }

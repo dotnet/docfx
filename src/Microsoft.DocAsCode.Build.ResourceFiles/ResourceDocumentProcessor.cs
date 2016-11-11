@@ -16,6 +16,9 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Utility;
 
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
+
     [Export(typeof(IDocumentProcessor))]
     public class ResourceDocumentProcessor : DisposableDocumentProcessor
     {
@@ -76,12 +79,12 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
 
             var filePath = Path.Combine(file.BaseDir, file.File);
             var repoDetail = GitUtility.GetGitDetail(filePath);
-            var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
+            var displayLocalPath = TypeForwardedToPathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
             return new FileModel(file, content)
             {
                 Uids = string.IsNullOrEmpty(uid) ? ImmutableArray<UidDefinition>.Empty : ImmutableArray<UidDefinition>.Empty.Add(new UidDefinition(uid, displayLocalPath)),
-                LocalPathFromRepoRoot = repoDetail?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath(),
+                LocalPathFromRepoRoot = repoDetail?.RelativePath ?? TypeForwardedToStringExtension.ToDisplayPath(Path.Combine(file.BaseDir, file.File)),
                 LocalPathFromRoot = displayLocalPath
             };
         }

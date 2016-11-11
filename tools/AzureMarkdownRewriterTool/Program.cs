@@ -18,6 +18,8 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
 
     using Newtonsoft.Json;
 
+    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
+
     internal sealed class Program
     {
         private static readonly Regex _azureHtmlIncludeWithPrefixRegex = new Regex(@"^(\<br\s*\/\>)(\s*\r?\n\[AZURE\.INCLUDE)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
@@ -163,14 +165,14 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                 new ParallelOptions { MaxDegreeOfParallelism = 8 },
                 file =>
                 {
-                    var relativePath = PathUtility.MakeRelativePath(repositoryRoot, file);
+                    var relativePath = TypeForwardedToPathUtility.MakeRelativePath(repositoryRoot, file);
                     if (IsIgnoreFile(relativePath, rewriterToolArguments.IsMigration))
                     {
                         return;
                     }
 
                     var isSucceed = true;
-                    var azureTransformArguments = rewriterToolArguments.AzureTransformArgumentsList.FirstOrDefault(a => PathUtility.IsPathUnderSpecificFolder(file, a.SourceDir));
+                    var azureTransformArguments = rewriterToolArguments.AzureTransformArgumentsList.FirstOrDefault(a => TypeForwardedToPathUtility.IsPathUnderSpecificFolder(file, a.SourceDir));
 
                     // By default, all the link should be transformed to external link with azure uri prefix
                     // However, if we find that the file is under one of the folder that need to be transformed. Then the prefix uri should be docs but not auzre
@@ -186,7 +188,7 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                     var azureFileInfo = new AzureFileInfo
                     {
                         FileName = fileName,
-                        FilePath = PathUtility.NormalizePath(file),
+                        FilePath = TypeForwardedToPathUtility.NormalizePath(file),
                         NeedTransformToAzureExternalLink = needTransformToAzureExternalLink,
                         UriPrefix = uriPrefix
                     };
@@ -233,18 +235,18 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
                 new ParallelOptions { MaxDegreeOfParallelism = 8 },
                 file =>
                 {
-                    var relativePath = PathUtility.MakeRelativePath(repositoryRoot, file);
+                    var relativePath = TypeForwardedToPathUtility.MakeRelativePath(repositoryRoot, file);
                     if (IsIgnoreFile(relativePath, rewriterToolArguments.IsMigration))
                     {
                         return;
                     }
 
-                    var filePath = PathUtility.NormalizePath(file);
+                    var filePath = TypeForwardedToPathUtility.NormalizePath(file);
                     var fileName = Path.GetFileName(file);
                     var azureFileInfo = new AzureFileInfo
                     {
                         FileName = fileName,
-                        FilePath = PathUtility.NormalizePath(file),
+                        FilePath = TypeForwardedToPathUtility.NormalizePath(file),
                         NeedTransformToAzureExternalLink = false,
                         UriPrefix = string.Empty
                     };
