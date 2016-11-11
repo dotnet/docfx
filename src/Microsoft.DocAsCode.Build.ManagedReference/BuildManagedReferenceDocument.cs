@@ -110,14 +110,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         }
 
         #region Private methods
-        private static IEnumerable<string> EmptyEnumerable = Enumerable.Empty<string>();
+        private static readonly IEnumerable<string> EmptyEnumerable = Enumerable.Empty<string>();
 
         private static void BuildItem(IHostService host, FileModel model)
         {
             var file = model.FileAndType;
             var overwrites = MarkdownReader.ReadMarkdownAsOverwrite(host, model.FileAndType).ToList();
             model.Content = overwrites;
-            model.LocalPathFromRepoRoot = overwrites[0].Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+            model.LinkToFiles = overwrites.SelectMany(o => o.LinkToFiles).ToImmutableHashSet();
+            model.LinkToUids = overwrites.SelectMany(o => o.LinkToUids).ToImmutableHashSet();
+            model.LocalPathFromRepoRoot = overwrites.FirstOrDefault()?.Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
             model.Uids = (from item in overwrites
                           select new UidDefinition(
                               item.Uid,

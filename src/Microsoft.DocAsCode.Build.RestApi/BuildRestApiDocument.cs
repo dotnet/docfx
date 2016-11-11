@@ -115,7 +115,9 @@ namespace Microsoft.DocAsCode.Build.RestApi
             var file = model.FileAndType;
             var overwrites = MarkdownReader.ReadMarkdownAsOverwrite(host, model.FileAndType).ToList();
             model.Content = overwrites;
-            model.LocalPathFromRepoRoot = overwrites[0].Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
+            model.LinkToFiles = overwrites.SelectMany(o => o.LinkToFiles).ToImmutableHashSet();
+            model.LinkToUids = overwrites.SelectMany(o => o.LinkToUids).ToImmutableHashSet();
+            model.LocalPathFromRepoRoot = overwrites.FirstOrDefault()?.Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
             model.Uids = (from item in overwrites
                           select new UidDefinition(
                               item.Uid,

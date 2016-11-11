@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Common.Tests
 {
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
@@ -32,7 +33,8 @@ This is unit test!";
             File.WriteAllText(fullPath, content);
             var host = new HostService(null, Enumerable.Empty<FileModel>())
             {
-                MarkdownService = new DfmServiceProvider().CreateMarkdownService(new MarkdownServiceParameters {BasePath = string.Empty})
+                MarkdownService = new DfmServiceProvider().CreateMarkdownService(new MarkdownServiceParameters {BasePath = string.Empty}),
+                SourceFiles = ImmutableDictionary.Create<string, FileAndType>()
             };
 
             var ft = new FileAndType(baseDir, fileName, DocumentType.Overwrite);
@@ -126,6 +128,35 @@ uid: Test2
             Assert.Equal("Test", results[0].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
             Assert.Equal("<p sourcefile=\"ut_ReadMarkdownAsOverwrite.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">This is unit test!</p>\n", results[0].Conceptual);
+            File.Delete(fileName);
+
+            // Test link to files and Uids in overwrite document
+            content = @"---
+uid: Test
+remarks: Hello
+---
+@NotExistUid
+
+[Not exist link](link.md)
+
+This is unit test!";
+            content = Regex.Replace(content, "\r?\n", "\r\n");
+            html = DocfxFlavoredMarked.Markup(content);
+            File.WriteAllText(fileName, content);
+            results = MarkdownReader.ReadMarkdownAsOverwrite(host, ft).ToList();
+            Assert.NotNull(results);
+            Assert.Equal(1, results.Count);
+            Assert.Equal("Test", results[0].Uid);
+            Assert.Equal("Hello", results[0].Metadata["remarks"]);
+            Assert.Equal(1, results[0].LinkToFiles.Count);
+            Assert.Equal("~/link.md", results[0].LinkToFiles.ElementAt(0));
+            Assert.Equal(1, results[0].LinkToUids.Count);
+            Assert.Equal("NotExistUid", results[0].LinkToUids.ElementAt(0));
+            Assert.Equal(@"<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""5"" sourceendlinenumber=""5""><xref href=""NotExistUid"" data-throw-if-not-resolved=""False"" data-raw=""@NotExistUid"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""5"" sourceendlinenumber=""5""></xref></p>
+<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""7"" sourceendlinenumber=""7""><a href=""link.md"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""7"" sourceendlinenumber=""7"">Not exist link</a></p>
+<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""9"" sourceendlinenumber=""9"">This is unit test!</p>
+".Replace("\r\n", "\n"),
+                results[0].Conceptual);
             File.Delete(fileName);
         }
     }
