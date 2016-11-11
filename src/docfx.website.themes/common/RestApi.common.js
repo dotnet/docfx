@@ -56,7 +56,11 @@ exports.transform = function (model) {
                     model.tags[i].children = children;
                 }
                 model.tags[i].conceptual = model.tags[i].conceptual || ''; // set to empty incase mustache looks up
-                model.tags[i].htmlId = model.tags[i]["x-bookmark-id"] ? model.tags[i]["x-bookmark-id"] : common.getHtmlId(model.tags[i].uid);
+                if (model.tags[i]["x-bookmark-id"]) {
+                    model.tags[i].htmlId = model.tags[i]["x-bookmark-id"];
+                } else if (model.tags[i].uid) {
+                    model.tags[i].htmlId = common.getHtmlId(model.tags[i].uid);
+                }
             }
             for (var i = 0; i < model.children.length; i++) {
                 var child = model.children[i];
@@ -259,8 +263,15 @@ exports.getBookmarks = function (model) {
     bookmarks[model.uid] = "";
     if (model.tags) {
         model.tags.forEach(function (tag) {
-            bookmarks[tag.uid] = tag["x-bookmark-id"] ? tag["x-bookmark-id"] : common.getHtmlId(tag.uid);
-        });
+            if (tag.uid) {
+                bookmarks[tag.uid] = tag["x-bookmark-id"] ? tag["x-bookmark-id"] : common.getHtmlId(tag.uid);
+            }
+            if (tag.children) {
+                tag.children.forEach(function (child) {
+                bookmarks[child.uid] = common.getHtmlId(child.uid);
+                })
+            }
+        })
     }
     if (model.children) {
         model.children.forEach(function (child) {
