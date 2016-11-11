@@ -52,13 +52,6 @@ namespace Microsoft.DocAsCode.Plugins
             StringComparer = GetStringComparer();
         }
 
-        [Obsolete]
-        public FileAndType(string baseDir, string file, DocumentType type, Func<string, string> pathRewriter)
-            : this(baseDir, file, type, null, null)
-        {
-            PathRewriter = pathRewriter;
-        }
-
         [JsonIgnore]
         public StringComparer StringComparer { get; }
 
@@ -80,33 +73,18 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("destinationDir")]
         public string DestinationDir { get; set; }
 
-        [Obsolete]
-        public Func<string, string> PathRewriter { get; }
-
         public FileAndType ChangeBaseDir(string baseDir)
         {
-            if (PathRewriter != null)
-            {
-                return new FileAndType(baseDir, File, Type, PathRewriter);
-            }
             return new FileAndType(baseDir, File, Type, SourceDir, DestinationDir);
         }
 
         public FileAndType ChangeFile(string file)
         {
-            if (PathRewriter != null)
-            {
-                return new FileAndType(BaseDir, file, Type, PathRewriter);
-            }
             return new FileAndType(BaseDir, file, Type, SourceDir, DestinationDir);
         }
 
         public FileAndType ChangeType(DocumentType type)
         {
-            if (PathRewriter != null)
-            {
-                return new FileAndType(BaseDir, File, type, PathRewriter);
-            }
             return new FileAndType(BaseDir, File, type, SourceDir, DestinationDir);
         }
 
