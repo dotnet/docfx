@@ -11,7 +11,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Newtonsoft.Json.Linq;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
 
@@ -20,9 +19,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         private const string Primary = ".primary";
         private const string Auxiliary = ".aux";
         private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
+
         private readonly object _locker = new object();
         private readonly ResourcePoolManager<ITemplateRenderer> _rendererPool = null;
-
         private readonly ResourcePoolManager<ITemplatePreprocessor> _preprocessorPool = null;
         private readonly string _script;
 
@@ -32,7 +31,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string Type { get; }
         public TemplateType TemplateType { get; }
         public IEnumerable<TemplateResourceInfo> Resources { get; }
-
         public bool ContainsGetOptions { get; }
         public bool ContainsModelTransformation { get; }
         public bool ContainsTemplateRenderer { get; }
@@ -98,14 +96,21 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <returns></returns>
         public TransformModelOptions GetOptions(object model)
         {
-            if (_preprocessorPool == null || !ContainsGetOptions) return null;
+            if (_preprocessorPool == null || !ContainsGetOptions)
+            {
+                return null;
+            }
+            object obj;
             using (var lease = _preprocessorPool.Rent())
             {
-                var obj = lease.Resource.GetOptionsFunc(model);
-
-                var config = JObject.FromObject(obj).ToObject<TransformModelOptions>();
-                return config;
+                obj = lease.Resource.GetOptionsFunc(model);
             }
+            if (obj == null)
+            {
+                return null;
+            }
+            var config = JObject.FromObject(obj).ToObject<TransformModelOptions>();
+            return config;
         }
 
         /// <summary>
@@ -117,7 +122,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <returns>The view model</returns>
         public object TransformModel(object model)
         {
-            if (_preprocessorPool == null || !ContainsModelTransformation) return model;
+            if (_preprocessorPool == null || !ContainsModelTransformation)
+            {
+                return model;
+            }
             using (var lease = _preprocessorPool.Rent())
             {
                 return lease.Resource.TransformModelFunc(model);
@@ -132,7 +140,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <returns>The output after applying template</returns>
         public string Transform(object model)
         {
-            if (_rendererPool == null || !ContainsTemplateRenderer || model == null) return null;
+            if (_rendererPool == null || !ContainsTemplateRenderer || model == null)
+            {
+                return null;
+            }
             using (var lease = _rendererPool.Rent())
             {
                 return lease.Resource.Render(model);
@@ -185,16 +196,28 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <param name="template"></param>
         private IEnumerable<TemplateResourceInfo> ExtractDependentResources(string templateName)
         {
-            if (_rendererPool == null) yield break;
+            if (_rendererPool == null)
+            {
+                yield break;
+            }
             using (var lease = _rendererPool.Rent())
             {
                 var _renderer = lease.Resource;
-                if (_renderer.Dependencies == null) yield break;
+                if (_renderer.Dependencies == null)
+                {
+                    yield break;
+                }
                 foreach (var dependency in _renderer.Dependencies)
                 {
                     string filePath = dependency;
-                    if (string.IsNullOrWhiteSpace(filePath)) continue;
-                    if (filePath.StartsWith("./")) filePath = filePath.Substring(2);
+                    if (string.IsNullOrWhiteSpace(filePath))
+                    {
+                        continue;
+                    }
+                    if (filePath.StartsWith("./"))
+                    {
+                        filePath = filePath.Substring(2);
+                    }
                     var regexPatternMatch = IsRegexPatternRegex.Match(filePath);
                     if (regexPatternMatch.Groups.Count > 1)
                     {

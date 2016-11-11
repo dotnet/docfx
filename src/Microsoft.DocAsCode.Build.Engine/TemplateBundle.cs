@@ -8,7 +8,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Linq;
 
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     public class TemplateBundle
     {
@@ -22,19 +21,26 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public TemplateBundle(string documentType, IEnumerable<Template> templates)
         {
-            if (string.IsNullOrEmpty(documentType)) throw new ArgumentNullException(nameof(documentType));
-            if (templates == null) throw new ArgumentNullException(nameof(templates));
+            if (string.IsNullOrEmpty(documentType))
+            {
+                throw new ArgumentNullException(nameof(documentType));
+            }
+            if (templates == null)
+            {
+                throw new ArgumentNullException(nameof(templates));
+            }
 
             DocumentType = documentType;
             Templates = templates.ToArray();
 
-            var defaultTemplate = Templates.FirstOrDefault(s => s.TemplateType == TemplateType.Primary)
-                ?? Templates.FirstOrDefault(s=>s.TemplateType != TemplateType.Auxiliary);
+            var defaultTemplate =
+                Templates.FirstOrDefault(s => s.TemplateType == TemplateType.Primary)
+                ?? Templates.FirstOrDefault(s => s.TemplateType != TemplateType.Auxiliary);
             Extension = defaultTemplate?.Extension ?? string.Empty;
             Resources = Templates.SelectMany(s => s.Resources).Distinct();
         }
 
-        internal TransformModelOptions GetOptions(InternalManifestItem item , IDocumentBuildContext context)
+        internal TransformModelOptions GetOptions(InternalManifestItem item, IDocumentBuildContext context)
         {
             return MergeOptions(GetOptionsForEachTemplate(item, context));
         }
@@ -43,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             var result = new TransformModelOptions();
             var bookmarks = new Dictionary<string, string>();
-            foreach(var options in optionsList)
+            foreach (var options in optionsList)
             {
                 // The model is shared if options defined in any template is shared
                 if (options.IsShared)
@@ -71,11 +77,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                 yield break;
             }
 
-            foreach(var template in Templates)
+            foreach (var template in Templates)
             {
                 if (template.ContainsGetOptions)
                 {
-                    yield return template.GetOptions(item.Model.Content);
+                    var options = template.GetOptions(item.Model.Content);
+                    if (options != null)
+                    {
+                        yield return options;
+                    }
                 }
             }
         }
