@@ -304,6 +304,8 @@ Metadata Name         | Type    | Description
 ----------------------|---------|---------------------------
 _appTitle             | string  | Will be appended to each output page's head title.
 _appFooter            | string  | The footer text. Will show DocFX's Copyright text if not specified.
+_appLogoPath          | string  | Logo file's path from output root. Will show DocFX's logo if not specified. Remember to add file to resource.
+_appFaviconPath       | string  | Favicon file's path from output root. Will show DocFX's favicon if not specified. Remember to add file to resource.
 _enableSearch         | bool    | Indicate whether to show the search box on the top of page.
 _disableNavbar        | bool    | Indicate whether to show the navigation bar on the top of page.
 _disableBreadcrumb    | bool    | Indicate whether to show breadcrumb on the top of page.
