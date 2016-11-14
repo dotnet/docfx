@@ -376,6 +376,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Logger.LogWarning($"File {path} is not found in {relativePath}.");
                     // TODO: what to do if file path not exists?
                     // CURRENT: fallback to the original one
+                    path = (TypeForwardedToRelativePath)path - (TypeForwardedToRelativePath)relativePath;
                     if (!string.IsNullOrEmpty(anchor))
                     {
                         path += anchor;
