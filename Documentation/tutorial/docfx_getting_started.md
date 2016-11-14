@@ -23,7 +23,7 @@ For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored
 2. Use *DocFX* as a command-line tool
 -----------------------
 
-*Step1.* Download and unzip *docfx.zip* from https://github.com/dotnet/docfx/releases, extract it to a local folder, and add it to PATH so you can run it anywhere.
+*Step1.* DocFX ships as a [chocolatey package](https://chocolatey.org/packages/docfx). Alternatively, you can download and unzip *docfx.zip* from https://github.com/dotnet/docfx/releases, extract it to a local folder, and add it to PATH so you can run it anywhere.
 
 *Step2.* Create a sample project
 ```
