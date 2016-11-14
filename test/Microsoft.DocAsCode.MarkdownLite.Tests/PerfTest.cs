@@ -1211,7 +1211,7 @@ Numbered list:
                 yield return @"<p>Leave 2 spaces at the end of a line to do a<br>line break</p>";
                 yield return @"<p>Text attributes <em>italic</em>, <strong>bold</strong>, ";
                 yield return @"<code>monospace</code>, <del>strikethrough</del> .</p>";
-                yield return @"<p>A <a href=""http://example.com"">link</a>.</p>";
+                yield return @"<p>A <a href=""http://example.com"" data-raw-source=""[link](http://example.com)"">link</a>.</p>";
                 yield return @"<p>Shopping list:</p>";
                 yield return @"<ul>";
                 yield return @"<li>apples</li>";

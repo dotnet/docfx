@@ -224,7 +224,7 @@ by a blank line.</p>
 <p>Leave 2 spaces at the end of a line to do a<br>line break</p>
 <p>Text attributes <em>italic</em>, <strong>bold</strong>, 
 <code>monospace</code>, <del>strikethrough</del> .</p>
-<p>A <a href=""http://example.com"">link</a>.</p>
+<p>A <a href=""http://example.com"" data-raw-source=""[link](http://example.com)"">link</a>.</p>
 <p>Shopping list:</p>
 <ul>
 <li>apples</li>

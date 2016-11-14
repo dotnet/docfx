@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Specialized;
+    using System.Linq;
     using System.Text.RegularExpressions;
     using System.Web;
 
@@ -27,6 +28,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string Title { get; private set; }
         public string Href { get; private set; }
         public string Raw { get; private set; }
+        public string RawSource { get; private set; }
         public string DisplayProperty { get; private set; }
         public string AltProperty { get; private set; }
         public string InnerHtml { get; private set; }
@@ -34,6 +36,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string Alt { get; private set; }
         public XRefSpec Spec { get; private set; }
         public bool ThrowIfNotResolved { get; private set; }
+        public string SourceFile { get; private set; }
+        public int SourceStartLineNumber { get; private set; }
+        public int SourceEndLineNumber { get; private set; }
 
         private XRefDetails() { }
 
@@ -77,9 +82,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             xref.Alt = node.GetAttributeValue("alt", node.GetAttributeValue("fullname", StringHelper.HtmlEncode(queryString?.Get("alt"))));
 
             xref.Title = node.GetAttributeValue("title", queryString?.Get("title"));
+            xref.SourceFile = node.GetAttributeValue("sourceFile", null);
+            xref.SourceStartLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0);
+            xref.SourceEndLineNumber = node.GetAttributeValue("sourceEndLineNumber", 0);
 
-            // Both `data-raw-html` and `data-raw` are html encoded. Use `data-raw-html` with higher priority.
-            // `data-raw-html` will be decoded then displayed, while `data-raw` will be displayed directly.
+            // Both `data-raw-html` and `data-raw-source` are html encoded. Use `data-raw-html` with higher priority.
+            // `data-raw-html` will be decoded then displayed, while `data-raw-source` will be displayed directly.
+            xref.RawSource = node.GetAttributeValue("data-raw-source", null);
             var raw = node.GetAttributeValue("data-raw-html", null);
             if (!string.IsNullOrEmpty(raw))
             {
@@ -87,7 +96,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             else
             {
-                xref.Raw = node.GetAttributeValue("data-raw", null);
+                xref.Raw = xref.RawSource;
             }
 
             xref.ThrowIfNotResolved = node.GetAttributeValue("data-throw-if-not-resolved", false);
@@ -125,21 +134,21 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (!string.IsNullOrEmpty(InnerHtml))
                 {
-                    return GetAnchorNode(Href, Anchor, Title, InnerHtml);
+                    return GetAnchorNode(Href, Anchor, Title, InnerHtml, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
                 }
                 if (!string.IsNullOrEmpty(Text))
                 {
-                    return GetAnchorNode(Href, Anchor, Title, Text);
+                    return GetAnchorNode(Href, Anchor, Title, Text, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
                 }
                 if (Spec != null)
                 {
                     var value = StringHelper.HtmlEncode(GetLanguageSpecificAttribute(Spec, language, DisplayProperty, "name"));
                     if (!string.IsNullOrEmpty(value))
                     {
-                        return GetAnchorNode(Href, Anchor, Title, value);
+                        return GetAnchorNode(Href, Anchor, Title, value, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
                     }
                 }
-                return GetAnchorNode(Href, Anchor, Title, Uid);
+                return GetAnchorNode(Href, Anchor, Title, Uid, RawSource, SourceFile, SourceStartLineNumber, SourceEndLineNumber);
             }
             else
             {
@@ -167,7 +176,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static HtmlAgilityPack.HtmlNode GetAnchorNode(string href, string anchor, string title, string value)
+        private static HtmlAgilityPack.HtmlNode GetAnchorNode(string href, string anchor, string title, string value, string rawSource, string sourceFile, int sourceStartLineNumber, int sourceEndLineNumber)
         {
             var anchorNode = $"<a class=\"xref\" href=\"{href}\"";
             if (!string.IsNullOrEmpty(anchor))
@@ -177,6 +186,22 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (!string.IsNullOrEmpty(title))
             {
                 anchorNode += $" title=\"{title}\"";
+            }
+            if (!string.IsNullOrEmpty(rawSource))
+            {
+                anchorNode += $" data-raw-source=\"{rawSource}\"";
+            }
+            if (!string.IsNullOrEmpty(sourceFile))
+            {
+                anchorNode += $" sourceFile=\"{sourceFile}\"";
+            }
+            if (sourceStartLineNumber != 0)
+            {
+                anchorNode += $" sourceStartLineNumber={sourceStartLineNumber}";
+            }
+            if (sourceEndLineNumber != 0)
+            {
+                anchorNode += $" sourceEndLineNumber={sourceEndLineNumber}";
             }
 
             anchorNode += $">{value}</a>";
@@ -233,12 +258,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             href = href.Substring("xref:".Length);
             var raw = StringHelper.HtmlEncode(node.OuterHtml);
-            var title = node.GetAttributeValue("title", null);
 
             var xrefNode = $"<xref href=\"{href}\" data-throw-if-not-resolved=\"True\" data-raw-html=\"{raw}\"";
-            if (!string.IsNullOrEmpty(title))
+            foreach (var attr in node.Attributes ?? Enumerable.Empty<HtmlAgilityPack.HtmlAttribute>())
             {
-                xrefNode += $" title=\"{title}\"";
+                if (attr.Name == "href" || attr.Name == "data-throw-if-not-resolved" || attr.Name == "data-raw-html")
+                {
+                    continue;
+                }
+                xrefNode += $" {attr.Name}=\"{attr.Value}\"";
             }
             xrefNode += $">{node.InnerText}</xref>";
 

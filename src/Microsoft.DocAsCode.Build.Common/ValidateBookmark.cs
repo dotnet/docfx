@@ -51,7 +51,16 @@ namespace Microsoft.DocAsCode.Build.Common
                  let index = link.IndexOfAny(new[] { '?', '#' })
                  let decodedLink = HttpUtility.UrlDecode(link.Remove(index))
                  where !WhiteList.Contains(bookmark) && TypeForwardedToPathUtility.IsRelativePath(decodedLink)
-                 select new LinkItem { Title = node.InnerText, Href = TransformPath(outputFile, decodedLink), Bookmark = bookmark, SourceFile = WebUtility.HtmlDecode(node.GetAttributeValue("sourceFile", null)), SourceLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0), TargetLineNumber = node.Line }).ToList();
+                 select new LinkItem
+                 {
+                     Title = node.InnerText,
+                     Href = TransformPath(outputFile, decodedLink),
+                     Bookmark = bookmark,
+                     SourceFragment = WebUtility.HtmlDecode(node.GetAttributeValue("data-raw-source", null)),
+                     SourceFile = WebUtility.HtmlDecode(node.GetAttributeValue("sourceFile", null)),
+                     SourceLineNumber = node.GetAttributeValue("sourceStartLineNumber", 0),
+                     TargetLineNumber = node.Line
+                 }).ToList();
             var anchors = GetNodeAttribute(document, "id").Concat(GetNodeAttribute(document, "name"));
             _registeredBookmarks[outputFile] = new HashSet<string>(anchors);
         }
@@ -72,13 +81,15 @@ namespace Microsoft.DocAsCode.Build.Common
                         string currentFileSrc = linkItem.SourceFile ?? _fileMapping[currentFile];
                         string linkedToFileSrc = _fileMapping[linkedToFile];
                         string link = linkItem.Href == string.Empty ? $"#{bookmark}" : $"{linkedToFileSrc}#{bookmark}";
-                        string content = $"[{title}]({link})";
-                        if (linkItem.SourceLineNumber == 0)
+                        string content = linkItem.SourceFragment;
+                        if (string.IsNullOrEmpty(content))
                         {
                             // Invalid bookmarks introduced from templates is a corner case, ignored.
                             content = $"<a href=\"{link}\">{title}</a>";
                         }
-                        Logger.LogWarning($"Illegal link: `{content}` -- missing bookmark. The file {linkedToFileSrc} doesn't contain a bookmark named {bookmark}.", file: currentFileSrc, line: linkItem.SourceLineNumber.ToString());
+                        Logger.LogWarning($"Illegal link: `{content}` -- missing bookmark. The file {linkedToFileSrc} doesn't contain a bookmark named {bookmark}.",
+                            file: currentFileSrc,
+                            line: linkItem.SourceLineNumber != 0 ? linkItem.SourceLineNumber.ToString() : null);
                     }
                 }
             }
@@ -111,6 +122,8 @@ namespace Microsoft.DocAsCode.Build.Common
             public string Href { get; set; }
 
             public string Bookmark { get; set; }
+
+            public string SourceFragment { get; set; }
 
             public string SourceFile { get; set; }
 

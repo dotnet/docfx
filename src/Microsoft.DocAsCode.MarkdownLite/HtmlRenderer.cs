@@ -246,6 +246,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 result = result + " title=\"" + StringHelper.Escape(token.Title) + "\"";
             }
+            result = AppendAttribute(result, "data-raw-source", token.SourceInfo.Markdown);
             result = AppendSourceInfo(result, renderer, token);
             result += ">";
 
@@ -368,6 +369,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 result = result + " sourceFile=\"" + StringHelper.HtmlEncode(token.SourceInfo.File) + "\" sourceStartLineNumber=\"" + token.SourceInfo.LineNumber.ToString() + "\" sourceEndLineNumber=\"" + (token.SourceInfo.LineNumber + token.SourceInfo.ValidLineCount - 1).ToString() + "\"";
             }
             return result;
+        }
+
+        protected static StringBuffer AppendAttribute(StringBuffer buffer, string attributeName, string value)
+        {
+            if (string.IsNullOrEmpty(value)) return buffer;
+            buffer += " ";
+            buffer += attributeName;
+            buffer += "=\"";
+            buffer += StringHelper.HtmlEncode(value);
+            buffer += "\"";
+            return buffer;
         }
 
         #endregion
