@@ -231,7 +231,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     try
                     {
-                        TranformHtml(context, result, relativeOutputPath, sw);
+                        TransformHtml(context, result, relativeOutputPath, sw);
                     }
                     catch (AggregateException e)
                     {
@@ -263,12 +263,23 @@ namespace Microsoft.DocAsCode.Build.Engine
             });
         }
 
-        private static void TranformHtml(IDocumentBuildContext context, string transformed, string relativeModelPath, StreamWriter outputWriter)
+        private static void TransformHtml(IDocumentBuildContext context, string html, string relativeModelPath, StreamWriter outputWriter)
         {
-            // Update HREF and XREF
-            HtmlAgilityPack.HtmlDocument html = new HtmlAgilityPack.HtmlDocument();
-            html.LoadHtml(transformed);
+            // Update href and xref
+            HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
+            document.LoadHtml(html);
 
+            var xrefExceptions = TransformHtmlCore(context, relativeModelPath, document);
+
+            document.Save(outputWriter);
+            if (xrefExceptions.Count > 0)
+            {
+                throw new AggregateException(xrefExceptions);
+            }
+        }
+
+        private static List<CrossReferenceNotResolvedException> TransformHtmlCore(IDocumentBuildContext context, string relativeModelPath, HtmlAgilityPack.HtmlDocument html)
+        {
             var xrefLinkNodes = html.DocumentNode.SelectNodes("//a[starts-with(@href, 'xref:')]");
             if (xrefLinkNodes != null)
             {
@@ -311,11 +322,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            html.Save(outputWriter);
-            if (xrefExceptions.Count > 0)
-            {
-                throw new AggregateException(xrefExceptions);
-            }
+            return xrefExceptions;
         }
 
         private static void TransformXrefLink(HtmlAgilityPack.HtmlNode node, IDocumentBuildContext context)

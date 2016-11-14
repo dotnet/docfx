@@ -115,17 +115,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                 List<HostService> hostServices = null;
                 try
                 {
-                    using (var processor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
+                    using (var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
                     {
                         IMarkdownService markdownService;
                         using (new LoggerPhaseScope("CreateMarkdownService", true))
                         {
-                            markdownService = CreateMarkdownService(parameters, processor.Tokens.ToImmutableDictionary());
+                            markdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
                         }
 
                         using (new LoggerPhaseScope("Load", true))
                         {
-                            hostServices = GetInnerContexts(parameters, Processors, processor, markdownService, context).ToList();
+                            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, markdownService, context).ToList();
                         }
 
                         var manifest = BuildCore(hostServices, context, parameters.VersionName).ToList();
@@ -163,11 +163,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                         IDictionary<string, object> globalVariables;
                         using (new LoggerPhaseScope("FeedGlobalVariables", true))
                         {
-                            globalVariables = FeedGlobalVariables(processor.Tokens, manifest, context);
+                            globalVariables = FeedGlobalVariables(templateProcessor.Tokens, manifest, context);
                         }
 
                         // processor to add global variable to the model
-                        foreach (var m in processor.Process(manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings, globalVariables))
+                        foreach (var m in templateProcessor.Process(manifest.Select(s => s.Item).ToList(), context, parameters.ApplyTemplateSettings, globalVariables))
                         {
                             context.ManifestItems.Add(m);
                         }
