@@ -83,9 +83,6 @@ namespace Microsoft.DocAsCode.Plugins
 
         public string Key { get; }
 
-        [Obsolete]
-        public Func<string, string> PathRewriter => FileAndType.PathRewriter;
-
         public ImmutableHashSet<string> LinkToFiles { get; set; } = ImmutableHashSet<string>.Empty;
 
         public ImmutableHashSet<string> LinkToUids { get; set; } = ImmutableHashSet<string>.Empty;

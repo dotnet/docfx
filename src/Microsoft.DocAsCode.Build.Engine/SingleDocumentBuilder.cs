@@ -895,10 +895,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Saving...");
                             m.BaseDir = context.BuildOutputFolder;
-                            if (m.PathRewriter != null)
-                            {
-                                m.File = m.PathRewriter(m.File);
-                            }
                             if (m.FileAndType.SourceDir != m.FileAndType.DestinationDir)
                             {
                                 m.File = (TypeForwardedToRelativePath)m.FileAndType.DestinationDir + (((TypeForwardedToRelativePath)m.File) - (TypeForwardedToRelativePath)m.FileAndType.SourceDir);
