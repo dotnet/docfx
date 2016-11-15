@@ -254,7 +254,7 @@ Metadata is coming from multiple sources, the following metadata will be validat
 2.  Global metadata and file metaata in `docfx.json`.
 3.  Global metadata and file metadata defined in separate `.json` files.
 
-> For more information about global metadata and global metadata, see [docfx.json format](docfx.exe_user_manual.md#3-docfx-json-format).
+> For more information about global metadata and global metadata, see [docfx.json format](docfx.exe_user_manual.md#3-docfxjson-format).
 
 ### Create validation plug-ins
 

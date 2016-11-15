@@ -48,7 +48,7 @@ DocFX converts it to a relative path in output folder structure:
 
 You can see the source file name (`.md`) is replaced with output file name (`.html`).
 
-> DocFX does not simply replace the file extension here (`.md` to `.html`), it also tracks the mapping between input and output files to make sure source file path will resolve to correct output path. For example, if in the above case, `subfolder` is renamed to `subfolder2` using [file mapping](docfx.exe_user_manual.md#4-supported-name-files-file-mapping-format) in `docfx.json`, in output html, the link url will also resolve to `subfolder2/file2.html`.
+> DocFX does not simply replace the file extension here (`.md` to `.html`), it also tracks the mapping between input and output files to make sure source file path will resolve to correct output path. For example, if in the above case, `subfolder` is renamed to `subfolder2` using [file mapping](docfx.exe_user_manual.md#4-supported-file-mapping-format) in `docfx.json`, in output html, the link url will also resolve to `subfolder2/file2.html`.
 
 ### Relative path vs. absolute path
 
