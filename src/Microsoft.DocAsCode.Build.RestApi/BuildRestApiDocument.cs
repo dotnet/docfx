@@ -78,6 +78,18 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     }
                 }
             }
+            if (childModel?.Responses != null)
+            {
+                foreach (var response in childModel.Responses)
+                {
+                    response.Description = Markup(host, response.Description, model, filter);
+
+                    foreach (var jToken in response.Metadata.Values.OfType<JToken>())
+                    {
+                        MarkupRecursive(jToken, host, model, filter);
+                    }
+                }
+            }
             return item;
         }
 
