@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             };
 
             File.WriteAllText(Path.Combine(outputFolder, "a.html"), @"<a href='http://bing.com#top'>Microsoft Bing</a> <p id='b1'>section</p><a href='#b1'/>");
-            File.WriteAllText(Path.Combine(outputFolder, "b.html"), @"<a href='a.html#b1' sourceFile='b.md' sourceStartLineNumber='1'>bookmark existed</a><a href='a.html#b2' sourceFile='b.md' sourceStartLineNumber='1'>link with source info</a> <a href='a.html#b3' sourceFile='token.md' sourceStartLineNumber='1'>link in token file</a><a href='a.html#b4'>link without source info</a>");
+            File.WriteAllText(Path.Combine(outputFolder, "b.html"), @"<a href='a.html#b1' sourceFile='b.md' sourceStartLineNumber='1'>bookmark existed</a><a href='a.html#b2' data-raw-source='[link with source info](a.md#b2)' sourceFile='b.md' sourceStartLineNumber='1'>link with source info</a> <a href='a.html#b3' data-raw-source='[link in token file](a.md#b3)' sourceFile='token.md' sourceStartLineNumber='1'>link in token file</a><a href='a.html#b4'>link without source info</a>");
             File.WriteAllText(Path.Combine(outputFolder, "c.html"), @"<a href='illegal_path_%3Cillegal character%3E.html#b1'>Test illegal link path</a>");
 
             Logger.RegisterListener(_listener);

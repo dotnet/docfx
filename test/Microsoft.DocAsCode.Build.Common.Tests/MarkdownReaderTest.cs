@@ -152,8 +152,8 @@ This is unit test!";
             Assert.Equal("~/link.md", results[0].LinkToFiles.ElementAt(0));
             Assert.Equal(1, results[0].LinkToUids.Count);
             Assert.Equal("NotExistUid", results[0].LinkToUids.ElementAt(0));
-            Assert.Equal(@"<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""5"" sourceendlinenumber=""5""><xref href=""NotExistUid"" data-throw-if-not-resolved=""False"" data-raw=""@NotExistUid"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""5"" sourceendlinenumber=""5""></xref></p>
-<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""7"" sourceendlinenumber=""7""><a href=""link.md"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""7"" sourceendlinenumber=""7"">Not exist link</a></p>
+            Assert.Equal(@"<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""5"" sourceendlinenumber=""5""><xref href=""NotExistUid"" data-throw-if-not-resolved=""False"" data-raw-source=""@NotExistUid"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""5"" sourceendlinenumber=""5""></xref></p>
+<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""7"" sourceendlinenumber=""7""><a href=""link.md"" data-raw-source=""[Not exist link](link.md)"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""7"" sourceendlinenumber=""7"">Not exist link</a></p>
 <p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""9"" sourceendlinenumber=""9"">This is unit test!</p>
 ".Replace("\r\n", "\n"),
                 results[0].Conceptual);

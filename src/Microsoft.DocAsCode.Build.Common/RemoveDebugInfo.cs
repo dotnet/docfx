@@ -34,6 +34,10 @@ namespace Microsoft.DocAsCode.Build.Common
                 {
                     attr.Remove();
                 }
+                foreach (var attr in node.ChildAttributes("data-raw-source"))
+                {
+                    attr.Remove();
+                }
             }
         }
 

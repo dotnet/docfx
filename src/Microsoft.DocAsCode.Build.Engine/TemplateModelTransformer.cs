@@ -346,7 +346,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (xref.ThrowIfNotResolved)
                 {
-                    throw new CrossReferenceNotResolvedException(xref.Uid, xref.Raw, null);
+                    throw new CrossReferenceNotResolvedException(xref.Uid, xref.RawSource, null);
                 }
             }
         }

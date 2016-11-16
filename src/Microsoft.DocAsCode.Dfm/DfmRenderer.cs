@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Dfm
             result = AppendAttribute(result, "href", token.Href);
             result = AppendAttribute(result, "title", token.Title);
             result = AppendAttribute(result, "data-throw-if-not-resolved", token.ThrowIfNotResolved.ToString());
-            result = AppendAttribute(result, "data-raw", token.SourceInfo.Markdown);
+            result = AppendAttribute(result, "data-raw-source", token.SourceInfo.Markdown);
             result = AppendSourceInfo(result, renderer, token);
             result += ">";
 
@@ -194,17 +194,6 @@ namespace Microsoft.DocAsCode.Dfm
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmVideoBlockToken token, MarkdownBlockContext context)
         {
             return token.SourceInfo.Markdown;
-        }
-
-        private static StringBuffer AppendAttribute(StringBuffer buffer, string attributeName, string value)
-        {
-            if (string.IsNullOrEmpty(value)) return buffer;
-            buffer += " ";
-            buffer += attributeName;
-            buffer += "=\"";
-            buffer += StringHelper.HtmlEncode(value);
-            buffer += "\"";
-            return buffer;
         }
     }
 }
