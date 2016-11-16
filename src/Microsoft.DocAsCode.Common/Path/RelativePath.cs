@@ -40,60 +40,9 @@ namespace Microsoft.DocAsCode.Common
 
         #region Public Members
 
-        public static RelativePath Parse(string path)
-        {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-            if (path.Length == 0)
-            {
-                return Empty;
-            }
-            if (Path.IsPathRooted(path))
-            {
-                throw new ArgumentException($"Rooted path({path}) is not supported", nameof(path));
-            }
-            bool isFromWorkingFolder = false;
-            var parts = path.Replace('\\', '/').Split('/');
-            var stack = new Stack<string>();
-            int parentCount = 0;
-            for (int i = 0; i < parts.Length; i++)
-            {
-                switch (parts[i])
-                {
-                    case "~":
-                        if (parentCount > 0 || stack.Count > 0 || isFromWorkingFolder)
-                        {
-                            throw new InvalidOperationException($"Invalid path: {path}");
-                        }
-                        isFromWorkingFolder = true;
-                        break;
-                    case "..":
-                        if (stack.Count > 0)
-                        {
-                            stack.Pop();
-                        }
-                        else
-                        {
-                            parentCount++;
-                        }
-                        break;
-                    case ".":
-                    case "":
-                        break;
-                    default:
-                        stack.Push(parts[i]);
-                        break;
-                }
-            }
-            if (parts[parts.Length - 1].Length == 0)
-            {
-                // if end with "/", treat it as folder
-                stack.Push(string.Empty);
-            }
-            return Create(isFromWorkingFolder, parentCount, stack.Reverse());
-        }
+        public static RelativePath Parse(string path) => TryParseCore(path, true);
+
+        public static RelativePath TryParse(string path) => TryParseCore(path, false);
 
         public static bool IsPathFromWorkingFolder(string path)
         {
@@ -332,6 +281,69 @@ namespace Microsoft.DocAsCode.Common
         #endregion
 
         #region Private Members
+
+        private static RelativePath TryParseCore(string path, bool throwOnError)
+        {
+            if (path == null)
+            {
+                if (throwOnError)
+                {
+                    throw new ArgumentNullException(nameof(path));
+                }
+                return null;
+            }
+            if (path.Length == 0)
+            {
+                return Empty;
+            }
+            if (Path.IsPathRooted(path))
+            {
+                if (throwOnError)
+                {
+                    throw new ArgumentException($"Rooted path({path}) is not supported", nameof(path));
+                }
+                return null;
+            }
+            bool isFromWorkingFolder = false;
+            var parts = path.Replace('\\', '/').Split('/');
+            var stack = new Stack<string>();
+            int parentCount = 0;
+            for (int i = 0; i < parts.Length; i++)
+            {
+                switch (parts[i])
+                {
+                    case "~":
+                        if (parentCount > 0 || stack.Count > 0 || isFromWorkingFolder)
+                        {
+                            throw new InvalidOperationException($"Invalid path: {path}");
+                        }
+                        isFromWorkingFolder = true;
+                        break;
+                    case "..":
+                        if (stack.Count > 0)
+                        {
+                            stack.Pop();
+                        }
+                        else
+                        {
+                            parentCount++;
+                        }
+                        break;
+                    case ".":
+                    case "":
+                        break;
+                    default:
+                        stack.Push(parts[i]);
+                        break;
+                }
+            }
+            if (parts[parts.Length - 1].Length == 0)
+            {
+                // if end with "/", treat it as folder
+                stack.Push(string.Empty);
+            }
+            return Create(isFromWorkingFolder, parentCount, stack.Reverse());
+        }
 
         private static RelativePath Create(bool isFromWorkingFolder, int parentDirectoryCount, IEnumerable<string> parts)
         {
