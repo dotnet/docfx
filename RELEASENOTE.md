@@ -2,6 +2,9 @@ Version Notes (Current Version: v2.8)
 =======================================
 v2.8(Pre-Release)
 -----------
+1.  Improve markdown engine:
+    - Remove paragraph rule.
+    - Improve parser performance.
 
 v2.7
 -----------
