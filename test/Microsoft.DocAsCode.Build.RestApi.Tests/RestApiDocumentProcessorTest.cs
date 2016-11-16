@@ -125,6 +125,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 item5.Parameters[2].Description);
             Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><strong>uri</strong> description.</p>\n", 
                 ((string)parameter2["description"]));
+            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">No Content. Indicates <strong>success</strong>. No response body is returned.</p>\n",
+                item5.Responses[0].Description);
         }
 
         [Fact]
