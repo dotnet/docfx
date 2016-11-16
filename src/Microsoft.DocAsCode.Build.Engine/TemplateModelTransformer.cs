@@ -372,14 +372,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Logger.LogWarning($"File {path} is not found in {relativePath}.");
                     // TODO: what to do if file path not exists?
                     // CURRENT: fallback to the original one
-                    if (path != null)
-                    {
-                        href = (path.UrlDecode().RemoveWorkingFolder() - (TypeForwardedToRelativePath)relativePath).UrlEncode();
-                    }
-                    else
-                    {
-                        href = originalHref;
-                    }
+                    href = (path.UrlDecode().RemoveWorkingFolder() - (TypeForwardedToRelativePath)relativePath).UrlEncode();
                 }
                 link.SetAttributeValue(attribute, href + anchor);
             }
