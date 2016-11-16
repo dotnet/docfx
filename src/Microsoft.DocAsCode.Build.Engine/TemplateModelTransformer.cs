@@ -353,48 +353,36 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static void UpdateHref(HtmlAgilityPack.HtmlNode link, string attribute, IDocumentBuildContext context, string relativePath)
         {
-            var key = link.GetAttributeValue(attribute, null);
-            string path;
-            if (TypeForwardedToRelativePath.TryGetPathWithoutWorkingFolderChar(key, out path))
+            var originalHref = link.GetAttributeValue(attribute, null);
+            var anchor = link.GetAttributeValue("anchor", null);
+            link.Attributes.Remove("anchor");
+            string href;
+            var path = TypeForwardedToRelativePath.TryParse(originalHref);
+
+            if (path?.IsFromWorkingFolder() == true)
             {
-                var href = context.GetFilePath(key);
-                var anchor = link.GetAttributeValue("anchor", null);
+                var targetPath = (TypeForwardedToRelativePath)context.GetFilePath(path.UrlDecode());
 
-                if (href != null)
+                if (targetPath != null)
                 {
-                    href = ((TypeForwardedToRelativePath)UpdateFilePath(href, relativePath)).UrlEncode();
-
-                    if (!string.IsNullOrEmpty(anchor))
-                    {
-                        href += anchor;
-                        link.Attributes.Remove("anchor");
-                    }
-                    link.SetAttributeValue(attribute, href);
+                    href = (targetPath.RemoveWorkingFolder() - (TypeForwardedToRelativePath)relativePath).UrlEncode();
                 }
                 else
                 {
                     Logger.LogWarning($"File {path} is not found in {relativePath}.");
                     // TODO: what to do if file path not exists?
                     // CURRENT: fallback to the original one
-                    path = (TypeForwardedToRelativePath)path - (TypeForwardedToRelativePath)relativePath;
-                    if (!string.IsNullOrEmpty(anchor))
+                    if (path != null)
                     {
-                        path += anchor;
-                        link.Attributes.Remove("anchor");
+                        href = (path.UrlDecode().RemoveWorkingFolder() - (TypeForwardedToRelativePath)relativePath).UrlEncode();
                     }
-                    link.SetAttributeValue(attribute, path);
+                    else
+                    {
+                        href = originalHref;
+                    }
                 }
+                link.SetAttributeValue(attribute, href + anchor);
             }
-        }
-
-        private static string UpdateFilePath(string path, string modelFilePathToRoot)
-        {
-            if (TypeForwardedToRelativePath.IsPathFromWorkingFolder(path))
-            {
-                return ((TypeForwardedToRelativePath)path).RemoveWorkingFolder().MakeRelativeTo((TypeForwardedToRelativePath)modelFilePathToRoot);
-            }
-
-            return path;
         }
     }
 }
