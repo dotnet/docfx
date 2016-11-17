@@ -272,6 +272,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 SeeAlsos?.ForEach(e => e.Expand(references, supportedLanguages));
                 Sees?.ForEach(e => e.Expand(references, supportedLanguages));
                 Exceptions?.ForEach(e => e.Expand(references, supportedLanguages));
+                Overload = ApiBuildOutputUtility.GetApiNames(Overload?.Uid, references, supportedLanguages);
             }
         }
 
