@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Build.ResourceFiles
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
@@ -14,7 +13,7 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common.Git;
 
     using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
     using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
@@ -78,7 +77,7 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
             }
 
             var filePath = Path.Combine(file.BaseDir, file.File);
-            var repoDetail = GitUtility.GetGitDetail(filePath);
+            var repoDetail = GitUtility.TryGetFileDetail(filePath, EnvironmentContext.RepoRootDirectory);
             var displayLocalPath = TypeForwardedToPathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
             return new FileModel(file, content)

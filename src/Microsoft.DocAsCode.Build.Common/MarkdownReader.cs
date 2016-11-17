@@ -11,8 +11,8 @@ namespace Microsoft.DocAsCode.Build.Common
 
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Utility;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Common.Git;
 
     public class MarkdownReader
     {
@@ -27,12 +27,12 @@ namespace Microsoft.DocAsCode.Build.Common
         public static Dictionary<string, object> ReadMarkdownAsConceptual(string baseDir, string file)
         {
             var filePath = Path.Combine(baseDir, file);
-            var repoInfo = GitUtility.GetGitDetail(filePath);
+            var repoInfo = GitUtility.TryGetFileDetail(filePath, EnvironmentContext.RepoRootDirectory);
             return new Dictionary<string, object>
             {
                 [Constants.PropertyName.Conceptual] = File.ReadAllText(filePath),
                 [Constants.PropertyName.Type] = "Conceptual",
-                [Constants.PropertyName.Source] = new SourceDetail() { Remote = repoInfo },
+                [Constants.PropertyName.Source] = new SourceDetail { Remote = repoInfo },
                 [Constants.PropertyName.Path] = file,
             };
         }
@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.Common
             }
 
             var overriden = RemoveRequiredProperties(properties, RequiredProperties);
-            var repoInfo = GitUtility.GetGitDetail(filePath);
+            var repoInfo = GitUtility.TryGetFileDetail(filePath, EnvironmentContext.RepoRootDirectory);
 
             return new OverwriteDocumentModel
             {

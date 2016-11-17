@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Tests
     using Xunit;
     using Newtonsoft.Json;
 
+    [Collection("docfx STA")]
     public class ArgsParserTest
     {
         [Fact]
