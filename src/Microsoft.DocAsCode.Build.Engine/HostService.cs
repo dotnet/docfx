@@ -147,41 +147,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public string MarkupToHtml(string markdown, string file)
-        {
-            return MarkdownService.Markup(markdown, file).Html;
-        }
-
-        public MarkupResult ParseHtml(string html, FileAndType ft)
-        {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(html);
-            var result = new MarkupResult();
-
-            var node = doc.DocumentNode.SelectSingleNode("//yamlheader");
-            if (node != null)
-            {
-                using (var sr = new StringReader(StringHelper.HtmlDecode(node.InnerHtml)))
-                {
-                    result.YamlHeader = YamlUtility.Deserialize<Dictionary<string, object>>(sr).ToImmutableDictionary();
-                }
-                node.Remove();
-            }
-
-            result.FileLinkSources = GetFileLinkSource(ft, doc);
-            result.LinkToFiles = result.FileLinkSources.Keys.ToImmutableArray();
-
-            result.UidLinkSources = GetUidLinkSources(doc);
-            result.LinkToUids = result.UidLinkSources.Keys.ToImmutableHashSet();
-
-            using (var sw = new StringWriter())
-            {
-                doc.Save(sw);
-                result.Html = sw.ToString();
-            }
-            return result;
-        }
-
         public MarkupResult Parse(MarkupResult markupResult, FileAndType ft)
         {
             if (markupResult == null)
