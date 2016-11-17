@@ -26,6 +26,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     internal sealed class HostService : IHostService, IDisposable
     {
         #region Fields
+        private static readonly char[] UriFragmentOrQueryString = new char[] { '#', '?' };
         private readonly object _syncRoot = new object();
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
         private readonly LruList<ModelWithCache> _lru = Environment.Is64BitProcess ? null : LruList<ModelWithCache>.CreateSynchronized(0xC00, OnLruRemoving);
@@ -176,82 +177,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 node.Remove();
             }
-            var linkToFiles = new HashSet<string>();
-            var fileLinkSources = new Dictionary<string, List<LinkSourceInfo>>();
-            foreach (var pair in (from n in doc.DocumentNode.Descendants()
-                                  where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
-                                  from attr in n.Attributes
-                                  where string.Equals(attr.Name, "src", StringComparison.OrdinalIgnoreCase) ||
-                                        string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase)
-                                  where !string.IsNullOrWhiteSpace(attr.Value)
-                                  select new { Node = n, Attr = attr }).ToList())
-            {
-                string linkFile;
-                string anchor = null;
-                var link = pair.Attr;
-                if (TypeForwardedToPathUtility.IsRelativePath(link.Value))
-                {
-                    var index = link.Value.IndexOf('#');
-                    if (index == -1)
-                    {
-                        linkFile = link.Value;
-                    }
-                    else if (index == 0)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        linkFile = link.Value.Remove(index);
-                        anchor = link.Value.Substring(index);
-                    }
-                    var path = (TypeForwardedToRelativePath)ft.File + (TypeForwardedToRelativePath)linkFile;
-                    var file = path.GetPathFromWorkingFolder();
-                    if (SourceFiles.ContainsKey(file))
-                    {
-                        link.Value = file;
-                        if (!string.IsNullOrEmpty(anchor) &&
-                            string.Equals(link.Name, "href", StringComparison.OrdinalIgnoreCase))
-                        {
-                            pair.Node.SetAttributeValue("anchor", anchor);
-                        }
-                    }
-                    linkToFiles.Add(HttpUtility.UrlDecode(file));
 
-                    List<LinkSourceInfo> sources;
-                    if (!fileLinkSources.TryGetValue(file, out sources))
-                    {
-                        sources = new List<LinkSourceInfo>();
-                        fileLinkSources[file] = sources;
-                    }
-                    sources.Add(new LinkSourceInfo
-                    {
-                        Target = file,
-                        Anchor = anchor,
-                        SourceFile = pair.Node.GetAttributeValue("sourceFile", null),
-                        LineNumber = pair.Node.GetAttributeValue("sourceLineNumber", 0),
-                    });
-                }
-            }
-            result.LinkToFiles = linkToFiles.ToImmutableArray();
-            result.FileLinkSources = fileLinkSources.ToImmutableDictionary(pair => pair.Key, pair => pair.Value.ToImmutableList());
+            result.FileLinkSources = GetFileLinkSource(ft, doc);
+            result.LinkToFiles = result.FileLinkSources.Keys.ToImmutableArray();
 
-            result.UidLinkSources = (from n in doc.DocumentNode.Descendants()
-                                     where string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
-                                     from attr in n.Attributes
-                                     where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
-                                     let target = attr.Value
-                                     where !string.IsNullOrWhiteSpace(target)
-                                     let queryIndex = target.IndexOfAny(new[] { '?', '#' })
-                                     let targetUid = queryIndex == -1 ? target : target.Remove(queryIndex)
-                                     select new LinkSourceInfo
-                                     {
-                                         Target = Uri.UnescapeDataString(targetUid),
-                                         SourceFile = n.GetAttributeValue("sourceFile", null),
-                                         LineNumber = n.GetAttributeValue("sourceLineNumber", 0),
-                                     } into lsi
-                                     group lsi by lsi.Target into g
-                                     select new KeyValuePair<string, ImmutableList<LinkSourceInfo>>(g.Key, g.ToImmutableList())).ToImmutableDictionary();
+            result.UidLinkSources = GetUidLinkSources(doc);
             result.LinkToUids = result.UidLinkSources.Keys.ToImmutableHashSet();
 
             using (var sw = new StringWriter())
@@ -290,82 +220,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 node.Remove();
             }
-            var linkToFiles = new HashSet<string>();
-            var fileLinkSources = new Dictionary<string, List<LinkSourceInfo>>();
-            foreach (var pair in (from n in doc.DocumentNode.Descendants()
-                                  where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
-                                  from attr in n.Attributes
-                                  where string.Equals(attr.Name, "src", StringComparison.OrdinalIgnoreCase) ||
-                                        string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase)
-                                  where !string.IsNullOrWhiteSpace(attr.Value)
-                                  select new { Node = n, Attr = attr }).ToList())
-            {
-                string linkFile;
-                string anchor = null;
-                var link = pair.Attr;
-                if (TypeForwardedToPathUtility.IsRelativePath(link.Value))
-                {
-                    var index = link.Value.IndexOf('#');
-                    if (index == -1)
-                    {
-                        linkFile = link.Value;
-                    }
-                    else if (index == 0)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        linkFile = link.Value.Remove(index);
-                        anchor = link.Value.Substring(index);
-                    }
-                    var path = (TypeForwardedToRelativePath)ft.File + (TypeForwardedToRelativePath)linkFile;
-                    var file = path.GetPathFromWorkingFolder();
-                    if (SourceFiles.ContainsKey(file))
-                    {
-                        link.Value = file;
-                        if (!string.IsNullOrEmpty(anchor) &&
-                            string.Equals(link.Name, "href", StringComparison.OrdinalIgnoreCase))
-                        {
-                            pair.Node.SetAttributeValue("anchor", anchor);
-                        }
-                    }
-                    linkToFiles.Add(HttpUtility.UrlDecode(file));
 
-                    List<LinkSourceInfo> sources;
-                    if (!fileLinkSources.TryGetValue(file, out sources))
-                    {
-                        sources = new List<LinkSourceInfo>();
-                        fileLinkSources[file] = sources;
-                    }
-                    sources.Add(new LinkSourceInfo
-                    {
-                        Target = file,
-                        Anchor = anchor,
-                        SourceFile = pair.Node.GetAttributeValue("sourceFile", null),
-                        LineNumber = pair.Node.GetAttributeValue("sourceStartLineNumber", 0),
-                    });
-                }
-            }
-            result.LinkToFiles = linkToFiles.ToImmutableArray();
-            result.FileLinkSources = fileLinkSources.ToImmutableDictionary(pair => pair.Key, pair => pair.Value.ToImmutableList());
+            result.FileLinkSources = GetFileLinkSource(ft, doc);
+            result.LinkToFiles = result.FileLinkSources.Keys.ToImmutableArray();
 
-            result.UidLinkSources = (from n in doc.DocumentNode.Descendants()
-                                     where string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
-                                     from attr in n.Attributes
-                                     where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
-                                     let target = attr.Value
-                                     where !string.IsNullOrWhiteSpace(target)
-                                     let queryIndex = target.IndexOfAny(new[] { '?', '#' })
-                                     let targetUid = queryIndex == -1 ? target : target.Remove(queryIndex)
-                                     select new LinkSourceInfo
-                                     {
-                                         Target = Uri.UnescapeDataString(targetUid),
-                                         SourceFile = n.GetAttributeValue("sourceFile", null),
-                                         LineNumber = n.GetAttributeValue("sourceStartLineNumber", 0),
-                                     } into lsi
-                                     group lsi by lsi.Target into g
-                                     select new KeyValuePair<string, ImmutableList<LinkSourceInfo>>(g.Key, g.ToImmutableList())).ToImmutableDictionary();
+            result.UidLinkSources = GetUidLinkSources(doc);
             result.LinkToUids = result.UidLinkSources.Keys.ToImmutableHashSet();
 
             if (result.Dependency.Length > 0)
@@ -384,6 +243,95 @@ namespace Microsoft.DocAsCode.Build.Engine
                 result.Html = sw.ToString();
             }
             return result;
+        }
+
+        private ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> GetFileLinkSource(FileAndType ft, HtmlDocument doc)
+        {
+            var fileLinkSources = new Dictionary<string, List<LinkSourceInfo>>();
+            foreach (var pair in (from n in doc.DocumentNode.Descendants()
+                                  where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
+                                  from attr in n.Attributes
+                                  where string.Equals(attr.Name, "src", StringComparison.OrdinalIgnoreCase) ||
+                                        string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase)
+                                  where !string.IsNullOrWhiteSpace(attr.Value)
+                                  select new { Node = n, Attr = attr }).ToList())
+            {
+                string linkFile;
+                string anchor = null;
+                var link = pair.Attr;
+                if (TypeForwardedToPathUtility.IsRelativePath(link.Value))
+                {
+                    var index = link.Value.IndexOfAny(UriFragmentOrQueryString);
+                    if (index == -1)
+                    {
+                        linkFile = link.Value;
+                    }
+                    else if (index == 0)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        linkFile = link.Value.Remove(index);
+                        anchor = link.Value.Substring(index);
+                    }
+                    var path = (TypeForwardedToRelativePath)ft.File + (TypeForwardedToRelativePath)linkFile;
+                    string file = path.GetPathFromWorkingFolder().UrlDecode();
+                    if (SourceFiles.ContainsKey(file))
+                    {
+                        link.Value = file;
+                        if (!string.IsNullOrEmpty(anchor) &&
+                            string.Equals(link.Name, "href", StringComparison.OrdinalIgnoreCase))
+                        {
+                            pair.Node.SetAttributeValue("anchor", anchor);
+                        }
+                    }
+
+                    List<LinkSourceInfo> sources;
+                    if (!fileLinkSources.TryGetValue(file, out sources))
+                    {
+                        sources = new List<LinkSourceInfo>();
+                        fileLinkSources[file] = sources;
+                    }
+                    sources.Add(new LinkSourceInfo
+                    {
+                        Target = file,
+                        Anchor = anchor,
+                        SourceFile = pair.Node.GetAttributeValue("sourceFile", null),
+                        LineNumber = pair.Node.GetAttributeValue("sourceStartLineNumber", 0),
+                    });
+                }
+            }
+            return fileLinkSources.ToImmutableDictionary(x => x.Key, x => x.Value.ToImmutableList());
+        }
+
+        private static ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> GetUidLinkSources(HtmlDocument doc)
+        {
+            var uidInXref =
+                from n in doc.DocumentNode.Descendants()
+                where string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
+                from attr in n.Attributes
+                where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
+                select Tuple.Create(n, attr.Value);
+            var uidInHref =
+                from n in doc.DocumentNode.Descendants()
+                where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
+                from attr in n.Attributes
+                where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
+                where attr.Value.StartsWith("xref:", StringComparison.OrdinalIgnoreCase)
+                select Tuple.Create(n, attr.Value.Substring("xref:".Length));
+            return (from pair in uidInXref.Concat(uidInHref)
+                    where !string.IsNullOrWhiteSpace(pair.Item2)
+                    let queryIndex = pair.Item2.IndexOfAny(UriFragmentOrQueryString)
+                    let targetUid = queryIndex == -1 ? pair.Item2 : pair.Item2.Remove(queryIndex)
+                    select new LinkSourceInfo
+                    {
+                        Target = Uri.UnescapeDataString(targetUid),
+                        SourceFile = pair.Item1.GetAttributeValue("sourceFile", null),
+                        LineNumber = pair.Item1.GetAttributeValue("sourceStartLineNumber", 0),
+                    } into lsi
+                    group lsi by lsi.Target into g
+                    select new KeyValuePair<string, ImmutableList<LinkSourceInfo>>(g.Key, g.ToImmutableList())).ToImmutableDictionary();
         }
 
         public void ReportDependencyTo(FileModel currentFileModel, string to, string type)
