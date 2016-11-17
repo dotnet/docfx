@@ -158,7 +158,7 @@ Difference between DFM and GFM
 
 ### List
 
-DFM list item always use the first character in the first line to decide which is in the list item, but GFM do not.
+DFM list item always uses the first character in the first line to decide whether it is in the list item, but GFM does not.
 For example:
 Case 1:
 ```md
@@ -169,18 +169,15 @@ Case 1:
   text
 ```
 
-In DFM, `a` start at column 3, `b` start at column 5, `c` start at column 7.  
-So if `text` start at column 1 (i.e. no leading white space), it is a paragraph.  
-If it start at column 2\~3 (> 1 and <= 3), it is a part of item a.  
-If it start at column 4\~5 (> 3 and <= 6), it is a part of item b.  
-If it start at column 6 or more, it is a part of item c.  
-And if it start at column 11 (7 + 4) or more, it is a part of item c, and it is code.
+`a` start at column 3, `b` start at column 5, `c` start at column 7.  
 
-In GFM, if `text` start at column 1, it is a paragraph.  
-If it start at column 2\~4, it is a part of item a.  
-If it start at column 5\~6, it is a part of item b.  
-If it start at column 7 or more, it is a part of item c.  
-And if it start at column 13 or more, it is a part of item c, and it is code.
+|        | DFM | GFM |
+| ------ | --- | --- |
+| paragraph | 1 | 1 |
+| part of item a | 2 ~ 3 (> 1 and <= 3) | 2 ~ 4 |
+| part of item b | 4 ~ 5 (> 3 and <= 6) | 5 ~ 6 |
+| part of item c | 6 or more (> 6) | 7 or more |
+| part of item c and code | 11 (7 + 4) | 13 |
 
 Case 2:
 ```md
@@ -190,21 +187,19 @@ Case 2:
 
    text
 ```
-`a` start at column 4, `b` start at column 7, `c` start at column 10.  
-So if `text` start at column 1, it is a paragraph.  
-If it start at column 2\~4 (> 1 and <= 4), it is a part of item a.  
-If it start at column 5\~7 (> 4 and <= 7), it is a part of item b.  
-If it start at column 8 or more, it is a part of item c.  
-And if it start at column 14 (10 + 4) or more, it is a part of item c, and it is code.
 
-In GFM, if `text` start at column 1, it is a paragraph.  
-If it start at column 2\~4, it is a part of item a.  
-If it start at column 5\~8, it is a part of item b.  
-If it start at column 9 or more, it is a part of item c.  
-And if it start at column 15 or more, it is a part of item c, and it is code.
+`a` start at column 4, `b` start at column 7, `c` start at column 10.
+
+|        | DFM | GFM |
+| ------ | --- | --- |
+| paragraph | 1 | 1 |
+| part of item a | 2 ~ 4 (> 1 and <= 4) | 2 ~ 4 |
+| part of item b | 5 ~ 7 (> 4 and <= 7) | 5 ~ 8 |
+| part of item c | 8 or more (> 7) | 9 or more |
+| part of item c and code | 14 (10 + 4) | 15 |
 
 ### YAML header
-GFM is also supported YAML header, but it must at the beginning of markdown file.  
+YAML header is also supported in GFM, but it must at the beginning of markdown file.  
 DFM allow multiple YAML header in one markdown file.  
 But for conceptual document, only first YAML header is effective.
 
@@ -216,10 +211,10 @@ a: b
 ---
 ```
 
-In GFM, it will be rendered as \<hr\>a: b\<hr\>.  
-In DFM, it will be rendered as a YAML header.
+In GFM, it would be rendered as \<hr\>a: b\<hr\>.  
+In DFM, it would be rendered as a YAML header.
 
-If you want to get \<hr\> in html, please use:
+If you want to get \<hr\> in html in DFM, please use:
 ```md
 - - -
 ***
@@ -234,9 +229,9 @@ a\: b
 
 ### Text after block entension
 
-Some block extension in DFM cannot be recognize in GFM.
-In GFM, it be treat as a part of paragraph.
-This cause following content will be treat as a part of paragraph.
+Some block extension in DFM cannot be recognized in GFM.
+In GFM, it would be treated as a part of paragraph.
+Then, following content would be treated as a part of paragraph.
 
 For example:
 ```md
