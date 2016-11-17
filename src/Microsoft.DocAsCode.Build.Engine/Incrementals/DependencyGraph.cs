@@ -21,13 +21,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 Name = DependencyTypeName.Include,
                 IsTransitive = true,
-                TriggerBuild = true,
+                Phase = BuildPhase.Build,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.Uid,
                 IsTransitive = false,
-                TriggerBuild = false,
+                Phase = BuildPhase.PostBuild,
             });
 
         private readonly HashSet<DependencyItem> _dependencyItems;
@@ -192,7 +192,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             DependencyType stored;
             if (_types.TryGetValue(dt.Name, out stored))
             {
-                if (stored.TriggerBuild != dt.TriggerBuild || stored.IsTransitive != dt.IsTransitive)
+                if (stored.TriggerBuild != dt.TriggerBuild || stored.Phase != dt.Phase || stored.IsTransitive != dt.IsTransitive)
                 {
                     Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
                     throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
@@ -201,7 +201,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 return;
             }
             _types[dt.Name] = dt;
-            Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, IsTransitive: {dt.IsTransitive}, TriggerBuild: {dt.TriggerBuild}.");
+            Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, IsTransitive: {dt.IsTransitive}, Phase to work on: {dt.Phase}.");
         }
 
         private void ReportDependencyCore(DependencyItem dependency)

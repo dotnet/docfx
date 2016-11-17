@@ -48,19 +48,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public DependencyGraph DependencyGraph { get; set; }
 
-        public Dictionary<FileAndType, LoadPhase> ModelLoadInfo { get; } = new Dictionary<FileAndType, LoadPhase>();
-
-        public ModelManifest CurrentIntermediateModelManifest { get; set; }
-
-        public ModelManifest LastIntermediateModelManifest { get; set; }
-
         public bool ShouldTraceIncrementalInfo { get; set; }
 
         public bool CanIncrementalBuild { get; set; }
-
-        public string IncrementalBaseDir { get; set; }
-
-        public string LastIncrementalBaseDir { get; set; }
 
         #endregion
 
@@ -439,112 +429,106 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        #region Model Load Info
+        #region Reload Model Incrementally
 
-        public void ReportModelLoadInfo(FileAndType file, LoadPhase phase)
-        {
-            ModelLoadInfo[file] = phase;
-        }
-
-        public void ReportModelLoadInfo(IEnumerable<FileAndType> files, LoadPhase phase)
-        {
-            foreach (var f in files)
-            {
-                ReportModelLoadInfo(f, phase);
-            }
-        }
-
-        public void ReloadModelsPerIncrementalChanges(IEnumerable<string> changes, string intermediateFolder, ModelManifest lmm, LoadPhase phase)
+        public void ReloadModelsPerIncrementalChanges(IncrementalBuildContext incrementalContext, IEnumerable<string> changes, BuildPhase loadedAt)
         {
             if (changes == null)
             {
                 return;
             }
             ReloadUnloadedModelsPerCondition(
-                phase,
+                incrementalContext,
+                loadedAt,
                 f =>
                 {
-                    var key = ((TypeForwardedToRelativePath)f.File).GetPathFromWorkingFolder().ToString();
+                    var key = ((TypeForwardedToRelativePath)f).GetPathFromWorkingFolder().ToString();
                     return changes.Contains(key);
                 });
         }
 
-        public void ReloadUnloadedModels(LoadPhase phase)
+        public void ReloadUnloadedModels(IncrementalBuildContext incrementalContext, BuildPhase loadedAt)
         {
-            ReloadUnloadedModelsPerCondition(phase, f => ModelLoadInfo[f] == LoadPhase.None);
+            var mi = incrementalContext.GetModelLoadInfo(this);
+            ReloadUnloadedModelsPerCondition(incrementalContext, loadedAt, f => mi[f] == null);
         }
 
-        private void ReloadUnloadedModelsPerCondition(LoadPhase phase, Func<FileAndType, bool> condition)
+        private void ReloadUnloadedModelsPerCondition(IncrementalBuildContext incrementalContext, BuildPhase phase, Func<string, bool> condition)
         {
             if (!CanIncrementalBuild)
             {
                 return;
             }
-            var toLoadList = (from f in ModelLoadInfo.Keys
+            var mi = incrementalContext.GetModelLoadInfo(this);
+            var toLoadList = (from f in mi.Keys
                               where condition(f)
-                              select LoadIntermediateModel(f.File) into m
+                              select LoadIntermediateModel(incrementalContext, f) into m
                               where m != null
                               select m).ToList();
             if (toLoadList.Count > 0)
             {
                 Reload(Models.Concat(toLoadList));
-                ReportModelLoadInfo(toLoadList.Select(t => t.FileAndType), phase);
+                incrementalContext.ReportModelLoadInfo(this, toLoadList.Select(t => t.FileAndType.File), phase);
             }
         }
 
-        public void SaveIntermediateModel()
+        public void SaveIntermediateModel(IncrementalBuildContext incrementalContext)
         {
             if (!ShouldTraceIncrementalInfo)
             {
                 return;
             }
             var processor = (ISupportIncrementalDocumentProcessor)Processor;
+            var mi = incrementalContext.GetModelLoadInfo(this);
+            var lmm = incrementalContext.GetLastIntermediateModelManifest(this);
+            var cmm = incrementalContext.GetCurrentIntermediateModelManifest(this);
 
-            foreach (var pair in ModelLoadInfo)
+            foreach (var pair in mi)
             {
                 IncrementalUtility.RetryIO(() =>
                 {
-                    string fileName = IncrementalUtility.GetRandomEntry(IncrementalBaseDir);
-                    if (pair.Value == LoadPhase.None)
+                    string fileName = IncrementalUtility.GetRandomEntry(incrementalContext.BaseDir);
+                    if (pair.Value == null)
                     {
-                        if (LastIntermediateModelManifest == null)
+                        if (lmm == null)
                         {
-                            throw new BuildCacheException($"Full build hasn't loaded model {pair.Key.FullPath}");
+                            throw new BuildCacheException($"Full build hasn't loaded model {pair.Key}");
                         }
                         string lfn;
-                        if (!LastIntermediateModelManifest.Models.TryGetValue(pair.Key.File, out lfn))
+                        if (!lmm.Models.TryGetValue(pair.Key, out lfn))
                         {
-                            throw new BuildCacheException($"Last build hasn't loaded model {pair.Key.FullPath}");
+                            throw new BuildCacheException($"Last build hasn't loaded model {pair.Key}");
                         }
-                        File.Move(Path.Combine(LastIncrementalBaseDir, lfn), Path.Combine(IncrementalBaseDir, fileName));
+                        File.Move(Path.Combine(incrementalContext.LastBaseDir, lfn), Path.Combine(incrementalContext.BaseDir, fileName));
                     }
                     else
                     {
-                        var key = TypeForwardedToRelativePath.NormalizedWorkingFolder + pair.Key.File;
+                        var key = TypeForwardedToRelativePath.NormalizedWorkingFolder + pair.Key;
                         var model = Models.Find(m => m.Key == key);
-                        using (var stream = File.Create(Path.Combine(IncrementalBaseDir, fileName)))
+                        using (var stream = File.Create(Path.Combine(incrementalContext.BaseDir, fileName)))
                         {
                             processor.SaveIntermediateModel(model, stream);
                         }
                     }
-                    CurrentIntermediateModelManifest.Models.Add(pair.Key.File, fileName);
+                    cmm.Models.Add(pair.Key, fileName);
                 });
             }
         }
 
-        public FileModel LoadIntermediateModel(string fileName)
+        public FileModel LoadIntermediateModel(IncrementalBuildContext incrementalContext, string fileName)
         {
             if (!CanIncrementalBuild)
             {
                 return null;
             }
             var processor = (ISupportIncrementalDocumentProcessor)Processor;
+            var cmm = incrementalContext.GetCurrentIntermediateModelManifest(this);
             string cfn;
-            if (!CurrentIntermediateModelManifest.Models.TryGetValue(fileName, out cfn))
+            if (!cmm.Models.TryGetValue(fileName, out cfn))
             {
                 throw new BuildCacheException($"Last build hasn't loaded model {fileName}");
             }
-            using (var stream = File.OpenRead(Path.Combine(IncrementalBaseDir, cfn)))
+            using (var stream = File.OpenRead(Path.Combine(incrementalContext.BaseDir, cfn)))
             {
                 return processor.LoadIntermediateModel(stream);
             }
@@ -668,13 +652,5 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         #endregion
-    }
-
-    internal enum LoadPhase
-    {
-        None,
-        PreBuild,
-        PostBuild,
-        PostPostBuild,
     }
 }
