@@ -5,6 +5,10 @@ v2.8(Pre-Release)
 1.  Improve markdown engine:
     - Remove paragraph rule.
     - Improve parser performance.
+2.  Refine the warning message of invalid bookmark.
+3.  Remove the usage of `FileModel.LocalPathFromRepoRoot`. This property is marked `Obsolete`.
+4.  Copy `PathUtility`, `RelativePath`, `StringExtension` and `FilePathComparer` from project `Microsoft.DocAsCode.Utility` to `Microsoft.DocAsCode.Common`. The copied classes in project `Microsoft.DocAsCode.Utility` are kept there for bits compatibility and marked `Obsolete`.
+5.  Fix a concurrency issue of `Logger`.
 
 v2.7
 -----------
