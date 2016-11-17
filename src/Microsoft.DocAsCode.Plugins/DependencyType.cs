@@ -3,12 +3,26 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System;
+
     public class DependencyType
     {
+        /// <summary>
+        /// name of the dependency type
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// whether this type of dependency is transitive
+        /// </summary>
         public bool IsTransitive { get; set; }
 
+        [Obsolete]
         public bool TriggerBuild { get; set; }
+
+        /// <summary>
+        /// the build phase that this type of dependency could have an effect on
+        /// </summary>
+        public BuildPhase Phase { get; set; }
     }
 }

@@ -98,13 +98,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                     context.IncrementalBuildContext = new IncrementalBuildContext(parameters, cbv, lbv, CanBuildInfoIncremental())
                     {
                         BaseDir = baseDir,
+                        LastBaseDir = LastBuildInfo != null ? Path.Combine(IntermediateFolder, LastBuildInfo.DirectoryName) : null,
                     };
                     if (context.IncrementalBuildContext.CanVersionIncremental)
                     {
                         LoadChanges(parameters, context);
                         Logger.LogVerbose($"Before expanding dependency before build, changes: {JsonUtility.Serialize(context.ChangeDict, Formatting.Indented)}");
                         var dependencyGraph = lbv.Dependency;
-                        ExpandDependency(dependencyGraph, context, d => dependencyGraph.DependencyTypes[d.Type].TriggerBuild);
+                        ExpandDependency(dependencyGraph, context, d => dependencyGraph.DependencyTypes[d.Type].Phase == BuildPhase.Build || dependencyGraph.DependencyTypes[d.Type].TriggerBuild);
                         Logger.LogVerbose($"After expanding dependency before build, changes: {JsonUtility.Serialize(context.ChangeDict, Formatting.Indented)}");
                     }
                 }
@@ -437,19 +438,19 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var incrementalContext = context.IncrementalBuildContext;
                 var lbv = incrementalContext.LastBuildVersionInfo;
                 var cbv = incrementalContext.CurrentBuildVersionInfo;
-                buildSaver = h => h.SaveIntermediateModel();
+                buildSaver = h => h.SaveIntermediateModel(incrementalContext);
                 loader = hs =>
                 {
-                    UpdateHostServices(hostServices);
+                    UpdateHostServices(context, hostServices);
                     if (lbv != null)
                     {
                         foreach (var h in hs)
                         {
-                            foreach (var file in from pair in h.ModelLoadInfo
-                                                 where pair.Value > LoadPhase.None
+                            foreach (var file in from pair in incrementalContext.GetModelLoadInfo(h)
+                                                 where pair.Value == BuildPhase.PostBuild
                                                  select pair.Key)
                             {
-                                lbv.BuildMessage.Replay(file.File);
+                                lbv.BuildMessage.Replay(file);
                             }
                         }
                     }
@@ -555,18 +556,18 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogDiagnostic($"After expanding dependency before postbuild, changes: {JsonUtility.Serialize(context.ChangeDict)}");
                 foreach (var hostService in hostServices)
                 {
-                    hostService.ReloadModelsPerIncrementalChanges(newChanges, intermediateFolder, lmm, LoadPhase.PostBuild);
+                    hostService.ReloadModelsPerIncrementalChanges(context.IncrementalBuildContext, newChanges, BuildPhase.PostBuild);
                 }
             }
         }
 
-        private static void UpdateHostServices(IEnumerable<HostService> hostServices)
+        private static void UpdateHostServices(DocumentBuildContext context, IEnumerable<HostService> hostServices)
         {
             foreach (var hostService in hostServices)
             {
                 if (hostService.CanIncrementalBuild)
                 {
-                    hostService.ReloadUnloadedModels(LoadPhase.PostBuild);
+                    hostService.ReloadUnloadedModels(context.IncrementalBuildContext, BuildPhase.PostBuild);
                 }
             }
         }
@@ -1127,23 +1128,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                     CanIncrementalBuild = processorCanIncremental,
                 };
 
-                if (processorSupportIncremental)
+                if (pair.item != null && incrementalContext != null)
                 {
-                    hostService.CurrentIntermediateModelManifest = cpi.IntermediateModelManifest;
-                    hostService.IncrementalBaseDir = Path.Combine(IntermediateFolder, CurrentBuildInfo.DirectoryName);
-                    if (processorCanIncremental)
-                    {
-                        hostService.LastIntermediateModelManifest = lpi?.IntermediateModelManifest;
-                        hostService.LastIncrementalBaseDir = Path.Combine(IntermediateFolder, LastBuildInfo.DirectoryName);
-                    }
-                }
-
-                if (pair.item != null)
-                {
-                    var allFiles = pair.item?.Select(f => f.file) ?? new FileAndType[0];
-                    var loadedFiles = hostService.Models.Select(m => m.FileAndType);
-                    hostService.ReportModelLoadInfo(allFiles.Except(loadedFiles), LoadPhase.None);
-                    hostService.ReportModelLoadInfo(loadedFiles, LoadPhase.PreBuild);
+                    var allFiles = pair.item?.Select(f => f.file.File) ?? new string[0];
+                    var loadedFiles = hostService.Models.Select(m => m.FileAndType.File);
+                    incrementalContext.ReportModelLoadInfo(hostService, allFiles.Except(loadedFiles), null);
+                    incrementalContext.ReportModelLoadInfo(hostService, loadedFiles, BuildPhase.PreBuild);
                 }
                 yield return hostService;
             }
