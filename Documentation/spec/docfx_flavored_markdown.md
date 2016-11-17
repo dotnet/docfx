@@ -1,7 +1,7 @@
 DocFX Flavored Markdown
 ==========================================
 
-DocFX supports "DocFX Flavored Markdown," or DFM. It is 100% compatible with [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/), and adds some additional functionality, including cross reference and file inclusion.
+DocFX supports "DocFX Flavored Markdown," or DFM. It is 99% compatible with [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/), and adds some additional functionality, including cross reference and file inclusion.
 
 ### Yaml Header
 
@@ -152,3 +152,97 @@ The above content will be transformed to the following html:
   <p>WARNING content</p>
 </div>
 ```
+
+Difference between DFM and GFM
+------------------
+
+### List
+
+DFM list item always use the first character in the first line to decide which is in the list item, but GFM do not.
+For example:
+Case 1:
+```md
+* a
+  * b
+    * c
+
+  text
+```
+
+In DFM, `a` start at column 3, `b` start at column 5, `c` start at column 7.  
+So if `text` start at column 1 (i.e. no leading white space), it is a paragraph.  
+If it start at column 2\~3 (> 1 and <= 3), it is a part of item a.  
+If it start at column 4\~5 (> 3 and <= 6), it is a part of item b.  
+If it start at column 6 or more, it is a part of item c.  
+And if it start at column 11 (7 + 4) or more, it is a part of item c, and it is code.
+
+In GFM, if `text` start at column 1, it is a paragraph.  
+If it start at column 2\~4, it is a part of item a.  
+If it start at column 5\~6, it is a part of item b.  
+If it start at column 7 or more, it is a part of item c.  
+And if it start at column 13 or more, it is a part of item c, and it is code.
+
+Case 2:
+```md
+1. a
+   2. b
+      3. c
+
+   text
+```
+`a` start at column 4, `b` start at column 7, `c` start at column 10.  
+So if `text` start at column 1, it is a paragraph.  
+If it start at column 2\~4 (> 1 and <= 4), it is a part of item a.  
+If it start at column 5\~7 (> 4 and <= 7), it is a part of item b.  
+If it start at column 8 or more, it is a part of item c.  
+And if it start at column 14 (10 + 4) or more, it is a part of item c, and it is code.
+
+In GFM, if `text` start at column 1, it is a paragraph.  
+If it start at column 2\~4, it is a part of item a.  
+If it start at column 5\~8, it is a part of item b.  
+If it start at column 9 or more, it is a part of item c.  
+And if it start at column 15 or more, it is a part of item c, and it is code.
+
+### YAML header
+GFM is also supported YAML header, but it must at the beginning of markdown file.  
+DFM allow multiple YAML header in one markdown file.  
+But for conceptual document, only first YAML header is effective.
+
+```md
+...some text...
+
+---
+a: b
+---
+```
+
+In GFM, it will be rendered as \<hr\>a: b\<hr\>.  
+In DFM, it will be rendered as a YAML header.
+
+If you want to get \<hr\> in html, please use:
+```md
+- - -
+***
+* * *
+```
+or change content not in YAML format:
+```md
+---
+a\: b
+---
+```
+
+### Text after block entension
+
+Some block extension in DFM cannot be recognize in GFM.
+In GFM, it be treat as a part of paragraph.
+This cause following content will be treat as a part of paragraph.
+
+For example:
+```md
+> [!NOTE]
+>     This is code.
+```
+
+In GFM, it will be rendered as a paragraph with content `[!NOTE] This is code.` in blockquote.  
+In DFM, it will be rendered as a code in note.
