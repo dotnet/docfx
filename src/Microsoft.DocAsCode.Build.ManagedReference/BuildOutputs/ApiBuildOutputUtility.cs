@@ -85,9 +85,27 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             return result;
         }
 
-        public static string GetXref(string uid)
+        public static string GetXref(string uid, string text = null, string alt = null)
         {
-            return $"<xref href=\"{HttpUtility.HtmlEncode(uid)}\" altProperty=\"fullName\" displayProperty=\"name\"/>";
+            var result = $"<xref href=\"{HttpUtility.HtmlEncode(uid)}\"";
+            if (!string.IsNullOrEmpty(text))
+            {
+                result += $" text=\"{text}\"";
+            }
+            else
+            {
+                result += " displayProperty=\"name\"";
+            }
+            if (!string.IsNullOrEmpty(alt))
+            {
+                result += $" alt=\"{alt}\"";
+            }
+            else
+            {
+                result += " altProperty=\"fullName\"";
+            }
+            result += "/>";
+            return result;
         }
 
         public static string GetHref(string url, string altText = null)

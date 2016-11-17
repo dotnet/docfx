@@ -204,7 +204,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Name = ApiBuildOutputUtility.TransformToLanguagePairList(vm.Name, vm.NameInDevLangs, supportedLanguages),
                 NameWithType = ApiBuildOutputUtility.TransformToLanguagePairList(vm.NameWithType, vm.NameWithTypeInDevLangs, supportedLanguages),
                 FullName = ApiBuildOutputUtility.TransformToLanguagePairList(vm.FullName, vm.FullNameInDevLangs, supportedLanguages),
-                Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid), supportedLanguages, vm.Specs),
+                Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid, vm.Name, vm.FullName), supportedLanguages, vm.Specs),
                 Metadata = vm.Additional,
             };
             object syntax;
@@ -232,7 +232,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Name = ApiBuildOutputUtility.TransformToLanguagePairList(vm.Name, vm.Names, vm.SupportedLanguages),
                 NameWithType = ApiBuildOutputUtility.TransformToLanguagePairList(vm.NameWithType, vm.NamesWithType, vm.SupportedLanguages),
                 FullName = ApiBuildOutputUtility.TransformToLanguagePairList(vm.FullName, vm.FullNames, vm.SupportedLanguages),
-                Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid), vm.SupportedLanguages),
+                Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid, vm.Name, vm.FullName), vm.SupportedLanguages),
                 Source = vm.Source,
                 Documentation = vm.Documentation,
                 AssemblyNameList = vm.AssemblyNameList,
@@ -291,7 +291,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         private static string GetSpecName(List<SpecViewModel> spec)
         {
             if (spec == null) return null;
-            return string.Concat(spec.Select(s => GetCompositeName(s)));
+            return string.Concat(spec.Select(GetCompositeName));
         }
 
         private static string GetCompositeName(SpecViewModel svm)
@@ -300,7 +300,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             if (string.IsNullOrEmpty(svm.Uid)) { return System.Web.HttpUtility.HtmlEncode(svm.FullName); }
 
             // If href exists, return name with href
-            return ApiBuildOutputUtility.GetXref(svm.Uid);
+            return ApiBuildOutputUtility.GetXref(svm.Uid, svm.Name, svm.FullName);
         }
     }
 }

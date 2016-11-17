@@ -171,6 +171,11 @@ namespace Microsoft.DocAsCode.E2E.Tests
             Assert.NotEmpty(results);
             Assert.Contains(results[0].Text, title);
 
+            // check spec name in parameters' type
+            element= _driver.FindElement(By.XPath("//h4[@id='CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_']/following-sibling::table/tbody/tr/td"));
+            Assert.NotNull(element);
+            Assert.Equal("Cat<T, K>", element.Text);
+
             // check extension methods
             results = _driver.FindElements(By.XPath("//h3[@id='extensionmethods']"));
             if (results.Count > 0)
