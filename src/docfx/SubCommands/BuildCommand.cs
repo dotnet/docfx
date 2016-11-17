@@ -509,7 +509,8 @@ namespace Microsoft.DocAsCode.SubCommands
 
                 builderDomain = AppDomain.CreateDomain("document builder domain", null, setup);
                 builderDomain.UnhandledException += (s, e) => { };
-                builderDomain.DoCallBack(new DocumentBuilderWrapper(config, manager, baseDirectory, outputDirectory, pluginDirectory, new CrossAppDomainListener(), templateDirectory).BuildDocument);
+                var wrapper = new DocumentBuilderWrapper(config, manager, baseDirectory, outputDirectory, pluginDirectory, new CrossAppDomainListener(), templateDirectory);
+                builderDomain.DoCallBack(wrapper.BuildDocument);
             }
             finally
             {
