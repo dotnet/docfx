@@ -3,15 +3,10 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
-    using System;
     using System.Collections.Immutable;
 
     public interface IHostService
     {
-        [Obsolete]
-        string MarkupToHtml(string markdown, string file);
-        [Obsolete]
-        MarkupResult ParseHtml(string html, FileAndType ft);
         MarkupResult Parse(MarkupResult markupResult, FileAndType ft);
         MarkupResult Markup(string markdown, FileAndType ft);
         MarkupResult Markup(string markdown, FileAndType ft, bool omitParse);
