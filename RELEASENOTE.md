@@ -9,6 +9,8 @@ v2.8(Pre-Release)
 3.  Remove the usage of `FileModel.LocalPathFromRepoRoot`. This property is marked `Obsolete`.
 4.  Copy `PathUtility`, `RelativePath`, `StringExtension` and `FilePathComparer` from project `Microsoft.DocAsCode.Utility` to `Microsoft.DocAsCode.Common`. The copied classes in project `Microsoft.DocAsCode.Utility` are kept there for bits compatibility and marked `Obsolete`.
 5.  Fix a concurrency issue of `Logger`.
+6.  Fix bug: unable to handle file link with query string.
+7.  Fix bug: unable to resolve uid for in html `<a href="xref:...">`.
 
 v2.7
 -----------
