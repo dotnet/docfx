@@ -303,6 +303,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(type));
             }
+            if (DependencyGraph == null)
+            {
+                return;
+            }
             lock (DependencyGraph)
             {
                 string fromKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
@@ -324,6 +328,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (type == null)
             {
                 throw new ArgumentNullException(nameof(type));
+            }
+            if (DependencyGraph == null)
+            {
+                return;
             }
             lock (DependencyGraph)
             {
