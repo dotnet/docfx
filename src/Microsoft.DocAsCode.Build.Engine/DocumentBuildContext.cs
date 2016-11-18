@@ -71,10 +71,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         internal IncrementalBuildContext IncrementalBuildContext { get; set; }
 
-        internal DependencyGraph DependencyGraph { get; } = new DependencyGraph();
-
-        internal Dictionary<string, ChangeKindWithDependency> ChangeDict { get; } = new Dictionary<string, ChangeKindWithDependency>();
-
         internal ConcurrentBag<ManifestItem> ManifestItems { get; } = new ConcurrentBag<ManifestItem>();
 
         private ConcurrentDictionary<string, XRefSpec> ExternalXRefSpec { get; } = new ConcurrentDictionary<string, XRefSpec>();
