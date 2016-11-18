@@ -158,8 +158,9 @@ Difference between DFM and GFM
 
 ### List
 
-DFM list item always uses the first character in the first line to decide whether it is in the list item, but GFM does not.
+DFM list item always uses the first character in the first line to decide whether it is in the list item, but GFM does not.  
 For example:
+
 Case 1:
 ```md
 * a
@@ -244,7 +245,7 @@ In DFM, it will be rendered as a code in note.
 
 ### List after paragraph
 
-In GFM, list after paragraph must seperate by two or new line character.
+In GFM, list after paragraph must be separated by two or new line character.  
 In DFM, one new line also works.
 
 For example:
@@ -253,5 +254,5 @@ text
 1. a
 2. b
 ```
-In GFM, it will be rendered as one paragraph with content `text 1. a 2. b`.
+In GFM, it will be rendered as one paragraph with content `text 1. a 2. b`.  
 In DFM, it will be rendered as a paragraph (with content `text`) and a list.
