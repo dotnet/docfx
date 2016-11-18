@@ -276,11 +276,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
             yield return result;
             // generate overload xref spec.
-            if (item.Overload == null) yield break;
-            var reference = references.Find(r => r.Uid == item.Overload);
-            if (reference != null)
+            if (item.Overload != null)
             {
-                yield return GetXRefInfo(reference, key);
+                var reference = references.Find(r => r.Uid == item.Overload);
+                if (reference != null)
+                {
+                    yield return GetXRefInfo(reference, key);
+                }
             }
         }
 
