@@ -28,7 +28,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly Dictionary<string, TocInfo> _tableOfContents = new Dictionary<string, TocInfo>(TypeForwardedToFilePathComparer.OSPlatformSensitiveStringComparer);
         private readonly Task<IXRefContainerReader> _reader;
 
-        public DocumentBuildContext(string buildOutputFolder) : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Directory.GetCurrentDirectory()) { }
+        public DocumentBuildContext(string buildOutputFolder)
+            : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Directory.GetCurrentDirectory(), null) { }
+
+        public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder)
+            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, null) { }
 
         public DocumentBuildContext(
             string buildOutputFolder,
@@ -36,7 +40,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             ImmutableArray<string> externalReferencePackages,
             ImmutableArray<string> xrefMaps,
             int maxParallelism,
-            string baseFolder)
+            string baseFolder,
+            string rootTocPath)
         {
             BuildOutputFolder = buildOutputFolder;
             AllSourceFiles = GetAllSourceFiles(allSourceFiles);
@@ -49,6 +54,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     from u in xrefMaps
                     select new Uri(u, UriKind.RelativeOrAbsolute)).GetReaderAsync(baseFolder);
             }
+            RootTocPath = rootTocPath;
         }
 
         public string BuildOutputFolder { get; }
@@ -68,6 +74,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public Dictionary<string, HashSet<string>> TocMap { get; } = new Dictionary<string, HashSet<string>>(TypeForwardedToFilePathComparer.OSPlatformSensitiveStringComparer);
 
         public HashSet<string> XRef { get; } = new HashSet<string>();
+
+        public string RootTocPath { get; }
 
         internal IncrementalBuildContext IncrementalBuildContext { get; set; }
 
