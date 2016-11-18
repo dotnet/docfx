@@ -17,7 +17,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     using Newtonsoft.Json;
 
@@ -146,7 +145,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 FileLinkSources = model.FileLinkSources,
                 UidLinkSources = model.UidLinkSources,
                 XRefSpecs = (from item in vm.Items
-                             from xref in GetXRefInfo(item, model.Key)
+                             from xref in GetXRefInfo(item, model.Key, vm.References)
                              group xref by xref.Uid into g
                              select g.First()).ToImmutableArray(),
                 ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray(),
@@ -195,7 +194,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             // TODO: remove these
             if (apiModel.Type == MemberType.Namespace) return;
             model.Bookmarks[apiModel.Uid] = string.Empty; // Reference's first level bookmark should have no anchor
-            apiModel.Children?.ForEach(c => model.Bookmarks[c.Uid] = c.Id);
+            apiModel.Children?.ForEach(c =>
+            {
+                model.Bookmarks[c.Uid] = c.Id;
+                if (!string.IsNullOrEmpty(c.Overload?.Uid))
+                {
+                    model.Bookmarks[c.Overload.Uid] = c.Overload.Id;
+                }
+            });
         }
 
         private IEnumerable<XRefSpec> GetXRefFromReference(PageViewModel vm)
@@ -226,7 +232,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
         }
 
-        private static IEnumerable<XRefSpec> GetXRefInfo(ItemViewModel item, string key)
+        private static IEnumerable<XRefSpec> GetXRefInfo(ItemViewModel item, string key,
+            List<DataContracts.Common.ReferenceViewModel> references)
         {
             var result = new XRefSpec
             {
@@ -269,116 +276,57 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
             yield return result;
             // generate overload xref spec.
-            if (item.Type != null)
+            if (item.Overload != null)
             {
-                switch (item.Type.Value)
+                var reference = references.Find(r => r.Uid == item.Overload);
+                if (reference != null)
                 {
-                    case MemberType.Property:
-                    case MemberType.Constructor:
-                    case MemberType.Method:
-                    case MemberType.Operator:
-                        yield return GenerateOverloadXrefSpec(item, key);
-                        break;
-                    default:
-                        break;
+                    yield return GetXRefInfo(reference, key);
                 }
             }
         }
 
-        /// <summary>
-        /// Work around, remove when overload is ready in yaml file.
-        /// </summary>
-        private static XRefSpec GenerateOverloadXrefSpec(ItemViewModel item, string key)
+        private static XRefSpec GetXRefInfo(DataContracts.Common.ReferenceViewModel item, string key)
         {
-            var uidBody = item.Uid;
-            {
-                var index = uidBody.IndexOf('(');
-                if (index != -1)
-                {
-                    uidBody = uidBody.Remove(index);
-                }
-            }
-            uidBody = System.Text.RegularExpressions.Regex.Replace(uidBody, @"``\d+$", string.Empty);
             var result = new XRefSpec
             {
-                Uid = uidBody + "*",
+                Uid = item.Uid,
+                Name = item.Name,
                 Href = key,
-                CommentId = "Overload:" + uidBody,
+                CommentId = item.CommentId,
             };
+            string name;
+            if (item.NameInDevLangs.TryGetValue("csharp", out name))
             {
-                if (!string.IsNullOrEmpty(item.Name))
-                {
-                    var index = item.Name.IndexOfAny(new char[] { '(', '[' });
-                    if (index != -1)
-                    {
-                        result.Name = item.Name.Remove(index);
-                    }
-                    else
-                    {
-                        result.Name = item.Name;
-                    }
-                }
+                result["name.csharp"] = name;
             }
-            if (!string.IsNullOrEmpty(item.NameForCSharp))
+            if (item.NameInDevLangs.TryGetValue("vb", out name))
             {
-                var index = item.NameForCSharp.IndexOfAny(new char[] { '(', '[' });
-                if (index != -1)
-                {
-                    result["name.csharp"] = item.NameForCSharp.Remove(index);
-                }
-                else
-                {
-                    result["name.csharp"] = item.NameForCSharp;
-                }
-            }
-            if (!string.IsNullOrEmpty(item.NameForVB))
-            {
-                var index = item.NameForVB.IndexOfAny(new char[] { '(', '[' });
-                if (index != -1)
-                {
-                    result["name.vb"] = item.NameForVB.Remove(index);
-                }
-                else
-                {
-                    result["name.vb"] = item.NameForVB;
-                }
+                result["name.vb"] = name;
             }
             if (!string.IsNullOrEmpty(item.FullName))
             {
-                var index = item.FullName.IndexOfAny(new char[] { '(', '[' });
-                if (index != -1)
-                {
-                    result["fullName"] = item.FullName.Remove(index);
-                }
-                else
-                {
-                    result["fullName"] = item.FullName;
-                }
                 result["fullName"] = item.FullName;
             }
-            if (!string.IsNullOrEmpty(item.FullNameForCSharp))
+            if (item.FullNameInDevLangs.TryGetValue("csharp", out name))
             {
-                var index = item.FullNameForCSharp.IndexOfAny(new char[] { '(', '[' });
-                if (index != -1)
-                {
-                    result["fullName.csharp"] = item.FullNameForCSharp.Remove(index);
-                }
-                else
-                {
-                    result["fullName.csharp"] = item.FullNameForCSharp;
-                }
+                result["fullName.csharp"] = name;
             }
-            if (!string.IsNullOrEmpty(item.FullNameForVB))
+            if (item.FullNameInDevLangs.TryGetValue("vb", out name))
             {
-                var index = item.FullNameForVB.IndexOfAny(new char[] { '(', '[' });
-                if (index != -1)
-                {
-                    result["fullName.vb"] = item.FullNameForVB.Remove(index);
-                }
-                else
-                {
-                    result["fullName.vb"] = item.FullNameForVB;
-                }
+                result["fullName.vb"] = name;
+            }
+            if (!string.IsNullOrEmpty(item.NameWithType))
+            {
+                result["nameWithType"] = item.NameWithType;
+            }
+            if (item.NameWithTypeInDevLangs.TryGetValue("csharp", out name))
+            {
+                result["nameWithType.csharp"] = name;
+            }
+            if (item.NameWithTypeInDevLangs.TryGetValue("vb", out name))
+            {
+                result["nameWithType.vb"] = name;
             }
             return result;
         }

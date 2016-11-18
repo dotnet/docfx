@@ -61,6 +61,9 @@ exports.getBookmarks = function (model)  {
   if (model.children) {
     model.children.forEach(function (item) {
       bookmarks[item.uid] = common.getHtmlId(item.uid);
+      if (item.overload && item.overload.uid) {
+        bookmarks[item.overload.uid] = common.getHtmlId(item.overload.uid);
+      }
     });
   }
 
@@ -134,6 +137,9 @@ function handleItem(vm, gitContribute, gitUrlPattern) {
 
   // id is used as default template's bookmark
   vm.id = common.getHtmlId(vm.uid);
+  if (vm.overload && vm.overload.uid) {
+    vm.overload.id = common.getHtmlId(vm.overload.uid);
+  }
 
   if (vm.supported_platforms) {
       vm.supported_platforms = transformDictionaryToArray(vm.supported_platforms);
