@@ -1,7 +1,7 @@
 DocFX Flavored Markdown
 ==========================================
 
-DocFX supports "DocFX Flavored Markdown," or DFM. It is 100% compatible with [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/), and adds some additional functionality, including cross reference and file inclusion.
+DocFX supports `DocFX Flavored Markdown`, or DFM. It is 99% compatible with [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/), and adds some additional functionality, including cross reference and file inclusion.
 
 ### Yaml Header
 
@@ -152,3 +152,107 @@ The above content will be transformed to the following html:
   <p>WARNING content</p>
 </div>
 ```
+
+Difference between DFM and GFM
+------------------
+
+### List
+
+DFM list item always uses the first character in the first line to decide whether it is in the list item, but GFM does not.  
+For example:
+
+Case 1:
+```md
+* a
+  * b
+    * c
+
+  text
+```
+
+`a` starts at column 3, `b` starts at column 5, `c` starts at column 7.
+
+| `text` will be | in DFM, `text` starts at column | in GFM, `text` starts at column |
+| ------ | --- | --- |
+| paragraph | 1 | 1 |
+| part of item a | 2 ~ 3 (> 1 and <= 3) | 2 ~ 4 |
+| part of item b | 4 ~ 5 (> 3 and <= 6) | 5 ~ 6 |
+| part of item c | 6 or more (> 6) | 7 or more |
+| part of item c and code | 11 (7 + 4) | 13 |
+
+Case 2:
+```md
+1. a
+   2. b
+      3. c
+
+   text
+```
+
+`a` starts at column 4, `b` starts at column 7, `c` starts at column 10.
+
+| `text` will be | in DFM, `text` starts at column | in GFM, `text` starts at column |
+| ------ | --- | --- |
+| paragraph | 1 | 1 |
+| part of item a | 2 ~ 4 (> 1 and <= 4) | 2 ~ 4 |
+| part of item b | 5 ~ 7 (> 4 and <= 7) | 5 ~ 8 |
+| part of item c | 8 or more (> 7) | 9 or more |
+| part of item c and code | 14 (10 + 4) | 15 |
+
+### YAML header
+YAML header is also supported in GFM, but it must at the beginning of markdown file.  
+DFM supports multiple YAML header in one markdown file.  
+But for conceptual document, only first YAML header is effective.
+
+```md
+...some text...
+
+---
+a: b
+---
+```
+
+In GFM, it would be rendered as `<hr>a: b<hr>`.  
+In DFM, it would be rendered as a YAML header.
+
+If you want to get `<hr>` in html in DFM, please use:
+```md
+- - -
+***
+* * *
+```
+or change content to make it not in YAML format:
+```md
+---
+a\: b
+---
+```
+
+### Text after block extension
+
+Some block extension in DFM cannot be recognized in GFM.
+In GFM, it would be treated as a part of paragraph.
+Then, following content would be treated as a part of paragraph.
+
+For example:
+```md
+> [!NOTE]
+>     This is code.
+```
+
+In GFM, it will be rendered as a paragraph with content `[!NOTE] This is code.` in blockquote.  
+In DFM, it will be rendered as a code in note.
+
+### List after paragraph
+
+In GFM, list after paragraph must be separated by two or new line character.  
+In DFM, one new line also works.
+
+For example:
+```md
+text
+1. a
+2. b
+```
+In GFM, it will be rendered as one paragraph with content `text 1. a 2. b`.  
+In DFM, it will be rendered as a paragraph (with content `text`) and a list.
