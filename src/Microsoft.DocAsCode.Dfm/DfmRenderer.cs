@@ -131,11 +131,11 @@ namespace Microsoft.DocAsCode.Dfm
                 else if (splitToken.Token is DfmVideoBlockToken)
                 {
                     var videoToken = splitToken.Token as DfmVideoBlockToken;
-                    content += "<iframe width=\"640\" height=\"320\" src=\"";
+                    content += "<div class=\"embeddedvideo\"><iframe src=\"";
                     content += videoToken.Link;
                     content += "\" frameborder=\"0\" allowfullscreen=\"true\"";
                     content = AppendSourceInfo(content, renderer, splitToken.Token);
-                    content += "></iframe>\n";
+                    content += "></iframe></div>\n";
                     continue;
                 }
                 else
