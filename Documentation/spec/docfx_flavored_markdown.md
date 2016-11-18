@@ -169,9 +169,9 @@ Case 1:
   text
 ```
 
-`a` start at column 3, `b` start at column 5, `c` start at column 7.  
+`a` starts at column 3, `b` starts at column 5, `c` starts at column 7.  
 
-|        | DFM | GFM |
+| `text` will be | in DFM, `text` starts at column | in GFM, `text` starts at column |
 | ------ | --- | --- |
 | paragraph | 1 | 1 |
 | part of item a | 2 ~ 3 (> 1 and <= 3) | 2 ~ 4 |
@@ -190,7 +190,7 @@ Case 2:
 
 `a` start at column 4, `b` start at column 7, `c` start at column 10.
 
-|        | DFM | GFM |
+| `text` will be | in DFM, `text` starts at column | in GFM, `text` starts at column |
 | ------ | --- | --- |
 | paragraph | 1 | 1 |
 | part of item a | 2 ~ 4 (> 1 and <= 4) | 2 ~ 4 |
@@ -200,7 +200,7 @@ Case 2:
 
 ### YAML header
 YAML header is also supported in GFM, but it must at the beginning of markdown file.  
-DFM allow multiple YAML header in one markdown file.  
+DFM supports multiple YAML header in one markdown file.  
 But for conceptual document, only first YAML header is effective.
 
 ```md
@@ -211,23 +211,23 @@ a: b
 ---
 ```
 
-In GFM, it would be rendered as \<hr\>a: b\<hr\>.  
+In GFM, it would be rendered as `<hr>a: b<hr>`.  
 In DFM, it would be rendered as a YAML header.
 
-If you want to get \<hr\> in html in DFM, please use:
+If you want to get `<hr>` in html in DFM, please use:
 ```md
 - - -
 ***
 * * *
 ```
-or change content not in YAML format:
+or change content to make it not in YAML format:
 ```md
 ---
 a\: b
 ---
 ```
 
-### Text after block entension
+### Text after block extension
 
 Some block extension in DFM cannot be recognized in GFM.
 In GFM, it would be treated as a part of paragraph.
@@ -241,3 +241,17 @@ For example:
 
 In GFM, it will be rendered as a paragraph with content `[!NOTE] This is code.` in blockquote.  
 In DFM, it will be rendered as a code in note.
+
+### List after paragraph
+
+In GFM, list after paragraph must seperate by two or new line character.
+In DFM, one new line also works.
+
+For example:
+```md
+text
+1. a
+2. b
+```
+In GFM, it will be rendered as one paragraph with content `text 1. a 2. b`.
+In DFM, it will be rendered as a paragraph (with content `text`) and a list.
