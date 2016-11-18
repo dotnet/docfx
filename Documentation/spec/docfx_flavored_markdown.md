@@ -1,7 +1,7 @@
 DocFX Flavored Markdown
 ==========================================
 
-DocFX supports "DocFX Flavored Markdown," or DFM. It is 99% compatible with [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/), and adds some additional functionality, including cross reference and file inclusion.
+DocFX supports `DocFX Flavored Markdown`, or DFM. It is 99% compatible with [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/), and adds some additional functionality, including cross reference and file inclusion.
 
 ### Yaml Header
 
@@ -169,7 +169,7 @@ Case 1:
   text
 ```
 
-`a` starts at column 3, `b` starts at column 5, `c` starts at column 7.  
+`a` starts at column 3, `b` starts at column 5, `c` starts at column 7.
 
 | `text` will be | in DFM, `text` starts at column | in GFM, `text` starts at column |
 | ------ | --- | --- |
@@ -188,7 +188,7 @@ Case 2:
    text
 ```
 
-`a` start at column 4, `b` start at column 7, `c` start at column 10.
+`a` starts at column 4, `b` starts at column 7, `c` starts at column 10.
 
 | `text` will be | in DFM, `text` starts at column | in GFM, `text` starts at column |
 | ------ | --- | --- |
