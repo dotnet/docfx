@@ -59,6 +59,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public static IncrementalBuildContext Create(DocumentBuildParameters parameters, BuildInfo cb, BuildInfo lb, string intermediateFolder)
         {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+            if (cb == null)
+            {
+                throw new ArgumentNullException(nameof(cb));
+            }
+            if (intermediateFolder == null)
+            {
+                throw new ArgumentNullException(nameof(intermediateFolder));
+            }
             var baseDir = Path.Combine(intermediateFolder, cb.DirectoryName);
             var lastBaseDir = lb != null ? Path.Combine(intermediateFolder, lb.DirectoryName) : null;
             var lastBuildStartTime = lb?.BuildStartTime;
@@ -83,10 +95,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private IncrementalBuildContext(string baseDir, string lastBaseDir, DateTime? lastBuildStartTime, bool canBuildInfoIncremental, DocumentBuildParameters parameters, BuildVersionInfo cbv, BuildVersionInfo lbv)
         {
-            if (parameters == null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
             _parameters = parameters;
             BaseDir = baseDir;
             LastBaseDir = lastBaseDir;
@@ -157,7 +165,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         #endregion
 
-        #region Changes and DependencyGraph
+        #region Changes
 
         public void LoadChanges()
         {
@@ -258,6 +266,66 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     };
                 }
             }
+        }
+
+        public ProcessorInfo CreateProcessorInfo(IDocumentProcessor processor)
+        {
+            var cpi = new ProcessorInfo
+            {
+                Name = processor.Name,
+                IncrementalContextHash = ((ISupportIncrementalDocumentProcessor)processor).GetIncrementalContextHash(),
+            };
+            foreach (var step in processor.BuildSteps)
+            {
+                cpi.Steps.Add(new ProcessorStepInfo
+                {
+                    Name = step.Name,
+                    IncrementalContextHash = ((ISupportIncrementalBuildStep)step).GetIncrementalContextHash(),
+                });
+            }
+            CurrentBuildVersionInfo.Processors.Add(cpi);
+            return cpi;
+        }
+
+        public bool CanProcessorIncremental(IDocumentProcessor processor)
+        {
+            if (!CanVersionIncremental)
+            {
+                return false;
+            }
+
+            var cpi = CurrentBuildVersionInfo.Processors.Find(p => p.Name == processor.Name);
+            if (cpi == null)
+            {
+                Logger.LogWarning($"Current BuildVersionInfo missed processor info for {processor.Name}.");
+                return false;
+            }
+            var lpi = LastBuildVersionInfo.Processors.Find(p => p.Name == processor.Name);
+            if (lpi == null)
+            {
+                Logger.LogVerbose($"Processor {processor.Name} disable incremental build because last build doesn't contain version {Version}.");
+                return false;
+            }
+            if (cpi.IncrementalContextHash != lpi.IncrementalContextHash)
+            {
+                Logger.LogVerbose($"Processor {processor.Name} disable incremental build because incremental context hash changed.");
+                return false;
+            }
+            if (cpi.Steps.Count != lpi.Steps.Count)
+            {
+                Logger.LogVerbose($"Processor {processor.Name} disable incremental build because steps count is different.");
+                return false;
+            }
+            for (int i = 0; i < cpi.Steps.Count; i++)
+            {
+                if (!object.Equals(cpi.Steps[i], lpi.Steps[i]))
+                {
+                    Logger.LogVerbose($"Processor {processor.Name} disable incremental build because steps changed, from step {lpi.Steps[i].ToJsonString()} to {cpi.Steps[i].ToJsonString()}.");
+                    return false;
+                }
+            }
+            Logger.LogVerbose($"Processor {processor.Name} enable incremental build.");
+            return true;
         }
 
         #endregion

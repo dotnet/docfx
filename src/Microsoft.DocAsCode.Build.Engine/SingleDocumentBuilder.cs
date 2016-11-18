@@ -909,9 +909,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 var incrementalContext = context.IncrementalBuildContext;
                 var processorSupportIncremental = IsProcessorSupportIncremental(pair.processor);
-                ProcessorInfo cpi = null;
-                ProcessorInfo lpi = null;
-                var processorCanIncremental = processorSupportIncremental && CanProcessorIncremental(incrementalContext, pair.processor, parameters.VersionName, out cpi, out lpi);
+                bool processorCanIncremental = processorSupportIncremental;
+                if (processorSupportIncremental)
+                {
+                    incrementalContext.CreateProcessorInfo(pair.processor);
+                    processorCanIncremental = incrementalContext.CanProcessorIncremental(pair.processor);
+                }
 
                 var hostService = new HostService(
                        parameters.Files.DefaultBaseDir,
@@ -961,72 +964,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return false;
             }
             return true;
-        }
-
-        private bool CanProcessorIncremental(IncrementalBuildContext incrementalContext, IDocumentProcessor processor, string versionName, out ProcessorInfo cpi, out ProcessorInfo lpi)
-        {
-            cpi = null;
-            lpi = null;
-            cpi = CreateProcessorInfo(incrementalContext, processor, versionName);
-
-            if (!incrementalContext.CanVersionIncremental)
-            {
-                return false;
-            }
-
-            if (LastBuildInfo == null)
-            {
-                Logger.LogVerbose($"Processor {processor.Name} disable incremental build because no last build.");
-                return false;
-            }
-
-            lpi = incrementalContext.LastBuildVersionInfo
-                ?.Processors
-                ?.Find(p => p.Name == processor.Name);
-            if (lpi == null)
-            {
-                Logger.LogVerbose($"Processor {processor.Name} disable incremental build because last build doesn't contain version {versionName}.");
-                return false;
-            }
-            if (cpi.IncrementalContextHash != lpi.IncrementalContextHash)
-            {
-                Logger.LogVerbose($"Processor {processor.Name} disable incremental build because incremental context hash changed.");
-                return false;
-            }
-            if (cpi.Steps.Count != lpi.Steps.Count)
-            {
-                Logger.LogVerbose($"Processor {processor.Name} disable incremental build because steps count is different.");
-                return false;
-            }
-            for (int i = 0; i < cpi.Steps.Count; i++)
-            {
-                if (!object.Equals(cpi.Steps[i], lpi.Steps[i]))
-                {
-                    Logger.LogVerbose($"Processor {processor.Name} disable incremental build because steps changed, from step {lpi.Steps[i].ToJsonString()} to {cpi.Steps[i].ToJsonString()}.");
-                    return false;
-                }
-            }
-            Logger.LogVerbose($"Processor {processor.Name} enable incremental build.");
-            return true;
-        }
-
-        private ProcessorInfo CreateProcessorInfo(IncrementalBuildContext incrementalContext, IDocumentProcessor processor, string versionName)
-        {
-            var cpi = new ProcessorInfo
-            {
-                Name = processor.Name,
-                IncrementalContextHash = ((ISupportIncrementalDocumentProcessor)processor).GetIncrementalContextHash(),
-            };
-            foreach (var step in processor.BuildSteps)
-            {
-                cpi.Steps.Add(new ProcessorStepInfo
-                {
-                    Name = step.Name,
-                    IncrementalContextHash = ((ISupportIncrementalBuildStep)step).GetIncrementalContextHash(),
-                });
-            }
-            incrementalContext.CurrentBuildVersionInfo.Processors.Add(cpi);
-            return cpi;
         }
 
         private static List<HomepageInfo> GetHomepages(DocumentBuildContext context)
