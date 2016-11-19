@@ -21,8 +21,8 @@ namespace Microsoft.DocAsCode.Plugins
         public bool TriggerBuild { get; set; }
 
         /// <summary>
-        /// the build phase that this type of dependency could have an effect on
+        /// the build phase that this type of dependency could have an effect on. [TO-DO]: remove the nullable ? when old value is overwritten
         /// </summary>
-        public BuildPhase Phase { get; set; }
+        public BuildPhase? Phase { get; set; }
     }
 }

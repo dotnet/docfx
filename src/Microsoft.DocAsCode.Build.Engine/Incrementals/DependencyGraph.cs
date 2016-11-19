@@ -192,10 +192,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             DependencyType stored;
             if (_types.TryGetValue(dt.Name, out stored))
             {
-                if (stored.TriggerBuild != dt.TriggerBuild || stored.Phase != dt.Phase || stored.IsTransitive != dt.IsTransitive)
+                // to-do: add check for phase when new value overwrites old value
+                if (stored.IsTransitive != dt.IsTransitive)
                 {
                     Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
                     throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
+                }
+                if (stored.Phase == null)
+                {
+                    stored.Phase = dt.Phase;
                 }
                 Logger.LogVerbose($"Same dependency type with name {dt.Name} has already been registered, ignored.");
                 return;
