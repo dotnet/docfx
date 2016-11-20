@@ -402,7 +402,33 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        #region Reload Model Incrementally
+        #region Incremental Build
+
+        public void RegisterDependencyType()
+        {
+            if (DependencyGraph == null)
+            {
+                return;
+            }
+            BuildPhaseUtility.RunBuildSteps(
+                Processor.BuildSteps,
+                buildStep =>
+                {
+                    if (buildStep is ISupportIncrementalBuildStep)
+                    {
+                        Logger.LogVerbose($"Processor {Processor.Name}, step {buildStep.Name}: Registering DependencyType...");
+                        using (new LoggerPhaseScope(buildStep.Name, true))
+                        {
+                            var types = (buildStep as ISupportIncrementalBuildStep).GetDependencyTypesToRegister();
+                            if (types == null)
+                            {
+                                return;
+                            }
+                            DependencyGraph.RegisterDependencyType(types);
+                        }
+                    }
+                });
+        }
 
         public void ReloadModelsPerIncrementalChanges(IncrementalBuildContext incrementalContext, IEnumerable<string> changes, BuildPhase loadedAt)
         {
@@ -424,25 +450,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             var mi = incrementalContext.GetModelLoadInfo(this);
             ReloadUnloadedModelsPerCondition(incrementalContext, loadedAt, f => mi[f] == null);
-        }
-
-        private void ReloadUnloadedModelsPerCondition(IncrementalBuildContext incrementalContext, BuildPhase phase, Func<string, bool> condition)
-        {
-            if (!CanIncrementalBuild)
-            {
-                return;
-            }
-            var mi = incrementalContext.GetModelLoadInfo(this);
-            var toLoadList = (from f in mi.Keys
-                              where condition(f)
-                              select LoadIntermediateModel(incrementalContext, f) into m
-                              where m != null
-                              select m).ToList();
-            if (toLoadList.Count > 0)
-            {
-                Reload(Models.Concat(toLoadList));
-                incrementalContext.ReportModelLoadInfo(this, toLoadList.Select(t => t.FileAndType.File), phase);
-            }
         }
 
         public void SaveIntermediateModel(IncrementalBuildContext incrementalContext)
@@ -551,6 +558,25 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     FileMap[m.FileAndType] = m.FileAndType;
                 }
+            }
+        }
+
+        private void ReloadUnloadedModelsPerCondition(IncrementalBuildContext incrementalContext, BuildPhase phase, Func<string, bool> condition)
+        {
+            if (!CanIncrementalBuild)
+            {
+                return;
+            }
+            var mi = incrementalContext.GetModelLoadInfo(this);
+            var toLoadList = (from f in mi.Keys
+                              where condition(f)
+                              select LoadIntermediateModel(incrementalContext, f) into m
+                              where m != null
+                              select m).ToList();
+            if (toLoadList.Count > 0)
+            {
+                Reload(Models.Concat(toLoadList));
+                incrementalContext.ReportModelLoadInfo(this, toLoadList.Select(t => t.FileAndType.File), phase);
             }
         }
 

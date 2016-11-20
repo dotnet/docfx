@@ -1,0 +1,112 @@
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Microsoft.DocAsCode.Build.Engine
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.IO;
+    using System.Linq;
+
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
+
+    internal class HostServiceConstructor : IHostServiceConstructor
+    {
+        private DocumentBuildContext _context;
+
+        public HostServiceConstructor(DocumentBuildContext context)
+        {
+            _context = context;
+        }
+
+        public virtual bool CanProcessorIncremental(IDocumentProcessor processor)
+        {
+            return false;
+        }
+
+        public virtual bool ShouldProcessorTraceInfo(IDocumentProcessor processor)
+        {
+            return false;
+        }
+
+        public virtual void PostConstruct(HostService hostService, IEnumerable<FileAndType> files)
+        {
+        }
+
+        public HostService ConstructHostService(
+            DocumentBuildParameters parameters,
+            TemplateProcessor templateProcessor,
+            IMarkdownService markdownService,
+            IEnumerable<IInputMetadataValidator> metadataValidator,
+            IDocumentProcessor processor,
+            IEnumerable<FileAndType> files)
+        {
+            var hostService = new HostService(
+                       parameters.Files.DefaultBaseDir,
+                       files == null
+                            ? new FileModel[0]
+                            : from file in files
+                              select Load(processor, parameters.Metadata, parameters.FileMetadata, file) into model
+                              where model != null
+                              select model)
+            {
+                MarkdownService = markdownService,
+                Processor = processor,
+                Template = templateProcessor,
+                Validators = metadataValidator?.ToImmutableList(),
+                ShouldTraceIncrementalInfo = ShouldProcessorTraceInfo(processor),
+                CanIncrementalBuild = CanProcessorIncremental(processor),
+            };
+            PostConstruct(hostService, files);
+            return hostService;
+        }
+
+        public virtual FileModel Load(IDocumentProcessor processor, ImmutableDictionary<string, object> metadata, FileMetadata fileMetadata, FileAndType file)
+        {
+            using (new LoggerFileScope(file.File))
+            {
+                Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}: Loading...");
+
+                var path = Path.Combine(file.BaseDir, file.File);
+                metadata = ApplyFileMetadata(path, metadata, fileMetadata);
+                try
+                {
+                    return processor.Load(file, metadata);
+                }
+                catch (Exception)
+                {
+                    Logger.LogError($"Unable to load file: {file.File} via processor: {processor.Name}.");
+                    throw;
+                }
+            }
+        }
+
+        private static ImmutableDictionary<string, object> ApplyFileMetadata(
+            string file,
+            ImmutableDictionary<string, object> metadata,
+            FileMetadata fileMetadata)
+        {
+            if (fileMetadata == null || fileMetadata.Count == 0) return metadata;
+            var result = new Dictionary<string, object>(metadata);
+            var baseDir = string.IsNullOrEmpty(fileMetadata.BaseDir) ? Directory.GetCurrentDirectory() : fileMetadata.BaseDir;
+            var TypeForwardedToRelativePath = PathUtility.MakeRelativePath(baseDir, file);
+            foreach (var item in fileMetadata)
+            {
+                // As the latter one overrides the former one, match the pattern from latter to former
+                for (int i = item.Value.Length - 1; i >= 0; i--)
+                {
+                    if (item.Value[i].Glob.Match(TypeForwardedToRelativePath))
+                    {
+                        // override global metadata if metadata is defined in file metadata
+                        result[item.Value[i].Key] = item.Value[i].Value;
+                        Logger.LogVerbose($"{TypeForwardedToRelativePath} matches file metadata with glob pattern {item.Value[i].Glob.Raw} for property {item.Value[i].Key}");
+                        break;
+                    }
+                }
+            }
+            return result.ToImmutableDictionary();
+        }
+    }
+}

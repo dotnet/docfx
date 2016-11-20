@@ -86,10 +86,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 XRefSpecMapFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 BuildMessageFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 Attributes = ComputeFileAttributes(parameters, lbv?.Dependency),
-                Dependency = new DependencyGraph(),
+                Dependency = ConstructDependencyGraphFromLast(lbv?.Dependency),
             };
             cb.Versions.Add(cbv);
             var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, canBuildInfoIncremental, parameters, cbv, lbv);
+            context.InitChanges();
             return context;
         }
 
@@ -212,9 +213,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
-        public List<string> ExpandDependency(DependencyGraph dependencyGraph, Func<DependencyItem, bool> isValid)
+        public List<string> ExpandDependency(Func<DependencyItem, bool> isValid)
         {
             var newChanges = new List<string>();
+            var dependencyGraph = CurrentBuildVersionInfo.Dependency;
 
             if (dependencyGraph != null)
             {
@@ -376,6 +378,30 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     }).ToDictionary(a => a.File);
         }
 
+        private static DependencyGraph ConstructDependencyGraphFromLast(DependencyGraph ldg)
+        {
+            var dg = new DependencyGraph();
+            if (ldg == null)
+            {
+                return dg;
+            }
+
+            // reregister dependency types from last dependency graph
+            using (new LoggerPhaseScope("RegisterDependencyTypeFromLastBuild", true))
+            {
+                dg.RegisterDependencyType(ldg.DependencyTypes.Values);
+            }
+
+            // restore dependency graph from last dependency graph
+            using (new LoggerPhaseScope("ReportDependencyFromLastBuild", true))
+            {
+                dg.ReportDependency(from r in ldg.ReportedBys
+                                    from i in ldg.GetDependencyReportedBy(r)
+                                    select i);
+            }
+            return dg;
+        }
+
         private static bool CanBuildInfoIncremental(BuildInfo cb, BuildInfo lb)
         {
             if (lb == null)
@@ -423,6 +449,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 return false;
             }
             return true;
+        }
+
+        private void InitChanges()
+        {
+            if (CanVersionIncremental)
+            {
+                LoadChanges();
+                Logger.LogVerbose($"Before expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
+                ExpandDependency(d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.Build || CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].TriggerBuild);
+                Logger.LogVerbose($"After expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
+            }
         }
 
         #endregion
