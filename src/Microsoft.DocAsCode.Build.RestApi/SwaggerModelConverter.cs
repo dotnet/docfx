@@ -102,7 +102,10 @@ namespace Microsoft.DocAsCode.Build.RestApi
                             {
                                 itemVm.Metadata[Constants.PropertyName.Source] = value;
                             }
-                            itemVm.Metadata[Constants.PropertyName.Source] = null;
+                            else
+                            {
+                                itemVm.Metadata[Constants.PropertyName.Source] = null;
+                            }
                             vm.Children.Add(itemVm);
                         }
                     }

@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Common
 
     public static class CommandUtility
     {
-        public static int RunCommand(CommandInfo commandInfo, StreamWriter stdoutwWriter = null, StreamWriter stderrWriter = null, int timeoutInMilliseconds = Timeout.Infinite)
+        public static int RunCommand(CommandInfo commandInfo, StreamWriter stdoutWriter = null, StreamWriter stderrWriter = null, int timeoutInMilliseconds = Timeout.Infinite)
         {
             if (commandInfo == null)
             {
@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Common
                 process.Start();
 
                 Task outputTask = null;
-                if (stdoutwWriter != null)
+                if (stdoutWriter != null)
                 {
                     outputTask = Task.Run(() =>
                     {
@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Common
                             {
                                 try
                                 {
-                                    stdoutwWriter.Write(buffer, 0, readCount);
+                                    stdoutWriter.Write(buffer, 0, readCount);
                                 }
                                 catch (Exception ex)
                                 {
@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Common
                                 }
                                 catch (Exception ex)
                                 {
-                                    throw new Exception($"Unable to write standerr output when running command {commandInfo.Name}: {ex.Message}");
+                                    throw new Exception($"Unable to write standard error output when running command {commandInfo.Name}: {ex.Message}");
                                 }
                             }
                             else
@@ -115,13 +115,23 @@ namespace Microsoft.DocAsCode.Common
 
         public static bool ExistCommand(string commandName)
         {
-            //TODO: Check if command exists also in Linux/macOS
-            var exitCode = RunCommand(new CommandInfo
+            int exitCode;
+            if (Environment.OSVersion.Platform == PlatformID.Unix)
             {
-                Name = "where",
-                Arguments = commandName
-            }, timeoutInMilliseconds: 1000);
-
+                exitCode = RunCommand(new CommandInfo
+                {
+                    Name = "type",
+                    Arguments = commandName
+                }, timeoutInMilliseconds: 1000);
+            }
+            else
+            {
+                exitCode = RunCommand(new CommandInfo
+                {
+                    Name = "where",
+                    Arguments = commandName
+                }, timeoutInMilliseconds: 1000);
+            }
             return exitCode == 0;
         }
     }

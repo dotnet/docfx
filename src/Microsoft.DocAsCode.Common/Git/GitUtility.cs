@@ -12,8 +12,17 @@ namespace Microsoft.DocAsCode.Common.Git
 
     public static class GitUtility
     {
-        private static readonly string GitName = "git";
+        private static readonly string CommandName = "git";
         private static readonly int GitTimeOut = 1000;
+
+        private static readonly string GetRepoRootCommand = "rev-parse --show-toplevel";
+        private static readonly string GetLocalBranchCommand = "rev-parse --abbrev-ref HEAD";
+        private static readonly string GetRemoteBranchCommand = "rev-parse --abbrev-ref @{u}";
+        // TODO: only get default remote's url currently.
+        private static readonly string GetOriginUrlCommand = "config --get remote.origin.url";
+        private static readonly string GetLocalHeadIdCommand = "rev-parse HEAD";
+        private static readonly string GetRemoteHeadIdCommand = "rev-parse @{u}";
+
         private static readonly Regex GitHubRepoUrlRegex =
             new Regex(@"^((https|http):\/\/(.+@)?github\.com\/|git@github\.com:)(?<account>\S+)\/(?<repository>[A-Za-z0-9_.-]+)(\.git)?$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
         private static readonly Regex VsoGitRepoUrlRegex =
@@ -43,17 +52,11 @@ namespace Microsoft.DocAsCode.Common.Git
             return detail;
         }
 
-        public static GitRepoInfo GetRepoInfo(string repoPath, bool isRoot = false)
+        public static GitRepoInfo GetRepoInfo(string repoPath)
         {
             if (repoPath == null)
             {
                 throw new ArgumentNullException(nameof(repoPath));
-            }
-
-            GitRepoInfo info;
-            if (isRoot && Cache.TryGetValue(repoPath, out info))
-            {
-                return info;
             }
 
             if (!ExistGitCommand())
@@ -61,42 +64,20 @@ namespace Microsoft.DocAsCode.Common.Git
                 throw new GitException("Can't find git command in current environment");
             }
 
-            var repoRootPath = RunGitCommandAndGetFirstLine(repoPath, "rev-parse --show-toplevel");
-            if (isRoot && Cache.TryGetValue(repoRootPath, out info))
-            {
-                return info;
-            }
+            var repoRootPath = RunGitCommandAndGetFirstLine(repoPath, GetRepoRootCommand);
 
-            var remoteBranch = RunGitCommandAndGetFirstLine(repoPath, "rev-parse --abbrev-ref @{u}");
-            var index = remoteBranch.IndexOf('/');
-            if (index > 0)
-            {
-                remoteBranch = remoteBranch.Substring(index + 1);
-            }
-
-            var rawOriginUrl = RunGitCommandAndGetFirstLine(repoPath, "config --get remote.origin.url");
-            var urlInfo = ParseOriginUrl(rawOriginUrl);
-            info = new GitRepoInfo
-            {
-                LocalBranch = RunGitCommandAndGetFirstLine(repoPath, "rev-parse --abbrev-ref HEAD"),
-                LocalHeadCommitId = RunGitCommandAndGetFirstLine(repoPath, "rev-parse HEAD"),
-                RemoteHeadCommitId = RunGitCommandAndGetFirstLine(repoPath, "rev-parse @{u}"),
-                RawRemoteOriginUrl = rawOriginUrl,
-                RepoRootPath = repoRootPath,
-                RemoteBranch = remoteBranch,
-                RemoteRepoName = urlInfo.RemoteRepoName,
-                RemoteOriginUrl = urlInfo.RemoteOriginUrl,
-                Account = urlInfo.Account,
-                Type = urlInfo.Type
-            };
-
-            return Cache.GetOrAdd(repoRootPath, info);
+            return Cache.GetOrAdd(repoRootPath, GetRepoInfoCore);
         }
 
         #region Private Methods
         private static GitDetail GetFileDetailCore(string filePath, string repoRootPath)
         {
-            var repoInfo = GetRepoInfo(repoRootPath, true);
+            GitRepoInfo repoInfo;
+            if (!Cache.TryGetValue(repoRootPath, out repoInfo))
+            {
+                repoInfo = GetRepoInfo(repoRootPath);
+            }
+
             return new GitDetail
             {
                 CommitId = repoInfo.RemoteHeadCommitId,
@@ -106,11 +87,49 @@ namespace Microsoft.DocAsCode.Common.Git
             };
         }
 
+        private static GitRepoInfo GetRepoInfoCore(string repoRootPath)
+        {
+            var localBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
+
+            string remoteBranch;
+            try
+            {
+                remoteBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetRemoteBranchCommand);
+                var index = remoteBranch.IndexOf('/');
+                if (index > 0)
+                {
+                    remoteBranch = remoteBranch.Substring(index + 1);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"Can't find remote branch in this repo and fallback to use local branch [{localBranch}]: {ex.Message}");
+                remoteBranch = localBranch;
+            }
+
+            var rawOriginUrl = RunGitCommandAndGetFirstLine(repoRootPath, GetOriginUrlCommand);
+            var urlInfo = ParseOriginUrl(rawOriginUrl);
+
+            return new GitRepoInfo
+            {
+                LocalBranch = localBranch,
+                LocalHeadCommitId = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalHeadIdCommand),
+                RemoteHeadCommitId = TryRunGitCommandAndGetFirstLine(repoRootPath, GetRemoteHeadIdCommand),
+                RawRemoteOriginUrl = rawOriginUrl,
+                RepoRootPath = repoRootPath,
+                RemoteBranch = remoteBranch,
+                RemoteRepoName = urlInfo.RemoteRepoName,
+                RemoteOriginUrl = urlInfo.RemoteOriginUrl,
+                Account = urlInfo.Account,
+                Type = urlInfo.Type
+            };
+        }
+
         private static GitRepoInfo ParseOriginUrl(string originUrl)
         {
-            var account = string.Empty;
-            var repoName = string.Empty;
-            var repoUrl = string.Empty;
+            string account = null;
+            string repoName = null;
+            string repoUrl = null;
             var repoType = RepoType.Unknown;
 
             var githubMatch = GitHubRepoUrlRegex.Match(originUrl);
@@ -147,6 +166,20 @@ namespace Microsoft.DocAsCode.Common.Git
             throw new GitException(message);
         }
 
+        private static string TryRunGitCommandAndGetFirstLine(string repoPath, string arguments)
+        {
+            string content = null;
+            try
+            {
+                content = RunGitCommandAndGetFirstLine(repoPath, arguments);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            return content;
+        }
+
         private static string RunGitCommandAndGetFirstLine(string repoPath, string arguments)
         {
             string content = null;
@@ -162,7 +195,7 @@ namespace Microsoft.DocAsCode.Common.Git
         private static void RunGitCommand(string repoPath, string arguments, Action<string> processOutput)
         {
             var encoding = Encoding.UTF8;
-            var bufferSize = 4096;
+            const int bufferSize = 4096;
 
             if (!Directory.Exists(repoPath))
             {
@@ -172,14 +205,14 @@ namespace Microsoft.DocAsCode.Common.Git
             using (var outputStream = new MemoryStream())
             using (var errorStream = new MemoryStream())
             {
-                var exitCode = -1;
+                int exitCode;
 
                 using (var outputStreamWriter = new StreamWriter(outputStream, encoding, bufferSize, true))
                 using (var errorStreamWriter = new StreamWriter(errorStream, encoding, bufferSize, true))
                 {
                     exitCode = CommandUtility.RunCommand(new CommandInfo
                     {
-                        Name = GitName,
+                        Name = CommandName,
                         Arguments = arguments,
                         WorkingDirectory = repoPath,
                     }, outputStreamWriter, errorStreamWriter, GitTimeOut);
@@ -210,8 +243,8 @@ namespace Microsoft.DocAsCode.Common.Git
 
         private static bool ExistGitCommand()
         {
-            return CommandUtility.ExistCommand(GitName);
+            return CommandUtility.ExistCommand(CommandName);
         }
-#endregion
+        #endregion
     }
 }

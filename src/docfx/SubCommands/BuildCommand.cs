@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     {
                         config = new BuildJsonConfig();
                         MergeOptionsToConfig(options, config);
-                        InitialEnvrionmentContext(config);
+                        InitializeEnvrionmentContext(config);
                         return config;
                     }
                 }
@@ -104,7 +104,7 @@ namespace Microsoft.DocAsCode.SubCommands
             config.BaseDirectory = Path.GetDirectoryName(configFile);
 
             MergeOptionsToConfig(options, config);
-            InitialEnvrionmentContext(config);
+            InitializeEnvrionmentContext(config);
             MergeGitContributeToConfig(config);
             return config;
         }
@@ -277,7 +277,7 @@ namespace Microsoft.DocAsCode.SubCommands
             config.GlobalMetadata = GetGlobalMetadataFromOption(config.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadataFilePaths, options.GlobalMetadata);
         }
 
-        private static void InitialEnvrionmentContext(BuildJsonConfig config)
+        private static void InitializeEnvrionmentContext(BuildJsonConfig config)
         {
             EnvironmentContext.BaseDirectory = Path.GetFullPath(string.IsNullOrEmpty(config.BaseDirectory) ? Directory.GetCurrentDirectory() : config.BaseDirectory);
 
