@@ -3,15 +3,11 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    // to-do: include apply templates
     internal class PostbuildPhaseHandler : IPhaseHandler
     {
         private DocumentBuildContext _context;
@@ -33,6 +29,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                         Postbuild(hostService);
                     }
                 }
+            }
+
+            if (_context != null)
+            {
+                var manifestProcessor = new ManifestProcessor(hostServices, _context);
+                manifestProcessor.Process();
             }
         }
 
