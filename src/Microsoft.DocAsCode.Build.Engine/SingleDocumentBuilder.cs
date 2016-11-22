@@ -38,8 +38,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters, IMarkdownService markdownService)
         {
-            var hostServiceConstructor = new HostServiceConstructor(null);
-            var hostService = hostServiceConstructor.ConstructHostService(
+            var hostServiceCreator = new HostServiceCreator(null);
+            var hostService = hostServiceCreator.CreateHostService(
                 parameters,
                 null,
                 markdownService,
@@ -116,11 +116,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                             markdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
                         }
 
-                        IHostServiceConstructor hostServiceConstructor;
+                        IHostServiceCreator hostServiceCreator;
                         using (new LoggerPhaseScope("Load", true))
                         {
-                            hostServiceConstructor = ShouldTraceIncrementalInfo ? new HostServiceConstructorWithIncremental(context) : new HostServiceConstructor(context);
-                            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, markdownService, hostServiceConstructor).ToList();
+                            hostServiceCreator = ShouldTraceIncrementalInfo ? new HostServiceCreatorWithIncremental(context) : new HostServiceCreator(context);
+                            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, markdownService, hostServiceCreator).ToList();
                         }
 
                         var manifest = BuildCore(hostServices, context).ToList();
@@ -524,7 +524,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             IEnumerable<IDocumentProcessor> processors,
             TemplateProcessor templateProcessor,
             IMarkdownService markdownService,
-            IHostServiceConstructor constructor)
+            IHostServiceCreator creator)
         {
             var k = from fileItem in (
                     from file in parameters.Files.EnumerateFiles()
@@ -561,7 +561,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                       item,
                                   }).AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism))
             {
-                var hostService = constructor.ConstructHostService(
+                var hostService = creator.CreateHostService(
                     parameters,
                     templateProcessor,
                     markdownService,

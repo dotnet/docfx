@@ -12,11 +12,11 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    internal class HostServiceConstructorWithIncremental : HostServiceConstructor, IHostServiceConstructor
+    internal class HostServiceCreatorWithIncremental : HostServiceCreator
     {
         public IncrementalBuildContext IncrementalContext { get; }
 
-        public HostServiceConstructorWithIncremental(DocumentBuildContext context) : base(context)
+        public HostServiceCreatorWithIncremental(DocumentBuildContext context) : base(context)
         {
             if (context == null)
             {
@@ -50,9 +50,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             return IncrementalContext.CanProcessorIncremental(processor);
         }
 
-        public override void PostConstruct(HostService hostService, IEnumerable<FileAndType> files)
+        public override void PostCreate(HostService hostService, IEnumerable<FileAndType> files)
         {
-            base.PostConstruct(hostService, files);
+            base.PostCreate(hostService, files);
             using (new LoggerPhaseScope("ReportModelLoadInfo", true))
             {
                 var allFiles = files?.Select(f => f.File) ?? new string[0];

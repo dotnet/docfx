@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Plugins;
 
-    internal class PrebuildBuildPhaseHandlerWithIncremental : PrebuildBuildPhaseHandler, IPhaseHandler
+    internal class PrebuildBuildPhaseHandlerWithIncremental : PrebuildBuildPhaseHandler
     {
         public IncrementalBuildContext IncrementalContext { get; }
 

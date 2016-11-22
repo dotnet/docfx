@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         public virtual void PreHandle(List<HostService> hostServices)
-        {          
+        {
         }
 
         public virtual void PostHandle(List<HostService> hostServices)

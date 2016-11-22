@@ -8,13 +8,13 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Plugins;
 
-    internal interface IHostServiceConstructor
+    internal interface IHostServiceCreator
     {
         bool ShouldProcessorTraceInfo(IDocumentProcessor processor);
         bool CanProcessorIncremental(IDocumentProcessor processor);
-        void PostConstruct(HostService hostService, IEnumerable<FileAndType> files);
+        void PostCreate(HostService hostService, IEnumerable<FileAndType> files);
         FileModel Load(IDocumentProcessor processor, ImmutableDictionary<string, object> metadata, FileMetadata fileMetadata, FileAndType file);
-        HostService ConstructHostService(
+        HostService CreateHostService(
             DocumentBuildParameters parameters,
             TemplateProcessor templateProcessor,
             IMarkdownService markdownService,

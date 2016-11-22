@@ -12,11 +12,11 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    internal class HostServiceConstructor : IHostServiceConstructor
+    internal class HostServiceCreator : IHostServiceCreator
     {
         private DocumentBuildContext _context;
 
-        public HostServiceConstructor(DocumentBuildContext context)
+        public HostServiceCreator(DocumentBuildContext context)
         {
             _context = context;
         }
@@ -31,11 +31,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             return false;
         }
 
-        public virtual void PostConstruct(HostService hostService, IEnumerable<FileAndType> files)
+        public virtual void PostCreate(HostService hostService, IEnumerable<FileAndType> files)
         {
         }
 
-        public HostService ConstructHostService(
+        public HostService CreateHostService(
             DocumentBuildParameters parameters,
             TemplateProcessor templateProcessor,
             IMarkdownService markdownService,
@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 ShouldTraceIncrementalInfo = ShouldProcessorTraceInfo(processor),
                 CanIncrementalBuild = CanProcessorIncremental(processor),
             };
-            PostConstruct(hostService, files);
+            PostCreate(hostService, files);
             return hostService;
         }
 
@@ -91,17 +91,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (fileMetadata == null || fileMetadata.Count == 0) return metadata;
             var result = new Dictionary<string, object>(metadata);
             var baseDir = string.IsNullOrEmpty(fileMetadata.BaseDir) ? Directory.GetCurrentDirectory() : fileMetadata.BaseDir;
-            var TypeForwardedToRelativePath = PathUtility.MakeRelativePath(baseDir, file);
+            var relativePath = PathUtility.MakeRelativePath(baseDir, file);
             foreach (var item in fileMetadata)
             {
                 // As the latter one overrides the former one, match the pattern from latter to former
                 for (int i = item.Value.Length - 1; i >= 0; i--)
                 {
-                    if (item.Value[i].Glob.Match(TypeForwardedToRelativePath))
+                    if (item.Value[i].Glob.Match(relativePath))
                     {
                         // override global metadata if metadata is defined in file metadata
                         result[item.Value[i].Key] = item.Value[i].Value;
-                        Logger.LogVerbose($"{TypeForwardedToRelativePath} matches file metadata with glob pattern {item.Value[i].Glob.Raw} for property {item.Value[i].Key}");
+                        Logger.LogVerbose($"{relativePath} matches file metadata with glob pattern {item.Value[i].Glob.Raw} for property {item.Value[i].Key}");
                         break;
                     }
                 }
