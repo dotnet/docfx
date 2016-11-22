@@ -8,7 +8,7 @@
     <title>DocFX Flavored Markdown | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFX Flavored Markdown | DocFX website ">
-    <meta name="generator" content="docfx 2.7.3.0">
+    <meta name="generator" content="docfx 2.8.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -31,6 +31,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
+              
               <a class="navbar-brand" href="../index.html">
                 <img id="logo" class="svg" src="../logo.svg" alt="">
               </a>
@@ -74,7 +75,7 @@
             <article class="content wrap" id="_content" data-uid="">
               <h1 id="docfx-flavored-markdown">DocFX Flavored Markdown</h1>
               
-<p>DocFX supports &quot;DocFX Flavored Markdown,&quot; or DFM. It is 100% compatible with <a href="https://guides.github.com/features/mastering-markdown/">GitHub Flavored Markdown</a>, and adds some additional functionality, including cross reference and file inclusion.</p>
+<p>DocFX supports <code>DocFX Flavored Markdown</code>, or DFM. It is 99% compatible with <a href="https://guides.github.com/features/mastering-markdown/">GitHub Flavored Markdown</a>, and adds some additional functionality, including cross reference and file inclusion.</p>
 <h3 id="yaml-header">Yaml Header</h3>
 <p>Yaml header in DFM is considered as the metadata for the Markdown file. It will transform to <code>yamlheader</code> tag when processed.
 Yaml header MUST be the first thing in the file and MUST take the form of valid YAML set between triple-dashed lines. Here is a basic example:</p>
@@ -211,7 +212,127 @@ Give an example below.</p>
   &lt;h5&gt;WARNING&lt;/h5&gt;
   &lt;p&gt;WARNING content&lt;/p&gt;
 &lt;/div&gt;
-</code></pre>
+</code></pre><h2 id="difference-between-dfm-and-gfm">Difference between DFM and GFM</h2>
+<h3 id="list">List</h3>
+<p>DFM list item always uses the first character in the first line to decide whether it is in the list item, but GFM does not.<br>For example:</p>
+<p>Case 1:</p>
+<pre><code class="lang-md">* a
+  * b
+    * c
+
+  text
+</code></pre><p><code>a</code> starts at column 3, <code>b</code> starts at column 5, <code>c</code> starts at column 7.</p>
+<table>
+<thead>
+<tr>
+<th><code>text</code> will be</th>
+<th>in DFM, <code>text</code> starts at column</th>
+<th>in GFM, <code>text</code> starts at column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>paragraph</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>part of item a</td>
+<td>2 ~ 3 (&gt; 1 and &lt;= 3)</td>
+<td>2 ~ 4</td>
+</tr>
+<tr>
+<td>part of item b</td>
+<td>4 ~ 5 (&gt; 3 and &lt;= 6)</td>
+<td>5 ~ 6</td>
+</tr>
+<tr>
+<td>part of item c</td>
+<td>6 or more (&gt; 6)</td>
+<td>7 or more</td>
+</tr>
+<tr>
+<td>part of item c and code</td>
+<td>11 (7 + 4)</td>
+<td>13</td>
+</tr>
+</tbody>
+</table>
+<p>Case 2:</p>
+<pre><code class="lang-md">1. a
+   2. b
+      3. c
+
+   text
+</code></pre><p><code>a</code> starts at column 4, <code>b</code> starts at column 7, <code>c</code> starts at column 10.</p>
+<table>
+<thead>
+<tr>
+<th><code>text</code> will be</th>
+<th>in DFM, <code>text</code> starts at column</th>
+<th>in GFM, <code>text</code> starts at column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>paragraph</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>part of item a</td>
+<td>2 ~ 4 (&gt; 1 and &lt;= 4)</td>
+<td>2 ~ 4</td>
+</tr>
+<tr>
+<td>part of item b</td>
+<td>5 ~ 7 (&gt; 4 and &lt;= 7)</td>
+<td>5 ~ 8</td>
+</tr>
+<tr>
+<td>part of item c</td>
+<td>8 or more (&gt; 7)</td>
+<td>9 or more</td>
+</tr>
+<tr>
+<td>part of item c and code</td>
+<td>14 (10 + 4)</td>
+<td>15</td>
+</tr>
+</tbody>
+</table>
+<h3 id="yaml-header-1">YAML header</h3>
+<p>YAML header is also supported in GFM, but it must at the beginning of markdown file.<br>DFM supports multiple YAML header in one markdown file.<br>But for conceptual document, only first YAML header is effective.</p>
+<pre><code class="lang-md">...some text...
+
+---
+a: b
+---
+</code></pre><p>In GFM, it would be rendered as <code>&lt;hr&gt;a: b&lt;hr&gt;</code>.<br>In DFM, it would be rendered as a YAML header.</p>
+<p>If you want to get <code>&lt;hr&gt;</code> in html in DFM, please use:</p>
+<pre><code class="lang-md">- - -
+***
+* * *
+</code></pre><p>or change content to make it not in YAML format:</p>
+<pre><code class="lang-md">---
+a\: b
+---
+</code></pre><h3 id="text-after-block-extension">Text after block extension</h3>
+<p>Some block extension in DFM cannot be recognized in GFM.
+In GFM, it would be treated as a part of paragraph.
+Then, following content would be treated as a part of paragraph.</p>
+<p>For example:</p>
+<pre><code class="lang-md">&gt; [!NOTE]
+&gt;     This is code.
+</code></pre><p>In GFM, it will be rendered as a paragraph with content <code>[!NOTE] This is code.</code> in blockquote.<br>In DFM, it will be rendered as a code in note.</p>
+<h3 id="list-after-paragraph">List after paragraph</h3>
+<p>In GFM, list after paragraph must be separated by two or new line character.<br>In DFM, one new line also works.</p>
+<p>For example:</p>
+<pre><code class="lang-md">text
+1. a
+2. b
+</code></pre><p>In GFM, it will be rendered as one paragraph with content <code>text 1. a 2. b</code>.<br>In DFM, it will be rendered as a paragraph (with content <code>text</code>) and a list.</p>
+
             </article>
           </div>
           

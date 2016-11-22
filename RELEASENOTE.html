@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.7.3) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.8) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.7.3) | DocFX website ">
-    <meta name="generator" content="docfx 2.7.3.0">
+    <meta name="title" content="Version Notes (Current Version: v2.8) | DocFX website ">
+    <meta name="generator" content="docfx 2.8.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -31,6 +31,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
+              
               <a class="navbar-brand" href="index.html">
                 <img id="logo" class="svg" src="logo.svg" alt="">
               </a>
@@ -65,8 +66,32 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <h1 id="version-notes-current-version-v273">Version Notes (Current Version: v2.7.3)</h1>
+              <h1 id="version-notes-current-version-v28">Version Notes (Current Version: v2.8)</h1>
               
+<h2 id="v28">v2.8</h2>
+<ol>
+<li>Improve markdown engine:<ul>
+<li>Remove paragraph rule.</li>
+<li>Improve parser performance.</li>
+</ul>
+</li>
+<li>Report bookmarks in template preprocessor, which is used in URL segment when resolving cross reference.</li>
+<li>Support customizing logo and favicon through metadata. (<a href="https://github.com/dotnet/docfx/pull/892">https://github.com/dotnet/docfx/pull/892</a>)</li>
+<li>Refine the warning message of invalid bookmark.</li>
+<li>Improve layout for print. (<a href="https://github.com/dotnet/docfx/issues/852">https://github.com/dotnet/docfx/issues/852</a>)</li>
+<li>Remove the usage of <code>FileModel.LocalPathFromRepoRoot</code>. This property is marked <code>Obsolete</code>.</li>
+<li>Copy <code>PathUtility</code>, <code>RelativePath</code>, <code>StringExtension</code> and <code>FilePathComparer</code> from project <code>Microsoft.DocAsCode.Utility</code> to <code>Microsoft.DocAsCode.Common</code>. The copied classes in project <code>Microsoft.DocAsCode.Utility</code> are kept there for bits compatibility and marked <code>Obsolete</code>.</li>
+<li>Add command option <code>docfx -v</code> to show version of DocFX</li>
+<li>Bug fixes:<ol>
+<li>concurrency issue of <code>Logger</code>.</li>
+<li>unable to handle file link with query string.</li>
+<li>unable to resolve uid for in html <code>&lt;a href=&quot;xref:...&quot;&gt;</code>.</li>
+<li>display specName wrong for generic type. (<a href="https://github.com/dotnet/docfx/issues/896">https://github.com/dotnet/docfx/issues/896</a>)</li>
+<li>breadcrumb rendered wrong when multiple toc item matched.</li>
+<li>subcommand metadata can&#39;t specify DocFX config file</li>
+</ol>
+</li>
+</ol>
 <h2 id="v273">v2.7.3</h2>
 <ol>
 <li>Fix bookmark validation failed when link contains illegal characters.</li>
@@ -315,7 +340,7 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 </li>
 <li>Cross-reference is now supporting anchor<code>#</code> (<a href="https://github.com/dotnet/docfx/issues/190">https://github.com/dotnet/docfx/issues/190</a>)</li>
 <li>C# Code snippet now supports referencing source code using a region <code>#engion</code> (<a href="https://github.com/dotnet/docfx/issues/160">https://github.com/dotnet/docfx/issues/160</a>)</li>
-<li>Support <a class="xref" href="tutorial/intro_toc.html#link-to-another-toc-file-">TOC reference</a>. With this syntax, we can combine multiple TOC files into a single TOC. (<a href="https://github.com/dotnet/docfx/issues/161">https://github.com/dotnet/docfx/issues/161</a>)</li>
+<li>Support <a class="xref" href="tutorial/intro_toc.html#link-to-another-toc-file">TOC reference</a>. With this syntax, we can combine multiple TOC files into a single TOC. (<a href="https://github.com/dotnet/docfx/issues/161">https://github.com/dotnet/docfx/issues/161</a>)</li>
 <li>Improve user experience when using <code>docfx.msbuild</code> in VS IDE</li>
 <li>Code refactor:<ol>
 <li>We improved DocFX project structure in this release. <code>Microsoft.DocAsCode.EntityModel</code> namespace is no longer in use. Assemblies are separated into <code>Microsoft.DocAsCode.Build</code>,  <code>Microsoft.DocAsCode.DataContracts</code>, and  <code>Microsoft.DocAsCode.Metadata</code> namespace. All assemblies can be separately referenced through NuGet. In this way, it is much convenient for plugin writers to reference existing data models and utilities.</li>
@@ -345,7 +370,7 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 </li>
 <li>Improve performance for document build.</li>
 <li>Breaking changes:<ol>
-<li>modify interface <a class="xref" href="api/Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html#Microsoft_DocAsCode_Plugins_IDocumentBuildStep">IDocumentBuildStep</a>.</li>
+<li>modify interface <a class="xref" href="api/Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html">IDocumentBuildStep</a>.</li>
 </ol>
 </li>
 </ol>
@@ -377,7 +402,7 @@ and after build the url will be <code>System.Func-1.html</code> instead of <code
 </ol>
 </li>
 <li><p>Update yaml serializion:
-Add <a class="xref" href="api/Microsoft.DocAsCode.YamlSerialization.ExtensibleMemberAttribute.html#Microsoft_DocAsCode_YamlSerialization_ExtensibleMemberAttribute">ExtensibleMemberAttribute</a></p>
+Add <a class="xref" href="api/Microsoft.DocAsCode.YamlSerialization.ExtensibleMemberAttribute.html">ExtensibleMemberAttribute</a></p>
 </li>
 <li>Improve <code>docfx init</code>, now with <code>docfx init</code>, a <code>docfx_project</code> seed project will will generated.</li>
 <li>Several improvements for <code>default</code> template:<ol>
@@ -432,10 +457,10 @@ Add <a class="xref" href="api/Microsoft.DocAsCode.YamlSerialization.ExtensibleMe
 </ol>
 </li>
 <li>Code improvements<ol>
-<li>Add <a class="xref" href="api/Microsoft.DocAsCode.YamlSerialization.html#Microsoft_DocAsCode_YamlSerialization">Microsoft.DocAsCode.YamlSerialization</a>
+<li>Add <a class="xref" href="api/Microsoft.DocAsCode.YamlSerialization.html">Microsoft.DocAsCode.YamlSerialization</a>
 This project is based on <a href="https://github.com/aaubry/YamlDotNet">YamlDotNet</a>. It overrides classes like type converters to improve performance and fix bug existed in <em>YamlDotNet</em></li>
-<li>Refactor markdown engine <a class="xref" href="api/Microsoft.DocAsCode.MarkdownLite.html#Microsoft_DocAsCode_MarkdownLite">Microsoft.DocAsCode.MarkdownLite</a></li>
-<li>Add <a class="xref" href="api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRewritable-1.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRewritable_1">IMarkdownRewritable&lt;T&gt;</a>. It provides a way to operate markdown tokens.</li>
+<li>Refactor markdown engine <a class="xref" href="api/Microsoft.DocAsCode.MarkdownLite.html">Microsoft.DocAsCode.MarkdownLite</a></li>
+<li>Add <a class="xref" href="api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRewritable-1.html">IMarkdownRewritable&lt;T&gt;</a>. It provides a way to operate markdown tokens.</li>
 </ol>
 </li>
 <li>Other improvements<ol>

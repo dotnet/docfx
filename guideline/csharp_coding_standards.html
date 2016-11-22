@@ -8,7 +8,7 @@
     <title>C# Coding Standards | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="C# Coding Standards | DocFX website ">
-    <meta name="generator" content="docfx 2.7.3.0">
+    <meta name="generator" content="docfx 2.8.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -31,6 +31,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
+              
               <a class="navbar-brand" href="../index.html">
                 <img id="logo" class="svg" src="../logo.svg" alt="">
               </a>
@@ -130,9 +131,9 @@ Filename: Observer.cs
 <p>  private readonly Guid _userId = Guid.NewGuid();</p>
 </li>
 <li><p><strong>DO</strong> start static readonly field and constant names with capitalized case</p>
-<p>  private static readonly IEntityAccessor EntityAccessor = null;</p>
-<pre><code>  private const string MetadataName = &quot;MetadataName&quot;;
-</code></pre></li>
+<p>  private static readonly IEntityAccessor EntityAccessor = null;
+      private const string MetadataName = &quot;MetadataName&quot;;</p>
+</li>
 <li><p><strong>DO NOT</strong> capitalize each word in so-called <a href="http://msdn.microsoft.com/en-us/library/ms229043.aspx">closed-form compound words</a>.</p>
 </li>
 <li><p><strong>DO</strong> use <code>Async</code> suffix in the asynchronous method names to notice people how to use it properly</p>
@@ -150,9 +151,9 @@ Filename: Observer.cs
 <ul>
 <li><p><strong>DO</strong> add <em>using</em> inside <em>namespace</em> declaration</p>
 <p>  namespace Microsoft.Content.Build.BuildWorker.UnitTest
-  {</p>
-<pre><code>using System;
-</code></pre><p>  }</p>
+  {
+    using System;
+  }</p>
 </li>
 <li><p><strong>DO</strong> add a space when:</p>
 <ol>

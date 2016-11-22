@@ -8,7 +8,7 @@
     <title>Links and Cross References | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Links and Cross References | DocFX website ">
-    <meta name="generator" content="docfx 2.7.3.0">
+    <meta name="generator" content="docfx 2.8.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -31,6 +31,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
+              
               <a class="navbar-brand" href="../index.html">
                 <img id="logo" class="svg" src="../logo.svg" alt="">
               </a>
@@ -98,7 +99,7 @@ This is especially common in API reference docs, for example, you may want to us
 </code></pre><p>DocFX converts it to a relative path in output folder structure:</p>
 <pre><code class="lang-html">&lt;a href=&quot;subfolder/file2.html&quot;&gt;file2&lt;/a&gt;
 </code></pre><p>You can see the source file name (<code>.md</code>) is replaced with output file name (<code>.html</code>).</p>
-<blockquote><p>DocFX does not simply replace the file extension here (<code>.md</code> to <code>.html</code>), it also tracks the mapping between input and output files to make sure source file path will resolve to correct output path. For example, if in the above case, <code>subfolder</code> is renamed to <code>subfolder2</code> using <a href="docfx.exe_user_manual.html#4-supported-name-files-file-mapping-format">file mapping</a> in <code>docfx.json</code>, in output html, the link url will also resolve to <code>subfolder2/file2.html</code>.</p>
+<blockquote><p>DocFX does not simply replace the file extension here (<code>.md</code> to <code>.html</code>), it also tracks the mapping between input and output files to make sure source file path will resolve to correct output path. For example, if in the above case, <code>subfolder</code> is renamed to <code>subfolder2</code> using <a href="docfx.exe_user_manual.html#4-supported-file-mapping-format">file mapping</a> in <code>docfx.json</code>, in output html, the link url will also resolve to <code>subfolder2/file2.html</code>.</p>
 </blockquote>
 <h3 id="relative-path-vs-absolute-path">Relative path vs. absolute path</h3>
 <p>It&#39;s recommended to always use relative path to reference another file in the same project. Relative path will be resolved during build and produce build warning if the target file does not exist.</p>

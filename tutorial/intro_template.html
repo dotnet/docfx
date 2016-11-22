@@ -8,7 +8,7 @@
     <title>Introduction to DocFX Template System | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to DocFX Template System | DocFX website ">
-    <meta name="generator" content="docfx 2.7.3.0">
+    <meta name="generator" content="docfx 2.8.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -31,6 +31,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
+              
               <a class="navbar-brand" href="../index.html">
                 <img id="logo" class="svg" src="../logo.svg" alt="">
               </a>
@@ -129,7 +130,7 @@ Inside Partial
 <p>DocFX introduces the following syntax to define the dependency for the <em>Renderer</em>:</p>
 <pre><code class="lang-mustache">{{!include(&#39;&lt;file_name&gt;&#39;)}}
 </code></pre><p><code>docfx</code> copies these dependencies to output folder preserving its relative path to the <em>Renderer</em> file.</p>
-<blockquote><p>Tips: Mustache is logic-less, and for a specific <code>{{name}}</code> tag, Mustache searches its context and its parent context recursively. So most of the time <a href="#-preprocessor-file-"><em>Preprocessor File</em></a> is used to re-define the data model used by the Mustache <em>Renderer</em>.</p>
+<blockquote><p>Tips: Mustache is logic-less, and for a specific <code>{{name}}</code> tag, Mustache searches its context and its parent context recursively. So most of the time <a href="#preprocessor"><em>Preprocessor File</em></a> is used to re-define the data model used by the Mustache <em>Renderer</em>.</p>
 </blockquote>
 <h3 id="renderer-in-liquid-syntax"><em>Renderer</em> in Liquid syntax</h3>
 <h4 id="naming-rule-1">Naming rule</h4>
