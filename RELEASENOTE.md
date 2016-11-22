@@ -5,12 +5,17 @@ v2.8(Pre-Release)
 1.  Improve markdown engine:
     - Remove paragraph rule.
     - Improve parser performance.
-2.  Refine the warning message of invalid bookmark.
-3.  Remove the usage of `FileModel.LocalPathFromRepoRoot`. This property is marked `Obsolete`.
-4.  Copy `PathUtility`, `RelativePath`, `StringExtension` and `FilePathComparer` from project `Microsoft.DocAsCode.Utility` to `Microsoft.DocAsCode.Common`. The copied classes in project `Microsoft.DocAsCode.Utility` are kept there for bits compatibility and marked `Obsolete`.
-5.  Fix a concurrency issue of `Logger`.
-6.  Fix bug: unable to handle file link with query string.
-7.  Fix bug: unable to resolve uid for in html `<a href="xref:...">`.
+2.  Report bookmarks in template preprocessor, which is used in URL segment when resolving cross reference.
+3.  Support customizing logo and favicon through metadata. (https://github.com/dotnet/docfx/pull/892)
+4.  Refine the warning message of invalid bookmark.
+5.  Improve layout for print. (https://github.com/dotnet/docfx/issues/852)
+6.  Remove the usage of `FileModel.LocalPathFromRepoRoot`. This property is marked `Obsolete`.
+7.  Copy `PathUtility`, `RelativePath`, `StringExtension` and `FilePathComparer` from project `Microsoft.DocAsCode.Utility` to `Microsoft.DocAsCode.Common`. The copied classes in project `Microsoft.DocAsCode.Utility` are kept there for bits compatibility and marked `Obsolete`.
+8.  Fix a concurrency issue of `Logger`.
+9.  Fix bug: unable to handle file link with query string.
+10.  Fix bug: unable to resolve uid for in html `<a href="xref:...">`.
+11.  Fix bug: display specName wrong for generic type. (https://github.com/dotnet/docfx/issues/896)
+12.  Fix bug: breadcrumb rendered wrong when multiple toc item matched.
 
 v2.7
 -----------
