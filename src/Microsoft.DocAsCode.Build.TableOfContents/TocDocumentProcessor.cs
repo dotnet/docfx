@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Build.TableOfContents
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
@@ -13,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common.Git;
 
     using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
     using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
@@ -47,7 +46,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 Items = tocViewModel
             };
 
-            var repoDetail = GitUtility.GetGitDetail(filePath);
+            var repoDetail = GitUtility.TryGetFileDetail(filePath, EnvironmentContext.RepoRootDirectory);
             var displayLocalPath = TypeForwardedToPathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
             // todo : metadata.

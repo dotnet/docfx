@@ -97,7 +97,15 @@ namespace Microsoft.DocAsCode.Build.RestApi
                             };
 
                             // TODO: line number
-                            itemVm.Metadata[Constants.PropertyName.Source] = swagger.Metadata[Constants.PropertyName.Source];
+                            object value;
+                            if (swagger.Metadata.TryGetValue(Constants.PropertyName.Source, out value))
+                            {
+                                itemVm.Metadata[Constants.PropertyName.Source] = value;
+                            }
+                            else
+                            {
+                                itemVm.Metadata[Constants.PropertyName.Source] = null;
+                            }
                             vm.Children.Add(itemVm);
                         }
                     }

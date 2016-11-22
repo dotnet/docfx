@@ -1,14 +1,12 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Utility
+namespace Microsoft.DocAsCode.Common.Git
 {
     using System;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
-
-    using Microsoft.DocAsCode.Utility.Git;
 
     [Serializable]
     public class GitDetail
@@ -30,7 +28,7 @@ namespace Microsoft.DocAsCode.Utility
 
         [YamlMember(Alias = "commit")]
         [JsonProperty("commit")]
-        public CommitDetail CommitDetail { get; set; }
+        public string CommitId { get; set; }
 
         [YamlIgnore]
         [JsonIgnore]
@@ -60,5 +58,4 @@ namespace Microsoft.DocAsCode.Utility
             return string.Format("branch: {0}, url: {1}, local: {2}, desc: {3}, file: {4}", RemoteBranch, RemoteRepositoryUrl, LocalWorkingDirectory, Description, RelativePath);
         }
     }
-
 }

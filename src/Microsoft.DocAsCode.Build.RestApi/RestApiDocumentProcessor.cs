@@ -14,11 +14,11 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.RestApi.Swagger;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Common.Git;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.RestApi;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     swagger.Raw = swaggerContent;
                     CheckOperationId(swagger, file.File);
 
-                    var repoInfo = GitUtility.GetGitDetail(filePath);
+                    var repoInfo = GitUtility.TryGetFileDetail(filePath, EnvironmentContext.RepoRootDirectory);
                     if (repoInfo != null)
                     {
                         swagger.Metadata["source"] = new SourceDetail() { Remote = repoInfo };
