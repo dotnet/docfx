@@ -51,18 +51,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             // 1. Root Toc is specified by RootTocKey, or by default in the top directory of output folder
             if (!string.IsNullOrEmpty(_context.RootTocPath))
             {
-                if (((TypeForwardedToRelativePath)_context.RootTocPath).IsFromWorkingFolder())
-                {
-                    attrs.RootTocKey = _context.RootTocPath;
-                    var rootTocPath = ((TypeForwardedToRelativePath)_context.RootTocPath).RemoveWorkingFolder();
-                    attrs.RootTocPath = rootTocPath;
-                    attrs.RelativePathToRootToc = rootTocPath.MakeRelativeTo(file);
-                }
-                else
-                {
-                    Logger.LogWarning($"{nameof(_context.RootTocPath)} \"{_context.RootTocPath}\" must start with \"~/\" or \"~\\\"");
-                    GetRootTocFromOutputRoot(attrs, file);
-                }
+                attrs.RootTocKey = _context.RootTocPath;
+                var rootTocPath = ((TypeForwardedToRelativePath)_context.RootTocPath).RemoveWorkingFolder();
+                attrs.RootTocPath = rootTocPath;
+                attrs.RelativePathToRootToc = rootTocPath.MakeRelativeTo(file);
             }
             else
             {
@@ -141,10 +133,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return null;
             }
             return (from toc in tocFiles
-                where toc.File != null
-                let relativePath = toc.File.RemoveWorkingFolder() - file
-                orderby relativePath.SubdirectoryCount, relativePath.ParentDirectoryCount
-                select toc)
+                    where toc.File != null
+                    let relativePath = toc.File.RemoveWorkingFolder() - file
+                    orderby relativePath.SubdirectoryCount, relativePath.ParentDirectoryCount
+                    select toc)
                 .FirstOrDefault();
         }
 
