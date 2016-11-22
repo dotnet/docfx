@@ -33,9 +33,9 @@ namespace Microsoft.DocAsCode.Common.Git
         private const string VsoNormalizedRepoUrlTemplate = "https://{0}.visualstudio.com/DefaultCollection/{1}/_git/{2}";
         private static readonly ConcurrentDictionary<string, GitRepoInfo> Cache = new ConcurrentDictionary<string, GitRepoInfo>();
 
-        public static GitDetail TryGetFileDetail(string filePath, string repoRootPath)
+        public static GitDetail TryGetFileDetail(string filePath)
         {
-            if (string.IsNullOrEmpty(filePath) || string.IsNullOrEmpty(repoRootPath))
+            if (string.IsNullOrEmpty(filePath))
             {
                 return null;
             }
@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.Common.Git
             GitDetail detail = null;
             try
             {
-                detail = GetFileDetailCore(filePath, repoRootPath);
+                detail = GetFileDetailCore(filePath);
             }
             catch (Exception)
             {
@@ -52,11 +52,11 @@ namespace Microsoft.DocAsCode.Common.Git
             return detail;
         }
 
-        public static GitRepoInfo GetRepoInfo(string repoPath)
+        public static GitRepoInfo GetRepoInfo(string directory)
         {
-            if (repoPath == null)
+            if (directory == null)
             {
-                throw new ArgumentNullException(nameof(repoPath));
+                throw new ArgumentNullException(nameof(directory));
             }
 
             if (!ExistGitCommand())
@@ -64,18 +64,22 @@ namespace Microsoft.DocAsCode.Common.Git
                 throw new GitException("Can't find git command in current environment");
             }
 
-            var repoRootPath = RunGitCommandAndGetFirstLine(repoPath, GetRepoRootCommand);
-
-            return Cache.GetOrAdd(repoRootPath, GetRepoInfoCore);
+            return Cache.GetOrAdd(directory, GetRepoInfoCore);
         }
 
         #region Private Methods
-        private static GitDetail GetFileDetailCore(string filePath, string repoRootPath)
+        private static GitDetail GetFileDetailCore(string filePath)
         {
-            GitRepoInfo repoInfo;
-            if (!Cache.TryGetValue(repoRootPath, out repoInfo))
+            var directory = Path.GetDirectoryName(filePath);
+            if (directory == null)
             {
-                repoInfo = GetRepoInfo(repoRootPath);
+                throw new GitException("The directory name of {filePath} should not be null");
+            }
+
+            GitRepoInfo repoInfo;
+            if (!Cache.TryGetValue(directory, out repoInfo))
+            {
+                repoInfo = GetRepoInfo(directory);
             }
 
             return new GitDetail
@@ -87,8 +91,9 @@ namespace Microsoft.DocAsCode.Common.Git
             };
         }
 
-        private static GitRepoInfo GetRepoInfoCore(string repoRootPath)
+        private static GitRepoInfo GetRepoInfoCore(string directory)
         {
+            var repoRootPath = RunGitCommandAndGetFirstLine(directory, GetRepoRootCommand);
             var localBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
 
             string remoteBranch;

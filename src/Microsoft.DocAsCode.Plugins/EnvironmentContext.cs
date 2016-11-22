@@ -9,10 +9,5 @@ namespace Microsoft.DocAsCode.Plugins
         /// The directory path which contains docfx.json.
         /// </summary>
         public static string BaseDirectory { get; set; }
-
-        /// <summary>
-        /// The directory path which contains .git folder, if it's a git repo.
-        /// </summary>
-        public static string RepoRootDirectory { get; set; }
     }
 }

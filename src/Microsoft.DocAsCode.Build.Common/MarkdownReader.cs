@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Build.Common
         public static Dictionary<string, object> ReadMarkdownAsConceptual(string baseDir, string file)
         {
             var filePath = Path.Combine(baseDir, file);
-            var repoInfo = GitUtility.TryGetFileDetail(filePath, EnvironmentContext.RepoRootDirectory);
+            var repoInfo = GitUtility.TryGetFileDetail(filePath);
             return new Dictionary<string, object>
             {
                 [Constants.PropertyName.Conceptual] = File.ReadAllText(filePath),
@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.Common
             }
 
             var overriden = RemoveRequiredProperties(properties, RequiredProperties);
-            var repoInfo = GitUtility.TryGetFileDetail(filePath, EnvironmentContext.RepoRootDirectory);
+            var repoInfo = GitUtility.TryGetFileDetail(filePath);
 
             return new OverwriteDocumentModel
             {

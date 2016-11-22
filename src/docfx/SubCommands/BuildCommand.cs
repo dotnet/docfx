@@ -37,6 +37,7 @@ namespace Microsoft.DocAsCode.SubCommands
             _version = assembly.GetName().Version.ToString();
             Config = ParseOptions(options);
             SetDefaultConfigValue(Config);
+            EnvironmentContext.BaseDirectory = Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Directory.GetCurrentDirectory() : Config.BaseDirectory);
             _templateManager = new TemplateManager(assembly, "Template", Config.Templates, Config.Themes, Config.BaseDirectory);
         }
 
@@ -88,7 +89,6 @@ namespace Microsoft.DocAsCode.SubCommands
                     {
                         config = new BuildJsonConfig();
                         MergeOptionsToConfig(options, config);
-                        InitializeEnvironmentContext(config);
                         return config;
                     }
                 }
@@ -104,7 +104,6 @@ namespace Microsoft.DocAsCode.SubCommands
             config.BaseDirectory = Path.GetDirectoryName(configFile);
 
             MergeOptionsToConfig(options, config);
-            InitializeEnvironmentContext(config);
             MergeGitContributeToConfig(config);
             return config;
         }
@@ -277,26 +276,9 @@ namespace Microsoft.DocAsCode.SubCommands
             config.GlobalMetadata = GetGlobalMetadataFromOption(config.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadataFilePaths, options.GlobalMetadata);
         }
 
-        private static void InitializeEnvironmentContext(BuildJsonConfig config)
-        {
-            EnvironmentContext.BaseDirectory = Path.GetFullPath(string.IsNullOrEmpty(config.BaseDirectory) ? Directory.GetCurrentDirectory() : config.BaseDirectory);
-
-            GitRepoInfo detail = null;
-            try
-            {
-                detail = GitUtility.GetRepoInfo(EnvironmentContext.BaseDirectory);
-            }
-            catch (GitException ex)
-            {
-                Logger.LogWarning(ex.Message);
-            }
-
-            EnvironmentContext.RepoRootDirectory = detail?.RepoRootPath;
-        }
-
         private static void MergeGitContributeToConfig(BuildJsonConfig config)
         {
-            var repoInfoFromBaseDirectory = GitUtility.TryGetFileDetail(Path.Combine(Directory.GetCurrentDirectory(), config.BaseDirectory), EnvironmentContext.RepoRootDirectory);
+            var repoInfoFromBaseDirectory = GitUtility.TryGetFileDetail(Path.Combine(Directory.GetCurrentDirectory(), config.BaseDirectory));
 
             if (repoInfoFromBaseDirectory?.RelativePath != null)
             {
