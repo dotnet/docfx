@@ -1,6 +1,6 @@
 Version Notes (Current Version: v2.8)
 =======================================
-v2.8(Pre-Release)
+v2.8
 -----------
 1.  Improve markdown engine:
     - Remove paragraph rule.
@@ -19,6 +19,20 @@ v2.8(Pre-Release)
     4. display specName wrong for generic type. (https://github.com/dotnet/docfx/issues/896)
     5. breadcrumb rendered wrong when multiple toc item matched.
     6. subcommand metadata can't specify DocFX config file
+
+v2.7.3
+-----------
+1.  Fix bookmark validation failed when link contains illegal characters.
+2.  Fix xref to fall back to uid.
+
+v2.7.2
+-----------
+1.  Fix xref with query string not resolved.
+2.  Fix relative path when validating bookmark.
+
+v2.7.1
+-----------
+1.  Search embedded resource prior to local resource.
 
 v2.7
 -----------
