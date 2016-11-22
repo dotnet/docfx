@@ -11,11 +11,14 @@ v2.8(Pre-Release)
 5.  Improve layout for print. (https://github.com/dotnet/docfx/issues/852)
 6.  Remove the usage of `FileModel.LocalPathFromRepoRoot`. This property is marked `Obsolete`.
 7.  Copy `PathUtility`, `RelativePath`, `StringExtension` and `FilePathComparer` from project `Microsoft.DocAsCode.Utility` to `Microsoft.DocAsCode.Common`. The copied classes in project `Microsoft.DocAsCode.Utility` are kept there for bits compatibility and marked `Obsolete`.
-8.  Fix a concurrency issue of `Logger`.
-9.  Fix bug: unable to handle file link with query string.
-10.  Fix bug: unable to resolve uid for in html `<a href="xref:...">`.
-11.  Fix bug: display specName wrong for generic type. (https://github.com/dotnet/docfx/issues/896)
-12.  Fix bug: breadcrumb rendered wrong when multiple toc item matched.
+8.  Add command option `docfx -v` to show version of DocFX
+9.  Bug fixes:
+    1. concurrency issue of `Logger`.
+    2. unable to handle file link with query string.
+    3. unable to resolve uid for in html `<a href="xref:...">`.
+    4. display specName wrong for generic type. (https://github.com/dotnet/docfx/issues/896)
+    5. breadcrumb rendered wrong when multiple toc item matched.
+    6. subcommand metadata can't specify DocFX config file
 
 v2.7
 -----------
