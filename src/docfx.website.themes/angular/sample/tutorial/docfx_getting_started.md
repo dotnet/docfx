@@ -16,9 +16,9 @@ As a prerequisite, you will need VS 2015 to use DocFx.
 ### Quick Start
 * Create an empty ASP.NET website. (Actually any project will work, we use ASP.NET website as it has built-in *PREVIEW* feature so that we can preview the generated website easily.)
 * Install Nuget Package `DocFx` prerelase version.
-	
+
   Under *Package Manager Console*
-	> `Install-Package docfx.msbuild -Pre`
+	> `Install-Package docfx.console -Pre`
 * You will notice that inside the project, default files *xdoc.json*, *toc.yml* are automatically added.
 * Preview the website, and navigate to `/_site` url.
 

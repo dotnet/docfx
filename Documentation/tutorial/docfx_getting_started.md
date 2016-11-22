@@ -46,7 +46,7 @@ As a prerequisite, you need [Visual Studio 2015](https://www.visualstudio.com/do
 
 *Step1.* Open Visual Studio and create a C# project as your documentation project. You can create an empty *ASP.NET Web Application* since it has a built-in *preview* feature that can be used to preview the generated website easily.
 
-*Step2.* Right click on the website project, and choose *Manage NuGet Packages...* to open the NuGet Package Manager. Search and install *docfx.msbuild* package.
+*Step2.* Right click on the website project, and choose *Manage NuGet Packages...* to open the NuGet Package Manager. Search and install *docfx.console* package.
 
 *Step3.* Create a `.cs` class in the website project, make sure the class is `public`, for example:
 
