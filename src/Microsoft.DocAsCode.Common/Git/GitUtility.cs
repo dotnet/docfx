@@ -71,10 +71,6 @@ namespace Microsoft.DocAsCode.Common.Git
         private static GitDetail GetFileDetailCore(string filePath)
         {
             var directory = Path.GetDirectoryName(filePath);
-            if (directory == null)
-            {
-                throw new GitException("The directory name of {filePath} should not be null");
-            }
 
             GitRepoInfo repoInfo;
             if (!Cache.TryGetValue(directory, out repoInfo))
