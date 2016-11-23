@@ -5,8 +5,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System.Collections.Generic;
 
-    using Microsoft.DocAsCode.Plugins;
-
     internal class PhaseProcessor
     {
         public List<IPhaseHandler> Handlers { get; } = new List<IPhaseHandler>();

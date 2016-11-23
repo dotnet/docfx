@@ -6,7 +6,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
 
     internal class PostbuildPhaseHandler : IPhaseHandler
     {
