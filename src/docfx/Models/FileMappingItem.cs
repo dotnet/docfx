@@ -85,6 +85,13 @@ namespace Microsoft.DocAsCode
         public string VersionName { get; set; }
 
         /// <summary>
+        /// The Root TOC Path used for navbar in current version, relative to output root
+        /// If not set, will use the toc in output root in current version if exists.
+        /// </summary>
+        [JsonProperty("rootTocPath")]
+        public string RootTocPath { get; set; }
+
+        /// <summary>
         /// Pattern match will be case sensitive.
         /// By default the pattern is case insensitive
         /// </summary>

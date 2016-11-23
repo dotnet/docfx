@@ -96,7 +96,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.ExternalReferencePackages,
                     parameters.XRefMaps,
                     parameters.MaxParallelism,
-                    parameters.Files.DefaultBaseDir);
+                    parameters.Files.DefaultBaseDir,
+                    parameters.RootTocPath);
                 if (ShouldTraceIncrementalInfo)
                 {
                     context.IncrementalBuildContext = IncrementalBuildContext.Create(parameters, CurrentBuildInfo, LastBuildInfo, IntermediateFolder);

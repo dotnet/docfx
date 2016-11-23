@@ -60,5 +60,18 @@ namespace Microsoft.DocAsCode
 
             _items.Add(item);
         }
+
+        /// <summary>
+        /// The RootTocPath of the current version, specified in FileMappingItems.
+        /// If different FileMappingItems in same version have different RootTocPath, the behavior is undetermined.
+        /// </summary>
+        public string RootTocPath
+        {
+            get
+            {
+                var fileMappingItem = _items.Find(i => !string.IsNullOrEmpty(i.RootTocPath));
+                return fileMappingItem?.RootTocPath;
+            }
+        }
     }
 }

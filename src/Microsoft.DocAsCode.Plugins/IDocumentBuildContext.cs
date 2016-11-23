@@ -69,5 +69,10 @@ namespace Microsoft.DocAsCode.Plugins
         /// </summary>
         /// <returns>All the registered toc information</returns>
         IImmutableList<TocInfo> GetTocInfo();
+
+        /// <summary>
+        /// The Root Toc Path of current version
+        /// </summary>
+        string RootTocPath { get; }
     }
 }

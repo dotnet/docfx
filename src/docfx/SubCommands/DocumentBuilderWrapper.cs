@@ -269,6 +269,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
                 parameters.VersionName = pair.Key;
                 parameters.Changes = GetIntersectChanges(parameters.Files, changeList);
+                parameters.RootTocPath = pair.Value.RootTocPath;
                 yield return parameters;
             }
         }
@@ -413,6 +414,15 @@ namespace Microsoft.DocAsCode.SubCommands
                 FileMapping result;
                 this.TryGetValue(type, out result);
                 return result;
+            }
+
+            public string RootTocPath
+            {
+                get
+                {
+                    var mapping = GetFileMapping(FileMappingType.Content);
+                    return mapping?.RootTocPath;
+                }
             }
         }
 
