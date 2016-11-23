@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "Microsoft.DocAsCode.Common": "1.0.0",
-    "Microsoft.DocAsCode.Utility": "1.0.0",
     "Microsoft.DocAsCode.DataContracts.Common": "1.0.0",
     "Microsoft.DocAsCode.DataContracts.ManagedReference": "1.0.0",
     "Microsoft.DocAsCode.YamlSerialization": "1.0.0",
@@ -44,6 +43,7 @@
   "frameworks": {
     "net452": {
       "frameworkAssemblies": {
+        "System.Web": "",
         "System.Xml": "",
         "System.Threading.Tasks": "",
         "System.Xml.Linq": ""

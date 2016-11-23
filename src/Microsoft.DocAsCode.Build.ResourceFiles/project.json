@@ -16,8 +16,7 @@
     "Microsoft.DocAsCode.Build.Common": "1.0.0",
     "Microsoft.DocAsCode.Common": "1.0.0",
     "Microsoft.DocAsCode.DataContracts.Common": "1.0.0",
-    "Microsoft.DocAsCode.Plugins": "1.0.0",
-    "Microsoft.DocAsCode.Utility": "1.0.0"
+    "Microsoft.DocAsCode.Plugins": "1.0.0"
   },
   "configurations": {
     "Debug": {

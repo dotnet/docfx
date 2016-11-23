@@ -11,7 +11,6 @@
     "Microsoft.DocAsCode.DataContracts.RestApi": "1.0.0",
     "Microsoft.DocAsCode.MarkdownLite": "1.0.0",
     "Microsoft.DocAsCode.Plugins": "1.0.0",
-    "Microsoft.DocAsCode.Utility": "1.0.0",
     "Microsoft.DocAsCode.YamlSerialization": "1.0.0",
     "HtmlAgilityPack": "1.4.9",
     "Jint": "2.5.0",
