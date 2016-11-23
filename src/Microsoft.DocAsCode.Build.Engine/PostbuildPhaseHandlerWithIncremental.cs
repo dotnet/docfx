@@ -5,10 +5,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
 
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Plugins;
 

@@ -29,10 +29,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly Task<IXRefContainerReader> _reader;
 
         public DocumentBuildContext(string buildOutputFolder)
-            : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Directory.GetCurrentDirectory(), null) { }
+            : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Directory.GetCurrentDirectory(), string.Empty, null, null) { }
 
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder)
-            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, null) { }
+            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, string.Empty, null, null) { }
 
         public DocumentBuildContext(
             string buildOutputFolder,
@@ -41,9 +41,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             ImmutableArray<string> xrefMaps,
             int maxParallelism,
             string baseFolder,
+            string versionName,
+            ApplyTemplateSettings applyTemplateSetting,
             string rootTocPath)
         {
             BuildOutputFolder = buildOutputFolder;
+            VersionName = versionName;
+            ApplyTemplateSettings = applyTemplateSetting;
             AllSourceFiles = GetAllSourceFiles(allSourceFiles);
             ExternalReferencePackages = externalReferencePackages;
             XRefMapUrls = xrefMaps;
@@ -58,6 +62,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         public string BuildOutputFolder { get; }
+
+        public string VersionName { get; }
+
+        public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 
         public ImmutableArray<string> ExternalReferencePackages { get; }
 
