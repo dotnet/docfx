@@ -33,6 +33,7 @@
       "TestData/overwrite/rest.overwrite.simple.md",
       "TestData/overwrite/rest.overwrite.default.md",
       "TestData/overwrite/rest.overwrite.invalid.md",
+      "TestData/overwrite/rest.overwrite.remarks.md",
       "TestData/contacts-operations.md",
       "TestData/contacts.json",
       "TestData/swagger/loopref_swagger2.json",

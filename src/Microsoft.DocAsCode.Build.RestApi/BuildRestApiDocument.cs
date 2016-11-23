@@ -63,6 +63,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             if (model.Type != DocumentType.Overwrite)
             {
                 item.Conceptual = Markup(host, item.Conceptual, model, filter);
+                item.Remarks = Markup(host, item.Remarks, model, filter);
             }
 
             var childModel = item as RestApiChildItemViewModel;

@@ -38,6 +38,10 @@ namespace Microsoft.DocAsCode.DataContracts.RestApi
         [JsonProperty("description")]
         public string Description { get; set; }
 
+        [YamlMember(Alias = "remarks")]
+        [JsonProperty("remarks")]
+        public string Remarks { get; set; }
+
         [YamlMember(Alias = "summary")]
         [JsonProperty("summary")]
         public string Summary { get; set; }
