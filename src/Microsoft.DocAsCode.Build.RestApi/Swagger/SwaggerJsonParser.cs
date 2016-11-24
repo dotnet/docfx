@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
 
     internal class SwaggerJsonParser
     {
-        private static readonly ThreadLocal<JsonSerializer> _serializer = new ThreadLocal<JsonSerializer>(
+        private static readonly ThreadLocal<JsonSerializer> Serializer = new ThreadLocal<JsonSerializer>(
             () =>
             {
                 var jsonSerializer = new JsonSerializer();
@@ -32,10 +32,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
                 var swagger = builder.Read(reader);
 
                 // Serialize to JToken
-                var token = JToken.FromObject(swagger, _serializer.Value);
+                var token = JToken.FromObject(swagger, Serializer.Value);
 
                 // Convert to swagger model
-                return token.ToObject<SwaggerModel>(_serializer.Value);
+                return token.ToObject<SwaggerModel>(Serializer.Value);
             }
         }
     }

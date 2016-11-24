@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
     public class SwaggerModel
     {
         /// <summary>
-        /// The original swagger.json cpntent
+        /// The original swagger.json content
         /// </summary>
         [YamlIgnore]
         [JsonIgnore]

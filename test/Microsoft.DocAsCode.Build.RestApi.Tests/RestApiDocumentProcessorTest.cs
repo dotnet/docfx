@@ -247,6 +247,20 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         }
 
         [Fact]
+        public void ProcessSwaggerWithRemarksOverwriteShouldSucceed()
+        {
+            var files = new FileCollection(_defaultFiles);
+            files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.remarks.md" });
+            BuildDocument(files);
+            {
+                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
+                Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.remarks.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Remarks content</p>\n", model.Remarks);
+            }
+        }
+
+        [Fact]
         public void ProcessSwaggerWithMultiUidOverwriteShouldSucceed()
         {
             var files = new FileCollection(_defaultFiles);
