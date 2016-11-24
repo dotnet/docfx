@@ -12304,6 +12304,12 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Common.RelativePath.GetPathWithoutWorkingFolderChar
   fullName: Microsoft.DocAsCode.Common.RelativePath.GetPathWithoutWorkingFolderChar
   nameWithType: RelativePath.GetPathWithoutWorkingFolderChar
+- uid: Microsoft.DocAsCode.Common.RelativePath.InvalidChars
+  name: InvalidChars
+  href: api/Microsoft.DocAsCode.Common.RelativePath.html#Microsoft_DocAsCode_Common_RelativePath_InvalidChars
+  commentId: F:Microsoft.DocAsCode.Common.RelativePath.InvalidChars
+  fullName: Microsoft.DocAsCode.Common.RelativePath.InvalidChars
+  nameWithType: RelativePath.InvalidChars
 - uid: Microsoft.DocAsCode.Common.RelativePath.IsEmpty
   name: IsEmpty
   href: api/Microsoft.DocAsCode.Common.RelativePath.html#Microsoft_DocAsCode_Common_RelativePath_IsEmpty
