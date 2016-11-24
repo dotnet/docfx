@@ -1,5 +1,8 @@
-Version Notes (Current Version: v2.8)
+Version Notes (Current Version: v2.8.1)
 =======================================
+v2.8.1
+1.  Fix bug: RelativePath.TryParse should not throw error when path contains invalid path characters.
+
 v2.8
 -----------
 1.  Improve markdown engine:
