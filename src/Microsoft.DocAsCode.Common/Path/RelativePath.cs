@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.Common
 
         #region Consts/Fields
         public const char WorkingFolderChar = '~';
+        public static readonly char[] InvalidChars = Path.GetInvalidPathChars().Concat(":").ToArray();
         public static readonly string NormalizedWorkingFolder = "~/";
         public static readonly string AltWorkingFolder = "~\\";
         public static readonly RelativePath Empty = new RelativePath(false, 0, new string[] { string.Empty });
@@ -295,6 +296,14 @@ namespace Microsoft.DocAsCode.Common
             if (path.Length == 0)
             {
                 return Empty;
+            }
+            if (path.IndexOfAny(InvalidChars) != -1)
+            {
+                if (throwOnError)
+                {
+                    throw new ArgumentException($"Path({path}) contains invalid char.", nameof(path));
+                }
+                return null;
             }
             if (Path.IsPathRooted(path))
             {
