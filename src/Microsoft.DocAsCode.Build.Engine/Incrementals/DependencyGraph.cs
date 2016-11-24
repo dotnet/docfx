@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 Name = DependencyTypeName.Include,
                 IsTransitive = true,
-                Phase = BuildPhase.Build,
+                Phase = BuildPhase.PreBuildBuild,
             },
             new DependencyType
             {

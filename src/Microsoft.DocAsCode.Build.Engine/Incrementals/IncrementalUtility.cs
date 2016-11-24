@@ -4,11 +4,12 @@
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
 
@@ -61,6 +62,50 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             using (var writer = new StreamWriter(fileName))
             {
                 JsonUtility.Serialize(writer, content);
+            }
+        }
+
+        public static BuildMessage LoadBuildMessage(string file)
+        {
+            if (string.IsNullOrEmpty(file))
+            {
+                return null;
+            }
+            using (var reader = new StreamReader(file))
+            {
+                var bm = new BuildMessage();
+                var content = JsonUtility.Deserialize<Dictionary<BuildPhase, string>>(reader);
+                foreach (var c in content)
+                {
+                    using (var sr = new StringReader(c.Value))
+                    {
+                        bm[c.Key] = BuildMessageInfo.Load(sr);
+                    }
+                }
+                return bm;
+            }
+        }
+
+        public static void SaveBuildMessage(string fileName, BuildMessage bm)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentNullException("fileName");
+            }
+            using (var writer = new StreamWriter(fileName))
+            {
+                JsonUtility.Serialize(
+                    writer,
+                    bm.ToDictionary(
+                        p => p.Key,
+                        p =>
+                        {
+                            using (var sw = new StringWriter())
+                            {
+                                p.Value.Save(sw);
+                                return sw.ToString();
+                            }
+                        }));
             }
         }
 
