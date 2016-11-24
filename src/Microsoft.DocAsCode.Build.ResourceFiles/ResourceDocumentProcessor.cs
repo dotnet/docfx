@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
             }
 
             var filePath = Path.Combine(file.BaseDir, file.File);
-            var repoDetail = GitUtility.TryGetFileDetail(filePath, EnvironmentContext.RepoRootDirectory);
+            var repoDetail = GitUtility.TryGetFileDetail(filePath);
             var displayLocalPath = TypeForwardedToPathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
             return new FileModel(file, content)

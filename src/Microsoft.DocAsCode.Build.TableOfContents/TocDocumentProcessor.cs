@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 Items = tocViewModel
             };
 
-            var repoDetail = GitUtility.TryGetFileDetail(filePath, EnvironmentContext.RepoRootDirectory);
+            var repoDetail = GitUtility.TryGetFileDetail(filePath);
             var displayLocalPath = TypeForwardedToPathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
             // todo : metadata.

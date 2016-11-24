@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     swagger.Raw = swaggerContent;
                     CheckOperationId(swagger, file.File);
 
-                    var repoInfo = GitUtility.TryGetFileDetail(filePath, EnvironmentContext.RepoRootDirectory);
+                    var repoInfo = GitUtility.TryGetFileDetail(filePath);
                     if (repoInfo != null)
                     {
                         swagger.Metadata["source"] = new SourceDetail() { Remote = repoInfo };
