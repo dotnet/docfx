@@ -1,5 +1,9 @@
-Version Notes (Current Version: v2.8.1)
+Version Notes (Current Version: v2.8.2)
 =======================================
+v2.8.2
+-----------
+1.  Fix bug: throw error when md contain wrong path..
+
 v2.8.1
 -----------
 1.  Fix bug: RelativePath.TryParse should not throw error when path contains invalid path characters.
