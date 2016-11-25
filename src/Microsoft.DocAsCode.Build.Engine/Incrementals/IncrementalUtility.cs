@@ -47,6 +47,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new ArgumentNullException("fileName");
             }
+            if (dg == null)
+            {
+                return;
+            }
             using (var writer = new StreamWriter(fileName))
             {
                 dg.Save(writer);
@@ -91,6 +95,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             if (string.IsNullOrEmpty(fileName))
             {
                 throw new ArgumentNullException("fileName");
+            }
+            if (bm == null)
+            {
+                return;
             }
             using (var writer = new StreamWriter(fileName))
             {
