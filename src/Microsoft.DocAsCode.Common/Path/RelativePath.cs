@@ -43,6 +43,7 @@ namespace Microsoft.DocAsCode.Common
 
         public static bool IsRelativePath(string path)
         {
+            // TODO : to merge with the PathUtility one
             return path != null &&
                 path.Length > 0 &&
                 path[0] != '/' &&
