@@ -12346,6 +12346,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Common.RelativePath.IsPathFromWorkingFolder
   fullName: Microsoft.DocAsCode.Common.RelativePath.IsPathFromWorkingFolder
   nameWithType: RelativePath.IsPathFromWorkingFolder
+- uid: Microsoft.DocAsCode.Common.RelativePath.IsRelativePath(System.String)
+  name: IsRelativePath(String)
+  href: api/Microsoft.DocAsCode.Common.RelativePath.html#Microsoft_DocAsCode_Common_RelativePath_IsRelativePath_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.RelativePath.IsRelativePath(System.String)
+  fullName: Microsoft.DocAsCode.Common.RelativePath.IsRelativePath(System.String)
+  nameWithType: RelativePath.IsRelativePath(String)
+- uid: Microsoft.DocAsCode.Common.RelativePath.IsRelativePath*
+  name: IsRelativePath
+  href: api/Microsoft.DocAsCode.Common.RelativePath.html#Microsoft_DocAsCode_Common_RelativePath_IsRelativePath_
+  commentId: Overload:Microsoft.DocAsCode.Common.RelativePath.IsRelativePath
+  fullName: Microsoft.DocAsCode.Common.RelativePath.IsRelativePath
+  nameWithType: RelativePath.IsRelativePath
 - uid: Microsoft.DocAsCode.Common.RelativePath.MakeRelativeTo(Microsoft.DocAsCode.Common.RelativePath)
   name: MakeRelativeTo(RelativePath)
   href: api/Microsoft.DocAsCode.Common.RelativePath.html#Microsoft_DocAsCode_Common_RelativePath_MakeRelativeTo_Microsoft_DocAsCode_Common_RelativePath_
