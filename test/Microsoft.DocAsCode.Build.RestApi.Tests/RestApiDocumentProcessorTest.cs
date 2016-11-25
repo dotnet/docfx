@@ -127,6 +127,12 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 ((string)parameter2["description"]));
             Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">No Content. Indicates <strong>success</strong>. No response body is returned.</p>\n",
                 item5.Responses[0].Description);
+
+            // Verify for markup result of securityDefinitions
+            var securityDefinitions = (JObject)model.Metadata.Single(m => m.Key == "securityDefinitions").Value;
+            var auth = (JObject)securityDefinitions["auth"];
+            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">securityDefinitions <em>description</em>.</p>\n",
+                auth["description"].ToString());
         }
 
         [Fact]
