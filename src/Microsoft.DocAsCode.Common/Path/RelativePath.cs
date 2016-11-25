@@ -41,6 +41,15 @@ namespace Microsoft.DocAsCode.Common
 
         #region Public Members
 
+        public static bool IsRelativePath(string path)
+        {
+            return path != null &&
+                path.Length > 0 &&
+                path[0] != '/' &&
+                path[0] != '\\' &&
+                path.IndexOfAny(InvalidChars) == -1;
+        }
+
         public static RelativePath Parse(string path) => TryParseCore(path, true);
 
         public static RelativePath TryParse(string path) => TryParseCore(path, false);

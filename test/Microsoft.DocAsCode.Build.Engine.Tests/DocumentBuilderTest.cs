@@ -606,6 +606,126 @@ exports.getOptions = function (){
             }
         }
 
+        [Fact]
+        public void TestBuildWithInvalidPath()
+        {
+            #region Prepare test data
+            var resourceFile = Path.GetFileName(typeof(DocumentBuilderTest).Assembly.Location);
+            var resourceMetaFile = resourceFile + ".meta";
+
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
+
+            var tocFile = CreateFile("toc.md",
+                new[]
+                {
+                    "# [test1](test.md)",
+                    "## [test2](test/test.md)",
+                },
+                _inputFolder);
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "# Hello World",
+                    "Test link: [link 1](test/test.md)",
+                    "Test link: [link 2](http://www.microsoft.com)",
+                    "Test link: [link 3](a b c.md)",
+                    "Test link: [link 4](c:\\a.md)",
+                    "Test link: [link 5](\\a.md)",
+                    "Test link: [link 6](urn:a.md)",
+                    "Test link: [link 7](bad urn:a.md)",
+                    "Test link: [link 8](test/test.md#top)",
+                    "Test link: [link 9](a.md#top)",
+                    "Test link: [link 10](#top)",
+                },
+                _inputFolder);
+            var conceptualFile2 = CreateFile("test/test.md",
+                new[]
+                {
+                    "# Hello World",
+                    "Test link: [link 1](../test.md)",
+                },
+                _inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
+            #endregion
+
+            try
+            {
+                using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
+                {
+                    BuildDocument(
+                        files,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: _templateFolder);
+
+                }
+
+                {
+                    // check toc.
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))));
+                    var model = JsonUtility.Deserialize<TocItemViewModel>(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))).Items;
+                    Assert.NotNull(model);
+                    Assert.Equal("test1", model[0].Name);
+                    Assert.Equal("test.html", model[0].Href);
+                    Assert.NotNull(model[0].Items);
+                    Assert.Equal("test2", model[0].Items[0].Name);
+                    Assert.Equal("test/test.html", model[0].Items[0].Href);
+                }
+
+                {
+                    // check conceptual.
+                    var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));
+                    Assert.True(File.Exists(conceptualOutputPath));
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
+                    var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
+                    Assert.Equal(
+                        $"<h1 id=\"hello-world\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Hello World</h1>",
+                        model["rawTitle"]);
+                    Assert.Equal(
+                        string.Join(
+                            "\n",
+                            "",
+                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"2\" sourceendlinenumber=\"11\">Test link: <a href=\"~/{_inputFolder}/test/test.md\" data-raw-source=\"[link 1](test/test.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"2\" sourceendlinenumber=\"2\">link 1</a>",
+                            $"Test link: <a href=\"http://www.microsoft.com\" data-raw-source=\"[link 2](http://www.microsoft.com)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"3\" sourceendlinenumber=\"3\">link 2</a>",
+                            $"Test link: <a href=\"a b c.md\" data-raw-source=\"[link 3](a b c.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"4\" sourceendlinenumber=\"4\">link 3</a>",
+                            $"Test link: <a href=\"c:\\a.md\" data-raw-source=\"[link 4](c:\\a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">link 4</a>",
+                            $"Test link: <a href=\"\\a.md\" data-raw-source=\"[link 5](\\a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">link 5</a>",
+                            $"Test link: <a href=\"urn:a.md\" data-raw-source=\"[link 6](urn:a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"7\" sourceendlinenumber=\"7\">link 6</a>",
+                            $"Test link: <a href=\"bad urn:a.md\" data-raw-source=\"[link 7](bad urn:a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"8\" sourceendlinenumber=\"8\">link 7</a>",
+                            $"Test link: <a href=\"~/{_inputFolder}/test/test.md\" data-raw-source=\"[link 8](test/test.md#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"9\" sourceendlinenumber=\"9\" anchor=\"#top\">link 8</a>",
+                            $"Test link: <a href=\"a.md#top\" data-raw-source=\"[link 9](a.md#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"10\" sourceendlinenumber=\"10\">link 9</a>",
+                            $"Test link: <a href=\"#top\" data-raw-source=\"[link 10](#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\">link 10</a></p>",
+                            ""),
+                        model[Constants.PropertyName.Conceptual]);
+                    Assert.Equal(
+                        string.Join(
+                            "\n",
+                            "",
+                            "<p>Test link: <a href=\"test/test.html\">link 1</a>",
+                            $"Test link: <a href=\"http://www.microsoft.com\">link 2</a>",
+                            $"Test link: <a href=\"a b c.md\">link 3</a>",
+                            $"Test link: <a href=\"c:\\a.md\">link 4</a>",
+                            $"Test link: <a href=\"\\a.md\">link 5</a>",
+                            $"Test link: <a href=\"urn:a.md\">link 6</a>",
+                            $"Test link: <a href=\"bad urn:a.md\">link 7</a>",
+                            $"Test link: <a href=\"test/test.html#top\">link 8</a>",
+                            $"Test link: <a href=\"a.md#top\">link 9</a>",
+                            $"Test link: <a href=\"#top\">link 10</a></p>",
+                            ""),
+                        File.ReadAllText(conceptualOutputPath));
+                    Assert.Equal("Conceptual", model["type"]);
+                    Assert.Equal("Hello world!", model["meta"]);
+                }
+            }
+            finally
+            {
+            }
+        }
+
         private static void AssertMetadataEqual(object expected, object actual)
         {
             var expectedJObject = JObject.FromObject(expected);
