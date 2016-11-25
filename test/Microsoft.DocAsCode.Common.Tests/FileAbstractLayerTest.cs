@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Xunit;
 
-    using Microsoft.DocAsCode.Common.FileAbstractLayer;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Tests.Common;
 
     [Trait("Owner", "vwxyzh")]
@@ -87,7 +87,6 @@ namespace Microsoft.DocAsCode.Common.Tests
                 select r.ToString() into p
                 orderby p
                 select p);
-
         }
 
         [Fact]

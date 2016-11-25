@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Common.FileAbstractLayer
+namespace Microsoft.DocAsCode.Common
 {
     using System;
     using System.Collections.Generic;
@@ -60,7 +60,7 @@ namespace Microsoft.DocAsCode.Common.FileAbstractLayer
                 throw new InvalidOperationException();
             }
             return (from m in _outputList
-                    select m.LogicPath).ToImmutableHashSet();
+                    select m.LogicalPath).ToImmutableHashSet();
         }
 
         public LinkFileSystem CreateNextLayer(string outputFolder = null) =>
@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.Common.FileAbstractLayer
             {
                 throw new ArgumentNullException(nameof(file));
             }
-            return FindPhysicPathNoThrow(file) != null;
+            return FindPhysicalPathNoThrow(file) != null;
         }
 
         public FileStream OpenRead(string file)
@@ -87,7 +87,7 @@ namespace Microsoft.DocAsCode.Common.FileAbstractLayer
 
         public FileStream OpenRead(RelativePath file)
         {
-            string pp = FindPhysicPath(file.GetPathFromWorkingFolder());
+            string pp = FindPhysicalPath(file.GetPathFromWorkingFolder());
             return File.OpenRead(pp);
         }
 
@@ -126,7 +126,7 @@ namespace Microsoft.DocAsCode.Common.FileAbstractLayer
 
         public void Copy(RelativePath sourceFileName, RelativePath destFileName)
         {
-            string pp = FindPhysicPath(sourceFileName.GetPathFromWorkingFolder());
+            string pp = FindPhysicalPath(sourceFileName.GetPathFromWorkingFolder());
             _outputList.Add(new PathMapping(destFileName.GetPathFromWorkingFolder(), pp));
         }
 
@@ -207,36 +207,36 @@ namespace Microsoft.DocAsCode.Common.FileAbstractLayer
 
         #region Private Methods
 
-        private string FindPhysicPath(RelativePath file)
+        private string FindPhysicalPath(RelativePath file)
         {
-            var physicPath = FindPhysicPathNoThrow(file);
-            if (physicPath == null)
+            var physicalPath = FindPhysicalPathNoThrow(file);
+            if (physicalPath == null)
             {
                 throw new FileNotFoundException("File not found.", file);
             }
-            return physicPath;
+            return physicalPath;
         }
 
-        private string FindPhysicPathNoThrow(RelativePath file)
+        private string FindPhysicalPathNoThrow(RelativePath file)
         {
             var path = file.GetPathFromWorkingFolder();
             foreach (var m in Mappings)
             {
                 if (m.IsFolder)
                 {
-                    var localPath = path - m.LogicPath;
+                    var localPath = path - m.LogicalPath;
                     if (m.AllowMoveOut || localPath.ParentDirectoryCount == 0)
                     {
-                        var physicPath = Path.Combine(m.PhysicPath, localPath.ToString());
-                        if (File.Exists(physicPath))
+                        var physicalPath = Path.Combine(m.PhysicalPath, localPath.ToString());
+                        if (File.Exists(physicalPath))
                         {
-                            return physicPath;
+                            return physicalPath;
                         }
                     }
                 }
-                else if (m.LogicPath == file)
+                else if (m.LogicalPath == path)
                 {
-                    return m.PhysicPath;
+                    return m.PhysicalPath;
                 }
             }
             return null;
@@ -251,11 +251,11 @@ namespace Microsoft.DocAsCode.Common.FileAbstractLayer
                 {
                     if (m.IsFolder)
                     {
-                        var fp = Path.GetFullPath(m.PhysicPath);
+                        var fp = Path.GetFullPath(m.PhysicalPath);
                         foreach (var f in Directory.EnumerateFiles(fp, "*.*", SearchOption.AllDirectories))
                         {
                             var lf = f.Substring(fp.Length + 1);
-                            var rp = m.LogicPath + (RelativePath)lf;
+                            var rp = m.LogicalPath + (RelativePath)lf;
                             if (!allInputs.ContainsKey(rp))
                             {
                                 allInputs.Add(rp, f);
@@ -264,7 +264,7 @@ namespace Microsoft.DocAsCode.Common.FileAbstractLayer
                     }
                     else
                     {
-                        allInputs.Add(m.LogicPath, m.PhysicPath);
+                        allInputs.Add(m.LogicalPath, m.PhysicalPath);
                     }
                 }
                 _allInputs = allInputs;
