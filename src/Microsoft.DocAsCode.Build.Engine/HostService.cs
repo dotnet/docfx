@@ -211,25 +211,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                                   where !string.IsNullOrWhiteSpace(attr.Value)
                                   select new { Node = n, Attr = attr }).ToList())
             {
-                string linkFile;
                 string anchor = null;
                 var link = pair.Attr;
-                if (TypeForwardedToPathUtility.IsRelativePath(link.Value))
+                string linkFile = link.Value;
+                var index = linkFile.IndexOfAny(UriFragmentOrQueryString);
+                if (index != -1)
                 {
-                    var index = link.Value.IndexOfAny(UriFragmentOrQueryString);
-                    if (index == -1)
-                    {
-                        linkFile = link.Value;
-                    }
-                    else if (index == 0)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        linkFile = link.Value.Remove(index);
-                        anchor = link.Value.Substring(index);
-                    }
+                    anchor = linkFile.Substring(index);
+                    linkFile = linkFile.Remove(index);
+                }
+                if (TypeForwardedToRelativePath.IsRelativePath(linkFile))
+                {
                     var path = (TypeForwardedToRelativePath)ft.File + (TypeForwardedToRelativePath)linkFile;
                     string file = path.GetPathFromWorkingFolder().UrlDecode();
                     if (SourceFiles.ContainsKey(file))
