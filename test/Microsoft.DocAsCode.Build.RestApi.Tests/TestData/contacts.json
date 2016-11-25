@@ -4,6 +4,17 @@
     "title": "Contacts",
     "version": "1.0"
   },
+  "securityDefinitions": {
+    "auth": {
+      "type": "oauth2",
+      "authorizationUrl": "https://sample.com",
+      "flow": "implicit",
+      "description": "securityDefinitions *description*.",
+      "scopes": {
+        "user_impersonation": "impersonate your user account"
+      }
+    }
+  },
   "tags": [
     {
       "name": "contact",
@@ -85,7 +96,7 @@
                 "mobile": null,
                 "physicalDeliveryOfficeName": null,
                 "postalCode": null,
-                "provisioningErrors": [ ],
+                "provisioningErrors": [],
                 "proxyAddresses": [
                   "SMTP:Marcus@contoso.com"
                 ],

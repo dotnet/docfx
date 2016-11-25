@@ -66,6 +66,16 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 item.Remarks = Markup(host, item.Remarks, model, filter);
             }
 
+            var rootModel = item as RestApiRootItemViewModel;
+            if (rootModel != null)
+            {
+                // Mark up recursively for swagger root except for children and tags
+                foreach (var jToken in rootModel.Metadata.Values.OfType<JToken>())
+                {
+                    MarkupRecursive(jToken, host, model, filter);
+                }
+            }
+
             var childModel = item as RestApiChildItemViewModel;
             if (childModel?.Parameters != null)
             {
