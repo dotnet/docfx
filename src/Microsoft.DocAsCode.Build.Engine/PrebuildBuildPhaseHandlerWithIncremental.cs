@@ -12,8 +12,11 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Plugins;
 
-    internal class PrebuildBuildPhaseHandlerWithIncremental : PrebuildBuildPhaseHandler
+    internal class PrebuildBuildPhaseHandlerWithIncremental : IPhaseHandler
     {
+        private DocumentBuildContext _context;
+        private PrebuildBuildPhaseHandler _inner;
+
         public IncrementalBuildContext IncrementalContext { get; }
 
         public BuildVersionInfo LastBuildVersionInfo { get; }
@@ -24,50 +27,26 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public BuildMessageInfo CurrentBuildMessageInfo { get; }
 
-        public PrebuildBuildPhaseHandlerWithIncremental(DocumentBuildContext context) : base(context)
+        public PrebuildBuildPhaseHandlerWithIncremental(PrebuildBuildPhaseHandler inner)
         {
-            if (context == null)
+            if (inner == null)
             {
-                throw new ArgumentNullException(nameof(context));
+                throw new ArgumentNullException(nameof(inner));
             }
-            IncrementalContext = context.IncrementalBuildContext;
+            _inner = inner;
+            _context = _inner.Context;
+            IncrementalContext = _context.IncrementalBuildContext;
             LastBuildVersionInfo = IncrementalContext.LastBuildVersionInfo;
             LastBuildMessageInfo = GetPhaseMessageInfo(LastBuildVersionInfo?.BuildMessage);
             CurrentBuildVersionInfo = IncrementalContext.CurrentBuildVersionInfo;
             CurrentBuildMessageInfo = GetPhaseMessageInfo(CurrentBuildVersionInfo.BuildMessage);
         }
 
-        public override void PreHandle(List<HostService> hostServices)
+        public void Handle(List<HostService> hostServices, int maxParallelism)
         {
-            base.PreHandle(hostServices);
-            foreach (var hostService in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
-            {
-                hostService.DependencyGraph = CurrentBuildVersionInfo.Dependency;
-                using (new LoggerPhaseScope("RegisterDependencyTypeFromProcessor", true))
-                {
-                    hostService.RegisterDependencyType();
-                }
-            }
-            Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
-        }
-
-        public override void PostHandle(List<HostService> hostServices)
-        {
-            foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
-            {
-                foreach (var file in from pair in IncrementalContext.GetModelLoadInfo(h)
-                                     where pair.Value == null
-                                     select pair.Key)
-                {
-                    LastBuildMessageInfo.Replay(file);
-                }
-            }
-            foreach (var h in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
-            {
-                h.SaveIntermediateModel(IncrementalContext);
-            }
-            Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
-            base.PostHandle(hostServices);
+            PreHandle(hostServices);
+            _inner.Handle(hostServices, maxParallelism);
+            PostHandle(hostServices);
         }
 
         #region Private Methods
@@ -85,6 +64,37 @@ namespace Microsoft.DocAsCode.Build.Engine
                 messages[BuildPhase.PreBuildBuild] = message = new BuildMessageInfo();
             }
             return message;
+        }
+
+        private void PreHandle(List<HostService> hostServices)
+        {
+            foreach (var hostService in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
+            {
+                hostService.DependencyGraph = CurrentBuildVersionInfo.Dependency;
+                using (new LoggerPhaseScope("RegisterDependencyTypeFromProcessor", true))
+                {
+                    hostService.RegisterDependencyType();
+                }
+            }
+            Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
+        }
+
+        private void PostHandle(List<HostService> hostServices)
+        {
+            foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
+            {
+                foreach (var file in from pair in IncrementalContext.GetModelLoadInfo(h)
+                                     where pair.Value == null
+                                     select pair.Key)
+                {
+                    LastBuildMessageInfo.Replay(file);
+                }
+            }
+            foreach (var h in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
+            {
+                h.SaveIntermediateModel(IncrementalContext);
+            }
+            Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
         #endregion

@@ -7,8 +7,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal interface IPhaseHandler
     {
-        void PreHandle(List<HostService> hostServices);
         void Handle(List<HostService> hostServices, int maxParallelism);
-        void PostHandle(List<HostService> hostServices);
     }
 }
