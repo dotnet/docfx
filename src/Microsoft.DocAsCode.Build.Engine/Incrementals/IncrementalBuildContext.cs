@@ -457,7 +457,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 LoadChanges();
                 Logger.LogVerbose($"Before expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
-                ExpandDependency(d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.Build || CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].TriggerBuild);
+                ExpandDependency(d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.PreBuildBuild || CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].TriggerBuild);
                 Logger.LogVerbose($"After expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
             }
         }

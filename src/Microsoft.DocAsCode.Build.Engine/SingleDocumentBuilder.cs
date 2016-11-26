@@ -90,6 +90,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism}.");
                 Directory.CreateDirectory(parameters.OutputBaseDir);
+
+                // prepare context, hostServiceCreator and phaseprocessor
                 var context = new DocumentBuildContext(
                     Path.Combine(Directory.GetCurrentDirectory(), parameters.OutputBaseDir),
                     parameters.Files.EnumerateFiles(),
@@ -100,9 +102,32 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.VersionName,
                     parameters.ApplyTemplateSettings,
                     parameters.RootTocPath);
+                IHostServiceCreator hostServiceCreator = null;
+                PhaseProcessor phaseProcessor = null;
                 if (ShouldTraceIncrementalInfo)
                 {
                     context.IncrementalBuildContext = IncrementalBuildContext.Create(parameters, CurrentBuildInfo, LastBuildInfo, IntermediateFolder);
+                    hostServiceCreator = new HostServiceCreatorWithIncremental(context);
+                    phaseProcessor = new PhaseProcessor
+                    {
+                        Handlers =
+                        {
+                            new PrebuildBuildPhaseHandlerWithIncremental(context),
+                            new PostbuildPhaseHandlerWithIncremental(context),
+                        }
+                    };
+                }
+                else
+                {
+                    hostServiceCreator = new HostServiceCreator(context);
+                    phaseProcessor = new PhaseProcessor
+                    {
+                        Handlers =
+                        {
+                            new PrebuildBuildPhaseHandler(context),
+                            new PostbuildPhaseHandler(context),
+                        }
+                    };
                 }
 
                 Logger.LogVerbose("Start building document...");
@@ -113,20 +138,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     using (var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
                     {
-                        IMarkdownService markdownService;
-                        using (new LoggerPhaseScope("CreateMarkdownService", true))
-                        {
-                            markdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
-                        }
-
-                        IHostServiceCreator hostServiceCreator;
                         using (new LoggerPhaseScope("Load", true))
                         {
-                            hostServiceCreator = ShouldTraceIncrementalInfo ? new HostServiceCreatorWithIncremental(context) : new HostServiceCreator(context);
-                            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, markdownService, hostServiceCreator).ToList();
+                            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator).ToList();
                         }
 
-                        BuildCore(hostServices, context);
+                        BuildCore(phaseProcessor, hostServices, context);
+
                         return new Manifest
                         {
                             Files = context.ManifestItems.ToList(),
@@ -150,32 +168,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void BuildCore(List<HostService> hostServices, DocumentBuildContext context)
+        private void BuildCore(PhaseProcessor phaseProcessor, List<HostService> hostServices, DocumentBuildContext context)
         {
-            PhaseProcessor phaseProcessor = null;
-            if (ShouldTraceIncrementalInfo)
-            {
-                phaseProcessor = new PhaseProcessor
-                {
-                    Handlers =
-                    {
-                        new PrebuildBuildPhaseHandlerWithIncremental(context),
-                        new PostbuildPhaseHandlerWithIncremental(context),
-                    }
-                };
-            }
-            else
-            {
-                phaseProcessor = new PhaseProcessor
-                {
-                    Handlers =
-                    {
-                        new PrebuildBuildPhaseHandler(context),
-                        new PostbuildPhaseHandler(context),
-                    }
-                };
-            }
-
             try
             {
                 phaseProcessor.Process(hostServices, context.MaxParallelism);
@@ -197,7 +191,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             DocumentBuildParameters parameters,
             IEnumerable<IDocumentProcessor> processors,
             TemplateProcessor templateProcessor,
-            IMarkdownService markdownService,
             IHostServiceCreator creator)
         {
             var k = from fileItem in (
@@ -223,6 +216,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                     sb.AppendLine(f.file.File);
                 }
                 Logger.LogWarning(sb.ToString());
+            }
+
+            IMarkdownService markdownService;
+            using (new LoggerPhaseScope("CreateMarkdownService", true))
+            {
+                markdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
             }
 
             // todo : revert until PreProcessor ready

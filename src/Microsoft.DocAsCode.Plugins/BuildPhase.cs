@@ -5,9 +5,7 @@ namespace Microsoft.DocAsCode.Plugins
 {
     public enum BuildPhase
     {
-        PreBuild,
-        Build,
+        PreBuildBuild,
         PostBuild,
-        ApplyTemplates,
     }
 }

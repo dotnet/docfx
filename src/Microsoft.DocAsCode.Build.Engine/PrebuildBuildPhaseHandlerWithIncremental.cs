@@ -16,15 +16,13 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         public IncrementalBuildContext IncrementalContext { get; }
 
-        public BuildVersionInfo LastBuildVersionInfo
-        {
-            get { return IncrementalContext.LastBuildVersionInfo; }
-        }
+        public BuildVersionInfo LastBuildVersionInfo { get; }
 
-        public BuildVersionInfo CurrentBuildVersionInfo
-        {
-            get { return IncrementalContext.CurrentBuildVersionInfo; }
-        }
+        public BuildVersionInfo CurrentBuildVersionInfo { get; }
+
+        public BuildMessageInfo LastBuildMessageInfo { get; }
+
+        public BuildMessageInfo CurrentBuildMessageInfo { get; }
 
         public PrebuildBuildPhaseHandlerWithIncremental(DocumentBuildContext context) : base(context)
         {
@@ -33,6 +31,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(context));
             }
             IncrementalContext = context.IncrementalBuildContext;
+            LastBuildVersionInfo = IncrementalContext.LastBuildVersionInfo;
+            LastBuildMessageInfo = GetPhaseMessageInfo(LastBuildVersionInfo?.BuildMessage);
+            CurrentBuildVersionInfo = IncrementalContext.CurrentBuildVersionInfo;
+            CurrentBuildMessageInfo = GetPhaseMessageInfo(CurrentBuildVersionInfo.BuildMessage);
         }
 
         public override void PreHandle(List<HostService> hostServices)
@@ -46,7 +48,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     hostService.RegisterDependencyType();
                 }
             }
-            Logger.RegisterListener(CurrentBuildVersionInfo.BuildMessage.GetListener());
+            Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
         public override void PostHandle(List<HostService> hostServices)
@@ -57,15 +59,34 @@ namespace Microsoft.DocAsCode.Build.Engine
                                      where pair.Value == null
                                      select pair.Key)
                 {
-                    LastBuildVersionInfo.BuildMessage.Replay(file);
+                    LastBuildMessageInfo.Replay(file);
                 }
             }
             foreach (var h in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
             {
                 h.SaveIntermediateModel(IncrementalContext);
             }
-            Logger.UnregisterListener(CurrentBuildVersionInfo.BuildMessage.GetListener());
+            Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
             base.PostHandle(hostServices);
         }
+
+        #region Private Methods
+
+        private static BuildMessageInfo GetPhaseMessageInfo(BuildMessage messages)
+        {
+            if (messages == null)
+            {
+                return null;
+            }
+
+            BuildMessageInfo message;
+            if (!messages.TryGetValue(BuildPhase.PreBuildBuild, out message))
+            {
+                messages[BuildPhase.PreBuildBuild] = message = new BuildMessageInfo();
+            }
+            return message;
+        }
+
+        #endregion
     }
 }
