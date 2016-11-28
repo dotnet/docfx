@@ -46,20 +46,24 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return false;
             }
-            IncrementalContext.CreateProcessorInfo(processor);
             return IncrementalContext.CanProcessorIncremental(processor);
         }
 
-        public override void PostCreate(HostService hostService, IEnumerable<FileAndType> files)
+        public override HostService CreateHostService(
+            DocumentBuildParameters parameters,
+            TemplateProcessor templateProcessor,
+            IMarkdownService markdownService,
+            IEnumerable<IInputMetadataValidator> metadataValidator,
+            IDocumentProcessor processor,
+            IEnumerable<FileAndType> files)
         {
-            base.PostCreate(hostService, files);
-            using (new LoggerPhaseScope("ReportModelLoadInfo", true))
+            if (ShouldProcessorTraceInfo(processor))
             {
-                var allFiles = files?.Select(f => f.File) ?? new string[0];
-                var loadedFiles = hostService.Models.Select(m => m.FileAndType.File);
-                IncrementalContext.ReportModelLoadInfo(hostService, allFiles.Except(loadedFiles), null);
-                IncrementalContext.ReportModelLoadInfo(hostService, loadedFiles, BuildPhase.PreBuildBuild);
+                IncrementalContext.CreateProcessorInfo(processor);
             }
+            var hs = base.CreateHostService(parameters, templateProcessor, markdownService, metadataValidator, processor, files);
+            PostCreate(hs, files);
+            return hs;
         }
 
         public override FileModel Load(IDocumentProcessor processor, ImmutableDictionary<string, object> metadata, FileMetadata fileMetadata, FileAndType file)
@@ -90,6 +94,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
                 return base.Load(processor, metadata, fileMetadata, file);
+            }
+        }
+
+        private void PostCreate(HostService hostService, IEnumerable<FileAndType> files)
+        {
+            using (new LoggerPhaseScope("ReportModelLoadInfo", true))
+            {
+                var allFiles = files?.Select(f => f.File) ?? new string[0];
+                var loadedFiles = hostService.Models.Select(m => m.FileAndType.File);
+                IncrementalContext.ReportModelLoadInfo(hostService, allFiles.Except(loadedFiles), null);
+                IncrementalContext.ReportModelLoadInfo(hostService, loadedFiles, BuildPhase.PreBuildBuild);
             }
         }
     }

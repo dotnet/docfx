@@ -31,8 +31,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public TemplateManager TemplateManager { get; set; }
 
-        // todo : partial properties should check.
-        //[IncrementalCheck]
+        // todo : move the check to the prehandle of postbuild phase.
+        [IncrementalCheck]
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 
         public int MaxParallelism { get; set; }

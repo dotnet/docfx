@@ -95,7 +95,76 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 h.SaveIntermediateModel(IncrementalContext);
             }
+            ReportDependency(hostServices);
             Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
+        }
+
+        private void ReportDependency(IEnumerable<HostService> hostServices)
+        {
+            ReportFileDependency(hostServices);
+            ReportUidDependency(hostServices);
+        }
+
+        private void ReportUidDependency(IEnumerable<HostService> hostServices)
+        {
+            foreach (var hostService in hostServices)
+            {
+                foreach (var m in hostService.Models)
+                {
+                    if (m.Type == DocumentType.Overwrite)
+                    {
+                        continue;
+                    }
+                    if (m.LinkToUids.Count != 0)
+                    {
+                        string fromNode = ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
+                        var dps = from f in GetFilesFromUids(m.LinkToUids)
+                                  select new DependencyItem(fromNode, f, fromNode, DependencyTypeName.Uid);
+                        CurrentBuildVersionInfo.Dependency.ReportDependency(dps);
+                    }
+                }
+            }
+        }
+
+        private void ReportFileDependency(IEnumerable<HostService> hostServices)
+        {
+            foreach (var hostService in hostServices)
+            {
+                foreach (var m in hostService.Models)
+                {
+                    if (m.Type == DocumentType.Overwrite)
+                    {
+                        continue;
+                    }
+                    if (m.LinkToFiles.Count != 0)
+                    {
+                        string fromNode = ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
+                        var dps = from f in m.LinkToFiles
+                                  select new DependencyItem(fromNode, f, fromNode, DependencyTypeName.File);
+                        CurrentBuildVersionInfo.Dependency.ReportDependency(dps);
+                    }
+                }
+            }
+        }
+
+        private IEnumerable<string> GetFilesFromUids(IEnumerable<string> uids)
+        {
+            foreach (var uid in uids)
+            {
+                if (string.IsNullOrEmpty(uid))
+                {
+                    continue;
+                }
+                XRefSpec spec;
+                if (!Context.XRefSpecMap.TryGetValue(uid, out spec))
+                {
+                    continue;
+                }
+                if (spec.Href != null)
+                {
+                    yield return spec.Href;
+                }
+            }
         }
 
         #endregion

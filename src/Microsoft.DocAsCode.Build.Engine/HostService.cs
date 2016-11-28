@@ -471,7 +471,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             throw new BuildCacheException($"Last build hasn't loaded model {pair.Key}");
                         }
-                        File.Move(Path.Combine(incrementalContext.LastBaseDir, lfn), Path.Combine(incrementalContext.BaseDir, fileName));
+
+                        // use copy rather than move because if the build failed, the intermediate files of last successful build shouldn't be corrupted.
+                        File.Copy(Path.Combine(incrementalContext.LastBaseDir, lfn), Path.Combine(incrementalContext.BaseDir, fileName));
                     }
                     else
                     {
