@@ -13,9 +13,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             foreach (var h in Handlers)
             {
-                h.PreHandle(hostServices);
                 h.Handle(hostServices, maxParallelism);
-                h.PostHandle(hostServices);
             }
         }
     }

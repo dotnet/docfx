@@ -40,6 +40,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             _inputFolder = GetRandomFolder();
             _outputFolder = GetRandomFolder();
             _templateFolder = GetRandomFolder();
+            EnvironmentContext.BaseDirectory = Directory.GetCurrentDirectory();
         }
 
         [Fact]

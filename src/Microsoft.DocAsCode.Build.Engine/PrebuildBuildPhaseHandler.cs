@@ -13,15 +13,16 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal class PrebuildBuildPhaseHandler : IPhaseHandler
     {
-        private DocumentBuildContext _context;
+        public DocumentBuildContext Context { get; }
 
         public PrebuildBuildPhaseHandler(DocumentBuildContext context)
         {
-            _context = context;
+            Context = context;
         }
 
         public void Handle(List<HostService> hostServices, int maxParallelism)
         {
+            Prepare(hostServices);
             foreach (var hostService in hostServices)
             {
                 using (new LoggerPhaseScope(hostService.Processor.Name, true))
@@ -42,15 +43,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public virtual void PreHandle(List<HostService> hostServices)
+        #region Private Methods
+
+        private void Prepare(List<HostService> hostServices)
         {
-            if (_context == null)
+            if (Context == null)
             {
                 return;
             }
             foreach (var hostService in hostServices)
             {
-                hostService.SourceFiles = _context.AllSourceFiles;
+                hostService.SourceFiles = Context.AllSourceFiles;
                 foreach (var m in hostService.Models)
                 {
                     if (m.LocalPathFromRepoRoot == null)
@@ -64,12 +67,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
         }
-
-        public virtual void PostHandle(List<HostService> hostServices)
-        {
-        }
-
-        #region Private Methods
 
         private static void Prebuild(HostService hostService)
         {

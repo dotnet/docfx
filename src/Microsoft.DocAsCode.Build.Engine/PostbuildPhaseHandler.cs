@@ -9,11 +9,14 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal class PostbuildPhaseHandler : IPhaseHandler
     {
-        private DocumentBuildContext _context;
+        public DocumentBuildContext Context { get; }
 
-        public PostbuildPhaseHandler(DocumentBuildContext context)
+        public TemplateProcessor TemplateProcessor { get; }
+
+        public PostbuildPhaseHandler(DocumentBuildContext context, TemplateProcessor templateProcessor)
         {
-            _context = context;
+            Context = context;
+            TemplateProcessor = templateProcessor;
         }
 
         public void Handle(List<HostService> hostServices, int maxParallelism)
@@ -30,19 +33,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            if (_context != null)
+            if (Context != null)
             {
-                var manifestProcessor = new ManifestProcessor(hostServices, _context);
+                var manifestProcessor = new ManifestProcessor(hostServices, Context, TemplateProcessor);
                 manifestProcessor.Process();
             }
-        }
-
-        public virtual void PreHandle(List<HostService> hostServices)
-        {
-        }
-
-        public virtual void PostHandle(List<HostService> hostServices)
-        {
         }
 
         #region Private Methods

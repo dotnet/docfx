@@ -68,6 +68,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         [JsonIgnore]
         public IEnumerable<ManifestItem> Manifest { get; set; }
         /// <summary>
+        /// deserialized outputs
+        /// </summary>
+        [JsonIgnore]
+        public BuildOutputs BuildOutputs { get; private set; } = new BuildOutputs();
+        /// <summary>
         /// deserialized xrefspecmap
         /// </summary>
         [JsonIgnore]
@@ -76,13 +81,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// deserialized build messages.
         /// </summary>
         [JsonIgnore]
-        public BuildMessage BuildMessage { get; set; } = new BuildMessage();
+        public BuildMessage BuildMessage { get; private set; } = new BuildMessage();
         #endregion
 
         internal void Load(string baseDir)
         {
             Dependency = IncrementalUtility.LoadDependency(Path.Combine(baseDir, DependencyFile));
             Attributes = IncrementalUtility.LoadIntermediateFile<IDictionary<string, FileAttributeItem>>(Path.Combine(baseDir, AttributesFile));
+            BuildOutputs = IncrementalUtility.LoadIntermediateFile<BuildOutputs>(Path.Combine(baseDir, OutputFile));
+            Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(Path.Combine(baseDir, ManifestFile));
             BuildMessage = IncrementalUtility.LoadBuildMessage(Path.Combine(baseDir, BuildMessageFile));
             foreach (var processor in Processors)
             {
@@ -94,6 +101,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             IncrementalUtility.SaveDependency(Path.Combine(baseDir, DependencyFile), Dependency);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, AttributesFile), Attributes);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, OutputFile), BuildOutputs);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestFile), Manifest);
             IncrementalUtility.SaveBuildMessage(Path.Combine(baseDir, BuildMessageFile), BuildMessage);
             foreach (var processor in Processors)
             {

@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private DocumentBuildContext _context;
         private TemplateProcessor _templateProcessor;
 
-        public ManifestProcessor(IEnumerable<HostService> hostServices, DocumentBuildContext context)
+        public ManifestProcessor(IEnumerable<HostService> hostServices, DocumentBuildContext context, TemplateProcessor templateProcessor)
         {
             if (hostServices == null)
             {
@@ -31,7 +31,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(context));
             }
-            Init(hostServices, context);
+            if (templateProcessor == null)
+            {
+                throw new ArgumentNullException(nameof(templateProcessor));
+            }
+            _context = context;
+            _templateProcessor = templateProcessor;
+            Init(hostServices);
         }
 
         public void Process()
@@ -64,35 +70,22 @@ namespace Microsoft.DocAsCode.Build.Engine
                 ApplySystemMetadata();
             }
 
-            // Register global variables after href are all updated
-            IDictionary<string, object> globalVariables;
-            using (new LoggerPhaseScope("FeedGlobalVariables", true))
+            foreach (var item in ProcessTemplate())
             {
-                globalVariables = FeedGlobalVariables();
-            }
-
-            // processor to add global variable to the model
-            foreach (var m in _templateProcessor.Process(_manifestWithContext.Select(s => s.Item).ToList(), _context, _context.ApplyTemplateSettings, globalVariables))
-            {
-                _context.ManifestItems.Add(m);
+                _context.ManifestItems.Add(item);
             }
         }
 
-        #region Private 
+        #region Private
 
-        private void Init(IEnumerable<HostService> hostServices, DocumentBuildContext context)
+        private void Init(IEnumerable<HostService> hostServices)
         {
-            _context = context;
             _manifestWithContext = new List<ManifestItemWithContext>();
             foreach (var hostService in hostServices)
             {
                 using (new LoggerPhaseScope(hostService.Processor.Name, true))
                 {
                     _manifestWithContext.AddRange(ExportManifest(hostService, _context));
-                    if (_templateProcessor == null)
-                    {
-                        _templateProcessor = hostService.Template;
-                    }
                 }
             }
         }
@@ -378,6 +371,19 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             metadata["_shared"] = sharedObjects;
             return metadata;
+        }
+
+        private List<ManifestItem> ProcessTemplate()
+        {
+            // Register global variables after href are all updated
+            IDictionary<string, object> globalVariables;
+            using (new LoggerPhaseScope("FeedGlobalVariables", true))
+            {
+                globalVariables = FeedGlobalVariables();
+            }
+
+            // processor to add global variable to the model
+            return _templateProcessor.Process(_manifestWithContext.Select(s => s.Item).ToList(), _context, _context.ApplyTemplateSettings, globalVariables);
         }
 
         #endregion

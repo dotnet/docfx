@@ -83,6 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 AttributesFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 DependencyFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 ManifestFile = IncrementalUtility.CreateRandomFileName(baseDir),
+                OutputFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 XRefSpecMapFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 BuildMessageFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 Attributes = ComputeFileAttributes(parameters, lbv?.Dependency),

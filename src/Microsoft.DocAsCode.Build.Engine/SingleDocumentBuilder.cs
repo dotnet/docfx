@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Handlers =
                     {
                         new PrebuildBuildPhaseHandler(null),
-                        new PostbuildPhaseHandler(null),
+                        new PostbuildPhaseHandler(null, null),
                     }
             };
             phaseProcessor.Process(new List<HostService> { hostService }, parameters.MaxParallelism);
@@ -91,7 +91,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism}.");
                 Directory.CreateDirectory(parameters.OutputBaseDir);
 
-                // prepare context, hostServiceCreator and phaseprocessor
                 var context = new DocumentBuildContext(
                     Path.Combine(Directory.GetCurrentDirectory(), parameters.OutputBaseDir),
                     parameters.Files.EnumerateFiles(),
@@ -102,42 +101,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.VersionName,
                     parameters.ApplyTemplateSettings,
                     parameters.RootTocPath);
-                IHostServiceCreator hostServiceCreator = null;
-                PhaseProcessor phaseProcessor = null;
-                if (ShouldTraceIncrementalInfo)
-                {
-                    context.IncrementalBuildContext = IncrementalBuildContext.Create(parameters, CurrentBuildInfo, LastBuildInfo, IntermediateFolder);
-                    hostServiceCreator = new HostServiceCreatorWithIncremental(context);
-                    phaseProcessor = new PhaseProcessor
-                    {
-                        Handlers =
-                        {
-                            new PrebuildBuildPhaseHandlerWithIncremental(context),
-                            new PostbuildPhaseHandlerWithIncremental(context),
-                        }
-                    };
-                }
-                else
-                {
-                    hostServiceCreator = new HostServiceCreator(context);
-                    phaseProcessor = new PhaseProcessor
-                    {
-                        Handlers =
-                        {
-                            new PrebuildBuildPhaseHandler(context),
-                            new PostbuildPhaseHandler(context),
-                        }
-                    };
-                }
 
                 Logger.LogVerbose("Start building document...");
 
                 // Start building document...
                 List<HostService> hostServices = null;
+                IHostServiceCreator hostServiceCreator = null;
+                PhaseProcessor phaseProcessor = null;
                 try
                 {
                     using (var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
                     {
+                        using (new LoggerPhaseScope("Prepare", true))
+                        {
+                            Prepare(parameters, context, templateProcessor, out hostServiceCreator, out phaseProcessor);
+                        }
                         using (new LoggerPhaseScope("Load", true))
                         {
                             hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator).ToList();
@@ -167,6 +145,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
         }
+
 
         private void BuildCore(PhaseProcessor phaseProcessor, List<HostService> hostServices, DocumentBuildContext context)
         {
@@ -242,6 +221,35 @@ namespace Microsoft.DocAsCode.Build.Engine
                     pair.processor,
                     pair.item?.Select(f => f.file));
                 yield return hostService;
+            }
+        }
+
+        private void Prepare(DocumentBuildParameters parameters, DocumentBuildContext context, TemplateProcessor templateProcessor, out IHostServiceCreator hostServiceCreator, out PhaseProcessor phaseProcessor)
+        {
+            if (ShouldTraceIncrementalInfo)
+            {
+                context.IncrementalBuildContext = IncrementalBuildContext.Create(parameters, CurrentBuildInfo, LastBuildInfo, IntermediateFolder);
+                hostServiceCreator = new HostServiceCreatorWithIncremental(context);
+                phaseProcessor = new PhaseProcessor
+                {
+                    Handlers =
+                                    {
+                                        new PrebuildBuildPhaseHandler(context).WithIncremental(),
+                                        new PostbuildPhaseHandler(context, templateProcessor).WithIncremental(),
+                                    }
+                };
+            }
+            else
+            {
+                hostServiceCreator = new HostServiceCreator(context);
+                phaseProcessor = new PhaseProcessor
+                {
+                    Handlers =
+                                    {
+                                        new PrebuildBuildPhaseHandler(context),
+                                        new PostbuildPhaseHandler(context, templateProcessor),
+                                    }
+                };
             }
         }
 
