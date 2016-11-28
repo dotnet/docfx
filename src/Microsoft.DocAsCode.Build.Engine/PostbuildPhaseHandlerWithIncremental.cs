@@ -14,9 +14,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal class PostbuildPhaseHandlerWithIncremental : IPhaseHandler
     {
-        private DocumentBuildContext _context;
         private PostbuildPhaseHandler _inner;
-        private TemplateProcessor _templateProcessor;
+
+        public DocumentBuildContext Context { get; }
+
+        public TemplateProcessor TemplateProcessor { get; }
 
         public IncrementalBuildContext IncrementalContext { get; }
 
@@ -35,9 +37,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(inner));
             }
             _inner = inner;
-            _context = _inner.Context;
-            _templateProcessor = _inner.TemplateProcessor;
-            IncrementalContext = _context.IncrementalBuildContext;
+            Context = _inner.Context;
+            TemplateProcessor = _inner.TemplateProcessor;
+            IncrementalContext = Context.IncrementalBuildContext;
             LastBuildVersionInfo = IncrementalContext.LastBuildVersionInfo;
             LastBuildMessageInfo = GetPhaseMessageInfo(LastBuildVersionInfo?.BuildMessage);
             CurrentBuildVersionInfo = IncrementalContext.CurrentBuildVersionInfo;
@@ -79,30 +81,30 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void ProcessUnloadedTemplateDependency()
         {
-            var loaded = _context.ManifestItems;
+            var loaded = Context.ManifestItems;
             var unloaded = GetUnloadedManifestItems();
             var types = new HashSet<string>(unloaded.Select(m => m.DocumentType).Except(loaded.Select(m => m.DocumentType)));
             if (types.Count > 0)
             {
-                _templateProcessor.ProcessDependencies(types, _context.ApplyTemplateSettings);
+                TemplateProcessor.ProcessDependencies(types, Context.ApplyTemplateSettings);
             }
             foreach (var m in unloaded)
             {
-                _context.ManifestItems.Add(m);
+                Context.ManifestItems.Add(m);
             }
         }
 
         private void UpdateManifest()
         {
-            CurrentBuildVersionInfo.Manifest = _context.ManifestItems;
+            CurrentBuildVersionInfo.Manifest = Context.ManifestItems;
         }
 
         private void SaveOutputs()
         {
-            var outputDir = _context.BuildOutputFolder;
+            var outputDir = Context.BuildOutputFolder;
             var lo = LastBuildVersionInfo?.BuildOutputs;
 
-            foreach (var item in from m in _context.ManifestItems
+            foreach (var item in from m in Context.ManifestItems
                                  from output in m.OutputFiles.Values
                                  select new
                                  {

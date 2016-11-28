@@ -14,8 +14,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal class PrebuildBuildPhaseHandlerWithIncremental : IPhaseHandler
     {
-        private DocumentBuildContext _context;
         private PrebuildBuildPhaseHandler _inner;
+
+        private DocumentBuildContext Context;
 
         public IncrementalBuildContext IncrementalContext { get; }
 
@@ -34,8 +35,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(inner));
             }
             _inner = inner;
-            _context = _inner.Context;
-            IncrementalContext = _context.IncrementalBuildContext;
+            Context = _inner.Context;
+            IncrementalContext = Context.IncrementalBuildContext;
             LastBuildVersionInfo = IncrementalContext.LastBuildVersionInfo;
             LastBuildMessageInfo = GetPhaseMessageInfo(LastBuildVersionInfo?.BuildMessage);
             CurrentBuildVersionInfo = IncrementalContext.CurrentBuildVersionInfo;
