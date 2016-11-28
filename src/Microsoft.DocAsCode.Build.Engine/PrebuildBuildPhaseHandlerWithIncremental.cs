@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
+    using System.Collections.Immutable;
     using System.Linq;
 
     using Microsoft.DocAsCode.Common;
@@ -111,15 +111,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 foreach (var m in hostService.Models)
                 {
-                    if (m.Type == DocumentType.Overwrite)
+                    var dps = GetUidDependency(m).ToList();
+                    if (dps.Count != 0)
                     {
-                        continue;
-                    }
-                    if (m.LinkToUids.Count != 0)
-                    {
-                        string fromNode = ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
-                        var dps = from f in GetFilesFromUids(m.LinkToUids)
-                                  select new DependencyItem(fromNode, f, fromNode, DependencyTypeName.Uid);
                         CurrentBuildVersionInfo.Dependency.ReportDependency(dps);
                     }
                 }
@@ -147,6 +141,24 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
+        private IEnumerable<DependencyItem> GetUidDependency(FileModel model)
+        {
+            var uids = model.Type == DocumentType.Overwrite ? model.Uids.Select(u => u.File).ToImmutableHashSet() : model.LinkToUids;
+            if (uids.Count == 0)
+            {
+                yield break;
+            }
+            string fromNode = ((RelativePath)model.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
+            foreach (var f in GetFilesFromUids(uids))
+            {
+                yield return new DependencyItem(fromNode, f, fromNode, DependencyTypeName.Uid);
+                if (model.Type == DocumentType.Overwrite)
+                {
+                    yield return new DependencyItem(f, fromNode, fromNode, DependencyTypeName.Uid);
+                }
+            }
+        }
+
         private IEnumerable<string> GetFilesFromUids(IEnumerable<string> uids)
         {
             foreach (var uid in uids)
@@ -156,11 +168,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     continue;
                 }
                 XRefSpec spec;
-                if (!Context.XRefSpecMap.TryGetValue(uid, out spec))
-                {
-                    continue;
-                }
-                if (spec.Href != null)
+                if (Context.XRefSpecMap.TryGetValue(uid, out spec) && spec.Href != null)
                 {
                     yield return spec.Href;
                 }
