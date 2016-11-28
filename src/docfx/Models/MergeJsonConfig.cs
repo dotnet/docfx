@@ -38,5 +38,8 @@ namespace Microsoft.DocAsCode
         /// </summary>
         [JsonProperty("fileMetadata")]
         public Dictionary<string, FileMetadataPairs> FileMetadata { get; set; }
+
+        [JsonProperty("metadataNeedMergedIntoToc")]
+        public ListWithStringFallback MetadataNeedMergedIntoToc { get; set; }
     }
 }

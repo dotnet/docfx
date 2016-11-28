@@ -23,6 +23,10 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonProperty("name")]
         public string Name { get; set; }
 
+        [YamlMember(Alias = "metadata")]
+        [JsonProperty("metadata")]
+        public Dictionary<string, List<string>> Metadata { get; set; }
+
         [ExtensibleMember("name.")]
         [JsonIgnore]
         public SortedList<string, string> NameInDevLangs { get; } = new SortedList<string, string>();

@@ -40,5 +40,8 @@ namespace Microsoft.DocAsCode
 
         [Option("fileMetadataFile", HelpText = "Specify a JSON file path containing fileMetadata settings, as similar to {\"fileMetadata\":{\"key\":\"value\"}}. It overrides the fileMetadata settings from the config file.")]
         public string FileMetadataFilePath { get; set; }
+
+        [OptionList("metadataNeedMergedIntoToc", Separator = ',', HelpText = "Specify metadata names that need to be merged into toc file")]
+        public List<string> MetadataNeedMergedIntoToc { get; set; }
     }
 }
