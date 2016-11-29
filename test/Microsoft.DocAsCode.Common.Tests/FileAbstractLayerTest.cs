@@ -16,11 +16,11 @@ namespace Microsoft.DocAsCode.Common.Tests
     public class FileAbstractLayerTest : TestBase
     {
         [Fact]
-        public void TestFalRead_Simple()
+        public void TestFal_Link_Read_Simple()
         {
             var input = GetRandomFolder();
             File.WriteAllText(Path.Combine(input, "temp.txt"), "Hello!");
-            var fal = new LinkFileSystem(new PathMapping((RelativePath)"~/", input));
+            var fal = FileAbstractLayer.CreateLink(new PathMapping((RelativePath)"~/", input));
             Assert.True(fal.Exists("~/temp.txt"));
             Assert.True(fal.Exists("temp.txt"));
             Assert.False(fal.Exists("~/temp.jpg"));
@@ -30,14 +30,14 @@ namespace Microsoft.DocAsCode.Common.Tests
         }
 
         [Fact]
-        public void TestFalRead_Fallback()
+        public void TestFal_Link_Read_Fallback()
         {
             var input1 = GetRandomFolder();
             File.WriteAllText(Path.Combine(input1, "temp1.txt"), "Hello!");
             var input2 = GetRandomFolder();
             File.WriteAllText(Path.Combine(input2, "temp1.txt"), "??????");
             File.WriteAllText(Path.Combine(input2, "temp2.txt"), "!!!!!!");
-            var fal = new LinkFileSystem(
+            var fal = FileAbstractLayer.CreateLink(
                 new PathMapping((RelativePath)"~/", input1),
                 new PathMapping((RelativePath)"~/", input2));
             Assert.True(fal.Exists("~/temp1.txt"));
@@ -60,7 +60,7 @@ namespace Microsoft.DocAsCode.Common.Tests
         }
 
         [Fact]
-        public void TestFalRead_Fallback2()
+        public void TestFal_Link_Read_Fallback2()
         {
             var input1 = GetRandomFolder();
             File.WriteAllText(Path.Combine(input1, "temp.txt"), "Hello!");
@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             Directory.CreateDirectory(Path.Combine(input2, "b"));
             File.WriteAllText(Path.Combine(input2, "a/temp.txt"), "??????");
             File.WriteAllText(Path.Combine(input2, "b/temp.txt"), "!!!!!!");
-            var fal = new LinkFileSystem(
+            var fal = FileAbstractLayer.CreateLink(
                 new PathMapping((RelativePath)"~/a/", input1),
                 new PathMapping((RelativePath)"~/", input2));
             Assert.True(fal.Exists("~/a/temp.txt"));
@@ -90,17 +90,17 @@ namespace Microsoft.DocAsCode.Common.Tests
         }
 
         [Fact]
-        public void TestFalCopy()
+        public void TestFal_Link_Copy()
         {
             var input = GetRandomFolder();
             var output = GetRandomFolder();
             File.WriteAllText(Path.Combine(input, "temp.txt"), "Hello!");
-            var fal = new LinkFileSystem(
+            var fal = FileAbstractLayer.CreateLink(
                 new[] { new PathMapping((RelativePath)"~/", input) },
                 output);
             fal.Copy("temp.txt", "copy.txt");
 
-            var fal2 = fal.CreateNextLayer();
+            var fal2 = new FileAbstractLayer(fal.Writer.CreateReader(), null);
             Assert.True(fal2.Exists("copy.txt"));
             Assert.False(fal2.Exists("temp.txt"));
             Assert.Equal("Hello!", fal2.ReadAllText("copy.txt"));
