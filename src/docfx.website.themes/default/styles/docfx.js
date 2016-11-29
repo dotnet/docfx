@@ -249,7 +249,7 @@ $(function () {
             );
             query.split(/\s+/).forEach(function (word) {
               if (word !== '') {
-                highlight($('#search-results>.sr-items *'), word, "<strong>");
+                $('#search-results>.sr-items *').mark(word);
               }
             });
           }
