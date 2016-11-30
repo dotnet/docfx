@@ -85,6 +85,10 @@ h6 mark {
     margin-left: 5em;
 }
 
+span.parametername {
+    font-style: italic;
+}
+
 svg:hover path {
     fill: #ffffff;
 }

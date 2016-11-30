@@ -40,7 +40,7 @@
 {{/parameters.0}}
 {{#parameters}}
     <tr>
-      <td><em>{{#required}}*{{/required}}{{name}}</em></td>
+      <td><span class="parametername">{{#required}}*{{/required}}{{name}}</span></td>
       <td>{{type}}</td>
       <td>{{default}}</td>
       <td>{{{description}}}</td>
