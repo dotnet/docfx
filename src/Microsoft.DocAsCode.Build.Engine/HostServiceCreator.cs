@@ -31,11 +31,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return false;
         }
 
-        public virtual void PostCreate(HostService hostService, IEnumerable<FileAndType> files)
-        {
-        }
-
-        public HostService CreateHostService(
+        public virtual HostService CreateHostService(
             DocumentBuildParameters parameters,
             TemplateProcessor templateProcessor,
             IMarkdownService markdownService,
@@ -59,7 +55,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 ShouldTraceIncrementalInfo = ShouldProcessorTraceInfo(processor),
                 CanIncrementalBuild = CanProcessorIncremental(processor),
             };
-            PostCreate(hostService, files);
             return hostService;
         }
 

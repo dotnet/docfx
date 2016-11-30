@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
+    using System.Collections.Immutable;
     using System.Linq;
 
     using Microsoft.DocAsCode.Common;
@@ -95,7 +95,84 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 h.SaveIntermediateModel(IncrementalContext);
             }
+            ReportDependency(hostServices);
             Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
+        }
+
+        private void ReportDependency(IEnumerable<HostService> hostServices)
+        {
+            ReportFileDependency(hostServices);
+            ReportUidDependency(hostServices);
+        }
+
+        private void ReportUidDependency(IEnumerable<HostService> hostServices)
+        {
+            foreach (var hostService in hostServices)
+            {
+                foreach (var m in hostService.Models)
+                {
+                    var dps = GetUidDependency(m).ToList();
+                    if (dps.Count != 0)
+                    {
+                        CurrentBuildVersionInfo.Dependency.ReportDependency(dps);
+                    }
+                }
+            }
+        }
+
+        private void ReportFileDependency(IEnumerable<HostService> hostServices)
+        {
+            foreach (var hostService in hostServices)
+            {
+                foreach (var m in hostService.Models)
+                {
+                    if (m.Type == DocumentType.Overwrite)
+                    {
+                        continue;
+                    }
+                    if (m.LinkToFiles.Count != 0)
+                    {
+                        string fromNode = ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
+                        var dps = from f in m.LinkToFiles
+                                  select new DependencyItem(fromNode, f, fromNode, DependencyTypeName.File);
+                        CurrentBuildVersionInfo.Dependency.ReportDependency(dps);
+                    }
+                }
+            }
+        }
+
+        private IEnumerable<DependencyItem> GetUidDependency(FileModel model)
+        {
+            var uids = model.Type == DocumentType.Overwrite ? model.Uids.Select(u => u.File).ToImmutableHashSet() : model.LinkToUids;
+            if (uids.Count == 0)
+            {
+                yield break;
+            }
+            string fromNode = ((RelativePath)model.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
+            foreach (var f in GetFilesFromUids(uids))
+            {
+                yield return new DependencyItem(fromNode, f, fromNode, DependencyTypeName.Uid);
+                if (model.Type == DocumentType.Overwrite)
+                {
+                    yield return new DependencyItem(f, fromNode, fromNode, DependencyTypeName.Uid);
+                }
+            }
+        }
+
+        private IEnumerable<string> GetFilesFromUids(IEnumerable<string> uids)
+        {
+            foreach (var uid in uids)
+            {
+                if (string.IsNullOrEmpty(uid))
+                {
+                    continue;
+                }
+                XRefSpec spec;
+                if (Context.XRefSpecMap.TryGetValue(uid, out spec) && spec.Href != null)
+                {
+                    yield return spec.Href;
+                }
+            }
         }
 
         #endregion

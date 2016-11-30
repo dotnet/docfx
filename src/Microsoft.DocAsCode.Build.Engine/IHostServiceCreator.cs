@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         bool ShouldProcessorTraceInfo(IDocumentProcessor processor);
         bool CanProcessorIncremental(IDocumentProcessor processor);
-        void PostCreate(HostService hostService, IEnumerable<FileAndType> files);
         FileModel Load(IDocumentProcessor processor, ImmutableDictionary<string, object> metadata, FileMetadata fileMetadata, FileAndType file);
         HostService CreateHostService(
             DocumentBuildParameters parameters,

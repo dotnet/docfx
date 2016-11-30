@@ -79,6 +79,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
+        private void ReloadModelsPerChanges(IEnumerable<HostService> hostServices)
+        {
+            var newChanges = IncrementalContext.ExpandDependency(d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.PostBuild);
+            foreach (var hostService in hostServices.Where(h => h.CanIncrementalBuild))
+            {
+                hostService.ReloadModelsPerIncrementalChanges(IncrementalContext, newChanges, BuildPhase.PostBuild);
+            }
+        }
+
         private void ProcessUnloadedTemplateDependency()
         {
             var loaded = Context.ManifestItems;
@@ -126,7 +135,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             throw new BuildCacheException($"Last build hasn't loaded output: {item.Path}.");
                         }
-                        File.Move(Path.Combine(IncrementalContext.LastBaseDir, lfn), Path.Combine(IncrementalContext.BaseDir, fileName));
+                        File.Copy(Path.Combine(IncrementalContext.LastBaseDir, lfn), Path.Combine(IncrementalContext.BaseDir, fileName));
+                        Directory.CreateDirectory(Path.GetDirectoryName(item.Path));
                         File.Copy(Path.Combine(IncrementalContext.BaseDir, fileName), item.Path, true);
                     }
                     else
