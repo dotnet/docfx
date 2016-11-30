@@ -73,6 +73,14 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void ReloadModels(IEnumerable<HostService> hostServices)
         {
+            foreach (var hostService in hostServices.Where(h => h.CanIncrementalBuild))
+            {
+                hostService.ReloadUnloadedModels(IncrementalContext, BuildPhase.PostBuild);
+            }
+        }
+
+        private void ReloadModelsPerChanges(IEnumerable<HostService> hostServices)
+        {
             var newChanges = IncrementalContext.ExpandDependency(d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.PostBuild);
             foreach (var hostService in hostServices.Where(h => h.CanIncrementalBuild))
             {
