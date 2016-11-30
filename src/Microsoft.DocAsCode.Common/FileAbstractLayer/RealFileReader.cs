@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Common
 
     public class RealFileReader : IFileReader
     {
-
         public RealFileReader(string inputFolder)
         {
             InputFolder = inputFolder;

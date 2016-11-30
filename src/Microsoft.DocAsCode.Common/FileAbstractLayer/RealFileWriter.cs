@@ -14,7 +14,9 @@ namespace Microsoft.DocAsCode.Common
 
         public override void Copy(PathMapping sourceFileName, RelativePath destFileName)
         {
-            File.Copy(sourceFileName.PhysicalPath, Path.Combine(OutputFolder, destFileName.RemoveWorkingFolder()));
+            var f = Path.Combine(OutputFolder, destFileName.RemoveWorkingFolder());
+            Directory.CreateDirectory(Path.GetDirectoryName(f));
+            File.Copy(sourceFileName.PhysicalPath, f);
         }
 
         public override FileStream Create(RelativePath file)

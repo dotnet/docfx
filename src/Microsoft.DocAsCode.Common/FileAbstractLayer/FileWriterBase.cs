@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Common
 
         public FileWriterBase(string outputFolder)
         {
+            Directory.CreateDirectory(outputFolder);
             OutputFolder = outputFolder;
         }
 
