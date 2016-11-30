@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Common.Tests
 {
-    using System;
     using System.IO;
     using System.Linq;
 
@@ -16,27 +15,27 @@ namespace Microsoft.DocAsCode.Common.Tests
     public class FileAbstractLayerTest : TestBase
     {
         [Fact]
-        public void TestFal_Link_Read_Simple()
+        public void TestFileAbstractLayerWithLinkImplementsShouldReadFileCorrectlyWhenInputNoFallback()
         {
             var input = GetRandomFolder();
-            File.WriteAllText(Path.Combine(input, "temp.txt"), "Hello!");
+            File.WriteAllText(Path.Combine(input, "temp.txt"), "👍");
             var fal = FileAbstractLayer.CreateLink(new PathMapping((RelativePath)"~/", input));
             Assert.True(fal.Exists("~/temp.txt"));
             Assert.True(fal.Exists("temp.txt"));
             Assert.False(fal.Exists("~/temp.jpg"));
             Assert.False(fal.Exists("temp.jpg"));
-            Assert.Equal("Hello!", fal.ReadAllText("temp.txt"));
+            Assert.Equal("👍", fal.ReadAllText("temp.txt"));
             Assert.Equal(new[] { (RelativePath)"~/temp.txt" }, fal.GetAllInputFiles());
         }
 
         [Fact]
-        public void TestFal_Link_Read_Fallback()
+        public void TestFileAbstractLayerWithLinkImplementsShouldReadFileCorrectlyWhenInputWithFallbackForSameLogicalFolder()
         {
             var input1 = GetRandomFolder();
-            File.WriteAllText(Path.Combine(input1, "temp1.txt"), "Hello!");
+            File.WriteAllText(Path.Combine(input1, "temp1.txt"), "😎");
             var input2 = GetRandomFolder();
-            File.WriteAllText(Path.Combine(input2, "temp1.txt"), "??????");
-            File.WriteAllText(Path.Combine(input2, "temp2.txt"), "!!!!!!");
+            File.WriteAllText(Path.Combine(input2, "temp1.txt"), "😈");
+            File.WriteAllText(Path.Combine(input2, "temp2.txt"), "💂");
             var fal = FileAbstractLayer.CreateLink(
                 new PathMapping((RelativePath)"~/", input1),
                 new PathMapping((RelativePath)"~/", input2));
@@ -45,8 +44,8 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.True(fal.Exists("~/temp2.txt"));
             Assert.True(fal.Exists("temp2.txt"));
             Assert.False(fal.Exists("~/temp.jpg"));
-            Assert.Equal("Hello!", fal.ReadAllText("temp1.txt"));
-            Assert.Equal("!!!!!!", fal.ReadAllText("temp2.txt"));
+            Assert.Equal("😎", fal.ReadAllText("temp1.txt"));
+            Assert.Equal("💂", fal.ReadAllText("temp2.txt"));
             Assert.Equal(
                 new[]
                 {
@@ -60,23 +59,23 @@ namespace Microsoft.DocAsCode.Common.Tests
         }
 
         [Fact]
-        public void TestFal_Link_Read_Fallback2()
+        public void TestFileAbstractLayerWithLinkImplementsShouldReadFileCorrectlyWhenInputWithFallbackForDifferentLogicalFolder()
         {
             var input1 = GetRandomFolder();
-            File.WriteAllText(Path.Combine(input1, "temp.txt"), "Hello!");
+            File.WriteAllText(Path.Combine(input1, "temp.txt"), "😎");
             var input2 = GetRandomFolder();
             Directory.CreateDirectory(Path.Combine(input2, "a"));
             Directory.CreateDirectory(Path.Combine(input2, "b"));
-            File.WriteAllText(Path.Combine(input2, "a/temp.txt"), "??????");
-            File.WriteAllText(Path.Combine(input2, "b/temp.txt"), "!!!!!!");
+            File.WriteAllText(Path.Combine(input2, "a/temp.txt"), "😈");
+            File.WriteAllText(Path.Combine(input2, "b/temp.txt"), "💂");
             var fal = FileAbstractLayer.CreateLink(
                 new PathMapping((RelativePath)"~/a/", input1),
                 new PathMapping((RelativePath)"~/", input2));
             Assert.True(fal.Exists("~/a/temp.txt"));
             Assert.True(fal.Exists("~/b/temp.txt"));
             Assert.False(fal.Exists("~/temp.txt"));
-            Assert.Equal("Hello!", fal.ReadAllText("a/temp.txt"));
-            Assert.Equal("!!!!!!", fal.ReadAllText("b/temp.txt"));
+            Assert.Equal("😎", fal.ReadAllText("a/temp.txt"));
+            Assert.Equal("💂", fal.ReadAllText("b/temp.txt"));
             Assert.Equal(
                 new[]
                 {
@@ -90,11 +89,11 @@ namespace Microsoft.DocAsCode.Common.Tests
         }
 
         [Fact]
-        public void TestFal_Link_Copy()
+        public void TestFileAbstractLayerWithLinkImplementsShouldCopyFileCorrectly()
         {
             var input = GetRandomFolder();
             var output = GetRandomFolder();
-            File.WriteAllText(Path.Combine(input, "temp.txt"), "Hello!");
+            File.WriteAllText(Path.Combine(input, "temp.txt"), "😈");
             var fal = FileAbstractLayer.CreateLink(
                 new[] { new PathMapping((RelativePath)"~/", input) },
                 output);
@@ -103,10 +102,46 @@ namespace Microsoft.DocAsCode.Common.Tests
             var fal2 = new FileAbstractLayer(fal.Writer.CreateReader(), null);
             Assert.True(fal2.Exists("copy.txt"));
             Assert.False(fal2.Exists("temp.txt"));
-            Assert.Equal("Hello!", fal2.ReadAllText("copy.txt"));
+            Assert.Equal("😈", fal2.ReadAllText("copy.txt"));
             Assert.Equal(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles());
             Assert.False(File.Exists(Path.Combine(output, "copy.txt")));
         }
 
+        [Fact]
+        public void TestFileAbstractLayerWithLinkImplementsShouldCreateTwiceForSameFileCorrectly()
+        {
+            var output = GetRandomFolder();
+            var fal = FileAbstractLayer.CreateLink(
+                new PathMapping[0] { },
+                output);
+            fal.WriteAllText("temp.txt", "😱");
+            fal.WriteAllText("temp.txt", "😆");
+
+            var fal2 = new FileAbstractLayer(fal.Writer.CreateReader(), null);
+            Assert.True(fal2.Exists("temp.txt"));
+            Assert.Equal("😆", fal2.ReadAllText("temp.txt"));
+            Assert.Equal(new[] { (RelativePath)"~/temp.txt" }, fal2.GetAllInputFiles());
+            Assert.False(File.Exists(Path.Combine(output, "temp.txt")));
+        }
+
+        [Fact]
+        public void TestFileAbstractLayerWithLinkImplementsShouldCopyThenCreateForSameFileCorrectly()
+        {
+            var input = GetRandomFolder();
+            var output = GetRandomFolder();
+            File.WriteAllText(Path.Combine(input, "temp.txt"), "😄");
+            var fal = FileAbstractLayer.CreateLink(
+                new[] { new PathMapping((RelativePath)"~/", input) },
+                output);
+            fal.Copy("temp.txt", "copy.txt");
+            fal.WriteAllText("copy.txt", "😁");
+
+            var fal2 = new FileAbstractLayer(fal.Writer.CreateReader(), null);
+            Assert.True(fal2.Exists("copy.txt"));
+            Assert.Equal("😁", fal2.ReadAllText("copy.txt"));
+            Assert.Equal(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles());
+            Assert.False(File.Exists(Path.Combine(output, "copy.txt")));
+            Assert.Equal(File.ReadAllText(Path.Combine(input, "temp.txt")), "😄");
+        }
     }
 }

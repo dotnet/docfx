@@ -44,14 +44,14 @@ namespace Microsoft.DocAsCode.Common
 
         #region IFileAbstractLayer Members
 
-        public bool IsReadOnly => Writer == null;
+        public bool CanWrite => Writer != null;
 
         public IEnumerable<RelativePath> GetAllInputFiles() =>
             Reader.EnumerateFiles();
 
         public IEnumerable<RelativePath> GetAllOutputFiles()
         {
-            if (IsReadOnly)
+            if (!CanWrite)
             {
                 throw new InvalidOperationException();
             }
@@ -75,7 +75,7 @@ namespace Microsoft.DocAsCode.Common
 
         public FileStream Create(RelativePath file)
         {
-            if (IsReadOnly)
+            if (!CanWrite)
             {
                 throw new InvalidOperationException();
             }
@@ -84,11 +84,11 @@ namespace Microsoft.DocAsCode.Common
 
         public void Copy(RelativePath sourceFileName, RelativePath destFileName)
         {
-            var mapping = FindPhysicalPath(sourceFileName);
-            if (mapping == null)
+            if (!CanWrite)
             {
-                throw new FileNotFoundException($"File ({sourceFileName}) not found.", sourceFileName);
+                throw new InvalidOperationException();
             }
+            var mapping = FindPhysicalPath(sourceFileName);
             Writer.Copy(mapping, destFileName);
         }
 

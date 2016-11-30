@@ -8,7 +8,8 @@ namespace Microsoft.DocAsCode.Common
 
     public class LinkFileWriter : FileWriterBase
     {
-        private readonly List<PathMapping> _mapping = new List<PathMapping>();
+        private readonly Dictionary<RelativePath, PathMapping> _mapping =
+            new Dictionary<RelativePath, PathMapping>();
 
         public LinkFileWriter(string outputFolder)
             : base(outputFolder) { }
@@ -17,28 +18,33 @@ namespace Microsoft.DocAsCode.Common
 
         public override void Copy(PathMapping sourceFilePath, RelativePath destFilePath)
         {
-            _mapping.Add(
-                new PathMapping(
-                    destFilePath.GetPathFromWorkingFolder(),
-                    sourceFilePath.PhysicalPath)
-                {
-                    Properties = sourceFilePath.Properties,
-                });
+            var key = destFilePath.GetPathFromWorkingFolder();
+            _mapping[key] = new PathMapping(key, sourceFilePath.PhysicalPath)
+            {
+                Properties = sourceFilePath.Properties,
+            };
         }
 
         public override FileStream Create(RelativePath file)
         {
+            var key = file.GetPathFromWorkingFolder();
+            PathMapping pm;
+            if (_mapping.TryGetValue(key, out pm) &&
+                pm.PhysicalPath.StartsWith(OutputFolder))
+            {
+                return File.Create(pm.PhysicalPath);
+            }
             var pair = CreateRandomFileStream();
-            _mapping.Add(
+            _mapping[key] =
                 new PathMapping(
-                    file.GetPathFromWorkingFolder(),
-                    Path.Combine(OutputFolder, pair.Item1)));
+                    key,
+                    Path.Combine(OutputFolder, pair.Item1));
             return pair.Item2;
         }
 
         public override IFileReader CreateReader()
         {
-            return new LinkFileReader(_mapping);
+            return new LinkFileReader(_mapping.Values);
         }
 
         #endregion

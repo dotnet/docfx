@@ -1,4 +1,6 @@
-﻿
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 namespace Microsoft.DocAsCode.Common
 {
     using System.Collections.Generic;
@@ -7,7 +9,6 @@ namespace Microsoft.DocAsCode.Common
 
     public class LinkFileReader : IFileReader
     {
-
         public LinkFileReader(IEnumerable<PathMapping> mappings)
         {
             Mappings = mappings.ToImmutableArray();
@@ -66,6 +67,5 @@ namespace Microsoft.DocAsCode.Common
         }
 
         #endregion
-
     }
 }

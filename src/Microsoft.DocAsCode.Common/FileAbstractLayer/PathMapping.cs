@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Common
     using System;
     using System.Collections.Immutable;
 
-    public struct PathMapping : IEquatable<PathMapping>
+    public struct PathMapping
     {
         public PathMapping(RelativePath logicalPath, string physicalPath)
         {
@@ -33,38 +33,5 @@ namespace Microsoft.DocAsCode.Common
         public bool AllowMoveOut { get; set; }
 
         public ImmutableDictionary<string, string> Properties { get; set; }
-
-        #region Equals & operators
-
-        public override int GetHashCode()
-        {
-            return LogicalPath.GetHashCode() ^ PhysicalPath.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is PathMapping)
-            {
-                return Equals((PathMapping)obj);
-            }
-            return false;
-        }
-
-        public bool Equals(PathMapping other)
-        {
-            return LogicalPath == other.LogicalPath &&
-                PhysicalPath == other.PhysicalPath &&
-                AllowMoveOut == other.AllowMoveOut &&
-                Properties == other.Properties;
-        }
-
-        public static bool operator ==(PathMapping left, PathMapping right) =>
-            left.Equals(right);
-
-        public static bool operator !=(PathMapping left, PathMapping right) =>
-            !left.Equals(right);
-
-        #endregion
-
     }
 }

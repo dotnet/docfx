@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Common
 
     public interface IFileAbstractLayer
     {
-        bool IsReadOnly { get; }
+        bool CanWrite { get; }
 
         IEnumerable<RelativePath> GetAllInputFiles();
 
