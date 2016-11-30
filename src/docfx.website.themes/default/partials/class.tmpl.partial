@@ -41,7 +41,7 @@
 {{#parameters}}
     <tr>
       <td>{{{type.specName.0.value}}}</td>
-      <td><em>{{{id}}}</em></td>
+      <td><span class="parametername">{{{id}}}</span></td>
       <td>{{{description}}}</td>
     </tr>
 {{/parameters}}
@@ -79,7 +79,7 @@
 {{/typeParameters.0}}
 {{#typeParameters}}
     <tr>
-      <td><em>{{{id}}}</em></td>
+      <td><span class="parametername">{{{id}}}</span></td>
       <td>{{{description}}}</td>
     </tr>
 {{/typeParameters}}
