@@ -432,6 +432,12 @@ namespace Microsoft.DocAsCode.Common
             return (left ?? Empty).MakeRelativeTo(right ?? Empty);
         }
 
+        public static bool operator ==(RelativePath left, RelativePath right) =>
+            object.Equals(left, right);
+
+        public static bool operator !=(RelativePath left, RelativePath right) =>
+            !object.Equals(left, right);
+
         public static implicit operator string(RelativePath path)
         {
             if (path == null)
