@@ -85,7 +85,7 @@ h6 mark {
     margin-left: 5em;
 }
 
-.parametername {
+span.parametername {
     font-style: italic;
 }
 
