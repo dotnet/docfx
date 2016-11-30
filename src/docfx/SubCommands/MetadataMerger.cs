@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Build.ManagedReference;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
 

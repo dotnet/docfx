@@ -1,4 +1,4 @@
-﻿namespace Microsoft.DocAsCode.Utility.EntityMergers
+﻿namespace Microsoft.DocAsCode.Common.EntityMergers
 {
     using System.Collections.Generic;
 

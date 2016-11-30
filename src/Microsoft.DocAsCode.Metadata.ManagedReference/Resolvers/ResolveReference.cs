@@ -7,8 +7,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Diagnostics;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
-    using Microsoft.DocAsCode.Utility;
 
     public class ResolveReference : IResolverPipeline
     {

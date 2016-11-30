@@ -4,7 +4,7 @@
 /// <summary>
 /// The utility class for docascode project
 /// </summary>
-namespace Microsoft.DocAsCode.Utility
+namespace Microsoft.DocAsCode.Common
 {
     using System.Collections.Generic;
     using System.Dynamic;

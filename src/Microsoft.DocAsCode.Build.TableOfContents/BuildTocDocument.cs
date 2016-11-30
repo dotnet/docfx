@@ -9,9 +9,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     [Export(nameof(TocDocumentProcessor), typeof(IDocumentBuildStep))]
     public class BuildTocDocument : BaseDocumentBuildStep, ISupportIncrementalBuildStep

@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 
-using Microsoft.DocAsCode.Utility;
+using Microsoft.DocAsCode.Common;
 
 namespace Microsoft.DocAsCode.Build.Engine
 {

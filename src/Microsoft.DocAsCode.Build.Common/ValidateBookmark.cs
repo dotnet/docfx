@@ -13,7 +13,6 @@ namespace Microsoft.DocAsCode.Build.Common
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToFilePathComparer = Microsoft.DocAsCode.Common.FilePathComparer;
     using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;

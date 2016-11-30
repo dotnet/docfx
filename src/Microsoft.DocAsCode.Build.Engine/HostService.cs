@@ -17,7 +17,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
     using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
@@ -471,9 +470,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             throw new BuildCacheException($"Last build hasn't loaded model {pair.Key}");
                         }
-
-                        // use copy rather than move because if the build failed, the intermediate files of last successful build shouldn't be corrupted.
-                        File.Copy(Path.Combine(incrementalContext.LastBaseDir, lfn), Path.Combine(incrementalContext.BaseDir, fileName));
+                        File.Move(Path.Combine(incrementalContext.LastBaseDir, lfn), Path.Combine(incrementalContext.BaseDir, fileName));
                     }
                     else
                     {

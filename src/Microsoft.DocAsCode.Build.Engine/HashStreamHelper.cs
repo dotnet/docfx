@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Security.Cryptography;
     using System.Threading.Tasks;
 
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     internal static class HashStreamHelper
     {

@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.DataContracts.RestApi
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
-    using Microsoft.DocAsCode.Utility.EntityMergers;
+    using Microsoft.DocAsCode.Common.EntityMergers;
 
     [Serializable]
     public class RestApiRootItemViewModel : RestApiItemViewModelBase

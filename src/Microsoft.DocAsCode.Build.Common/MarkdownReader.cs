@@ -11,8 +11,8 @@ namespace Microsoft.DocAsCode.Build.Common
 
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Common.Git;
+    using Microsoft.DocAsCode.Plugins;
 
     public class MarkdownReader
     {

@@ -8,8 +8,8 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
     using System.Collections.Generic;
     using System.Linq;
 
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.AzureMarkdownRewriters;
+    using Microsoft.DocAsCode.Common;
 
     public static class AzureVideoHelper
     {

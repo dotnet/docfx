@@ -1,4 +1,4 @@
-﻿namespace Microsoft.DocAsCode.Utility
+﻿namespace Microsoft.DocAsCode.Common
 {
     using System;
     using System.Collections.Generic;

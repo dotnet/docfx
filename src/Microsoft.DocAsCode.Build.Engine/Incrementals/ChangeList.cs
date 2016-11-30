@@ -11,7 +11,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
 

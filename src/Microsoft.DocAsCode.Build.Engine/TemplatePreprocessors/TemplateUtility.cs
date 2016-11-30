@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
     using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;

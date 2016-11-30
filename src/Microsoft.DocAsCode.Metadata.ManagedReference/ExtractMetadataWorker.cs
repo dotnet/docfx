@@ -18,7 +18,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
-    using Microsoft.DocAsCode.Utility;
     using Microsoft.DotNet.ProjectModel.Workspaces;
 
     using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;

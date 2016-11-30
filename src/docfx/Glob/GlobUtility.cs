@@ -10,7 +10,6 @@ namespace Microsoft.DocAsCode
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Glob;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
 

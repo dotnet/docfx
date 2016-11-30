@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.IO;
 
     using Microsoft.CodeAnalysis;
+
     using Microsoft.DocAsCode.Common;
 
     public class ConfigFilterVisitor : DelegatingFilterVisitor

@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Linq;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Utility;
 
     public class TemplateCollection : Dictionary<string, TemplateBundle>
     {

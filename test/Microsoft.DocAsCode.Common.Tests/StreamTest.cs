@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Utility.Tests
+namespace Microsoft.DocAsCode.Common.Tests
 {
     using System;
     using System.IO;
@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Utility.Tests
     using System.Threading.Tasks;
     using Xunit;
 
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     [Trait("Owner", "vwxyzh")]
     [Trait("Related", "Stream")]

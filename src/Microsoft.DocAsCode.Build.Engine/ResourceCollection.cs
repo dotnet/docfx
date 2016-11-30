@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Build.Engine;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
     using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;

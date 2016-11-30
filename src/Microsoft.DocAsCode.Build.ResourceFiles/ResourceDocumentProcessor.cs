@@ -11,9 +11,9 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Common.Git;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Common.Git;
 
     using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
     using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;

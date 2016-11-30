@@ -13,7 +13,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.CodeAnalysis.MSBuild;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Utility;
 
     internal class IncrementalCheck
     {

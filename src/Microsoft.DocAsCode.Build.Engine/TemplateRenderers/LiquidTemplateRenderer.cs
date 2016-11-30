@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     internal class LiquidTemplateRenderer : ITemplateRenderer
     {

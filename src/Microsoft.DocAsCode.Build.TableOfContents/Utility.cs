@@ -8,7 +8,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Utility;
     using Microsoft.DocAsCode.Plugins;
 
     using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;

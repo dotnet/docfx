@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Dfm
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
 

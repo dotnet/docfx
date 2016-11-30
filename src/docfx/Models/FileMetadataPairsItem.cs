@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode
     using System;
 
     using Microsoft.DocAsCode.Glob;
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     [Serializable]
     public class FileMetadataPairsItem

@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     public class SetParent : IResolverPipeline
     {

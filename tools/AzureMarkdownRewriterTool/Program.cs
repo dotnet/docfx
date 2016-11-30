@@ -12,9 +12,8 @@ namespace Microsoft.DocAsCode.Tools.AzureMarkdownRewriterTool
     using System.Threading.Tasks;
     using System.Web;
 
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.AzureMarkdownRewriters;
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     using Newtonsoft.Json;
 

@@ -21,7 +21,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
-    using Microsoft.DocAsCode.Utility;
 
     [Trait("Owner", "zhyan")]
     [Trait("EntityType", "DocumentBuilder")]

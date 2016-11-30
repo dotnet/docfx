@@ -12,8 +12,8 @@ namespace Microsoft.DocAsCode.Build.Common
     using System.Runtime.Serialization;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Common.StreamSegmentSerialization;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility.StreamSegmentSerialization;
 
     public static class FileModelPropertySerialization
     {

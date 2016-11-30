@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     using Newtonsoft.Json;
 

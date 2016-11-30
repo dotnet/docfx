@@ -6,8 +6,8 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using System;
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Utility.EntityMergers;
     using Newtonsoft.Json;
 
     [Serializable]

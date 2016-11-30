@@ -12,9 +12,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility.EntityMergers;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
     public class BuildManagedReferenceDocument : BaseDocumentBuildStep

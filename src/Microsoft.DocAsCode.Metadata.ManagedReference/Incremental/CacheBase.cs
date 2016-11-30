@@ -11,7 +11,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Reflection;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
 

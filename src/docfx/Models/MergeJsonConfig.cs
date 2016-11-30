@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode
     using System;
     using System.Collections.Generic;
 
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     using Newtonsoft.Json;
 

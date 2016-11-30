@@ -16,7 +16,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
     using Microsoft.DocAsCode.Tests.Common;
 
     using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;

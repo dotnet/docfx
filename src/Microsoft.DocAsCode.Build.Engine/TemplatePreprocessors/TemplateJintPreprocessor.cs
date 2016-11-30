@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Jint.Native.Object;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
 

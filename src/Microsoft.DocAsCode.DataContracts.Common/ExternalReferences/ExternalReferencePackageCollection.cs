@@ -5,7 +5,7 @@
     using System.Collections.Immutable;
     using System.Linq;
 
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     public class ExternalReferencePackageCollection : IDisposable
     {

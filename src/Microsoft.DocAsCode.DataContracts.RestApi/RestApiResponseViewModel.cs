@@ -9,8 +9,8 @@ namespace Microsoft.DocAsCode.DataContracts.RestApi
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.YamlSerialization;
-    using Microsoft.DocAsCode.Utility.EntityMergers;
 
     [Serializable]
     public class RestApiResponseViewModel

@@ -9,9 +9,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
-    using Microsoft.DocAsCode.Utility.EntityMergers;
 
     public class MetadataItem : ICloneable
     {

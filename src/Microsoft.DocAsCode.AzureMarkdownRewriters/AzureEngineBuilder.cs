@@ -14,7 +14,6 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
 

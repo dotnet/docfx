@@ -11,7 +11,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
 

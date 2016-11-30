@@ -13,7 +13,6 @@ namespace Microsoft.DocAsCode.Dfm
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
-    using Microsoft.DocAsCode.Utility;
 
     using TypeForwardedToFilePathComparer = Microsoft.DocAsCode.Common.FilePathComparer;
     using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;

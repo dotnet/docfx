@@ -12,10 +12,9 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using System.Text;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
-    using Microsoft.DocAsCode.Common;
 
     using Newtonsoft.Json;
 

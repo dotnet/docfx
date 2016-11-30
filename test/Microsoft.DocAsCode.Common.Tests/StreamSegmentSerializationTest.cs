@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Utility.Tests
+namespace Microsoft.DocAsCode.Common.Tests
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
 
-    using Microsoft.DocAsCode.Utility.StreamSegmentSerialization;
+    using Microsoft.DocAsCode.Common.StreamSegmentSerialization;
 
     using Xunit;
 

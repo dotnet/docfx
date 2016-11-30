@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
-    using Microsoft.DocAsCode.Utility;
 
     public class AzureMarkdownRenderer : DfmMarkdownRenderer
     {

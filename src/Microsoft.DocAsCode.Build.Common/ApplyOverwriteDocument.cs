@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility.EntityMergers;
+    using Microsoft.DocAsCode.Common.EntityMergers;
 
     public abstract class ApplyOverwriteDocument : BaseDocumentBuildStep
     {

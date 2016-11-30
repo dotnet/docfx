@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Dfm
     using System.Linq;
 
     using Microsoft.DocAsCode.MarkdownLite;
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     public static class DfmContextExtensions
     {

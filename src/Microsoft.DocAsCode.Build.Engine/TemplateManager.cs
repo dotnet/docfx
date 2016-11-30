@@ -8,11 +8,10 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Security.Cryptography;
     using System.Text;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Utility;
-    using System.Security.Cryptography;
 
     using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
 

@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode.Build.Common
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
-    using Microsoft.DocAsCode.Utility;
 
     using HtmlAgilityPack;
     using Newtonsoft.Json;

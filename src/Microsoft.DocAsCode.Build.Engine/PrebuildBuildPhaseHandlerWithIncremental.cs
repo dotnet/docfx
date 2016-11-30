@@ -8,8 +8,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Immutable;
     using System.Linq;
 
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     internal class PrebuildBuildPhaseHandlerWithIncremental : IPhaseHandler

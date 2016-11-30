@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Utility;
+    using Microsoft.DocAsCode.Common;
 
     internal sealed class XRefDetails
     {
