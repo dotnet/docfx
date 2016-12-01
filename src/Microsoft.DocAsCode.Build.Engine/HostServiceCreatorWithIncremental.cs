@@ -101,6 +101,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (new LoggerPhaseScope("ReportModelLoadInfo", true))
             {
+                if (!hostService.ShouldTraceIncrementalInfo)
+                {
+                    return;
+                }
                 var allFiles = files?.Select(f => f.File) ?? new string[0];
                 var loadedFiles = hostService.Models.Select(m => m.FileAndType.File);
                 IncrementalContext.ReportModelLoadInfo(hostService, allFiles.Except(loadedFiles), null);
