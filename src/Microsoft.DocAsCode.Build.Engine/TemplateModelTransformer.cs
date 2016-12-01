@@ -142,7 +142,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             var viewModelPath = ExportModel(viewModel, outputFile, exportSettings);
                             Logger.LogWarning($"Model \"{viewModelPath}\" is transformed to empty string with template \"{template.Name}\"");
                         }
-                        TransformDocument(result, extension, _context, outputPath, outputFile, missingUids, manifestItem);
+                        TransformDocument(result ?? string.Empty, extension, _context, outputPath, outputFile, missingUids, manifestItem);
                         Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputPath}\".");
                     }
                 }
