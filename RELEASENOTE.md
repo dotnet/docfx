@@ -2,6 +2,7 @@ Version Notes (Current Version: v2.9)
 =======================================
 v2.9(Pre-Release)
 -----------
+1.  Remove project `Microsoft.DocAsCode.Utility`, move class to `Microsoft.DocAsCode.Common`.
 
 v2.8
 -----------
