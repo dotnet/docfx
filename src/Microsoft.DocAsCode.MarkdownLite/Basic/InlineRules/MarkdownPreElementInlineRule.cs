@@ -5,15 +5,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System.Text.RegularExpressions;
 
-    public class MarkdownCodeElementInlineRule : IMarkdownRule
+    public class MarkdownPreElementInlineRule : IMarkdownRule
     {
         public virtual string Name => "Inline.CodeElement";
 
-        public virtual Regex CodeElement => Regexes.Inline.CodeElement;
+        public virtual Regex PreElement => Regexes.Inline.PreElement;
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = CodeElement.Match(context.CurrentMarkdown);
+            var match = PreElement.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;

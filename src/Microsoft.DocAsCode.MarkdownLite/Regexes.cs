@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static readonly Regex Escape = new Regex(@"^\\([\\`*{}\[\]()#+\-.!_>])", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex Comment = new Regex(@"^<!--(?:[^-]|-(?!->))*-->", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex AutoLink = new Regex(@"^<([^ >]+(@|:\/)[^ >]+)>", RegexOptionCompiled, RegexTimeOut);
-            public static readonly Regex CodeElement = new Regex(@"^\<code\>[\s\S]*?\</code\>", RegexOptionCompiled | RegexOptions.IgnoreCase, RegexTimeOut);
+            public static readonly Regex PreElement = new Regex(@"^\<pre\>[\s\S]*?\</pre\>", RegexOptionCompiled | RegexOptions.IgnoreCase, RegexTimeOut);
             public static readonly Regex Tag = new Regex(@"^<\/?([A-Z]|[a-z])\w*(?:""[^""]*""|'[^']*'|[^'"">])*?>", RegexOptionCompiled, RegexTimeOut);
             /// <summary>
             /// <![CDATA[
