@@ -5,13 +5,14 @@ namespace Microsoft.DocAsCode.Common
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
 
     public class FileAbstractLayer : IFileAbstractLayer
     {
         #region Constructors
 
-        public FileAbstractLayer(IFileReader reader, IFileWriter writer)
+        internal FileAbstractLayer(IFileReader reader, IFileWriter writer)
         {
             Reader = reader;
             Writer = writer;
@@ -20,21 +21,6 @@ namespace Microsoft.DocAsCode.Common
         #endregion
 
         #region Public Members
-
-        public static FileAbstractLayer CreateLink(params PathMapping[] mappings)
-        {
-            return new FileAbstractLayer(new LinkFileReader(mappings), null);
-        }
-
-        public static FileAbstractLayer CreateLink(IEnumerable<PathMapping> mappings)
-        {
-            return new FileAbstractLayer(new LinkFileReader(mappings), null);
-        }
-
-        public static FileAbstractLayer CreateLink(IEnumerable<PathMapping> mappings, string outputFolder)
-        {
-            return new FileAbstractLayer(new LinkFileReader(mappings), new LinkFileWriter(outputFolder));
-        }
 
         public IFileReader Reader { get; }
 
@@ -90,6 +76,12 @@ namespace Microsoft.DocAsCode.Common
             }
             var mapping = FindPhysicalPath(sourceFileName);
             Writer.Copy(mapping, destFileName);
+        }
+
+        public ImmutableDictionary<string, string> GetProperties(RelativePath file)
+        {
+            var mapping = FindPhysicalPath(file);
+            return mapping.Properties;
         }
 
         #endregion
