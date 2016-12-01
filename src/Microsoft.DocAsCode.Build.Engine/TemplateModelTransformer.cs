@@ -141,13 +141,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                             var exportSettings = ApplyTemplateSettings.ViewModelExportSettingsForDebug;
                             var viewModelPath = ExportModel(viewModel, outputFile, exportSettings);
                             Logger.LogWarning($"Model \"{viewModelPath}\" is transformed to empty string with template \"{template.Name}\"");
-                            File.WriteAllText(outputPath, string.Empty);
                         }
-                        else
-                        {
-                            TransformDocument(result, extension, _context, outputPath, outputFile, missingUids, manifestItem);
-                            Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputPath}\".");
-                        }
+                        TransformDocument(result ?? string.Empty, extension, _context, outputPath, outputFile, missingUids, manifestItem);
+                        Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputPath}\".");
                     }
                 }
                 catch (PathTooLongException e)
