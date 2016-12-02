@@ -96,6 +96,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 h.SaveIntermediateModel(IncrementalContext);
             }
             ReportDependency(hostServices);
+            IncrementalContext.UpdateBuildVersionInfoPerDependencyGraph();
             Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
         }
 

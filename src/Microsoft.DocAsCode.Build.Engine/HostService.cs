@@ -507,6 +507,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
+        public List<string> GetUnloadedModelFiles(IncrementalBuildContext incrementalContext)
+        {
+            if (!CanIncrementalBuild)
+            {
+                return new List<string>();
+            }
+            return (from pair in incrementalContext.GetModelLoadInfo(this)
+                    where pair.Value == null
+                    select pair.Key).ToList();
+        }
+
         #endregion
 
         #region Private Methods

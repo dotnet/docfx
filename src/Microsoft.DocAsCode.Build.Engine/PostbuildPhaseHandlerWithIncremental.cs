@@ -58,15 +58,17 @@ namespace Microsoft.DocAsCode.Build.Engine
         private void PreHandle(List<HostService> hostServices)
         {
             ReloadModels(hostServices);
+            RegisterUnloadedXRefSpec(hostServices);
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
         private void PostHandle(List<HostService> hostServices)
         {
-            IncrementalContext.UpdateBuildVersionInfoPerDependencyGraph();
-            ProcessUnloadedTemplateDependency();
+            ProcessUnloadedTemplateDependency(hostServices);
             UpdateManifest();
-            SaveOutputs();
+            UpdateFileMap(hostServices);
+            UpdateXrefMap(hostServices);
+            SaveOutputs(hostServices);
             RelayBuildMessage(hostServices);
             Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
         }
@@ -88,10 +90,35 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void ProcessUnloadedTemplateDependency()
+        private void RegisterUnloadedXRefSpec(IEnumerable<HostService> hostServices)
+        {
+            var lastXrefMap = LastBuildVersionInfo?.XRefSpecMap;
+            foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
+            {
+                foreach (var file in h.GetUnloadedModelFiles(IncrementalContext))
+                {
+                    if (lastXrefMap == null)
+                    {
+                        throw new BuildCacheException($"Full build hasn't loaded XRefMap.");
+                    }
+                    IEnumerable<XRefSpec> specs;
+                    if (!lastXrefMap.TryGetValue(file, out specs))
+                    {
+                        throw new BuildCacheException($"Last build hasn't loaded xrefspec for file: ({file}).");
+                    }
+                    CurrentBuildVersionInfo.XRefSpecMap[file] = specs;
+                    foreach (var spec in specs)
+                    {
+                        Context.RegisterInternalXrefSpec(spec);
+                    }
+                }
+            }
+        }
+
+        private void ProcessUnloadedTemplateDependency(IEnumerable<HostService> hostServices)
         {
             var loaded = Context.ManifestItems;
-            var unloaded = GetUnloadedManifestItems();
+            var unloaded = GetUnloadedManifestItems(hostServices);
             var types = new HashSet<string>(unloaded.Select(m => m.DocumentType).Except(loaded.Select(m => m.DocumentType)));
             if (types.Count > 0)
             {
@@ -108,43 +135,100 @@ namespace Microsoft.DocAsCode.Build.Engine
             CurrentBuildVersionInfo.Manifest = Context.ManifestItems;
         }
 
-        private void SaveOutputs()
+        private void UpdateFileMap(IEnumerable<HostService> hostServices)
         {
-            var outputDir = Context.BuildOutputFolder;
-            var lo = LastBuildVersionInfo?.BuildOutputs;
-
-            foreach (var item in from m in Context.ManifestItems
-                                 from output in m.OutputFiles.Values
-                                 select new
-                                 {
-                                     Path = Path.Combine(outputDir, output.RelativePath),
-                                     SourcePath = m.SourceRelativePath,
-                                 })
+            var lastFileMap = LastBuildVersionInfo?.FileMap;
+            foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
             {
-                IncrementalUtility.RetryIO(() =>
+                foreach (var file in h.GetUnloadedModelFiles(IncrementalContext))
                 {
-                    string fileName = IncrementalUtility.GetRandomEntry(IncrementalContext.BaseDir);
-                    if (IncrementalContext.ModelLoadInfo.Values.Single(d => d.ContainsKey(item.SourcePath))[item.SourcePath] == null)
+                    var fileFromWorkingFolder = ((RelativePath)file).GetPathFromWorkingFolder();
+                    if (lastFileMap == null)
                     {
-                        if (lo == null)
-                        {
-                            throw new BuildCacheException($"Full build hasn't loaded build outputs.");
-                        }
-                        string lfn;
-                        if (!lo.TryGetValue(item.Path, out lfn))
-                        {
-                            throw new BuildCacheException($"Last build hasn't loaded output: {item.Path}.");
-                        }
-                        File.Copy(Path.Combine(IncrementalContext.LastBaseDir, lfn), Path.Combine(IncrementalContext.BaseDir, fileName));
-                        Directory.CreateDirectory(Path.GetDirectoryName(item.Path));
-                        File.Copy(Path.Combine(IncrementalContext.BaseDir, fileName), item.Path, true);
+                        throw new BuildCacheException($"Full build hasn't loaded File Map.");
+                    }
+                    string path;
+
+                    // for overwrite files, it don't exist in filemap
+                    if (lastFileMap.TryGetValue(fileFromWorkingFolder, out path))
+                    {
+                        Context.FileMap[fileFromWorkingFolder] = path;
+                    }
+                }
+            }
+            CurrentBuildVersionInfo.FileMap = Context.FileMap;
+        }
+
+        private void UpdateXrefMap(IEnumerable<HostService> hostServices)
+        {
+            var map = CurrentBuildVersionInfo.XRefSpecMap;
+            foreach (var h in hostServices)
+            {
+                foreach (var f in h.Models)
+                {
+                    if (f.Type == DocumentType.Overwrite)
+                    {
+                        map[f.OriginalFileAndType.File] = Enumerable.Empty<XRefSpec>();
                     }
                     else
                     {
-                        File.Copy(item.Path, Path.Combine(IncrementalContext.BaseDir, fileName));
+                        map[f.OriginalFileAndType.File] = (from uid in f.Uids
+                                                           let s = Context.GetXrefSpec(uid.Name)
+                                                           where s != null
+                                                           select s).ToList();
                     }
-                    CurrentBuildVersionInfo.BuildOutputs.Add(item.Path, fileName);
-                });
+                }
+            }
+        }
+
+        private void SaveOutputs(IEnumerable<HostService> hostServices)
+        {
+            var outputDir = Context.BuildOutputFolder;
+            var lo = LastBuildVersionInfo?.BuildOutputs;
+            var outputItems = (from m in Context.ManifestItems
+                               from output in m.OutputFiles.Values
+                               select new
+                               {
+                                   Path = Path.Combine(outputDir, output.RelativePath),
+                                   SourcePath = m.SourceRelativePath,
+                               } into items
+                               group items by items.SourcePath).ToDictionary(g => g.Key, g => g.Select(p => p.Path).ToList());
+
+            foreach (var h in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
+            {
+                foreach (var pair in IncrementalContext.GetModelLoadInfo(h))
+                {
+                    List<string> items;
+                    if (!outputItems.TryGetValue(pair.Key, out items))
+                    {
+                        continue;
+                    }
+                    foreach (var path in items)
+                    {
+                        string fileName = IncrementalUtility.GetRandomEntry(IncrementalContext.BaseDir);
+                        IncrementalUtility.RetryIO(() =>
+                        {
+                            if (pair.Value == null)
+                            {
+                                if (lo == null)
+                                {
+                                    throw new BuildCacheException($"Full build hasn't loaded build outputs.");
+                                }
+                                string lfn;
+                                if (!lo.TryGetValue(path, out lfn))
+                                {
+                                    throw new BuildCacheException($"Last build hasn't loaded output: {path}.");
+                                }
+
+                                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                                File.Copy(Path.Combine(IncrementalContext.LastBaseDir, lfn), path, true);
+                            }
+
+                            File.Copy(path, Path.Combine(IncrementalContext.BaseDir, fileName));
+                            CurrentBuildVersionInfo.BuildOutputs.Add(path, fileName);
+                        });
+                    }
+                }
             }
         }
 
@@ -152,25 +236,22 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
             {
-                foreach (var file in from pair in IncrementalContext.GetModelLoadInfo(h)
-                                     where pair.Value == null
-                                     select pair.Key)
+                foreach (var file in h.GetUnloadedModelFiles(IncrementalContext))
                 {
                     LastBuildMessageInfo.Replay(file);
                 }
             }
         }
 
-        private List<ManifestItem> GetUnloadedManifestItems()
+        private List<ManifestItem> GetUnloadedManifestItems(IEnumerable<HostService> hostServices)
         {
             if (LastBuildVersionInfo == null)
             {
                 return new List<ManifestItem>();
             }
-            return (from d in IncrementalContext.ModelLoadInfo.Values
-                    from m in d
-                    where m.Value == null
-                    select m.Key into f
+            return (from h in hostServices
+                    where h.CanIncrementalBuild
+                    from f in h.GetUnloadedModelFiles(IncrementalContext)
                     from mani in LastBuildVersionInfo.Manifest
                     where f == mani.SourceRelativePath
                     select mani).ToList();

@@ -85,6 +85,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 ManifestFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 OutputFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 XRefSpecMapFile = IncrementalUtility.CreateRandomFileName(baseDir),
+                FileMapFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 BuildMessageFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 Attributes = ComputeFileAttributes(parameters, lbv?.Dependency),
                 Dependency = ConstructDependencyGraphFromLast(lbv?.Dependency),
@@ -144,6 +145,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         public IReadOnlyDictionary<string, BuildPhase?> GetModelLoadInfo(HostService hostService)
         {
             string name = hostService.Processor.Name;
+            if (!hostService.ShouldTraceIncrementalInfo)
+            {
+                throw new InvalidOperationException($"HostService: {name} doesn't record incremental info, cannot call the method to get model load info.");
+            }
             Dictionary<string, BuildPhase?> mi;
             if (ModelLoadInfo.TryGetValue(name, out mi))
             {
