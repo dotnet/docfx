@@ -3,11 +3,12 @@
 
 namespace Microsoft.DocAsCode.Common
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
 
-    public interface IFileAbstractLayer
+    public interface IFileAbstractLayer : IDisposable
     {
         bool CanWrite { get; }
 

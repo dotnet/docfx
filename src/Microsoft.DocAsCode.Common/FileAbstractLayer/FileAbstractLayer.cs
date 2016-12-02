@@ -32,11 +32,15 @@ namespace Microsoft.DocAsCode.Common
 
         public bool CanWrite => Writer != null;
 
-        public IEnumerable<RelativePath> GetAllInputFiles() =>
-            Reader.EnumerateFiles();
+        public IEnumerable<RelativePath> GetAllInputFiles()
+        {
+            EnsureNotDisposed();
+            return Reader.EnumerateFiles();
+        }
 
         public IEnumerable<RelativePath> GetAllOutputFiles()
         {
+            EnsureNotDisposed();
             if (!CanWrite)
             {
                 throw new InvalidOperationException();
@@ -50,11 +54,13 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentNullException(nameof(file));
             }
+            EnsureNotDisposed();
             return Reader.FindFile(file) != null;
         }
 
         public FileStream OpenRead(RelativePath file)
         {
+            EnsureNotDisposed();
             var pp = FindPhysicalPath(file);
             return File.OpenRead(pp.PhysicalPath);
         }
@@ -65,6 +71,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new InvalidOperationException();
             }
+            EnsureNotDisposed();
             return Writer.Create(file);
         }
 
@@ -74,14 +81,35 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new InvalidOperationException();
             }
+            EnsureNotDisposed();
             var mapping = FindPhysicalPath(sourceFileName);
             Writer.Copy(mapping, destFileName);
         }
 
         public ImmutableDictionary<string, string> GetProperties(RelativePath file)
         {
+            EnsureNotDisposed();
             var mapping = FindPhysicalPath(file);
             return mapping.Properties;
+        }
+
+        #endregion
+
+        #region IDisposable Support
+
+        private bool _disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                _disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
         }
 
         #endregion
@@ -97,6 +125,14 @@ namespace Microsoft.DocAsCode.Common
                 throw new FileNotFoundException($"File ({fn}) not found.", fn);
             }
             return mapping.Value;
+        }
+
+        private void EnsureNotDisposed()
+        {
+            if (_disposed)
+            {
+                throw new ObjectDisposedException("FileAbstractLayer");
+            }
         }
 
         #endregion
