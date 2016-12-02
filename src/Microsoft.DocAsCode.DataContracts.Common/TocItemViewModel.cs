@@ -23,8 +23,8 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonProperty("name")]
         public string Name { get; set; }
 
-        [YamlMember(Alias = "metadata")]
-        [JsonProperty("metadata")]
+        [ExtensibleMember]
+        [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; }
 
         [ExtensibleMember("name.")]
