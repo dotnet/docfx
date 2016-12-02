@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
 
     public interface IFileAbstractLayer
@@ -21,5 +22,7 @@ namespace Microsoft.DocAsCode.Common
         FileStream Create(RelativePath file);
 
         void Copy(RelativePath sourceFileName, RelativePath destFileName);
+
+        ImmutableDictionary<string, string> GetProperties(RelativePath file);
     }
 }

@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Common
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -11,6 +12,20 @@ namespace Microsoft.DocAsCode.Common
     {
         public RealFileReader(string inputFolder)
         {
+            if (inputFolder == null)
+            {
+                throw new ArgumentNullException(nameof(inputFolder));
+            }
+            if (!Directory.Exists(inputFolder))
+            {
+                throw new DirectoryNotFoundException($"Directory ({inputFolder}) not found.");
+            }
+            if (inputFolder.Length > 0 &&
+                !inputFolder.EndsWith("\\") &&
+                !inputFolder.EndsWith("/"))
+            {
+                inputFolder += "/";
+            }
             InputFolder = inputFolder;
         }
 
@@ -30,7 +45,7 @@ namespace Microsoft.DocAsCode.Common
 
         public IEnumerable<RelativePath> EnumerateFiles()
         {
-            var length = Path.GetFullPath(InputFolder).Length;
+            var length = InputFolder.Length;
             return from f in Directory.EnumerateFiles(InputFolder, "*.*", SearchOption.AllDirectories)
                    select (RelativePath)f.Substring(length);
         }
