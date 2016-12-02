@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
 
         [YamlMember(Alias = "metadata")]
         [JsonProperty("metadata")]
-        public Dictionary<string, List<string>> Metadata { get; set; }
+        public Dictionary<string, object> Metadata { get; set; }
 
         [ExtensibleMember("name.")]
         [JsonIgnore]

@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.SubCommands
     {
         public const string PhaseName = "Merge Metadata";
 
-        private readonly Dictionary<string, Dictionary<string, object>> _tagsRecord = new Dictionary<string, Dictionary<string, object>>();
+        private readonly Dictionary<string, Dictionary<string, object>> _metaTable = new Dictionary<string, Dictionary<string, object>>();
 
         public void Merge(MetadataMergeParameters parameters)
         {
@@ -87,7 +87,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             foreach (var m in models)
             {
-                InitializeTagsRecord(m);
+                InitMetaTable(m);
                 YamlUtility.Serialize(Path.Combine(outputBase, m.File), m.Content, YamlMime.ManagedReference);
             }
         }
@@ -110,12 +110,12 @@ namespace Microsoft.DocAsCode.SubCommands
                 YamlMime.TableOfContent);
         }
 
-        private void InitializeTagsRecord(FileModel model)
+        private void InitMetaTable(FileModel model)
         {
             var content = model.Content as PageViewModel;
             if (content != null && model.Uids.Length > 0)
             {
-                _tagsRecord.Add(model.Uids.First().Name, content.Metadata);
+                _metaTable.Add(model.Uids.First().Name, content.Metadata);
             }
         }
 
@@ -125,15 +125,15 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 foreach (var metaName in metaNames)
                 {
-                    MergeMetadata(item, metaName);
+                    MergeIntoTocMetadata(item, metaName);
                 }
             }
         }
 
-        private List<string> MergeMetadata(TocItemViewModel item, string metaName)
+        private List<string> MergeIntoTocMetadata(TocItemViewModel item, string metaName)
         {
             Dictionary<string, object> metadata;
-            if (_tagsRecord.TryGetValue(item.Uid, out metadata))
+            if (_metaTable.TryGetValue(item.Uid, out metadata))
             {
                 object metaValue;
                 if (metadata.TryGetValue(metaName, out metaValue))
@@ -141,12 +141,12 @@ namespace Microsoft.DocAsCode.SubCommands
                     var merged = TryGetListFromObject(metaValue);
                     foreach (var child in item.Items ?? Enumerable.Empty<TocItemViewModel>())
                     {
-                        var childMetaValue = MergeMetadata(child, metaName);
+                        var childMetaValue = MergeIntoTocMetadata(child, metaName);
                         merged = MergeMetadata(merged, childMetaValue);
                     }
                     if (item.Metadata == null)
                     {
-                        item.Metadata = new Dictionary<string, List<string>>();
+                        item.Metadata = new Dictionary<string, object>();
                     }
                     item.Metadata[metaName] = merged;
                     return merged;

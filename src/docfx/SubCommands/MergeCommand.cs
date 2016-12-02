@@ -108,9 +108,9 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             config.FileMetadata = BuildCommand.GetFileMetadataFromOption(config.FileMetadata, options.FileMetadataFilePath, null);
             config.GlobalMetadata = BuildCommand.GetGlobalMetadataFromOption(config.GlobalMetadata, options.GlobalMetadataFilePath, null, options.GlobalMetadata);
-            if (options.MetadataNeedMergedIntoToc != null)
+            if (options.TocMetadata != null)
             {
-                config.MetadataNeedMergedIntoToc = new ListWithStringFallback(options.MetadataNeedMergedIntoToc);
+                config.TocMetadata = new ListWithStringFallback(options.TocMetadata);
             }
         }
 
@@ -146,7 +146,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 OutputBaseDir = outputDirectory,
                 Metadata = config.GlobalMetadata?.ToImmutableDictionary() ?? ImmutableDictionary<string, object>.Empty,
                 FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata),
-                MetadataNeedMergedIntoToc = config.MetadataNeedMergedIntoToc?.ToImmutableList() ?? ImmutableList<string>.Empty,
+                MetadataNeedMergedIntoToc = config.TocMetadata?.ToImmutableList() ?? ImmutableList<string>.Empty,
                 Files = GetFileCollectionFromFileMapping(
                     baseDirectory,
                     DocumentType.Article,
