@@ -72,7 +72,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 builder.Add(new GfmUrlInlineRule());
             }
-            builder.Add(new MarkdownCodeElementInlineRule());
+            builder.Add(new MarkdownPreElementInlineRule());
             builder.Add(new MarkdownTagInlineRule());
             builder.Add(new MarkdownLinkInlineRule());
             builder.Add(new MarkdownRefLinkInlineRule());

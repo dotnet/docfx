@@ -763,7 +763,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
                 },
                 new MarkdownTagValidationRule
                 {
-                    TagNames = new List<string> { "code" },
+                    TagNames = new List<string> { "pre" },
                     MessageFormatter = "Warning tag({0})!",
                     Behavior = TagValidationBehavior.Warning,
                 },
@@ -783,12 +783,12 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
             string result;
             using (new LoggerPhaseScope("test!!!!"))
             {
-                result = engine.Markup(@"<div><i>x</i><EM>y</EM><h1>z<code>a*b*c</code></h1></div>
+                result = engine.Markup(@"<div><i>x</i><EM>y</EM><h1>z<pre><code>a*b*c</code></pre></h1></div>
 
 <script>alert(1);</script>", "test");
             }
             Logger.UnregisterListener(listener);
-            Assert.Equal(@"<div><i>x</i><EM>y</EM><h1>z<code>a*b*c</code></h1></div>
+            Assert.Equal(@"<div><i>x</i><EM>y</EM><h1>z<pre><code>a*b*c</code></pre></h1></div>
 
 <script>alert(1);</script>".Replace("\r\n", "\n"), result);
             Assert.Equal(8, listener.Items.Count);
@@ -798,7 +798,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
                 "Invalid tag(div)!",
                 "Invalid tag(EM)!",
                 "Warning tag(h1)!",
-                "Warning tag(code)!",
+                "Warning tag(pre)!",
                 "Warning tag(h1)!",
                 "Html Tag!",
                 "Warning tag(script)!",
