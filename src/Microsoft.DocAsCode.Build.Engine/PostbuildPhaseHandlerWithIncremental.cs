@@ -189,7 +189,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                from output in m.OutputFiles.Values
                                select new
                                {
-                                   Path = Path.Combine(outputDir, output.RelativePath),
+                                   Path = output.RelativePath,
                                    SourcePath = m.SourceRelativePath,
                                } into items
                                group items by items.SourcePath).ToDictionary(g => g.Key, g => g.Select(p => p.Path).ToList());
@@ -206,6 +206,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     foreach (var path in items)
                     {
                         string fileName = IncrementalUtility.GetRandomEntry(IncrementalContext.BaseDir);
+                        string fullPath = Path.Combine(outputDir, path);
                         IncrementalUtility.RetryIO(() =>
                         {
                             if (pair.Value == null)
@@ -220,11 +221,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                                     throw new BuildCacheException($"Last build hasn't loaded output: {path}.");
                                 }
 
-                                Directory.CreateDirectory(Path.GetDirectoryName(path));
-                                File.Copy(Path.Combine(IncrementalContext.LastBaseDir, lfn), path, true);
+                                Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                                File.Copy(Path.Combine(IncrementalContext.LastBaseDir, lfn), fullPath, true);
                             }
 
-                            File.Copy(path, Path.Combine(IncrementalContext.BaseDir, fileName));
+                            File.Copy(fullPath, Path.Combine(IncrementalContext.BaseDir, fileName));
                             CurrentBuildVersionInfo.BuildOutputs.Add(path, fileName);
                         });
                     }

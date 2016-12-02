@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string TemplateDir { get; set; }
 
-        public ImmutableDictionary<string, ChangeKindWithDependency> Changes { get; set; } = ImmutableDictionary<string, ChangeKindWithDependency>.Empty;
+        public ImmutableDictionary<string, ChangeKindWithDependency> Changes { get; set; }
 
         public bool ForceRebuild { get; set; }
     }
