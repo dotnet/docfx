@@ -5,16 +5,21 @@ namespace Microsoft.DocAsCode.Common
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
     public class RealFileReader : IFileReader
     {
-        public RealFileReader(string inputFolder)
+        public RealFileReader(string inputFolder, ImmutableDictionary<string, string> properties)
         {
             if (inputFolder == null)
             {
                 throw new ArgumentNullException(nameof(inputFolder));
+            }
+            if (properties == null)
+            {
+                throw new ArgumentNullException(nameof(properties));
             }
             if (!Directory.Exists(inputFolder))
             {
@@ -27,9 +32,12 @@ namespace Microsoft.DocAsCode.Common
                 inputFolder += "/";
             }
             InputFolder = inputFolder;
+            Properties = properties;
         }
 
         public string InputFolder { get; }
+
+        public ImmutableDictionary<string, string> Properties { get; }
 
         #region IFileReader Members
 
@@ -40,7 +48,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 return null;
             }
-            return new PathMapping(file, pp);
+            return new PathMapping(file, pp) { Properties = Properties };
         }
 
         public IEnumerable<RelativePath> EnumerateFiles()

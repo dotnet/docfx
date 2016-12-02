@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Common
 {
+    using System.Collections.Immutable;
     using System.IO;
 
     public class RealFileWriter : FileWriterBase
@@ -28,7 +29,7 @@ namespace Microsoft.DocAsCode.Common
 
         public override IFileReader CreateReader()
         {
-            return new RealFileReader(OutputFolder);
+            return new RealFileReader(OutputFolder, ImmutableDictionary<string, string>.Empty);
         }
 
         #endregion
