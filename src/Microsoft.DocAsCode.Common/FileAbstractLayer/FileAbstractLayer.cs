@@ -26,11 +26,9 @@ namespace Microsoft.DocAsCode.Common
 
         public IFileWriter Writer { get; }
 
-        #endregion
+        public bool CanRead => !_disposed;
 
-        #region IFileAbstractLayer Members
-
-        public bool CanWrite => Writer != null;
+        public bool CanWrite => !_disposed && Writer != null;
 
         public IEnumerable<RelativePath> GetAllInputFiles()
         {
@@ -60,6 +58,10 @@ namespace Microsoft.DocAsCode.Common
 
         public FileStream OpenRead(RelativePath file)
         {
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
             EnsureNotDisposed();
             var pp = FindPhysicalPath(file);
             return File.OpenRead(pp.PhysicalPath);
@@ -67,27 +69,43 @@ namespace Microsoft.DocAsCode.Common
 
         public FileStream Create(RelativePath file)
         {
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+            EnsureNotDisposed();
             if (!CanWrite)
             {
                 throw new InvalidOperationException();
             }
-            EnsureNotDisposed();
             return Writer.Create(file);
         }
 
         public void Copy(RelativePath sourceFileName, RelativePath destFileName)
         {
+            if (sourceFileName == null)
+            {
+                throw new ArgumentNullException(nameof(sourceFileName));
+            }
+            if (destFileName == null)
+            {
+                throw new ArgumentNullException(nameof(destFileName));
+            }
+            EnsureNotDisposed();
             if (!CanWrite)
             {
                 throw new InvalidOperationException();
             }
-            EnsureNotDisposed();
             var mapping = FindPhysicalPath(sourceFileName);
             Writer.Copy(mapping, destFileName);
         }
 
         public ImmutableDictionary<string, string> GetProperties(RelativePath file)
         {
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
             EnsureNotDisposed();
             var mapping = FindPhysicalPath(file);
             return mapping.Properties;

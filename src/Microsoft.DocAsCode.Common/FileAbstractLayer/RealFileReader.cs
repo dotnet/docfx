@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.Common
         {
             var length = InputFolder.Length;
             return from f in Directory.EnumerateFiles(InputFolder, "*.*", SearchOption.AllDirectories)
-                   select (RelativePath)f.Substring(length);
+                   select ((RelativePath)f.Substring(length)).GetPathFromWorkingFolder();
         }
 
         #endregion
