@@ -83,6 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public void Build(IEnumerable<DocumentBuildParameters> parameters, string outputDirectory)
         {
             var manifests = new List<Manifest>();
+            bool transformDocument = false;
             foreach (var parameter in parameters)
             {
                 if (parameter.Files.Count == 0)
@@ -92,6 +93,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                         : $"No files found, nothing is generated in version \"{parameter.VersionName}\".");
                     manifests.Add(new Manifest());
                     continue;
+                }
+                if (parameter.ApplyTemplateSettings.TransformDocument)
+                {
+                    transformDocument = true;
                 }
                 PrepareMetadata(parameter);
                 if (!string.IsNullOrEmpty(parameter.VersionName))
@@ -109,7 +114,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             SaveManifest(generatedManifest, outputDirectory);
 
             // overwrite intermediate cache files
-            if (_intermediateFolder != null)
+            if (_intermediateFolder != null && transformDocument)
             {
                 _currentBuildInfo.Save(_intermediateFolder);
                 if (_lastBuildInfo != null)

@@ -33,8 +33,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         internal BuildInfo LastBuildInfo { get; set; }
         internal string IntermediateFolder { get; set; }
 
-        private bool ShouldTraceIncrementalInfo => IntermediateFolder != null;
-
         public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters, IMarkdownService markdownService)
         {
             var hostServiceCreator = new HostServiceCreator(null);
@@ -225,7 +223,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void Prepare(DocumentBuildParameters parameters, DocumentBuildContext context, TemplateProcessor templateProcessor, out IHostServiceCreator hostServiceCreator, out PhaseProcessor phaseProcessor)
         {
-            if (ShouldTraceIncrementalInfo)
+            if (IntermediateFolder != null && parameters.ApplyTemplateSettings.TransformDocument)
             {
                 context.IncrementalBuildContext = IncrementalBuildContext.Create(parameters, CurrentBuildInfo, LastBuildInfo, IntermediateFolder);
                 hostServiceCreator = new HostServiceCreatorWithIncremental(context);

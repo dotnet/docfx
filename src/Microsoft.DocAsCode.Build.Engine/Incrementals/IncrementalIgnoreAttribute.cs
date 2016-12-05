@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using System;
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
-    public class IncrementalCheckAttribute : Attribute
+    public class IncrementalIgnoreAttribute : Attribute
     {
     }
 }

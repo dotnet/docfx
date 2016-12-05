@@ -41,8 +41,17 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string GetTemplatesHash()
         {
+            return $"{GetResourceHash(_templates)}-{GetResourceHash(_themes)}";
+        }
+
+        private string GetResourceHash(IEnumerable<string> resources)
+        {
+            if (resources == null)
+            {
+                return null;
+            }
             var sb = new StringBuilder();
-            using (var templateResource = CreateTemplateResource(_templates))
+            using (var templateResource = CreateTemplateResource(resources))
             using (var md5 = MD5.Create())
             {
                 foreach (var name in from n in templateResource.Names ?? Enumerable.Empty<string>()

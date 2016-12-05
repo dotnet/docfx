@@ -10,48 +10,47 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public sealed class DocumentBuildParameters : MarshalByRefObject
     {
+        [IncrementalIgnore]
         public FileCollection Files { get; set; }
 
+        [IncrementalIgnore]
         public string OutputBaseDir { get; set; }
 
-        [IncrementalCheck]
         public ImmutableArray<string> ExternalReferencePackages { get; set; } = ImmutableArray<string>.Empty;
 
-        [IncrementalCheck]
         public ImmutableArray<string> XRefMaps { get; set; } = ImmutableArray<string>.Empty;
 
-        [IncrementalCheck]
         public ImmutableDictionary<string, object> Metadata { get; set; } = ImmutableDictionary<string, object>.Empty;
 
-        [IncrementalCheck]
         public FileMetadata FileMetadata { get; set; }
 
-        [IncrementalCheck]
         public ImmutableArray<string> PostProcessors { get; set; } = ImmutableArray<string>.Empty;
 
+        [IncrementalIgnore]
         public TemplateManager TemplateManager { get; set; }
 
-        // todo : move the check to the prehandle of postbuild phase
-        [IncrementalCheck]
+        [IncrementalIgnore]
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 
+        [IncrementalIgnore]
         public int MaxParallelism { get; set; }
 
-        [IncrementalCheck]
         public string MarkdownEngineName { get; set; } = "dfm";
 
-        [IncrementalCheck]
         public ImmutableDictionary<string, object> MarkdownEngineParameters { get; set; } = ImmutableDictionary<string, object>.Empty;
 
+        [IncrementalIgnore]
         public string VersionName { get; set; }
 
-        [IncrementalCheck]
         public string RootTocPath { get; set; }
 
+        [IncrementalIgnore]
         public string TemplateDir { get; set; }
 
+        [IncrementalIgnore]
         public ImmutableDictionary<string, ChangeKindWithDependency> Changes { get; set; }
 
+        [IncrementalIgnore]
         public bool ForceRebuild { get; set; }
     }
 }

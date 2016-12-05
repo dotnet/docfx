@@ -346,7 +346,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 parameter,
                 new JsonSerializerSettings
                 {
-                    ContractResolver = new IncrementalCheckPropertiesResolver()
+                    ContractResolver = new IncrementalIgnorePropertiesResolver()
                 }));
         }
 
@@ -459,7 +459,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 var options = _parameters.ApplyTemplateSettings.Options;
                 if ((options & (ApplyTemplateOptions.ExportRawModel | ApplyTemplateOptions.ExportViewModel)) != ApplyTemplateOptions.None)
                 {
-                    Logger.LogVerbose($"Disable incremental build because ExportRawModel/ExportViewModel option.");
+                    Logger.LogVerbose($"Disable incremental build because ExportRawModel/ExportViewModel option enabled.");
                     return false;
                 }
             }
