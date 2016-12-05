@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
+    using System.Collections.Immutable;
 
     public class FileAbstractLayerBuilder
     {
@@ -19,13 +20,20 @@ namespace Microsoft.DocAsCode.Common
             _writer = writer;
         }
 
-        public FileAbstractLayerBuilder ReadFromRealFileSystem(string folder)
+        public FileAbstractLayerBuilder ReadFromRealFileSystem(string folder) =>
+            ReadFromRealFileSystem(folder, ImmutableDictionary<string, string>.Empty);
+
+        public FileAbstractLayerBuilder ReadFromRealFileSystem(string folder, ImmutableDictionary<string, string> properties)
         {
             if (folder == null)
             {
                 throw new ArgumentNullException(nameof(folder));
             }
-            return new FileAbstractLayerBuilder(new RealFileReader(folder), _writer);
+            if (properties == null)
+            {
+                throw new ArgumentNullException(nameof(properties));
+            }
+            return new FileAbstractLayerBuilder(new RealFileReader(folder, properties), _writer);
         }
 
         public FileAbstractLayerBuilder WriteToRealFileSystem(string folder)

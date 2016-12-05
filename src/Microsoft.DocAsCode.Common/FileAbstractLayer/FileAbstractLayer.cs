@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Common
     using System.Collections.Immutable;
     using System.IO;
 
-    public class FileAbstractLayer : IFileAbstractLayer
+    public class FileAbstractLayer : IDisposable
     {
         #region Constructors
 

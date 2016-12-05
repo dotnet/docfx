@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Common.Tests
 {
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
@@ -29,6 +30,24 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.False(fal.Exists("temp.jpg"));
             Assert.Equal("👍", fal.ReadAllText("temp.txt"));
             Assert.Equal(new[] { (RelativePath)"~/temp.txt" }, fal.GetAllInputFiles());
+        }
+
+        [Fact]
+        public void TestFileAbstractLayerWithLinkImplementsShouldGetPropertiesCorrectly()
+        {
+            var input = GetRandomFolder();
+            File.WriteAllText(Path.Combine(input, "temp.txt"), "👍");
+            var fal = new FileAbstractLayerBuilder()
+                .ReadFromLink(
+                    new PathMapping((RelativePath)"~/", input)
+                    {
+                        Properties = ImmutableDictionary<string, string>.Empty.Add("test", "true")
+                    })
+                .Create();
+            Assert.True(fal.Exists("temp.txt"));
+            Assert.Equal("true", fal.GetProperties("temp.txt")["test"]);
+            Assert.True(fal.HasProperty("temp.txt", "test"));
+            Assert.Equal("true", fal.GetProperty("temp.txt", "test"));
         }
 
         [Fact]
@@ -237,6 +256,22 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.Equal(new[] { (RelativePath)"~/copy.txt" }, fal2.GetAllInputFiles());
             Assert.True(File.Exists(Path.Combine(output, "copy.txt")));
             Assert.Equal(File.ReadAllText(Path.Combine(input, "temp.txt")), "😄");
+        }
+
+        [Fact]
+        public void TestFileAbstractLayerWithRealImplementsShouldGetPropertiesCorrectly()
+        {
+            var input = GetRandomFolder();
+            File.WriteAllText(Path.Combine(input, "temp.txt"), "👍");
+            var fal = new FileAbstractLayerBuilder()
+                .ReadFromRealFileSystem(
+                    input,
+                    ImmutableDictionary<string, string>.Empty.Add("test", "true"))
+                .Create();
+            Assert.True(fal.Exists("temp.txt"));
+            Assert.Equal("true", fal.GetProperties("temp.txt")["test"]);
+            Assert.True(fal.HasProperty("temp.txt", "test"));
+            Assert.Equal("true", fal.GetProperty("temp.txt", "test"));
         }
     }
 }
