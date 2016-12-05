@@ -57,7 +57,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void PreHandle(List<HostService> hostServices)
         {
-            ReloadModels(hostServices);
+            ReloadModelsPerChanges(hostServices);
             RegisterUnloadedXRefSpec(hostServices);
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }

@@ -41,6 +41,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string GetTemplatesHash()
         {
+            if (_templates == null)
+            {
+                return null;
+            }
             var sb = new StringBuilder();
             using (var templateResource = CreateTemplateResource(_templates))
             using (var md5 = MD5.Create())
