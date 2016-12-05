@@ -13,6 +13,13 @@ $(function () {
     $('table').addClass('table table-bordered table-striped table-condensed');
   })();
 
+  // Styling for alerts.
+  (function () {
+    $('.NOTE, .TIP').addClass('alert alert-info');
+    $('.WARNING').addClass('alert alert-warning');
+    $('.IMPORTANT, .CAUTION').addClass('alert alert-danger');
+  })();  
+
   // Enable highlight.js
   (function () {
     $('pre code').each(function(i, block) {
