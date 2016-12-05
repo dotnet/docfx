@@ -454,6 +454,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 Logger.LogVerbose($"Disable incremental build by force rebuild option.");
                 return false;
             }
+            if (_parameters.ApplyTemplateSettings != null)
+            {
+                var options = _parameters.ApplyTemplateSettings.Options;
+                if ((options & (ApplyTemplateOptions.ExportRawModel | ApplyTemplateOptions.ExportViewModel)) != ApplyTemplateOptions.None)
+                {
+                    Logger.LogVerbose($"Disable incremental build because ExportRawModel/ExportViewModel option.");
+                    return false;
+                }
+            }
             return true;
         }
 
