@@ -18,7 +18,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             new ResolveReference(),
             new NormalizeSyntax(),
             new BuildMembers(),
-            new BuildToc(),
+            new SetDerivedClass(),
+            new BuildToc()
         };
 
         /// <summary>
