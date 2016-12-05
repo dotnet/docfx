@@ -7,6 +7,12 @@ $(function () {
   var show = 'show';
   var hide = 'hide';
 
+  // Styling for tables in conceptual documents using Bootstrap.
+  // See http://getbootstrap.com/css/#tables
+  (function () {
+    $('table').addClass('table table-bordered table-striped table-condensed');
+  })();
+
   // Enable highlight.js
   (function () {
     $('pre code').each(function(i, block) {
