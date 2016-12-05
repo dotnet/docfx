@@ -9,8 +9,6 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.IO;
     using System.Linq;
 
-    using Newtonsoft.Json.Linq;
-
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Build.ManagedReference;
@@ -101,7 +99,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var vm = MergeTocViewModel(
                 from f in tocFiles
                 select YamlUtility.Deserialize<TocViewModel>(Path.Combine(f.BaseDir, f.File)));
-            SetTocViewModelMetadata(vm, parameters.MetadataNeedMergedIntoToc);
+            CopyMetadataToToc(vm, parameters.TocMetadata);
             YamlUtility.Serialize(
                 Path.Combine(
                     outputBase,
@@ -119,18 +117,22 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private void SetTocViewModelMetadata(TocViewModel vm, ImmutableList<string> metaNames)
+        private void CopyMetadataToToc(TocViewModel vm, ImmutableList<string> metaNames)
         {
             foreach (var item in vm)
             {
                 foreach (var metaName in metaNames)
                 {
-                    MergeIntoTocMetadata(item, metaName);
+                    CopyMetadataToTocItem(item, metaName);
+                    foreach (var childItem in item.Items ?? Enumerable.Empty<TocItemViewModel>())
+                    {
+                        CopyMetadataToTocItem(childItem, metaName);
+                    }
                 }
             }
         }
 
-        private List<string> MergeIntoTocMetadata(TocItemViewModel item, string metaName)
+        private void CopyMetadataToTocItem(TocItemViewModel item, string metaName)
         {
             Dictionary<string, object> metadata;
             if (_metaTable.TryGetValue(item.Uid, out metadata))
@@ -138,73 +140,9 @@ namespace Microsoft.DocAsCode.SubCommands
                 object metaValue;
                 if (metadata.TryGetValue(metaName, out metaValue))
                 {
-                    var merged = TryGetListFromObject(metaValue);
-                    foreach (var child in item.Items ?? Enumerable.Empty<TocItemViewModel>())
-                    {
-                        var childMetaValue = MergeIntoTocMetadata(child, metaName);
-                        merged = MergeMetadata(merged, childMetaValue);
-                    }
-                    if (item.Metadata == null)
-                    {
-                        item.Metadata = new Dictionary<string, object>();
-                    }
-                    item.Metadata[metaName] = merged;
-                    return merged;
+                    item.Metadata[metaName] = metaValue;
                 }
             }
-            return null;
-        }
-
-        private static List<string> MergeMetadata(object meta1, object meta2)
-        {
-            var list1 = TryGetListFromObject(meta1);
-            var list2 = TryGetListFromObject(meta2);
-
-            if (list1 == null && list2 == null)
-            {
-                return null;
-            }
-            else if (list1 == null)
-            {
-                return list2.Distinct().ToList();
-            }
-            else if (list2 == null)
-            {
-                return list1.Distinct().ToList();
-            }
-
-            list1.AddRange(list2);
-            return list1.Distinct().ToList();
-        }
-
-        private static List<string> TryGetListFromObject(object meta)
-        {
-            var text = meta as string;
-            if (text != null)
-            {
-                return new List<string> { text };
-            }
-
-            var collection = meta as IEnumerable<object>;
-            if (collection != null)
-            {
-                return collection.OfType<string>().ToList();
-            }
-
-            var jarray = meta as JArray;
-            if (jarray != null)
-            {
-                try
-                {
-                    return jarray.ToObject<List<string>>();
-                }
-                catch (Exception)
-                {
-                    Logger.LogWarning($"Unknown metadata: {jarray.ToString()}");
-                }
-            }
-
-            return null;
         }
 
         private static TocItemViewModel MergeTocItem(List<TocItemViewModel> items)

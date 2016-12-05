@@ -146,7 +146,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 OutputBaseDir = outputDirectory,
                 Metadata = config.GlobalMetadata?.ToImmutableDictionary() ?? ImmutableDictionary<string, object>.Empty,
                 FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata),
-                MetadataNeedMergedIntoToc = config.TocMetadata?.ToImmutableList() ?? ImmutableList<string>.Empty,
+                TocMetadata = config.TocMetadata?.ToImmutableList() ?? ImmutableList<string>.Empty,
                 Files = GetFileCollectionFromFileMapping(
                     baseDirectory,
                     DocumentType.Article,
