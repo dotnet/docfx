@@ -248,7 +248,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Exceptions = model.Exceptions,
                 Sees = model.Sees,
                 SeeAlsos = model.SeeAlsos,
-                DerivedClass = model.DerivedClass,
+                DerivedClasses = model.DerivedClasses,
                 Inheritance = model.Inheritance,
                 Implements = model.Implements,
                 InheritedMembers = model.InheritedMembers,

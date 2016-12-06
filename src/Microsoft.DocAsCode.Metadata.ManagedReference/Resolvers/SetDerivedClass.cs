@@ -28,14 +28,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var inheritance = item.Inheritance;
                 if (inheritance!= null && inheritance.Count > 0)
                 {
-                    List<string> derivedClasses;
-                    if (_derivedClassMapping.TryGetValue(inheritance[inheritance.Count - 1], out derivedClasses))
+                    var superClass = inheritance[inheritance.Count - 1];
+                    // ignore System.Object's derived class
+                    if (superClass != "System.Object")
                     {
-                        derivedClasses.Add(item.Name);
-                    }
-                    else
-                    {
-                        _derivedClassMapping.Add(inheritance[inheritance.Count - 1], new List<string> { item.Name });
+                        List<string> derivedClasses;
+                        if (_derivedClassMapping.TryGetValue(superClass, out derivedClasses))
+                        {
+                            derivedClasses.Add(item.Name);
+                        }
+                        else
+                        {
+                            _derivedClassMapping.Add(superClass, new List<string> { item.Name });
+                        }
                     }
                 }
             }
@@ -50,6 +55,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     List<string> derivedClasses;
                     if (_derivedClassMapping.TryGetValue(item.Name, out derivedClasses))
                     {
+                        derivedClasses.Sort();
                         item.DerivedClasses = derivedClasses;
                     }
                 }
