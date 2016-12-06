@@ -18,10 +18,9 @@ namespace Microsoft.DocAsCode.Common.Tests
         [Fact]
         public void TestFileAbstractLayerWithLinkImplementsShouldReadFileCorrectlyWhenInputNoFallback()
         {
-
             var input = GetRandomFolder();
             File.WriteAllText(Path.Combine(input, "temp.txt"), "👍");
-            var fal = new FileAbstractLayerBuilder()
+            var fal = FileAbstractLayerBuilder.Default
                 .ReadFromLink(new PathMapping((RelativePath)"~/", input))
                 .Create();
             Assert.True(fal.Exists("~/temp.txt"));
@@ -37,7 +36,7 @@ namespace Microsoft.DocAsCode.Common.Tests
         {
             var input = GetRandomFolder();
             File.WriteAllText(Path.Combine(input, "temp.txt"), "👍");
-            var fal = new FileAbstractLayerBuilder()
+            var fal = FileAbstractLayerBuilder.Default
                 .ReadFromLink(
                     new PathMapping((RelativePath)"~/", input)
                     {
@@ -58,7 +57,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             var input2 = GetRandomFolder();
             File.WriteAllText(Path.Combine(input2, "temp1.txt"), "😈");
             File.WriteAllText(Path.Combine(input2, "temp2.txt"), "💂");
-            var fal = new FileAbstractLayerBuilder()
+            var fal = FileAbstractLayerBuilder.Default
                 .ReadFromLink(
                     new PathMapping((RelativePath)"~/", input1),
                     new PathMapping((RelativePath)"~/", input2))
@@ -92,7 +91,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             Directory.CreateDirectory(Path.Combine(input2, "b"));
             File.WriteAllText(Path.Combine(input2, "a/temp.txt"), "😈");
             File.WriteAllText(Path.Combine(input2, "b/temp.txt"), "💂");
-            var fal = new FileAbstractLayerBuilder()
+            var fal = FileAbstractLayerBuilder.Default
                 .ReadFromLink(
                     new PathMapping((RelativePath)"~/a/", input1),
                     new PathMapping((RelativePath)"~/", input2))
@@ -120,13 +119,13 @@ namespace Microsoft.DocAsCode.Common.Tests
             var input = GetRandomFolder();
             var output = GetRandomFolder();
             File.WriteAllText(Path.Combine(input, "temp.txt"), "😈");
-            var fal = new FileAbstractLayerBuilder()
+            var fal = FileAbstractLayerBuilder.Default
                 .ReadFromLink(new PathMapping((RelativePath)"~/", input))
                 .WriteToLink(output)
                 .Create();
             fal.Copy("temp.txt", "copy.txt");
 
-            var fal2 = new FileAbstractLayerBuilder()
+            var fal2 = FileAbstractLayerBuilder.Default
                 .ReadFromOutput(fal)
                 .Create();
             Assert.True(fal2.Exists("copy.txt"));
@@ -140,13 +139,13 @@ namespace Microsoft.DocAsCode.Common.Tests
         public void TestFileAbstractLayerWithLinkImplementsShouldCreateTwiceForSameFileCorrectly()
         {
             var output = GetRandomFolder();
-            var fal = new FileAbstractLayerBuilder()
+            var fal = FileAbstractLayerBuilder.Default
                 .WriteToLink(output)
                 .Create();
             fal.WriteAllText("temp.txt", "😱");
             fal.WriteAllText("temp.txt", "😆");
 
-            var fal2 = new FileAbstractLayerBuilder()
+            var fal2 = FileAbstractLayerBuilder.Default
                 .ReadFromOutput(fal)
                 .Create();
             Assert.True(fal2.Exists("temp.txt"));
@@ -161,14 +160,14 @@ namespace Microsoft.DocAsCode.Common.Tests
             var input = GetRandomFolder();
             var output = GetRandomFolder();
             File.WriteAllText(Path.Combine(input, "temp.txt"), "😄");
-            var fal = new FileAbstractLayerBuilder()
+            var fal = FileAbstractLayerBuilder.Default
                 .ReadFromLink(new PathMapping((RelativePath)"~/", input))
                 .WriteToLink(output)
                 .Create();
             fal.Copy("temp.txt", "copy.txt");
             fal.WriteAllText("copy.txt", "😁");
 
-            var fal2 = new FileAbstractLayerBuilder()
+            var fal2 = FileAbstractLayerBuilder.Default
                 .ReadFromOutput(fal)
                 .Create();
             Assert.True(fal2.Exists("copy.txt"));
@@ -183,7 +182,7 @@ namespace Microsoft.DocAsCode.Common.Tests
         {
             var input = GetRandomFolder();
             File.WriteAllText(Path.Combine(input, "temp.txt"), "👍");
-            var fal = new FileAbstractLayerBuilder()
+            var fal = FileAbstractLayerBuilder.Default
                 .ReadFromRealFileSystem(input)
                 .Create();
             Assert.True(fal.Exists("~/temp.txt"));
@@ -200,13 +199,13 @@ namespace Microsoft.DocAsCode.Common.Tests
             var input = GetRandomFolder();
             var output = GetRandomFolder();
             File.WriteAllText(Path.Combine(input, "temp.txt"), "😈");
-            var fal = new FileAbstractLayerBuilder()
+            var fal = FileAbstractLayerBuilder.Default
                 .ReadFromRealFileSystem(input)
                 .WriteToRealFileSystem(output)
                 .Create();
             fal.Copy("temp.txt", "copy.txt");
 
-            var fal2 = new FileAbstractLayerBuilder()
+            var fal2 = FileAbstractLayerBuilder.Default
                 .ReadFromOutput(fal)
                 .Create();
             Assert.True(fal2.Exists("copy.txt"));
@@ -220,13 +219,13 @@ namespace Microsoft.DocAsCode.Common.Tests
         public void TestFileAbstractLayerWithRealImplementsShouldCreateTwiceForSameFileCorrectly()
         {
             var output = GetRandomFolder();
-            var fal = new FileAbstractLayerBuilder()
+            var fal = FileAbstractLayerBuilder.Default
                 .WriteToRealFileSystem(output)
                 .Create();
             fal.WriteAllText("temp.txt", "😱");
             fal.WriteAllText("temp.txt", "😆");
 
-            var fal2 = new FileAbstractLayerBuilder()
+            var fal2 = FileAbstractLayerBuilder.Default
                 .ReadFromOutput(fal)
                 .Create();
             Assert.True(fal2.Exists("temp.txt"));
@@ -241,14 +240,14 @@ namespace Microsoft.DocAsCode.Common.Tests
             var input = GetRandomFolder();
             var output = GetRandomFolder();
             File.WriteAllText(Path.Combine(input, "temp.txt"), "😄");
-            var fal = new FileAbstractLayerBuilder()
+            var fal = FileAbstractLayerBuilder.Default
                 .ReadFromRealFileSystem(input)
                 .WriteToRealFileSystem(output)
                 .Create();
             fal.Copy("temp.txt", "copy.txt");
             fal.WriteAllText("copy.txt", "😁");
 
-            var fal2 = new FileAbstractLayerBuilder()
+            var fal2 = FileAbstractLayerBuilder.Default
                 .ReadFromOutput(fal)
                 .Create();
             Assert.True(fal2.Exists("copy.txt"));
@@ -263,7 +262,7 @@ namespace Microsoft.DocAsCode.Common.Tests
         {
             var input = GetRandomFolder();
             File.WriteAllText(Path.Combine(input, "temp.txt"), "👍");
-            var fal = new FileAbstractLayerBuilder()
+            var fal = FileAbstractLayerBuilder.Default
                 .ReadFromRealFileSystem(
                     input,
                     ImmutableDictionary<string, string>.Empty.Add("test", "true"))
@@ -272,6 +271,54 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.Equal("true", fal.GetProperties("temp.txt")["test"]);
             Assert.True(fal.HasProperty("temp.txt", "test"));
             Assert.Equal("true", fal.GetProperty("temp.txt", "test"));
+        }
+
+        [Fact]
+        public void TestFileAbstractLayerWithFallbackShouldReadFileCorrectly()
+        {
+            var input1 = GetRandomFolder();
+            File.WriteAllText(Path.Combine(input1, "temp1.txt"), "👍");
+            var input2 = GetRandomFolder();
+            File.WriteAllText(Path.Combine(input2, "temp1.txt"), "😈");
+            File.WriteAllText(Path.Combine(input2, "temp2.txt"), "😎");
+            var fal = FileAbstractLayerBuilder.Default
+                .ReadFromRealFileSystem(input1)
+                .FallbackReadFromInput(
+                    FileAbstractLayerBuilder.Default
+                    .ReadFromRealFileSystem(input2)
+                    .Create())
+                .Create();
+            Assert.True(fal.Exists("temp1.txt"));
+            Assert.True(fal.Exists("temp2.txt"));
+            Assert.False(fal.Exists("temp3.txt"));
+            Assert.Equal("👍", fal.ReadAllText("temp1.txt"));
+            Assert.Equal("😎", fal.ReadAllText("temp2.txt"));
+            Assert.Equal(
+                new[] { "~/temp1.txt", "~/temp2.txt" },
+                from r in fal.GetAllInputFiles()
+                select (string)r into p
+                orderby p
+                select p);
+        }
+
+        [Fact]
+        public void TestFileAbstractLayerWithFallbackShouldGetPropertiesCorrectly()
+        {
+            var input1 = GetRandomFolder();
+            File.WriteAllText(Path.Combine(input1, "temp1.txt"), "👍");
+            var input2 = GetRandomFolder();
+            File.WriteAllText(Path.Combine(input2, "temp1.txt"), "😈");
+            File.WriteAllText(Path.Combine(input2, "temp2.txt"), "😎");
+            var fal = FileAbstractLayerBuilder.Default
+                .ReadFromRealFileSystem(input1, ImmutableDictionary<string, string>.Empty.Add("from", "1"))
+                .FallbackReadFromInput(
+                    FileAbstractLayerBuilder.Default
+                    .ReadFromRealFileSystem(input2, ImmutableDictionary<string, string>.Empty.Add("from", "2"))
+                    .Create())
+                .Create();
+            Assert.True(fal.Exists("temp1.txt"));
+            Assert.Equal("1", fal.GetProperty("temp1.txt", "from"));
+            Assert.Equal("2", fal.GetProperty("temp2.txt", "from"));
         }
     }
 }
