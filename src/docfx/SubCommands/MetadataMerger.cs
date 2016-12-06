@@ -85,7 +85,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             foreach (var m in models)
             {
-                InitMetaTable(m);
+                InitMetaTable(m, parameters.TocMetadata);
                 YamlUtility.Serialize(Path.Combine(outputBase, m.File), m.Content, YamlMime.ManagedReference);
             }
         }
@@ -99,7 +99,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var vm = MergeTocViewModel(
                 from f in tocFiles
                 select YamlUtility.Deserialize<TocViewModel>(Path.Combine(f.BaseDir, f.File)));
-            CopyMetadataToToc(vm, parameters.TocMetadata);
+            CopyMetadataToToc(vm);
             YamlUtility.Serialize(
                 Path.Combine(
                     outputBase,
@@ -108,39 +108,47 @@ namespace Microsoft.DocAsCode.SubCommands
                 YamlMime.TableOfContent);
         }
 
-        private void InitMetaTable(FileModel model)
+        private void InitMetaTable(FileModel model, ImmutableList<string> metaNames)
         {
             var content = model.Content as PageViewModel;
-            if (content != null && model.Uids.Length > 0)
+            if (content?.Metadata != null && model.Uids.Length > 0)
             {
-                _metaTable.Add(model.Uids.First().Name, content.Metadata);
-            }
-        }
-
-        private void CopyMetadataToToc(TocViewModel vm, ImmutableList<string> metaNames)
-        {
-            foreach (var item in vm)
-            {
+                var metadata = new Dictionary<string, object>();
                 foreach (var metaName in metaNames)
                 {
-                    CopyMetadataToTocItem(item, metaName);
-                    foreach (var childItem in item.Items ?? Enumerable.Empty<TocItemViewModel>())
+                    object metaValue;
+                    if (content.Metadata.TryGetValue(metaName, out metaValue))
                     {
-                        CopyMetadataToTocItem(childItem, metaName);
+                        metadata.Add(metaName, metaValue);
                     }
+                }
+                if (metadata.Count > 0)
+                {
+                    _metaTable.Add(model.Uids.First().Name, metadata);
                 }
             }
         }
 
-        private void CopyMetadataToTocItem(TocItemViewModel item, string metaName)
+        private void CopyMetadataToToc(TocViewModel vm)
+        {
+            foreach (var item in vm)
+            {
+                CopyMetadataToTocItem(item);
+                foreach (var childItem in item.Items ?? Enumerable.Empty<TocItemViewModel>())
+                {
+                    CopyMetadataToTocItem(childItem);
+                }
+            }
+        }
+
+        private void CopyMetadataToTocItem(TocItemViewModel item)
         {
             Dictionary<string, object> metadata;
             if (_metaTable.TryGetValue(item.Uid, out metadata))
             {
-                object metaValue;
-                if (metadata.TryGetValue(metaName, out metaValue))
+                foreach (var metaPair in metadata)
                 {
-                    item.Metadata[metaName] = metaValue;
+                    item.Metadata[metaPair.Key] = metaPair.Value;
                 }
             }
         }
