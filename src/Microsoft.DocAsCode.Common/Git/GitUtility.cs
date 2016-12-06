@@ -60,7 +60,15 @@ namespace Microsoft.DocAsCode.Common.Git
         #region Private Methods
         private static GitDetail GetFileDetailCore(string filePath)
         {
-            var directory = Path.GetDirectoryName(filePath);
+            string directory;
+            if (File.GetAttributes(filePath).HasFlag(FileAttributes.Directory))
+            {
+                directory = filePath;
+            }
+            else
+            {
+                directory = Path.GetDirectoryName(filePath);
+            }
 
             GitRepoInfo repoInfo;
             if (!Cache.TryGetValue(directory, out repoInfo))
