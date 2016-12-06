@@ -108,6 +108,10 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             config.FileMetadata = BuildCommand.GetFileMetadataFromOption(config.FileMetadata, options.FileMetadataFilePath, null);
             config.GlobalMetadata = BuildCommand.GetGlobalMetadataFromOption(config.GlobalMetadata, options.GlobalMetadataFilePath, null, options.GlobalMetadata);
+            if (options.TocMetadata != null)
+            {
+                config.TocMetadata = new ListWithStringFallback(options.TocMetadata);
+            }
         }
 
         private sealed class MergeConfig
@@ -142,6 +146,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 OutputBaseDir = outputDirectory,
                 Metadata = config.GlobalMetadata?.ToImmutableDictionary() ?? ImmutableDictionary<string, object>.Empty,
                 FileMetadata = ConvertToFileMetadataItem(baseDirectory, config.FileMetadata),
+                TocMetadata = config.TocMetadata?.ToImmutableList() ?? ImmutableList<string>.Empty,
                 Files = GetFileCollectionFromFileMapping(
                     baseDirectory,
                     DocumentType.Article,

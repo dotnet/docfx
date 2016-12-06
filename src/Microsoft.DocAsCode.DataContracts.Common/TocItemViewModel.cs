@@ -111,12 +111,12 @@ namespace Microsoft.DocAsCode.DataContracts.Common
 
         [ExtensibleMember]
         [JsonIgnore]
-        public Dictionary<string, object> Additional { get; set; } = new Dictionary<string, object>();
+        public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [YamlIgnore]
         [JsonExtensionData(ReadData = false, WriteData = true)]
-        public Dictionary<string, object> AdditionalJson
+        public Dictionary<string, object> MetadataJson
         {
             get
             {
@@ -125,7 +125,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
                 {
                     dict["name." + item.Key] = item.Value;
                 }
-                foreach (var item in Additional)
+                foreach (var item in Metadata)
                 {
                     dict[item.Key] = item.Value;
                 }

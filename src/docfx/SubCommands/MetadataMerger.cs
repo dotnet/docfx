@@ -13,11 +13,14 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Build.ManagedReference;
     using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
     public class MetadataMerger
     {
         public const string PhaseName = "Merge Metadata";
+
+        private readonly Dictionary<string, Dictionary<string, object>> _metaTable = new Dictionary<string, Dictionary<string, object>>();
 
         public void Merge(MetadataMergeParameters parameters)
         {
@@ -48,7 +51,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private static void MergePageViewModel(MetadataMergeParameters parameters, string outputBase)
+        private void MergePageViewModel(MetadataMergeParameters parameters, string outputBase)
         {
             var p = new ManagedReferenceDocumentProcessor();
             p.BuildSteps = new List<IDocumentBuildStep>
@@ -80,11 +83,12 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             foreach (var m in models)
             {
+                InitMetaTable(m, parameters.TocMetadata);
                 YamlUtility.Serialize(Path.Combine(outputBase, m.File), m.Content, YamlMime.ManagedReference);
             }
         }
 
-        private static void MergeToc(MetadataMergeParameters parameters, string outputBase)
+        private void MergeToc(MetadataMergeParameters parameters, string outputBase)
         {
             var tocFiles =
                 (from f in parameters.Files.EnumerateFiles()
@@ -93,12 +97,58 @@ namespace Microsoft.DocAsCode.SubCommands
             var vm = MergeTocViewModel(
                 from f in tocFiles
                 select YamlUtility.Deserialize<TocViewModel>(Path.Combine(f.BaseDir, f.File)));
+            CopyMetadataToToc(vm);
             YamlUtility.Serialize(
                 Path.Combine(
                     outputBase,
                     (RelativePath)tocFiles[0].DestinationDir + (((RelativePath)tocFiles[0].File) - (RelativePath)tocFiles[0].SourceDir)),
                 vm,
                 YamlMime.TableOfContent);
+        }
+
+        private void InitMetaTable(FileModel model, ImmutableList<string> metaNames)
+        {
+            var content = model.Content as PageViewModel;
+            if (content?.Metadata != null && model.Uids.Length > 0)
+            {
+                var metadata = new Dictionary<string, object>();
+                foreach (var metaName in metaNames)
+                {
+                    object metaValue;
+                    if (content.Metadata.TryGetValue(metaName, out metaValue))
+                    {
+                        metadata.Add(metaName, metaValue);
+                    }
+                }
+                if (metadata.Count > 0)
+                {
+                    _metaTable.Add(model.Uids.First().Name, metadata);
+                }
+            }
+        }
+
+        private void CopyMetadataToToc(TocViewModel vm)
+        {
+            foreach (var item in vm)
+            {
+                CopyMetadataToTocItem(item);
+                foreach (var childItem in item.Items ?? Enumerable.Empty<TocItemViewModel>())
+                {
+                    CopyMetadataToTocItem(childItem);
+                }
+            }
+        }
+
+        private void CopyMetadataToTocItem(TocItemViewModel item)
+        {
+            Dictionary<string, object> metadata;
+            if (_metaTable.TryGetValue(item.Uid, out metadata))
+            {
+                foreach (var metaPair in metadata)
+                {
+                    item.Metadata[metaPair.Key] = metaPair.Value;
+                }
+            }
         }
 
         private static TocItemViewModel MergeTocItem(List<TocItemViewModel> items)

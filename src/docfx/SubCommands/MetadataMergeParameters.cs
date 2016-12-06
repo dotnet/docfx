@@ -13,5 +13,6 @@ namespace Microsoft.DocAsCode.SubCommands
         public string OutputBaseDir { get; set; }
         public ImmutableDictionary<string, object> Metadata { get; set; } = ImmutableDictionary<string, object>.Empty;
         public FileMetadata FileMetadata { get; set; }
+        public ImmutableList<string> TocMetadata { get; set; }
     }
 }

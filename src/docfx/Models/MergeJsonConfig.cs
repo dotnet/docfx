@@ -38,5 +38,8 @@ namespace Microsoft.DocAsCode
         /// </summary>
         [JsonProperty("fileMetadata")]
         public Dictionary<string, FileMetadataPairs> FileMetadata { get; set; }
+
+        [JsonProperty("tocMetadata")]
+        public ListWithStringFallback TocMetadata { get; set; }
     }
 }
