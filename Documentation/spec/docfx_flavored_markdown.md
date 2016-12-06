@@ -1,7 +1,7 @@
 DocFX Flavored Markdown
 ==========================================
 
-DocFX supports `DocFX Flavored Markdown`, or DFM. It is 99% compatible with [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/), and adds some additional functionality, including cross reference and file inclusion.
+DocFX supports `DocFX Flavored Markdown`, or DFM. It supports all [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/) syntax with 2 exceptions when resolving [list](#differences-between-dfm-and-gfm). Also, DFM adds new syntax to support additional functionalities, including cross reference and file inclusion.
 
 ### Yaml Header
 
@@ -170,7 +170,7 @@ Here are all the supported note types with the styling of the default theme appl
 > [!CAUTION]
 > This is a warning containing some important message.
 
-Difference between DFM and GFM
+Differences between DFM and GFM
 ------------------
 
 ### List
@@ -216,6 +216,20 @@ Case 2:
 | part of item c | 8 or more (> 7) | 9 or more |
 | part of item c and code | 14 (10 + 4) | 15 |
 
+### List after paragraph
+
+In GFM, list after paragraph must be separated by two or new line character.  
+In DFM, one new line also works.
+
+For example:
+```md
+text
+1. a
+2. b
+```
+In GFM, it will be rendered as one paragraph with content `text 1. a 2. b`.  
+In DFM, it will be rendered as a paragraph (with content `text`) and a list.
+
 ### YAML header
 YAML header is also supported in GFM, but it must at the beginning of markdown file.  
 DFM supports multiple YAML header in one markdown file.  
@@ -259,17 +273,3 @@ For example:
 
 In GFM, it will be rendered as a paragraph with content `[!NOTE] This is code.` in blockquote.  
 In DFM, it will be rendered as a code in note.
-
-### List after paragraph
-
-In GFM, list after paragraph must be separated by two or new line character.  
-In DFM, one new line also works.
-
-For example:
-```md
-text
-1. a
-2. b
-```
-In GFM, it will be rendered as one paragraph with content `text 1. a 2. b`.  
-In DFM, it will be rendered as a paragraph (with content `text`) and a list.
