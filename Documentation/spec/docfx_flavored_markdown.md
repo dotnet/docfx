@@ -218,7 +218,7 @@ Case 2:
 
 ### List after paragraph
 
-In GFM, list after paragraph must be separated by two or new line character.  
+In GFM, list after paragraph must be separated by two or more new line character.  
 In DFM, one new line also works.
 
 For example:
@@ -230,10 +230,16 @@ text
 In GFM, it will be rendered as one paragraph with content `text 1. a 2. b`.  
 In DFM, it will be rendered as a paragraph (with content `text`) and a list.
 
+
+Differences introduced by DFM syntax
+--------------
+
+Please note that DFM introduces more syntax to support more functionalities. When GFM does not support them, preview the Markdown file inside *GFM Preview* can lead to different results.
+
 ### YAML header
-YAML header is also supported in GFM, but it must at the beginning of markdown file.  
-DFM supports multiple YAML header in one markdown file.  
-But for conceptual document, only first YAML header is effective.
+
+In GFM, YAML header must start at the very beginning of the Markdown file.
+In DFM, YAML header contains more powerful meanings. Refer to [Yaml Header](#yaml-header) for details.
 
 ```md
 ...some text...
