@@ -279,10 +279,10 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty("inheritance")]
         public List<string> Inheritance { get; set; }
 
-        [YamlMember(Alias = "derivedClass")]
+        [YamlMember(Alias = "derivedClasses")]
         [MergeOption(MergeOption.Ignore)]
-        [JsonProperty("derivedClass")]
-        public List<string> DerivedClass { get; set; }
+        [JsonProperty("derivedClasses")]
+        public List<string> DerivedClasses { get; set; }
 
         [YamlMember(Alias = "implements")]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children

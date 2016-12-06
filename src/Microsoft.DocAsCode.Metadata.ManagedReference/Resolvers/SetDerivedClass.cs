@@ -14,8 +14,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public void Run(MetadataModel yaml, ResolverContext context)
         {
-            InitDerivedClassMapping(yaml.Members);
-            AppendDerivedClass(yaml.Members);
+            if (yaml.Members != null && yaml.Members.Count > 0)
+            {
+                InitDerivedClassMapping(yaml.Members);
+                AppendDerivedClass(yaml.Members);
+            }
         }
 
         private void InitDerivedClassMapping(List<MetadataItem> items)
@@ -23,16 +26,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             foreach (var item in items ?? Enumerable.Empty<MetadataItem>())
             {
                 var inheritance = item.Inheritance;
-                if (inheritance?.Any() == true)
+                if (inheritance!= null && inheritance.Count > 0)
                 {
-                    List<string> derivedClass;
-                    if (_derivedClassMapping.TryGetValue(inheritance.Last(), out derivedClass))
+                    List<string> derivedClasses;
+                    if (_derivedClassMapping.TryGetValue(inheritance[inheritance.Count - 1], out derivedClasses))
                     {
-                        derivedClass.Add(item.Name);
+                        derivedClasses.Add(item.Name);
                     }
                     else
                     {
-                        _derivedClassMapping.Add(inheritance.Last(), new List<string> { item.Name });
+                        _derivedClassMapping.Add(inheritance[inheritance.Count - 1], new List<string> { item.Name });
                     }
                 }
             }
@@ -44,10 +47,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 if (item.Type == MemberType.Class)
                 {
-                    List<string> derivedClass;
-                    if (_derivedClassMapping.TryGetValue(item.Name, out derivedClass))
+                    List<string> derivedClasses;
+                    if (_derivedClassMapping.TryGetValue(item.Name, out derivedClasses))
                     {
-                        item.DerivedClass = derivedClass;
+                        item.DerivedClasses = derivedClasses;
                     }
                 }
             }
