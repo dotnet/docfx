@@ -206,13 +206,33 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
             Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.simple.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Overwrite content</p>\n", model.Summary);
             Assert.Null(model.Conceptual);
+        }
+
+        [Fact]
+        public void ProcessSwaggerWithParametersOverwriteShouldSucceed()
+        {
+            var files = new FileCollection(_defaultFiles);
+            files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.parameters.md" });
+            BuildDocument(files);
+            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
 
             // Verify overwrite parameters
             var parametersForUpdate = model.Children.Single(c => c.OperationId == "update contact").Parameters;
-            Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.simple.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">The new object_id description</p>\n",
+            Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.parameters.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">The new object_id description</p>\n",
                 parametersForUpdate.Single(p => p.Name == "object_id").Description);
-            Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.simple.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">The new bodyparam description</p>\n",
-                parametersForUpdate.Single(p => p.Name == "bodyparam").Description);
+            var bodyparam = parametersForUpdate.Single(p => p.Name == "bodyparam");
+            Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.parameters.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">The new bodyparam description</p>\n",
+                bodyparam.Description);
+            var properties = (JObject)(((JObject)bodyparam.Metadata["schema"])["properties"]);
+            var objectType = properties["objectType"];
+            Assert.Equal("string", objectType["type"]);
+            Assert.Equal("this is overwrite objectType description", objectType["description"]);
+            var errorDetail = properties["provisioningErrors"]["items"]["schema"]["properties"]["errorDetail"];
+            Assert.Equal(JTokenType.Boolean, errorDetail["readOnly"].Type);
+            Assert.Equal("false", errorDetail["readOnly"].ToString().ToLower());
+            Assert.Equal("this is overwrite errorDetail description", errorDetail["description"]);
         }
 
         [Fact]

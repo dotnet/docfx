@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Common.EntityMergers
     {
         private readonly IMerger _inner;
 
-        public MergerDecorator(IMerger inner)
+        protected MergerDecorator(IMerger inner)
         {
             if (inner == null)
             {

@@ -14,10 +14,10 @@ namespace Microsoft.DocAsCode.Build.Common
 
     public abstract class ApplyOverwriteDocument : BaseDocumentBuildStep
     {
-        private readonly MergerFacade Merger = new MergerFacade(
-                new DictionaryMerger(
-                    new KeyedListMerger(
-                        new ReflectionEntityMerger())));
+        protected virtual MergerFacade Merger { get; set; } = new MergerFacade(
+            new DictionaryMerger(
+                new KeyedListMerger(
+                    new ReflectionEntityMerger())));
 
         public override void Postbuild(ImmutableList<FileModel> models, IHostService host)
         {

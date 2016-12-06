@@ -611,7 +611,8 @@
       "properties": {
         "objectType": {
           "type": "string",
-          "readOnly": "true"
+          "readOnly": "true",
+          "description": "this is objectType description"
         },
         "objectId": {
           "type": "string",
@@ -708,7 +709,8 @@
       "properties": {
         "errorDetail": {
           "type": "string",
-          "readOnly": "true"
+          "readOnly": "true",
+          "description": "this is errorDetail description"
         },
         "resolved": {
           "type": "boolean",

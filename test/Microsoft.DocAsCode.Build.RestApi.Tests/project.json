@@ -30,6 +30,7 @@
       "TestData/overwrite/rest.overwrite.unmergable.md",
       "TestData/overwrite/rest.overwrite.multi.uid.md",
       "TestData/overwrite/rest.overwrite.not.predefined.md",
+      "TestData/overwrite/rest.overwrite.parameters.md",
       "TestData/overwrite/rest.overwrite.simple.md",
       "TestData/overwrite/rest.overwrite.default.md",
       "TestData/overwrite/rest.overwrite.invalid.md",
