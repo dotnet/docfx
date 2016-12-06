@@ -17,8 +17,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
-    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
-
     public class TripleSlashCommentModel
     {
         private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
@@ -231,7 +229,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     if (result.ContainsKey(name))
                     {
                         string path = context.Source.Remote != null ? Path.Combine(context.Source.Remote.LocalWorkingDirectory, context.Source.Remote.RelativePath) : context.Source.Path;
-                        Logger.LogWarning($"Duplicate {contentType} '{name}' found in comments, the latter one is ignored.", null, TypeForwardedToStringExtension.ToDisplayPath(path), context.Source.StartLine.ToString());
+                        Logger.LogWarning($"Duplicate {contentType} '{name}' found in comments, the latter one is ignored.", null, StringExtension.ToDisplayPath(path), context.Source.StartLine.ToString());
                     }
                     else
                     {

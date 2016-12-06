@@ -15,8 +15,6 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
 
-    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
-
     public class AzureMigrationEngineBuilder : GfmEngineBuilder
     {
         private const string MarkdownExtension = ".md";
@@ -157,7 +155,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
             try
             {
-                if (!TypeForwardedToPathUtility.IsRelativePath(href))
+                if (!PathUtility.IsRelativePath(href))
                 {
                     return new AppendDefaultExtensionResult(false, href, null);
                 }
@@ -256,7 +254,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             // if the href is not relative path, return it. Add try catch to keep this method safe.
             try
             {
-                if (!TypeForwardedToPathUtility.IsRelativePath(href))
+                if (!PathUtility.IsRelativePath(href))
                 {
                     return href;
                 }
@@ -296,7 +294,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
             string azureHref = null;
             var hrefFileInfo = azureMarkdownFileInfoMapping[hrefFileName];
-            azureHref = string.Format("{0}{1}", TypeForwardedToPathUtility.MakeRelativePath(Path.GetDirectoryName(currentFilePath), hrefFileInfo.FilePath), anchor);
+            azureHref = string.Format("{0}{1}", PathUtility.MakeRelativePath(Path.GetDirectoryName(currentFilePath), hrefFileInfo.FilePath), anchor);
 
             return azureHref;
         }
@@ -304,7 +302,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         private string CheckNonMdRelativeFileHref(string nonMdHref, IMarkdownContext context, string rawMarkdown, string line)
         {
             // If the context doesn't have necessary info or nonMdHref is not a relative path, return the original href
-            if (!context.Variables.ContainsKey("path") || !TypeForwardedToPathUtility.IsRelativePath(nonMdHref))
+            if (!context.Variables.ContainsKey("path") || !PathUtility.IsRelativePath(nonMdHref))
             {
                 return nonMdHref;
             }

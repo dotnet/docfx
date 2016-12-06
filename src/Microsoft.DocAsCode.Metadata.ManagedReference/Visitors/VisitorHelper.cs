@@ -10,12 +10,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.CodeAnalysis;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Common.Git;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
-
-    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
 
     public static class VisitorHelper
     {
@@ -150,7 +149,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 source.Remote = GitUtility.TryGetFileDetail(source.Path);
                 if (source.Remote != null)
                 {
-                    source.Path = TypeForwardedToPathUtility.FormatPath(source.Path, UriKind.Relative, source.Remote.LocalWorkingDirectory);
+                    source.Path = PathUtility.FormatPath(source.Path, UriKind.Relative, source.Remote.LocalWorkingDirectory);
                 }
                 return source;
             }

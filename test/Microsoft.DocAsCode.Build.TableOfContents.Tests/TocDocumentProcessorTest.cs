@@ -18,9 +18,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
-    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
-    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
-
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "TocDocumentProcessorTest")]
     [Collection("docfx STA")]
@@ -397,7 +394,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             FileCollection files = new FileCollection(_inputFolder);
             files.Add(DocumentType.Article, new[] { toc, subToc });
             var e = Assert.Throws<DocumentException>(() => BuildDocument(files));
-            Assert.Equal($"Circular reference to {TypeForwardedToStringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, subToc)))} is found in {TypeForwardedToStringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, referencedToc)))}", e.Message, true);
+            Assert.Equal($"Circular reference to {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, subToc)))} is found in {StringExtension.ToDisplayPath(Path.GetFullPath(Path.Combine(_inputFolder, referencedToc)))}", e.Message, true);
         }
 
         [Fact]
@@ -492,7 +489,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             var file = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, fileFolder);
             var toc1 = _fileCreator.CreateFile($"#[Topic]({file})", FileType.MarkdownToc);
             const string toc2Folder = "sub1/sub2/sub3";
-            var filePathRelativeToToc2 = ((TypeForwardedToRelativePath) file).MakeRelativeTo((TypeForwardedToRelativePath)toc2Folder);
+            var filePathRelativeToToc2 = ((RelativePath) file).MakeRelativeTo((RelativePath)toc2Folder);
             var toc2 = _fileCreator.CreateFile($"#[Same Topic]({filePathRelativeToToc2.FileName}", FileType.MarkdownToc, toc2Folder);
             var files = new FileCollection(_inputFolder);
             files.Add(DocumentType.Article, new[] { file, toc1, toc2 });

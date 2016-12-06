@@ -14,10 +14,6 @@ namespace Microsoft.DocAsCode.Build.Common
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    using TypeForwardedToFilePathComparer = Microsoft.DocAsCode.Common.FilePathComparer;
-    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
-    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
-
     public class ValidateBookmark : HtmlDocumentHandler
     {
         private static readonly string XPathTemplate = "//*/@{0}";
@@ -30,9 +26,9 @@ namespace Microsoft.DocAsCode.Build.Common
 
         public override Manifest PreHandle(Manifest manifest)
         {
-            _registeredBookmarks = new Dictionary<string, HashSet<string>>(TypeForwardedToFilePathComparer.OSPlatformSensitiveStringComparer);
-            _linksWithBookmark = new Dictionary<string, List<LinkItem>>(TypeForwardedToFilePathComparer.OSPlatformSensitiveStringComparer);
-            _fileMapping = new Dictionary<string, string>(TypeForwardedToFilePathComparer.OSPlatformSensitiveStringComparer);
+            _registeredBookmarks = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
+            _linksWithBookmark = new Dictionary<string, List<LinkItem>>(FilePathComparer.OSPlatformSensitiveStringComparer);
+            _fileMapping = new Dictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
             return manifest;
         }
 
@@ -49,7 +45,7 @@ namespace Microsoft.DocAsCode.Build.Common
                  let bookmark = link.Substring(bookmarkIndex + 1)
                  let index = link.IndexOfAny(new[] { '?', '#' })
                  let decodedLink = HttpUtility.UrlDecode(link.Remove(index))
-                 where !WhiteList.Contains(bookmark) && TypeForwardedToPathUtility.IsRelativePath(decodedLink)
+                 where !WhiteList.Contains(bookmark) && PathUtility.IsRelativePath(decodedLink)
                  select new LinkItem
                  {
                      Title = node.InnerText,
@@ -111,7 +107,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
         private static string TransformPath(string basePathFromRoot, string relativePath)
         {
-            return ((TypeForwardedToRelativePath)basePathFromRoot + (TypeForwardedToRelativePath)relativePath).RemoveWorkingFolder();
+            return ((RelativePath)basePathFromRoot + (RelativePath)relativePath).RemoveWorkingFolder();
         }
 
         private class LinkItem

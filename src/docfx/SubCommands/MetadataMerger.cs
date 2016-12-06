@@ -15,8 +15,6 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
-
     public class MetadataMerger
     {
         public const string PhaseName = "Merge Metadata";
@@ -77,7 +75,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     }));
             foreach (var m in models)
             {
-                m.File = (TypeForwardedToRelativePath)m.FileAndType.DestinationDir + (((TypeForwardedToRelativePath)m.File) - (TypeForwardedToRelativePath)m.FileAndType.SourceDir);
+                m.File = (RelativePath)m.FileAndType.DestinationDir + (((RelativePath)m.File) - (RelativePath)m.FileAndType.SourceDir);
                 Console.WriteLine($"File:{m.OriginalFileAndType.File} from:{m.FileAndType.SourceDir} to:{m.FileAndType.DestinationDir} => {m.File}");
             }
             foreach (var m in models)
@@ -98,7 +96,7 @@ namespace Microsoft.DocAsCode.SubCommands
             YamlUtility.Serialize(
                 Path.Combine(
                     outputBase,
-                    (TypeForwardedToRelativePath)tocFiles[0].DestinationDir + (((TypeForwardedToRelativePath)tocFiles[0].File) - (TypeForwardedToRelativePath)tocFiles[0].SourceDir)),
+                    (RelativePath)tocFiles[0].DestinationDir + (((RelativePath)tocFiles[0].File) - (RelativePath)tocFiles[0].SourceDir)),
                 vm,
                 YamlMime.TableOfContent);
         }

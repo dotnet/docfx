@@ -10,8 +10,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
-
     internal sealed class SystemMetadataGenerator
     {
         private readonly IDocumentBuildContext _context;
@@ -28,7 +26,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             // Order toc files by the output folder depth
             _toc = context.GetTocInfo()
-                .Select(s => new FileInfo(s.TocFileKey, (TypeForwardedToRelativePath)context.GetFilePath(s.TocFileKey)))
+                .Select(s => new FileInfo(s.TocFileKey, (RelativePath)context.GetFilePath(s.TocFileKey)))
                 .Where(s => s.File != null)
                 .OrderBy(s => s.File.SubdirectoryCount);
         }
@@ -41,9 +39,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             };
 
             string key = GetFileKey(item.Key);
-            var file = (TypeForwardedToRelativePath)(item.FileWithoutExtension + item.Extension);
+            var file = (RelativePath)(item.FileWithoutExtension + item.Extension);
 
-            attrs.RelativePathToRoot = (TypeForwardedToRelativePath.Empty).MakeRelativeTo(file);
+            attrs.RelativePathToRoot = (RelativePath.Empty).MakeRelativeTo(file);
             var fileWithoutWorkingFolder = file.RemoveWorkingFolder();
             attrs.Path = fileWithoutWorkingFolder;
 
@@ -51,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (!string.IsNullOrEmpty(_context.RootTocPath))
             {
                 attrs.RootTocKey = _context.RootTocPath;
-                var rootTocPath = ((TypeForwardedToRelativePath)_context.RootTocPath).RemoveWorkingFolder();
+                var rootTocPath = ((RelativePath)_context.RootTocPath).RemoveWorkingFolder();
                 attrs.RootTocPath = rootTocPath;
                 attrs.RelativePathToRootToc = rootTocPath.MakeRelativeTo(file);
             }
@@ -63,7 +61,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             // 2. The algorithm of toc current article belongs to:
             //    a. If toc can be found in TocMap, return that toc
             //    b. Elsewise, get the nearest toc, **nearest** means nearest toc in **OUTPUT** folder
-            var parentTocFiles = _context.GetTocFileKeySet(key)?.Select(s => new FileInfo(s, (TypeForwardedToRelativePath)_context.GetFilePath(s)));
+            var parentTocFiles = _context.GetTocFileKeySet(key)?.Select(s => new FileInfo(s, (RelativePath)_context.GetFilePath(s)));
             var parentToc = GetNearestToc(parentTocFiles, file) ?? GetDefaultToc(key);
 
             if (parentToc != null)
@@ -83,7 +81,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return attrs;
         }
 
-        private void GetRootTocFromOutputRoot(SystemMetadata attrs, TypeForwardedToRelativePath file)
+        private void GetRootTocFromOutputRoot(SystemMetadata attrs, RelativePath file)
         {
             var rootToc = _toc.FirstOrDefault();
             if (rootToc != null)
@@ -107,7 +105,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private FileInfo GetDefaultToc(string fileKey)
         {
-            var outputPath = (TypeForwardedToRelativePath)_context.GetFilePath(fileKey);
+            var outputPath = (RelativePath)_context.GetFilePath(fileKey);
 
             // MakeRelativeTo calculates how to get file "s" from "outputPath"
             // The standard for being the toc of current file is: Relative directory is empty or ".."s only
@@ -125,7 +123,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// when subdirectory counts are same, "near" means less parent directory count
         /// e.g. "../../a/TOC.md" is nearer than "b/c/TOC.md"
         /// </summary>
-        private static FileInfo GetNearestToc(IEnumerable<FileInfo> tocFiles, TypeForwardedToRelativePath file)
+        private static FileInfo GetNearestToc(IEnumerable<FileInfo> tocFiles, RelativePath file)
         {
             if (tocFiles == null)
             {
@@ -141,15 +139,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string GetFileKey(string key)
         {
-            if (key.StartsWith(TypeForwardedToRelativePath.NormalizedWorkingFolder)) return key;
-            return TypeForwardedToRelativePath.NormalizedWorkingFolder + key;
+            if (key.StartsWith(RelativePath.NormalizedWorkingFolder)) return key;
+            return RelativePath.NormalizedWorkingFolder + key;
         }
 
         private sealed class FileInfo
         {
             public string Key { get; set; }
-            public TypeForwardedToRelativePath File { get; set; }
-            public FileInfo(string key, TypeForwardedToRelativePath file)
+            public RelativePath File { get; set; }
+            public FileInfo(string key, RelativePath file)
             {
                 Key = key;
                 File = file;

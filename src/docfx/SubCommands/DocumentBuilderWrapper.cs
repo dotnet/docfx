@@ -23,8 +23,6 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
-    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
-
     [Serializable]
     internal sealed class DocumentBuilderWrapper
     {
@@ -393,13 +391,13 @@ namespace Microsoft.DocAsCode.SubCommands
             var dict = new Dictionary<string, ChangeKindWithDependency>();
             foreach (var file in files.EnumerateFiles())
             {
-                string fileKey = ((TypeForwardedToRelativePath)file.File).GetPathFromWorkingFolder().ToString();
+                string fileKey = ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
                 dict[fileKey] = ChangeKindWithDependency.None;
             }
 
             foreach (ChangeItem change in changeList)
             {
-                string fileKey = ((TypeForwardedToRelativePath)change.FilePath).GetPathFromWorkingFolder().ToString();
+                string fileKey = ((RelativePath)change.FilePath).GetPathFromWorkingFolder().ToString();
 
                 // always put the change into dict because docfx could access files outside its own scope, like tokens.
                 dict[fileKey] = change.Kind;

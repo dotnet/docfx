@@ -12,8 +12,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
-
     internal class ManifestProcessor
     {
         private List<ManifestItemWithContext> _manifestWithContext;
@@ -104,7 +102,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             m.BaseDir = context.BuildOutputFolder;
                             if (m.FileAndType.SourceDir != m.FileAndType.DestinationDir)
                             {
-                                m.File = (TypeForwardedToRelativePath)m.FileAndType.DestinationDir + (((TypeForwardedToRelativePath)m.File) - (TypeForwardedToRelativePath)m.FileAndType.SourceDir);
+                                m.File = (RelativePath)m.FileAndType.DestinationDir + (((RelativePath)m.File) - (RelativePath)m.FileAndType.SourceDir);
                             }
                             var result = hostService.Processor.Save(m);
                             if (result != null)
@@ -136,7 +134,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             FileModel model,
             SaveResult result)
         {
-            context.FileMap[model.Key] = ((TypeForwardedToRelativePath)model.File).GetPathFromWorkingFolder();
+            context.FileMap[model.Key] = ((RelativePath)model.File).GetPathFromWorkingFolder();
             DocumentException.RunAll(
                 () => CheckFileLink(hostService, result),
                 () => HandleUids(context, result),
@@ -207,7 +205,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     XRefSpec xref;
                     if (context.XRefSpecMap.TryGetValue(spec.Uid, out xref))
                     {
-                        Logger.LogWarning($"Uid({spec.Uid}) has already been defined in {((TypeForwardedToRelativePath)xref.Href).RemoveWorkingFolder()}.");
+                        Logger.LogWarning($"Uid({spec.Uid}) has already been defined in {((RelativePath)xref.Href).RemoveWorkingFolder()}.");
                     }
                     else
                     {

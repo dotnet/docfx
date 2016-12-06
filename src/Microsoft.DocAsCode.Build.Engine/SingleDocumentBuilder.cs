@@ -16,10 +16,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
-    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
-    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
-    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
-
     public class SingleDocumentBuilder : IDisposable
     {
         private const string PhaseName = "Build Document";
@@ -125,7 +121,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Files = context.ManifestItems.ToList(),
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context),
-                            SourceBasePath = TypeForwardedToStringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory)
+                            SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory)
                         };
                     }
                 }
@@ -256,8 +252,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 .Where(s => !string.IsNullOrEmpty(s.Homepage))
                 .Select(s => new HomepageInfo
                 {
-                    Homepage = TypeForwardedToRelativePath.GetPathWithoutWorkingFolderChar(s.Homepage),
-                    TocPath = TypeForwardedToRelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(s.TocFileKey))
+                    Homepage = RelativePath.GetPathWithoutWorkingFolderChar(s.Homepage),
+                    TocPath = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(s.TocFileKey))
                 }).ToList();
         }
 
@@ -272,7 +268,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                  select new XRefSpec(xref)
                  {
-                     Href = ((TypeForwardedToRelativePath)context.FileMap[UriUtility.GetNonFragment(xref.Href)]).RemoveWorkingFolder() + UriUtility.GetFragment(xref.Href)
+                     Href = ((RelativePath)context.FileMap[UriUtility.GetNonFragment(xref.Href)]).RemoveWorkingFolder() + UriUtility.GetFragment(xref.Href)
                  }).ToList();
             xrefMap.Sort();
             string xrefMapFileNameWithVersion = string.IsNullOrEmpty(parameters.VersionName) ?

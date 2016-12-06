@@ -12,8 +12,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Common;
 
-    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
-
     public class Template
     {
         private const string Primary = ".primary";
@@ -158,7 +156,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             // Make sure resource keys are combined using '/'
-            return TypeForwardedToStringExtension.ForwardSlashCombine(TypeForwardedToStringExtension.ToNormalizedPath(Path.GetDirectoryName(templateName)), relativePath);
+            return StringExtension.ForwardSlashCombine(StringExtension.ToNormalizedPath(Path.GetDirectoryName(templateName)), relativePath);
         }
 
         private static TemplateInfo GetTemplateInfo(string templateName)

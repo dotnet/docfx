@@ -13,8 +13,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Common;
 
-    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
-
     public class TemplateJintPreprocessor : ITemplatePreprocessor
     {
         /// <summary>
@@ -85,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private Engine SetupEngine(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
         {
-            var rootPath = (TypeForwardedToRelativePath)scriptResource.ResourceName;
+            var rootPath = (RelativePath)scriptResource.ResourceName;
             var engineCache = new Dictionary<string, Engine>();
 
             var utility = new TemplateUtility(context);
@@ -103,7 +101,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         throw new ArgumentException($"Only relative path starting with `{RequireRelativePathPrefix}` is supported in require");
                     }
-                    var relativePath = (TypeForwardedToRelativePath)s.Substring(RequireRelativePathPrefix.Length);
+                    var relativePath = (RelativePath)s.Substring(RequireRelativePathPrefix.Length);
                     s = relativePath.BasedOn(rootPath);
 
                     var script = resourceCollection?.GetResource(s);

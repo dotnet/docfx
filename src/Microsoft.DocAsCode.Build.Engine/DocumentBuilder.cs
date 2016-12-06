@@ -20,8 +20,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
-    using TypeForwardedToFilePathComparer = Microsoft.DocAsCode.Common.FilePathComparer;
-    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
 
     public class DocumentBuilder : IDisposable
     {
@@ -202,7 +200,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                         from output in m.OutputFiles.Values
                                         let relativePath = output?.RelativePath
                                         select new { item = m, relativePath = relativePath })
-                              .GroupBy(obj => obj.relativePath, TypeForwardedToFilePathComparer.OSPlatformSensitiveStringComparer)
+                              .GroupBy(obj => obj.relativePath, FilePathComparer.OSPlatformSensitiveStringComparer)
                               .Where(g => g.Count() > 1))
             {
                 Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates.Select(duplicate => duplicate.item.SourceRelativePath))}\" writing to the same output file \"{duplicates.Key}\"");
@@ -350,7 +348,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     builder.AppendLine(item);
                 }
-                return TypeForwardedToStringExtension.GetMd5String(builder.ToString());
+                return StringExtension.GetMd5String(builder.ToString());
             }
             return string.Empty;
         }

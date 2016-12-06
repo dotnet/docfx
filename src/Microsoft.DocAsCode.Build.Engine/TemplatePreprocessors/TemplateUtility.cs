@@ -5,9 +5,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using Microsoft.DocAsCode.Common;
 
-    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
-    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
-
     public class TemplateUtility
     {
         private readonly DocumentBuildContext _context;
@@ -19,12 +16,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string ResolveSourceRelativePath(string originPath, string currentFileOutputPath)
         {
-            if (string.IsNullOrEmpty(originPath) || !TypeForwardedToPathUtility.IsRelativePath(originPath))
+            if (string.IsNullOrEmpty(originPath) || !PathUtility.IsRelativePath(originPath))
             {
                 return originPath;
             }
 
-            var origin = (TypeForwardedToRelativePath)originPath;
+            var origin = (RelativePath)originPath;
             if (origin == null)
             {
                 return originPath;
@@ -33,7 +30,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var destPath = _context.GetFilePath(origin.GetPathFromWorkingFolder().ToString());
             if (destPath != null)
             {
-                return ((TypeForwardedToRelativePath)destPath - ((TypeForwardedToRelativePath)currentFileOutputPath).GetPathFromWorkingFolder()).ToString();
+                return ((RelativePath)destPath - ((RelativePath)currentFileOutputPath).GetPathFromWorkingFolder()).ToString();
             }
             else
             {

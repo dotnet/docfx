@@ -13,8 +13,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
-
     public class TemplateProcessor : IDisposable
     {
         private readonly ResourceCollection _resourceProvider;
@@ -92,7 +90,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var notSupportedDocumentTypes = documentTypes.Where(s => s != "Resource" && _templateCollection[s] == null);
                 if (notSupportedDocumentTypes.Any())
                 {
-                    Logger.LogWarning($"There is no template processing document type(s): {TypeForwardedToStringExtension.ToDelimitedString(notSupportedDocumentTypes)}");
+                    Logger.LogWarning($"There is no template processing document type(s): {StringExtension.ToDelimitedString(notSupportedDocumentTypes)}");
                 }
                 var templatesInUse = documentTypes.Select(s => _templateCollection[s]).Where(s => s != null).ToList();
                 ProcessDependenciesCore(settings.OutputFolder, templatesInUse);

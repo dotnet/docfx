@@ -18,8 +18,6 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 
     using Newtonsoft.Json;
 
-    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
-
     [Export(typeof(IDocumentProcessor))]
     public class ConceptualDocumentProcessor
         : DisposableDocumentProcessor, ISupportIncrementalDocumentProcessor
@@ -72,7 +70,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                 }
             }
 
-            var displayLocalPath = TypeForwardedToPathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
+            var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
             return new FileModel(
                 file,

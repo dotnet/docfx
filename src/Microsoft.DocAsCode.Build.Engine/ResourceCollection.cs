@@ -13,9 +13,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Build.Engine;
 
-    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
-    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
-
     public sealed class ArchiveResourceCollection : ResourceCollection
     {
         private readonly object _locker = new object();
@@ -77,7 +74,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             // zip entry is case sensitive
             // incase relative path is combined by backslash \
-            return _zipped.GetEntry(TypeForwardedToStringExtension.ToNormalizedPath(name.Trim()))?.Open();
+            return _zipped.GetEntry(StringExtension.ToNormalizedPath(name.Trim()))?.Open();
         }
 
         protected override void Dispose(bool disposing)
@@ -109,7 +106,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             Name = _directory;
             _maxDepth = maxSearchLevel;
             var includedFiles = GetFiles(_directory, "*", maxSearchLevel);
-            Names = includedFiles.Select(s => TypeForwardedToPathUtility.MakeRelativePath(_directory, s)).Where(s => s != null);
+            Names = includedFiles.Select(s => PathUtility.MakeRelativePath(_directory, s)).Where(s => s != null);
 
             IsEmpty = !Names.Any();
         }
@@ -119,7 +116,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (IsEmpty) return null;
 
             // incase relative path is combined by backslash \
-            if (!Names.Contains(TypeForwardedToStringExtension.ToNormalizedPath(name.Trim()), ResourceComparer)) return null;
+            if (!Names.Contains(StringExtension.ToNormalizedPath(name.Trim()), ResourceComparer)) return null;
             var filePath = Path.Combine(_directory, name);
             return new FileStream(filePath, FileMode.Open, FileAccess.Read);
         }
@@ -140,7 +137,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                     if (remainingFiles.Length > 0)
                     {
-                        throw new ResourceFileExceedsMaxDepthException(_maxDepth, TypeForwardedToPathUtility.MakeRelativePath(_directory, remainingFiles[0]), Name);
+                        throw new ResourceFileExceedsMaxDepthException(_maxDepth, PathUtility.MakeRelativePath(_directory, remainingFiles[0]), Name);
                     }
                 }
                 return files;

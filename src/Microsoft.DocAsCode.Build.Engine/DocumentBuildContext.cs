@@ -18,13 +18,10 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
-    using TypeForwardedToFilePathComparer = Microsoft.DocAsCode.Common.FilePathComparer;
-    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
-    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
 
     public sealed class DocumentBuildContext : IDocumentBuildContext
     {
-        private readonly Dictionary<string, TocInfo> _tableOfContents = new Dictionary<string, TocInfo>(TypeForwardedToFilePathComparer.OSPlatformSensitiveStringComparer);
+        private readonly Dictionary<string, TocInfo> _tableOfContents = new Dictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
         private readonly Task<IXRefContainerReader> _reader;
 
         public DocumentBuildContext(string buildOutputFolder)
@@ -74,11 +71,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public int MaxParallelism { get; }
 
-        public Dictionary<string, string> FileMap { get; } = new Dictionary<string, string>(TypeForwardedToFilePathComparer.OSPlatformSensitiveStringComparer);
+        public Dictionary<string, string> FileMap { get; } = new Dictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
         public ConcurrentDictionary<string, XRefSpec> XRefSpecMap { get; } = new ConcurrentDictionary<string, XRefSpec>();
 
-        public Dictionary<string, HashSet<string>> TocMap { get; } = new Dictionary<string, HashSet<string>>(TypeForwardedToFilePathComparer.OSPlatformSensitiveStringComparer);
+        public Dictionary<string, HashSet<string>> TocMap { get; } = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
         public HashSet<string> XRef { get; } = new HashSet<string>();
 
@@ -248,7 +245,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (xrefSpec == null) throw new ArgumentNullException(nameof(xrefSpec));
             if (string.IsNullOrEmpty(xrefSpec.Href)) throw new ArgumentException("Href for xref spec must contain value");
-            if (!TypeForwardedToPathUtility.IsRelativePath(xrefSpec.Href)) throw new ArgumentException("Only relative href path is supported");
+            if (!PathUtility.IsRelativePath(xrefSpec.Href)) throw new ArgumentException("Only relative href path is supported");
             XRefSpecMap[xrefSpec.Uid] = xrefSpec;
         }
 
@@ -340,7 +337,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             else
             {
-                TocMap[fileKey] = new HashSet<string>(TypeForwardedToFilePathComparer.OSPlatformSensitiveComparer) { tocFileKey };
+                TocMap[fileKey] = new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { tocFileKey };
             }
         }
 
@@ -356,15 +353,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private ImmutableDictionary<string, FileAndType> GetAllSourceFiles(IEnumerable<FileAndType> allSourceFiles)
         {
-            var dict = new Dictionary<string, FileAndType>(TypeForwardedToFilePathComparer.OSPlatformSensitiveStringComparer);
+            var dict = new Dictionary<string, FileAndType>(FilePathComparer.OSPlatformSensitiveStringComparer);
             foreach (var item in allSourceFiles)
             {
-                var path = (string)((TypeForwardedToRelativePath)item.File).GetPathFromWorkingFolder();
+                var path = (string)((RelativePath)item.File).GetPathFromWorkingFolder();
                 FileAndType ft;
                 if (dict.TryGetValue(path, out ft))
                 {
-                    if (TypeForwardedToFilePathComparer.OSPlatformSensitiveStringComparer.Equals(ft.BaseDir, item.BaseDir) &&
-                        TypeForwardedToFilePathComparer.OSPlatformSensitiveStringComparer.Equals(ft.File, item.File))
+                    if (FilePathComparer.OSPlatformSensitiveStringComparer.Equals(ft.BaseDir, item.BaseDir) &&
+                        FilePathComparer.OSPlatformSensitiveStringComparer.Equals(ft.File, item.File))
                     {
                         if (ft.Type >= item.Type)
                         {
@@ -391,7 +388,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 dict[path] = item;
             }
-            return dict.ToImmutableDictionary(TypeForwardedToFilePathComparer.OSPlatformSensitiveStringComparer);
+            return dict.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveStringComparer);
         }
 
         private static XRefSpec GetExternalReference(ExternalReferencePackageCollection externalReferences, string uid)

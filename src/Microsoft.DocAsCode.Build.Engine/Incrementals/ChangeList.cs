@@ -12,8 +12,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
 
-    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
-
     public sealed class ChangeList : IEnumerable<ChangeItem>
     {
         private readonly List<ChangeItem> _list = new List<ChangeItem>();
@@ -49,7 +47,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new ArgumentException("File path cannot be empty", nameof(filePath));
             }
-            if (!TypeForwardedToPathUtility.IsRelativePath(filePath))
+            if (!PathUtility.IsRelativePath(filePath))
             {
                 throw new ArgumentException("Expect relative path.", nameof(filePath));
             }
@@ -101,13 +99,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                         continue;
                     }
                     string path;
-                    if (TypeForwardedToPathUtility.IsRelativePath(columns[0]))
+                    if (PathUtility.IsRelativePath(columns[0]))
                     {
                         path = columns[0];
                     }
                     else
                     {
-                        path = TypeForwardedToPathUtility.MakeRelativePath(baseDir, columns[0]);
+                        path = PathUtility.MakeRelativePath(baseDir, columns[0]);
                     }
                     if (path != null)
                     {

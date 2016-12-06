@@ -12,9 +12,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    using TypeForwardedToRelativePath = Microsoft.DocAsCode.Common.RelativePath;
-    using TypeForwardedToStringExtension = Microsoft.DocAsCode.Common.StringExtension;
-
     public class TemplateModelTransformer
     {
         private const string GlobalVariableKey = "__global";
@@ -206,7 +203,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             string modelPath = Path.Combine(outputFolder ?? string.Empty, settings.PathRewriter(modelFileRelativePath));
 
             JsonUtility.Serialize(modelPath, model);
-            return TypeForwardedToStringExtension.ToDisplayPath(modelPath);
+            return StringExtension.ToDisplayPath(modelPath);
         }
 
         private static void TransformDocument(string result, string extension, IDocumentBuildContext context, string outputPath, string relativeOutputPath, HashSet<string> missingUids, ManifestItem manifestItem)
@@ -352,22 +349,22 @@ namespace Microsoft.DocAsCode.Build.Engine
             var anchor = link.GetAttributeValue("anchor", null);
             link.Attributes.Remove("anchor");
             string href;
-            var path = TypeForwardedToRelativePath.TryParse(originalHref);
+            var path = RelativePath.TryParse(originalHref);
 
             if (path?.IsFromWorkingFolder() == true)
             {
-                var targetPath = (TypeForwardedToRelativePath)context.GetFilePath(path.UrlDecode());
+                var targetPath = (RelativePath)context.GetFilePath(path.UrlDecode());
 
                 if (targetPath != null)
                 {
-                    href = (targetPath.RemoveWorkingFolder() - (TypeForwardedToRelativePath)relativePath).UrlEncode();
+                    href = (targetPath.RemoveWorkingFolder() - (RelativePath)relativePath).UrlEncode();
                 }
                 else
                 {
                     Logger.LogWarning($"File {path} is not found in {relativePath}.");
                     // TODO: what to do if file path not exists?
                     // CURRENT: fallback to the original one
-                    href = (path.UrlDecode().RemoveWorkingFolder() - (TypeForwardedToRelativePath)relativePath).UrlEncode();
+                    href = (path.UrlDecode().RemoveWorkingFolder() - (RelativePath)relativePath).UrlEncode();
                 }
                 link.SetAttributeValue(attribute, href + anchor);
             }

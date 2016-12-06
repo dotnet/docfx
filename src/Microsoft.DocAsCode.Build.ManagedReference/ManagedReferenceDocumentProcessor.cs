@@ -20,8 +20,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
     using Newtonsoft.Json;
 
-    using TypeForwardedToPathUtility = Microsoft.DocAsCode.Common.PathUtility;
-
     [Export(typeof(IDocumentProcessor))]
     public class ManagedReferenceDocumentProcessor
         : DisposableDocumentProcessor, ISupportIncrementalDocumentProcessor
@@ -110,7 +108,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                         }
                     }
 
-                    var displayLocalPath = TypeForwardedToPathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
+                    var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
                     return new FileModel(file, page, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
                     {
