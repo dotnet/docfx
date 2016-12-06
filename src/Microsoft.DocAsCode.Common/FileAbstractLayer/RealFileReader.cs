@@ -11,6 +11,8 @@ namespace Microsoft.DocAsCode.Common
 
     public class RealFileReader : IFileReader
     {
+        private readonly string _expandedInputFolder;
+
         public RealFileReader(string inputFolder, ImmutableDictionary<string, string> properties)
         {
             if (inputFolder == null)
@@ -21,7 +23,8 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentNullException(nameof(properties));
             }
-            if (!Directory.Exists(inputFolder))
+            _expandedInputFolder = Path.GetFullPath(Environment.ExpandEnvironmentVariables(inputFolder));
+            if (!Directory.Exists(_expandedInputFolder))
             {
                 throw new DirectoryNotFoundException($"Directory ({inputFolder}) not found.");
             }
@@ -43,18 +46,18 @@ namespace Microsoft.DocAsCode.Common
 
         public PathMapping? FindFile(RelativePath file)
         {
-            var pp = Path.Combine(InputFolder, file.RemoveWorkingFolder());
+            var pp = Path.Combine(_expandedInputFolder, file.RemoveWorkingFolder());
             if (!File.Exists(pp))
             {
                 return null;
             }
-            return new PathMapping(file, pp) { Properties = Properties };
+            return new PathMapping(file, Path.Combine(InputFolder, file.RemoveWorkingFolder())) { Properties = Properties };
         }
 
         public IEnumerable<RelativePath> EnumerateFiles()
         {
-            var length = InputFolder.Length;
-            return from f in Directory.EnumerateFiles(InputFolder, "*.*", SearchOption.AllDirectories)
+            var length = _expandedInputFolder.Length + 1;
+            return from f in Directory.EnumerateFiles(_expandedInputFolder, "*.*", SearchOption.AllDirectories)
                    select ((RelativePath)f.Substring(length)).GetPathFromWorkingFolder();
         }
 

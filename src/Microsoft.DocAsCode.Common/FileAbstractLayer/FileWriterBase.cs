@@ -12,11 +12,14 @@ namespace Microsoft.DocAsCode.Common
 
         public FileWriterBase(string outputFolder)
         {
-            Directory.CreateDirectory(outputFolder);
+            ExpandedOutputFolder = Path.GetFullPath(Environment.ExpandEnvironmentVariables(outputFolder));
+            Directory.CreateDirectory(ExpandedOutputFolder);
             OutputFolder = outputFolder;
         }
 
         public string OutputFolder { get; }
+
+        public string ExpandedOutputFolder { get; }
 
         #region IFileWriter
 
@@ -33,10 +36,12 @@ namespace Microsoft.DocAsCode.Common
         protected string GetRandomEntry()
         {
             string name;
+            string path;
             do
             {
                 name = Path.GetRandomFileName();
-            } while (Directory.Exists(Path.Combine(OutputFolder, name)) || File.Exists(Path.Combine(OutputFolder, name)));
+                path = Path.Combine(ExpandedOutputFolder, name);
+            } while (Directory.Exists(path) || File.Exists(path));
             return name;
         }
 
@@ -45,7 +50,7 @@ namespace Microsoft.DocAsCode.Common
             return RetryIO(() =>
             {
                 var file = GetRandomEntry();
-                return Tuple.Create(file, File.Create(Path.Combine(OutputFolder, file)));
+                return Tuple.Create(file, File.Create(Path.Combine(ExpandedOutputFolder, file)));
             });
         }
 

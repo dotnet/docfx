@@ -64,7 +64,7 @@ namespace Microsoft.DocAsCode.Common
             }
             EnsureNotDisposed();
             var pp = FindPhysicalPath(file);
-            return File.OpenRead(pp.PhysicalPath);
+            return File.OpenRead(Environment.ExpandEnvironmentVariables(pp.PhysicalPath));
         }
 
         public FileStream Create(RelativePath file)

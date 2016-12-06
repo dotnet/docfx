@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Common
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
@@ -29,7 +30,7 @@ namespace Microsoft.DocAsCode.Common
                     if (m.AllowMoveOut || localPath.ParentDirectoryCount == 0)
                     {
                         var physicalPath = Path.Combine(m.PhysicalPath, localPath.ToString());
-                        if (File.Exists(physicalPath))
+                        if (File.Exists(Environment.ExpandEnvironmentVariables(physicalPath)))
                         {
                             return new PathMapping(path, physicalPath) { Properties = m.Properties };
                         }
@@ -50,7 +51,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 if (m.IsFolder)
                 {
-                    var fp = Path.GetFullPath(m.PhysicalPath);
+                    var fp = Path.GetFullPath(Environment.ExpandEnvironmentVariables(m.PhysicalPath));
                     foreach (var f in Directory.EnumerateFiles(fp, "*.*", SearchOption.AllDirectories))
                     {
                         var lf = f.Substring(fp.Length + 1);

@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Common
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
 
@@ -32,7 +33,7 @@ namespace Microsoft.DocAsCode.Common
             if (_mapping.TryGetValue(key, out pm) &&
                 pm.PhysicalPath.StartsWith(OutputFolder))
             {
-                return File.Create(pm.PhysicalPath);
+                return File.Create(Environment.ExpandEnvironmentVariables(pm.PhysicalPath));
             }
             var pair = CreateRandomFileStream();
             _mapping[key] =
