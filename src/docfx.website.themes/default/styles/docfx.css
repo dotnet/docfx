@@ -89,6 +89,18 @@ span.parametername {
     font-style: italic;
 }
 
+span.paramref {
+    font-style: italic;
+}
+
+span.typeparamref {
+    font-style: italic;
+}
+
+span.languagekeyword{
+    font-weight: bold;
+}
+
 svg:hover path {
     fill: #ffffff;
 }

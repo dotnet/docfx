@@ -120,7 +120,7 @@ Classes in assemblies are by definition complete.
 
             var remarks = commentModel.Remarks;
             Assert.Equal(@"
-<p>This is <em>ref</em> a sample of exception node</p>
+<p>This is <span class=""paramref"">ref</span> a sample of exception node</p>
 <ul><li>
 <pre><code class=""c#"">public class XmlElement
     : XmlLinkedNode</code></pre>
