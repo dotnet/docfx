@@ -49,6 +49,11 @@ namespace Microsoft.DocAsCode.Common.Git
                 throw new ArgumentNullException(nameof(directory));
             }
 
+            if (!Path.IsPathRooted(directory))
+            {
+                throw new GitException($"{nameof(directory)} should be an absolute path");
+            }
+
             if (!ExistGitCommand())
             {
                 throw new GitException("Can't find git command in current environment");
@@ -60,7 +65,20 @@ namespace Microsoft.DocAsCode.Common.Git
         #region Private Methods
         private static GitDetail GetFileDetailCore(string filePath)
         {
-            var directory = Path.GetDirectoryName(filePath);
+            if (!Path.IsPathRooted(filePath))
+            {
+                throw new GitException($"{nameof(filePath)} should be an absolute path");
+            }
+
+            string directory;
+            if (PathUtility.IsDirectory(filePath))
+            {
+                directory = filePath;
+            }
+            else
+            {
+                directory = Path.GetDirectoryName(filePath);
+            }
 
             GitRepoInfo repoInfo;
             if (!Cache.TryGetValue(directory, out repoInfo))

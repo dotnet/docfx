@@ -275,5 +275,14 @@ namespace Microsoft.DocAsCode.Common
             }
             return Path.GetFullPath(path).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         }
+
+        public static bool IsDirectory(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                throw new ArgumentException($"{nameof(path)} should not be null or empty string");
+            }
+            return File.GetAttributes(path).HasFlag(FileAttributes.Directory);
+        }
     }
 }
