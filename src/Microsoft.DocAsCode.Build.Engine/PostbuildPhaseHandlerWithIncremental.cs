@@ -255,7 +255,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                     from f in h.GetUnloadedModelFiles(IncrementalContext)
                     from mani in LastBuildVersionInfo.Manifest
                     where f == mani.SourceRelativePath
-                    select mani).ToList();
+                    let copied = mani.Clone()
+                    let isIncremental = copied.IsIncremental = true
+                    select copied).ToList();
         }
 
         private static BuildMessageInfo GetPhaseMessageInfo(BuildMessage messages)
