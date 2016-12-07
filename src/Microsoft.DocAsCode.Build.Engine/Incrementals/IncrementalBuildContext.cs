@@ -263,7 +263,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             var nodesToUpdate = CurrentBuildVersionInfo.Dependency.GetAllDependentNodes().Except(fileAttributes.Keys);
             foreach (var node in nodesToUpdate)
             {
-                string fullPath = Path.Combine(EnvironmentContext.BaseDirectory, ((RelativePath)node).RemoveWorkingFolder());
+                RelativePath path = RelativePath.TryParse(node);
+                if (path == null)
+                {
+                    continue;
+                }
+                string fullPath = Path.Combine(EnvironmentContext.BaseDirectory, path.RemoveWorkingFolder());
                 if (File.Exists(fullPath))
                 {
                     fileAttributes[node] = new FileAttributeItem
