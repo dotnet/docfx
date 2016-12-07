@@ -94,7 +94,7 @@ namespace Microsoft.DocAsCode.Common.Git
             }
             catch (Exception ex)
             {
-                Logger.LogWarning($"Can't find remote branch in this repo and fallback to use local branch [{localBranch}]: {ex.Message}");
+                Logger.LogInfo($"Can't find remote branch in this repo and fallback to use local branch [{localBranch}]: {ex.Message}");
                 remoteBranch = localBranch;
             }
 
