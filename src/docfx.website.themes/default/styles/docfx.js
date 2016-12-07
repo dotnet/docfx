@@ -353,10 +353,10 @@ $(function () {
             $(e).parent().addClass(active);
             var parent = $(e).parent().parents('li').children('a');
             if (!breadcrumb.isTocPartLoaded) {
-              if (parent.length > 0) {
+              for (var i = parent.length - 1; i >= 0; i--) {
                 breadcrumb.push({
-                  href: parent[0].href,
-                  name: parent[0].innerHTML
+                  href: parent[i].href,
+                  name: parent[i].innerHTML
                 });
               }
               breadcrumb.push({
