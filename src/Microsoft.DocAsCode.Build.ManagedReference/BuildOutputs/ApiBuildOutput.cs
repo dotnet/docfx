@@ -124,6 +124,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("inheritance")]
         public List<ApiReferenceBuildOutput> Inheritance { get; set; }
 
+        [YamlMember(Alias = "derivedClasses")]
+        [MergeOption(MergeOption.Ignore)]
+        [JsonProperty("derivedClasses")]
+        public List<ApiReferenceBuildOutput> DerivedClasses { get; set; }
+
         [YamlMember(Alias = "level")]
         [JsonProperty("level")]
         public int Level { get { return Inheritance != null ? Inheritance.Count : 0; } }
@@ -205,7 +210,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         {
             if (model == null) return null;
 
-            return new ApiBuildOutput
+            var output = new ApiBuildOutput
             {
                 Uid = model.Uid,
                 Id = Utility.GetHtmlId(model.Uid),
@@ -241,16 +246,23 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Attributes = model.Attributes,
                 Metadata = metadata.Concat(model.Metadata.Where(p => !metadata.Keys.Contains(p.Key))).ToDictionary(p => p.Key, p => p.Value),
             };
+            output.DerivedClasses = GetReferenceList(model.DerivedClasses, references, model.SupportedLanguages, level:output.Level+1);
+            return output;
         }
 
         private static List<ApiReferenceBuildOutput> GetReferenceList(List<string> uids,
                                                                       Dictionary<string, ApiReferenceBuildOutput> references,
                                                                       string[] supportedLanguages,
-                                                                      bool extractIndex = false)
+                                                                      bool extractIndex = false,
+                                                                      int level = -1)
         {
             if (extractIndex)
             {
                 return uids?.Select((u, i) => ApiBuildOutputUtility.GetReferenceViewModel(u, references, supportedLanguages, i)).ToList();
+            }
+            else if (level != -1)
+            {
+                return uids?.Select(u => ApiBuildOutputUtility.GetReferenceViewModel(u, references, supportedLanguages, level)).ToList();
             }
             else
             {
