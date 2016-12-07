@@ -121,6 +121,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [JsonProperty("inheritance")]
         public List<string> Inheritance { get; set; }
 
+        [YamlMember(Alias = "derivedClasses")]
+        [JsonProperty("derivedClasses")]
+        public List<string> DerivedClasses { get; set; }
+
         [YamlMember(Alias = "implements")]
         [JsonProperty("implements")]
         public List<string> Implements { get; set; }
