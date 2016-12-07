@@ -9,6 +9,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal class PostbuildPhaseHandler : IPhaseHandler
     {
+        public string Name => GetType().Name;
+
         public DocumentBuildContext Context { get; }
 
         public TemplateProcessor TemplateProcessor { get; }

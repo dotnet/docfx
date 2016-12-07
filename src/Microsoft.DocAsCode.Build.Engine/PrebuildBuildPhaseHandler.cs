@@ -13,6 +13,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal class PrebuildBuildPhaseHandler : IPhaseHandler
     {
+        public string Name => GetType().Name;
+
         public DocumentBuildContext Context { get; }
 
         public PrebuildBuildPhaseHandler(DocumentBuildContext context)

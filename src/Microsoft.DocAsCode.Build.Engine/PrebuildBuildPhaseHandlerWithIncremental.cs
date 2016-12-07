@@ -16,7 +16,9 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private PrebuildBuildPhaseHandler _inner;
 
-        private DocumentBuildContext Context;
+        public string Name => GetType().Name;
+
+        public DocumentBuildContext Context { get; }
 
         public IncrementalBuildContext IncrementalContext { get; }
 

@@ -16,6 +16,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private PostbuildPhaseHandler _inner;
 
+        public string Name => GetType().Name;
+
         public DocumentBuildContext Context { get; }
 
         public TemplateProcessor TemplateProcessor { get; }
