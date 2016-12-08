@@ -255,8 +255,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     from f in h.GetUnloadedModelFiles(IncrementalContext)
                     from mani in LastBuildVersionInfo.Manifest
                     where f == mani.SourceRelativePath
-                    let copied = mani.Clone()
-                    let isIncremental = copied.IsIncremental = true
+                    let copied = mani.Clone(isIncremental: true)
                     select copied).ToList();
         }
 

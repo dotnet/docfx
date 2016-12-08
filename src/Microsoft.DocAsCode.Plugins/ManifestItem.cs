@@ -32,6 +32,13 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
+        public ManifestItem Clone(bool isIncremental)
+        {
+            var cloned = Clone();
+            cloned.IsIncremental = isIncremental;
+            return cloned;
+        }
+
         public ManifestItem Clone()
         {
             return (ManifestItem)MemberwiseClone();
