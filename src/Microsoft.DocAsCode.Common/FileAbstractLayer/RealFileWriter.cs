@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Common
 {
+    using System;
     using System.Collections.Immutable;
     using System.IO;
 
@@ -15,14 +16,14 @@ namespace Microsoft.DocAsCode.Common
 
         public override void Copy(PathMapping sourceFileName, RelativePath destFileName)
         {
-            var f = Path.Combine(OutputFolder, destFileName.RemoveWorkingFolder());
+            var f = Path.Combine(ExpandedOutputFolder, destFileName.RemoveWorkingFolder());
             Directory.CreateDirectory(Path.GetDirectoryName(f));
-            File.Copy(sourceFileName.PhysicalPath, f);
+            File.Copy(Environment.ExpandEnvironmentVariables(sourceFileName.PhysicalPath), f);
         }
 
         public override FileStream Create(RelativePath file)
         {
-            var f = Path.Combine(OutputFolder, file.RemoveWorkingFolder());
+            var f = Path.Combine(ExpandedOutputFolder, file.RemoveWorkingFolder());
             Directory.CreateDirectory(Path.GetDirectoryName(f));
             return File.Create(f);
         }
