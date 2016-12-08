@@ -368,7 +368,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             if (dg != null)
             {
                 var filesFromDependency = from node in dg.GetAllDependentNodes()
-                                          let fullPath = Path.Combine(EnvironmentContext.BaseDirectory, ((RelativePath)node).RemoveWorkingFolder())
+                                          let p = RelativePath.TryParse(node)
+                                          where p != null
+                                          let fullPath = Path.Combine(EnvironmentContext.BaseDirectory, p.RemoveWorkingFolder())
                                           select new
                                           {
                                               PathFromWorkingFolder = node,
