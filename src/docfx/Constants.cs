@@ -17,6 +17,5 @@ namespace Microsoft.DocAsCode
         public const string DefaultMetadataOutputFolderName = "_api";
         public const string DefaultConceputalOutputFolderName = ""; // Current OutputFolder
         public const string DefaultTemplateName = "default";
-        public const string DefaultOverwriteFolderName = "apispec";
     }
 }

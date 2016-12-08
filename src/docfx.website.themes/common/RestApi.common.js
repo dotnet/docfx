@@ -16,7 +16,7 @@ exports.transform = function (model) {
                 child.operation = child.operation.toUpperCase();
             }
             child.path = appendQueryParamsToPath(child.path, child.parameters);
-            child.sourceurl = child.sourceurl || common.getViewSourceHref(child, null, model._gitUrlPattern);
+            child.sourceurl = child.sourceurl || common.getViewSourceHref(child, null);
             child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
             child.footer = child.footer || ''; // set to empty incase mustache looks up
             child.htmlId = common.getHtmlId(child.uid);

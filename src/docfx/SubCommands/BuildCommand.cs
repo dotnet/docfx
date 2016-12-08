@@ -101,7 +101,6 @@ namespace Microsoft.DocAsCode.SubCommands
             config.BaseDirectory = Path.GetDirectoryName(configFile);
 
             MergeOptionsToConfig(options, config);
-            MergeGitContributeToConfig(config);
             return config;
         }
 
@@ -271,40 +270,6 @@ namespace Microsoft.DocAsCode.SubCommands
 
             config.FileMetadata = GetFileMetadataFromOption(config.FileMetadata, options.FileMetadataFilePath, config.FileMetadataFilePaths);
             config.GlobalMetadata = GetGlobalMetadataFromOption(config.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadataFilePaths, options.GlobalMetadata);
-        }
-
-        private static void MergeGitContributeToConfig(BuildJsonConfig config)
-        {
-            var repoInfoFromBaseDirectory = GitUtility.TryGetFileDetail(Path.Combine(Directory.GetCurrentDirectory(), config.BaseDirectory));
-
-            if (repoInfoFromBaseDirectory?.RelativePath != null)
-            {
-                repoInfoFromBaseDirectory.RelativePath = Path.Combine(repoInfoFromBaseDirectory.RelativePath, DocAsCode.Constants.DefaultOverwriteFolderName);
-            }
-            object gitRespositoryOpenToPublicContributors;
-            if (config.GlobalMetadata.TryGetValue("_gitContribute", out gitRespositoryOpenToPublicContributors))
-            {
-                GitDetail repoInfo;
-                try
-                {
-                    repoInfo = JObject.FromObject(gitRespositoryOpenToPublicContributors).ToObject<GitDetail>();
-                }
-                catch (Exception e)
-                {
-                    throw new DocumentException($"Unable to convert _gitContribute to GitDetail in globalMetadata: {e.Message}", e);
-                }
-                if (repoInfoFromBaseDirectory != null)
-                {
-                    if (repoInfo.RelativePath == null) repoInfo.RelativePath = repoInfoFromBaseDirectory.RelativePath;
-                    if (repoInfo.RemoteBranch == null) repoInfo.RemoteBranch = repoInfoFromBaseDirectory.RemoteBranch;
-                    if (repoInfo.RemoteRepositoryUrl == null) repoInfo.RemoteRepositoryUrl = repoInfoFromBaseDirectory.RemoteRepositoryUrl;
-                }
-                config.GlobalMetadata["_gitContribute"] = repoInfo;
-            }
-            else
-            {
-                config.GlobalMetadata["_gitContribute"] = repoInfoFromBaseDirectory;
-            }
         }
 
         internal static Dictionary<string, FileMetadataPairs> GetFileMetadataFromOption(Dictionary<string, FileMetadataPairs> fileMetadataFromConfig, string fileMetadataFilePath, ListWithStringFallback fileMetadataFilePaths)
