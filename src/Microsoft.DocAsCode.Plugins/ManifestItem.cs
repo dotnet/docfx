@@ -24,8 +24,24 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("output")]
         public Dictionary<string, OutputFileInfo> OutputFiles { get; set; }
 
+        [YamlMember(Alias = "isIncremental")]
+        [JsonProperty("is_incremental")]
+        public bool IsIncremental { get; set; }
+
         [ExtensibleMember]
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
+
+        public ManifestItem Clone(bool isIncremental)
+        {
+            var cloned = Clone();
+            cloned.IsIncremental = isIncremental;
+            return cloned;
+        }
+
+        public ManifestItem Clone()
+        {
+            return (ManifestItem)MemberwiseClone();
+        }
     }
 }
