@@ -246,7 +246,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Attributes = model.Attributes,
                 Metadata = metadata.Concat(model.Metadata.Where(p => !metadata.Keys.Contains(p.Key))).ToDictionary(p => p.Key, p => p.Value),
             };
-            output.DerivedClasses = GetReferenceList(model.DerivedClasses, references, model.SupportedLanguages, true, output.Level+1);
+            output.DerivedClasses = GetReferenceList(model.DerivedClasses, references, model.SupportedLanguages, true, output.Level + 1);
             return output;
         }
 
