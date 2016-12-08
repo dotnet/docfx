@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
@@ -14,6 +15,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal class HostServiceCreatorWithIncremental : HostServiceCreator
     {
+        private readonly ConcurrentDictionary<string, bool> _cache = new ConcurrentDictionary<string, bool>();
+
         public IncrementalBuildContext IncrementalContext { get; }
 
         public HostServiceCreatorWithIncremental(DocumentBuildContext context) : base(context)
@@ -27,26 +30,28 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public override bool ShouldProcessorTraceInfo(IDocumentProcessor processor)
         {
-            if (!(processor is ISupportIncrementalDocumentProcessor))
+            var key = $"trace-{processor.Name}";
+            bool result;
+            if (_cache.TryGetValue(key, out result))
             {
-                Logger.LogVerbose($"Processor {processor.Name} cannot suppport incremental build because the processor doesn't implement {nameof(ISupportIncrementalDocumentProcessor)} interface.");
-                return false;
+                return result;
             }
-            if (!processor.BuildSteps.All(step => step is ISupportIncrementalBuildStep))
-            {
-                Logger.LogVerbose($"Processor {processor.Name} cannot suppport incremental build because the following steps don't implement {nameof(ISupportIncrementalBuildStep)} interface: {string.Join(",", processor.BuildSteps.Where(step => !(step is ISupportIncrementalBuildStep)).Select(s => s.Name))}.");
-                return false;
-            }
-            return true;
+            result = ShouldProcessorTraceInfoCore(processor);
+            _cache[key] = result;
+            return result;
         }
 
         public override bool CanProcessorIncremental(IDocumentProcessor processor)
         {
-            if (!ShouldProcessorTraceInfo(processor))
+            var key = $"canIncremental-{processor.Name}";
+            bool result;
+            if (_cache.TryGetValue(key, out result))
             {
-                return false;
+                return result;
             }
-            return IncrementalContext.CanProcessorIncremental(processor);
+            result = CanProcessorIncrementalCore(processor);
+            _cache[key] = result;
+            return result;
         }
 
         public override HostService CreateHostService(
@@ -110,6 +115,30 @@ namespace Microsoft.DocAsCode.Build.Engine
                 IncrementalContext.ReportModelLoadInfo(hostService, allFiles.Except(loadedFiles), null);
                 IncrementalContext.ReportModelLoadInfo(hostService, loadedFiles, BuildPhase.PreBuildBuild);
             }
+        }
+
+        private bool ShouldProcessorTraceInfoCore(IDocumentProcessor processor)
+        {
+            if (!(processor is ISupportIncrementalDocumentProcessor))
+            {
+                Logger.LogVerbose($"Processor {processor.Name} cannot suppport incremental build because the processor doesn't implement {nameof(ISupportIncrementalDocumentProcessor)} interface.");
+                return false;
+            }
+            if (!processor.BuildSteps.All(step => step is ISupportIncrementalBuildStep))
+            {
+                Logger.LogVerbose($"Processor {processor.Name} cannot suppport incremental build because the following steps don't implement {nameof(ISupportIncrementalBuildStep)} interface: {string.Join(",", processor.BuildSteps.Where(step => !(step is ISupportIncrementalBuildStep)).Select(s => s.Name))}.");
+                return false;
+            }
+            return true;
+        }
+
+        private bool CanProcessorIncrementalCore(IDocumentProcessor processor)
+        {
+            if (!ShouldProcessorTraceInfo(processor))
+            {
+                return false;
+            }
+            return IncrementalContext.CanProcessorIncremental(processor);
         }
     }
 }
