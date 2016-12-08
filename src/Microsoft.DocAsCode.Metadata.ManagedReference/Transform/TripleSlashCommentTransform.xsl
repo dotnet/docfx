@@ -28,9 +28,9 @@
   </xsl:template>
 
   <xsl:template match="languageKeyword">
-    <strong>
+    <span class="languagekeyword">
       <xsl:apply-templates />
-    </strong>
+    </span>
   </xsl:template>
 
   <xsl:template match="ui">
@@ -91,17 +91,17 @@
 
   <xsl:template match="paramref">
     <xsl:if test="normalize-space(@name)">
-      <em>
+      <span class="paramref">
         <xsl:value-of select="@name" />
-      </em>
+      </span>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="typeparamref">
     <xsl:if test="normalize-space(@name)">
-      <em>
+      <span class="typeparamref">
         <xsl:value-of select="@name" />
-      </em>
+      </span>
     </xsl:if>
   </xsl:template>
 
