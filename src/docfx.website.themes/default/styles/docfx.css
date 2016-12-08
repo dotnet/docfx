@@ -85,18 +85,11 @@ h6 mark {
     margin-left: 5em;
 }
 
-span.parametername {
-    font-style: italic;
-}
-
-span.paramref {
-    font-style: italic;
-}
-
+span.parametername,
+span.paramref,
 span.typeparamref {
     font-style: italic;
 }
-
 span.languagekeyword{
     font-weight: bold;
 }
