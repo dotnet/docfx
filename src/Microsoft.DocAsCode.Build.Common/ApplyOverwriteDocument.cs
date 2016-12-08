@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
     public abstract class ApplyOverwriteDocument : BaseDocumentBuildStep
     {
-        protected virtual MergerFacade Merger { get; set; } = new MergerFacade(
+        protected virtual MergerFacade Merger { get; } = new MergerFacade(
             new DictionaryMerger(
                 new KeyedListMerger(
                     new ReflectionEntityMerger())));

@@ -20,7 +20,8 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
         public override int BuildOrder => 0x10;
 
-        protected override MergerFacade Merger { get; set; } = new MergerFacade(
+        // TODO: MergerFacade factory?
+        protected override MergerFacade Merger { get; } = new MergerFacade(
             new DictionaryMerger(
                 new KeyedListMerger(
                     new JObjectMerger(
