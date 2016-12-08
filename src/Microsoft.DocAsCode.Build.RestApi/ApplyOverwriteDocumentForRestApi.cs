@@ -25,7 +25,8 @@ namespace Microsoft.DocAsCode.Build.RestApi
             new DictionaryMerger(
                 new KeyedListMerger(
                     new JObjectMerger(
-                        new ReflectionEntityMerger()))));
+                        new JArrayMerger((
+                            new ReflectionEntityMerger()))))));
 
         public IEnumerable<RestApiRootItemViewModel> GetRootItemsFromOverwriteDocument(FileModel overwriteModel, string uid, IHostService host)
         {
