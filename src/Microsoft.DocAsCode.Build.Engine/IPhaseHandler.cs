@@ -8,5 +8,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     internal interface IPhaseHandler
     {
         void Handle(List<HostService> hostServices, int maxParallelism);
+
+        string Name { get; }
     }
 }

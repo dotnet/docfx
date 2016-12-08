@@ -16,6 +16,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private PostbuildPhaseHandler _inner;
 
+        public string Name => nameof(PostbuildPhaseHandlerWithIncremental);
+
         public DocumentBuildContext Context { get; }
 
         public TemplateProcessor TemplateProcessor { get; }

@@ -5,6 +5,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System.Collections.Generic;
 
+    using Microsoft.DocAsCode.Common;
+
     internal class PhaseProcessor
     {
         public List<IPhaseHandler> Handlers { get; } = new List<IPhaseHandler>();
@@ -13,7 +15,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             foreach (var h in Handlers)
             {
-                h.Handle(hostServices, maxParallelism);
+                using (new LoggerPhaseScope(h.Name, false))
+                using (new PerformanceScope(h.Name, LogLevel.Verbose))
+                {
+                    h.Handle(hostServices, maxParallelism);
+                }
             }
         }
     }
