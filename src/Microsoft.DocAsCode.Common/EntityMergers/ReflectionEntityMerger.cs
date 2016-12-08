@@ -4,9 +4,7 @@
 namespace Microsoft.DocAsCode.Common.EntityMergers
 {
     using System;
-    using System.Collections;
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
@@ -22,7 +20,7 @@ namespace Microsoft.DocAsCode.Common.EntityMergers
                 source = overrides;
                 return;
             }
-            if (type == typeof(string))
+            if (type == typeof(string) || type == typeof(object))
             {
                 source = overrides;
                 return;

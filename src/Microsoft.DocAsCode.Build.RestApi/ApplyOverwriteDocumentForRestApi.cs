@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.RestApi;
     using Microsoft.DocAsCode.Plugins;
@@ -18,6 +19,13 @@ namespace Microsoft.DocAsCode.Build.RestApi
         public override string Name => nameof(ApplyOverwriteDocumentForRestApi);
 
         public override int BuildOrder => 0x10;
+
+        // TODO: MergerFacade factory?
+        protected override MergerFacade Merger { get; } = new MergerFacade(
+            new DictionaryMerger(
+                new KeyedListMerger(
+                    new JObjectMerger(
+                        new ReflectionEntityMerger()))));
 
         public IEnumerable<RestApiRootItemViewModel> GetRootItemsFromOverwriteDocument(FileModel overwriteModel, string uid, IHostService host)
         {
