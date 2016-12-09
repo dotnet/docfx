@@ -233,6 +233,21 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal(JTokenType.Boolean, errorDetail["readOnly"].Type);
             Assert.Equal("false", errorDetail["readOnly"].ToString().ToLower());
             Assert.Equal("this is overwrite errorDetail description", errorDetail["description"]);
+
+            var paramForUpdateManager = model.Children.Single(c => c.OperationId == "get contact memberOf links").Parameters.Single(p => p.Name == "bodyparam");
+            var paramForAllOf = ((JObject)paramForUpdateManager.Metadata["schema"])["allOf"];
+            // First allOf item is not overwritten
+            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">original first allOf description</p>\n", paramForAllOf[0]["description"]);
+            // Second allOf item is overwritten
+            Assert.Equal("this is second overwrite allOf description", paramForAllOf[1]["description"]);
+            Assert.Equal("this is overwrite location description", paramForAllOf[1]["properties"]["location"]["description"]);
+            // Third allOf item's enum value is overwritten
+            var paramForLevel = paramForAllOf[2]["properties"]["level"];
+            Assert.Equal("this is overwrite level description", paramForLevel["description"]);
+            Assert.Equal(3, paramForLevel["enum"].Count());
+            Assert.Equal("Verbose", paramForLevel["enum"][0].ToString());
+            Assert.Equal("Info", paramForLevel["enum"][1].ToString());
+            Assert.Equal("Warning", paramForLevel["enum"][2].ToString());
         }
 
         [Fact]

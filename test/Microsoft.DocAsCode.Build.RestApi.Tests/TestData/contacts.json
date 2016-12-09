@@ -380,6 +380,46 @@
             "required": true,
             "type": "string",
             "default": "1.6"
+          },
+          {
+            "in": "body",
+            "description": "The request body *contains* a single property that specifies the URL of the user or contact to add as manager.",
+            "name": "bodyparam",
+            "required": true,
+            "schema": {
+              "allOf": [
+                {
+                  "description": "original first allOf description",
+                  "properties": {
+                    "site": {
+                      "type": "string",
+                      "description": "original site description"
+                    }
+                  }
+                },
+                {
+                  "description": "original second allOf description",
+                  "properties": {
+                    "location": {
+                      "type": "string",
+                      "description": "original location description"
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "level": {
+                      "description": "original level description",
+                      "enum": [
+                        "Info",
+                        "Warning",
+                        "Error"
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
           }
         ],
         "responses": {
