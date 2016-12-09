@@ -114,6 +114,8 @@ namespace Microsoft.DocAsCode.E2E.Tests
 
             // check overwrite
             var conceptual = _driver.FindElement(By.ClassName("conceptual"));
+            // Add this line to help find out what sometime breaks e2e
+            Assert.True(conceptual.Text.Contains("This is a class talking about CAT."), $"Actual HTML: {conceptual.GetAttribute("outerHTML")}");
             Assert.Contains("This is a class talking about CAT.", conceptual.Text);
             var element = conceptual.FindElement(By.TagName("blockquote"));
             Assert.Equal("NOTE This is a CAT class", element.Text);
