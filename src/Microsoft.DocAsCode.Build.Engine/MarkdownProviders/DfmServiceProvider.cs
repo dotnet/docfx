@@ -3,12 +3,15 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
+    using System.IO;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
@@ -36,26 +39,59 @@ namespace Microsoft.DocAsCode.Build.Engine
                 parameters.BasePath,
                 parameters.TemplateDir,
                 parameters.Tokens,
-                MarkdownTokenTreeValidatorFactory.Combine(TokenTreeValidator),
+                TokenTreeValidator,
                 fallbackFolders);
         }
 
         [ImportMany]
         public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; }
 
-        private sealed class DfmService : IMarkdownService
+        private sealed class DfmService : IMarkdownService, IHasIncrementalContext
         {
             private readonly DfmEngineBuilder _builder;
 
             private readonly ImmutableDictionary<string, string> _tokens;
 
-            public DfmService(string baseDir, string templateDir, ImmutableDictionary<string, string> tokens, IMarkdownTokenTreeValidator tokenTreeValidator, IReadOnlyList<string> fallbackFolders = null)
+            private readonly string _incrementalContextHash;
+
+            public DfmService(string baseDir, string templateDir, ImmutableDictionary<string, string> tokens, IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator, IReadOnlyList<string> fallbackFolders = null)
             {
                 var options = DocfxFlavoredMarked.CreateDefaultOptions();
                 options.ShouldExportSourceInfo = true;
                 _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, templateDir, options, fallbackFolders);
-                _builder.TokenTreeValidator = tokenTreeValidator;
+                _builder.TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(tokenTreeValidator);
                 _tokens = tokens;
+
+                _incrementalContextHash = ComputeIncrementalContextHash(baseDir, templateDir, tokenTreeValidator);
+            }
+
+            private static string ComputeIncrementalContextHash(string baseDir, string templateDir, IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator)
+            {
+                var content = (StringBuffer)"dfm";
+                if (baseDir != null)
+                {
+                    if (File.Exists(Path.Combine(baseDir, "md.style")))
+                    {
+                        content += "::";
+                        content += File.ReadAllText(Path.Combine(baseDir, "md.style"));
+                    }
+                }
+                if (templateDir != null)
+                {
+                    var templateStylesFolder = Path.Combine(templateDir, "md.styles");
+                    if (Directory.Exists(templateStylesFolder))
+                    {
+                        foreach (var f in Directory.GetFiles(templateStylesFolder).OrderBy(f => f))
+                        {
+                            content += "::";
+                            content += f.Substring(templateStylesFolder.Length);
+                            content += "::";
+                            content += File.ReadAllText(f);
+                        }
+                    }
+                }
+
+                return content.ToString().GetMd5String();
             }
 
             public MarkupResult Markup(string src, string path)
@@ -72,6 +108,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 return result;
             }
+
+            public string GetIncrementalContextHash() => _incrementalContextHash;
         }
     }
 }

@@ -57,7 +57,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         #region Creator and Constructor
 
-        public static IncrementalBuildContext Create(DocumentBuildParameters parameters, BuildInfo cb, BuildInfo lb, string intermediateFolder)
+        public static IncrementalBuildContext Create(DocumentBuildParameters parameters, BuildInfo cb, BuildInfo lb, string intermediateFolder, string markdownServiceContextHash)
         {
             if (parameters == null)
             {
@@ -79,7 +79,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             var cbv = new BuildVersionInfo
             {
                 VersionName = parameters.VersionName,
-                ConfigHash = ComputeConfigHash(parameters),
+                ConfigHash = ComputeConfigHash(parameters, markdownServiceContextHash),
                 AttributesFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 DependencyFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 ManifestFile = IncrementalUtility.CreateRandomFileName(baseDir),
@@ -345,14 +345,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         #region Private Methods
 
-        private static string ComputeConfigHash(DocumentBuildParameters parameter)
+        private static string ComputeConfigHash(DocumentBuildParameters parameter, string markdownServiceContextHash)
         {
-            return StringExtension.GetMd5String(JsonConvert.SerializeObject(
+            return (JsonConvert.SerializeObject(
                 parameter,
                 new JsonSerializerSettings
                 {
                     ContractResolver = new IncrementalIgnorePropertiesResolver()
-                }));
+                }) + "|" + markdownServiceContextHash).GetMd5String();
         }
 
         private static Dictionary<string, FileAttributeItem> ComputeFileAttributes(DocumentBuildParameters parameters, DependencyGraph dg)
