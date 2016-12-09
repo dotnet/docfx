@@ -30,11 +30,6 @@ namespace Microsoft.DocAsCode.Common.Git
         [JsonProperty("commit")]
         public string CommitId { get; set; }
 
-        [YamlIgnore]
-        [JsonIgnore]
-        //[YamlDotNet.Serialization.YamlMember(Alias = "local")]
-        public string LocalWorkingDirectory { get; set; }
-
         [JsonProperty("key")]
         [YamlMember(Alias = "key")]
         public string Description { get; set; }
@@ -55,7 +50,7 @@ namespace Microsoft.DocAsCode.Common.Git
 
         public override string ToString()
         {
-            return string.Format("branch: {0}, url: {1}, local: {2}, desc: {3}, file: {4}", RemoteBranch, RemoteRepositoryUrl, LocalWorkingDirectory, Description, RelativePath);
+            return string.Format("branch: {0}, url: {1}, desc: {2}, file: {3}", RemoteBranch, RemoteRepositoryUrl, Description, RelativePath);
         }
     }
 }

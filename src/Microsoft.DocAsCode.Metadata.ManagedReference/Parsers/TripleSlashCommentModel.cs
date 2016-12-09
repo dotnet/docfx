@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Xml.XPath;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
     public class TripleSlashCommentModel
@@ -196,17 +197,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <param name="xml"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        /// <example> 
+        /// <example>
         /// This sample shows how to call the <see cref="GetExceptions(string, ITripleSlashCommentParserContext)"/> method.
         /// <code>
-        /// class TestClass  
-        /// { 
-        ///     static int Main()  
-        ///     { 
-        ///         return GetExceptions(null, null).Count(); 
-        ///     } 
-        /// } 
-        /// </code> 
+        /// class TestClass
+        /// {
+        ///     static int Main()
+        ///     {
+        ///         return GetExceptions(null, null).Count();
+        ///     }
+        /// }
+        /// </code>
         /// </example>
         private List<string> GetExamples(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
@@ -228,7 +229,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     if (result.ContainsKey(name))
                     {
-                        string path = context.Source.Remote != null ? Path.Combine(context.Source.Remote.LocalWorkingDirectory, context.Source.Remote.RelativePath) : context.Source.Path;
+                        string path = context.Source.Remote != null ? Path.Combine(EnvironmentContext.BaseDirectory, context.Source.Remote.RelativePath) : context.Source.Path;
                         Logger.LogWarning($"Duplicate {contentType} '{name}' found in comments, the latter one is ignored.", null, StringExtension.ToDisplayPath(path), context.Source.StartLine.ToString());
                     }
                     else
@@ -273,7 +274,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 foreach (var item in nodes)
                 {
                     var cref = item.Attribute("cref").Value;
-                    // Strict check is needed as value could be an invalid href, 
+                    // Strict check is needed as value could be an invalid href,
                     // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
                     if (CommentIdRegex.IsMatch(cref))
                     {
