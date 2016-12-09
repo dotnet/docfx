@@ -31,27 +31,13 @@ namespace Microsoft.DocAsCode.Build.Engine
         public override bool ShouldProcessorTraceInfo(IDocumentProcessor processor)
         {
             var key = $"trace-{processor.Name}";
-            bool result;
-            if (_cache.TryGetValue(key, out result))
-            {
-                return result;
-            }
-            result = ShouldProcessorTraceInfoCore(processor);
-            _cache[key] = result;
-            return result;
+            return _cache.GetOrAdd(key, ShouldProcessorTraceInfoCore(processor));
         }
 
         public override bool CanProcessorIncremental(IDocumentProcessor processor)
         {
             var key = $"canIncremental-{processor.Name}";
-            bool result;
-            if (_cache.TryGetValue(key, out result))
-            {
-                return result;
-            }
-            result = CanProcessorIncrementalCore(processor);
-            _cache[key] = result;
-            return result;
+            return _cache.GetOrAdd(key, CanProcessorIncrementalCore(processor));
         }
 
         public override HostService CreateHostService(
