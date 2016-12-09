@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var buildOption = options as BuildCommandOptions;
             if (buildOption != null)
             {
-                root = Path.GetDirectoryName(buildOption.ConfigFile);
+                root = Path.GetDirectoryName(buildOption.ConfigFile?? Directory.GetCurrentDirectory());
             }
             var logOption = options as ILoggable;
             if (logOption != null)

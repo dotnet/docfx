@@ -95,6 +95,10 @@ namespace Microsoft.DocAsCode.Common
             {
                 return null;
             }
+            if (string.IsNullOrEmpty(_repoRoot))
+            {
+                return fileFromRoot;
+            }
 
             string file = ((RelativePath)fileFromRoot).RemoveWorkingFolder();
             string basePath = Path.GetFullPath(_repoRoot);
