@@ -268,7 +268,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Overwrite)),
                     GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
                 p.VersionName = pair.Key;
-                p.Changes = GetIntersectChanges(parameters.Files, changeList);
+                p.Changes = GetIntersectChanges(p.Files, changeList);
                 p.RootTocPath = pair.Value.RootTocPath;
                 yield return p;
             }
