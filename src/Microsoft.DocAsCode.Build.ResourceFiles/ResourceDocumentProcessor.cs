@@ -73,14 +73,11 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
                 content = metadata.ToDictionary(p => p.Key, p => p.Value);
             }
 
-            var filePath = Path.Combine(file.BaseDir, file.File);
-            var repoDetail = GitUtility.TryGetFileDetail(filePath);
             var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
             return new FileModel(file, content)
             {
                 Uids = string.IsNullOrEmpty(uid) ? ImmutableArray<UidDefinition>.Empty : ImmutableArray<UidDefinition>.Empty.Add(new UidDefinition(uid, displayLocalPath)),
-                LocalPathFromRepoRoot = repoDetail?.RelativePath ?? StringExtension.ToDisplayPath(Path.Combine(file.BaseDir, file.File)),
                 LocalPathFromRoot = displayLocalPath
             };
         }
