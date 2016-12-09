@@ -63,7 +63,7 @@ function isRelativePath(path) {
 var gitUrlPatternItems = {
     'github': {
         'testRegex': /^(https?:\/\/)?(\S+\@)?(\S+\.)?github\.com(\/|:).*/i,
-        'generateUrl': function(modelGitInfo) {
+        'generateUrl': function (modelGitInfo) {
             var url = normalizeGitUrlToHttps(modelGitInfo.repo);
             url += '/blob' + '/' + modelGitInfo.branch + '/' + modelGitInfo.path;
             if (modelGitInfo.startLine && modelGitInfo.startLine > 0) {
@@ -71,7 +71,7 @@ var gitUrlPatternItems = {
             }
             return url;
         },
-        'generateNewFileUrl': function(modelGitInfo, uid) {
+        'generateNewFileUrl': function (modelGitInfo, uid) {
             var url = normalizeGitUrlToHttps(modelGitInfo.repo);
             url += '/new';
             url += '/' + modelGitInfo.branch;
@@ -83,14 +83,14 @@ var gitUrlPatternItems = {
     },
     'vso': {
         'testRegex': /^https:\/\/.*\.visualstudio\.com\/.*/i,
-        'generateUrl': function(modelGitInfo) {
-            var url =  modelGitInfo.repo + '?path=' + modelGitInfo.path + '&version=GB' + modelGitInfo.branch;
+        'generateUrl': function (modelGitInfo) {
+            var url = modelGitInfo.repo + '?path=' + modelGitInfo.path + '&version=GB' + modelGitInfo.branch;
             if (modelGitInfo.startLine && modelGitInfo.startLine > 0) {
                 url += '&line=' + modelGitInfo.startLine;
             }
             return url;
         },
-        'generateNewFileUrl': function(modelGitInfo, uid) {
+        'generateNewFileUrl': function (modelGitInfo, uid) {
             return '';
         }
     }
@@ -140,7 +140,10 @@ function getRemoteUrl(remote, startLine, gitContribute, gitUrlPattern) {
 }
 
 function getGitContributeFallbackWithGitRemote(gitRemote, gitContribute) {
-    var modelGitInfo = {};
+    var modelGitInfo = {
+        // apiSpecFolder defines the folder contains overwrite files for MRef, the default value is apiSpec
+        apiSpecFolder: "apiSpec"
+    };
 
     if (gitContribute && gitContribute.repo) {
         modelGitInfo.repo = gitContribute.repo;
@@ -154,10 +157,8 @@ function getGitContributeFallbackWithGitRemote(gitRemote, gitContribute) {
         modelGitInfo.branch = gitRemote.branch;
     }
 
-    if (gitContribute) {
-        // apiSpecFolder defines the folder contains overwrite files for MRef
-        // the default value is apiSpec
-        modelGitInfo.apiSpecFolder = gitContribute.path || "apiSpec";
+    if (gitContribute && gitContribute.path) {
+        modelGitInfo.apiSpecFolder = gitContribute.path;
     }
 
     if (gitRemote) {
