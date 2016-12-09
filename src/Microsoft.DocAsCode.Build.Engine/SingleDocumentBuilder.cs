@@ -21,7 +21,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         private const string PhaseName = "Build Document";
         private const string XRefMapFileName = "xrefmap.yml";
 
-        public CompositionHost Container { get; set; }
         public IEnumerable<IDocumentProcessor> Processors { get; set; }
         public IEnumerable<IInputMetadataValidator> MetadataValidators { get; set; }
         public IMarkdownServiceProvider MarkdownServiceProvider { get; set; }

@@ -86,12 +86,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (parameters.Count == 0)
             {
-                throw new ArgumentException("Parameters is empty.", nameof(parameters));
+                throw new ArgumentException("Parameters are empty.", nameof(parameters));
             }
 
-            var markdownServiceProvider = (IMarkdownServiceProvider)_container.GetExport(
-                typeof(IMarkdownServiceProvider),
-                parameters[0].MarkdownEngineName);
+            var markdownServiceProvider = GetExport<IMarkdownServiceProvider>(parameters[0].MarkdownEngineName);
             if (markdownServiceProvider == null)
             {
                 Logger.LogError($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
@@ -145,7 +143,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (var builder = new SingleDocumentBuilder
             {
-                Container = _container,
                 CurrentBuildInfo = _currentBuildInfo,
                 LastBuildInfo = _lastBuildInfo,
                 IntermediateFolder = _intermediateFolder,
@@ -276,7 +273,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             AddBuildInPostProcessor(processorList);
             foreach (var processor in processors)
             {
-                var p = GetExport(typeof(IPostProcessor), processor) as IPostProcessor;
+                var p = GetExport<IPostProcessor>(processor);
                 if (p != null)
                 {
                     processorList.Add(new PostProcessor
@@ -310,6 +307,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 });
         }
+
+        private T GetExport<T>(string name) where T : class =>
+            (T)GetExport(typeof(T), name);
 
         private object GetExport(Type type, string name)
         {
