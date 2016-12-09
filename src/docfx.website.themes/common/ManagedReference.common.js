@@ -125,7 +125,7 @@ function handleNamespace(model) {
 function handleItem(vm, gitContribute, gitUrlPattern) {
   // get contribution information
   vm.docurl = common.getImproveTheDocHref(vm, gitContribute, gitUrlPattern);
-  vm.sourceurl = common.getViewSourceHref(vm, null);
+  vm.sourceurl = common.getViewSourceHref(vm, gitUrlPattern);
 
   // set to null incase mustache looks up
   vm.summary = vm.summary || null;
