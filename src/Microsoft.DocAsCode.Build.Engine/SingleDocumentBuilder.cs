@@ -21,9 +21,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         private const string PhaseName = "Build Document";
         private const string XRefMapFileName = "xrefmap.yml";
 
-        public CompositionHost Container { get; set; }
         public IEnumerable<IDocumentProcessor> Processors { get; set; }
         public IEnumerable<IInputMetadataValidator> MetadataValidators { get; set; }
+        public IMarkdownServiceProvider MarkdownServiceProvider { get; set; }
 
         internal BuildInfo CurrentBuildInfo { get; set; }
         internal BuildInfo LastBuildInfo { get; set; }
@@ -138,7 +138,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
         }
-
 
         private void BuildCore(PhaseProcessor phaseProcessor, List<HostService> hostServices, DocumentBuildContext context)
         {
@@ -284,16 +283,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private IMarkdownService CreateMarkdownService(DocumentBuildParameters parameters, ImmutableDictionary<string, string> tokens)
         {
-            var provider = (IMarkdownServiceProvider)Container.GetExport(
-                typeof(IMarkdownServiceProvider),
-                parameters.MarkdownEngineName);
-            if (provider == null)
-            {
-                Logger.LogError($"Unable to find markdown engine: {parameters.MarkdownEngineName}");
-                throw new DocfxException($"Unable to find markdown engine: {parameters.MarkdownEngineName}");
-            }
-            Logger.LogInfo($"Markdown engine is {parameters.MarkdownEngineName}");
-            return provider.CreateMarkdownService(
+            return MarkdownServiceProvider.CreateMarkdownService(
                 new MarkdownServiceParameters
                 {
                     BasePath = parameters.Files.DefaultBaseDir,

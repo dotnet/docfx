@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
+    using System.Linq;
     using System.Runtime.Remoting.Lifetime;
     using System.Reflection;
 
@@ -129,7 +130,7 @@ namespace Microsoft.DocAsCode.SubCommands
             using (var builder = new DocumentBuilder(assemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder, changeList?.From, changeList?.To))
             using (new PerformanceScope("building documents", LogLevel.Info))
             {
-                builder.Build(ConfigToParameter(config, templateManager, changeList, baseDirectory, outputDirectory, templateDirectory), outputDirectory);
+                builder.Build(ConfigToParameter(config, templateManager, changeList, baseDirectory, outputDirectory, templateDirectory).ToList(), outputDirectory);
             }
         }
 
@@ -260,15 +261,16 @@ namespace Microsoft.DocAsCode.SubCommands
 
             foreach (var pair in fileMappingParametersDictionary)
             {
-                parameters.Files = GetFileCollectionFromFileMapping(
+                var p = parameters.Clone();
+                p.Files = GetFileCollectionFromFileMapping(
                     baseDirectory,
                     GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Content)),
                     GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Overwrite)),
                     GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
-                parameters.VersionName = pair.Key;
-                parameters.Changes = GetIntersectChanges(parameters.Files, changeList);
-                parameters.RootTocPath = pair.Value.RootTocPath;
-                yield return parameters;
+                p.VersionName = pair.Key;
+                p.Changes = GetIntersectChanges(parameters.Files, changeList);
+                p.RootTocPath = pair.Value.RootTocPath;
+                yield return p;
             }
         }
 

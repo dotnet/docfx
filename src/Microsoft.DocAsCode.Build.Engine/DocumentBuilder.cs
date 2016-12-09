@@ -78,8 +78,25 @@ namespace Microsoft.DocAsCode.Build.Engine
             Build(new DocumentBuildParameters[] { parameter }, parameter.OutputBaseDir);
         }
 
-        public void Build(IEnumerable<DocumentBuildParameters> parameters, string outputDirectory)
+        public void Build(IList<DocumentBuildParameters> parameters, string outputDirectory)
         {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+            if (parameters.Count == 0)
+            {
+                throw new ArgumentException("Parameters are empty.", nameof(parameters));
+            }
+
+            var markdownServiceProvider = GetExport<IMarkdownServiceProvider>(parameters[0].MarkdownEngineName);
+            if (markdownServiceProvider == null)
+            {
+                Logger.LogError($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
+                throw new DocfxException($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
+            }
+            Logger.LogInfo($"Markdown engine is {parameters[0].MarkdownEngineName}");
+
             var manifests = new List<Manifest>();
             bool transformDocument = false;
             foreach (var parameter in parameters)
@@ -101,7 +118,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     Logger.LogInfo($"Start building for version: {parameter.VersionName}");
                 }
-                manifests.Add(BuildCore(parameter));
+                manifests.Add(BuildCore(parameter, markdownServiceProvider));
             }
             var generatedManifest = MergeManifest(manifests);
 
@@ -122,16 +139,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        internal Manifest BuildCore(DocumentBuildParameters parameter)
+        internal Manifest BuildCore(DocumentBuildParameters parameter, IMarkdownServiceProvider markdownServiceProvider)
         {
             using (var builder = new SingleDocumentBuilder
             {
-                Container = _container,
                 CurrentBuildInfo = _currentBuildInfo,
                 LastBuildInfo = _lastBuildInfo,
                 IntermediateFolder = _intermediateFolder,
                 MetadataValidators = MetadataValidators.Concat(GetMetadataRules(parameter)).ToList(),
                 Processors = Processors,
+                MarkdownServiceProvider = markdownServiceProvider,
             })
             {
                 return builder.Build(parameter);
@@ -256,7 +273,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             AddBuildInPostProcessor(processorList);
             foreach (var processor in processors)
             {
-                var p = GetExport(typeof(IPostProcessor), processor) as IPostProcessor;
+                var p = GetExport<IPostProcessor>(processor);
                 if (p != null)
                 {
                     processorList.Add(new PostProcessor
@@ -290,6 +307,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 });
         }
+
+        private T GetExport<T>(string name) where T : class =>
+            (T)GetExport(typeof(T), name);
 
         private object GetExport(Type type, string name)
         {
