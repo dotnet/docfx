@@ -20,13 +20,12 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
         public override int BuildOrder => 0x10;
 
-        // TODO: MergerFacade factory?
-        protected override MergerFacade Merger { get; } = new MergerFacade(
-            new DictionaryMerger(
-                new KeyedListMerger(
-                    new JObjectMerger(
-                        new JArrayMerger((
-                            new ReflectionEntityMerger()))))));
+        protected override IMerger GetMerger()
+        {
+            return new JObjectMerger(
+                new JArrayMerger(
+                    base.GetMerger()));
+        }
 
         public IEnumerable<RestApiRootItemViewModel> GetRootItemsFromOverwriteDocument(FileModel overwriteModel, string uid, IHostService host)
         {
