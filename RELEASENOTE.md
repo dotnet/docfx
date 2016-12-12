@@ -4,14 +4,17 @@ v2.9(Pre-Release)
 -----------
 1.  **Breaking Change** Using `<span class="xxx">` for languageKeyWord, paramref and typeparamref in generated yml files, instead of using `<em>` and `<strong>`. Change default template accordingly.
 2.  Remove project `Microsoft.DocAsCode.Utility`, move class to `Microsoft.DocAsCode.Common`.
-3.  REST:
+3.  Get documentation's git information with git command instead of `GitSharp`.
+4.  REST:
     - Support `remarks` to be overwritten.
     - Support reference in parameters to be overwritten.
     - Support DFM syntax in swagger description
-4.  Bug fixes:
+5.  Bug fixes:
     1. Fix inherited member's name when xref unresolved.
     2. Fix missing items in breadcrumb. (https://github.com/dotnet/docfx/issues/944)
     3. Fix generating overload method names from generic method.
+    4. Fix full text search not work in index page.
+    5. Fix the warning that no highlight function defined.
 
 v2.8
 -----------
