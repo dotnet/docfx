@@ -7,7 +7,9 @@ export class Common {
         let file, args;
         if (process.platform === 'win32') {
             file = 'cmd.exe';
-            args = ['/s', '/c', '"' + command + '"'];
+            // execute chcp 65001 to make sure console's code page supports UTF8
+            // https://github.com/nodejs/node-v0.x-archive/issues/2190
+            args = ['/s', '/c', '"chcp 65001 >NUL & ' + command + '"'];
             options = Object.assign({}, options);
             options.windowsVerbatimArguments = true;
         }
