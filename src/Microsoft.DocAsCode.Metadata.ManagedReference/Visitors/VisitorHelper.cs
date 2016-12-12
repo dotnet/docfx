@@ -149,7 +149,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 source.Remote = GitUtility.TryGetFileDetail(source.Path);
                 if (source.Remote != null)
                 {
-                    source.Path = PathUtility.FormatPath(source.Path, UriKind.Relative, source.Remote.LocalWorkingDirectory);
+                    source.Path = PathUtility.FormatPath(source.Path, UriKind.Relative, EnvironmentContext.BaseDirectory);
                 }
                 return source;
             }

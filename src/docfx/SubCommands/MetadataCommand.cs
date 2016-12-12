@@ -26,6 +26,7 @@ namespace Microsoft.DocAsCode.SubCommands
         public MetadataCommand(MetadataCommandOptions options)
         {
             Config = ParseOptions(options);
+            EnvironmentContext.BaseDirectory = Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Directory.GetCurrentDirectory() : Config.BaseDirectory);
             InputModels = GetInputModels(Config);
         }
 
