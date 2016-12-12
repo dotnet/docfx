@@ -11,7 +11,7 @@
 {{/inheritance}}
     <div class="level{{item.level}}"><span class="xref">{{item.name.0.value}}</span></div>
 {{#derivedClasses}}
-    <div class="level{{index}}>{{{specName.0.value}}}</div>
+    <div class="level{{index}}">{{{specName.0.value}}}</div>
 {{/derivedClasses}}
 </div>
 {{/inheritance.0}}
