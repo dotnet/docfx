@@ -19,6 +19,7 @@ exports.transform = function (model) {
             child.sourceurl = child.sourceurl || common.getViewSourceHref(child, null, model._gitUrlPattern);
             child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
             child.footer = child.footer || ''; // set to empty incase mustache looks up
+            child.remarks = child.remarks || ''; // set to empty incase mustache looks up
             child.htmlId = common.getHtmlId(child.uid);
 
             formatExample(child.responses);
