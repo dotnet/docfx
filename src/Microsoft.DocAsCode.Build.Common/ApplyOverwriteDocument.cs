@@ -14,12 +14,12 @@ namespace Microsoft.DocAsCode.Build.Common
 
     public abstract class ApplyOverwriteDocument : BaseDocumentBuildStep
     {
+        private readonly MergerFacade _merger;
+
         protected ApplyOverwriteDocument()
         {
-            Merger = new MergerFacade(GetMerger());
+            _merger = new MergerFacade(GetMerger());
         }
-
-        protected MergerFacade Merger { get; }
 
         protected virtual IMerger GetMerger()
         {
@@ -99,7 +99,7 @@ namespace Microsoft.DocAsCode.Build.Common
         {
             try
             {
-                Merger.Merge(ref baseModel, overrideModel);
+                _merger.Merge(ref baseModel, overrideModel);
             }
             catch (Exception e)
             {
