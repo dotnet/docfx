@@ -1,6 +1,6 @@
 ﻿Version Notes (Current Version: v2.9)
 =======================================
-v2.9(Pre-Release)
+v2.9
 -----------
 1.  **Breaking Change** Using `<span class="xxx">` for languageKeyWord, paramref and typeparamref in generated yml files, instead of using `<em>` and `<strong>`. Change default template accordingly.
 2.  Remove project `Microsoft.DocAsCode.Utility`, move class to `Microsoft.DocAsCode.Common`.
@@ -15,6 +15,14 @@ v2.9(Pre-Release)
     3. Fix generating overload method names from generic method.
     4. Fix full text search not work in index page.
     5. Fix the warning that no highlight function defined.
+
+v2.8.2
+-----------
+1.  Fix bug: throw error when md contain wrong path..
+
+v2.8.1
+-----------
+1.  Fix bug: RelativePath.TryParse should not throw error when path contains invalid path characters.
 
 v2.8
 -----------
