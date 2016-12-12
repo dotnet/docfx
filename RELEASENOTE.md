@@ -2,7 +2,11 @@ Version Notes (Current Version: v2.9)
 =======================================
 v2.9(Pre-Release)
 -----------
-1.  Remove project `Microsoft.DocAsCode.Utility`, move class to `Microsoft.DocAsCode.Common`.
+1.  **Breaking Change** Using `<span class="xxx">` for languageKeyWord, paramref and typeparamref in generated yml files, instead of using `<em>` and `<strong>`. Change default template accordingly.
+2.  Remove project `Microsoft.DocAsCode.Utility`, move class to `Microsoft.DocAsCode.Common`.
+3.  Bug fixes:
+    1. Fix inherited member's name when xref unresolved.
+    2. Fix missing items in breadcrumb. (https://github.com/dotnet/docfx/issues/944)
 
 v2.8
 -----------
