@@ -1,5 +1,8 @@
-﻿Version Notes (Current Version: v2.9)
+﻿Version Notes (Current Version: v2.10)
 =======================================
+v2.10(Pre-Release)
+-----------
+
 v2.9
 -----------
 1.  **Breaking Change** Using `<span class="xxx">` for languageKeyWord, paramref and typeparamref in generated yml files, instead of using `<em>` and `<strong>`. Change default template accordingly.
