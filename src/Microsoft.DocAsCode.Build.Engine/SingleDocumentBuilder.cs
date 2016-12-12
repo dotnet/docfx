@@ -28,6 +28,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         internal BuildInfo CurrentBuildInfo { get; set; }
         internal BuildInfo LastBuildInfo { get; set; }
         internal string IntermediateFolder { get; set; }
+        private IMarkdownService MarkdownService { get; set; }
 
         public static ImmutableList<FileModel> Build(IDocumentProcessor processor, DocumentBuildParameters parameters, IMarkdownService markdownService)
         {
@@ -107,7 +108,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         using (new LoggerPhaseScope("Prepare", true))
                         {
-                            Prepare(parameters, context, templateProcessor, out hostServiceCreator, out phaseProcessor);
+                            if (MarkdownService == null)
+                            {
+                                MarkdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
+                            }
+                            Prepare(
+                                parameters,
+                                context,
+                                templateProcessor,
+                                (MarkdownService as IHasIncrementalContext)?.GetIncrementalContextHash(),
+                                out hostServiceCreator,
+                                out phaseProcessor);
                         }
                         using (new LoggerPhaseScope("Load", true))
                         {
@@ -189,13 +200,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogWarning(sb.ToString());
             }
 
-            IMarkdownService markdownService;
-            using (new LoggerPhaseScope("CreateMarkdownService", true))
-            {
-                markdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
-            }
-
-            // todo : revert until PreProcessor ready
             foreach (var pair in (from processor in processors
                                   join item in toHandleItems on processor equals item.Key into g
                                   from item in g.DefaultIfEmpty()
@@ -208,7 +212,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var hostService = creator.CreateHostService(
                     parameters,
                     templateProcessor,
-                    markdownService,
+                    MarkdownService,
                     MetadataValidators,
                     pair.processor,
                     pair.item?.Select(f => f.file));
@@ -216,11 +220,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void Prepare(DocumentBuildParameters parameters, DocumentBuildContext context, TemplateProcessor templateProcessor, out IHostServiceCreator hostServiceCreator, out PhaseProcessor phaseProcessor)
+        private void Prepare(
+            DocumentBuildParameters parameters,
+            DocumentBuildContext context,
+            TemplateProcessor templateProcessor,
+            string markdownServiceContextHash,
+            out IHostServiceCreator hostServiceCreator,
+            out PhaseProcessor phaseProcessor)
         {
             if (IntermediateFolder != null && parameters.ApplyTemplateSettings.TransformDocument)
             {
-                context.IncrementalBuildContext = IncrementalBuildContext.Create(parameters, CurrentBuildInfo, LastBuildInfo, IntermediateFolder);
+                context.IncrementalBuildContext = IncrementalBuildContext.Create(parameters, CurrentBuildInfo, LastBuildInfo, IntermediateFolder, markdownServiceContextHash);
                 hostServiceCreator = new HostServiceCreatorWithIncremental(context);
                 phaseProcessor = new PhaseProcessor
                 {
