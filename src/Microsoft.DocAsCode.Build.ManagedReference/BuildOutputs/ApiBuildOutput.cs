@@ -126,7 +126,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         [YamlMember(Alias = "derivedClasses")]
         [MergeOption(MergeOption.Ignore)]
-        [JsonIgnore]
+        [JsonProperty("derivedClasses")]
         public List<ApiReferenceBuildOutput> DerivedClasses { get; set; }
 
         [YamlMember(Alias = "level")]
