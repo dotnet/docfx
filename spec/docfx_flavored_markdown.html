@@ -8,7 +8,7 @@
     <title>DocFX Flavored Markdown | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFX Flavored Markdown | DocFX website ">
-    <meta name="generator" content="docfx 2.8.2.0">
+    <meta name="generator" content="docfx 2.9.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -75,7 +75,7 @@
             <article class="content wrap" id="_content" data-uid="">
               <h1 id="docfx-flavored-markdown">DocFX Flavored Markdown</h1>
               
-<p>DocFX supports <code>DocFX Flavored Markdown</code>, or DFM. It is 99% compatible with <a href="https://guides.github.com/features/mastering-markdown/">GitHub Flavored Markdown</a>, and adds some additional functionality, including cross reference and file inclusion.</p>
+<p>DocFX supports <code>DocFX Flavored Markdown</code>, or DFM. It supports all <a href="https://guides.github.com/features/mastering-markdown/">GitHub Flavored Markdown</a> syntax with 2 exceptions when resolving <a href="#differences-between-dfm-and-gfm">list</a>. Also, DFM adds new syntax to support additional functionalities, including cross reference and file inclusion.</p>
 <h3 id="yaml-header">Yaml Header</h3>
 <p>Yaml header in DFM is considered as the metadata for the Markdown file. It will transform to <code>yamlheader</code> tag when processed.
 Yaml header MUST be the first thing in the file and MUST take the form of valid YAML set between triple-dashed lines. Here is a basic example:</p>
@@ -212,7 +212,18 @@ Give an example below.</p>
   &lt;h5&gt;WARNING&lt;/h5&gt;
   &lt;p&gt;WARNING content&lt;/p&gt;
 &lt;/div&gt;
-</code></pre><h2 id="difference-between-dfm-and-gfm">Difference between DFM and GFM</h2>
+</code></pre><p>Here are all the supported note types with the styling of the default theme applied:</p>
+<div class="NOTE"><h5>Note</h5><p>This is a note which needs your attention, but it&#39;s not super important.</p>
+</div>
+<div class="TIP"><h5>Tip</h5><p>This is a note which needs your attention, but it&#39;s not super important.</p>
+</div>
+<div class="WARNING"><h5>Warning</h5><p>This is a warning containing some important message.</p>
+</div>
+<div class="IMPORTANT"><h5>Important</h5><p>This is a warning containing some important message.</p>
+</div>
+<div class="CAUTION"><h5>Caution</h5><p>This is a warning containing some important message.</p>
+</div>
+<h2 id="differences-between-dfm-and-gfm">Differences between DFM and GFM</h2>
 <h3 id="list">List</h3>
 <p>DFM list item always uses the first character in the first line to decide whether it is in the list item, but GFM does not.<br>For example:</p>
 <p>Case 1:</p>
@@ -301,8 +312,18 @@ Give an example below.</p>
 </tr>
 </tbody>
 </table>
+<h3 id="list-after-paragraph">List after paragraph</h3>
+<p>In GFM, list after paragraph must be separated by two or more new line character.<br>In DFM, one new line also works.</p>
+<p>For example:</p>
+<pre><code class="lang-md">text
+1. a
+2. b
+</code></pre><p>In GFM, it will be rendered as one paragraph with content <code>text 1. a 2. b</code>.<br>In DFM, it will be rendered as a paragraph (with content <code>text</code>) and a list.</p>
+<h2 id="differences-introduced-by-dfm-syntax">Differences introduced by DFM syntax</h2>
+<p>Please note that DFM introduces more syntax to support more functionalities. When GFM does not support them, preview the Markdown file inside <em>GFM Preview</em> can lead to different results.</p>
 <h3 id="yaml-header-1">YAML header</h3>
-<p>YAML header is also supported in GFM, but it must at the beginning of markdown file.<br>DFM supports multiple YAML header in one markdown file.<br>But for conceptual document, only first YAML header is effective.</p>
+<p>In GFM, YAML header must start at the very beginning of the Markdown file.
+In DFM, YAML header contains more powerful meanings. Refer to <a href="#yaml-header">Yaml Header</a> for details.</p>
 <pre><code class="lang-md">...some text...
 
 ---
@@ -325,13 +346,6 @@ Then, following content would be treated as a part of paragraph.</p>
 <pre><code class="lang-md">&gt; [!NOTE]
 &gt;     This is code.
 </code></pre><p>In GFM, it will be rendered as a paragraph with content <code>[!NOTE] This is code.</code> in blockquote.<br>In DFM, it will be rendered as a code in note.</p>
-<h3 id="list-after-paragraph">List after paragraph</h3>
-<p>In GFM, list after paragraph must be separated by two or new line character.<br>In DFM, one new line also works.</p>
-<p>For example:</p>
-<pre><code class="lang-md">text
-1. a
-2. b
-</code></pre><p>In GFM, it will be rendered as one paragraph with content <code>text 1. a 2. b</code>.<br>In DFM, it will be rendered as a paragraph (with content <code>text</code>) and a list.</p>
 
             </article>
           </div>

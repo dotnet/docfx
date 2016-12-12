@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class DocumentBuildContext
    | DocFX website ">
-    <meta name="generator" content="docfx 2.8.2.0">
+    <meta name="generator" content="docfx 2.9.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -123,7 +123,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext__ctor_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.%23ctor(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L31">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L27">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext__ctor_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.#ctor*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext__ctor_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.#ctor(System.String)">DocumentBuildContext(String)</h4>
@@ -145,7 +145,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>buildOutputFolder</em></td>
+                    <td><span class="parametername">buildOutputFolder</span></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -155,7 +155,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext__ctor_System_String_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_Plugins_FileAndType__System_Collections_Immutable_ImmutableArray_System_String__System_Collections_Immutable_ImmutableArray_System_String__System_Int32_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.%23ctor(System.String%2CSystem.Collections.Generic.IEnumerable%7BMicrosoft.DocAsCode.Plugins.FileAndType%7D%2CSystem.Collections.Immutable.ImmutableArray%7BSystem.String%7D%2CSystem.Collections.Immutable.ImmutableArray%7BSystem.String%7D%2CSystem.Int32%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L33">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L30">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext__ctor_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.#ctor*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext__ctor_System_String_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_Plugins_FileAndType__System_Collections_Immutable_ImmutableArray_System_String__System_Collections_Immutable_ImmutableArray_System_String__System_Int32_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.#ctor(System.String,System.Collections.Generic.IEnumerable{Microsoft.DocAsCode.Plugins.FileAndType},System.Collections.Immutable.ImmutableArray{System.String},System.Collections.Immutable.ImmutableArray{System.String},System.Int32,System.String)">DocumentBuildContext(String, IEnumerable&lt;FileAndType&gt;, ImmutableArray&lt;String&gt;, ImmutableArray&lt;String&gt;, Int32, String)</h4>
@@ -177,32 +177,104 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>buildOutputFolder</em></td>
+                    <td><span class="parametername">buildOutputFolder</span></td>
                     <td></td>
                   </tr>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.FileAndType.html">FileAndType</a>&gt;</td>
-                    <td><em>allSourceFiles</em></td>
+                    <td><span class="parametername">allSourceFiles</span></td>
                     <td></td>
                   </tr>
                   <tr>
                     <td><span class="xref">System.Collections.Immutable.ImmutableArray</span>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</td>
-                    <td><em>externalReferencePackages</em></td>
+                    <td><span class="parametername">externalReferencePackages</span></td>
                     <td></td>
                   </tr>
                   <tr>
                     <td><span class="xref">System.Collections.Immutable.ImmutableArray</span>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</td>
-                    <td><em>xrefMaps</em></td>
+                    <td><span class="parametername">xrefMaps</span></td>
                     <td></td>
                   </tr>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
-                    <td><em>maxParallelism</em></td>
+                    <td><span class="parametername">maxParallelism</span></td>
                     <td></td>
                   </tr>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>baseFolder</em></td>
+                    <td><span class="parametername">baseFolder</span></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext__ctor_System_String_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_Plugins_FileAndType__System_Collections_Immutable_ImmutableArray_System_String__System_Collections_Immutable_ImmutableArray_System_String__System_Int32_System_String_System_String_Microsoft_DocAsCode_Build_Engine_ApplyTemplateSettings_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.%23ctor(System.String%2CSystem.Collections.Generic.IEnumerable%7BMicrosoft.DocAsCode.Plugins.FileAndType%7D%2CSystem.Collections.Immutable.ImmutableArray%7BSystem.String%7D%2CSystem.Collections.Immutable.ImmutableArray%7BSystem.String%7D%2CSystem.Int32%2CSystem.String%2CSystem.String%2CMicrosoft.DocAsCode.Build.Engine.ApplyTemplateSettings%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L33">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext__ctor_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.#ctor*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext__ctor_System_String_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_Plugins_FileAndType__System_Collections_Immutable_ImmutableArray_System_String__System_Collections_Immutable_ImmutableArray_System_String__System_Int32_System_String_System_String_Microsoft_DocAsCode_Build_Engine_ApplyTemplateSettings_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.#ctor(System.String,System.Collections.Generic.IEnumerable{Microsoft.DocAsCode.Plugins.FileAndType},System.Collections.Immutable.ImmutableArray{System.String},System.Collections.Immutable.ImmutableArray{System.String},System.Int32,System.String,System.String,Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings,System.String)">DocumentBuildContext(String, IEnumerable&lt;FileAndType&gt;, ImmutableArray&lt;String&gt;, ImmutableArray&lt;String&gt;, Int32, String, String, ApplyTemplateSettings, String)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public DocumentBuildContext(string buildOutputFolder, IEnumerable&lt;FileAndType&gt; allSourceFiles, ImmutableArray&lt;string&gt; externalReferencePackages, ImmutableArray&lt;string&gt; xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td><span class="parametername">buildOutputFolder</span></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.FileAndType.html">FileAndType</a>&gt;</td>
+                    <td><span class="parametername">allSourceFiles</span></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">System.Collections.Immutable.ImmutableArray</span>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</td>
+                    <td><span class="parametername">externalReferencePackages</span></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><span class="xref">System.Collections.Immutable.ImmutableArray</span>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</td>
+                    <td><span class="parametername">xrefMaps</span></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
+                    <td><span class="parametername">maxParallelism</span></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td><span class="parametername">baseFolder</span></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td><span class="parametername">versionName</span></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings.html">ApplyTemplateSettings</a></td>
+                    <td><span class="parametername">applyTemplateSetting</span></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td><span class="parametername">rootTocPath</span></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -214,7 +286,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_AllSourceFiles.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.AllSourceFiles%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L60">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L70">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_AllSourceFiles_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.AllSourceFiles*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_AllSourceFiles" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.AllSourceFiles">AllSourceFiles</h4>
@@ -241,10 +313,40 @@
               </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_ApplyTemplateSettings.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.ApplyTemplateSettings%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L64">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_ApplyTemplateSettings_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.ApplyTemplateSettings*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_ApplyTemplateSettings" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.ApplyTemplateSettings">ApplyTemplateSettings</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public ApplyTemplateSettings ApplyTemplateSettings { get; set; }</code></pre>
+              </div>
+              <h5 class="propertyValue">Property Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.ApplyTemplateSettings.html">ApplyTemplateSettings</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_BuildOutputFolder.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.BuildOutputFolder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L54">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L60">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_BuildOutputFolder_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.BuildOutputFolder*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_BuildOutputFolder" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.BuildOutputFolder">BuildOutputFolder</h4>
@@ -274,7 +376,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_ExternalReferencePackages.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.ExternalReferencePackages%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L56">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L66">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_ExternalReferencePackages_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.ExternalReferencePackages*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_ExternalReferencePackages" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.ExternalReferencePackages">ExternalReferencePackages</h4>
@@ -304,7 +406,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_FileMap.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.FileMap%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L64">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L74">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_FileMap_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.FileMap*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_FileMap" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.FileMap">FileMap</h4>
@@ -334,7 +436,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_MaxParallelism.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.MaxParallelism%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L62">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L72">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_MaxParallelism_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.MaxParallelism*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_MaxParallelism" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.MaxParallelism">MaxParallelism</h4>
@@ -361,10 +463,42 @@
               </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RootTocPath.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RootTocPath%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L82">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RootTocPath_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RootTocPath*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RootTocPath" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RootTocPath">RootTocPath</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public string RootTocPath { get; }</code></pre>
+              </div>
+              <h5 class="propertyValue">Property Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildContext.html#Microsoft_DocAsCode_Plugins_IDocumentBuildContext_RootTocPath">IDocumentBuildContext.RootTocPath</a></div>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_TocMap.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.TocMap%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L68">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L78">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_TocMap_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.TocMap*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_TocMap" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.TocMap">TocMap</h4>
@@ -391,10 +525,40 @@
               </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_VersionName.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.VersionName%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L62">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_VersionName_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.VersionName*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_VersionName" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.VersionName">VersionName</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public string VersionName { get; }</code></pre>
+              </div>
+              <h5 class="propertyValue">Property Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_XRef.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRef%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L70">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L80">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_XRef_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRef*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_XRef" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRef">XRef</h4>
@@ -424,7 +588,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_XRefMapUrls.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRefMapUrls%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L58">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L68">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_XRefMapUrls_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRefMapUrls*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_XRefMapUrls" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRefMapUrls">XRefMapUrls</h4>
@@ -454,7 +618,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_XRefSpecMap.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRefSpecMap%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L66">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L76">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_XRefSpecMap_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRefSpecMap*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_XRefSpecMap" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.XRefSpecMap">XRefSpecMap</h4>
@@ -486,7 +650,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_GetFilePath_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.GetFilePath(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L213">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L225">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_GetFilePath_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.GetFilePath*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_GetFilePath_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.GetFilePath(System.String)">GetFilePath(String)</h4>
@@ -508,7 +672,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>key</em></td>
+                    <td><span class="parametername">key</span></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -535,7 +699,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_GetTocFileKeySet_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.GetTocFileKeySet(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L305">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L317">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_GetTocFileKeySet_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.GetTocFileKeySet*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_GetTocFileKeySet_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.GetTocFileKeySet(System.String)">GetTocFileKeySet(String)</h4>
@@ -557,7 +721,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>key</em></td>
+                    <td><span class="parametername">key</span></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -584,7 +748,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_GetTocInfo.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.GetTocInfo%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L337">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L349">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_GetTocInfo_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.GetTocInfo*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_GetTocInfo" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.GetTocInfo">GetTocInfo()</h4>
@@ -616,7 +780,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_GetXrefSpec_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.GetXrefSpec(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L257">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L269">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_GetXrefSpec_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.GetXrefSpec*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_GetXrefSpec_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.GetXrefSpec(System.String)">GetXrefSpec(String)</h4>
@@ -638,7 +802,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>uid</em></td>
+                    <td><span class="parametername">uid</span></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -665,7 +829,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RegisterInternalXrefSpec_Microsoft_DocAsCode_Plugins_XRefSpec_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RegisterInternalXrefSpec(Microsoft.DocAsCode.Plugins.XRefSpec)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L232">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L244">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RegisterInternalXrefSpec_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RegisterInternalXrefSpec*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RegisterInternalXrefSpec_Microsoft_DocAsCode_Plugins_XRefSpec_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RegisterInternalXrefSpec(Microsoft.DocAsCode.Plugins.XRefSpec)">RegisterInternalXrefSpec(XRefSpec)</h4>
@@ -687,7 +851,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.Plugins.XRefSpec.html">XRefSpec</a></td>
-                    <td><em>xrefSpec</em></td>
+                    <td><span class="parametername">xrefSpec</span></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -699,7 +863,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RegisterInternalXrefSpecBookmark_System_String_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RegisterInternalXrefSpecBookmark(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L240">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L252">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RegisterInternalXrefSpecBookmark_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RegisterInternalXrefSpecBookmark*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RegisterInternalXrefSpecBookmark_System_String_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RegisterInternalXrefSpecBookmark(System.String,System.String)">RegisterInternalXrefSpecBookmark(String, String)</h4>
@@ -721,12 +885,12 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>uid</em></td>
+                    <td><span class="parametername">uid</span></td>
                     <td></td>
                   </tr>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>bookmark</em></td>
+                    <td><span class="parametername">bookmark</span></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -738,7 +902,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RegisterToc_System_String_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RegisterToc(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L317">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L329">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RegisterToc_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RegisterToc*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RegisterToc_System_String_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RegisterToc(System.String,System.String)">RegisterToc(String, String)</h4>
@@ -760,12 +924,12 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>tocFileKey</em></td>
+                    <td><span class="parametername">tocFileKey</span></td>
                     <td></td>
                   </tr>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>fileKey</em></td>
+                    <td><span class="parametername">fileKey</span></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -777,7 +941,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RegisterTocInfo_Microsoft_DocAsCode_Plugins_TocInfo_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RegisterTocInfo(Microsoft.DocAsCode.Plugins.TocInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L332">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L344">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RegisterTocInfo_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RegisterTocInfo*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_RegisterTocInfo_Microsoft_DocAsCode_Plugins_TocInfo_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.RegisterTocInfo(Microsoft.DocAsCode.Plugins.TocInfo)">RegisterTocInfo(TocInfo)</h4>
@@ -799,7 +963,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.Plugins.TocInfo.html">TocInfo</a></td>
-                    <td><em>toc</em></td>
+                    <td><span class="parametername">toc</span></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -811,7 +975,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_ReportExternalXRefSpec_Microsoft_DocAsCode_Plugins_XRefSpec_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.ReportExternalXRefSpec(Microsoft.DocAsCode.Plugins.XRefSpec)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L82">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L94">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_ReportExternalXRefSpec_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.ReportExternalXRefSpec*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_ReportExternalXRefSpec_Microsoft_DocAsCode_Plugins_XRefSpec_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.ReportExternalXRefSpec(Microsoft.DocAsCode.Plugins.XRefSpec)">ReportExternalXRefSpec(XRefSpec)</h4>
@@ -833,7 +997,7 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="Microsoft.DocAsCode.Plugins.XRefSpec.html">XRefSpec</a></td>
-                    <td><em>spec</em></td>
+                    <td><span class="parametername">spec</span></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -843,7 +1007,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_ResolveExternalXRefSpec.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.ResolveExternalXRefSpec%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L90">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L102">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_ResolveExternalXRefSpec_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.ResolveExternalXRefSpec*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_ResolveExternalXRefSpec" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.ResolveExternalXRefSpec">ResolveExternalXRefSpec()</h4>
@@ -858,7 +1022,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_SetFilePath_System_String_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.SetFilePath(System.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L226">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L238">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_SetFilePath_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.SetFilePath*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_SetFilePath_System_String_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.DocumentBuildContext.SetFilePath(System.String,System.String)">SetFilePath(String, String)</h4>
@@ -880,12 +1044,12 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>key</em></td>
+                    <td><span class="parametername">key</span></td>
                     <td></td>
                   </tr>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-                    <td><em>filePath</em></td>
+                    <td><span class="parametername">filePath</span></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -907,7 +1071,7 @@
                     <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_DocumentBuildContext.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DocumentBuildContext%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L26" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/DocumentBuildContext.cs/#L22" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

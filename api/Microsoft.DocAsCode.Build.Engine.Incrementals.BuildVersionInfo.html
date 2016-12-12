@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class BuildVersionInfo
    | DocFX website ">
-    <meta name="generator" content="docfx 2.8.2.0">
+    <meta name="generator" content="docfx 2.9.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -123,7 +123,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_Attributes.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Attributes%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L63">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L67">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_Attributes_" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Attributes*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_Attributes" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Attributes">Attributes</h4>
@@ -187,7 +187,7 @@ e.g. last modified time, md5.</p>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_BuildMessage.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.BuildMessage%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L78">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L92">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_BuildMessage_" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.BuildMessage*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_BuildMessage" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.BuildMessage">BuildMessage</h4>
@@ -197,7 +197,7 @@ e.g. last modified time, md5.</p>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[JsonIgnore]
-public BuildMessageInfo BuildMessage { get; set; }</code></pre>
+public BuildMessage BuildMessage { get; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -209,7 +209,7 @@ public BuildMessageInfo BuildMessage { get; set; }</code></pre>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildMessageInfo.html">BuildMessageInfo</a></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildMessage.html">BuildMessage</a></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -219,11 +219,11 @@ public BuildMessageInfo BuildMessage { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_BuildMessageFile.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.BuildMessageFile%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L52">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L56">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_BuildMessageFile_" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.BuildMessageFile*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_BuildMessageFile" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.BuildMessageFile">BuildMessageFile</h4>
-              <div class="markdown level1 summary"><p>The file link for the build message file (type is <a class="xref" href="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildMessageInfo.html">BuildMessageInfo</a>).</p>
+              <div class="markdown level1 summary"><p>The file link for the build message file (type is <a class="xref" href="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_BuildMessage">BuildMessage</a>).</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -241,6 +241,38 @@ public BuildMessageInfo BuildMessage { get; set; }</code></pre>
                 <tbody>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_BuildOutputs.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.BuildOutputs%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L77">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_BuildOutputs_" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.BuildOutputs*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_BuildOutputs" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.BuildOutputs">BuildOutputs</h4>
+              <div class="markdown level1 summary"><p>deserialized outputs</p>
+</div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">[JsonIgnore]
+public BuildOutputs BuildOutputs { get; }</code></pre>
+              </div>
+              <h5 class="propertyValue">Property Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputs.html">BuildOutputs</a></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -282,7 +314,7 @@ Include global metadata, file metadata.</p>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_Dependency.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Dependency%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L58">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L62">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_Dependency_" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Dependency*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_Dependency" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Dependency">Dependency</h4>
@@ -342,10 +374,73 @@ public DependencyGraph Dependency { get; set; }</code></pre>
               </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_FileMap.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMap%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L87">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_FileMap_" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMap*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_FileMap" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMap">FileMap</h4>
+              <div class="markdown level1 summary"><p>deserialized filemap.</p>
+</div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">[JsonIgnore]
+public IDictionary&lt;string, string&gt; FileMap { get; set; }</code></pre>
+              </div>
+              <h5 class="propertyValue">Property Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/s4ys34ea(v=vs.110).aspx">IDictionary</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_FileMapFile.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMapFile%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L52">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_FileMapFile_" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMapFile*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_FileMapFile" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.FileMapFile">FileMapFile</h4>
+              <div class="markdown level1 summary"><p>The file link for the FileMap file.</p>
+</div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public string FileMapFile { get; set; }</code></pre>
+              </div>
+              <h5 class="propertyValue">Property Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_Manifest.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Manifest%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L68">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L72">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_Manifest_" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Manifest*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_Manifest" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.Manifest">Manifest</h4>
@@ -412,7 +507,7 @@ public IEnumerable&lt;ManifestItem&gt; Manifest { get; set; }</code></pre>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_OutputFile_" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.OutputFile*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_OutputFile" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.OutputFile">OutputFile</h4>
-              <div class="markdown level1 summary"><p>The file link for build outputs (type is <a class="xref" href="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildOutputs.html">BuildOutputs</a>).</p>
+              <div class="markdown level1 summary"><p>The file link for build outputs (type is <a class="xref" href="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_BuildOutputs">BuildOutputs</a>).</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -501,17 +596,17 @@ public IEnumerable&lt;ManifestItem&gt; Manifest { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_XRefSpecMap.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.XRefSpecMap%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L73">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/Incrementals/BuildVersionInfo.cs/#L82">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_XRefSpecMap_" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.XRefSpecMap*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Engine_Incrementals_BuildVersionInfo_XRefSpecMap" data-uid="Microsoft.DocAsCode.Build.Engine.Incrementals.BuildVersionInfo.XRefSpecMap">XRefSpecMap</h4>
-              <div class="markdown level1 summary"><p>deserialized xrefspecmap</p>
+              <div class="markdown level1 summary"><p>deserialized xrefspecmap. Key is original file path from root. Value is XrefSpecs reported by the file.</p>
 </div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[JsonIgnore]
-public IDictionary&lt;string, XRefSpec&gt; XRefSpecMap { get; set; }</code></pre>
+public IDictionary&lt;string, IEnumerable&lt;XRefSpec&gt;&gt; XRefSpecMap { get; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -523,7 +618,7 @@ public IDictionary&lt;string, XRefSpec&gt; XRefSpecMap { get; set; }</code></pre
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/s4ys34ea(v=vs.110).aspx">IDictionary</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="Microsoft.DocAsCode.Plugins.XRefSpec.html">XRefSpec</a>&gt;</td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/s4ys34ea(v=vs.110).aspx">IDictionary</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.XRefSpec.html">XRefSpec</a>&gt;&gt;</td>
                     <td></td>
                   </tr>
                 </tbody>

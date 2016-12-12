@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.8.2) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.9) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.8.2) | DocFX website ">
-    <meta name="generator" content="docfx 2.8.2.0">
+    <meta name="title" content="Version Notes (Current Version: v2.9) | DocFX website ">
+    <meta name="generator" content="docfx 2.9.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -66,8 +66,28 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <h1 id="version-notes-current-version-v282">Version Notes (Current Version: v2.8.2)</h1>
+              <h1 id="version-notes-current-version-v29">Version Notes (Current Version: v2.9)</h1>
               
+<h2 id="v29">v2.9</h2>
+<ol>
+<li><strong>Breaking Change</strong> Using <code>&lt;span class=&quot;xxx&quot;&gt;</code> for languageKeyWord, paramref and typeparamref in generated yml files, instead of using <code>&lt;em&gt;</code> and <code>&lt;strong&gt;</code>. Change default template accordingly.</li>
+<li>Remove project <code>Microsoft.DocAsCode.Utility</code>, move class to <code>Microsoft.DocAsCode.Common</code>.</li>
+<li>Get documentation&#39;s git information with git command instead of <code>GitSharp</code>.</li>
+<li>REST:<ul>
+<li>Support <code>remarks</code> to be overwritten.</li>
+<li>Support reference in parameters to be overwritten.</li>
+<li>Support DFM syntax in swagger description</li>
+</ul>
+</li>
+<li>Bug fixes:<ol>
+<li>Fix inherited member&#39;s name when xref unresolved.</li>
+<li>Fix missing items in breadcrumb. (<a href="https://github.com/dotnet/docfx/issues/944">https://github.com/dotnet/docfx/issues/944</a>)</li>
+<li>Fix generating overload method names from generic method.</li>
+<li>Fix full text search not work in index page.</li>
+<li>Fix the warning that no highlight function defined.</li>
+</ol>
+</li>
+</ol>
 <h2 id="v282">v2.8.2</h2>
 <ol>
 <li>Fix bug: throw error when md contain wrong path..</li>
