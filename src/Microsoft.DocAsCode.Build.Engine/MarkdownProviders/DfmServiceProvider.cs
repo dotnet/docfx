@@ -91,7 +91,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
 
-                return content.ToString().GetMd5String();
+                var contentText = content.ToString();
+                Logger.LogVerbose($"Dfm config content: {content}");
+                return contentText.GetMd5String();
             }
 
             public MarkupResult Markup(string src, string path)
