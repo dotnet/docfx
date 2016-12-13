@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ApiBuildOutput
    | DocFX website ">
-    <meta name="generator" content="docfx 2.9.0.0">
+    <meta name="generator" content="docfx 2.9.1.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -262,7 +262,7 @@ public string Conceptual { get; set; }</code></pre>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlMember(Alias = &quot;derivedClasses&quot;)]
 [MergeOption(MergeOption.Ignore)]
-[JsonIgnore]
+[JsonProperty(&quot;derivedClasses&quot;)]
 public List&lt;ApiReferenceBuildOutput&gt; DerivedClasses { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
