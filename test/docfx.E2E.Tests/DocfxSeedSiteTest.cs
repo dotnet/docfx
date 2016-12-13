@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.E2E.Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing.Imaging;
     using System.IO;
     using System.Net;
 
@@ -114,8 +115,9 @@ namespace Microsoft.DocAsCode.E2E.Tests
 
             // check overwrite
             var conceptual = _driver.FindElement(By.ClassName("conceptual"));
-            // Add this line to help find out what sometime breaks e2e
-            Assert.True(conceptual.Text.Contains("This is a class talking about CAT."), $"Actual HTML: {conceptual.GetAttribute("outerHTML")}");
+            // Add these lines to help find out what sometime breaks e2e
+            ((ITakesScreenshot)_driver).GetScreenshot().SaveAsFile("capture.png", ImageFormat.Png);
+            Assert.True(conceptual.Text.Contains("This is a class talking about CAT."), $"Actual HTML: {conceptual.GetAttribute("outerHTML")}\n Full HTML:\n {_driver.PageSource}");
             Assert.Contains("This is a class talking about CAT.", conceptual.Text);
             var element = conceptual.FindElement(By.TagName("blockquote"));
             Assert.Equal("NOTE This is a CAT class", element.Text);
@@ -174,7 +176,7 @@ namespace Microsoft.DocAsCode.E2E.Tests
             Assert.Contains(results[0].Text, title);
 
             // check spec name in parameters' type
-            element= _driver.FindElement(By.XPath("//h4[@id='CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_']/following-sibling::table/tbody/tr/td"));
+            element = _driver.FindElement(By.XPath("//h4[@id='CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_']/following-sibling::table/tbody/tr/td"));
             Assert.NotNull(element);
             Assert.Equal("Cat<T, K>", element.Text);
 
