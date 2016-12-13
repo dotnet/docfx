@@ -6,7 +6,7 @@ exports.transform = function (model) {
     model._jsonPath = _fileNameWithoutExt + ".swagger.json";
     model.title = model.title || model.name;
     model.docurl = model.docurl || common.getImproveTheDocHref(model, model._gitContribute, model._gitUrlPattern);
-    model.sourceurl = model.sourceurl || common.getViewSourceHref(model, model._gitUrlPattern);
+    model.sourceurl = model.sourceurl || common.getViewSourceHref(model, null, model._gitUrlPattern);
     model.htmlId = common.getHtmlId(model.uid);
     if (model.children) {
         for (var i = 0; i < model.children.length; i++) {
@@ -16,7 +16,7 @@ exports.transform = function (model) {
                 child.operation = child.operation.toUpperCase();
             }
             child.path = appendQueryParamsToPath(child.path, child.parameters);
-            child.sourceurl = child.sourceurl || common.getViewSourceHref(child, model._gitUrlPattern);
+            child.sourceurl = child.sourceurl || common.getViewSourceHref(child, null, model._gitUrlPattern);
             child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
             child.footer = child.footer || ''; // set to empty incase mustache looks up
             child.htmlId = common.getHtmlId(child.uid);
