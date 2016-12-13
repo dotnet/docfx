@@ -347,12 +347,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private static string ComputeConfigHash(DocumentBuildParameters parameter, string markdownServiceContextHash)
         {
-            return (JsonConvert.SerializeObject(
+            var json = JsonConvert.SerializeObject(
                 parameter,
                 new JsonSerializerSettings
                 {
                     ContractResolver = new IncrementalIgnorePropertiesResolver()
-                }) + "|" + markdownServiceContextHash).GetMd5String();
+                });
+            var config = json + "|" + markdownServiceContextHash;
+            Logger.LogVerbose($"Config content: {config}");
+            return config.GetMd5String();
         }
 
         private static Dictionary<string, FileAttributeItem> ComputeFileAttributes(DocumentBuildParameters parameters, DependencyGraph dg)
