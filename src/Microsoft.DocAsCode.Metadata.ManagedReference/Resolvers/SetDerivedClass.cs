@@ -16,12 +16,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (yaml.Members != null && yaml.Members.Count > 0)
             {
-                InitDerivedClassMapping(yaml.Members);
+                UpdateDerivedClassMapping(yaml.Members, context.References);
                 AppendDerivedClass(yaml.Members);
             }
         }
 
-        private void InitDerivedClassMapping(List<MetadataItem> items)
+        private void UpdateDerivedClassMapping(List<MetadataItem> items, Dictionary<string, ReferenceItem> reference)
         {
             foreach (var item in items ?? Enumerable.Empty<MetadataItem>())
             {
@@ -29,6 +29,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (inheritance!= null && inheritance.Count > 0)
                 {
                     var superClass = inheritance[inheritance.Count - 1];
+
+                    ReferenceItem referenceItem;
+                    if (reference.TryGetValue(superClass, out referenceItem))
+                    {
+                        superClass = referenceItem.Definition ?? superClass;
+                    }
+
                     // ignore System.Object's derived class
                     if (superClass != "System.Object")
                     {
