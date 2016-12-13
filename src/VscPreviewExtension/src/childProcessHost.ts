@@ -2,8 +2,11 @@
 
 import { workspace, window, ExtensionContext, Uri } from "vscode";
 import * as childProcess from "child_process";
+import * as fs from "fs";
+
 import { ContentProvider } from "./contentProvider";
 import * as ConstVariable from "./constVariable";
+import { Common } from "./common";
 
 export class ChildProcessHost {
     public provider: ContentProvider;
@@ -19,9 +22,9 @@ export class ChildProcessHost {
     constructor(context: ExtensionContext) {
         // TODO: make path configurable
         let exePath = context.asAbsolutePath("./DfmParse/Microsoft.DocAsCode.Dfm.VscPreview.exe");
-        this._spawn = childProcess.spawn(exePath);
+        this._spawn = Common.spawn(exePath, {});
         if (!this._spawn.pid) {
-            window.showErrorMessage("Error:DfmProcess lost!");
+            window.showErrorMessage("Error: DfmProcess lost!");
             return;
         }
         this._waiting = false;
