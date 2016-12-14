@@ -88,7 +88,8 @@ namespace Microsoft.DocAsCode.Common.Git
 
             return new GitDetail
             {
-                CommitId = repoInfo.RemoteHeadCommitId,
+                // TODO: remove commit id to avoid config hash changed
+                // CommitId = repoInfo.RemoteHeadCommitId,
                 RemoteBranch = repoInfo.RemoteBranch,
                 RemoteRepositoryUrl = repoInfo.RemoteOriginUrl,
                 RelativePath = PathUtility.MakeRelativePath(repoInfo.RepoRootPath, filePath)
@@ -121,8 +122,9 @@ namespace Microsoft.DocAsCode.Common.Git
             return new GitRepoInfo
             {
                 LocalBranch = localBranch,
-                LocalHeadCommitId = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalHeadIdCommand),
-                RemoteHeadCommitId = TryRunGitCommandAndGetFirstLine(repoRootPath, GetRemoteHeadIdCommand),
+                // TODO: remove commit id to avoid config hash changed
+                //LocalHeadCommitId = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalHeadIdCommand),
+                //RemoteHeadCommitId = TryRunGitCommandAndGetFirstLine(repoRootPath, GetRemoteHeadIdCommand),
                 RemoteOriginUrl = originUrl,
                 RepoRootPath = repoRootPath,
                 RemoteBranch = remoteBranch,
