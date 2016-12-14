@@ -26,13 +26,15 @@ namespace Microsoft.DocAsCode.Common.Git
         [JsonProperty("repo")]
         public string RemoteRepositoryUrl { get; set; }
 
-        [YamlMember(Alias = "commit")]
-        [JsonProperty("commit")]
-        public string CommitId { get; set; }
+        // remove it to avoid config hash changed
+        //[YamlMember(Alias = "commit")]
+        //[JsonProperty("commit")]
+        //public string CommitId { get; set; }
 
-        [JsonProperty("key")]
-        [YamlMember(Alias = "key")]
-        public string Description { get; set; }
+        // remove it to avoid config hash changed
+        //[JsonProperty("key")]
+        //[YamlMember(Alias = "key")]
+        //public string Description { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -50,7 +52,7 @@ namespace Microsoft.DocAsCode.Common.Git
 
         public override string ToString()
         {
-            return string.Format("branch: {0}, url: {1}, desc: {2}, file: {3}", RemoteBranch, RemoteRepositoryUrl, Description, RelativePath);
+            return string.Format("branch: {0}, url: {1}, file: {2}", RemoteBranch, RemoteRepositoryUrl, RelativePath);
         }
     }
 }
