@@ -13059,30 +13059,6 @@ references:
   commentId: T:Microsoft.DocAsCode.Common.Git.GitDetail
   fullName: Microsoft.DocAsCode.Common.Git.GitDetail
   nameWithType: GitDetail
-- uid: Microsoft.DocAsCode.Common.Git.GitDetail.CommitId
-  name: CommitId
-  href: api/Microsoft.DocAsCode.Common.Git.GitDetail.html#Microsoft_DocAsCode_Common_Git_GitDetail_CommitId
-  commentId: P:Microsoft.DocAsCode.Common.Git.GitDetail.CommitId
-  fullName: Microsoft.DocAsCode.Common.Git.GitDetail.CommitId
-  nameWithType: GitDetail.CommitId
-- uid: Microsoft.DocAsCode.Common.Git.GitDetail.CommitId*
-  name: CommitId
-  href: api/Microsoft.DocAsCode.Common.Git.GitDetail.html#Microsoft_DocAsCode_Common_Git_GitDetail_CommitId_
-  commentId: Overload:Microsoft.DocAsCode.Common.Git.GitDetail.CommitId
-  fullName: Microsoft.DocAsCode.Common.Git.GitDetail.CommitId
-  nameWithType: GitDetail.CommitId
-- uid: Microsoft.DocAsCode.Common.Git.GitDetail.Description
-  name: Description
-  href: api/Microsoft.DocAsCode.Common.Git.GitDetail.html#Microsoft_DocAsCode_Common_Git_GitDetail_Description
-  commentId: P:Microsoft.DocAsCode.Common.Git.GitDetail.Description
-  fullName: Microsoft.DocAsCode.Common.Git.GitDetail.Description
-  nameWithType: GitDetail.Description
-- uid: Microsoft.DocAsCode.Common.Git.GitDetail.Description*
-  name: Description
-  href: api/Microsoft.DocAsCode.Common.Git.GitDetail.html#Microsoft_DocAsCode_Common_Git_GitDetail_Description_
-  commentId: Overload:Microsoft.DocAsCode.Common.Git.GitDetail.Description
-  fullName: Microsoft.DocAsCode.Common.Git.GitDetail.Description
-  nameWithType: GitDetail.Description
 - uid: Microsoft.DocAsCode.Common.Git.GitDetail.Equals(System.Object)
   name: Equals(Object)
   href: api/Microsoft.DocAsCode.Common.Git.GitDetail.html#Microsoft_DocAsCode_Common_Git_GitDetail_Equals_System_Object_
