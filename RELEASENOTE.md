@@ -1,8 +1,12 @@
-﻿Version Notes (Current Version: v2.9.1)
+﻿Version Notes (Current Version: v2.9.2)
 =======================================
+v2.9.2
+-----------
+1.  Remove commit id to avoid config hash changed.
+
 v2.9.1
 -----------
-1.  Enable to show derivedClass.
+1.  Enable to show derived classes.
 2.  Add log for config hash.
 
 v2.9
