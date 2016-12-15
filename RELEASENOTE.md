@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.9.2)
+﻿Version Notes (Current Version: v2.9.3)
 =======================================
+v2.9.3
+-----------
+1.  hotfix for wrong file link check message.
+
 v2.9.2
 -----------
 1.  Remove commit id to avoid config hash changed.
