@@ -48,10 +48,24 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public static BuildInfo Load(string baseDir)
         {
-            var buildInfo = JsonUtility.Deserialize<BuildInfo>(Path.Combine(baseDir, FileName));
-            foreach (var version in buildInfo.Versions)
+            if (baseDir == null || !File.Exists(Path.Combine(baseDir, FileName)))
             {
-                version.Load(Path.Combine(baseDir, buildInfo.DirectoryName));
+                return null;
+            }
+
+            BuildInfo buildInfo;
+            try
+            {
+                buildInfo = JsonUtility.Deserialize<BuildInfo>(Path.Combine(baseDir, FileName));
+                foreach (var version in buildInfo.Versions)
+                {
+                    version.Load(Path.Combine(baseDir, buildInfo.DirectoryName));
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"Exception occurs when loading build info from '{Path.Combine(baseDir, FileName)}', message: {ex.Message}.");
+                return null;
             }
             return buildInfo;
         }

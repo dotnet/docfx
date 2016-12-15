@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             _postProcessors = GetPostProcessor(postProcessorNames);
             _intermediateFolder = intermediateFolder;
-            _lastBuildInfo = LoadLastBuildInfo();
+            _lastBuildInfo = BuildInfo.Load(_intermediateFolder);
         }
 
         public void Build(DocumentBuildParameters parameter)
@@ -249,22 +249,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             var manifestJsonPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ManifestFileName);
             JsonUtility.Serialize(manifestJsonPath, manifest);
             Logger.LogInfo($"Manifest file saved to {manifestJsonPath}.");
-        }
-
-        private BuildInfo LoadLastBuildInfo()
-        {
-            if (_intermediateFolder != null &&
-                File.Exists(Path.Combine(_intermediateFolder, BuildInfo.FileName)))
-            {
-                try
-                {
-                    return BuildInfo.Load(_intermediateFolder);
-                }
-                catch (Exception)
-                {
-                }
-            }
-            return null;
         }
 
         private List<PostProcessor> GetPostProcessor(ImmutableArray<string> processors)
