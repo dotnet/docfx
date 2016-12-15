@@ -87,10 +87,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     <see cref=""T:Microsoft.DocAsCode.EntityModel.SpecIdHelper""/>
     <see cref=""T:System.Diagnostics.SourceSwitch""/>
     <see href=""http://exception.com"">Global See section</see>
+    <see href=""http://exception.com""/>
     <seealso cref=""T:System.IO.WaitForChangedResult""/>
     <seealso cref=""!:http://google.com"">ABCS</seealso>
     <seealso href=""http://www.bing.com"">Hello Bing</seealso>
-
+    <seealso href=""http://www.bing.com""/>
 </member>";
             var context = new TripleSlashCommentParserContext
             {
@@ -162,18 +163,22 @@ Check empty code.
             commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
 
             var sees = commentModel.Sees;
-            Assert.Equal(3, sees.Count);
+            Assert.Equal(4, sees.Count);
             Assert.Equal("Microsoft.DocAsCode.EntityModel.SpecIdHelper", sees[0].LinkId);
             Assert.Null(sees[0].AltText);
             Assert.Equal("http://exception.com", sees[2].LinkId);
             Assert.Equal("Global See section", sees[2].AltText);
+            Assert.Equal("http://exception.com", sees[3].AltText);
+            Assert.Equal("http://exception.com", sees[3].LinkId);
 
             var seeAlsos = commentModel.SeeAlsos;
-            Assert.Equal(2, seeAlsos.Count);
+            Assert.Equal(3, seeAlsos.Count);
             Assert.Equal("System.IO.WaitForChangedResult", seeAlsos[0].LinkId);
             Assert.Null(seeAlsos[0].AltText);
             Assert.Equal("http://www.bing.com", seeAlsos[1].LinkId);
             Assert.Equal("Hello Bing", seeAlsos[1].AltText);
+            Assert.Equal("http://www.bing.com", seeAlsos[2].AltText);
+            Assert.Equal("http://www.bing.com", seeAlsos[2].LinkId);
         }
     }
 }
