@@ -61,6 +61,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             ReloadModelsPerChanges(hostServices);
             RegisterUnloadedXRefSpec(hostServices);
+            RegisterUnloadedFileMap(hostServices);
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
@@ -117,6 +118,29 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
+        private void RegisterUnloadedFileMap(IEnumerable<HostService> hostServices)
+        {
+            var lastFileMap = LastBuildVersionInfo?.FileMap;
+            foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
+            {
+                foreach (var file in h.GetUnloadedModelFiles(IncrementalContext))
+                {
+                    var fileFromWorkingFolder = ((RelativePath)file).GetPathFromWorkingFolder();
+                    if (lastFileMap == null)
+                    {
+                        throw new BuildCacheException($"Full build hasn't loaded File Map.");
+                    }
+                    string path;
+
+                    // for overwrite files, it don't exist in filemap
+                    if (lastFileMap.TryGetValue(fileFromWorkingFolder, out path))
+                    {
+                        Context.FileMap[fileFromWorkingFolder] = path;
+                    }
+                }
+            }
+        }
+
         private void ProcessUnloadedTemplateDependency(IEnumerable<HostService> hostServices)
         {
             var loaded = Context.ManifestItems;
@@ -139,25 +163,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void UpdateFileMap(IEnumerable<HostService> hostServices)
         {
-            var lastFileMap = LastBuildVersionInfo?.FileMap;
-            foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
-            {
-                foreach (var file in h.GetUnloadedModelFiles(IncrementalContext))
-                {
-                    var fileFromWorkingFolder = ((RelativePath)file).GetPathFromWorkingFolder();
-                    if (lastFileMap == null)
-                    {
-                        throw new BuildCacheException($"Full build hasn't loaded File Map.");
-                    }
-                    string path;
-
-                    // for overwrite files, it don't exist in filemap
-                    if (lastFileMap.TryGetValue(fileFromWorkingFolder, out path))
-                    {
-                        Context.FileMap[fileFromWorkingFolder] = path;
-                    }
-                }
-            }
             CurrentBuildVersionInfo.FileMap = Context.FileMap;
         }
 
