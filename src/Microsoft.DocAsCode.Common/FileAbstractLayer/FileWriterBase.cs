@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Common
 
         public abstract void Copy(PathMapping sourceFileName, RelativePath destFileName);
 
-        public abstract FileStream Create(RelativePath filePath);
+        public abstract Stream Create(RelativePath filePath);
 
         public abstract IFileReader CreateReader();
 

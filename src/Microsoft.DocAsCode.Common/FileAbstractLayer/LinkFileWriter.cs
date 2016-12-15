@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Common
             };
         }
 
-        public override FileStream Create(RelativePath file)
+        public override Stream Create(RelativePath file)
         {
             var key = file.GetPathFromWorkingFolder();
             PathMapping pm;
