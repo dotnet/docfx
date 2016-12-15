@@ -45,12 +45,6 @@ namespace Microsoft.DocAsCode.Common
         public static void WriteAllText(this FileAbstractLayer fal, string file, string content) =>
             WriteAllText(fal, (RelativePath)file, content);
 
-        public static void Copy(this FileAbstractLayer fal, string sourceFileName, string destFileName) =>
-            fal.Copy((RelativePath)sourceFileName, (RelativePath)destFileName);
-
-        public static ImmutableDictionary<string, string> GetProperties(this FileAbstractLayer fal, string file) =>
-            fal.GetProperties((RelativePath)file);
-
         public static bool HasProperty(this FileAbstractLayer fal, RelativePath file, string propertyName)
         {
             var dict = fal.GetProperties(file);
