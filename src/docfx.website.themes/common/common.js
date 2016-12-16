@@ -64,19 +64,19 @@ function isRelativePath(path) {
 var gitUrlPatternItems = {
     'github': {
         'testRegex': /^(https?:\/\/)?(\S+\@)?(\S+\.)?github\.com(\/|:).*/i,
-        'generateUrl': function (modelGitInfo) {
-            var url = normalizeGitUrlToHttps(modelGitInfo.repo);
-            url += '/blob' + '/' + modelGitInfo.branch + '/' + modelGitInfo.path;
-            if (modelGitInfo.startLine && modelGitInfo.startLine > 0) {
-                url += '/#L' + modelGitInfo.startLine;
+        'generateUrl': function (gitInfo) {
+            var url = normalizeGitUrlToHttps(gitInfo.repo);
+            url += '/blob' + '/' + gitInfo.branch + '/' + gitInfo.path;
+            if (gitInfo.startLine && gitInfo.startLine > 0) {
+                url += '/#L' + gitInfo.startLine;
             }
             return url;
         },
-        'generateNewFileUrl': function (modelGitInfo, uid) {
-            var url = normalizeGitUrlToHttps(modelGitInfo.repo);
+        'generateNewFileUrl': function (gitInfo, uid) {
+            var url = normalizeGitUrlToHttps(gitInfo.repo);
             url += '/new';
-            url += '/' + modelGitInfo.branch;
-            url += '/' + getOverrideFolder(modelGitInfo.apiSpecFolder);
+            url += '/' + gitInfo.branch;
+            url += '/' + getOverrideFolder(gitInfo.apiSpecFolder);
             url += '/new?filename=' + getHtmlId(uid) + '.md';
             url += '&value=' + encodeURIComponent(getOverrideTemplate(uid));
             return url;
@@ -84,14 +84,14 @@ var gitUrlPatternItems = {
     },
     'vso': {
         'testRegex': /^https:\/\/.*\.visualstudio\.com\/.*/i,
-        'generateUrl': function (modelGitInfo) {
-            var url = modelGitInfo.repo + '?path=' + modelGitInfo.path + '&version=GB' + modelGitInfo.branch;
-            if (modelGitInfo.startLine && modelGitInfo.startLine > 0) {
-                url += '&line=' + modelGitInfo.startLine;
+        'generateUrl': function (gitInfo) {
+            var url = gitInfo.repo + '?path=' + gitInfo.path + '&version=GB' + gitInfo.branch;
+            if (gitInfo.startLine && gitInfo.startLine > 0) {
+                url += '&line=' + gitInfo.startLine;
             }
             return url;
         },
-        'generateNewFileUrl': function (modelGitInfo, uid) {
+        'generateNewFileUrl': function (gitInfo, uid) {
             return '';
         }
     }
@@ -109,65 +109,63 @@ function getNewFileUrl(item, gitContribute, gitUrlPattern) {
         return '';
     }
 
-    var modelGitInfo = getGitContributeFallbackWithGitRemote(item.source.remote, gitContribute);
-    if (!modelGitInfo.repo || !modelGitInfo.branch || !modelGitInfo.path) {
+    var gitInfo = getGitContributeFallbackWithGitRemote(gitContribute, item.source.remote);
+    if (!gitInfo.repo || !gitInfo.branch || !gitInfo.path) {
         return '';
     }
 
-    if (modelGitInfo.repo.substr(-4) === '.git') {
-        modelGitInfo.repo = modelGitInfo.repo.substr(0, modelGitInfo.repo.length - 4);
+    if (gitInfo.repo.substr(-4) === '.git') {
+        gitInfo.repo = gitInfo.repo.substr(0, gitInfo.repo.length - 4);
     }
 
-    var patternName = getPatternName(modelGitInfo.repo, gitUrlPattern);
+    var patternName = getPatternName(gitInfo.repo, gitUrlPattern);
     if (!patternName) return patternName;
-    return gitUrlPatternItems[patternName].generateNewFileUrl(modelGitInfo, item.uid);
+    return gitUrlPatternItems[patternName].generateNewFileUrl(gitInfo, item.uid);
 }
 
 function getRemoteUrl(remote, startLine, gitContribute, gitUrlPattern) {
-    var modelGitInfo = getGitContributeFallbackWithGitRemote(remote, gitContribute);
-    if (!modelGitInfo.repo || !modelGitInfo.branch || !modelGitInfo.path) {
+    var gitInfo = getGitContributeFallbackWithGitRemote(gitContribute, remote);
+    if (!gitInfo.repo || !gitInfo.branch || !gitInfo.path) {
         return '';
     }
 
-    if (modelGitInfo.repo.substr(-4) === '.git') {
-        modelGitInfo.repo = modelGitInfo.repo.substr(0, modelGitInfo.repo.length - 4);
+    if (gitInfo.repo.substr(-4) === '.git') {
+        gitInfo.repo = gitInfo.repo.substr(0, gitInfo.repo.length - 4);
     }
 
-    var patternName = getPatternName(modelGitInfo.repo, gitUrlPattern);
+    var patternName = getPatternName(gitInfo.repo, gitUrlPattern);
     if (!patternName) return '';
 
-    modelGitInfo.startLine = startLine;
-    return gitUrlPatternItems[patternName].generateUrl(modelGitInfo);
+    gitInfo.startLine = startLine;
+    return gitUrlPatternItems[patternName].generateUrl(gitInfo);
 }
 
-function getGitContributeFallbackWithGitRemote(gitRemote, gitContribute) {
-    var modelGitInfo = {
-        // apiSpecFolder defines the folder contains overwrite files for MRef, the default value is apiSpec
-        apiSpecFolder: "apiSpec"
-    };
+function getGitContributeFallbackWithGitRemote(gitContribute, gitRemote) {
+    // apiSpecFolder defines the folder contains overwrite files for MRef, the default value is apiSpec
+    var defaultApiSpecFolder = "apiSpec";
 
-    if (gitContribute && gitContribute.repo) {
-        modelGitInfo.repo = gitContribute.repo;
-    } else if (gitRemote && gitRemote.repo) {
-        modelGitInfo.repo = gitRemote.repo;
+    if (!gitContribute && !gitRemote) {
+        return {
+            apiSpecFolder: defaultApiSpecFolder
+        }
     }
 
-    if (gitContribute && gitContribute.branch) {
-        modelGitInfo.branch = gitContribute.branch;
-    } else if (gitRemote && gitRemote.branch) {
-        modelGitInfo.branch = gitRemote.branch;
+    if (!gitContribute) {
+        return {
+            apiSpecFolder: defaultApiSpecFolder,
+            repo: gitRemote.repo,
+            branch: gitRemote.branch,
+            // path defines the relative path from current git repo.
+            path: gitRemote.path
+        }
     }
 
-    if (gitContribute && gitContribute.path) {
-        modelGitInfo.apiSpecFolder = gitContribute.path;
+    return {
+        apiSpecFolder: gitContribute.apiSpecFolder || defaultApiSpecFolder,
+        repo: gitContribute.repo || gitRemote.repo,
+        branch: gitContribute.branch || gitRemote.branch,
+        path: gitRemote.path
     }
-
-    if (gitRemote) {
-        // path defines the relative path from current git repo.
-        modelGitInfo.path = gitRemote.path;
-    }
-
-    return modelGitInfo;
 }
 
 function getPatternName(repo, gitUrlPattern) {
