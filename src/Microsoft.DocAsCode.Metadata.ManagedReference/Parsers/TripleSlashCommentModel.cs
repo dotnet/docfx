@@ -375,7 +375,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
                 else if (!string.IsNullOrEmpty(url))
                 {
-                    yield return new LinkInfo { AltText = altText, LinkId = url, LinkType = LinkType.HRef };
+                    yield return new LinkInfo { AltText = altText ?? url, LinkId = url, LinkType = LinkType.HRef };
                 }
             }
         }
