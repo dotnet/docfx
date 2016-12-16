@@ -5,6 +5,7 @@ But for some purpose, some behaviors are unwanted, for example, you may not want
 
 In this document, you'll learn how to define markdown validation rules, which will help you to validate markdown documents in an efficient way.
 
+> [!Note]
 > Markdown validation is part of DFM, if you switch Markdown engine to other engine, validation might not work.
 
 There're three kinds of validation rules provided by DocFX:
@@ -131,6 +132,7 @@ And update your `md.style` with following content:
    ```
 4. Run `docfx` you'll see your rule being executed.
 
+> [!Note]
 > The folder `rules` is actually a template folder. In DocFX, template is a place for you to customize build, render, validation behavior.
 > For more information about template, please refer to our [template](howto_build_your_own_type_of_documentation_with_custom_plug-in.md) and [plugin](howto_build_your_own_type_of_documentation_with_custom_plug-in.md) documentation.
 
@@ -181,6 +183,7 @@ As you can see in the above example, you can throw @Microsoft.DocAsCode.Plugins.
 
 You can also use @Microsoft.DocAsCode.Common.Logger.LogWarning(System.String,System.String,System.String,System.String) and @Microsoft.DocAsCode.Common.Logger.LogError(System.String,System.String,System.String,System.String) to report a warning and an error respectively.
 
+> [!Note]
 > To use these methods, you need to install nuget package `Microsoft.DocAsCode.Common` first.
 
 The different between `ReportError` and throw `DocumentException` is throwing exception will stop the build immediately but `ReportError` won't stop build but will eventually fail the build after rules are run.
@@ -254,6 +257,7 @@ Metadata is coming from multiple sources, the following metadata will be validat
 2.  Global metadata and file metaata in `docfx.json`.
 3.  Global metadata and file metadata defined in separate `.json` files.
 
+> [!Tip]
 > For more information about global metadata and global metadata, see [docfx.json format](docfx.exe_user_manual.md#3-docfxjson-format).
 
 ### Create validation plug-ins

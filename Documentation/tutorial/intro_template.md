@@ -52,6 +52,7 @@ There are two Markdown files `A.md` and `B.md`, the content for `A.md` is:
 <a href="B.html">Link To B</a>
 ```
 
+> [!Note]
 > If no `primary` *Renderer* is defined, DocFX randomly picks one *Renderer* as the primary one, and the result is unpredictable.
 
 ### *Renderer* in Mustache syntax
@@ -96,7 +97,9 @@ DocFX introduces the following syntax to define the dependency for the *Renderer
 `docfx` copies these dependencies to output folder preserving its relative path to the *Renderer* file.
 
 
-> Tips: Mustache is logic-less, and for a specific `{{name}}` tag, Mustache searches its context and its parent context recursively. So most of the time [*Preprocessor File*](#preprocessor) is used to re-define the data model used by the Mustache *Renderer*.
+> [!Tip]
+> Mustache is logic-less, and for a specific `{{name}}` tag, Mustache searches its context and its parent context recursively.
+> So most of the time [*Preprocessor File*](#preprocessor) is used to re-define the data model used by the Mustache *Renderer*.
 
 ### *Renderer* in Liquid syntax
 
@@ -134,6 +137,7 @@ var common = require('./common.js');
 common.util();
 ```
 
+> [!Note]
 > Only relative path starting with `./` is supported.
 
 #### Log
@@ -182,7 +186,9 @@ Then Markdown file `A.md` is transformed to `A.txt` with content:
 Hello World
 ```
 
-> Tip: For each file, the input data model can be exported to a JSON file by calling `docfx build --exportRawModel`. And the returned *View Model* can be exported to a JSON file by calling `docfx build --exportViewModel`.
+> [!Tip]
+> For each file, the input data model can be exported to a JSON file by calling `docfx build --exportRawModel`.
+> And the returned *View Model* can be exported to a JSON file by calling `docfx build --exportViewModel`.
 
 The Input Data Model
 --------------------
@@ -202,6 +208,7 @@ _tocPath | The relative path of the TOC file that current output file belongs to
 _tocRel | The relative path from current output file to its TOC file. For example, if the TOC file is `a/toc.html` from root output folder, the value is `../`.
 _tocKey | The original file path of the TOC file starting with `~/`. `~/` stands for the folder where `docfx.json` is in, for example, `~/a/toc.yml`.
 
+> [!Note]
 > Users can also override system generated properties by using *YAML Header*, `fileMetadata` or `globalMetadata`.
 
 ### Globally Shared Properties
