@@ -48,6 +48,34 @@ C: Good!
         }
 
         [Fact]
+        public void TestBoolean()
+        {
+            var sw = new StringWriter();
+            YamlUtility.Serialize(sw, new object[] { true, false }, YamlMime.YamlMimePrefix + "Test-Yaml-Mime");
+            var yaml = sw.ToString();
+            Assert.Equal(@"### YamlMime:Test-Yaml-Mime
+- true
+- false
+".Replace("\r\n", "\n"), yaml.Replace("\r\n", "\n"));
+            Assert.Equal("YamlMime:Test-Yaml-Mime", YamlMime.ReadMime(new StringReader(yaml)));
+            var value = YamlUtility.Deserialize<object[]>(new StringReader(yaml));
+            Assert.NotNull(value);
+            Assert.Equal(2, value.Length);
+            Assert.Equal(true, value[0]);
+            Assert.Equal(false, value[1]);
+            var value2 = YamlUtility.Deserialize<object[]>(new StringReader(@"### YamlMime:Test-Yaml-Mime
+- true
+- True
+- TRUE
+- false
+- False
+- FALSE
+"));
+            Assert.NotNull(value2);
+            Assert.Equal(new[] { true, true, true, false, false, false }, value2.Cast<bool>());
+        }
+
+        [Fact]
         public void TestYamlMime_Success()
         {
             var sw = new StringWriter();
