@@ -7,8 +7,11 @@ namespace Microsoft.DocAsCode.Common
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
+    using System.Linq;
 
-    public class FileAbstractLayer : IDisposable
+    using Microsoft.DocAsCode.Plugins;
+
+    public class FileAbstractLayer : IFileAbstractLayer, IDisposable
     {
         #region Constructors
 
@@ -56,7 +59,7 @@ namespace Microsoft.DocAsCode.Common
             return Reader.FindFile(file) != null;
         }
 
-        public FileStream OpenRead(RelativePath file)
+        public Stream OpenRead(RelativePath file)
         {
             if (file == null)
             {
@@ -67,7 +70,7 @@ namespace Microsoft.DocAsCode.Common
             return File.OpenRead(Environment.ExpandEnvironmentVariables(pp.PhysicalPath));
         }
 
-        public FileStream Create(RelativePath file)
+        public Stream Create(RelativePath file)
         {
             if (file == null)
             {
@@ -110,6 +113,45 @@ namespace Microsoft.DocAsCode.Common
             var mapping = FindPhysicalPath(file);
             return mapping.Properties;
         }
+
+        public string GetPhysicalPath(RelativePath file)
+        {
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+            EnsureNotDisposed();
+            var pp = FindPhysicalPath(file);
+            return pp.PhysicalPath;
+        }
+
+        #endregion
+
+        #region IFileAbstractLayer Members
+
+        IEnumerable<string> IFileAbstractLayer.GetAllInputFiles()
+        {
+            return from r in GetAllInputFiles()
+                   select (string)r.RemoveWorkingFolder();
+        }
+
+        IEnumerable<string> IFileAbstractLayer.GetAllOutputFiles()
+        {
+            return from r in GetAllOutputFiles()
+                   select (string)r.RemoveWorkingFolder();
+        }
+
+        public bool Exists(string file) => Exists((RelativePath)file);
+
+        public Stream OpenRead(string file) => OpenRead((RelativePath)file);
+
+        public Stream Create(string file) => Create((RelativePath)file);
+
+        public void Copy(string sourceFileName, string destFileName) => Copy((RelativePath)sourceFileName, (RelativePath)destFileName);
+
+        public ImmutableDictionary<string, string> GetProperties(string file) => GetProperties((RelativePath)file);
+
+        public string GetPhysicalPath(string file) => GetPhysicalPath((RelativePath)file);
 
         #endregion
 

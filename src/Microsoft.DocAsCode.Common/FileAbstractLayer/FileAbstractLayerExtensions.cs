@@ -11,9 +11,6 @@ namespace Microsoft.DocAsCode.Common
         public static bool Exists(this FileAbstractLayer fal, string file) =>
             fal.Exists((RelativePath)file);
 
-        public static FileStream OpenRead(this FileAbstractLayer fal, string file) =>
-            fal.OpenRead((RelativePath)file);
-
         public static StreamReader OpenReadText(this FileAbstractLayer fal, RelativePath file) =>
             new StreamReader(fal.OpenRead(file));
 
@@ -31,9 +28,6 @@ namespace Microsoft.DocAsCode.Common
         public static string ReadAllText(this FileAbstractLayer fal, string file) =>
             ReadAllText(fal, (RelativePath)file);
 
-        public static FileStream Create(this FileAbstractLayer fal, string file) =>
-            fal.Create((RelativePath)file);
-
         public static StreamWriter CreateText(this FileAbstractLayer fal, RelativePath file) =>
             new StreamWriter(fal.Create(file));
 
@@ -50,12 +44,6 @@ namespace Microsoft.DocAsCode.Common
 
         public static void WriteAllText(this FileAbstractLayer fal, string file, string content) =>
             WriteAllText(fal, (RelativePath)file, content);
-
-        public static void Copy(this FileAbstractLayer fal, string sourceFileName, string destFileName) =>
-            fal.Copy((RelativePath)sourceFileName, (RelativePath)destFileName);
-
-        public static ImmutableDictionary<string, string> GetProperties(this FileAbstractLayer fal, string file) =>
-            fal.GetProperties((RelativePath)file);
 
         public static bool HasProperty(this FileAbstractLayer fal, RelativePath file, string propertyName)
         {

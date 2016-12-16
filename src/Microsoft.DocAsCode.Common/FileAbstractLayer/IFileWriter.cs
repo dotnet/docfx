@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Common
         /// </summary>
         /// <param name="file">logical file path</param>
         /// <returns>file stream</returns>
-        FileStream Create(RelativePath file);
+        Stream Create(RelativePath file);
         /// <summary>
         /// Copy a file to logical file path.
         /// </summary>
