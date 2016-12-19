@@ -135,7 +135,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             RemoveDuplicateOutputFiles(generatedManifest.Files);
             PostProcess(generatedManifest, outputDirectory);
 
-            EnvironmentContext.Clean();
+            EnvironmentContext.FileAbstractLayerImpl = null;
 
             // Save to manifest.json
             SaveManifest(generatedManifest, outputDirectory);

@@ -40,13 +40,6 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentNullException(nameof(file));
             }
-            if (EnvironmentContext.FileAbstractLayer == null)
-            {
-                using (var reader = File.OpenText(file))
-                {
-                    return ReadMime(reader);
-                }
-            }
             using (var stream = EnvironmentContext.FileAbstractLayer.OpenRead(file))
             using (var reader = new StreamReader(stream))
             {
