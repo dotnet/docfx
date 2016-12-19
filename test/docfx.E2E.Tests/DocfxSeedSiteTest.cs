@@ -99,7 +99,14 @@ namespace Microsoft.DocAsCode.E2E.Tests
             // go to reference
             _driver.FindElement(By.LinkText("API Documentation")).Click();
 
+            // Make sure the namespace page has been loaded
+            _driver.FindElement(By.XPath("//title[starts-with(.,'Namespace')]"));
+
+            // go to class page
             _driver.FindElements(By.XPath("//h4/a"))[0].Click();
+
+            // Make sure the class page has been loaded
+            _driver.FindElement(By.XPath("//title[starts-with(.,'Class')]"));
 
             TestPageCommon();
 
@@ -111,7 +118,6 @@ namespace Microsoft.DocAsCode.E2E.Tests
             // check breadcrumb
             results = _driver.FindElements(By.XPath("//div[@id='breadcrumb']/ul/li/a"));
             Assert.Contains(results[results.Count - 1].Text, title);
-
 
             // check overwrite
             var conceptual = _driver.FindElement(By.ClassName("conceptual"));
@@ -274,8 +280,6 @@ namespace Microsoft.DocAsCode.E2E.Tests
 
         private void TestPageCommon()
         {
-            System.Threading.Thread.Sleep(1000);
-
             // check logo
             IWebElement element = _driver.FindElement(By.Id("logo"));
             Assert.Equal("svg", element.TagName);
