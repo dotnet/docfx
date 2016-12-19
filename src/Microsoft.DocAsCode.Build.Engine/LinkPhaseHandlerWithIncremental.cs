@@ -12,11 +12,13 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    internal class PostbuildPhaseHandlerWithIncremental : IPhaseHandler
+    internal class LinkPhaseHandlerWithIncremental : IPhaseHandler
     {
-        private PostbuildPhaseHandler _inner;
+        private LinkPhaseHandler _inner;
 
-        public string Name => nameof(PostbuildPhaseHandlerWithIncremental);
+        public string Name => nameof(LinkPhaseHandlerWithIncremental);
+
+        public BuildPhase Phase => BuildPhase.Link;
 
         public DocumentBuildContext Context { get; }
 
@@ -32,7 +34,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public BuildMessageInfo CurrentBuildMessageInfo { get; }
 
-        public PostbuildPhaseHandlerWithIncremental(PostbuildPhaseHandler inner)
+        public LinkPhaseHandlerWithIncremental(LinkPhaseHandler inner)
         {
             if (inner == null)
             {
@@ -43,9 +45,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             TemplateProcessor = _inner.TemplateProcessor;
             IncrementalContext = Context.IncrementalBuildContext;
             LastBuildVersionInfo = IncrementalContext.LastBuildVersionInfo;
-            LastBuildMessageInfo = GetPhaseMessageInfo(LastBuildVersionInfo?.BuildMessage);
+            LastBuildMessageInfo = BuildPhaseUtility.GetPhaseMessageInfo(LastBuildVersionInfo?.BuildMessage, Phase);
             CurrentBuildVersionInfo = IncrementalContext.CurrentBuildVersionInfo;
-            CurrentBuildMessageInfo = GetPhaseMessageInfo(CurrentBuildVersionInfo.BuildMessage);
+            CurrentBuildMessageInfo = BuildPhaseUtility.GetPhaseMessageInfo(CurrentBuildVersionInfo.BuildMessage, Phase);
         }
 
         public void Handle(List<HostService> hostServices, int maxParallelism)
@@ -80,16 +82,16 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             foreach (var hostService in hostServices.Where(h => h.CanIncrementalBuild))
             {
-                hostService.ReloadUnloadedModels(IncrementalContext, BuildPhase.PostBuild);
+                hostService.ReloadUnloadedModels(IncrementalContext, Phase);
             }
         }
 
         private void ReloadModelsPerChanges(IEnumerable<HostService> hostServices)
         {
-            var newChanges = IncrementalContext.ExpandDependency(d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.PostBuild);
+            var newChanges = IncrementalContext.ExpandDependency(d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == Phase);
             foreach (var hostService in hostServices.Where(h => h.CanIncrementalBuild))
             {
-                hostService.ReloadModelsPerIncrementalChanges(IncrementalContext, newChanges, BuildPhase.PostBuild);
+                hostService.ReloadModelsPerIncrementalChanges(IncrementalContext, newChanges, Phase);
             }
         }
 
@@ -264,21 +266,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     where f == mani.SourceRelativePath
                     let copied = mani.Clone(isIncremental: true)
                     select copied).ToList();
-        }
-
-        private static BuildMessageInfo GetPhaseMessageInfo(BuildMessage messages)
-        {
-            if (messages == null)
-            {
-                return null;
-            }
-
-            BuildMessageInfo message;
-            if (!messages.TryGetValue(BuildPhase.PostBuild, out message))
-            {
-                messages[BuildPhase.PostBuild] = message = new BuildMessageInfo();
-            }
-            return message;
         }
 
         #endregion

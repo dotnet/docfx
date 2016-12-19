@@ -44,8 +44,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Handlers =
                     {
-                        new PrebuildBuildPhaseHandler(null),
-                        new PostbuildPhaseHandler(null, null),
+                        new CompilePhaseHandler(null),
+                        new LinkPhaseHandler(null, null),
                     }
             };
             phaseProcessor.Process(new List<HostService> { hostService }, parameters.MaxParallelism);
@@ -236,8 +236,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     Handlers =
                                     {
-                                        new PrebuildBuildPhaseHandler(context).WithIncremental(),
-                                        new PostbuildPhaseHandler(context, templateProcessor).WithIncremental(),
+                                        new CompilePhaseHandler(context).WithIncremental(),
+                                        new LinkPhaseHandler(context, templateProcessor).WithIncremental(),
                                     }
                 };
             }
@@ -248,8 +248,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     Handlers =
                                     {
-                                        new PrebuildBuildPhaseHandler(context),
-                                        new PostbuildPhaseHandler(context, templateProcessor),
+                                        new CompilePhaseHandler(context),
+                                        new LinkPhaseHandler(context, templateProcessor),
                                     }
                 };
             }

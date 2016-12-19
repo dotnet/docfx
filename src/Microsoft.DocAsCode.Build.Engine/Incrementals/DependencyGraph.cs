@@ -21,19 +21,19 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 Name = DependencyTypeName.Include,
                 IsTransitive = true,
-                Phase = BuildPhase.PreBuildBuild,
+                Phase = BuildPhase.Compile,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.Uid,
                 IsTransitive = false,
-                Phase = BuildPhase.PostBuild,
+                Phase = BuildPhase.Link,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.File,
                 IsTransitive = false,
-                Phase = BuildPhase.PostBuild,
+                Phase = BuildPhase.Link,
             });
 
         private readonly HashSet<DependencyItem> _dependencyItems;

@@ -12,11 +12,13 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    internal class PrebuildBuildPhaseHandlerWithIncremental : IPhaseHandler
+    internal class CompilePhaseHandlerWithIncremental : IPhaseHandler
     {
-        private PrebuildBuildPhaseHandler _inner;
+        private CompilePhaseHandler _inner;
 
-        public string Name => nameof(PrebuildBuildPhaseHandlerWithIncremental);
+        public string Name => nameof(CompilePhaseHandlerWithIncremental);
+
+        public BuildPhase Phase => BuildPhase.Compile;
 
         public DocumentBuildContext Context { get; }
 
@@ -30,7 +32,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public BuildMessageInfo CurrentBuildMessageInfo { get; }
 
-        public PrebuildBuildPhaseHandlerWithIncremental(PrebuildBuildPhaseHandler inner)
+        public CompilePhaseHandlerWithIncremental(CompilePhaseHandler inner)
         {
             if (inner == null)
             {
@@ -40,9 +42,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             Context = _inner.Context;
             IncrementalContext = Context.IncrementalBuildContext;
             LastBuildVersionInfo = IncrementalContext.LastBuildVersionInfo;
-            LastBuildMessageInfo = GetPhaseMessageInfo(LastBuildVersionInfo?.BuildMessage);
+            LastBuildMessageInfo = BuildPhaseUtility.GetPhaseMessageInfo(LastBuildVersionInfo?.BuildMessage, Phase);
             CurrentBuildVersionInfo = IncrementalContext.CurrentBuildVersionInfo;
-            CurrentBuildMessageInfo = GetPhaseMessageInfo(CurrentBuildVersionInfo.BuildMessage);
+            CurrentBuildMessageInfo = BuildPhaseUtility.GetPhaseMessageInfo(CurrentBuildVersionInfo.BuildMessage, Phase);
         }
 
         public void Handle(List<HostService> hostServices, int maxParallelism)
@@ -53,21 +55,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         #region Private Methods
-
-        private static BuildMessageInfo GetPhaseMessageInfo(BuildMessage messages)
-        {
-            if (messages == null)
-            {
-                return null;
-            }
-
-            BuildMessageInfo message;
-            if (!messages.TryGetValue(BuildPhase.PreBuildBuild, out message))
-            {
-                messages[BuildPhase.PreBuildBuild] = message = new BuildMessageInfo();
-            }
-            return message;
-        }
 
         private void PreHandle(List<HostService> hostServices)
         {
