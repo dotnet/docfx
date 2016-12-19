@@ -7,10 +7,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 
     using Xunit;
 
+    [Trait("Related", "MarkdownRenderer")]
     public class GfmMarkdownRendererTest
     {
         [Fact]
-        [Trait("Related", "MarkdownRenderer")]
         public void TestGfmRenderer_LinkWithSpecialCharactorsInTitle()
         {
             var source = @"[This is link text with quotation ' and double quotation ""hello"" world](girl.md ""title is ""hello"" world."")";
@@ -21,7 +21,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRenderer")]
         public void TestGfmRenderer_RefLink()
         {
             var source = @"This is Ref Link: [Simple text][A]
@@ -33,7 +32,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRenderer")]
         public void TestGfmRenderer_RefLinkWithSimpleStyle()
         {
             var source = @"This is Ref Link: [A][]
@@ -45,7 +43,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRenderer")]
         public void TestGfmRenderer_NumberLink()
         {
             var source = @"This is Ref Link: [NumberLink]
@@ -57,7 +54,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRenderer")]
         [Trait("Disable", "Because in GFM the mail will be encrypt. Disable this case as it will fail.")]
         public void TestGfmRenderer_AutoLink()
         {
@@ -68,7 +64,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             TestGfmRendererInGeneral(source, expected);
         }
 
-        [Trait("Related", "MarkdownRenderer")]
         public void TestGfmRenderer_AutoLinkWithMail()
         {
             var source = @"This is Auto Link: <user@microsoft.com>";
@@ -79,7 +74,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRenderer")]
         public void TestGfmRenderer_UrlLink()
         {
             var source = @"This is Url Link: https://www.google.com";
@@ -90,7 +84,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRenderer")]
         public void TestGfmRenderer_ImageLinkWithSpecialCharactorsInTitle()
         {
             var source = @"![This is link text with quotation ' and double quotation ""hello"" world](girl.png ""title is ""hello"" world."")";
@@ -101,7 +94,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRenderer")]
         public void TestGfmRenderer_RefImageLink()
         {
             var source = @"This is Ref Image Link: ![Simple image text][A]
@@ -113,7 +105,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         }
 
         [Fact]
-        [Trait("Related", "MarkdownRenderer")]
         public void TestGfmRenderer_NumberImageLink()
         {
             var source = @"This is Ref Image Link: ![NumberImageLink]
