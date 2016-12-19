@@ -4,15 +4,15 @@
 "use strict";
 
 let path = require('path');
-let spawn = require('child_process').spawn;
 
-let colors = require('colors/safe');
 let fs = require('fs-extra');
 let program = require('commander');
 let request = require('request');
 let jszip = require('jszip');
 let nconf = require('nconf');
 let sha1 = require('sha1');
+
+let util = require('./util');
 
 nconf.add('configuration', {type: 'file', file: path.join(__dirname, 'config.json')});
 let config = {};
@@ -32,102 +32,16 @@ let globalOptions = {
   query_url: config.docfx.releaseUrl + '/latest'
 };
 
-colors.setTheme({
-  verbose: 'cyan',
-  info: 'green',
-  help: 'cyan',
-  warn: 'yellow',
-  debug: 'blue',
-  error: 'red'
-});
-
-let logger = {
-  info(msg) {
-    console.log(colors.info(msg));
-  },
-  warn(msg) {
-    console.log(colors.warn(msg));
-  },
-  debug(msg) {
-    console.log(colors.debug(msg));
-  },
-  verbose(msg) {
-    console.log(colors.verbose(msg));
-  },
-  error(msg) {
-    console.log(colors.error(msg));
-  },
-}
-
-function execPromiseFn(command, args, workDir) {
-  return function() {
-    return new Promise(function(resolve, reject) {
-      args = args || [];
-      workDir = workDir || ".";
-      let argStr = args.join(" ");
-      let currentDir = process.cwd();
-
-      logger.info("Running command: " + command + " " + argStr);
-      try {
-        process.chdir(workDir);
-      } catch (err) {
-        reject(new Error("Error occurs while changing work directory to " + workDir + ", " + err));
-      }
-
-      let sp = spawn(process.env.comspec, ['/c', command, ...args]);
-      sp.stdout.on("data", function(data) {
-        logger.verbose(data.toString());
-      });
-      sp.stderr.on("data", function(data) {
-        logger.warn(data.toString());
-      });
-      sp.on("close", function(code) {
-        if (code === 0) {
-          logger.info("Finishing command: " + command + " " + argStr);
-          process.chdir(currentDir);
-          resolve();
-        } else {
-          reject(new Error("Error occurs while running " + command + " " + argStr + ", Exited with code: " + code ));
-        }
-      });
-    });
-  }
-}
-
-let git = {
-  add(filePath, workDir) {
-    return execPromiseFn("git", ["add", filePath], workDir);
-  },
-  commit(msg, workDir) {
-    return execPromiseFn("git", ["commit", "-m", msg], workDir);
-  },
-  amend(workDir) {
-    return execPromiseFn("git", ["commit", "--amend", "--no-edit"], workDir);
-  },
-  push(branch, workDir) {
-    return execPromiseFn("git", ["push", "-u", "origin", branch], workDir);
-  },
-  clone(repoUrl, branch, folderName, workDir) {
-    return execPromiseFn("git", ["clone", "-b", branch, repoUrl, folderName], workDir)
-  },
-  configName(name, workDir) {
-    return execPromiseFn("git", ["config", "user.name", name], workDir);
-  },
-  configEmail(email, workDir) {
-    return execPromiseFn("git", ["config", "user.email", email], workDir);
-  }
-}
-
 function copyPromiseFn(src, dest, options) {
   return function() {
-    logger.info("Start copying " + src + " " + dest);
+    util.logger.info("Start copying " + src + " " + dest);
     options = options || {clobber: true};
     return new Promise(function(resolve, reject) {
       fs.copy(src, dest, options, function(err) {
         if (err) {
           reject("Error occurs while copying " + src + " to " + dest + ", " + err);
         }
-        logger.info("Finish copying " + src + " to " + dest);
+        util.logger.info("Finish copying " + src + " to " + dest);
         resolve();
       });
     });
@@ -136,13 +50,13 @@ function copyPromiseFn(src, dest, options) {
 
 function removePromiseFn(dir) {
   return function() {
-    logger.info("Start removing " + dir);
+    util.logger.info("Start removing " + dir);
     return new Promise(function(resolve, reject) {
       fs.remove(dir, function(err) {
         if (err) {
           reject("Error occurs while removing " + dir + ", " + err);
         }
-        logger.info("Finish removing " + dir);
+        util.logger.info("Finish removing " + dir);
         resolve();
       });
     });
@@ -151,7 +65,7 @@ function removePromiseFn(dir) {
 
 function uploadMygetPromiseFn(nugetExe, releaseFolder, apiKey, sourceUrl) {
   return function() {
-    logger.info("Start uploading to myget.org");
+    util.logger.info("Start uploading to myget.org");
     let promises = [];
 
     function upload(folder) {
@@ -163,7 +77,7 @@ function uploadMygetPromiseFn(nugetExe, releaseFolder, apiKey, sourceUrl) {
         let subPath = path.join(folder, file);
         let segment = file.split('.');
         if (fs.lstatSync(subPath).isFile() && segment.pop() === 'nupkg' && segment.pop() !== 'symbols') {
-          promises.push(execPromiseFn(nugetExe, ['push', subPath, config.myget.apiKey, '-Source', sourceUrl])());
+          promises.push(util.execPromiseFn(nugetExe, ['push', subPath, config.myget.apiKey, '-Source', sourceUrl])());
         } else {
           upload(subPath);
         }
@@ -171,14 +85,14 @@ function uploadMygetPromiseFn(nugetExe, releaseFolder, apiKey, sourceUrl) {
     }
 
     upload(releaseFolder);
-    logger.info("Finish uploading to myget.org");
+    util.logger.info("Finish uploading to myget.org");
     return Promise.all(promises);
   }
 }
 
 function zipAssetsPromiseFn(fromDir, destDir) {
   return function() {
-    logger.info("Start zipping assets");
+    util.logger.info("Start zipping assets");
     let zip = new jszip();
     fs.readdirSync(fromDir).forEach(function(file) {
       let filePath = path.join(fromDir, file);
@@ -194,14 +108,14 @@ function zipAssetsPromiseFn(fromDir, destDir) {
     fs.unlinkSync(destDir);
     fs.writeFileSync(destDir, buffer);
     globalOptions.sha1 = "$sha1       = '" + sha1(buffer) + "'";
-    logger.info("Finish zipping assets");
+    util.logger.info("Finish zipping assets");
     return Promise.resolve();
   }
 }
 
 function parseReleaseNotePromiseFn(){
   return function() {
-    logger.info("Start parsing RELEASENOTE");
+    util.logger.info("Start parsing RELEASENOTE");
     return new Promise(function(resolve, reject) {
       let regex = /^\-{3,}$/g;
       fs.readFile(config.docfx.releaseNote, function(err, data) {
@@ -231,7 +145,7 @@ function parseReleaseNotePromiseFn(){
           globalOptions.content = lines.slice(record[0] + 1, record[1] - 2).join('\n');
         }
         globalOptions.rawVersion = globalOptions.version.slice(1);
-        logger.info("Finish parsing RELEASENOTE");
+        util.logger.info("Finish parsing RELEASENOTE");
         resolve();
       });
     });
@@ -240,7 +154,7 @@ function parseReleaseNotePromiseFn(){
 
 function createReleasePromiseFn() {
   return function() {
-    logger.info("Start creating release of repo");
+    util.logger.info("Start creating release of repo");
     return new Promise(function(resolve, reject) {
       if (!process.env.TOKEN) {
         reject(new Error('No github account token in the environment.'));
@@ -269,7 +183,7 @@ function createReleasePromiseFn() {
         if (error) {
           reject(new Error("Error occurs while creating release of repo, " + error));
         }
-        logger.info("Finishing creating release of repo");
+        util.logger.info("Finishing creating release of repo");
         globalOptions.upload_url = body.upload_url;
         resolve();
       });
@@ -279,14 +193,14 @@ function createReleasePromiseFn() {
 
 function loadZipPromiseFn() {
   return function() {
-    logger.info("Start loading assets zip");
+    util.logger.info("Start loading assets zip");
     return new Promise(function(resolve, reject) {
       fs.readFile(config.docfx.zipDestFolder, function(err, data) {
         if (err) {
           reject(new Error("Error occurs while loading assets zip, " + err));
         }
         globalOptions.data = data;
-        logger.info("Finish loading assets zip");
+        util.logger.info("Finish loading assets zip");
         resolve();
       });
     });
@@ -295,7 +209,7 @@ function loadZipPromiseFn() {
 
 function getLastestReleasePromiseFn() {
   return function() {
-    logger.info("Start get latest release");
+    util.logger.info("Start get latest release");
     return new Promise(function(resolve, reject) {
       if (!process.env.TOKEN) {
         reject(new Error('No github account token in the environment.'));
@@ -322,7 +236,7 @@ function getLastestReleasePromiseFn() {
         if (body.assets.length !== 0) {
           globalOptions.assets_url = body.assets[0].url;
         }
-        logger.info("Finish quering assets");
+        util.logger.info("Finish quering assets");
         resolve();
       });
     });
@@ -331,7 +245,7 @@ function getLastestReleasePromiseFn() {
 
 function deleteAssetsPromiseFn() {
   return function() {
-    logger.info("Start deleting assets");
+    util.logger.info("Start deleting assets");
     return new Promise(function(resolve, reject) {
       if (!process.env.TOKEN) {
         reject(new Error('No github account token in the environment.'));
@@ -353,7 +267,7 @@ function deleteAssetsPromiseFn() {
         if (err) {
           reject(new Error("Error occurs while deleting assets"));
         }
-        logger.info("Finish deleting assets");
+        util.logger.info("Finish deleting assets");
         resolve();
       });
     });
@@ -362,7 +276,7 @@ function deleteAssetsPromiseFn() {
 
 function uploadAssetsPromiseFn() {
   return function() {
-    logger.info("Start uploading assets");
+    util.logger.info("Start uploading assets");
     return new Promise(function(resolve, reject) {
       if (!process.env.TOKEN) {
         reject(new Error('No github account token in the environment.'));
@@ -385,7 +299,7 @@ function uploadAssetsPromiseFn() {
         if (err) {
           reject(new Error("Error occurs while uploading assets, " + err));
         }
-        logger.info("Finish uploading assets");
+        util.logger.info("Finish uploading assets");
         resolve();
       });
     });
@@ -436,7 +350,7 @@ function pushChocoPackage() {
       if (!globalOptions.pkgName) {
         reject(new Error('package name can not be null/empty/undefined while pushing choco package'));
       }
-      let promiseFn = execPromiseFn('choco', ['push', globalOptions.pkgName], config.choco.homeDir);
+      let promiseFn = util.execPromiseFn('choco', ['push', globalOptions.pkgName], config.choco.homeDir);
       promiseFn().then(resolve).catch(reject);
     });
   }
@@ -448,37 +362,37 @@ let serialPromiseFlow = function(promiseArray) {
 
 let runSteps = function(promiseArray) {
   serialPromiseFlow(promiseArray).catch(function(err) {
-    logger.error(err);
+    util.logger.error(err);
     process.exit(1);
   });
 }
 
 let clearReleaseStep = removePromiseFn(config.docfx.releaseFolder);
-let docfxBuildStep = execPromiseFn("build.cmd", ["-prod"], config.docfx.home);
-let genereateDocsStep = execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docFolder);
+let docfxBuildStep = util.execPromiseFn("build.cmd", ["-prod"], config.docfx.home);
+let genereateDocsStep = util.execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docFolder);
 let uploadDevMygetStep = uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.dev);
 let uploadMasterMygetStep = uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.master);
 
 let e2eTestStep = function() {
   let stepsOrder = [
-    execPromiseFn("choco", ["install", "firefox", "--version=46.0.1", "-y"]),
-    execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docfxSeedHome),
-    execPromiseFn("dotnet", ["restore"], config.docfx.e2eTestsHome),
-    execPromiseFn("dotnet", ["test"], config.docfx.e2eTestsHome)
+    util.execPromiseFn("choco", ["install", "firefox", "--version=46.0.1", "-y"]),
+    util.execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docfxSeedHome),
+    util.execPromiseFn("dotnet", ["restore"], config.docfx.e2eTestsHome),
+    util.execPromiseFn("dotnet", ["test"], config.docfx.e2eTestsHome)
   ];
   return serialPromiseFlow(stepsOrder);
 }
 
 let updateGhPageStep = function() {
   let stepsOrder = [
-    git.clone(config.docfx.repoUrl, "gh-pages", "docfxsite"),
+    util.git.clone(config.docfx.repoUrl, "gh-pages", "docfxsite"),
     copyPromiseFn(config.docfx.siteFolder, "tmp"),
     copyPromiseFn("docfxsite/.git", "tmp/.git"),
-    git.configName(config.git.name, "tmp"),
-    git.configEmail(config.git.email, "tmp"),
-    git.add(".", "tmp"),
-    git.commit(config.git.message, "tmp"),
-    git.push("gh-pages", "tmp")
+    util.git.configName(config.git.name, "tmp"),
+    util.git.configEmail(config.git.email, "tmp"),
+    util.git.add(".", "tmp"),
+    util.git.commit(config.git.message, "tmp"),
+    util.git.push("gh-pages", "gh-pages", "tmp")
   ];
   return serialPromiseFlow(stepsOrder);
 }
@@ -497,8 +411,8 @@ let updateGithubReleaseStep = function() {
 let updateChocoReleaseStep = function() {
   let stepsOrder = [
     updateChocoConfigPromiseFn(),
-    execPromiseFn("choco", ['pack'], config.choco.homeDir),
-    execPromiseFn("choco", ['apiKey', '-k', process.env.CHOCO_TOKEN, '-source', 'https://chocolatey.org/', config.choco.homeDir]),
+    util.execPromiseFn("choco", ['pack'], config.choco.homeDir),
+    util.execPromiseFn("choco", ['apiKey', '-k', process.env.CHOCO_TOKEN, '-source', 'https://chocolatey.org/', config.choco.homeDir]),
     pushChocoPackage()
   ];
   return serialPromiseFlow(stepsOrder);
@@ -514,7 +428,7 @@ program
 program.parse(process.argv);
 
 if (!branchValue) {
-  logger.error("Need specify the repo branch");
+  util.logger.error("Need specify the repo branch");
   process.exit(1);
 }
 
@@ -566,5 +480,5 @@ switch (branchValue.toLowerCase()) {
     ]);
     break;
   default:
-    logger.error("Please specify the *right* repo branch name to run this script");
+    util.logger.error("Please specify the *right* repo branch name to run this script");
 }
