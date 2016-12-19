@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.Build.RestApi.Tests
 {
-    using System.IO;
-
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Xunit;
@@ -19,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         public void ParseSimpleSwaggerJsonShouldSucceed()
         {
             var swaggerFile = @"TestData\swagger\simple_swagger2.json";
-            var swagger = SwaggerJsonParser.Parse(File.ReadAllText(swaggerFile));
+            var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
             Assert.Equal(1, swagger.Paths.Values.Count);
             var actionJObject = swagger.Paths["/contacts"].Metadata["get"] as JObject;
@@ -39,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         public void ParseSwaggerJsonWithReferenceShouldSucceed()
         {
             var swaggerFile = @"TestData\swagger\ref_swagger2.json";
-            var swagger = SwaggerJsonParser.Parse(File.ReadAllText(swaggerFile));
+            var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
             Assert.Equal(1, swagger.Paths.Count);
             Assert.Equal(1, swagger.Paths["/contacts"].Metadata.Count);
@@ -77,7 +75,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         public void ParseSwaggerJsonWithTagShouldSucceed()
         {
             const string swaggerFile = @"TestData\swagger\tag_swagger2.json";
-            var swagger = SwaggerJsonParser.Parse(File.ReadAllText(swaggerFile));
+            var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
             Assert.Equal(3, swagger.Tags.Count);
             var tag0 = swagger.Tags[0];
@@ -96,7 +94,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         public void ParseSwaggerJsonWithPathParametersShouldSucceed()
         {
             const string swaggerFile = @"TestData\swagger\pathParameters_swagger2.json";
-            var swagger = SwaggerJsonParser.Parse(File.ReadAllText(swaggerFile));
+            var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
             Assert.Equal(1, swagger.Paths.Values.Count);
             var parameters = swagger.Paths["/contacts"].Parameters;
@@ -117,7 +115,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         public void ParseSwaggerJsonWithLoopReferenceShouldSucceed()
         {
             const string swaggerFile = @"TestData\swagger\loopref_swagger2.json";
-            var swagger = SwaggerJsonParser.Parse(File.ReadAllText(swaggerFile));
+            var swagger = SwaggerJsonParser.Parse(swaggerFile);
 
             Assert.Equal(1, swagger.Paths.Values.Count);
             var actionJObject = swagger.Paths["/contacts"].Metadata["patch"] as JObject;

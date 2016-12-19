@@ -37,8 +37,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             _templateFolder = GetRandomFolder();
             _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
             _defaultFiles.Add(DocumentType.Article, new[] { "TestData/contacts.json" }, "TestData/");
-            _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
-            _applyTemplateSettings.RawModelExportSettings.Export = true;
+            _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder)
+            {
+                RawModelExportSettings = {Export = true}
+            };
         }
 
         [Fact]
@@ -136,7 +138,30 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         }
 
         [Fact]
-        public void ProcessSwaggerWithXRefMap()
+        public void ProcessSwaggerWithExternalReferenceShouldSucceed()
+        {
+            FileCollection files = new FileCollection(_defaultFiles);
+            BuildDocument(files);
+
+            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
+
+            var operation = model.Children.Single(c => c.OperationId == "get contact direct reports links");
+            var externalSchema = operation.Parameters[2].Metadata["schema"];
+            var externalParameters = ((JObject)externalSchema)["parameters"];
+            Assert.Equal("cache1", externalParameters["name"]);
+            var scheduleEntries = externalParameters["parameters"]["properties"]["scheduleEntries"];
+            Assert.Equal(JTokenType.Array, scheduleEntries.Type);
+            Assert.Equal(2, ((JArray)scheduleEntries).Count);
+            Assert.Equal("Monday", ((JArray)scheduleEntries)[0]["dayOfWeek"]);
+
+            var responses = ((JObject)externalSchema)["responses"];
+            Assert.Equal("fake metadata", responses["200"]["examples"]["application/json"]["odata.metadata"]);
+        }
+
+        [Fact]
+        public void ProcessSwaggerWithXRefMapShouldSucceed()
         {
             var files = new FileCollection(_defaultFiles);
             BuildDocument(files);

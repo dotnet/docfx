@@ -74,10 +74,9 @@ namespace Microsoft.DocAsCode.Build.RestApi
             {
                 case DocumentType.Article:
                     var filePath = Path.Combine(file.BaseDir, file.File);
-                    var swaggerContent = File.ReadAllText(filePath);
-                    var swagger = SwaggerJsonParser.Parse(swaggerContent);
+                    var swagger = SwaggerJsonParser.Parse(filePath);
                     swagger.Metadata[DocumentTypeKey] = RestApiDocumentType;
-                    swagger.Raw = swaggerContent;
+                    swagger.Raw = File.ReadAllText(filePath);
                     CheckOperationId(swagger, file.File);
 
                     var repoInfo = GitUtility.TryGetFileDetail(filePath);

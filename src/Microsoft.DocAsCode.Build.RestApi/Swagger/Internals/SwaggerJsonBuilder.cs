@@ -5,8 +5,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Text;
+
+    using Microsoft.DocAsCode.Exceptions;
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
@@ -19,16 +22,25 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
         private const string InternalRefNameKey = "x-internal-ref-name";
         private const string InternalLoopRefNameKey = "x-internal-loop-ref-name";
 
-        public SwaggerObjectBase Read(JsonReader reader)
+        public SwaggerObjectBase Read(string swaggerPath)
         {
-            _documentObjectCache = new Dictionary<string, SwaggerObjectBase>();
-            var token = JToken.ReadFrom(reader);
-            var swagger = Build(token);
-            RemoveReferenceDefinitions((SwaggerObject)swagger);
-            return ResolveReferences(swagger, new Stack<string>());
+            using (JsonReader reader = new JsonTextReader(File.OpenText(swaggerPath)))
+            {
+                _documentObjectCache = new Dictionary<string, SwaggerObjectBase>();
+                var token = JToken.ReadFrom(reader);
+
+                var swaggerDir = Path.GetDirectoryName(swaggerPath);
+                if (string.IsNullOrEmpty(swaggerDir))
+                {
+                    throw new DocfxException($"Directory of swagger file path {swaggerPath} should not be null or empty.");
+                }
+                var swagger = Build(token, swaggerDir);
+                RemoveReferenceDefinitions((SwaggerObject)swagger);
+                return ResolveReferences(swagger, new Stack<string>());
+            }
         }
 
-        private SwaggerObjectBase Build(JToken token)
+        private SwaggerObjectBase Build(JToken token, string swaggerDir)
         {
             // Fetch from cache first
             var location = GetLocation(token);
@@ -50,31 +62,55 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                         throw new JsonException($"JSON reference $ref property must have a string or null value, instead of {referenceToken.Type}, location: {referenceToken.Path}.");
                     }
 
-                    var formatted = RestApiHelper.FormatReferenceFullPath((string)referenceToken);
-                    var deferredObject = new SwaggerReferenceObject
+                    var swaggerReference = RestApiHelper.FormatReferenceFullPath((string)referenceToken);
+                    switch (swaggerReference.Type)
                     {
-                        DeferredReference = formatted.Item1,
-                        ReferenceName = formatted.Item2,
-                        Location = location
-                    };
+                        case RestApiHelper.SwaggerReferenceType.InternalReference:
+                            var deferredObject = new SwaggerReferenceObject
+                            {
+                                DeferredReference = swaggerReference.Path,
+                                ReferenceName = swaggerReference.Name,
+                                Location = location
+                            };
 
-                    // For swagger, other properties are still allowed besides $ref, e.g.
-                    // "schema": {
-                    //   "$ref": "#/definitions/foo"
-                    //   "example": { }
-                    // }
-                    // Use Token property to keep other properties
-                    // These properties cannot be referenced
-                    jObject.Remove("$ref");
-                    deferredObject.Token = jObject;
-                    _documentObjectCache.Add(location, deferredObject);
-                    return deferredObject;
+                            // For swagger, other properties are still allowed besides $ref, e.g.
+                            // "schema": {
+                            //   "$ref": "#/definitions/foo"
+                            //   "example": { }
+                            // }
+                            // Use Token property to keep other properties
+                            // These properties cannot be referenced
+                            jObject.Remove("$ref");
+                            deferredObject.Token = jObject;
+                            _documentObjectCache.Add(location, deferredObject);
+                            return deferredObject;
+                        case RestApiHelper.SwaggerReferenceType.ExternalReference:
+                            jObject.Remove("$ref");
+
+                            // Currently we support external reference without $ref inside
+                            var externalSwaggerPath = Path.Combine(swaggerDir, swaggerReference.Path);
+                            using (JsonReader reader = new JsonTextReader(File.OpenText(externalSwaggerPath)))
+                            {
+                                var externalJObject = JObject.Load(reader);
+                                foreach (var item in externalJObject)
+                                {
+                                    jObject[item.Key] = item.Value;
+                                }
+                            }
+                            return new SwaggerValue
+                            {
+                                Location = location,
+                                Token = jObject
+                            };
+                        default:
+                            throw new DocfxException($"{referenceToken} does not support type {swaggerReference.Type}.");
+                    }
                 }
 
                 var swaggerObject = new SwaggerObject { Location = location };
                 foreach (KeyValuePair<string, JToken> property in jObject)
                 {
-                    swaggerObject.Dictionary.Add(property.Key, Build(property.Value));
+                    swaggerObject.Dictionary.Add(property.Key, Build(property.Value, swaggerDir));
                 }
 
                 _documentObjectCache.Add(location, swaggerObject);
@@ -87,7 +123,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 var swaggerArray = new SwaggerArray { Location = location };
                 foreach (var property in jArray)
                 {
-                    swaggerArray.Array.Add(Build(property));
+                    swaggerArray.Array.Add(Build(property, swaggerDir));
                 }
 
                 return swaggerArray;

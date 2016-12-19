@@ -37,6 +37,7 @@
       "TestData/overwrite/rest.overwrite.remarks.md",
       "TestData/contacts-operations.md",
       "TestData/contacts.json",
+      "TestData/ref.json",
       "TestData/swagger/loopref_swagger2.json",
       "TestData/swagger/ref_swagger2.json",
       "TestData/swagger/pathParameters_swagger2.json",

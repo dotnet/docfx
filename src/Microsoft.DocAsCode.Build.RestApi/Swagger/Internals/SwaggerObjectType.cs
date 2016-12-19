@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
     {
         /// <summary>
         /// {
-        ///     "$ref": "#/definitions/defintion"
+        ///     "$ref": "#/definitions/definition"
         ///     "otherProperty": "value"
         /// }
         /// </summary>
