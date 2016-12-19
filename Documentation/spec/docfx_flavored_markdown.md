@@ -49,11 +49,21 @@ For more information, see [cross reference](../tutorial/links_and_cross_referenc
 
 
 ### File Inclusion
-DFM adds syntax to include other file parts into current file, the included file will also be considered as in DFM syntax. *NOTE* that YAML header is **NOT** supported when the file is an inclusion.
+DFM adds syntax to include other file parts into current file, the included file will also be considered as in DFM syntax.
+
 There are two types of file inclusion: Inline and block, as similar to inline code span and block code.
 
+> [!NOTE] 
+> YAML header is **NOT** supported when the file is an inclusion.
+
 #### Inline
-Inline file inclusion is in the following syntax, in which `<title>` stands for the title of the included file, and `<filepath>` stands for the file path of the included file. The file path can be either absolute or relative.`<filepath>` can be wrapped by `'` or `"`. *NOTE* that for inline file inclusion, the file included will be considered as containing only inline tags, for example, `###header` inside the file will not transfer since `<h3>` is a block tag, while `[a](b)` will transform to `<a href='b'>a</a>` since `<a>` is an inline tag.
+Inline file inclusion is in the following syntax, in which `<title>` stands for the title of the included file, and `<filepath>` stands for the file path of the included file. The file path can be either absolute or relative.`<filepath>` can be wrapped by `'` or `"`.
+
+> [!NOTE] 
+> For inline file inclusion, the file included will be considered as containing only inline tags, for example,
+> `###header` inside the file will not transfer since `<h3>` is a block tag, while `[a](b)` will transform to
+> `<a href='b'>a</a>` since `<a>` is an inline tag.
+
 ```md
 ...Other inline contents... [!include[<title>](<filepath>)]
 ```
@@ -234,7 +244,9 @@ In DFM, it will be rendered as a paragraph (with content `text`) and a list.
 Differences introduced by DFM syntax
 --------------
 
-Please note that DFM introduces more syntax to support more functionalities. When GFM does not support them, preview the Markdown file inside *GFM Preview* can lead to different results.
+> [!Warning]
+> Please note that DFM introduces more syntax to support more functionalities. When GFM does not support them, preview the
+> Markdown file inside *GFM Preview* can lead to different results.
 
 ### YAML header
 
