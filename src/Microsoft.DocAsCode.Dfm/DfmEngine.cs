@@ -13,9 +13,10 @@ namespace Microsoft.DocAsCode.Dfm
     public class DfmEngine : MarkdownEngine
     {
         public DfmEngine(IMarkdownContext context, IMarkdownTokenRewriter rewriter, object renderer, Options options)
-            : base(context, rewriter, renderer, options, new Dictionary<string, LinkObj>())
-        {
-        }
+            : base(context, rewriter, renderer, options, new Dictionary<string, LinkObj>()) { }
+
+        internal DfmEngine(DfmEngine engine)
+            : this(engine.Context, engine.Rewriter, engine.RendererImpl, engine.Options) { }
 
         public override string Markup(string src, string path)
         {

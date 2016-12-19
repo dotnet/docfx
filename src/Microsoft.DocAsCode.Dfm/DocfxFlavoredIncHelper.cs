@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.Dfm
                     var filePathWithStatus = DfmFallbackHelper.GetFilePathWithFallback(originalRelativePath, context);
                     var src = File.ReadAllText(filePathWithStatus.Item1);
                     dependency = new HashSet<string>();
-                    src = engine.InternalMarkup(src, context.SetFilePathStack(parents).SetDependency(dependency).SetIsInclude());
+                    src = new DfmEngine(engine).InternalMarkup(src, context.SetFilePathStack(parents).SetDependency(dependency).SetIsInclude());
 
                     result = UpdateToHrefFromWorkingFolder(src, currentPath);
                     result = GenerateNodeWithCommentWrapper("INCLUDE", $"Include content from \"{currentPath}\"", result);
