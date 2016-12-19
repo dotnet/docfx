@@ -35,6 +35,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             EnvironmentContext.SetBaseDirectory(Directory.GetCurrentDirectory());
         }
 
+        public override void Dispose()
+        {
+            EnvironmentContext.Clean();
+            base.Dispose();
+        }
+
         [Fact]
         public void TestBasic()
         {

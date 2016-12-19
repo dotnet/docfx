@@ -571,8 +571,14 @@ test2
                 var settings = new ApplyTemplateSettings(inputFolder, outputFolder);
                 EnvironmentContext.SetBaseDirectory(inputFolder);
                 EnvironmentContext.SetOutputDirectory(outputFolder);
-                processor.Process(items.ToList(), context, settings);
-                EnvironmentContext.Clean();
+                try
+                {
+                    processor.Process(items.ToList(), context, settings);
+                }
+                finally
+                {
+                    EnvironmentContext.Clean();
+                }
             }
         }
 

@@ -43,6 +43,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             EnvironmentContext.SetOutputDirectory(_outputFolder);
         }
 
+        public override void Dispose()
+        {
+            EnvironmentContext.Clean();
+            base.Dispose();
+        }
+
         [Fact]
         public void TestBuild()
         {

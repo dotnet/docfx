@@ -135,10 +135,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             RemoveDuplicateOutputFiles(generatedManifest.Files);
             PostProcess(generatedManifest, outputDirectory);
 
-            EnvironmentContext.FileAbstractLayerImpl = null;
-
             // Save to manifest.json
-            SaveManifest(generatedManifest, outputDirectory);
+            SaveManifest(generatedManifest);
+
+            EnvironmentContext.FileAbstractLayerImpl = null;
 
             // overwrite intermediate cache files
             if (_intermediateFolder != null && transformDocument)
@@ -256,11 +256,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             };
         }
 
-        private static void SaveManifest(Manifest manifest, string outputDirectory)
+        private static void SaveManifest(Manifest manifest)
         {
-            var manifestJsonPath = Path.Combine(outputDirectory ?? string.Empty, Constants.ManifestFileName);
-            JsonUtility.Serialize(manifestJsonPath, manifest);
-            Logger.LogInfo($"Manifest file saved to {manifestJsonPath}.");
+            JsonUtility.Serialize(Constants.ManifestFileName, manifest);
+            Logger.LogInfo($"Manifest file saved to {Constants.ManifestFileName}.");
         }
 
         private List<PostProcessor> GetPostProcessor(ImmutableArray<string> processors)

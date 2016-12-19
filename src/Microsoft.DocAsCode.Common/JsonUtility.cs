@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.Common
         public static T Deserialize<T>(string path, JsonSerializer serializer = null)
         {
             using (var stream = EnvironmentContext.FileAbstractLayer.OpenRead(path))
-            using (StreamReader reader = new StreamReader(path))
+            using (StreamReader reader = new StreamReader(stream))
             {
                 return Deserialize<T>(reader, serializer);
             }
