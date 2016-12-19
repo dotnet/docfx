@@ -3,9 +3,15 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System;
+
     public enum BuildPhase
     {
-        PreBuildBuild,
-        PostBuild,
+        Compile,
+        Link,
+        [Obsolete]
+        PreBuildBuild = Compile,
+        [Obsolete]
+        PostBuild = Link,
     }
 }

@@ -99,7 +99,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var allFiles = files?.Select(f => f.File) ?? new string[0];
                 var loadedFiles = hostService.Models.Select(m => m.FileAndType.File);
                 IncrementalContext.ReportModelLoadInfo(hostService, allFiles.Except(loadedFiles), null);
-                IncrementalContext.ReportModelLoadInfo(hostService, loadedFiles, BuildPhase.PreBuildBuild);
+                IncrementalContext.ReportModelLoadInfo(hostService, loadedFiles, BuildPhase.Compile);
             }
         }
 

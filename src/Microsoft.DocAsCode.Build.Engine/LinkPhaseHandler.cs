@@ -6,16 +6,19 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
 
-    internal class PostbuildPhaseHandler : IPhaseHandler
+    internal class LinkPhaseHandler : IPhaseHandler
     {
-        public string Name => nameof(PostbuildPhaseHandler);
+        public string Name => nameof(LinkPhaseHandler);
+
+        public BuildPhase Phase => BuildPhase.Link;
 
         public DocumentBuildContext Context { get; }
 
         public TemplateProcessor TemplateProcessor { get; }
 
-        public PostbuildPhaseHandler(DocumentBuildContext context, TemplateProcessor templateProcessor)
+        public LinkPhaseHandler(DocumentBuildContext context, TemplateProcessor templateProcessor)
         {
             Context = context;
             TemplateProcessor = templateProcessor;

@@ -11,13 +11,15 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    internal class PrebuildBuildPhaseHandler : IPhaseHandler
+    internal class CompilePhaseHandler : IPhaseHandler
     {
-        public string Name => nameof(PrebuildBuildPhaseHandler);
+        public string Name => nameof(CompilePhaseHandler);
+
+        public BuildPhase Phase => BuildPhase.Compile;
 
         public DocumentBuildContext Context { get; }
 
-        public PrebuildBuildPhaseHandler(DocumentBuildContext context)
+        public CompilePhaseHandler(DocumentBuildContext context)
         {
             Context = context;
         }

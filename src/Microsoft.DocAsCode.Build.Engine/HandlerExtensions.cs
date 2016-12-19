@@ -5,14 +5,14 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     internal static class HandlerExtensions
     {
-        public static PrebuildBuildPhaseHandlerWithIncremental WithIncremental(this PrebuildBuildPhaseHandler inner)
+        public static CompilePhaseHandlerWithIncremental WithIncremental(this CompilePhaseHandler inner)
         {
-            return new PrebuildBuildPhaseHandlerWithIncremental(inner);
+            return new CompilePhaseHandlerWithIncremental(inner);
         }
 
-        public static PostbuildPhaseHandlerWithIncremental WithIncremental(this PostbuildPhaseHandler inner)
+        public static LinkPhaseHandlerWithIncremental WithIncremental(this LinkPhaseHandler inner)
         {
-            return new PostbuildPhaseHandlerWithIncremental(inner);
+            return new LinkPhaseHandlerWithIncremental(inner);
         }
     }
 }

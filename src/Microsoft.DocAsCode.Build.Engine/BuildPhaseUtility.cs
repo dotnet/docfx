@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
@@ -21,6 +22,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                     action(buildStep);
                 }
             }
+        }
+
+        public static BuildMessageInfo GetPhaseMessageInfo(BuildMessage messages, BuildPhase phase)
+        {
+            if (messages == null)
+            {
+                return null;
+            }
+
+            BuildMessageInfo message;
+            if (!messages.TryGetValue(phase, out message))
+            {
+                messages[phase] = message = new BuildMessageInfo();
+            }
+            return message;
         }
     }
 }
