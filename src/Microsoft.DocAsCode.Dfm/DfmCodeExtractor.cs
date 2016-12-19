@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Dfm
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
 
     internal class DfmCodeExtractor
     {
@@ -27,7 +28,7 @@ namespace Microsoft.DocAsCode.Dfm
                 throw new ArgumentNullException(nameof(fencesPath));
             }
 
-            var fencesCode = File.ReadAllLines(fencesPath);
+            var fencesCode = EnvironmentContext.FileAbstractLayer.ReadAllLines(fencesPath);
             if (token.PathQueryOption == null)
             {
                 // Add the full file when no query option is given

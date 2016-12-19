@@ -118,12 +118,24 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     Logger.LogInfo($"Start building for version: {parameter.VersionName}");
                 }
+                EnvironmentContext.FileAbstractLayerImpl =
+                    FileAbstractLayerBuilder.Default
+                    .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
+                    .WriteToRealFileSystem(parameter.OutputBaseDir)
+                    .Create();
                 manifests.Add(BuildCore(parameter, markdownServiceProvider));
             }
+            EnvironmentContext.FileAbstractLayerImpl =
+                FileAbstractLayerBuilder.Default
+                .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
+                .WriteToRealFileSystem(parameters[0].OutputBaseDir)
+                .Create();
             var generatedManifest = MergeManifest(manifests);
 
             RemoveDuplicateOutputFiles(generatedManifest.Files);
             PostProcess(generatedManifest, outputDirectory);
+
+            EnvironmentContext.Clean();
 
             // Save to manifest.json
             SaveManifest(generatedManifest, outputDirectory);

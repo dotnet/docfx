@@ -174,7 +174,7 @@ namespace Microsoft.DocAsCode.Tests
             command = controller.Create();
             Assert.Equal(typeof(HelpCommand), command.GetType());
 
-            args = new string[] { "serve", "--invalid"};
+            args = new string[] { "serve", "--invalid" };
             controller = ArgsParser.Instance.Parse(args);
             Assert.Throws<OptionParserException>(() => controller.Create());
         }

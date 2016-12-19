@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System.Text;
     using Xunit;
 
+    [Collection("docfx STA")]
     public class ExtractSearchIndexFromHtmlTest
     {
         private static ExtractSearchIndex _extractor = new ExtractSearchIndex();

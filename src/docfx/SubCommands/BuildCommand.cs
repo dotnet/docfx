@@ -34,12 +34,12 @@ namespace Microsoft.DocAsCode.SubCommands
             _version = assembly.GetName().Version.ToString();
             Config = ParseOptions(options);
             SetDefaultConfigValue(Config);
-            EnvironmentContext.BaseDirectory = Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Directory.GetCurrentDirectory() : Config.BaseDirectory);
             _templateManager = new TemplateManager(assembly, "Template", Config.Templates, Config.Themes, Config.BaseDirectory);
         }
 
         public void Exec(SubCommandRunningContext context)
         {
+            EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Directory.GetCurrentDirectory() : Config.BaseDirectory));
             // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
             var baseDirectory = EnvironmentContext.BaseDirectory;
             var intermediateOutputFolder = Path.Combine(baseDirectory, "obj");
@@ -54,6 +54,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 ServeCommand.Serve(outputFolder, Config.Port);
             }
+            EnvironmentContext.Clean();
         }
 
         #region BuildCommand ctor related

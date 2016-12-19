@@ -257,7 +257,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                 }
             }
             var configFile = Path.Combine(baseDir, MarkdownSytleConfig.MarkdownStyleFileName);
-            if (File.Exists(configFile))
+            if (EnvironmentContext.FileAbstractLayer.Exists(configFile))
             {
                 var config = JsonUtility.Deserialize<MarkdownSytleConfig>(configFile);
                 builder.AddMetadataValidators(config.MetadataRules);
