@@ -535,6 +535,47 @@ aaa",
 
         [Fact]
         [Trait("Related", "Markdown")]
+        public void TestTable_WithEmptyColumn()
+        {
+            // 1. Prepare data
+            var source = @"|   | Empty column  | Right Aligned |
+|:------------ |:---------------:|-----:|
+|       | some wordy text | $1600 |
+|       | centered        |   $12 |
+|   | are neat        |    $1 |";
+
+            var expected = @"<table>
+<thead>
+<tr>
+<th style=""text-align:left""></th>
+<th style=""text-align:center"">Empty column</th>
+<th style=""text-align:right"">Right Aligned</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style=""text-align:left""></td>
+<td style=""text-align:center"">some wordy text</td>
+<td style=""text-align:right"">$1600</td>
+</tr>
+<tr>
+<td style=""text-align:left""></td>
+<td style=""text-align:center"">centered</td>
+<td style=""text-align:right"">$12</td>
+</tr>
+<tr>
+<td style=""text-align:left""></td>
+<td style=""text-align:center"">are neat</td>
+<td style=""text-align:right"">$1</td>
+</tr>
+</tbody>
+</table>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
         public void TestTable_WithEmptyCell()
         {
             // 1. Prepare data
