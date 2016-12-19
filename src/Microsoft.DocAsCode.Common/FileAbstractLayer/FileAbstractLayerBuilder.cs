@@ -117,6 +117,15 @@ namespace Microsoft.DocAsCode.Common
             return new FileAbstractLayer(_reader, _writer);
         }
 
+        public static FileAbstractLayerBuilder CreateBuilder(FileAbstractLayer fal)
+        {
+            if (fal == null)
+            {
+                throw new ArgumentNullException(nameof(fal));
+            }
+            return new FileAbstractLayerBuilder(fal.Reader, fal.Writer);
+        }
+
         #endregion
 
         #region Private Methods

@@ -6,6 +6,8 @@ namespace Microsoft.DocAsCode.Common
     using System;
     using System.IO;
 
+    using Microsoft.DocAsCode.Plugins;
+
     public static class YamlMime
     {
         public const string YamlMimePrefix = nameof(YamlMime) + ":";
@@ -32,18 +34,17 @@ namespace Microsoft.DocAsCode.Common
             return content;
         }
 
-#if !NetCore
         public static string ReadMime(string file)
         {
             if (file == null)
             {
                 throw new ArgumentNullException(nameof(file));
             }
-            using (var reader = File.OpenText(file))
+            using (var stream = EnvironmentContext.FileAbstractLayer.OpenRead(file))
+            using (var reader = new StreamReader(stream))
             {
                 return ReadMime(reader);
             }
         }
-#endif
     }
 }

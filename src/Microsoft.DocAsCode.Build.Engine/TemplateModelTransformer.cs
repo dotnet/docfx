@@ -92,9 +92,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     var extension = template.Extension;
                     string outputFile = item.FileWithoutExtension + extension;
-                    string outputPath = Path.Combine(outputDirectory, outputFile);
-                    var dir = Path.GetDirectoryName(outputPath);
-                    if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
                     object viewModel = null;
                     try
                     {
@@ -139,8 +136,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                             var viewModelPath = ExportModel(viewModel, outputFile, exportSettings);
                             Logger.LogWarning($"Model \"{viewModelPath}\" is transformed to empty string with template \"{template.Name}\"");
                         }
-                        TransformDocument(result ?? string.Empty, extension, _context, outputPath, outputFile, missingUids, manifestItem);
-                        Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputPath}\".");
+                        TransformDocument(result ?? string.Empty, extension, _context, outputFile, missingUids, manifestItem);
+                        Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputFile}\".");
                     }
                 }
                 catch (PathTooLongException e)
@@ -197,26 +194,22 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string ExportModel(object model, string modelFileRelativePath, ExportSettings settings)
         {
-            if (model == null) return null;
+            if (model == null)
+            {
+                return null;
+            }
             var outputFolder = settings.OutputFolder;
 
-            string modelPath = Path.Combine(outputFolder ?? string.Empty, settings.PathRewriter(modelFileRelativePath));
+            string modelPath = settings.PathRewriter(modelFileRelativePath);
 
             JsonUtility.Serialize(modelPath, model);
             return StringExtension.ToDisplayPath(modelPath);
         }
 
-        private static void TransformDocument(string result, string extension, IDocumentBuildContext context, string outputPath, string relativeOutputPath, HashSet<string> missingUids, ManifestItem manifestItem)
+        private static void TransformDocument(string result, string extension, IDocumentBuildContext context, string relativeOutputPath, HashSet<string> missingUids, ManifestItem manifestItem)
         {
-            var subDirectory = Path.GetDirectoryName(outputPath);
-            if (!string.IsNullOrEmpty(subDirectory) &&
-                !Directory.Exists(subDirectory))
-            {
-                Directory.CreateDirectory(subDirectory);
-            }
-
             Task<byte[]> hashTask;
-            using (var stream = File.Create(outputPath).WithMd5Hash(out hashTask))
+            using (var stream = EnvironmentContext.FileAbstractLayer.Create(relativeOutputPath).WithMd5Hash(out hashTask))
             using (var sw = new StreamWriter(stream))
             {
                 if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))

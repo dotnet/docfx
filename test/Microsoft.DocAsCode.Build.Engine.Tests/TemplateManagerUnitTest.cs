@@ -10,10 +10,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Xunit;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "TemplateManager")]
+    [Collection("docfx STA")]
     public class TemplateManagerUnitTest : TestBase
     {
         private readonly string _inputFolder;
@@ -564,10 +566,19 @@ test2
                         File.Create(item.ResourceFile).Dispose();
                     }
                     if (string.IsNullOrEmpty(item.InputFolder)) item.InputFolder = Directory.GetCurrentDirectory();
-                    item.Model = new DocAsCode.Plugins.ModelWithCache(model);
+                    item.Model = new ModelWithCache(model);
                 }
                 var settings = new ApplyTemplateSettings(inputFolder, outputFolder);
-                processor.Process(items.ToList(), context, settings);
+                EnvironmentContext.SetBaseDirectory(inputFolder);
+                EnvironmentContext.SetOutputDirectory(outputFolder);
+                try
+                {
+                    processor.Process(items.ToList(), context, settings);
+                }
+                finally
+                {
+                    EnvironmentContext.Clean();
+                }
             }
         }
 

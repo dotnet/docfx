@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Tests.Common
             return folder;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             try
             {

@@ -8,6 +8,8 @@ namespace Microsoft.DocAsCode.Common
 
     using Newtonsoft.Json;
 
+    using Microsoft.DocAsCode.Plugins;
+
     public static class JsonUtility
     {
         public static readonly ThreadLocal<JsonSerializer> DefaultSerializer = new ThreadLocal<JsonSerializer>(
@@ -36,31 +38,23 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
-#if !NetCore
         public static void Serialize(string path, object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {
-            var directory = Path.GetDirectoryName(path);
-            if (!string.IsNullOrEmpty(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            using (StreamWriter writer = new StreamWriter(path))
+            using (var stream = EnvironmentContext.FileAbstractLayer.Create(path))
+            using (StreamWriter writer = new StreamWriter(stream))
             {
                 Serialize(writer, graph, formatting, serializer);
             }
         }
-#endif
 
-#if !NetCore
         public static T Deserialize<T>(string path, JsonSerializer serializer = null)
         {
-            using (StreamReader reader = new StreamReader(path))
+            using (var stream = EnvironmentContext.FileAbstractLayer.OpenRead(path))
+            using (StreamReader reader = new StreamReader(stream))
             {
                 return Deserialize<T>(reader, serializer);
             }
         }
-#endif
 
         public static T Deserialize<T>(TextReader reader, JsonSerializer serializer = null)
         {

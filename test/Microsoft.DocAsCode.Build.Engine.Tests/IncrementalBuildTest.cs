@@ -32,7 +32,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
         public IncrementalBuildTest()
         {
-            EnvironmentContext.BaseDirectory = Directory.GetCurrentDirectory();
+            EnvironmentContext.SetBaseDirectory(Directory.GetCurrentDirectory());
+        }
+
+        public override void Dispose()
+        {
+            EnvironmentContext.Clean();
+            base.Dispose();
         }
 
         [Fact]
@@ -390,7 +396,7 @@ tagRules : [
                 }
                 {
                     // check manifest
-                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(8, manifest.Files.Count);
@@ -574,7 +580,7 @@ tagRules : [
                 }
                 {
                     // check manifest
-                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(8, manifest.Files.Count);

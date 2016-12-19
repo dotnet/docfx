@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Plugins;
 
     public static class DfmFallbackHelper
     {
@@ -46,7 +47,7 @@ namespace Microsoft.DocAsCode.Dfm
             var originalFilePath = Path.Combine(context.GetBaseFolder(), filePathToDocset);
             var actualFilePath = originalFilePath;
             bool hitFallback = false;
-            if (!File.Exists(originalFilePath))
+            if (!EnvironmentContext.FileAbstractLayer.Exists(originalFilePath))
             {
                 var fallbackFolders = context.GetFallbackFolders();
                 foreach (var folder in fallbackFolders)
@@ -54,7 +55,7 @@ namespace Microsoft.DocAsCode.Dfm
                     var fallbackFilePath = Path.Combine(folder, filePathToDocset);
                     var fallbackFileRelativePath = PathUtility.MakeRelativePath(parentFileDirectoryToDocset, fallbackFilePath);
                     context.ReportDependency(fallbackFileRelativePath); // All the high priority fallback files should be reported to the dependency.
-                    if (File.Exists(fallbackFilePath))
+                    if (EnvironmentContext.FileAbstractLayer.Exists(fallbackFilePath))
                     {
                         actualFilePath = fallbackFilePath;
                         hitFallback = true;

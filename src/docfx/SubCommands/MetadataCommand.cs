@@ -26,12 +26,12 @@ namespace Microsoft.DocAsCode.SubCommands
         public MetadataCommand(MetadataCommandOptions options)
         {
             Config = ParseOptions(options);
-            EnvironmentContext.BaseDirectory = Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Directory.GetCurrentDirectory() : Config.BaseDirectory);
             InputModels = GetInputModels(Config);
         }
 
         public void Exec(SubCommandRunningContext context)
         {
+            EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Directory.GetCurrentDirectory() : Config.BaseDirectory));
             foreach (var inputModel in InputModels)
             {
                 // TODO: Use plugin to generate metadata for files with different extension?
@@ -42,6 +42,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     task.Wait();
                 }
             }
+            EnvironmentContext.Clean();
         }
 
         private MetadataJsonConfig ParseOptions(MetadataCommandOptions options)

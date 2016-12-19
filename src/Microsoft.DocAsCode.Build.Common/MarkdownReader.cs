@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.Common
         public static IEnumerable<OverwriteDocumentModel> ReadMarkdownAsOverwrite(IHostService host, FileAndType ft)
         {
             // Order the list from top to bottom
-            var markdown = File.ReadAllText(ft.FullPath);
+            var markdown = EnvironmentContext.FileAbstractLayer.ReadAllText(ft.File);
             var parts = MarkupMultiple(host, markdown, ft);
             return parts.Select(part => TransformModel(ft.FullPath, part));
         }

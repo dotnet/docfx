@@ -12,9 +12,9 @@ namespace Microsoft.DocAsCode.Build.Common
     using System.Composition;
     using System.Collections.Immutable;
 
-    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Plugins;
 
     using HtmlAgilityPack;
     using Newtonsoft.Json;
@@ -60,7 +60,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 var html = new HtmlDocument();
                 Logger.LogVerbose($"Extracting index data from {filePath}");
 
-                if (File.Exists(filePath))
+                if (EnvironmentContext.FileAbstractLayer.Exists(filePath))
                 {
                     try
                     {

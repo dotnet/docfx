@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Plugins;
 
     internal sealed class DocfxFlavoredIncHelper : IDisposable
     {
@@ -66,7 +67,7 @@ namespace Microsoft.DocAsCode.Dfm
                     !_cache.TryGet(currentPath, out result))
                 {
                     var filePathWithStatus = DfmFallbackHelper.GetFilePathWithFallback(originalRelativePath, context);
-                    var src = File.ReadAllText(filePathWithStatus.Item1);
+                    var src = EnvironmentContext.FileAbstractLayer.ReadAllText(filePathWithStatus.Item1);
                     dependency = new HashSet<string>();
                     src = new DfmEngine(engine).InternalMarkup(src, context.SetFilePathStack(parents).SetDependency(dependency).SetIsInclude());
 
