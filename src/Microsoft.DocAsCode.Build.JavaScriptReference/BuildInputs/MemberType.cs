@@ -10,18 +10,14 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
     {
         Default,
         Toc,
-        Assembly,
-        Namespace,
+        Package,
         Class,
         Interface,
-        Struct,
-        Delegate,
         Enum,
         Field,
         Property,
         Event,
         Constructor,
         Method,
-        Operator,
     }
 }
