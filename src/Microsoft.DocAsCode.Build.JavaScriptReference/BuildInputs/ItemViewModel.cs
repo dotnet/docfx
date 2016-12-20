@@ -146,23 +146,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
         public List<string> Platform { get; set; }
 
         [ExtensibleMember]
-        [JsonIgnore]
+        [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [YamlIgnore]
-        [JsonExtensionData(WriteData = true, ReadData = false)]
-        public Dictionary<string, object> ExtensionData
-        {
-            get
-            {
-                var result = new Dictionary<string, object>();
-                foreach (var item in Metadata)
-                {
-                    result[item.Key] = item.Value;
-                }
-                return result;
-            }
-        }
     }
 }
