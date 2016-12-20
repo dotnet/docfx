@@ -39,6 +39,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
             _applyTemplateSettings.RawModelExportSettings.Export = true;
             _fileCreator = new FileCreator(_inputFolder);
+            EnvironmentContext.SetBaseDirectory(_inputFolder);
+            EnvironmentContext.SetOutputDirectory(_outputFolder);
+        }
+
+        public override void Dispose()
+        {
+            EnvironmentContext.Clean();
+            base.Dispose();
         }
 
         [Fact]
@@ -56,7 +64,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             files.Add(DocumentType.Article, new[] { toc });
             BuildDocument(files);
 
-            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension));
+            var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
             var expectedModel = new TocItemViewModel
@@ -120,7 +128,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             FileCollection files = new FileCollection(_inputFolder);
             files.Add(DocumentType.Article, new[] { file1, file2, toc });
             BuildDocument(files);
-            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension));
+            var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
             var expectedModel = new TocItemViewModel
@@ -200,7 +208,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             FileCollection files = new FileCollection(_inputFolder);
             files.Add(DocumentType.Article, new[] { file1, file2, toc, subToc });
             BuildDocument(files);
-            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension));
+            var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
             var expectedModel = new TocItemViewModel
@@ -277,7 +285,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             FileCollection files = new FileCollection(_inputFolder);
             files.Add(DocumentType.Article, new[] { file1, file2, file3, toc, subToc });
             BuildDocument(files);
-            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension));
+            var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
 
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
@@ -425,7 +433,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             FileCollection files = new FileCollection(_inputFolder);
             files.Add(DocumentType.Article, new[] { file1, file2, toc, referencedToc });
             BuildDocument(files);
-            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension));
+            var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
 
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
@@ -489,7 +497,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             var file = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, fileFolder);
             var toc1 = _fileCreator.CreateFile($"#[Topic]({file})", FileType.MarkdownToc);
             const string toc2Folder = "sub1/sub2/sub3";
-            var filePathRelativeToToc2 = ((RelativePath) file).MakeRelativeTo((RelativePath)toc2Folder);
+            var filePathRelativeToToc2 = ((RelativePath)file).MakeRelativeTo((RelativePath)toc2Folder);
             var toc2 = _fileCreator.CreateFile($"#[Same Topic]({filePathRelativeToToc2.FileName}", FileType.MarkdownToc, toc2Folder);
             var files = new FileCollection(_inputFolder);
             files.Add(DocumentType.Article, new[] { file, toc1, toc2 });
@@ -498,7 +506,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             BuildDocument(files);
 
             // Assert
-            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension(file, RawModelFileExtension));
+            var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(file, RawModelFileExtension)));
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
             Assert.Equal("../../toc.md", model["_tocRel"]);

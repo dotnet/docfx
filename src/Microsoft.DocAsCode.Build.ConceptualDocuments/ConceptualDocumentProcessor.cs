@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             {
                 throw new NotSupportedException();
             }
-            var content = MarkdownReader.ReadMarkdownAsConceptual(file.BaseDir, file.File);
+            var content = MarkdownReader.ReadMarkdownAsConceptual(file.File);
             foreach (var item in metadata)
             {
                 if (!content.ContainsKey(item.Key))
@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                 }
             }
 
-            var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
+            var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
             return new FileModel(
                 file,
@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                 serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
             {
                 LocalPathFromRepoRoot = (content["source"] as SourceDetail)?.Remote?.RelativePath,
-                LocalPathFromRoot = displayLocalPath
+                LocalPathFromRoot = localPathFromRoot,
             };
         }
 
