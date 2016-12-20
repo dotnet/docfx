@@ -3,7 +3,7 @@ DocFX Flavored Markdown
 
 DocFX supports `DocFX Flavored Markdown`, or DFM. It supports all [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/) syntax with 2 exceptions when resolving [list](#differences-between-dfm-and-gfm). Also, DFM adds new syntax to support additional functionalities, including cross reference and file inclusion.
 
-### Yaml Header
+## Yaml Header
 
 Yaml header in DFM is considered as the metadata for the Markdown file. It will transform to `yamlheader` tag when processed.
 Yaml header MUST be the first thing in the file and MUST take the form of valid YAML set between triple-dashed lines. Here is a basic example:
@@ -15,7 +15,7 @@ title: A
 ---
 ```
 
-### Cross Reference
+## Cross Reference
 
 Cross reference allows you to link to another topic by using its unique identifier (called UID) instead of using its file path.
 
@@ -48,7 +48,7 @@ If `link_text` is not specified, DocFX will extract the title from the target to
 For more information, see [cross reference](../tutorial/links_and_cross_references.md#using-cross-reference).
 
 
-### File Inclusion
+## File Inclusion
 DFM adds syntax to include other file parts into current file, the included file will also be considered as in DFM syntax.
 
 There are two types of file inclusion: Inline and block, as similar to inline code span and block code.
@@ -56,7 +56,7 @@ There are two types of file inclusion: Inline and block, as similar to inline co
 > [!NOTE] 
 > YAML header is **NOT** supported when the file is an inclusion.
 
-#### Inline
+### Inline
 Inline file inclusion is in the following syntax, in which `<title>` stands for the title of the included file, and `<filepath>` stands for the file path of the included file. The file path can be either absolute or relative.`<filepath>` can be wrapped by `'` or `"`.
 
 > [!NOTE] 
@@ -67,13 +67,13 @@ Inline file inclusion is in the following syntax, in which `<title>` stands for 
 ```md
 ...Other inline contents... [!include[<title>](<filepath>)]
 ```
-#### Block
+### Block
 Block file inclusion must be in a single line and with no prefix characters before the start `[`. Content inside the included file will transform using DFM syntax.
 ```md
 [!include[<title>](<filepath>)]
 ```
 
-### Section definition
+## Section definition
 User may need to define section. Mostly used for code table.
 Give an example below.
 
@@ -93,7 +93,7 @@ The above blockquote Markdown text will transform to section html as in the foll
 </div>
 ```
 
-### Code Snippet
+## Code Snippet
 Allows you to insert code with code language specified. The content of specified code path will expand.
 
 ```md
@@ -115,7 +115,7 @@ Allows you to insert code with code language specified. The content of specified
 * If `dedent` isn't specified, the maximum common indent will be trimmed automatically.
 * __`<title>`__ can be omitted.
 
-#### Code Snippet Sample
+### Code Snippet Sample
 ```md
 [!code-csharp[Main](Program.cs)]
 
@@ -128,7 +128,7 @@ Allows you to insert code with code language specified. The content of specified
 [!code[Main](index.xml?highlight=2,5-7,9-) "This includes the whole file with lines 2,5-7,9- highlighted"]
 ```
 
-#### Tag Name Representation in Code Snippet Source File
+### Tag Name Representation in Code Snippet Source File
 DFM currently only supports the following __`<language>`__ values to be able to retrieve by tag name:
 * C#: cs, csharp
 * VB: vb, vbnet
@@ -140,7 +140,7 @@ DFM currently only supports the following __`<language>`__ values to be able to 
 * Javascript: javascript
 
 
-### Note (Warning/Tip/Important)
+## Note (Warning/Tip/Important)
 Using specific syntax inside block quote to indicate the following content is Note.
 
 ```
@@ -180,8 +180,7 @@ Here are all the supported note types with the styling of the default theme appl
 > [!CAUTION]
 > This is a warning containing some important message.
 
-Differences between DFM and GFM
-------------------
+## Differences between DFM and GFM
 
 ### List
 
@@ -241,8 +240,7 @@ In GFM, it will be rendered as one paragraph with content `text 1. a 2. b`.
 In DFM, it will be rendered as a paragraph (with content `text`) and a list.
 
 
-Differences introduced by DFM syntax
---------------
+## Differences introduced by DFM syntax
 
 > [!Warning]
 > Please note that DFM introduces more syntax to support more functionalities. When GFM does not support them, preview the
