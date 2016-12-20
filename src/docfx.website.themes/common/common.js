@@ -109,7 +109,7 @@ function getNewFileUrl(item, gitContribute, gitUrlPattern) {
         return '';
     }
 
-    var gitInfo = getGitContributeFallbackWithGitRemote(gitContribute, item.source.remote);
+    var gitInfo = getGitInfo(gitContribute, item.source.remote);
     if (!gitInfo.repo || !gitInfo.branch || !gitInfo.path) {
         return '';
     }
@@ -124,7 +124,7 @@ function getNewFileUrl(item, gitContribute, gitUrlPattern) {
 }
 
 function getRemoteUrl(remote, startLine, gitContribute, gitUrlPattern) {
-    var gitInfo = getGitContributeFallbackWithGitRemote(gitContribute, remote);
+    var gitInfo = getGitInfo(gitContribute, remote);
     if (!gitInfo.repo || !gitInfo.branch || !gitInfo.path) {
         return '';
     }
@@ -140,7 +140,7 @@ function getRemoteUrl(remote, startLine, gitContribute, gitUrlPattern) {
     return gitUrlPatternItems[patternName].generateUrl(gitInfo);
 }
 
-function getGitContributeFallbackWithGitRemote(gitContribute, gitRemote) {
+function getGitInfo(gitContribute, gitRemote) {
     // apiSpecFolder defines the folder contains overwrite files for MRef, the default value is apiSpec
     var defaultApiSpecFolder = "apiSpec";
 
