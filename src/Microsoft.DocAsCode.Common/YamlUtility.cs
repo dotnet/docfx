@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Common
 
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.YamlSerialization;
 
     public static class YamlUtility
@@ -34,7 +35,6 @@ namespace Microsoft.DocAsCode.Common
             serializer.Value.Serialize(writer, graph);
         }
 
-#if !NetCore
         public static void Serialize(string path, object graph)
         {
             Serialize(path, graph, null);
@@ -42,31 +42,24 @@ namespace Microsoft.DocAsCode.Common
 
         public static void Serialize(string path, object graph, string comments)
         {
-            var directory = Path.GetDirectoryName(path);
-            if (!string.IsNullOrEmpty(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            using (StreamWriter writer = new StreamWriter(path))
+            using (var writer = EnvironmentContext.FileAbstractLayer.CreateText(path))
             {
                 Serialize(writer, graph, comments);
             }
         }
-#endif
 
         public static T Deserialize<T>(TextReader reader)
         {
             return deserializer.Value.Deserialize<T>(reader);
         }
 
-#if !NetCore
         public static T Deserialize<T>(string path)
         {
-            using (StreamReader reader = new StreamReader(path))
+            using (var reader = EnvironmentContext.FileAbstractLayer.OpenReadText(path))
+            {
                 return Deserialize<T>(reader);
+            }
         }
-#endif
 
         public static T ConvertTo<T>(object obj)
         {
