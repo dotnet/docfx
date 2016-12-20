@@ -28,13 +28,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             var sourceInfo = context.Consume(match.Length);
 
-            var rows = match.Groups[3].Value.ReplaceRegex(Regexes.Lexers.UselessGfmTableCell, string.Empty).Split('\n').Select(x => x).ToArray();
+            var rows = match.Groups[3].Value.ReplaceRegex(Regexes.Lexers.UselessGfmTableCell, string.Empty).Split('\n');
             var cells = new string[rows.Length][];
             for (int i = 0; i < rows.Length; i++)
             {
-                var columns = rows[i]
-                  .ReplaceRegex(Regexes.Lexers.EmptyGfmTableCell, string.Empty)
-                  .SplitRegex(Regexes.Lexers.TableSplitter);
+                var columns = rows[i].SplitRegex(Regexes.Lexers.TableSplitter);
                 if (columns.Length == header.Length)
                 {
                     cells[i] = columns;

@@ -33,9 +33,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var cells = new string[rows.Count][];
             for (int i = 0; i < rows.Count; i++)
             {
-                var columns = rows[i]
-                  .ReplaceRegex(Regexes.Lexers.EmptyGfmTableCell, string.Empty)
-                  .SplitRegex(Regexes.Lexers.TableSplitter);
+                var columns = rows[i].SplitRegex(Regexes.Lexers.TableSplitter);
                 if (columns.Length == header.Length)
                 {
                     cells[i] = columns;
