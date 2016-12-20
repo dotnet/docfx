@@ -5,10 +5,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
 {
     using System.Threading;
 
+    using Microsoft.DocAsCode.Build.RestApi.Swagger.Internals;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-
-    using Microsoft.DocAsCode.Build.RestApi.Swagger.Internals;
 
     internal class SwaggerJsonParser
     {

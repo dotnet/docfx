@@ -3,11 +3,11 @@
 
 namespace Microsoft.DocAsCode.Build.RestApi.Tests
 {
+    using Microsoft.DocAsCode.Build.RestApi.Swagger;
+
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Xunit;
-
-    using Microsoft.DocAsCode.Build.RestApi.Swagger;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "SwaggerJsonParser")]

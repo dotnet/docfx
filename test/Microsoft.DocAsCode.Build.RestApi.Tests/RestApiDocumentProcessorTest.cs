@@ -8,16 +8,16 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
     using System.IO;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Build.Engine;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.DataContracts.RestApi;
     using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Tests.Common;
 
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-    using Microsoft.DocAsCode.Build.Engine;
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.DataContracts.RestApi;
-    using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Tests.Common;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "RestApiDocumentProcessor")]
