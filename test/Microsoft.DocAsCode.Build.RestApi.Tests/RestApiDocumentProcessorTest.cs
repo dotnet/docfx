@@ -8,14 +8,16 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
     using System.IO;
     using System.Linq;
 
-    using Newtonsoft.Json.Linq;
-    using Xunit;
-
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.RestApi;
+    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
+
+    using Newtonsoft.Json.Linq;
+    using Xunit;
+
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "RestApiDocumentProcessor")]
@@ -29,6 +31,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         private ApplyTemplateSettings _applyTemplateSettings;
 
         private const string RawModelFileExtension = ".raw.json";
+        private const string SwaggerDirectory = "swagger";
 
         public RestApiDocumentProcessorTest()
         {
@@ -36,9 +39,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             _inputFolder = GetRandomFolder();
             _templateFolder = GetRandomFolder();
             _defaultFiles = new FileCollection(Directory.GetCurrentDirectory());
-            _defaultFiles.Add(DocumentType.Article, new[] { "TestData/contacts.json" }, "TestData/");
-            _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder);
-            _applyTemplateSettings.RawModelExportSettings.Export = true;
+            _defaultFiles.Add(DocumentType.Article, new[] { "TestData/swagger/contacts.json" }, "TestData/");
+            _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder)
+            {
+                RawModelExportSettings = {Export = true}
+            };
         }
 
         [Fact]
@@ -47,7 +52,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             FileCollection files = new FileCollection(_defaultFiles);
             BuildDocument(files);
 
-            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
+            var outputRawModelPath = GetRawModelFilePath("contacts.json");
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
             Assert.Equal("graph.windows.net/myorganization/Contacts/1.0", model.Uid);
@@ -58,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             // Verify $ref in path
             var item0 = model.Children[0];
             Assert.Equal("graph.windows.net/myorganization/Contacts/1.0/get contacts", item0.Uid);
-            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">You can get a collection of contacts from your tenant.</p>\n", item0.Summary);
+            Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">You can get a collection of contacts from your tenant.</p>\n", item0.Summary);
             Assert.Equal(1, item0.Parameters.Count);
             Assert.Equal("1.6", item0.Parameters[0].Metadata["default"]);
             Assert.Equal(1, item0.Responses.Count);
@@ -78,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal(3, model.Tags.Count);
             var tag0 = model.Tags[0];
             Assert.Equal("contact", tag0.Name);
-            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Everything about the <strong>contacts</strong></p>\n", tag0.Description);
+            Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Everything about the <strong>contacts</strong></p>\n", tag0.Description);
             Assert.Equal("contact-bookmark", tag0.HtmlId);
             Assert.Equal(1, tag0.Metadata.Count);
             var externalDocs = (JObject)tag0.Metadata["externalDocs"];
@@ -121,22 +126,79 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal("string", parameter2["type"]);
             Assert.Equal("uri", parameter2["format"]);
             // Verify markup result of parameters
-            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">The request body <em>contains</em> a single property that specifies the URL of the user or contact to add as manager.</p>\n",
+            Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">The request body <em>contains</em> a single property that specifies the URL of the user or contact to add as manager.</p>\n",
                 item5.Parameters[2].Description);
-            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><strong>uri</strong> description.</p>\n", 
+            Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><strong>uri</strong> description.</p>\n", 
                 ((string)parameter2["description"]));
-            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">No Content. Indicates <strong>success</strong>. No response body is returned.</p>\n",
+            Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">No Content. Indicates <strong>success</strong>. No response body is returned.</p>\n",
                 item5.Responses[0].Description);
 
             // Verify for markup result of securityDefinitions
             var securityDefinitions = (JObject)model.Metadata.Single(m => m.Key == "securityDefinitions").Value;
             var auth = (JObject)securityDefinitions["auth"];
-            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">securityDefinitions <em>description</em>.</p>\n",
+            Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">securityDefinitions <em>description</em>.</p>\n",
                 auth["description"].ToString());
         }
 
         [Fact]
-        public void ProcessSwaggerWithXRefMap()
+        public void ProcessSwaggerWithExternalReferenceShouldSucceed()
+        {
+            FileCollection files = new FileCollection(_defaultFiles);
+            BuildDocument(files);
+
+            var outputRawModelPath = GetRawModelFilePath("contacts.json");
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
+
+            var operation = model.Children.Single(c => c.OperationId == "get contact direct reports links");
+            var externalSchema = operation.Parameters[2].Metadata["schema"];
+            var externalParameters = ((JObject)externalSchema)["parameters"];
+            Assert.Equal("cache1", externalParameters["name"]);
+            var scheduleEntries = externalParameters["parameters"]["properties"]["scheduleEntries"];
+            Assert.Equal(JTokenType.Array, scheduleEntries.Type);
+            Assert.Equal(2, ((JArray)scheduleEntries).Count);
+            Assert.Equal("Monday", ((JArray)scheduleEntries)[0]["dayOfWeek"]);
+
+            var responses = ((JObject)externalSchema)["responses"];
+            Assert.Equal("fake metadata", responses["200"]["examples"]["application/json"]["odata.metadata"]);
+        }
+
+        [Fact]
+        public void ProcessSwaggerWithNotExistedExternalReferenceShouldFail()
+        {
+            var files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { "TestData/swagger/externalRefNotExist.json" }, "TestData/");
+            try
+            {
+                BuildDocument(files);
+            }
+            catch (DocfxException ex)
+            {
+                Assert.True(ex.Message.Contains("External swagger path not exist"));
+                return;
+            }
+            Assert.True(false, $"Should throws {nameof(DocfxException)}.");
+        }
+
+        [Fact]
+        public void ProcessSwaggerWithExternalReferenceHasRefInsideShouldFail()
+        {
+            var files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { "TestData/swagger/externalRefWithRefInside.json" }, "TestData/");
+            try
+            {
+                BuildDocument(files);
+            }
+            catch (DocfxException ex)
+            {
+                Assert.Equal(ex.Message, "$ref in refWithRefInside.json is not supported in external reference currently.");
+                return;
+            }
+            Assert.True(false, $"Should throws {nameof(DocfxException)}.");
+        }
+
+        [Fact]
+        public void ProcessSwaggerWithXRefMapShouldSucceed()
         {
             var files = new FileCollection(_defaultFiles);
             BuildDocument(files);
@@ -148,15 +210,15 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var rootItem = xrefMap.References[0];
             Assert.Equal("graph.windows.net/myorganization/Contacts/1.0", rootItem.Uid);
             Assert.Equal("Contacts", rootItem.Name);
-            Assert.Equal("contacts.json", rootItem.Href);
+            Assert.Equal("swagger/contacts.json", rootItem.Href);
             var childItem1 = xrefMap.References[1];
             Assert.Equal("graph.windows.net/myorganization/Contacts/1.0/delete contact", childItem1.Uid);
             Assert.Equal("delete contact", childItem1.Name);
-            Assert.Equal("contacts.json", childItem1.Href);
+            Assert.Equal("swagger/contacts.json", childItem1.Href);
             var tagItem1 = xrefMap.References[9];
             Assert.Equal("graph.windows.net/myorganization/Contacts/1.0/tag/contact", tagItem1.Uid);
             Assert.Equal("contact", tagItem1.Name);
-            Assert.Equal("contacts.json", tagItem1.Href);
+            Assert.Equal("swagger/contacts.json", tagItem1.Href);
         }
 
         [Fact]
@@ -167,14 +229,14 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             BuildDocument(files);
 
             {
-                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
+                var outputRawModelPath = GetRawModelFilePath("contacts.json");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
                 var tag1 = model.Tags[0];
                 Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.tags.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Overwrite <em>description</em> content</p>\n", tag1.Description);
                 Assert.Null(tag1.Conceptual);
                 var tag2 = model.Tags[1];
-                Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Access to Petstore orders</p>\n", tag2.Description);
+                Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Access to Petstore orders</p>\n", tag2.Description);
                 Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.tags.md\" sourcestartlinenumber=\"12\" sourceendlinenumber=\"12\">Overwrite <strong>conceptual</strong> content</p>\n", tag2.Conceptual);
             }
         }
@@ -187,7 +249,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             BuildDocument(files);
 
             {
-                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
+                var outputRawModelPath = GetRawModelFilePath("contacts.json");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
                 Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.default.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Overwrite summary</p>\n", model.Summary);
@@ -201,7 +263,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             FileCollection files = new FileCollection(_defaultFiles);
             files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.simple.md" });
             BuildDocument(files);
-            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
+            var outputRawModelPath = GetRawModelFilePath("contacts.json");
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
             Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.simple.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Overwrite content</p>\n", model.Summary);
@@ -214,7 +276,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var files = new FileCollection(_defaultFiles);
             files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.parameters.md" });
             BuildDocument(files);
-            var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
+            var outputRawModelPath = GetRawModelFilePath("contacts.json");
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
 
@@ -237,7 +299,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var paramForUpdateManager = model.Children.Single(c => c.OperationId == "get contact memberOf links").Parameters.Single(p => p.Name == "bodyparam");
             var paramForAllOf = ((JObject)paramForUpdateManager.Metadata["schema"])["allOf"];
             // First allOf item is not overwritten
-            Assert.Equal("<p sourcefile=\"TestData/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">original first allOf description</p>\n", paramForAllOf[0]["description"]);
+            Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">original first allOf description</p>\n", paramForAllOf[0]["description"]);
             // Second allOf item is overwritten
             Assert.Equal("this is second overwrite allOf description", paramForAllOf[1]["description"]);
             Assert.Equal("this is overwrite location description", paramForAllOf[1]["properties"]["location"]["description"]);
@@ -257,7 +319,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.not.predefined.md" });
             BuildDocument(files);
             {
-                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
+                var outputRawModelPath = GetRawModelFilePath("contacts.json");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
                 Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.not.predefined.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Overwrite content</p>\n", model.Metadata["not_defined_property"]);
@@ -280,7 +342,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.unmergable.md" });
             BuildDocument(files);
             {
-                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
+                var outputRawModelPath = GetRawModelFilePath("contacts.json");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
                 Assert.Equal("graph_windows_net_myorganization_Contacts_1_0", model.HtmlId);
@@ -294,7 +356,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.remarks.md" });
             BuildDocument(files);
             {
-                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
+                var outputRawModelPath = GetRawModelFilePath("contacts.json");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
                 Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.remarks.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Remarks content</p>\n", model.Remarks);
@@ -309,7 +371,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.unmergable.md" });
             BuildDocument(files);
             {
-                var outputRawModelPath = Path.Combine(_outputFolder, Path.ChangeExtension("contacts.json", RawModelFileExtension));
+                var outputRawModelPath = GetRawModelFilePath("contacts.json");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
                 Assert.Equal("graph_windows_net_myorganization_Contacts_1_0", model.HtmlId);
@@ -341,6 +403,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()
         {
             yield return typeof(RestApiDocumentProcessor).Assembly;
+        }
+
+        private string GetRawModelFilePath(string fileName)
+        {
+            return Path.Combine(_outputFolder, SwaggerDirectory, Path.ChangeExtension(fileName, RawModelFileExtension));
         }
     }
 }

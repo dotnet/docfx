@@ -1,0 +1,28 @@
+﻿{
+  "parameters": {
+    "in": "body",
+    "name": "body",
+    "description": "Pet object that needs to be added to the store",
+    "required": true,
+    "schema": {
+      "$ref": "#/definitions/Tag"
+    }
+  },
+  "definitions": {
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Tag"
+      }
+    }
+  }
+}

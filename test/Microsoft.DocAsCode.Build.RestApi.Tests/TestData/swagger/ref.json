@@ -1,0 +1,38 @@
+﻿{
+  "parameters": {
+    "name": "cache1",
+    "resourceGroupName": "rg1",
+    "api-version": "2016-04-01",
+    "subscriptionId": "subid",
+    "parameters": {
+      "properties": {
+        "scheduleEntries": [
+          {
+            "dayOfWeek": "Monday",
+            "startHourUtc": 12,
+            "maintenanceWindow": "PT3H"
+          },
+          {
+            "dayOfWeek": "Tuesday",
+            "startHourUtc": 12
+          }
+        ]
+      }
+    }
+  },
+  "responses": {
+    "200": {
+      "description": "OK. Indicates success. One or more direct reports are returned.",
+      "examples": {
+        "application/json": {
+          "odata.metadata": "fake metadata",
+          "value": [
+            {
+              "url": "fake url"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
