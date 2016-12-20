@@ -4,10 +4,11 @@
 namespace Microsoft.DocAsCode.Build.JavaScriptReference
 {
     using System;
-    using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.Common.EntityMergers;
+
     using Newtonsoft.Json;
+    using YamlDotNet.Serialization;
 
     [Serializable]
     public class ExceptionInfo

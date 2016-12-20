@@ -4,11 +4,12 @@
 namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 {
     using System;
-    using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.DataContracts.Common;
+
     using Newtonsoft.Json;
+    using YamlDotNet.Serialization;
 
     [Serializable]
     public class ExceptionInfo
