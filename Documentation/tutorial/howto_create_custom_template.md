@@ -87,9 +87,12 @@ Now the warning message *There is no template processing document type(s): Toc* 
 Open http://localhost:8080/toc.html and you can see a toc web page.
 ![TOC Web Page](images/toc_web_page.png)
 
-> Tip: Run `docfx template export default` to view what's inside the default template.
+> [!Tip]
+> Run `docfx template export default` to view what's inside the default template.
 
-> NOTE: It is possible that DocFX updates its embedded templates when a new version is released. So please make sure to re-export the template if you overwrite or are dependent on it in your custom template.
+> [!Note]
+> It is possible that DocFX updates its embedded templates when a new version is released.
+> So please make sure to re-export the template if you overwrite or are dependent on it in your custom template.
 
 Extension for *Preprocessor* file
 ----------------------------------

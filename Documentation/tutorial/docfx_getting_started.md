@@ -90,8 +90,8 @@ Here is a seed project https://github.com/docascode/docfx-seed. It contains
 4. `toc.yml` under root folder. It renders as the navbar of the website.
 5. `docfx.json` under root folder. It is the configuration file that `docfx` depends upon.
 
-> Tip:
-  It is a good practice to separate files with different type into different folders.
+> [!Tip]
+> It is a good practice to separate files with different type into different folders.
 
 6. Q&A
 -------------------------

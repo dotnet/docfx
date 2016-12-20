@@ -56,7 +56,9 @@ A REST API **File** contains multiple **API**s as its children. An **API** is an
 }
 ```
 
-> It is recommended that user provides a well-formed `operationId` name. We suggest that the `operationId` is one word in camelCase or snake_case.
+> [!Tip]
+> It is recommended that user provides a well-formed `operationId` name.
+> We suggest that the `operationId` is one word in camelCase or snake_case.
 
 A REST API **File** could also contain multiple tags. The tag is a [Tag Object](http://swagger.io/specification/#tagObject), which is optional and used by [Operation Object](http://swagger.io/specification/#operationObject). The **UID**(Unique IDentifier) for this tag is defined as the combination of **UID** of the **File**, `tag`, and `name` of the [Tag Object](http://swagger.io/specification/#tagObject). For example, the following tag `Basic` has **UID** `microsoft.com/docfx/Contacts/1.6/tag/Basic`:
 ```json

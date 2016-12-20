@@ -47,11 +47,9 @@ The format of the filter configuration file
 
 To filter out APIs, you could specify `apiRules` with a list of `exclude` or `include` rules.
 
-> *Note*
-
-> The rules would be executed sequentially and the matching process would stop once one rule is matched. 
+> [!Note]
+> The rules would be executed sequentially and the matching process would stop once one rule is matched.
 > Namely, you need to put the most detailed rule in the top.
-
 > If no rule is matched the API would be included by default.
 
 
@@ -82,12 +80,11 @@ Supported `type`:
  * `Method`
  * `Property`
   
-> *Note*
-  
+> [!Note]
 > `Type` could be `Class`, `Struct`, `Enum`, `Interface`, or `Delegate`. `Member` could be `Event`, `Field`, `Method`, or `Property`.
-  
+>
 > `Namespace` is flattened. Namely, excluding namespace 'A.B' has nothing to do with namespace 'A.B.C'.
-  
+>
 > If a namespace is excluded, all types/members defined in the namespace would also be excluded.
 > If a type is excluded, all members defined in the type would also be excluded.
   

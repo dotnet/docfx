@@ -55,7 +55,8 @@ The data model for `toc.yml` is an **array** of *TOC Item Object*s.
 ##### *TOC Item Object*
 *TOC Item Object* represents the data model for each *TOC Item*.
 
-Note that all the property names are **case sensitive**.
+> [!Note]
+> All the property names are **case sensitive**.
 
 Property Name | Type              | Description
 ------------- | ----------------- | ---------------------------
@@ -123,7 +124,8 @@ DocFX processes these `toc.yml` files and expands the uppder `toc.yml` file into
       topichref: howto/howto2.md
 ```
 
-*NOTE* that the referenced `toc.yml` file under `howto` folder will not be transformed to the output folder even if it is included in `docfx.json`.
+> [!NOTE]
+> The referenced `toc.yml` file under `howto` folder will not be transformed to the output folder even if it is included in `docfx.json`.
 
 ### Link to a folder
 If the *Toc Item* is linking to a folder, ending with `/` explicitly, the link value for the *Toc Item* is determined in the following steps:

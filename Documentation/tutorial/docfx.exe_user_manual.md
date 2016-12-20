@@ -92,7 +92,9 @@ docfx build [-o:<output_path>] [-t:<template folder>]
 
 If `toc.yml` or `toc.md` is found in current folder, it will be rendered as the top level TABLE-OF-CONTENT. As in website, it will be rendered as the top navigation bar.
 
-**NOTE** that `homepage` is not supported in `toc.md`. And if `href` is referencing to a **folder**, it must end with `/`.
+> ![Note]
+> Please note that `homepage` is not supported in `toc.md`.
+> And if `href` is referencing to a **folder**, it must end with `/`.
 
 **toc.yml syntax**
 `toc.yml` is an array of items. Each item can have following properties:
@@ -253,9 +255,12 @@ To use a custom template, one way is to specify template path with `--template` 
 }
 ```
 
->The template path could either be a zip file called `<template>.zip` or a folder called `<template>`.
+> [!Note]
+> The template path could either be a zip file called `<template>.zip` or a folder called `<template>`.
 
->DocFX has embedded templates: `default`, `iframe.html`, `statictoc` and `common`. Please avoid using these as template folder name.
+> [!Warning]
+> DocFX has embedded templates: `default`, `iframe.html`, `statictoc` and `common`.
+> Please avoid using these as template folder name.
 
 To custom theme, one way is to specify theme name with `--theme` command option, multiple themes must be separated by `,` with no spaces. The other way is to set key-value mapping in `docfx.json` as similar to defining template. Also, both `.zip` file and folder are supported.
 
