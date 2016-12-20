@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.Tests
             new MetadataCommand(new MetadataCommandOptions
             {
                 OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-                Projects = new List<String> { projectFile },
+                Projects = new List<string> { projectFile },
             }).Exec(null);
 
             Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));

@@ -284,7 +284,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 XRefMapFileName :
                 parameters.VersionName + "." + XRefMapFileName;
             YamlUtility.Serialize(
-                Path.Combine(parameters.OutputBaseDir, xrefMapFileNameWithVersion),
+                xrefMapFileNameWithVersion,
                 xrefMap,
                 YamlMime.XRefMap);
             Logger.LogInfo("XRef map exported.");
