@@ -7,12 +7,12 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using System.Collections.Generic;
     using System.ComponentModel;
 
-    using Newtonsoft.Json;
-    using YamlDotNet.Serialization;
-
     using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.YamlSerialization;
+
+    using Newtonsoft.Json;
+    using YamlDotNet.Serialization;
 
     [Serializable]
     public class ItemViewModel : IOverwriteDocumentViewModel
