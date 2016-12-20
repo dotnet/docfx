@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
     using System.Linq;
     using System.Text;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
 
     using Newtonsoft.Json;
@@ -18,6 +19,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
     {
         private IDictionary<string, SwaggerObjectBase> _documentObjectCache;
         private const string DefinitionsKey = "definitions";
+        private const string ReferenceKey = "$ref";
         private const string ParametersKey = "parameters";
         private const string InternalRefNameKey = "x-internal-ref-name";
         private const string InternalLoopRefNameKey = "x-internal-loop-ref-name";
@@ -55,7 +57,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             {
                 // Only one $ref is allowed inside a swagger JObject
                 JToken referenceToken;
-                if (jObject.TryGetValue("$ref", out referenceToken))
+                if (jObject.TryGetValue(ReferenceKey, out referenceToken))
                 {
                     if (referenceToken.Type != JTokenType.String && referenceToken.Type != JTokenType.Null)
                     {
@@ -65,7 +67,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                     var swaggerReference = RestApiHelper.FormatReferenceFullPath((string)referenceToken);
                     switch (swaggerReference.Type)
                     {
-                        case RestApiHelper.SwaggerReferenceType.InternalReference:
+                        case SwaggerFormattedReferenceType.InternalReference:
                             var deferredObject = new SwaggerReferenceObject
                             {
                                 DeferredReference = swaggerReference.Path,
@@ -84,19 +86,24 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                             deferredObject.Token = jObject;
                             _documentObjectCache.Add(location, deferredObject);
                             return deferredObject;
-                        case RestApiHelper.SwaggerReferenceType.ExternalReference:
+                        case SwaggerFormattedReferenceType.ExternalReference:
                             jObject.Remove("$ref");
 
-                            // Currently we support external reference without $ref inside
-                            var externalSwaggerPath = Path.Combine(swaggerDir, swaggerReference.Path);
-                            using (JsonReader reader = new JsonTextReader(File.OpenText(externalSwaggerPath)))
+                            var externalJObject = LoadExternalReference(Path.Combine(swaggerDir, swaggerReference.Path));
+                            RestApiHelper.CheckSpecificKey(externalJObject, ReferenceKey, () =>
                             {
-                                var externalJObject = JObject.Load(reader);
-                                foreach (var item in externalJObject)
+                                throw new DocfxException($"{ReferenceKey} in {swaggerReference.Path} is not supported in external reference currently.");
+                            });
+                            foreach (var item in externalJObject)
+                            {
+                                JToken value;
+                                if (jObject.TryGetValue(item.Key, out value))
                                 {
-                                    jObject[item.Key] = item.Value;
+                                    Logger.LogWarning($"{item.Key} inside {jObject.Path} would be overwritten by the value of same key inside {swaggerReference.Path} with path {externalJObject.Path}.");
                                 }
+                                jObject[item.Key] = item.Value;
                             }
+
                             return new SwaggerValue
                             {
                                 Location = location,
@@ -134,6 +141,18 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 Location = location,
                 Token = token
             };
+        }
+
+        private static JObject LoadExternalReference(string externalSwaggerPath)
+        {
+            if (!File.Exists(externalSwaggerPath))
+            {
+                throw new DocfxException($"External swagger path not exist: {externalSwaggerPath}.");
+            }
+            using (JsonReader reader = new JsonTextReader(File.OpenText(externalSwaggerPath)))
+            {
+                return JObject.Load(reader);
+            }
         }
 
         private static void RemoveReferenceDefinitions(SwaggerObject root)

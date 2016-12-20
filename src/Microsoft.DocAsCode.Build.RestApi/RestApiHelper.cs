@@ -9,6 +9,8 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
     using Microsoft.DocAsCode.Common;
 
+    using Newtonsoft.Json.Linq;
+
     internal static class RestApiHelper
     {
         /// <summary>
@@ -32,7 +34,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
         /// </summary>
         /// <param name="reference"></param>
         /// <returns></returns>
-        public static SwaggerReference FormatReferenceFullPath(string reference)
+        public static SwaggerFormattedReference FormatReferenceFullPath(string reference)
         {
             if (reference == null)
             {
@@ -45,9 +47,9 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 // Reuse relative path, to decode the values inside '/'.
                 var path = reference.Substring(2);
                 var decodedPath = ((RelativePath)path).UrlDecode();
-                return new SwaggerReference
+                return new SwaggerFormattedReference
                 {
-                    Type = SwaggerReferenceType.InternalReference,
+                    Type = SwaggerFormattedReferenceType.InternalReference,
                     Path = "/" + decodedPath,
                     Name = decodedPath.FileName
                 };
@@ -56,9 +58,9 @@ namespace Microsoft.DocAsCode.Build.RestApi
             // External reference json
             if (reference.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
             {
-                return new SwaggerReference
+                return new SwaggerFormattedReference
                 {
-                    Type = SwaggerReferenceType.ExternalReference,
+                    Type = SwaggerFormattedReferenceType.ExternalReference,
                     Path = reference,
                     Name = Path.GetFileNameWithoutExtension(reference)
                 };
@@ -68,9 +70,9 @@ namespace Microsoft.DocAsCode.Build.RestApi
             if (reference.StartsWith("/"))
             {
                 var fileName = reference.Split('/').Last();
-                return new SwaggerReference
+                return new SwaggerFormattedReference
                 {
-                    Type = SwaggerReferenceType.InternalReference,
+                    Type = SwaggerFormattedReferenceType.InternalReference,
                     Path = reference,
                     Name = fileName
                 };
@@ -79,19 +81,29 @@ namespace Microsoft.DocAsCode.Build.RestApi
             throw new InvalidOperationException($"Reference path \"{reference}\" is not supported now");
         }
 
-        public class SwaggerReference
+        public static void CheckSpecificKey(JToken jToken, string key, Action action)
         {
-            public SwaggerReferenceType Type { get; set; }
+            var jArray = jToken as JArray;
+            if (jArray != null)
+            {
+                foreach (var item in jArray)
+                {
+                    CheckSpecificKey(item, key, action);
+                }
+            }
 
-            public string Path { get; set; }
-
-            public string Name { get; set; }
-        }
-
-        public enum SwaggerReferenceType
-        {
-            InternalReference,
-            ExternalReference
+            var jObject = jToken as JObject;
+            if (jObject != null)
+            {
+                foreach (var pair in jObject)
+                {
+                    if (pair.Key.Equals(key, StringComparison.OrdinalIgnoreCase))
+                    {
+                        action();
+                    }
+                    CheckSpecificKey(pair.Value, key, action);
+                }
+            }
         }
     }
 }
