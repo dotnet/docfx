@@ -99,7 +99,14 @@ namespace Microsoft.DocAsCode.E2E.Tests
             // go to reference
             _driver.FindElement(By.LinkText("API Documentation")).Click();
 
+            // make sure the namespace page has been loaded
+            _driver.FindElement(By.XPath("//title[starts-with(.,'Namespace')]"));
+
+            // go to class page
             _driver.FindElements(By.XPath("//h4/a"))[0].Click();
+
+            // make sure the class page has been loaded
+            _driver.FindElement(By.XPath("//title[starts-with(.,'Class')]"));
 
             TestPageCommon();
 
@@ -112,10 +119,9 @@ namespace Microsoft.DocAsCode.E2E.Tests
             results = _driver.FindElements(By.XPath("//div[@id='breadcrumb']/ul/li/a"));
             Assert.Contains(results[results.Count - 1].Text, title);
 
-
             // check overwrite
             var conceptual = _driver.FindElement(By.ClassName("conceptual"));
-            // Add these lines to help find out what sometime breaks e2e
+            // add these lines to help find out what sometime breaks e2e
             ((ITakesScreenshot)_driver).GetScreenshot().SaveAsFile("capture.png", ImageFormat.Png);
             Assert.True(conceptual.Text.Contains("This is a class talking about CAT."), $"Actual HTML: {conceptual.GetAttribute("outerHTML")}\n Full HTML:\n {_driver.PageSource}");
             Assert.Contains("This is a class talking about CAT.", conceptual.Text);
@@ -274,8 +280,6 @@ namespace Microsoft.DocAsCode.E2E.Tests
 
         private void TestPageCommon()
         {
-            System.Threading.Thread.Sleep(1000);
-
             // check logo
             IWebElement element = _driver.FindElement(By.Id("logo"));
             Assert.Equal("svg", element.TagName);
