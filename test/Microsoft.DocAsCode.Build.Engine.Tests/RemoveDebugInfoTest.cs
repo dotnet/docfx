@@ -9,35 +9,49 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Tests.Common;
 
     using Xunit;
 
-    public class RemoveDebugInfoTest
+    [Collection("docfx STA")]
+    public class RemoveDebugInfoTest : TestBase
     {
+        private readonly string _outputFolder;
+
+        public RemoveDebugInfoTest()
+        {
+            _outputFolder = GetRandomFolder();
+            EnvironmentContext.SetBaseDirectory(_outputFolder);
+            EnvironmentContext.SetOutputDirectory(_outputFolder);
+        }
+
+        public override void Dispose()
+        {
+            EnvironmentContext.Clean();
+            base.Dispose();
+        }
+
         [Fact]
         public void TestBasicFeature()
         {
-            var outputFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "RemoveDebugInfo");
-            Directory.CreateDirectory(outputFolder);
             Manifest manifest = new Manifest
             {
-                SourceBasePath = outputFolder,
+                SourceBasePath = _outputFolder,
                 Files = new List<ManifestItem>
                 {
                     new ManifestItem { SourceRelativePath = "a.md", OutputFiles = new Dictionary<string, OutputFileInfo> { { ".html", new OutputFileInfo { RelativePath = "a.html" } } } },
                 }
             };
 
-            File.WriteAllText(Path.Combine(outputFolder, "a.html"), @"<p id='b1' sourceFile='a.md' sourceStartLineNumber='1' sourceEndLineNumber='2'>section<a sourcefile=""a.md"" href='http://bing.com#top'>Microsoft Bing</a></p>");
+            File.WriteAllText(Path.Combine(_outputFolder, "a.html"), @"<p id='b1' sourceFile='a.md' sourceStartLineNumber='1' sourceEndLineNumber='2'>section<a sourcefile=""a.md"" href='http://bing.com#top'>Microsoft Bing</a></p>");
 
             new HtmlPostProcessor
             {
                 Handlers = { new RemoveDebugInfo() }
-            }.Process(manifest, outputFolder);
+            }.Process(manifest, _outputFolder);
 
-            var actual = File.ReadAllText(Path.Combine(outputFolder, "a.html"));
+            var actual = File.ReadAllText(Path.Combine(_outputFolder, "a.html"));
             Assert.Equal("<p id='b1'>section<a href='http://bing.com#top'>Microsoft Bing</a></p>", actual);
-            Directory.Delete(outputFolder, true);
         }
     }
 }
