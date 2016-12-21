@@ -42,8 +42,6 @@
       "_gitContribute": {
         "branch": "dev"
       }
-      // This option is deprecated
-      //"_enableSearch": true
     },
     "fileMetadata": {
       "priority": {
