@@ -110,7 +110,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             if (MarkdownService == null)
                             {
-                                MarkdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
+                                using (new LoggerPhaseScope("CreateMarkdownService", true))
+                                {
+                                    MarkdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
+                                }
                             }
                             Prepare(
                                 parameters,
@@ -209,14 +212,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                                       item,
                                   }).AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism))
             {
-                var hostService = creator.CreateHostService(
-                    parameters,
-                    templateProcessor,
-                    MarkdownService,
-                    MetadataValidators,
-                    pair.processor,
-                    pair.item?.Select(f => f.file));
-                yield return hostService;
+                using (new LoggerPhaseScope(pair.processor.Name, true))
+                {
+                    var hostService = creator.CreateHostService(
+                        parameters,
+                        templateProcessor,
+                        MarkdownService,
+                        MetadataValidators,
+                        pair.processor,
+                        pair.item?.Select(f => f.file));
+                    yield return hostService;
+                }
             }
         }
 
@@ -230,7 +236,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (IntermediateFolder != null && parameters.ApplyTemplateSettings.TransformDocument)
             {
-                context.IncrementalBuildContext = IncrementalBuildContext.Create(parameters, CurrentBuildInfo, LastBuildInfo, IntermediateFolder, markdownServiceContextHash);
+                using (new LoggerPhaseScope("CreateIncrementalBuildContext", true))
+                {
+                    context.IncrementalBuildContext = IncrementalBuildContext.Create(parameters, CurrentBuildInfo, LastBuildInfo, IntermediateFolder, markdownServiceContextHash);
+                }
                 hostServiceCreator = new HostServiceCreatorWithIncremental(context);
                 phaseProcessor = new PhaseProcessor
                 {

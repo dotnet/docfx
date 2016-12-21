@@ -347,75 +347,83 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private static string ComputeConfigHash(DocumentBuildParameters parameter, string markdownServiceContextHash)
         {
-            var json = JsonConvert.SerializeObject(
+            using (new LoggerPhaseScope("ComputeConfigHash", true))
+            {
+                var json = JsonConvert.SerializeObject(
                 parameter,
                 new JsonSerializerSettings
                 {
                     ContractResolver = new IncrementalIgnorePropertiesResolver()
                 });
-            var config = json + "|" + markdownServiceContextHash;
-            Logger.LogVerbose($"Config content: {config}");
-            return config.GetMd5String();
+                var config = json + "|" + markdownServiceContextHash;
+                Logger.LogVerbose($"Config content: {config}");
+                return config.GetMd5String();
+            }
         }
 
         private static Dictionary<string, FileAttributeItem> ComputeFileAttributes(DocumentBuildParameters parameters, DependencyGraph dg)
         {
-            var filesInScope = from f in parameters.Files.EnumerateFiles()
-                               let fileKey = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString()
-                               select new
-                               {
-                                   PathFromWorkingFolder = fileKey,
-                                   FullPath = f.FullPath
-                               };
-            var files = filesInScope;
-            if (dg != null)
+            using (new LoggerPhaseScope("ComputeFileAttributes", true))
             {
-                var filesFromDependency = from node in dg.GetAllDependentNodes()
-                                          let p = RelativePath.TryParse(node)
-                                          where p != null
-                                          let fullPath = Path.Combine(EnvironmentContext.BaseDirectory, p.RemoveWorkingFolder())
-                                          select new
-                                          {
-                                              PathFromWorkingFolder = node,
-                                              FullPath = fullPath
-                                          };
-                files = files.Concat(filesFromDependency);
+                var filesInScope = from f in parameters.Files.EnumerateFiles()
+                                   let fileKey = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString()
+                                   select new
+                                   {
+                                       PathFromWorkingFolder = fileKey,
+                                       FullPath = f.FullPath
+                                   };
+                var files = filesInScope;
+                if (dg != null)
+                {
+                    var filesFromDependency = from node in dg.GetAllDependentNodes()
+                                              let p = RelativePath.TryParse(node)
+                                              where p != null
+                                              let fullPath = Path.Combine(EnvironmentContext.BaseDirectory, p.RemoveWorkingFolder())
+                                              select new
+                                              {
+                                                  PathFromWorkingFolder = node,
+                                                  FullPath = fullPath
+                                              };
+                    files = files.Concat(filesFromDependency);
+                }
+
+                return (from item in files
+                        where File.Exists(item.FullPath)
+                        group item by item.PathFromWorkingFolder into g
+                        select new FileAttributeItem
+                        {
+                            File = g.Key,
+                            LastModifiedTime = File.GetLastWriteTimeUtc(g.First().FullPath),
+                            MD5 = StringExtension.GetMd5String(File.ReadAllText(g.First().FullPath)),
+                        }).ToDictionary(a => a.File);
             }
-
-
-            return (from item in files
-                    where File.Exists(item.FullPath)
-                    group item by item.PathFromWorkingFolder into g
-                    select new FileAttributeItem
-                    {
-                        File = g.Key,
-                        LastModifiedTime = File.GetLastWriteTimeUtc(g.First().FullPath),
-                        MD5 = StringExtension.GetMd5String(File.ReadAllText(g.First().FullPath)),
-                    }).ToDictionary(a => a.File);
         }
 
         private static DependencyGraph ConstructDependencyGraphFromLast(DependencyGraph ldg)
         {
-            var dg = new DependencyGraph();
-            if (ldg == null)
+            using (new LoggerPhaseScope("ConstructDgFromLast", true))
             {
+                var dg = new DependencyGraph();
+                if (ldg == null)
+                {
+                    return dg;
+                }
+
+                // reregister dependency types from last dependency graph
+                using (new LoggerPhaseScope("RegisterDependencyTypeFromLastBuild", true))
+                {
+                    dg.RegisterDependencyType(ldg.DependencyTypes.Values);
+                }
+
+                // restore dependency graph from last dependency graph
+                using (new LoggerPhaseScope("ReportDependencyFromLastBuild", true))
+                {
+                    dg.ReportDependency(from r in ldg.ReportedBys
+                                        from i in ldg.GetDependencyReportedBy(r)
+                                        select i);
+                }
                 return dg;
             }
-
-            // reregister dependency types from last dependency graph
-            using (new LoggerPhaseScope("RegisterDependencyTypeFromLastBuild", true))
-            {
-                dg.RegisterDependencyType(ldg.DependencyTypes.Values);
-            }
-
-            // restore dependency graph from last dependency graph
-            using (new LoggerPhaseScope("ReportDependencyFromLastBuild", true))
-            {
-                dg.ReportDependency(from r in ldg.ReportedBys
-                                    from i in ldg.GetDependencyReportedBy(r)
-                                    select i);
-            }
-            return dg;
         }
 
         private static bool CanBuildInfoIncremental(BuildInfo cb, BuildInfo lb)
@@ -480,9 +488,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (CanVersionIncremental)
             {
-                LoadChanges();
+                using (new LoggerPhaseScope("LoadChanges", true))
+                {
+                    LoadChanges();
+                }
                 Logger.LogVerbose($"Before expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
-                ExpandDependency(d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.Compile || CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].TriggerBuild);
+                using (new LoggerPhaseScope("ExpandDependency", true))
+                {
+                    ExpandDependency(d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.Compile || CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].TriggerBuild);
+                }
                 Logger.LogVerbose($"After expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
             }
         }
