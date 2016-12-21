@@ -19,5 +19,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// MD5 string of the file content
         /// </summary>
         public string MD5 { get; set; }
+
+        /// <summary>
+        /// Whether the file is from source or dependency
+        /// </summary>
+        public bool IsFromSource { get; set; }
     }
 }
