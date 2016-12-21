@@ -180,6 +180,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new InvalidOperationException("Only incremental build could load changes.");
             }
+
+            var lastFileAttributes = LastBuildVersionInfo.Attributes;
             if (_parameters.Changes != null)
             {
                 // use user-provided changelist
@@ -187,11 +189,20 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     _changeDict[pair.Key] = pair.Value;
                 }
+
+                //// scenario: file itself doesn't change but add/remove from docfx.json
+                foreach (var file in _parameters.Changes.Keys.Except(lastFileAttributes.Keys))
+                {
+                    _changeDict[file] = ChangeKindWithDependency.Created;
+                }
+                foreach (var file in lastFileAttributes.Keys.Except(_parameters.Changes.Keys))
+                {
+                    _changeDict[file] = ChangeKindWithDependency.Deleted;
+                }
             }
             else
             {
                 // get changelist from lastBuildInfo if user doesn't provide changelist
-                var lastFileAttributes = LastBuildVersionInfo.Attributes;
                 var fileAttributes = CurrentBuildVersionInfo.Attributes;
                 DateTime checkTime = LastBuildStartTime.Value;
                 foreach (var file in fileAttributes.Keys.Intersect(lastFileAttributes.Keys))
