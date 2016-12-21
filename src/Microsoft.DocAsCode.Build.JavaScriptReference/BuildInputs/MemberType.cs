@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
         Default,
         Toc,
         Package,
+        Namespace,
         Class,
         Interface,
         Enum,

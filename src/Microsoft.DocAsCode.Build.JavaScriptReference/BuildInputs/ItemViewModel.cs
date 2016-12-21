@@ -68,10 +68,10 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
         public SourceDetail Documentation { get; set; }
 
         // Can be used to save npm package name
-        [YamlMember(Alias = "assemblies")]
+        [YamlMember(Alias = "packages")]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
-        [JsonProperty("assemblies")]
-        public List<string> AssemblyNameList { get; set; }
+        [JsonProperty("packages")]
+        public List<string> PackageNameList { get; set; }
 
         [YamlMember(Alias = "namespace")]
         [JsonProperty("namespace")]

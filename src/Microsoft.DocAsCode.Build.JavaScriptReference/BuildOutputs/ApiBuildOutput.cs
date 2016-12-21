@@ -64,9 +64,9 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
         [JsonProperty("documentation")]
         public SourceDetail Documentation { get; set; }
 
-        [YamlMember(Alias = "assemblies")]
-        [JsonProperty("assemblies")]
-        public List<string> AssemblyNameList { get; set; }
+        [YamlMember(Alias = "packages")]
+        [JsonProperty("packages")]
+        public List<string> PackageNameList { get; set; }
 
         [YamlMember(Alias = "namespace")]
         [JsonProperty("namespace")]
