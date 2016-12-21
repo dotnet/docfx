@@ -46,7 +46,7 @@ let git = {
     return execPromiseFn("git", ["commit", "--amend", "--no-edit"], workDir);
   },
   push(current_branch, target_branch, workDir) {
-    return execPromiseFn("git", ["push", "origin", current_branch+":"+target_branch], workDir);
+    return execPromiseFn("git", ["push", "origin", current_branch + ":" + target_branch], workDir);
   },
   clone(repoUrl, branch, folderName, workDir) {
     return execPromiseFn("git", ["clone", "-b", branch, repoUrl, folderName], workDir)
@@ -66,8 +66,8 @@ function isThirdWeekInSprint() {
 }
 
 function execPromiseFn(command, args, workDir) {
-  return function() {
-    return new Promise(function(resolve, reject) {
+  return function () {
+    return new Promise(function (resolve, reject) {
       args = args || [];
       workDir = workDir || ".";
       let argStr = args.join(" ");
@@ -81,19 +81,19 @@ function execPromiseFn(command, args, workDir) {
       }
 
       let sp = spawn(process.env.comspec, ['/c', command, ...args]);
-      sp.stdout.on("data", function(data) {
+      sp.stdout.on("data", function (data) {
         logger.verbose(data.toString());
       });
-      sp.stderr.on("data", function(data) {
-        logger.warn(data.toString());
+      sp.stderr.on("data", function (data) {
+        logger.error(data.toString());
       });
-      sp.on("close", function(code) {
+      sp.on("close", function (code) {
         if (code === 0) {
           logger.info("Finishing command: " + command + " " + argStr);
           process.chdir(currentDir);
           resolve();
         } else {
-          reject(new Error("Error occurs while running " + command + " " + argStr + ", Exited with code: " + code ));
+          reject(new Error("Error occurs while running " + command + " " + argStr + ", exited with code: " + code));
         }
       });
     });
