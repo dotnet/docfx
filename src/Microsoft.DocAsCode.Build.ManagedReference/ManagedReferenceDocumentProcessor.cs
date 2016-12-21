@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs;
+    using Microsoft.DocAsCode.Build.ReferenceBase;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
@@ -22,7 +23,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
     [Export(typeof(IDocumentProcessor))]
     public class ManagedReferenceDocumentProcessor
-        : DisposableDocumentProcessor, ISupportIncrementalDocumentProcessor
+        : ReferenceDocumentProcessorBase, ISupportIncrementalDocumentProcessor
     {
         #region Fields
         private readonly ResourcePoolManager<JsonSerializer> _serializerPool;
@@ -33,6 +34,86 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         public ManagedReferenceDocumentProcessor()
         {
             _serializerPool = new ResourcePoolManager<JsonSerializer>(GetSerializer, 0x10);
+        }
+
+        #endregion
+
+        #region ReferenceDocumentProcessorBase Members
+
+        protected override FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata)
+        {
+            var page = YamlUtility.Deserialize<PageViewModel>(Path.Combine(file.BaseDir, file.File));
+            if (page.Items == null || page.Items.Count == 0)
+            {
+                return null;
+            }
+            if (page.Metadata == null)
+            {
+                page.Metadata = metadata.ToDictionary(p => p.Key, p => p.Value);
+            }
+            else
+            {
+                foreach (var item in metadata)
+                {
+                    if (!page.Metadata.ContainsKey(item.Key))
+                    {
+                        page.Metadata[item.Key] = item.Value;
+                    }
+                }
+            }
+
+            var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
+
+            return new FileModel(file, page, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
+            {
+                Uids = (from item in page.Items select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),
+                LocalPathFromRepoRoot = displayLocalPath,
+                LocalPathFromRoot = displayLocalPath
+            };
+        }
+
+        protected override FileModel LoadOverwrite(FileAndType file)
+        {
+            // TODO: Refactor current behavior that overwrite file is read multiple times by multiple processors
+            return OverwriteDocumentReader.Read(file);
+        }
+
+        protected override SaveResult GenerateSaveResult(FileModel model)
+        {
+            var vm = (PageViewModel)model.Content;
+            return new SaveResult
+            {
+                DocumentType = "ManagedReference",
+                FileWithoutExtension = Path.ChangeExtension(model.File, null),
+                LinkToFiles = model.LinkToFiles.ToImmutableArray(),
+                LinkToUids = model.LinkToUids,
+                FileLinkSources = model.FileLinkSources,
+                UidLinkSources = model.UidLinkSources,
+                XRefSpecs = (from item in vm.Items
+                             from xref in GetXRefInfo(item, model.Key, vm.References)
+                             group xref by xref.Uid into g
+                             select g.First()).ToImmutableArray(),
+                ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray(),
+            };
+        }
+
+        protected override void UpdateModelContent(FileModel model)
+        {
+            var apiModel = ApiBuildOutput.FromModel((PageViewModel)model.Content); // Fill in details
+            model.Content = apiModel;
+
+            // Fill in bookmarks if template doesn't generate them.
+            // TODO: remove these
+            if (apiModel.Type == MemberType.Namespace) return;
+            model.Bookmarks[apiModel.Uid] = string.Empty; // Reference's first level bookmark should have no anchor
+            apiModel.Children?.ForEach(c =>
+            {
+                model.Bookmarks[c.Uid] = c.Id;
+                if (!string.IsNullOrEmpty(c.Overload?.Uid))
+                {
+                    model.Bookmarks[c.Overload.Uid] = c.Overload.Id;
+                }
+            });
         }
 
         #endregion
@@ -83,73 +164,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return ProcessingPriority.NotSupported;
         }
 
-        public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
-        {
-            switch (file.Type)
-            {
-                case DocumentType.Article:
-                    var page = YamlUtility.Deserialize<PageViewModel>(Path.Combine(file.BaseDir, file.File));
-                    if (page.Items == null || page.Items.Count == 0)
-                    {
-                        return null;
-                    }
-                    if (page.Metadata == null)
-                    {
-                        page.Metadata = metadata.ToDictionary(p => p.Key, p => p.Value);
-                    }
-                    else
-                    {
-                        foreach (var item in metadata)
-                        {
-                            if (!page.Metadata.ContainsKey(item.Key))
-                            {
-                                page.Metadata[item.Key] = item.Value;
-                            }
-                        }
-                    }
-
-                    var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
-
-                    return new FileModel(file, page, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
-                    {
-                        Uids = (from item in page.Items select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),
-                        LocalPathFromRepoRoot = displayLocalPath,
-                        LocalPathFromRoot = displayLocalPath
-                    };
-                case DocumentType.Overwrite:
-                    // TODO: Refactor current behavior that overwrite file is read multiple times by multiple processors
-                    return OverwriteDocumentReader.Read(file);
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-
-        public override SaveResult Save(FileModel model)
-        {
-            if (model.Type != DocumentType.Article)
-            {
-                throw new NotSupportedException();
-            }
-            var vm = (PageViewModel)model.Content;
-
-            UpdateModelContent(model);
-
-            return new SaveResult
-            {
-                DocumentType = "ManagedReference",
-                FileWithoutExtension = Path.ChangeExtension(model.File, null),
-                LinkToFiles = model.LinkToFiles.ToImmutableArray(),
-                LinkToUids = model.LinkToUids,
-                FileLinkSources = model.FileLinkSources,
-                UidLinkSources = model.UidLinkSources,
-                XRefSpecs = (from item in vm.Items
-                             from xref in GetXRefInfo(item, model.Key, vm.References)
-                             group xref by xref.Uid into g
-                             select g.First()).ToImmutableArray(),
-                ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray(),
-            };
-        }
-
         #endregion
 
         #region ISupportIncrementalDocumentProcessor Members
@@ -182,25 +196,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         #endregion
 
         #region Protected/Private Methods
-
-        protected virtual void UpdateModelContent(FileModel model)
-        {
-            var apiModel = ApiBuildOutput.FromModel((PageViewModel)model.Content); // Fill in details
-            model.Content = apiModel;
-
-            // Fill in bookmarks if template doesn't generate them.
-            // TODO: remove these
-            if (apiModel.Type == MemberType.Namespace) return;
-            model.Bookmarks[apiModel.Uid] = string.Empty; // Reference's first level bookmark should have no anchor
-            apiModel.Children?.ForEach(c =>
-            {
-                model.Bookmarks[c.Uid] = c.Id;
-                if (!string.IsNullOrEmpty(c.Overload?.Uid))
-                {
-                    model.Bookmarks[c.Overload.Uid] = c.Overload.Id;
-                }
-            });
-        }
 
         private IEnumerable<XRefSpec> GetXRefFromReference(PageViewModel vm)
         {

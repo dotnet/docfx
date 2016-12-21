@@ -138,6 +138,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JavaScriptReference", "Java
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.JavaScriptReference", "src\Microsoft.DocAsCode.Build.JavaScriptReference\Microsoft.DocAsCode.Build.JavaScriptReference.xproj", "{D609EB39-0CBD-41C1-8F4D-46720491BE40}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReferenceBase", "ReferenceBase", "{4D8E36E4-9895-4234-A37B-6D240EF3E3EC}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ReferenceBase", "Microsoft.DocAsCode.Build.ReferenceBase\Microsoft.DocAsCode.Build.ReferenceBase.xproj", "{15C98521-56AE-4259-B49C-691015893D7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -450,6 +454,14 @@ Global
 		{D609EB39-0CBD-41C1-8F4D-46720491BE40}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D609EB39-0CBD-41C1-8F4D-46720491BE40}.Release|x86.ActiveCfg = Release|Any CPU
 		{D609EB39-0CBD-41C1-8F4D-46720491BE40}.Release|x86.Build.0 = Release|Any CPU
+		{15C98521-56AE-4259-B49C-691015893D7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15C98521-56AE-4259-B49C-691015893D7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15C98521-56AE-4259-B49C-691015893D7F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{15C98521-56AE-4259-B49C-691015893D7F}.Debug|x86.Build.0 = Debug|Any CPU
+		{15C98521-56AE-4259-B49C-691015893D7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15C98521-56AE-4259-B49C-691015893D7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15C98521-56AE-4259-B49C-691015893D7F}.Release|x86.ActiveCfg = Release|Any CPU
+		{15C98521-56AE-4259-B49C-691015893D7F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -514,5 +526,7 @@ Global
 		{9029C48C-F8D1-41DF-8F93-B70B51A5B1A4} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{792E929C-A9E5-415E-93A8-69FBBEAFD1D0} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
 		{D609EB39-0CBD-41C1-8F4D-46720491BE40} = {792E929C-A9E5-415E-93A8-69FBBEAFD1D0}
+		{4D8E36E4-9895-4234-A37B-6D240EF3E3EC} = {F922E543-9AD4-4031-8BD1-8A7AA9771D1E}
+		{15C98521-56AE-4259-B49C-691015893D7F} = {4D8E36E4-9895-4234-A37B-6D240EF3E3EC}
 	EndGlobalSection
 EndGlobal
