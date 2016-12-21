@@ -9,9 +9,9 @@ namespace Microsoft.DocAsCode.Build.Common
     using System.IO;
     using System.Linq;
 
-    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Common.Git;
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
     public class MarkdownReader
@@ -24,13 +24,13 @@ namespace Microsoft.DocAsCode.Build.Common
             return parts.Select(part => TransformModel(ft.FullPath, part));
         }
 
-        public static Dictionary<string, object> ReadMarkdownAsConceptual(string baseDir, string file)
+        public static Dictionary<string, object> ReadMarkdownAsConceptual(string file)
         {
-            var filePath = Path.Combine(baseDir, file);
+            var filePath = EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file);
             var repoInfo = GitUtility.TryGetFileDetail(filePath);
             return new Dictionary<string, object>
             {
-                [Constants.PropertyName.Conceptual] = File.ReadAllText(filePath),
+                [Constants.PropertyName.Conceptual] = EnvironmentContext.FileAbstractLayer.ReadAllText(file),
                 [Constants.PropertyName.Type] = "Conceptual",
                 [Constants.PropertyName.Source] = new SourceDetail { Remote = repoInfo },
                 [Constants.PropertyName.Path] = file,
