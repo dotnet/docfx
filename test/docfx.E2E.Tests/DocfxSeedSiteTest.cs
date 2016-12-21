@@ -100,13 +100,13 @@ namespace Microsoft.DocAsCode.E2E.Tests
             _driver.FindElement(By.LinkText("API Documentation")).Click();
 
             // make sure the namespace page has been loaded
-            _driver.FindElement(By.XPath("//title[starts-with(.,'Namespace')]"));
+            _driver.FindElement(By.Id("classes"));
 
             // go to class page
             _driver.FindElements(By.XPath("//h4/a"))[0].Click();
 
             // make sure the class page has been loaded
-            _driver.FindElement(By.XPath("//title[starts-with(.,'Class')]"));
+            _driver.FindElement(By.Id("methods"));
 
             TestPageCommon();
 
