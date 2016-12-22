@@ -198,9 +198,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return null;
             }
-            var outputFolder = settings.OutputFolder;
+            var outputFolder = settings.OutputFolder ?? string.Empty;
 
-            string modelPath = settings.PathRewriter(modelFileRelativePath);
+            string modelPath = Path.GetFullPath(Path.Combine(outputFolder, settings.PathRewriter(modelFileRelativePath)));
 
             JsonUtility.Serialize(modelPath, model);
             return StringExtension.ToDisplayPath(modelPath);
