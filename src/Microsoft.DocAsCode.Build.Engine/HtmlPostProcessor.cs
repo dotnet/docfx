@@ -6,14 +6,13 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.IO;
     using System.Linq;
     using System.Text;
 
     using HtmlAgilityPack;
 
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     internal sealed class HtmlPostProcessor : IPostProcessor
@@ -49,26 +48,31 @@ namespace Microsoft.DocAsCode.Build.Engine
                                       OutputFile = output.Value.RelativePath,
                                   })
             {
-                var filePath = Path.Combine(outputFolder, tuple.OutputFile);
-                if (!File.Exists(filePath))
+                if (!EnvironmentContext.FileAbstractLayer.Exists(tuple.OutputFile))
                 {
                     continue;
                 }
                 var document = new HtmlDocument();
                 try
                 {
-                    document.Load(filePath, Encoding.UTF8);
+                    using (var stream = EnvironmentContext.FileAbstractLayer.OpenRead(tuple.OutputFile))
+                    {
+                        document.Load(stream, Encoding.UTF8);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogWarning($"Warning: Can't load content from {filePath}: {ex.Message}");
+                    Logger.LogWarning($"Warning: Can't load content from {tuple.OutputFile}: {ex.Message}");
                     continue;
                 }
                 foreach (var handler in Handlers)
                 {
                     handler.HandleWithScopeWrapper(document, tuple.Item, tuple.InputFile, tuple.OutputFile);
                 }
-                document.Save(filePath, Encoding.UTF8);
+                using (var stream = EnvironmentContext.FileAbstractLayer.Create(tuple.OutputFile))
+                {
+                    document.Save(stream, Encoding.UTF8);
+                }
             }
             foreach (var handler in Handlers)
             {
