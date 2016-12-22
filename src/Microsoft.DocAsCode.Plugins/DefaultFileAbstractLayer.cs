@@ -17,52 +17,39 @@ namespace Microsoft.DocAsCode.Plugins
 
         public IEnumerable<string> GetAllInputFiles()
         {
-            var folder = Path.GetFullPath(
-                Environment.ExpandEnvironmentVariables(
-                    EnvironmentContext.BaseDirectory ?? string.Empty));
+            var folder = Path.GetFullPath(GetPhysicalPath("."));
             return from f in Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories)
                    select f.Substring(folder.Length + 1);
         }
 
         public IEnumerable<string> GetAllOutputFiles()
         {
-            var folder = Path.GetFullPath(
-                Environment.ExpandEnvironmentVariables(
-                    EnvironmentContext.OutputDirectory ?? string.Empty));
+            var folder = Path.GetFullPath(GetOutputPhysicalPath("."));
             return from f in Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories)
                    select f.Substring(folder.Length + 1);
         }
 
         public bool Exists(string file) =>
-            File.Exists(
-                Path.Combine(
-                    Environment.ExpandEnvironmentVariables(EnvironmentContext.BaseDirectory),
-                    file));
+            File.Exists(GetPhysicalPath(file));
 
         public Stream OpenRead(string file) =>
-            File.OpenRead(
-                Path.Combine(
-                    Environment.ExpandEnvironmentVariables(EnvironmentContext.BaseDirectory),
-                    file));
+            File.OpenRead(GetPhysicalPath(file));
 
         public Stream Create(string file)
         {
-            var f = Path.Combine(
-                Environment.ExpandEnvironmentVariables(EnvironmentContext.OutputDirectory),
-                file);
+            var f = GetOutputPhysicalPath(file);
             Directory.CreateDirectory(Path.GetDirectoryName(f));
             return File.Create(f);
         }
 
-
-        public void Copy(string sourceFileName, string destFileName) =>
-            File.Copy(
-                Path.Combine(
-                    Environment.ExpandEnvironmentVariables(EnvironmentContext.BaseDirectory),
-                    sourceFileName),
-                Path.Combine(
-                    Environment.ExpandEnvironmentVariables(EnvironmentContext.OutputDirectory),
-                    destFileName));
+        public void Copy(string sourceFileName, string destFileName)
+        {
+            var source = GetPhysicalPath(sourceFileName);
+            var dest = GetOutputPhysicalPath(destFileName);
+            Directory.CreateDirectory(Path.GetDirectoryName(dest));
+            File.Copy(source, dest);
+            File.SetAttributes(dest, FileAttributes.Normal);
+        }
 
         public ImmutableDictionary<string, string> GetProperties(string file) =>
             ImmutableDictionary<string, string>.Empty;
@@ -70,6 +57,11 @@ namespace Microsoft.DocAsCode.Plugins
         public string GetPhysicalPath(string file) =>
             Path.Combine(
                 Environment.ExpandEnvironmentVariables(EnvironmentContext.BaseDirectory),
+                file);
+
+        public string GetOutputPhysicalPath(string file) =>
+            Path.Combine(
+                Environment.ExpandEnvironmentVariables(EnvironmentContext.OutputDirectory),
                 file);
     }
 }
