@@ -56,6 +56,9 @@ let git = {
   },
   configEmail(email, workDir) {
     return execPromiseFn("git", ["config", "user.email", email], workDir);
+  },
+  updateOriginUrl(url, workDir) {
+    return execPromiseFn("git", ["remote", "set-url", "origin", url], workDir);
   }
 }
 
@@ -89,8 +92,8 @@ function execPromiseFn(command, args, workDir) {
       });
       sp.on("close", function (code) {
         if (code === 0) {
-          logger.info("Finishing command: " + command + " " + argStr);
           process.chdir(currentDir);
+          logger.info("Finishing command: " + command + " " + argStr);
           resolve();
         } else {
           reject(new Error("Error occurs while running " + command + " " + argStr + ", exited with code: " + code));
@@ -100,7 +103,20 @@ function execPromiseFn(command, args, workDir) {
   }
 }
 
+function serialPromiseFlow(promiseArray) {
+  return promiseArray.reduce((p, fn) => p.then(fn), Promise.resolve());
+}
+
+function runSteps(promiseArray) {
+  serialPromiseFlow(promiseArray).catch(function (err) {
+    util.logger.error(err);
+    process.exit(1);
+  });
+}
+
 exports.logger = logger;
 exports.git = git;
 exports.execPromiseFn = execPromiseFn;
 exports.isThirdWeekInSprint = isThirdWeekInSprint;
+exports.runSteps = runSteps;
+exports.serialPromiseFlow = serialPromiseFlow;

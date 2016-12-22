@@ -3,17 +3,24 @@
 
 "use strict"
 
+let path = require("path");
 let util = require("./util");
+let nconf = require('nconf');
+
+nconf.add('configuration', { type: 'file', file: path.join(__dirname, 'config.json') });
+
+let config = {};
+config.sync = nconf.get("sync");
+config.docfx = nconf.get("docfx");
 
 if (util.isThirdWeekInSprint()) {
   util.logger.info("Don't sync in the third week of a sprint");
-  return 0;
+  process.exit(0);
 }
-
-util.git.push("dev", "stable")().then(function () {
+util.serialPromiseFlow([
+  util.git.updateOriginUrl(config.docfx.repoUrl, config.docfx.home),
+  util.git.push(config.sync.fromBranch, config.sync.targetBranch, config.docfx.home)
+]).then(() => {
   util.logger.info("Sync successfully");
-  return 0;
-}).catch(function () {
-  util.logger.error("Failed to sync");
-  return 1;
 });
+

@@ -356,17 +356,6 @@ function pushChocoPackage() {
   }
 }
 
-let serialPromiseFlow = function (promiseArray) {
-  return promiseArray.reduce((p, fn) => p.then(fn), Promise.resolve());
-}
-
-let runSteps = function (promiseArray) {
-  serialPromiseFlow(promiseArray).catch(function (err) {
-    util.logger.error(err);
-    process.exit(1);
-  });
-}
-
 let clearReleaseStep = removePromiseFn(config.docfx.releaseFolder);
 let docfxBuildStep = util.execPromiseFn("build.cmd", ["-prod"], config.docfx.home);
 let genereateDocsStep = util.execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docFolder);
@@ -380,7 +369,7 @@ let e2eTestStep = function () {
     util.execPromiseFn("dotnet", ["restore"], config.docfx.e2eTestsHome),
     util.execPromiseFn("dotnet", ["test"], config.docfx.e2eTestsHome)
   ];
-  return serialPromiseFlow(stepsOrder);
+  return util.serialPromiseFlow(stepsOrder);
 }
 
 let updateGhPageStep = function () {
@@ -394,7 +383,7 @@ let updateGhPageStep = function () {
     util.git.commit(config.git.message, "tmp"),
     util.git.push("gh-pages", "gh-pages", "tmp")
   ];
-  return serialPromiseFlow(stepsOrder);
+  return util.serialPromiseFlow(stepsOrder);
 }
 
 let updateGithubReleaseStep = function () {
@@ -405,7 +394,7 @@ let updateGithubReleaseStep = function () {
     updateReleasePromiseFn(),
     uploadAssetsPromiseFn()
   ];
-  return serialPromiseFlow(stepsOrder);
+  return util.serialPromiseFlow(stepsOrder);
 }
 
 let updateChocoReleaseStep = function () {
@@ -415,7 +404,7 @@ let updateChocoReleaseStep = function () {
     util.execPromiseFn("choco", ['apiKey', '-k', process.env.CHOCO_TOKEN, '-source', 'https://chocolatey.org/', config.choco.homeDir]),
     pushChocoPackage()
   ];
-  return serialPromiseFlow(stepsOrder);
+  return util.serialPromiseFlow(stepsOrder);
 }
 
 let branchValue;
@@ -434,7 +423,7 @@ if (!branchValue) {
 
 switch (branchValue.toLowerCase()) {
   case "dev":
-    runSteps([
+    util.runSteps([
       // step 1: clear the possible release exists
       clearReleaseStep,
       // step2: run build.cmd
@@ -446,7 +435,7 @@ switch (branchValue.toLowerCase()) {
     ]);
     break;
   case "nightly-build":
-    runSteps([
+    util.runSteps([
       // step 1: clear the possible release exists
       clearReleaseStep,
       // step2: run build.cmd
@@ -460,7 +449,7 @@ switch (branchValue.toLowerCase()) {
     ]);
     break;
   case "master":
-    runSteps([
+    util.runSteps([
       // step 1: clear the possible release exists
       clearReleaseStep,
       // step2: run build.cmd
