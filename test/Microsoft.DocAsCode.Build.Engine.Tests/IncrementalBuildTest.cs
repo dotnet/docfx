@@ -16,7 +16,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Build.ResourceFiles;
     using Microsoft.DocAsCode.Build.TableOfContents;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Tests.Common;
@@ -521,9 +520,9 @@ tagRules : [
             #endregion
 
             Init("IncrementalBuild.TestServerChanges");
-            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestLocalChanges");
-            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestLocalChanges.Second");
-            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestLocalChanges.Second.ForceBuild");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestServerChanges");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestServerChanges.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestServerChanges.Second.ForceBuild");
             try
             {
                 using (new LoggerPhaseScope("first-IncrementalBuild.TestServerChanges"))
@@ -591,6 +590,411 @@ tagRules : [
                     Assert.True(File.Exists(xrefMapOutputPath));
                     var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
                     Assert.Equal(70, xrefMap.References.Count);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                }
+            }
+            finally
+            {
+                CleanUp();
+                Directory.Delete(outputFolder, true);
+                Directory.Delete(templateFolder, true);
+                Directory.Delete(inputFolder, true);
+                Directory.Delete(intermediateFolder, true);
+            }
+        }
+
+        [Fact]
+        public void TestServerChangesFilesAddRemoveFromDocfx()
+        {
+            // conceptual1--->conceptual2(phase 2)
+            // conceptual1--->token1(phase 1)
+            // conceptual2--->conceptual3(phase 1)
+            // conceptual3
+            // conceptual4
+            #region Prepare test data
+            var resourceFile = Path.GetFileName(typeof(IncrementalBuildTest).Assembly.Location);
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
+            CreateFile("ManagedReference.html.primary.tmpl", "managed content", templateFolder);
+            CreateFile("toc.html.tmpl", "toc", templateFolder);
+
+            var tocFile = CreateFile("toc.md",
+                new[]
+                {
+                    "# [test1](test.md)",
+                    "## [test2](test/test.md)",
+                    "# Api",
+                    "## [Console](@System.Console)",
+                    "## [ConsoleColor](xref:System.ConsoleColor)",
+                },
+                inputFolder);
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef1",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test XRef: @XRef1",
+                    "Test link: [link text](test/test.md)",
+                    "Test link: [link text 2](../" + resourceFile + ")",
+                    "Test link style xref: [link text 3](xref:XRef2 \"title\")",
+                    "<p>",
+                    "test",
+                    "[!INCLUDE [Test token outside of docfx](test/token1.md)]",
+                },
+                inputFolder);
+            var conceptualFile2 = CreateFile("test/test.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef2",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test XRef: @XRef2",
+                    "Test link: [link text](../test.md)",
+                    "[!INCLUDE [API_version](test3.md)]",
+                },
+                inputFolder);
+            var conceptualFile3 = CreateFile("test/test3.md",
+                new[]
+                {
+                    "# Hello World",
+                    "test",
+                },
+                inputFolder);
+            var conceptualFile4 = CreateFile("test/test4.md",
+                new[]
+                {
+                    "# Hello World",
+                    "test",
+                },
+                inputFolder);
+            var token1 = CreateFile("test/token1.md",
+                new[]
+                {
+                    "# Hello World",
+                    "test add",
+                },
+                inputFolder);
+
+            File.WriteAllText(MarkdownSytleConfig.MarkdownStyleFileName, @"{
+rules : [
+    ""foo"",
+    { name: ""bar"", disable: true}
+],
+tagRules : [
+    {
+        tagNames: [""p""],
+        behavior: ""Warning"",
+        messageFormatter: ""Tag {0} is not valid."",
+        openingTagOnly: true
+    }
+]
+}");
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2, conceptualFile3, conceptualFile4 });
+            files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, "TestData/", null);
+            files.Add(DocumentType.Resource, new[] { resourceFile });
+            #endregion
+
+            Init("IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("first-IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                // make changes to conceptual3
+                UpdateFile(
+                    "test/test3.md",
+                    new[]
+                    {
+                        "# Hello World3",
+                        "test",
+                    },
+                    inputFolder);
+
+                // add token1 into docfx.json and remove conceptualFile2
+                files.Add(DocumentType.Article, new[] { token1 });
+                files.RemoveAll(f => f.File == conceptualFile2.ToNormalizedPath());
+
+                using (new LoggerPhaseScope("second-IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx"))
+                {
+
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder,
+                        changes: new Dictionary<string, ChangeKindWithDependency>
+                        {
+                            { ((RelativePath)conceptualFile3).GetPathFromWorkingFolder(), ChangeKindWithDependency.Updated },
+                            { ((RelativePath)conceptualFile).GetPathFromWorkingFolder(), ChangeKindWithDependency.None },
+                            { ((RelativePath)conceptualFile4).GetPathFromWorkingFolder(), ChangeKindWithDependency.None },
+                            { ((RelativePath)token1).GetPathFromWorkingFolder(), ChangeKindWithDependency.None },
+                            { ((RelativePath)tocFile).GetPathFromWorkingFolder(), ChangeKindWithDependency.None },
+                            { ((RelativePath)resourceFile).GetPathFromWorkingFolder(), ChangeKindWithDependency.None },
+                            { "~/TestData/System.Console.csyml", ChangeKindWithDependency.None },
+                            { "~/TestData/System.ConsoleColor.csyml", ChangeKindWithDependency.None },
+                        });
+
+                }
+                using (new LoggerPhaseScope("second-forcebuild-IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(8, manifest.Files.Count);
+                }
+                {
+                    // check xrefmap
+                    var xrefMapOutputPath = Path.Combine(outputFolderForIncremental, "xrefmap.yml");
+                    Assert.True(File.Exists(xrefMapOutputPath));
+                    var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
+                    Assert.Equal(69, xrefMap.References.Count);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                }
+            }
+            finally
+            {
+                CleanUp();
+                Directory.Delete(outputFolder, true);
+                Directory.Delete(templateFolder, true);
+                Directory.Delete(inputFolder, true);
+                Directory.Delete(intermediateFolder, true);
+            }
+        }
+
+        [Fact]
+        public void TestLocalChangesFilesAddRemoveFromDocfx()
+        {
+            // conceptual1--->conceptual2(phase 2)
+            // conceptual1--->token1(phase 1)
+            // conceptual2--->conceptual3(phase 1)
+            // conceptual3
+            // conceptual4
+            #region Prepare test data
+            var resourceFile = Path.GetFileName(typeof(IncrementalBuildTest).Assembly.Location);
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
+            CreateFile("ManagedReference.html.primary.tmpl", "managed content", templateFolder);
+            CreateFile("toc.html.tmpl", "toc", templateFolder);
+
+            var tocFile = CreateFile("toc.md",
+                new[]
+                {
+                    "# [test1](test.md)",
+                    "## [test2](test/test.md)",
+                    "# Api",
+                    "## [Console](@System.Console)",
+                    "## [ConsoleColor](xref:System.ConsoleColor)",
+                },
+                inputFolder);
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef1",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test XRef: @XRef1",
+                    "Test link: [link text](test/test.md)",
+                    "Test link: [link text 2](../" + resourceFile + ")",
+                    "Test link style xref: [link text 3](xref:XRef2 \"title\")",
+                    "<p>",
+                    "test",
+                    "[!INCLUDE [Test token outside of docfx](test/token1.md)]",
+                },
+                inputFolder);
+            var conceptualFile2 = CreateFile("test/test.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef2",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test XRef: @XRef2",
+                    "Test link: [link text](../test.md)",
+                    "[!INCLUDE [API_version](test3.md)]",
+                },
+                inputFolder);
+            var conceptualFile3 = CreateFile("test/test3.md",
+                new[]
+                {
+                    "# Hello World",
+                    "test",
+                },
+                inputFolder);
+            var conceptualFile4 = CreateFile("test/test4.md",
+                new[]
+                {
+                    "# Hello World",
+                    "test",
+                },
+                inputFolder);
+            var token1 = CreateFile("test/token1.md",
+                new[]
+                {
+                    "# Hello World",
+                    "test add",
+                },
+                inputFolder);
+
+            File.WriteAllText(MarkdownSytleConfig.MarkdownStyleFileName, @"{
+rules : [
+    ""foo"",
+    { name: ""bar"", disable: true}
+],
+tagRules : [
+    {
+        tagNames: [""p""],
+        behavior: ""Warning"",
+        messageFormatter: ""Tag {0} is not valid."",
+        openingTagOnly: true
+    }
+]
+}");
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2, conceptualFile3, conceptualFile4 });
+            files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, "TestData/", null);
+            files.Add(DocumentType.Resource, new[] { resourceFile });
+            #endregion
+
+            Init("IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("first-IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                // make changes to conceptual3
+                UpdateFile(
+                    "test/test3.md",
+                    new[]
+                    {
+                        "# Hello World3",
+                        "test",
+                    },
+                    inputFolder);
+
+                // add token1 into docfx.json and remove conceptualFile2
+                files.Add(DocumentType.Article, new[] { token1 });
+                files.RemoveAll(f => f.File == conceptualFile2.ToNormalizedPath());
+
+                using (new LoggerPhaseScope("second-IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx"))
+                {
+
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("second-forcebuild-IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(8, manifest.Files.Count);
+                }
+                {
+                    // check xrefmap
+                    var xrefMapOutputPath = Path.Combine(outputFolderForIncremental, "xrefmap.yml");
+                    Assert.True(File.Exists(xrefMapOutputPath));
+                    var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
+                    Assert.Equal(69, xrefMap.References.Count);
                 }
                 {
                     // compare with force build

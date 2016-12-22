@@ -180,6 +180,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new InvalidOperationException("Only incremental build could load changes.");
             }
+
+            var lastFileAttributes = LastBuildVersionInfo.Attributes;
             if (_parameters.Changes != null)
             {
                 // use user-provided changelist
@@ -187,18 +189,41 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     _changeDict[pair.Key] = pair.Value;
                 }
+
+                // scenario: file itself doesn't change but add/remove from docfx.json
+                var lastSrcFiles = (from p in lastFileAttributes
+                                    where p.Value.IsFromSource == true
+                                    select p.Key).ToList();
+                foreach (var file in _parameters.Changes.Keys.Except(lastSrcFiles))
+                {
+                    if (_changeDict[file] == ChangeKindWithDependency.None)
+                    {
+                        _changeDict[file] = ChangeKindWithDependency.Created;
+                    }
+                }
+                foreach (var file in lastSrcFiles.Except(_parameters.Changes.Keys))
+                {
+                    _changeDict[file] = ChangeKindWithDependency.Deleted;
+                }
             }
             else
             {
                 // get changelist from lastBuildInfo if user doesn't provide changelist
-                var lastFileAttributes = LastBuildVersionInfo.Attributes;
                 var fileAttributes = CurrentBuildVersionInfo.Attributes;
                 DateTime checkTime = LastBuildStartTime.Value;
                 foreach (var file in fileAttributes.Keys.Intersect(lastFileAttributes.Keys))
                 {
                     var last = lastFileAttributes[file];
                     var current = fileAttributes[file];
-                    if (current.LastModifiedTime > checkTime && current.MD5 != last.MD5)
+                    if (current.IsFromSource && !last.IsFromSource)
+                    {
+                        _changeDict[file] = ChangeKindWithDependency.Created;
+                    }
+                    else if (!current.IsFromSource && last.IsFromSource)
+                    {
+                        _changeDict[file] = ChangeKindWithDependency.Deleted;
+                    }
+                    else if (current.LastModifiedTime > checkTime && current.MD5 != last.MD5)
                     {
                         _changeDict[file] = ChangeKindWithDependency.Updated;
                     }
@@ -370,7 +395,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                                    select new
                                    {
                                        PathFromWorkingFolder = fileKey,
-                                       FullPath = f.FullPath
+                                       FullPath = f.FullPath,
+                                       IsFromSource = true,
                                    };
                 var files = filesInScope;
                 if (dg != null)
@@ -382,7 +408,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                                               select new
                                               {
                                                   PathFromWorkingFolder = node,
-                                                  FullPath = fullPath
+                                                  FullPath = fullPath,
+                                                  IsFromSource = false,
                                               };
                     files = files.Concat(filesFromDependency);
                 }
@@ -395,6 +422,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                             File = g.Key,
                             LastModifiedTime = File.GetLastWriteTimeUtc(g.First().FullPath),
                             MD5 = StringExtension.GetMd5String(File.ReadAllText(g.First().FullPath)),
+                            IsFromSource = g.Any(v => v.IsFromSource),
                         }).ToDictionary(a => a.File);
             }
         }
