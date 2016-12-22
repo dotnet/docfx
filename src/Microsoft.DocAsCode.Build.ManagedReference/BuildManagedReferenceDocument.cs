@@ -11,38 +11,35 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using System.Collections.Immutable;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Build.ReferenceBase;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildManagedReferenceDocument : BaseDocumentBuildStep
+    public class BuildManagedReferenceDocument : BuildReferenceDocumentBase
     {
-        private readonly ReflectionEntityMerger Merger = new ReflectionEntityMerger();
-
         public override string Name => nameof(BuildManagedReferenceDocument);
 
         public override int BuildOrder => 0;
 
-        public override void Build(FileModel model, IHostService host)
+        #region BuildReferenceDocumentBase
+
+        protected override void BuildArticle(IHostService host, FileModel model)
         {
-            switch (model.Type)
+            var page = (PageViewModel)model.Content;
+            foreach (var item in page.Items)
             {
-                case DocumentType.Article:
-                    var page = (PageViewModel)model.Content;
-                    foreach (var item in page.Items)
-                    {
-                        BuildItem(host, item, model);
-                    }
-                    break;
-                case DocumentType.Overwrite:
-                    BuildItem(host, model);
-                    break;
-                default:
-                    throw new NotSupportedException();
+                BuildItem(host, item, model);
             }
         }
+
+        protected override void BuildOverwrite(IHostService host, FileModel model)
+        {
+            BuildItem(host, model);
+        }
+
+        #endregion
 
         public static ItemViewModel BuildItem(IHostService host, ItemViewModel item, FileModel model, Func<string, bool> filter = null)
         {

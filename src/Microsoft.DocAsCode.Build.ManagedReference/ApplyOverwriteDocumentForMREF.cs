@@ -9,18 +9,21 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Build.ReferenceBase;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocument
+    public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocumentForReferenceBase<ItemViewModel>
     {
         public override string Name => nameof(ApplyOverwriteDocumentForMref);
 
         public override int BuildOrder => 0x10;
 
-        public IEnumerable<ItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host)
+        #region ApplyOverwriteDocumentForReferenceBase Members
+
+        protected override IEnumerable<ItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host)
         {
             return OverwriteDocumentReader.Transform<ItemViewModel>(
                 fileModel,
@@ -28,14 +31,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 s => BuildManagedReferenceDocument.BuildItem(host, s, fileModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
         }
 
-        public IEnumerable<ItemViewModel> GetItemsToOverwrite(FileModel fileModel, string uid, IHostService host)
+        protected override IEnumerable<ItemViewModel> GetItemsToOverwrite(FileModel fileModel, string uid, IHostService host)
         {
             return ((PageViewModel)fileModel.Content).Items.Where(s => s.Uid == uid);
         }
 
-        protected override void ApplyOverwrite(IHostService host, List<FileModel> od, string uid, List<FileModel> articles)
-        {
-            ApplyOverwrite(host, od, uid, articles, GetItemsFromOverwriteDocument, GetItemsToOverwrite);
-        }
+        #endregion
     }
 }
