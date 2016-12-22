@@ -28,16 +28,16 @@ function getHtmlId(input) {
     return input.replace(/\W/g, '_');
 }
 
-// Note: the parameter `gitContribute` won't be used in this function
 function getViewSourceHref(item, gitContribute, gitUrlPattern) {
+    /* jshint validthis: true */
     if (!item || !item.source || !item.source.remote) return '';
-    return getRemoteUrl(item.source.remote, item.source.startLine - '0' + 1, null, gitUrlPattern);
+    return getRemoteUrl(item.source.remote, item.source.startLine - '0' + 1, gitContribute, gitUrlPattern);
 }
 
 function getImproveTheDocHref(item, gitContribute, gitUrlPattern) {
     if (!item) return '';
     if (!item.documentation || !item.documentation.remote) {
-        return getNewFileUrl(item, gitContribute, gitUrlPattern);
+        return getNewFileUrl(item.uid, gitContribute, gitUrlPattern);
     } else {
         return getRemoteUrl(item.documentation.remote, item.documentation.startLine + 1, gitContribute, gitUrlPattern);
     }
@@ -64,19 +64,19 @@ function isRelativePath(path) {
 var gitUrlPatternItems = {
     'github': {
         'testRegex': /^(https?:\/\/)?(\S+\@)?(\S+\.)?github\.com(\/|:).*/i,
-        'generateUrl': function (gitInfo) {
-            var url = normalizeGitUrlToHttps(gitInfo.repo);
-            url += '/blob' + '/' + gitInfo.branch + '/' + gitInfo.path;
-            if (gitInfo.startLine && gitInfo.startLine > 0) {
-                url += '/#L' + gitInfo.startLine;
+        'generateUrl': function(repo, branch, path, startLine) {
+            var url = normalizeGitUrlToHttps(repo);
+            url += '/blob' + '/' + branch + '/' + path;
+            if (startLine && startLine > 0) {
+                url += '/#L' + startLine;
             }
             return url;
         },
-        'generateNewFileUrl': function (gitInfo, uid) {
-            var url = normalizeGitUrlToHttps(gitInfo.repo);
+        'generateNewFileUrl': function(repo, branch, path, uid) {
+            var url = normalizeGitUrlToHttps(repo);
             url += '/new';
-            url += '/' + gitInfo.branch;
-            url += '/' + getOverrideFolder(gitInfo.apiSpecFolder);
+            url += '/' + branch;
+            url += '/' + getOverrideFolder(path);
             url += '/new?filename=' + getHtmlId(uid) + '.md';
             url += '&value=' + encodeURIComponent(getOverrideTemplate(uid));
             return url;
@@ -84,14 +84,14 @@ var gitUrlPatternItems = {
     },
     'vso': {
         'testRegex': /^https:\/\/.*\.visualstudio\.com\/.*/i,
-        'generateUrl': function (gitInfo) {
-            var url = gitInfo.repo + '?path=' + gitInfo.path + '&version=GB' + gitInfo.branch;
-            if (gitInfo.startLine && gitInfo.startLine > 0) {
-                url += '&line=' + gitInfo.startLine;
+        'generateUrl': function(repo, branch, path, startLine) {
+            var url =  repo + '?path=' + path + '&version=GB' + branch;
+            if (startLine && startLine > 0) {
+                url += '&line=' + startLine;
             }
             return url;
         },
-        'generateNewFileUrl': function (gitInfo, uid) {
+        'generateNewFileUrl': function(repo, branch, path, uid) {
             return '';
         }
     }
@@ -103,69 +103,36 @@ function normalizeGitUrlToHttps(repo) {
     return 'https://' + repo.substr(pos + 1).replace(/:/g, '/');
 }
 
-function getNewFileUrl(item, gitContribute, gitUrlPattern) {
+function getNewFileUrl(uid, gitContribute, gitUrlPattern) {
     // do not support VSO for now
-    if (!item.source) {
-        return '';
+    if (!gitContribute || !gitContribute.repo) return '';
+    var repo = gitContribute.repo;
+    if (repo.substr(-4) === '.git') {
+        repo = repo.substr(0, repo.length - 4);
     }
 
-    var gitInfo = getGitInfo(gitContribute, item.source.remote);
-    if (!gitInfo.repo || !gitInfo.branch || !gitInfo.path) {
-        return '';
-    }
-
-    if (gitInfo.repo.substr(-4) === '.git') {
-        gitInfo.repo = gitInfo.repo.substr(0, gitInfo.repo.length - 4);
-    }
-
-    var patternName = getPatternName(gitInfo.repo, gitUrlPattern);
+    var patternName = getPatternName(repo, gitUrlPattern);
     if (!patternName) return patternName;
-    return gitUrlPatternItems[patternName].generateNewFileUrl(gitInfo, item.uid);
+    return gitUrlPatternItems[patternName].generateNewFileUrl(repo, gitContribute.branch, gitContribute.path, uid);
 }
 
 function getRemoteUrl(remote, startLine, gitContribute, gitUrlPattern) {
-    var gitInfo = getGitInfo(gitContribute, remote);
-    if (!gitInfo.repo || !gitInfo.branch || !gitInfo.path) {
-        return '';
+    var repo = undefined;
+    var branch = undefined;
+    if (gitContribute && gitContribute.repo) repo = gitContribute.repo;
+    if (repo == undefined && remote && remote.repo) repo = remote.repo;
+    if (gitContribute && gitContribute.branch) branch = gitContribute.branch;
+    if (branch == undefined && remote && remote.branch) branch = remote.branch;
+
+    if (repo == undefined || branch == undefined) return '';
+
+    if (repo.substr(-4) === '.git') {
+        repo = repo.substr(0, repo.length - 4);
     }
 
-    if (gitInfo.repo.substr(-4) === '.git') {
-        gitInfo.repo = gitInfo.repo.substr(0, gitInfo.repo.length - 4);
-    }
-
-    var patternName = getPatternName(gitInfo.repo, gitUrlPattern);
+    var patternName = getPatternName(repo, gitUrlPattern);
     if (!patternName) return '';
-
-    gitInfo.startLine = startLine;
-    return gitUrlPatternItems[patternName].generateUrl(gitInfo);
-}
-
-function getGitInfo(gitContribute, gitRemote) {
-    // apiSpecFolder defines the folder contains overwrite files for MRef, the default value is apiSpec
-    var defaultApiSpecFolder = "apiSpec";
-
-    if (!gitContribute && !gitRemote) {
-        return {
-            apiSpecFolder: defaultApiSpecFolder
-        }
-    }
-
-    if (!gitContribute) {
-        return {
-            apiSpecFolder: defaultApiSpecFolder,
-            repo: gitRemote.repo,
-            branch: gitRemote.branch,
-            // path defines the relative path from current git repo.
-            path: gitRemote.path
-        }
-    }
-
-    return {
-        apiSpecFolder: gitContribute.apiSpecFolder || defaultApiSpecFolder,
-        repo: gitContribute.repo || gitRemote.repo,
-        branch: gitContribute.branch || gitRemote.branch,
-        path: gitRemote.path
-    }
+    return gitUrlPatternItems[patternName].generateUrl(repo, branch, remote.path, startLine);
 }
 
 function getPatternName(repo, gitUrlPattern) {

@@ -562,7 +562,6 @@ exports.getOptions = function (){
                     ["conceptual"] = $"\n<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"6\">Test link: <a href=\"~/{_inputFolder}/test/test.md\" data-raw-source=\"[link text](test/test.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">link text</a>\ntest</p>\n",
                     ["type"] = "Conceptual",
                     ["source"] = model["source"], // reuse model's source, not testing this
-                    ["documentation"] = model["source"],
                     ["path"] = $"{_inputFolder}/test.md",
                     ["meta"] = "Hello world!",
                     ["title"] = "Hello World",
