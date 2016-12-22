@@ -4,8 +4,12 @@
 namespace Microsoft.DocAsCode.Build.ReferenceBase
 {
     using System;
+    using System.Collections.Immutable;
+    using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     /// <summary>
@@ -32,6 +36,18 @@ namespace Microsoft.DocAsCode.Build.ReferenceBase
 
         protected abstract void BuildArticle(IHostService host, FileModel model);
 
-        protected abstract void BuildOverwrite(IHostService host, FileModel model);
+        protected virtual void BuildOverwrite(IHostService host, FileModel model)
+        {
+            var file = model.FileAndType;
+            var overwrites = MarkdownReader.ReadMarkdownAsOverwrite(host, model.FileAndType).ToList();
+            model.Content = overwrites;
+            model.LinkToFiles = overwrites.SelectMany(o => o.LinkToFiles).ToImmutableHashSet();
+            model.LinkToUids = overwrites.SelectMany(o => o.LinkToUids).ToImmutableHashSet();
+            model.Uids = (from item in overwrites
+                          select new UidDefinition(
+                              item.Uid,
+                              model.LocalPathFromRoot,
+                              item.Documentation.StartLine + 1)).ToImmutableArray();
+        }
     }
 }

@@ -19,8 +19,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     {
         public override string Name => nameof(ApplyOverwriteDocumentForMref);
 
-        public override int BuildOrder => 0x10;
-
         #region ApplyOverwriteDocumentForReferenceBase Members
 
         protected override IEnumerable<ItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host)

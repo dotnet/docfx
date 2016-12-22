@@ -67,7 +67,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return new FileModel(file, page, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
             {
                 Uids = (from item in page.Items select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),
-                LocalPathFromRepoRoot = displayLocalPath,
                 LocalPathFromRoot = displayLocalPath
             };
         }

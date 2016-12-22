@@ -21,8 +21,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     {
         public override string Name => nameof(BuildManagedReferenceDocument);
 
-        public override int BuildOrder => 0;
-
         #region BuildReferenceDocumentBase
 
         protected override void BuildArticle(IHostService host, FileModel model)
@@ -32,11 +30,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 BuildItem(host, item, model);
             }
-        }
-
-        protected override void BuildOverwrite(IHostService host, FileModel model)
-        {
-            BuildItem(host, model);
         }
 
         #endregion
@@ -109,21 +102,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         #region Private methods
         private static readonly IEnumerable<string> EmptyEnumerable = Enumerable.Empty<string>();
-
-        private static void BuildItem(IHostService host, FileModel model)
-        {
-            var file = model.FileAndType;
-            var overwrites = MarkdownReader.ReadMarkdownAsOverwrite(host, model.FileAndType).ToList();
-            model.Content = overwrites;
-            model.LinkToFiles = overwrites.SelectMany(o => o.LinkToFiles).ToImmutableHashSet();
-            model.LinkToUids = overwrites.SelectMany(o => o.LinkToUids).ToImmutableHashSet();
-            model.LocalPathFromRepoRoot = overwrites.FirstOrDefault()?.Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
-            model.Uids = (from item in overwrites
-                          select new UidDefinition(
-                              item.Uid,
-                              model.LocalPathFromRoot,
-                              item.Documentation.StartLine + 1)).ToImmutableArray();
-        }
 
         private static string Markup(IHostService host, string markdown, FileModel model, Func<string, bool> filter = null)
         {
