@@ -25,6 +25,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public DateTime? LastBuildStartTime { get; }
 
+        public IncrementalInfo IncrementalInfo { get; }
+
         public BuildVersionInfo CurrentBuildVersionInfo { get; }
 
         public BuildVersionInfo LastBuildVersionInfo { get; }
@@ -74,7 +76,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             var baseDir = Path.Combine(intermediateFolder, cb.DirectoryName);
             var lastBaseDir = lb != null ? Path.Combine(intermediateFolder, lb.DirectoryName) : null;
             var lastBuildStartTime = lb?.BuildStartTime;
-            var canBuildInfoIncremental = CanBuildInfoIncremental(cb, lb);
+            var buildInfoIncrementalStatus = GetBuildInfoIncrementalStatus(cb, lb);
             var lbv = lb?.Versions?.SingleOrDefault(v => v.VersionName == parameters.VersionName);
             var cbv = new BuildVersionInfo
             {
@@ -91,12 +93,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 Dependency = ConstructDependencyGraphFromLast(lbv?.Dependency),
             };
             cb.Versions.Add(cbv);
-            var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, canBuildInfoIncremental, parameters, cbv, lbv);
+            var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, buildInfoIncrementalStatus, parameters, cbv, lbv);
             context.InitChanges();
             return context;
         }
 
-        private IncrementalBuildContext(string baseDir, string lastBaseDir, DateTime? lastBuildStartTime, bool canBuildInfoIncremental, DocumentBuildParameters parameters, BuildVersionInfo cbv, BuildVersionInfo lbv)
+        private IncrementalBuildContext(string baseDir, string lastBaseDir, DateTime? lastBuildStartTime, IncrementalStatus buildInfoIncrementalStatus, DocumentBuildParameters parameters, BuildVersionInfo cbv, BuildVersionInfo lbv)
         {
             _parameters = parameters;
             BaseDir = baseDir;
@@ -104,7 +106,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             LastBuildStartTime = lastBuildStartTime;
             CurrentBuildVersionInfo = cbv;
             LastBuildVersionInfo = lbv;
-            CanVersionIncremental = canBuildInfoIncremental && GetCanVersionIncremental();
+            IncrementalInfo = new IncrementalInfo();
+            CanVersionIncremental = GetCanVersionIncremental(buildInfoIncrementalStatus);
         }
 
         #endregion
@@ -325,43 +328,74 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return cpi;
         }
 
+        public bool ShouldProcessorTraceInfo(IDocumentProcessor processor)
+        {
+            if (!(processor is ISupportIncrementalDocumentProcessor))
+            {
+                string message = $"Processor {processor.Name} cannot suppport incremental build because the processor doesn't implement {nameof(ISupportIncrementalDocumentProcessor)} interface.";
+                IncrementalInfo.ReportProcessorStatus(processor.Name, false, message);
+                Logger.LogVerbose(message);
+                return false;
+            }
+            if (!processor.BuildSteps.All(step => step is ISupportIncrementalBuildStep))
+            {
+                string message = $"Processor {processor.Name} cannot suppport incremental build because the following steps don't implement {nameof(ISupportIncrementalBuildStep)} interface: {string.Join(",", processor.BuildSteps.Where(step => !(step is ISupportIncrementalBuildStep)).Select(s => s.Name))}.";
+                IncrementalInfo.ReportProcessorStatus(processor.Name, false, message);
+                Logger.LogVerbose(message);
+                return false;
+            }
+            return true;
+        }
+
         public bool CanProcessorIncremental(IDocumentProcessor processor)
         {
             if (!CanVersionIncremental)
             {
+                IncrementalInfo.ReportProcessorStatus(processor.Name, false);
                 return false;
             }
 
             var cpi = CurrentBuildVersionInfo.Processors.Find(p => p.Name == processor.Name);
             if (cpi == null)
             {
-                Logger.LogWarning($"Current BuildVersionInfo missed processor info for {processor.Name}.");
+                string message = $"Current BuildVersionInfo missed processor info for {processor.Name}.";
+                IncrementalInfo.ReportProcessorStatus(processor.Name, false, message);
+                Logger.LogWarning(message);
                 return false;
             }
             var lpi = LastBuildVersionInfo.Processors.Find(p => p.Name == processor.Name);
             if (lpi == null)
             {
-                Logger.LogVerbose($"Processor {processor.Name} disable incremental build because last build doesn't contain version {Version}.");
+                string message = $"Processor {processor.Name} disable incremental build because last build doesn't contain version {Version}.";
+                IncrementalInfo.ReportProcessorStatus(processor.Name, false, message);
+                Logger.LogVerbose(message);
                 return false;
             }
             if (cpi.IncrementalContextHash != lpi.IncrementalContextHash)
             {
-                Logger.LogVerbose($"Processor {processor.Name} disable incremental build because incremental context hash changed.");
+                string message = $"Processor {processor.Name} disable incremental build because incremental context hash changed.";
+                IncrementalInfo.ReportProcessorStatus(processor.Name, false, message);
+                Logger.LogVerbose(message);
                 return false;
             }
             if (cpi.Steps.Count != lpi.Steps.Count)
             {
-                Logger.LogVerbose($"Processor {processor.Name} disable incremental build because steps count is different.");
+                string message = $"Processor {processor.Name} disable incremental build because steps count is different.";
+                IncrementalInfo.ReportProcessorStatus(processor.Name, false, message);
+                Logger.LogVerbose(message);
                 return false;
             }
             for (int i = 0; i < cpi.Steps.Count; i++)
             {
                 if (!object.Equals(cpi.Steps[i], lpi.Steps[i]))
                 {
-                    Logger.LogVerbose($"Processor {processor.Name} disable incremental build because steps changed, from step {lpi.Steps[i].ToJsonString()} to {cpi.Steps[i].ToJsonString()}.");
+                    string message = $"Processor {processor.Name} disable incremental build because steps changed, from step {lpi.Steps[i].ToJsonString()} to {cpi.Steps[i].ToJsonString()}.";
+                    IncrementalInfo.ReportProcessorStatus(processor.Name, false, message);
+                    Logger.LogVerbose(message);
                     return false;
                 }
             }
+            IncrementalInfo.ReportProcessorStatus(processor.Name, true);
             Logger.LogVerbose($"Processor {processor.Name} enable incremental build.");
             return true;
         }
@@ -454,50 +488,58 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
-        private static bool CanBuildInfoIncremental(BuildInfo cb, BuildInfo lb)
+        private static IncrementalStatus GetBuildInfoIncrementalStatus(BuildInfo cb, BuildInfo lb)
         {
             if (lb == null)
             {
-                return false;
+                return new IncrementalStatus { CanIncremental = false, Details = "Cannot build incrementally because last build info is missing." };
             }
             if (cb.DocfxVersion != lb.DocfxVersion)
             {
-                Logger.LogVerbose($"Cannot build incrementally because docfx version changed from {lb.DocfxVersion} to {cb.DocfxVersion}.");
-                return false;
+                return new IncrementalStatus { CanIncremental = false, Details = $"Cannot build incrementally because docfx version changed from {lb.DocfxVersion} to {cb.DocfxVersion}." };
             }
             if (cb.PluginHash != lb.PluginHash)
             {
-                Logger.LogVerbose("Cannot build incrementally because plugin changed.");
-                return false;
+                return new IncrementalStatus { CanIncremental = false, Details = "Cannot build incrementally because plugin changed." };
             }
             if (cb.TemplateHash != lb.TemplateHash)
             {
-                Logger.LogVerbose("Cannot build incrementally because template changed.");
-                return false;
+                return new IncrementalStatus { CanIncremental = false, Details = "Cannot build incrementally because template changed." };
             }
             if (cb.CommitFromSHA != lb.CommitToSHA)
             {
-                Logger.LogVerbose($"Cannot build incrementally because commit SHA doesn't match. Last build commit: {lb.CommitToSHA}. Current build commit base: {cb.CommitFromSHA}.");
-                return false;
+                return new IncrementalStatus { CanIncremental = false, Details = $"Cannot build incrementally because commit SHA doesn't match. Last build commit: {lb.CommitToSHA}. Current build commit base: {cb.CommitFromSHA}." };
             }
-            return true;
+            return new IncrementalStatus { CanIncremental = true };
         }
 
-        private bool GetCanVersionIncremental()
+        private bool GetCanVersionIncremental(IncrementalStatus buildInfoIncrementalStatus)
         {
+            if (!buildInfoIncrementalStatus.CanIncremental)
+            {
+                IncrementalInfo.ReportStatus(false, buildInfoIncrementalStatus.Details);
+                Logger.LogVerbose(buildInfoIncrementalStatus.Details);
+                return false;
+            }
             if (LastBuildVersionInfo == null)
             {
-                Logger.LogVerbose($"Cannot build incrementally because last build didn't contain version {Version}.");
+                string message = $"Cannot build incrementally because last build didn't contain version {Version}.";
+                IncrementalInfo.ReportStatus(false, message);
+                Logger.LogVerbose(message);
                 return false;
             }
             if (CurrentBuildVersionInfo.ConfigHash != LastBuildVersionInfo.ConfigHash)
             {
-                Logger.LogVerbose("Cannot build incrementally because config changed.");
+                string message = "Cannot build incrementally because config changed.";
+                IncrementalInfo.ReportStatus(false, message);
+                Logger.LogVerbose(message);
                 return false;
             }
             if (_parameters.ForceRebuild)
             {
-                Logger.LogVerbose($"Disable incremental build by force rebuild option.");
+                string message = $"Disable incremental build by force rebuild option.";
+                IncrementalInfo.ReportStatus(false, message);
+                Logger.LogVerbose(message);
                 return false;
             }
             if (_parameters.ApplyTemplateSettings != null)
@@ -505,10 +547,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 var options = _parameters.ApplyTemplateSettings.Options;
                 if ((options & (ApplyTemplateOptions.ExportRawModel | ApplyTemplateOptions.ExportViewModel)) != ApplyTemplateOptions.None)
                 {
-                    Logger.LogVerbose($"Disable incremental build because ExportRawModel/ExportViewModel option enabled.");
+                    string message = $"Disable incremental build because ExportRawModel/ExportViewModel option enabled.";
+                    IncrementalInfo.ReportStatus(false, message);
+                    Logger.LogVerbose(message);
                     return false;
                 }
             }
+            IncrementalInfo.ReportStatus(true);
             return true;
         }
 
