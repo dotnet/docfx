@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.ReferenceBase
+namespace Microsoft.DocAsCode.Build.Common
 {
     using System;
     using System.Collections.Immutable;
+    using System.IO;
 
-    using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Plugins;
 
     /// <summary>
@@ -14,6 +14,8 @@ namespace Microsoft.DocAsCode.Build.ReferenceBase
     /// </summary>
     public abstract class ReferenceDocumentProcessorBase : DisposableDocumentProcessor
     {
+        protected abstract string ProcessorDocumentType { get; }
+
         public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
             switch (file.Type)
@@ -21,7 +23,7 @@ namespace Microsoft.DocAsCode.Build.ReferenceBase
                 case DocumentType.Article:
                     return LoadArticle(file, metadata);
                 case DocumentType.Overwrite:
-                    return LoadOverwrite(file);
+                    return LoadOverwrite(file, metadata);
                 default:
                     throw new NotSupportedException();
             }
@@ -33,20 +35,23 @@ namespace Microsoft.DocAsCode.Build.ReferenceBase
             {
                 throw new NotSupportedException();
             }
-            var result = GenerateSaveResult(model);
-            UpdateModelContent(model);
-            return result;
-        }
-
-        protected virtual void UpdateModelContent(FileModel model)
-        {
+            return new SaveResult
+            {
+                DocumentType = model.DocumentType ?? ProcessorDocumentType,
+                FileWithoutExtension = Path.ChangeExtension(model.File, null),
+                LinkToFiles = model.LinkToFiles.ToImmutableArray(),
+                LinkToUids = model.LinkToUids,
+                FileLinkSources = model.FileLinkSources,
+                UidLinkSources = model.UidLinkSources,
+            };
         }
 
         protected abstract FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata);
 
-        protected abstract FileModel LoadOverwrite(FileAndType file);
-
-        protected abstract SaveResult GenerateSaveResult(FileModel model);
-
+        protected virtual FileModel LoadOverwrite(FileAndType file, ImmutableDictionary<string, object> metadata)
+        {
+            // TODO: Refactor current behavior that overwrite file is read multiple times by multiple processors
+            return OverwriteDocumentReader.Read(file);
+        }
     }
 }

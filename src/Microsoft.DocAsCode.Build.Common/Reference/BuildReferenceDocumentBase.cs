@@ -1,15 +1,12 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.ReferenceBase
+namespace Microsoft.DocAsCode.Build.Common
 {
     using System;
     using System.Collections.Immutable;
-    using System.IO;
     using System.Linq;
 
-    using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     /// <summary>
@@ -38,7 +35,6 @@ namespace Microsoft.DocAsCode.Build.ReferenceBase
 
         protected virtual void BuildOverwrite(IHostService host, FileModel model)
         {
-            var file = model.FileAndType;
             var overwrites = MarkdownReader.ReadMarkdownAsOverwrite(host, model.FileAndType).ToList();
             model.Content = overwrites;
             model.LinkToFiles = overwrites.SelectMany(o => o.LinkToFiles).ToImmutableHashSet();

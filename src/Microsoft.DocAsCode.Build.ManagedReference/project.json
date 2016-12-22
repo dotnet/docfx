@@ -20,8 +20,7 @@
     "Microsoft.DocAsCode.DataContracts.Common": "1.0.0",
     "Microsoft.DocAsCode.DataContracts.ManagedReference": "1.0.0",
     "Microsoft.DocAsCode.Plugins": "1.0.0",
-    "Microsoft.DocAsCode.YamlSerialization": "1.0.0",
-    "Microsoft.DocAsCode.Build.ReferenceBase": "1.0.0"
+    "Microsoft.DocAsCode.YamlSerialization": "1.0.0"
   },
   "configurations": {
     "Debug": {
