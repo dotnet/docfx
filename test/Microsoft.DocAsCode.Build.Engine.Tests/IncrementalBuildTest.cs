@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     [Collection("docfx STA")]
     public class IncrementalBuildTest : TestBase
     {
-        private TestLoggerListener Listener { get; set; }
+        private LogListener Listener { get; set; }
 
         public IncrementalBuildTest()
         {
@@ -1330,7 +1330,7 @@ tagRules : [
 
         private void Init(string phaseName)
         {
-            Listener = new TestLoggerListener(phaseName) { LogLevelThreshold = LogLevel.Warning };
+            Listener = new LogListener(phaseName) { LogLevelThreshold = LogLevel.Warning };
             Logger.RegisterListener(Listener);
         }
 
@@ -1450,6 +1450,48 @@ tagRules : [
             var subDirectory = Path.Combine(baseFolder, dir);
             Directory.CreateDirectory(subDirectory);
             return subDirectory;
+        }
+
+        #endregion
+
+        #region Listener
+
+        private class LogListener : ILoggerListener
+        {
+            public string Phase { get; }
+
+            public List<ILogItem> Items { get; } = new List<ILogItem>();
+
+            public LogLevel LogLevelThreshold { get; set; }
+
+            public LogListener(string phase)
+            {
+                Phase = phase;
+            }
+
+            public void Dispose()
+            {
+            }
+
+            public void Flush()
+            {
+            }
+
+            public void WriteLine(ILogItem item)
+            {
+                if (item.LogLevel < LogLevelThreshold)
+                {
+                    return;
+                }
+                if (item.Phase == Phase)
+                {
+                    Items.Add(item);
+                }
+                else if (item.Phase != null && item.Phase.StartsWith(Phase))
+                {
+                    Items.Add(item);
+                }
+            }
         }
 
         #endregion

@@ -30,15 +30,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
         public void WriteLine(ILogItem item)
         {
-            if (item.LogLevel < LogLevelThreshold)
-            {
-                return;
-            }
             if (item.Phase == Phase)
             {
                 Items.Add(item);
             }
-            else if (item.Phase != null && item.Phase.StartsWith(Phase))
+            else if (item.Phase != null && item.Phase.EndsWith(Phase))
             {
                 Items.Add(item);
             }
