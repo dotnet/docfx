@@ -177,7 +177,8 @@ tagRules : [
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(6, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
-                    Assert.True(incrementalInfo != null && incrementalInfo.Count == 1);
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
@@ -410,7 +411,8 @@ tagRules : [
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(8, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
-                    Assert.True(incrementalInfo != null && incrementalInfo.Count == 1);
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
@@ -600,7 +602,8 @@ tagRules : [
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(8, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
-                    Assert.True(incrementalInfo != null && incrementalInfo.Count == 1);
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
@@ -814,7 +817,8 @@ tagRules : [
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(8, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
-                    Assert.True(incrementalInfo != null && incrementalInfo.Count == 1);
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
@@ -1017,7 +1021,8 @@ tagRules : [
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(8, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
-                    Assert.True(incrementalInfo != null && incrementalInfo.Count == 1);
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
@@ -1135,7 +1140,8 @@ tagRules : [
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(1, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
-                    Assert.True(incrementalInfo != null && incrementalInfo.Count == 1);
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.False(incrementalStatus.CanIncremental);
                     Assert.Equal(incrementalStatus.Details, "Cannot build incrementally because config changed.");
@@ -1190,7 +1196,8 @@ tagRules : [
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(1, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
-                    Assert.True(incrementalInfo != null && incrementalInfo.Count == 1);
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.False(incrementalStatus.CanIncremental);
                     Assert.Equal(incrementalStatus.Details, "Cannot build incrementally because template changed.");
