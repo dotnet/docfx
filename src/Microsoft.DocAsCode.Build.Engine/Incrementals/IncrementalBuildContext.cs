@@ -89,11 +89,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 XRefSpecMapFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 FileMapFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 BuildMessageFile = IncrementalUtility.CreateRandomFileName(baseDir),
-                Attributes = ComputeFileAttributes(parameters, lbv?.Dependency),
                 Dependency = ConstructDependencyGraphFromLast(lbv?.Dependency),
             };
             cb.Versions.Add(cbv);
             var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, buildInfoIncrementalStatus, parameters, cbv, lbv);
+            context.InitFileAttributes();
             context.InitChanges();
             return context;
         }
@@ -281,6 +281,44 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         #region BuildVersionInfo
 
+        public void InitFileAttributes()
+        {
+            using (new LoggerPhaseScope("InitFileAttributes", true))
+            {
+                var fileAttributes = CurrentBuildVersionInfo.Attributes;
+                foreach (var f in GetFilesToCalculateAttributes())
+                {
+                    string key = f.PathFromWorkingFolder;
+                    if (fileAttributes.ContainsKey(key))
+                    {
+                        continue;
+                    }
+                    FileAttributeItem item;
+                    if (_parameters.Changes == null || _parameters.Changes.ContainsKey(key) ||
+                        LastBuildVersionInfo == null || !LastBuildVersionInfo.Attributes.TryGetValue(key, out item))
+                    {
+                        fileAttributes[key] = new FileAttributeItem
+                        {
+                            File = key,
+                            LastModifiedTime = File.GetLastWriteTimeUtc(f.FullPath),
+                            MD5 = StringExtension.GetMd5String(File.ReadAllText(f.FullPath)),
+                            IsFromSource = f.IsFromSource,
+                        };
+                    }
+                    else
+                    {
+                        fileAttributes[key] = new FileAttributeItem
+                        {
+                            File = item.File,
+                            LastModifiedTime = item.LastModifiedTime,
+                            MD5 = item.MD5,
+                            IsFromSource = f.IsFromSource,
+                        };
+                    }
+                }
+            }
+        }
+
         public void UpdateBuildVersionInfoPerDependencyGraph()
         {
             if (CurrentBuildVersionInfo.Dependency == null)
@@ -420,47 +458,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
-        private static Dictionary<string, FileAttributeItem> ComputeFileAttributes(DocumentBuildParameters parameters, DependencyGraph dg)
-        {
-            using (new LoggerPhaseScope("ComputeFileAttributes", true))
-            {
-                var filesInScope = from f in parameters.Files.EnumerateFiles()
-                                   let fileKey = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString()
-                                   select new
-                                   {
-                                       PathFromWorkingFolder = fileKey,
-                                       FullPath = f.FullPath,
-                                       IsFromSource = true,
-                                   };
-                var files = filesInScope;
-                if (dg != null)
-                {
-                    var filesFromDependency = from node in dg.GetAllDependentNodes()
-                                              let p = RelativePath.TryParse(node)
-                                              where p != null
-                                              let fullPath = Path.Combine(EnvironmentContext.BaseDirectory, p.RemoveWorkingFolder())
-                                              select new
-                                              {
-                                                  PathFromWorkingFolder = node,
-                                                  FullPath = fullPath,
-                                                  IsFromSource = false,
-                                              };
-                    files = files.Concat(filesFromDependency);
-                }
-
-                return (from item in files
-                        where File.Exists(item.FullPath)
-                        group item by item.PathFromWorkingFolder into g
-                        select new FileAttributeItem
-                        {
-                            File = g.Key,
-                            LastModifiedTime = File.GetLastWriteTimeUtc(g.First().FullPath),
-                            MD5 = StringExtension.GetMd5String(File.ReadAllText(g.First().FullPath)),
-                            IsFromSource = g.Any(v => v.IsFromSource),
-                        }).ToDictionary(a => a.File);
-            }
-        }
-
         private static DependencyGraph ConstructDependencyGraphFromLast(DependencyGraph ldg)
         {
             using (new LoggerPhaseScope("ConstructDgFromLast", true))
@@ -557,6 +554,43 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return true;
         }
 
+        private IEnumerable<FileItem> GetFilesToCalculateAttributes()
+        {
+            var keys = new HashSet<string>();
+            foreach (var f in _parameters.Files.EnumerateFiles())
+            {
+                var fileKey = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString();
+                keys.Add(fileKey);
+                yield return new FileItem
+                {
+                    PathFromWorkingFolder = fileKey,
+                    FullPath = f.FullPath,
+                    IsFromSource = true,
+                };
+            }
+            if (CurrentBuildVersionInfo.Dependency != null)
+            {
+                foreach (var f in CurrentBuildVersionInfo.Dependency.GetAllDependentNodes())
+                {
+                    var p = RelativePath.TryParse(f);
+                    if (p == null)
+                    {
+                        continue;
+                    }
+                    var fullPath = PathUtility.GetFullPath(EnvironmentContext.BaseDirectory, p.RemoveWorkingFolder());
+                    if (!keys.Contains(f) && File.Exists(fullPath))
+                    {
+                        yield return new FileItem
+                        {
+                            PathFromWorkingFolder = f,
+                            FullPath = fullPath,
+                            IsFromSource = false,
+                        };
+                    }
+                }
+            }
+        }
+
         private void InitChanges()
         {
             if (CanVersionIncremental)
@@ -575,5 +609,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         }
 
         #endregion
+
+        private class FileItem
+        {
+            public string PathFromWorkingFolder { get; set; }
+
+            public string FullPath { get; set; }
+
+            public bool IsFromSource { get; set; }
+        }
     }
 }
