@@ -139,7 +139,7 @@ tagRules : [
             string outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestBasic.Second");
             try
             {
-                using (new LoggerPhaseScope("first-IncrementalBuild.TestBasic"))
+                using (new LoggerPhaseScope("IncrementalBuild.TestBasic-first"))
                 {
                     BuildDocument(
                         files,
@@ -154,9 +154,10 @@ tagRules : [
 
                 }
 
-                // no changes
+                ClearListener();
 
-                using (new LoggerPhaseScope("second-IncrementalBuild.TestBasic"))
+                // no changes
+                using (new LoggerPhaseScope("IncrementalBuild.TestBasic-second"))
                 {
                     BuildDocument(
                         files,
@@ -239,6 +240,11 @@ tagRules : [
                 {
                     // check resource.
                     Assert.True(File.Exists(Path.Combine(outputFolderForIncremental, resourceFile)));
+                }
+                {
+                    // check logs.
+                    var logs = Listener.Items.Where(i => i.Phase.StartsWith("IncrementalBuild.TestBasic")).ToList();
+                    Assert.Equal(7, logs.Count);
                 }
             }
             finally
@@ -354,7 +360,7 @@ tagRules : [
             var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestLocalChanges.Second.ForceBuild");
             try
             {
-                using (new LoggerPhaseScope("first-IncrementalBuild.TestLocalChanges"))
+                using (new LoggerPhaseScope("IncrementalBuild.TestLocalChanges-first"))
                 {
                     BuildDocument(
                         files,
@@ -378,7 +384,9 @@ tagRules : [
                         "test",
                     },
                     inputFolder);
-                using (new LoggerPhaseScope("second-IncrementalBuild.TestLocalChanges"))
+
+                ClearListener();
+                using (new LoggerPhaseScope("IncrementalBuild.TestLocalChanges-second"))
                 {
                     BuildDocument(
                         files,
@@ -392,7 +400,7 @@ tagRules : [
                         intermediateFolder: intermediateFolder);
 
                 }
-                using (new LoggerPhaseScope("second-forcebuild-IncrementalBuild.TestLocalChanges"))
+                using (new LoggerPhaseScope("IncrementalBuild.TestLocalChanges-forcebuild-second"))
                 {
                     BuildDocument(
                         files,
@@ -428,6 +436,9 @@ tagRules : [
                 {
                     // compare with force build
                     Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages(new[] { "IncrementalBuild.TestLocalChanges-forcebuild-second" }),
+                        GetLogMessages(new[] { "IncrementalBuild.TestLocalChanges-second", "IncrementalBuild.TestLocalChanges-first" }));
                 }
             }
             finally
@@ -543,7 +554,7 @@ tagRules : [
             var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestServerChanges.Second.ForceBuild");
             try
             {
-                using (new LoggerPhaseScope("first-IncrementalBuild.TestServerChanges"))
+                using (new LoggerPhaseScope("IncrementalBuild.TestServerChanges-first"))
                 {
                     BuildDocument(
                         files,
@@ -558,7 +569,9 @@ tagRules : [
 
                 }
 
-                using (new LoggerPhaseScope("second-IncrementalBuild.TestServerChanges"))
+                ClearListener();
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestServerChanges-second"))
                 {
                     BuildDocument(
                         files,
@@ -583,7 +596,7 @@ tagRules : [
                         });
 
                 }
-                using (new LoggerPhaseScope("second-forcebuild-IncrementalBuild.TestServerChanges"))
+                using (new LoggerPhaseScope("IncrementalBuild.TestServerChanges-forcebuild-second"))
                 {
                     BuildDocument(
                         files,
@@ -619,6 +632,9 @@ tagRules : [
                 {
                     // compare with force build
                     Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestServerChanges-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestServerChanges-second", "IncrementalBuild.TestServerChanges-first" }));
                 }
             }
             finally
@@ -743,7 +759,7 @@ tagRules : [
             var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx.Second.ForceBuild");
             try
             {
-                using (new LoggerPhaseScope("first-IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx"))
+                using (new LoggerPhaseScope("IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx-first"))
                 {
                     BuildDocument(
                         files,
@@ -772,7 +788,9 @@ tagRules : [
                 files.Add(DocumentType.Article, new[] { token1 });
                 files.RemoveAll(f => f.File == conceptualFile2.ToNormalizedPath());
 
-                using (new LoggerPhaseScope("second-IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx"))
+                ClearListener();
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx-second"))
                 {
 
                     BuildDocument(
@@ -798,7 +816,7 @@ tagRules : [
                         });
 
                 }
-                using (new LoggerPhaseScope("second-forcebuild-IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx"))
+                using (new LoggerPhaseScope("IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx-forcebuild-second"))
                 {
                     BuildDocument(
                         files,
@@ -834,6 +852,9 @@ tagRules : [
                 {
                     // compare with force build
                     Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx-second", "IncrementalBuild.TestServerChangesFilesAddRemoveFromDocfx-first" }));
                 }
             }
             finally
@@ -958,7 +979,7 @@ tagRules : [
             var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx.Second.ForceBuild");
             try
             {
-                using (new LoggerPhaseScope("first-IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx"))
+                using (new LoggerPhaseScope("IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx-first"))
                 {
                     BuildDocument(
                         files,
@@ -987,7 +1008,9 @@ tagRules : [
                 files.Add(DocumentType.Article, new[] { token1 });
                 files.RemoveAll(f => f.File == conceptualFile2.ToNormalizedPath());
 
-                using (new LoggerPhaseScope("second-IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx"))
+                ClearListener();
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx-second"))
                 {
 
                     BuildDocument(
@@ -1002,7 +1025,7 @@ tagRules : [
                         intermediateFolder: intermediateFolder);
 
                 }
-                using (new LoggerPhaseScope("second-forcebuild-IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx"))
+                using (new LoggerPhaseScope("IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx-forcebuild-second"))
                 {
                     BuildDocument(
                         files,
@@ -1038,6 +1061,9 @@ tagRules : [
                 {
                     // compare with force build
                     Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx-second", "IncrementalBuild.TestLocalChangesFilesAddRemoveFromDocfx-first" }));
                 }
             }
             finally
@@ -1051,7 +1077,7 @@ tagRules : [
         }
 
         [Fact]
-        public void TestIncrementalFlag()
+        public void TestIncrementalFlagConfigChange()
         {
             #region Prepare test data
             var resourceFile = Path.GetFileName(typeof(IncrementalBuildTest).Assembly.Location);
@@ -1085,13 +1111,13 @@ tagRules : [
             files.Add(DocumentType.Article, new[] { conceptualFile });
             #endregion
 
-            Init("IncrementalBuild.TestIncrementalFlag");
-            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalFlag");
-            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalFlag.Second");
-            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalFlag.Second.ForceBuild");
+            Init("IncrementalBuild.TestIncrementalFlagConfigChange");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalFlagConfigChange");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalFlagConfigChange.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalFlagConfigChange.Second.ForceBuild");
             try
             {
-                using (new LoggerPhaseScope("first-IncrementalBuild.TestIncrementalFlag"))
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalFlagConfigChange-first"))
                 {
                     BuildDocument(
                         files,
@@ -1106,8 +1132,10 @@ tagRules : [
 
                 }
 
+                ClearListener();
+
                 // change config.metadata
-                using (new LoggerPhaseScope("second-IncrementalBuild.TestIncrementalFlag"))
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalFlagConfigChange-second"))
                 {
                     BuildDocument(
                         files,
@@ -1121,7 +1149,7 @@ tagRules : [
                         intermediateFolder: intermediateFolder);
 
                 }
-                using (new LoggerPhaseScope("second-forcebuild-IncrementalBuild.TestIncrementalFlag"))
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalFlagConfigChange-forcebuild-second"))
                 {
                     BuildDocument(
                         files,
@@ -1158,10 +1186,81 @@ tagRules : [
                 {
                     // compare with force build
                     Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestIncrementalFlagConfigChange-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestIncrementalFlagConfigChange-second", "IncrementalBuild.TestIncrementalFlagConfigChange-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+                Directory.Delete(outputFolder, true);
+                Directory.Delete(templateFolder, true);
+                Directory.Delete(inputFolder, true);
+                Directory.Delete(intermediateFolder, true);
+            }
+        }
+
+        [Fact]
+        public void TestIncrementalFlagTemplateHash()
+        {
+            #region Prepare test data
+            var resourceFile = Path.GetFileName(typeof(IncrementalBuildTest).Assembly.Location);
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
+
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef1",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test XRef: @XRef1",
+                    "Test link: [link text](test/test.md)",
+                    "Test link: [link text 2](../" + resourceFile + ")",
+                    "Test link style xref: [link text 3](xref:XRef2 \"title\")",
+                    "<p>",
+                    "test",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { conceptualFile });
+            #endregion
+
+            Init("IncrementalBuild.TestIncrementalFlagTemplateHash");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalFlagTemplateHash");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalFlagTemplateHash.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalFlagTemplateHash.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalFlagTemplateHash-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
                 }
 
+                ClearListener();
+
                 // change template hash
-                using (new LoggerPhaseScope("second-IncrementalBuild.TestIncrementalFlagTemplateHash"))
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalFlagTemplateHash-second"))
                 {
                     BuildDocument(
                         files,
@@ -1176,7 +1275,7 @@ tagRules : [
                         intermediateFolder: intermediateFolder);
 
                 }
-                using (new LoggerPhaseScope("second-forcebuild-IncrementalBuild.TestIncrementalFlagTemplateHash"))
+                using (new LoggerPhaseScope("IncrementalBuild.TestIncrementalFlagTemplateHash-forcebuild-second"))
                 {
                     BuildDocument(
                         files,
@@ -1214,6 +1313,9 @@ tagRules : [
                 {
                     // compare with force build
                     Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestIncrementalFlagTemplateHash-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestIncrementalFlagTemplateHash-second", "IncrementalBuild.TestIncrementalFlagTemplateHash-first" }));
                 }
             }
             finally
@@ -1228,7 +1330,7 @@ tagRules : [
 
         private void Init(string phaseName)
         {
-            Listener = new TestLoggerListener(phaseName);
+            Listener = new TestLoggerListener(phaseName) { LogLevelThreshold = LogLevel.Warning };
             Logger.RegisterListener(Listener);
         }
 
@@ -1236,6 +1338,14 @@ tagRules : [
         {
             Logger.UnregisterListener(Listener);
             Listener = null;
+        }
+
+        private void ClearListener()
+        {
+            if (Listener != null)
+            {
+                Listener.Items.Clear();
+            }
         }
 
         private static bool CompareDir(string path1, string path2)
@@ -1258,6 +1368,15 @@ tagRules : [
                 }
             }
             return true;
+        }
+
+        private List<string> GetLogMessages(params string[] phasePrefixes)
+        {
+            return (from i in Listener.Items
+                    from p in phasePrefixes
+                    where i.Phase.StartsWith(p)
+                    orderby i.Message
+                    select i.Message).ToList();
         }
 
         private void BuildDocument(
