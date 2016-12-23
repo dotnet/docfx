@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         [Trait("Related", "Perf")]
         public void TestPerf()
         {
-            const int RepeatCount = 1000;
+            const int RepeatCount = 800;
             string source = GetSource(RepeatCount);
             var builder = new GfmEngineBuilder(new Options());
             var engine = builder.CreateEngine(new HtmlRenderer());
