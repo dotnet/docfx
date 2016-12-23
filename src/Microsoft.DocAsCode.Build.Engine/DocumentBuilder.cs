@@ -69,7 +69,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogVerbose($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");
             }
             _postProcessors = GetPostProcessor(postProcessorNames);
-            _intermediateFolder = intermediateFolder;
+            if (intermediateFolder != null)
+            {
+                var expanded = Environment.ExpandEnvironmentVariables(intermediateFolder);
+                if (expanded.Length == 0)
+                {
+                    expanded = ".";
+                }
+                _intermediateFolder = Path.GetFullPath(expanded);
+            }
             _lastBuildInfo = BuildInfo.Load(_intermediateFolder);
         }
 
