@@ -71,11 +71,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             _postProcessors = GetPostProcessor(postProcessorNames);
             if (intermediateFolder != null)
             {
-                if (intermediateFolder.Length == 0)
+                var expanded = Environment.ExpandEnvironmentVariables(intermediateFolder);
+                if (expanded.Length == 0)
                 {
-                    _intermediateFolder = Path.GetFullPath(".");
+                    expanded = ".";
                 }
-                _intermediateFolder = Path.GetFullPath(Environment.ExpandEnvironmentVariables(intermediateFolder));
+                _intermediateFolder = Path.GetFullPath(expanded);
             }
             _lastBuildInfo = BuildInfo.Load(_intermediateFolder);
         }
