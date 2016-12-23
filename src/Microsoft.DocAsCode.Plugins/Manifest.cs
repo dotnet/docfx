@@ -29,5 +29,9 @@ namespace Microsoft.DocAsCode.Plugins
         [YamlMember(Alias = "files")]
         [JsonProperty("files")]
         public List<ManifestItem> Files { get; set; }
+
+        [YamlMember(Alias = "incrementalInfo")]
+        [JsonProperty("incremental_info")]
+        public List<IncrementalInfo> IncrementalInfo { get; set; }
     }
 }

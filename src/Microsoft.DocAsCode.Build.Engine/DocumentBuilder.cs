@@ -243,6 +243,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             var xrefMaps = (from manifest in manifests
                             where manifest.XRefMap != null
                             select manifest.XRefMap).ToList();
+            var incrementalInfos = (from manifest in manifests
+                                    from i in manifest.IncrementalInfo ?? Enumerable.Empty<IncrementalInfo>()
+                                    select i).ToList();
             return new Manifest
             {
                 Homepages = (from manifest in manifests
@@ -252,7 +255,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                          from file in manifest.Files ?? Enumerable.Empty<ManifestItem>()
                          select file).Distinct().ToList(),
                 XRefMap = xrefMaps.Count <= 1 ? xrefMaps.FirstOrDefault() : xrefMaps,
-                SourceBasePath = manifests.FirstOrDefault()?.SourceBasePath
+                SourceBasePath = manifests.FirstOrDefault()?.SourceBasePath,
+                IncrementalInfo = incrementalInfos.Count > 0 ? incrementalInfos : null,
             };
         }
 

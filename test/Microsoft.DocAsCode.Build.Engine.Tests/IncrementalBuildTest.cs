@@ -176,6 +176,17 @@ tagRules : [
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(6, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    Assert.Equal(
+                        processorsStatus[nameof(ManagedReferenceDocumentProcessor)].Details,
+                        "Processor ManagedReferenceDocumentProcessor cannot suppport incremental build because the following steps don't implement ISupportIncrementalBuildStep interface: ApplyOverwriteDocumentForMref,BuildManagedReferenceDocument,FillReferenceInformation,ValidateManagedReferenceDocumentMetadata.");
                 }
                 {
                     // check xrefmap
@@ -399,6 +410,13 @@ tagRules : [
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(8, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
                 }
                 {
                     // check xrefmap
@@ -583,6 +601,13 @@ tagRules : [
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(8, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
                 }
                 {
                     // check xrefmap
@@ -791,6 +816,13 @@ tagRules : [
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(8, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
                 }
                 {
                     // check xrefmap
@@ -988,6 +1020,13 @@ tagRules : [
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(8, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
                 }
                 {
                     // check xrefmap
@@ -995,6 +1034,182 @@ tagRules : [
                     Assert.True(File.Exists(xrefMapOutputPath));
                     var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
                     Assert.Equal(69, xrefMap.References.Count);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                }
+            }
+            finally
+            {
+                CleanUp();
+                Directory.Delete(outputFolder, true);
+                Directory.Delete(templateFolder, true);
+                Directory.Delete(inputFolder, true);
+                Directory.Delete(intermediateFolder, true);
+            }
+        }
+
+        [Fact]
+        public void TestIncrementalFlag()
+        {
+            #region Prepare test data
+            var resourceFile = Path.GetFileName(typeof(IncrementalBuildTest).Assembly.Location);
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
+
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "---",
+                    "uid: XRef1",
+                    "a: b",
+                    "b:",
+                    "  c: e",
+                    "---",
+                    "# Hello World",
+                    "Test XRef: @XRef1",
+                    "Test link: [link text](test/test.md)",
+                    "Test link: [link text 2](../" + resourceFile + ")",
+                    "Test link style xref: [link text 3](xref:XRef2 \"title\")",
+                    "<p>",
+                    "test",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { conceptualFile });
+            #endregion
+
+            Init("IncrementalBuild.TestIncrementalFlag");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalFlag");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalFlag.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestIncrementalFlag.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("first-IncrementalBuild.TestIncrementalFlag"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                // change config.metadata
+                using (new LoggerPhaseScope("second-IncrementalBuild.TestIncrementalFlag"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world2!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("second-forcebuild-IncrementalBuild.TestIncrementalFlag"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world2!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(1, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.False(incrementalStatus.CanIncremental);
+                    Assert.Equal(incrementalStatus.Details, "Cannot build incrementally because config changed.");
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.False(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // check xrefmap
+                    var xrefMapOutputPath = Path.Combine(outputFolderForIncremental, "xrefmap.yml");
+                    Assert.True(File.Exists(xrefMapOutputPath));
+                    var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
+                    Assert.Equal(1, xrefMap.References.Count);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                }
+
+                // change template hash
+                using (new LoggerPhaseScope("second-IncrementalBuild.TestIncrementalFlagTemplateHash"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world2!",
+                        },
+                        templateHash: "1234",
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("second-forcebuild-IncrementalBuild.TestIncrementalFlagTemplateHash"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world2!",
+                        },
+                        templateHash: "1234",
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(1, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.False(incrementalStatus.CanIncremental);
+                    Assert.Equal(incrementalStatus.Details, "Cannot build incrementally because template changed.");
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.False(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // check xrefmap
+                    var xrefMapOutputPath = Path.Combine(outputFolderForIncremental, "xrefmap.yml");
+                    Assert.True(File.Exists(xrefMapOutputPath));
+                    var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
+                    Assert.Equal(1, xrefMap.References.Count);
                 }
                 {
                     // compare with force build
@@ -1051,11 +1266,12 @@ tagRules : [
             string outputFolder,
             Dictionary<string, object> metadata = null,
             ApplyTemplateSettings applyTemplateSettings = null,
+            string templateHash = null,
             string templateFolder = null,
             string intermediateFolder = null,
             Dictionary<string, ChangeKindWithDependency> changes = null)
         {
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null, intermediateFolder))
+            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, templateHash, intermediateFolder))
             {
                 if (applyTemplateSettings == null)
                 {

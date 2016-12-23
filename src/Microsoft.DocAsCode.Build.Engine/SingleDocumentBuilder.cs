@@ -135,7 +135,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Files = context.ManifestItems.ToList(),
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context),
-                            SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory)
+                            SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
+                            IncrementalInfo = context.IncrementalBuildContext != null ? new List<IncrementalInfo> { context.IncrementalBuildContext.IncrementalInfo } : null,
                         };
                     }
                 }
