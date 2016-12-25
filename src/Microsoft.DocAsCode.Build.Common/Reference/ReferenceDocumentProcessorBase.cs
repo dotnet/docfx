@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Build.Common
     /// </summary>
     public abstract class ReferenceDocumentProcessorBase : DisposableDocumentProcessor
     {
-        protected abstract string ProcessorDocumentType { get; }
+        protected abstract string ProcessedDocumentType { get; }
 
         public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.Common
             }
             return new SaveResult
             {
-                DocumentType = model.DocumentType ?? ProcessorDocumentType,
+                DocumentType = model.DocumentType ?? ProcessedDocumentType,
                 FileWithoutExtension = Path.ChangeExtension(model.File, null),
                 LinkToFiles = model.LinkToFiles.ToImmutableArray(),
                 LinkToUids = model.LinkToUids,

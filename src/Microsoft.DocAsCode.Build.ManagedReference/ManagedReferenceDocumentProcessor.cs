@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         #region ReferenceDocumentProcessorBase Members
 
-        protected override string ProcessorDocumentType { get; } = "ManagedReference";
+        protected override string ProcessedDocumentType { get; } = "ManagedReference";
 
         protected override FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
