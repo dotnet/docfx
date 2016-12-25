@@ -134,7 +134,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             FileModel model,
             SaveResult result)
         {
-            context.FileMap[model.Key] = ((RelativePath)model.File).GetPathFromWorkingFolder();
+            context.SetFilePath(model.Key, ((RelativePath)model.File).GetPathFromWorkingFolder());
             DocumentException.RunAll(
                 () => CheckFileLink(hostService, result),
                 () => HandleUids(context, result),

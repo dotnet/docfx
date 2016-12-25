@@ -137,7 +137,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // for overwrite files, it don't exist in filemap
                     if (lastFileMap.TryGetValue(fileFromWorkingFolder, out path))
                     {
-                        Context.FileMap[fileFromWorkingFolder] = path;
+                        Context.SetFilePath(fileFromWorkingFolder, path);
                     }
                 }
             }

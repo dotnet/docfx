@@ -42,6 +42,7 @@ namespace Microsoft.DocAsCode.Dfm
             }
             catch (Exception)
             {
+                Logger.LogInfo("Invalid yaml header.", file: context.File, line: context.LineNumber.ToString());
                 return null;
             }
             var sourceInfo = context.Consume(match.Length);

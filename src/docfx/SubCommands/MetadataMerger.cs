@@ -84,7 +84,7 @@ namespace Microsoft.DocAsCode.SubCommands
             foreach (var m in models)
             {
                 InitMetaTable(m, parameters.TocMetadata);
-                YamlUtility.Serialize(Path.Combine(outputBase, m.File), m.Content, YamlMime.ManagedReference);
+                YamlUtility.Serialize(m.File, m.Content, YamlMime.ManagedReference);
             }
         }
 
@@ -96,12 +96,10 @@ namespace Microsoft.DocAsCode.SubCommands
                  select f).ToList();
             var vm = MergeTocViewModel(
                 from f in tocFiles
-                select YamlUtility.Deserialize<TocViewModel>(Path.Combine(f.BaseDir, f.File)));
+                select YamlUtility.Deserialize<TocViewModel>(f.File));
             CopyMetadataToToc(vm);
             YamlUtility.Serialize(
-                Path.Combine(
-                    outputBase,
-                    (RelativePath)tocFiles[0].DestinationDir + (((RelativePath)tocFiles[0].File) - (RelativePath)tocFiles[0].SourceDir)),
+                ((RelativePath)tocFiles[0].DestinationDir + (((RelativePath)tocFiles[0].File) - (RelativePath)tocFiles[0].SourceDir)).ToString(),
                 vm,
                 YamlMime.TableOfContent);
         }

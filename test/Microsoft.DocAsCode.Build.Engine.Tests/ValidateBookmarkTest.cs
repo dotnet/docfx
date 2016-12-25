@@ -12,21 +12,35 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Tests.Common;
 
     using Xunit;
 
-    public class ValidateBookmarkTest
+    [Collection("docfx STA")]
+    public class ValidateBookmarkTest : TestBase
     {
+        private readonly string _outputFolder;
         private LoggerListener _listener = new LoggerListener("validate_bookmark.ValidateBookmark");
+
+        public ValidateBookmarkTest()
+        {
+            _outputFolder = GetRandomFolder();
+            EnvironmentContext.SetBaseDirectory(_outputFolder);
+            EnvironmentContext.SetOutputDirectory(_outputFolder);
+        }
+
+        public override void Dispose()
+        {
+            EnvironmentContext.Clean();
+            base.Dispose();
+        }
 
         [Fact]
         public void TestBasicFeature()
         {
-            var outputFolder = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "validate_bookmark");
-            Directory.CreateDirectory(outputFolder);
             Manifest manifest = new Manifest
             {
-                SourceBasePath = outputFolder,
+                SourceBasePath = _outputFolder,
                 Files = new List<ManifestItem>
                 {
                     new ManifestItem { SourceRelativePath = "a.md", OutputFiles = new Dictionary<string, OutputFileInfo> { { ".html", new OutputFileInfo { RelativePath = "a.html" } } } },
@@ -35,9 +49,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 }
             };
 
-            File.WriteAllText(Path.Combine(outputFolder, "a.html"), @"<a href='http://bing.com#top'>Microsoft Bing</a> <p id='b1'>section</p><a href='#b1'/>");
-            File.WriteAllText(Path.Combine(outputFolder, "b.html"), @"<a href='a.html#b1' sourceFile='b.md' sourceStartLineNumber='1'>bookmark existed</a><a href='a.html#b2' data-raw-source='[link with source info](a.md#b2)' sourceFile='b.md' sourceStartLineNumber='1'>link with source info</a> <a href='a.html#b3' data-raw-source='[link in token file](a.md#b3)' sourceFile='token.md' sourceStartLineNumber='1'>link in token file</a><a href='a.html#b4'>link without source info</a>");
-            File.WriteAllText(Path.Combine(outputFolder, "c.html"), @"<a href='illegal_path_%3Cillegal character%3E.html#b1'>Test illegal link path</a>");
+            File.WriteAllText(Path.Combine(_outputFolder, "a.html"), @"<a href='http://bing.com#top'>Microsoft Bing</a> <p id='b1'>section</p><a href='#b1'/>");
+            File.WriteAllText(Path.Combine(_outputFolder, "b.html"), @"<a href='a.html#b1' sourceFile='b.md' sourceStartLineNumber='1'>bookmark existed</a><a href='a.html#b2' data-raw-source='[link with source info](a.md#b2)' sourceFile='b.md' sourceStartLineNumber='1'>link with source info</a> <a href='a.html#b3' data-raw-source='[link in token file](a.md#b3)' sourceFile='token.md' sourceStartLineNumber='1'>link in token file</a><a href='a.html#b4'>link without source info</a>");
+            File.WriteAllText(Path.Combine(_outputFolder, "c.html"), @"<a href='illegal_path_%3Cillegal character%3E.html#b1'>Test illegal link path</a>");
 
             Logger.RegisterListener(_listener);
             using (new LoggerPhaseScope("validate_bookmark"))
@@ -45,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 new HtmlPostProcessor
                 {
                     Handlers = { new ValidateBookmark() }
-                }.Process(manifest, outputFolder);
+                }.Process(manifest, _outputFolder);
             }
             Logger.UnregisterListener(_listener);
             var logs = _listener.Items;

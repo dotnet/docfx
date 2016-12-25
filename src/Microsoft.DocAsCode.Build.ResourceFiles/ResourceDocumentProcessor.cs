@@ -49,8 +49,8 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
         {
             string uid = null;
             Dictionary<string, object> content = null;
-            var metafile = Path.Combine(file.BaseDir, file.File.TrimEnd('.') + ".meta");
-            if (File.Exists(metafile))
+            var metafile = file.File.TrimEnd('.') + ".meta";
+            if (EnvironmentContext.FileAbstractLayer.Exists(metafile))
             {
                 content = YamlUtility.Deserialize<Dictionary<string, object>>(metafile);
                 if (content != null)
@@ -73,12 +73,12 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
                 content = metadata.ToDictionary(p => p.Key, p => p.Value);
             }
 
-            var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
+            var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
             return new FileModel(file, content)
             {
-                Uids = string.IsNullOrEmpty(uid) ? ImmutableArray<UidDefinition>.Empty : ImmutableArray<UidDefinition>.Empty.Add(new UidDefinition(uid, displayLocalPath)),
-                LocalPathFromRoot = displayLocalPath
+                Uids = string.IsNullOrEmpty(uid) ? ImmutableArray<UidDefinition>.Empty : ImmutableArray<UidDefinition>.Empty.Add(new UidDefinition(uid, localPathFromRoot)),
+                LocalPathFromRoot = localPathFromRoot
             };
         }
 
@@ -86,13 +86,9 @@ namespace Microsoft.DocAsCode.Build.ResourceFiles
         {
             if (model.FileAndType != model.OriginalFileAndType)
             {
-                var targetFile = Path.Combine(model.BaseDir, model.File);
-                Directory.CreateDirectory(Path.GetDirectoryName(targetFile));
-                File.Copy(
-                    Path.Combine(model.OriginalFileAndType.BaseDir, model.OriginalFileAndType.File),
-                    targetFile,
-                    true);
-                File.SetAttributes(targetFile, FileAttributes.Normal);
+                EnvironmentContext.FileAbstractLayer.Copy(
+                    model.OriginalFileAndType.File,
+                    model.FileAndType.File);
             }
             var result = new SaveResult
             {

@@ -2,6 +2,9 @@
 =======================================
 v2.10(Pre-Release)
 -----------
+1.  Bug fixes:
+    1. Markdown table content is misplaced if there is empty column in it.
+    2. Markdown include should not share link context.
 
 v2.9
 -----------

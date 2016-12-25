@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal class HostServiceCreatorWithIncremental : HostServiceCreator
     {
-        private readonly ConcurrentDictionary<string, bool> _cache = new ConcurrentDictionary<string, bool>();
+        private readonly ConcurrentDictionary<string, Lazy<bool>> _cache = new ConcurrentDictionary<string, Lazy<bool>>();
 
         public IncrementalBuildContext IncrementalContext { get; }
 
@@ -31,13 +31,13 @@ namespace Microsoft.DocAsCode.Build.Engine
         public override bool ShouldProcessorTraceInfo(IDocumentProcessor processor)
         {
             var key = $"trace-{processor.Name}";
-            return _cache.GetOrAdd(key, k => ShouldProcessorTraceInfoCore(processor));
+            return _cache.GetOrAdd(key, k => new Lazy<bool>(() => ShouldProcessorTraceInfoCore(processor))).Value;
         }
 
         public override bool CanProcessorIncremental(IDocumentProcessor processor)
         {
             var key = $"canIncremental-{processor.Name}";
-            return _cache.GetOrAdd(key, k => CanProcessorIncrementalCore(processor));
+            return _cache.GetOrAdd(key, k => new Lazy<bool>(() => CanProcessorIncrementalCore(processor))).Value;
         }
 
         public override HostService CreateHostService(
@@ -105,17 +105,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private bool ShouldProcessorTraceInfoCore(IDocumentProcessor processor)
         {
-            if (!(processor is ISupportIncrementalDocumentProcessor))
-            {
-                Logger.LogVerbose($"Processor {processor.Name} cannot suppport incremental build because the processor doesn't implement {nameof(ISupportIncrementalDocumentProcessor)} interface.");
-                return false;
-            }
-            if (!processor.BuildSteps.All(step => step is ISupportIncrementalBuildStep))
-            {
-                Logger.LogVerbose($"Processor {processor.Name} cannot suppport incremental build because the following steps don't implement {nameof(ISupportIncrementalBuildStep)} interface: {string.Join(",", processor.BuildSteps.Where(step => !(step is ISupportIncrementalBuildStep)).Select(s => s.Name))}.");
-                return false;
-            }
-            return true;
+            return IncrementalContext.ShouldProcessorTraceInfo(processor);
         }
 
         private bool CanProcessorIncrementalCore(IDocumentProcessor processor)

@@ -38,6 +38,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         Prebuild(hostService);
                     }
+                }
+            }
+            foreach (var hostService in hostServices)
+            {
+                using (new LoggerPhaseScope(hostService.Processor.Name, true))
+                {
                     Logger.LogVerbose($"Processor {hostService.Processor.Name}: Building...");
                     using (new LoggerPhaseScope("Build", true))
                     {

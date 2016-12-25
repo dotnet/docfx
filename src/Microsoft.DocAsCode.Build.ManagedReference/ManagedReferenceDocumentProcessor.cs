@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         protected override FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
-            var page = YamlUtility.Deserialize<PageViewModel>(Path.Combine(file.BaseDir, file.File));
+            var page = YamlUtility.Deserialize<PageViewModel>(file.File);
             if (page.Items == null || page.Items.Count == 0)
             {
                 return null;
@@ -63,12 +63,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 }
             }
 
-            var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
+            var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
             return new FileModel(file, page, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
             {
-                Uids = (from item in page.Items select new UidDefinition(item.Uid, displayLocalPath)).ToImmutableArray(),
-                LocalPathFromRoot = displayLocalPath
+                Uids = (from item in page.Items select new UidDefinition(item.Uid, localPathFromRoot)).ToImmutableArray(),
+                LocalPathFromRoot = localPathFromRoot
             };
         }
 
@@ -89,7 +89,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     if (".yml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase) ||
                         ".yaml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
                     {
-                        var mime = YamlMime.ReadMime(Path.Combine(file.BaseDir, file.File));
+                        var mime = YamlMime.ReadMime(file.File);
                         switch (mime)
                         {
                             case YamlMime.ManagedReference:

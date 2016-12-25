@@ -19,6 +19,7 @@ namespace Microsoft.DocAsCode.Common
             var f = Path.Combine(ExpandedOutputFolder, destFileName.RemoveWorkingFolder());
             Directory.CreateDirectory(Path.GetDirectoryName(f));
             File.Copy(Environment.ExpandEnvironmentVariables(sourceFileName.PhysicalPath), f);
+            File.SetAttributes(f, FileAttributes.Normal);
         }
 
         public override Stream Create(RelativePath file)

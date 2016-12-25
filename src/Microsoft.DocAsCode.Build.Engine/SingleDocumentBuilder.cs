@@ -110,7 +110,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             if (MarkdownService == null)
                             {
-                                MarkdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
+                                using (new LoggerPhaseScope("CreateMarkdownService", true))
+                                {
+                                    MarkdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
+                                }
                             }
                             Prepare(
                                 parameters,
@@ -132,7 +135,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Files = context.ManifestItems.ToList(),
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context),
-                            SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory)
+                            SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
+                            IncrementalInfo = context.IncrementalBuildContext != null ? new List<IncrementalInfo> { context.IncrementalBuildContext.IncrementalInfo } : null,
                         };
                     }
                 }
@@ -209,14 +213,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                                       item,
                                   }).AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism))
             {
-                var hostService = creator.CreateHostService(
-                    parameters,
-                    templateProcessor,
-                    MarkdownService,
-                    MetadataValidators,
-                    pair.processor,
-                    pair.item?.Select(f => f.file));
-                yield return hostService;
+                using (new LoggerPhaseScope(pair.processor.Name, true))
+                {
+                    var hostService = creator.CreateHostService(
+                        parameters,
+                        templateProcessor,
+                        MarkdownService,
+                        MetadataValidators,
+                        pair.processor,
+                        pair.item?.Select(f => f.file));
+                    yield return hostService;
+                }
             }
         }
 
@@ -230,7 +237,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (IntermediateFolder != null && parameters.ApplyTemplateSettings.TransformDocument)
             {
-                context.IncrementalBuildContext = IncrementalBuildContext.Create(parameters, CurrentBuildInfo, LastBuildInfo, IntermediateFolder, markdownServiceContextHash);
+                using (new LoggerPhaseScope("CreateIncrementalBuildContext", true))
+                {
+                    context.IncrementalBuildContext = IncrementalBuildContext.Create(parameters, CurrentBuildInfo, LastBuildInfo, IntermediateFolder, markdownServiceContextHash);
+                }
                 hostServiceCreator = new HostServiceCreatorWithIncremental(context);
                 phaseProcessor = new PhaseProcessor
                 {
@@ -277,7 +287,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 (from xref in context.XRefSpecMap.Values.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                  select new XRefSpec(xref)
                  {
-                     Href = ((RelativePath)context.FileMap[UriUtility.GetNonFragment(xref.Href)]).RemoveWorkingFolder() + UriUtility.GetFragment(xref.Href)
+                     Href = ((RelativePath)context.GetFilePath(UriUtility.GetNonFragment(xref.Href))).RemoveWorkingFolder() + UriUtility.GetFragment(xref.Href)
                  }).ToList();
             xrefMap.Sort();
             string xrefMapFileNameWithVersion = string.IsNullOrEmpty(parameters.VersionName) ?
