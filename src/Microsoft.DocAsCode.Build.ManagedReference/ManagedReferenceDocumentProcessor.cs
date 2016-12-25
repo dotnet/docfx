@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
     [Export(typeof(IDocumentProcessor))]
     public class ManagedReferenceDocumentProcessor
-        : DisposableDocumentProcessor, ISupportIncrementalDocumentProcessor
+        : ReferenceDocumentProcessorBase, ISupportIncrementalDocumentProcessor
     {
         #region Fields
         private readonly ResourcePoolManager<JsonSerializer> _serializerPool;
@@ -33,6 +33,43 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         public ManagedReferenceDocumentProcessor()
         {
             _serializerPool = new ResourcePoolManager<JsonSerializer>(GetSerializer, 0x10);
+        }
+
+        #endregion
+
+        #region ReferenceDocumentProcessorBase Members
+
+        protected override string ProcessedDocumentType { get; } = "ManagedReference";
+
+        protected override FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata)
+        {
+            var page = YamlUtility.Deserialize<PageViewModel>(file.File);
+            if (page.Items == null || page.Items.Count == 0)
+            {
+                return null;
+            }
+            if (page.Metadata == null)
+            {
+                page.Metadata = metadata.ToDictionary(p => p.Key, p => p.Value);
+            }
+            else
+            {
+                foreach (var item in metadata)
+                {
+                    if (!page.Metadata.ContainsKey(item.Key))
+                    {
+                        page.Metadata[item.Key] = item.Value;
+                    }
+                }
+            }
+
+            var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
+
+            return new FileModel(file, page, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
+            {
+                Uids = (from item in page.Items select new UidDefinition(item.Uid, localPathFromRoot)).ToImmutableArray(),
+                LocalPathFromRoot = localPathFromRoot
+            };
         }
 
         #endregion
@@ -83,72 +120,23 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return ProcessingPriority.NotSupported;
         }
 
-        public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
-        {
-            switch (file.Type)
-            {
-                case DocumentType.Article:
-                    var page = YamlUtility.Deserialize<PageViewModel>(file.File);
-                    if (page.Items == null || page.Items.Count == 0)
-                    {
-                        return null;
-                    }
-                    if (page.Metadata == null)
-                    {
-                        page.Metadata = metadata.ToDictionary(p => p.Key, p => p.Value);
-                    }
-                    else
-                    {
-                        foreach (var item in metadata)
-                        {
-                            if (!page.Metadata.ContainsKey(item.Key))
-                            {
-                                page.Metadata[item.Key] = item.Value;
-                            }
-                        }
-                    }
-
-                    var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
-
-                    return new FileModel(file, page, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
-                    {
-                        Uids = (from item in page.Items select new UidDefinition(item.Uid, localPathFromRoot)).ToImmutableArray(),
-                        LocalPathFromRepoRoot = localPathFromRoot,
-                        LocalPathFromRoot = localPathFromRoot
-                    };
-                case DocumentType.Overwrite:
-                    // TODO: Refactor current behavior that overwrite file is read multiple times by multiple processors
-                    return OverwriteDocumentReader.Read(file);
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-
         public override SaveResult Save(FileModel model)
         {
-            if (model.Type != DocumentType.Article)
-            {
-                throw new NotSupportedException();
-            }
             var vm = (PageViewModel)model.Content;
+
+            var result = base.Save(model);
+            result.XRefSpecs = (from item in vm.Items
+                                from xref in GetXRefInfo(item, model.Key, vm.References)
+                                group xref by xref.Uid
+                                into g
+                                select g.First()).ToImmutableArray();
+            result.ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray();
 
             UpdateModelContent(model);
 
-            return new SaveResult
-            {
-                DocumentType = "ManagedReference",
-                FileWithoutExtension = Path.ChangeExtension(model.File, null),
-                LinkToFiles = model.LinkToFiles.ToImmutableArray(),
-                LinkToUids = model.LinkToUids,
-                FileLinkSources = model.FileLinkSources,
-                UidLinkSources = model.UidLinkSources,
-                XRefSpecs = (from item in vm.Items
-                             from xref in GetXRefInfo(item, model.Key, vm.References)
-                             group xref by xref.Uid into g
-                             select g.First()).ToImmutableArray(),
-                ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray(),
-            };
+            return result;
         }
+
 
         #endregion
 

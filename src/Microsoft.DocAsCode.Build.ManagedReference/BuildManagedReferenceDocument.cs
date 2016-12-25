@@ -12,37 +12,26 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildManagedReferenceDocument : BaseDocumentBuildStep
+    public class BuildManagedReferenceDocument : BuildReferenceDocumentBase
     {
-        private readonly ReflectionEntityMerger Merger = new ReflectionEntityMerger();
-
         public override string Name => nameof(BuildManagedReferenceDocument);
 
-        public override int BuildOrder => 0;
+        #region BuildReferenceDocumentBase
 
-        public override void Build(FileModel model, IHostService host)
+        protected override void BuildArticle(IHostService host, FileModel model)
         {
-            switch (model.Type)
+            var page = (PageViewModel)model.Content;
+            foreach (var item in page.Items)
             {
-                case DocumentType.Article:
-                    var page = (PageViewModel)model.Content;
-                    foreach (var item in page.Items)
-                    {
-                        BuildItem(host, item, model);
-                    }
-                    break;
-                case DocumentType.Overwrite:
-                    BuildItem(host, model);
-                    break;
-                default:
-                    throw new NotSupportedException();
+                BuildItem(host, item, model);
             }
         }
+
+        #endregion
 
         public static ItemViewModel BuildItem(IHostService host, ItemViewModel item, FileModel model, Func<string, bool> filter = null)
         {
@@ -112,21 +101,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         #region Private methods
         private static readonly IEnumerable<string> EmptyEnumerable = Enumerable.Empty<string>();
-
-        private static void BuildItem(IHostService host, FileModel model)
-        {
-            var file = model.FileAndType;
-            var overwrites = MarkdownReader.ReadMarkdownAsOverwrite(host, model.FileAndType).ToList();
-            model.Content = overwrites;
-            model.LinkToFiles = overwrites.SelectMany(o => o.LinkToFiles).ToImmutableHashSet();
-            model.LinkToUids = overwrites.SelectMany(o => o.LinkToUids).ToImmutableHashSet();
-            model.LocalPathFromRepoRoot = overwrites.FirstOrDefault()?.Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
-            model.Uids = (from item in overwrites
-                          select new UidDefinition(
-                              item.Uid,
-                              model.LocalPathFromRoot,
-                              item.Documentation.StartLine + 1)).ToImmutableArray();
-        }
 
         private static string Markup(IHostService host, string markdown, FileModel model, Func<string, bool> filter = null)
         {
