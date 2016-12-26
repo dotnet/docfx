@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Build.Common
 
     public static class ReflectionHelper
     {
-
         private static ConcurrentDictionary<Type, List<PropertyInfo>> _settablePropertiesCache = new ConcurrentDictionary<Type, List<PropertyInfo>>();
         private static ConcurrentDictionary<Type, List<PropertyInfo>> _gettablePropertiesCache = new ConcurrentDictionary<Type, List<PropertyInfo>>();
 
@@ -84,12 +83,8 @@ namespace Microsoft.DocAsCode.Build.Common
 
         public static bool IsGenericType(Type type, Type genericType)
         {
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == genericType)
-            {
-                return true;
-            }
-
-            return false;
+            return type.IsGenericType
+                && type.GetGenericTypeDefinition() == genericType;
         }
 
         private static IEnumerable<PropertyInfo> GetProperties(Type type, BindingFlags bindingFlags)

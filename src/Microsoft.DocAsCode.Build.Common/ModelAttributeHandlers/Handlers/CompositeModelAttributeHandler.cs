@@ -3,10 +3,10 @@
 
 namespace Microsoft.DocAsCode.Build.Common
 {
-    public class CompositeHandler : IModelAttributeHandler
+    public class CompositeModelAttributeHandler : IModelAttributeHandler
     {
         private IModelAttributeHandler[] _handlers;
-        public CompositeHandler(params IModelAttributeHandler[] handlers)
+        public CompositeModelAttributeHandler(params IModelAttributeHandler[] handlers)
         {
             _handlers = handlers;
         }

@@ -8,12 +8,12 @@ namespace Microsoft.DocAsCode.Build.Common
     using System.Linq;
     using System.Reflection;
 
-    public abstract class BaseHandler<T> : IModelAttributeHandler where T: Attribute
+    public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler where T: Attribute
     {
         private readonly PropInfo[] _props;
         private readonly IModelAttributeHandler _handler;
 
-        protected BaseHandler(Type type, IModelAttributeHandler handler)
+        protected BaseModelAttributeHandler(Type type, IModelAttributeHandler handler)
         {
             if (type == null)
             {

@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Build.Common
             _cache.GetOrAdd(type, new UniqueIdentityHandlerImpl(type, this)).Handle(obj, context);
         }
 
-        private sealed class UniqueIdentityHandlerImpl : BaseHandler<UniqueIdentityReferenceAttribute>
+        private sealed class UniqueIdentityHandlerImpl : BaseModelAttributeHandler<UniqueIdentityReferenceAttribute>
         {
             public UniqueIdentityHandlerImpl(Type type, IModelAttributeHandler handler) : base(type, handler)
             {
@@ -43,22 +43,31 @@ namespace Microsoft.DocAsCode.Build.Common
                 {
                     context.LinkToUids.Add(val);
                 }
-
-                var list = obj as IEnumerable;
-                if (list != null)
-                {
-                    foreach (var i in list)
-                    {
-                        var item = i as string;
-                        if (item != null)
-                        {
-                            context.LinkToUids.Add(item);
-                        }
-                    }
-                }
                 else
                 {
-                    throw new NotSupportedException($"Type {obj.GetType()} is NOT a supported type for {nameof(UniqueIdentityReferenceAttribute)}");
+                    var list = obj as IEnumerable;
+                    if (list != null)
+                    {
+                        foreach (var i in list)
+                        {
+                            if (i != null)
+                            {
+                                var item = i as string;
+                                if (item != null)
+                                {
+                                    context.LinkToUids.Add(item);
+                                }
+                                else
+                                {
+                                    throw new NotSupportedException($"Type {obj.GetType()} inside IEnumerable is NOT a supported item type for {nameof(UniqueIdentityReferenceAttribute)}");
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new NotSupportedException($"Type {obj.GetType()} is NOT a supported type for {nameof(UniqueIdentityReferenceAttribute)}");
+                    }
                 }
             }
         }
