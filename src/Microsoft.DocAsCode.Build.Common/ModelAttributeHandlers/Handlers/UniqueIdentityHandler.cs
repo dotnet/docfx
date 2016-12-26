@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Build.Common
             _cache.GetOrAdd(type, new UniqueIdentityHandlerImpl(type, this)).Handle(obj, context);
         }
 
-        private sealed class UniqueIdentityHandlerImpl : BaseHandler<UniqueIdentityReferenceAttribute>
+        private sealed class UniqueIdentityHandlerImpl : BaseModelAttributeHandler<UniqueIdentityReferenceAttribute>
         {
             public UniqueIdentityHandlerImpl(Type type, IModelAttributeHandler handler) : base(type, handler)
             {
@@ -49,10 +49,17 @@ namespace Microsoft.DocAsCode.Build.Common
                 {
                     foreach (var i in list)
                     {
-                        var item = i as string;
-                        if (item != null)
+                        if (i != null)
                         {
-                            context.LinkToUids.Add(item);
+                            var item = i as string;
+                            if (item != null)
+                            {
+                                context.LinkToUids.Add(item);
+                            }
+                            else
+                            {
+                                throw new NotSupportedException($"Type {obj.GetType()} inside IEnumerable is NOT a supported item type for {nameof(UniqueIdentityReferenceAttribute)}");
+                            }
                         }
                     }
                 }

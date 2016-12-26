@@ -31,12 +31,24 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
         }
 
         [Fact]
-        public void TestModelWithInvalidAttributeShouldThrow()
+        public void TestModelWithInvalidTypeShouldThrow()
         {
             var model = new InvalidModel
             {
                 Identity = "identity",
                 InvalidIdentity = 1,
+            };
+            Assert.Throws<NotSupportedException>(
+                () => Handle(model)
+                );
+        }
+
+        [Fact]
+        public void TestModelWithInvalidItemTypeShouldThrow()
+        {
+            var model = new InvalidModel2
+            {
+                Identities = new List<int> { 0 }
             };
             Assert.Throws<NotSupportedException>(
                 () => Handle(model)
@@ -89,7 +101,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
         private static HandleModelAttributesContext Handle(object model)
         {
-            var handler = new CompositeHandler(new UniqueIdentityReferenceHandler());
+            var handler = new CompositeModelAttributeHandler(new UniqueIdentityReferenceHandler());
             var context = new HandleModelAttributesContext();
 
             handler.Handle(model, context);
@@ -115,6 +127,12 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
             [UniqueIdentityReference]
             public string Identity { get; set; }
+        }
+
+        private class InvalidModel2
+        {
+            [UniqueIdentityReference]
+            public List<int> Identities { get; set; }
         }
 
         private class ComplexModel
