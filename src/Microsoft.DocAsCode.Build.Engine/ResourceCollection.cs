@@ -180,7 +180,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var stream = _collectionsInOverriddenOrder[i].GetResourceStream(name);
                 if (stream != null)
                 {
-                    Logger.LogVerbose($"Resource \"{name}\" is found from \"{_collectionsInOverriddenOrder[i].Name}\"");
+                    Logger.LogDiagnostic($"Resource \"{name}\" is found from \"{_collectionsInOverriddenOrder[i].Name}\"");
                     return stream;
                 }
             }
