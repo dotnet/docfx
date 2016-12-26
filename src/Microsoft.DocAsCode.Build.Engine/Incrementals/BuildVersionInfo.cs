@@ -65,7 +65,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// deserialized attributes
         /// </summary>
         [JsonIgnore]
-        public IDictionary<string, FileAttributeItem> Attributes { get; set; }
+        public IDictionary<string, FileAttributeItem> Attributes { get; set; } = new Dictionary<string, FileAttributeItem>();
         /// <summary>
         /// deserialized manifestitems
         /// </summary>
