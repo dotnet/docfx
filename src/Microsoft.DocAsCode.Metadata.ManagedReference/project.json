@@ -43,9 +43,11 @@
   "frameworks": {
     "net452": {
       "frameworkAssemblies": {
+        "System.Threading.Tasks": {
+          "type": "build"
+        },
         "System.Web": "",
         "System.Xml": "",
-        "System.Threading.Tasks": "",
         "System.Xml.Linq": ""
       }
     }
