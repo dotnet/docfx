@@ -24,6 +24,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         #region Fields
         private static readonly char[] UriFragmentOrQueryString = new char[] { '#', '?' };
         private readonly object _syncRoot = new object();
+        private readonly object _tocSyncRoot = new object();
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
         private readonly LruList<ModelWithCache> _lru = Environment.Is64BitProcess ? null : LruList<ModelWithCache>.CreateSynchronized(0xC00, OnLruRemoving);
         #endregion
@@ -122,6 +123,43 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             return MarkupCore(markdown, ft, omitParse);
         }
+
+        #region TableOfContent related
+
+        public ImmutableArray<RestructureTableOfContent> RestructureTableOfContentDelegates { get; set; } = ImmutableArray<RestructureTableOfContent>.Empty;
+
+        public bool ShouldRestructureTableOfContent()
+        {
+            return RestructureTableOfContentDelegates.Length > 0;
+        }
+
+        public void RegisterRestructuringTableOfContent(params RestructureTableOfContent[] methods)
+        {
+            if (methods == null || methods.Length == 0)
+            {
+                return;
+            }
+
+            var list = new List<RestructureTableOfContent>(methods);
+            lock (_tocSyncRoot)
+            {
+                if (RestructureTableOfContentDelegates != null)
+                {
+                    list.AddRange(RestructureTableOfContentDelegates);
+                }
+                RestructureTableOfContentDelegates = list.ToImmutableArray();
+            }
+        }
+
+        public void InvokeRestructuringTableOfContent(TreeItem item)
+        {
+            foreach (var del in RestructureTableOfContentDelegates)
+            {
+                del.Invoke(item);
+            }
+        }
+
+        #endregion
 
         private MarkupResult MarkupCore(string markdown, FileAndType ft, bool omitParse)
         {

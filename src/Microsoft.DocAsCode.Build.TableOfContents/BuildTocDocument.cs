@@ -59,8 +59,13 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         public override void Build(FileModel model, IHostService host)
         {
             var toc = (TocItemViewModel)model.Content;
-            BuildCore(toc, model, host);
+            if (host.ShouldRestructureTableOfContent())
+            {
+                toc = RestructureTableOfContent(toc, host);
+            }
 
+            BuildCore(toc, model, host);
+            model.Content = toc;
             // todo : metadata.
         }
 
@@ -98,6 +103,13 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                     BuildCore(i, model, hostService);
                 }
             }
+        }
+
+        private static TocItemViewModel RestructureTableOfContent(TocItemViewModel toc, IHostService host)
+        {
+            TreeItem convertedToc = YamlUtility.ConvertTo<TreeItem>(toc);
+            host.InvokeRestructuringTableOfContent(convertedToc);
+            return YamlUtility.ConvertTo<TocItemViewModel>(convertedToc);
         }
 
         private static string ParseFile(string link)
