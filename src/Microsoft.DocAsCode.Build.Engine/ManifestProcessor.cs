@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
@@ -257,7 +258,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     Logger.LogDiagnostic($"Feed options from template for {m.Item.DocumentType}...");
                     m.Options = m.TemplateBundle.GetOptions(m.Item, _context);
                 }
-            });
+            },
+            _context.MaxParallelism);
         }
 
         private void FeedXRefMap()
@@ -280,7 +282,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                         _context.RegisterInternalXrefSpecBookmark(pair.Key, pair.Value);
                     }
                 }
-            });
+            },
+            _context.MaxParallelism);
         }
 
         private void UpdateHref()
@@ -296,7 +299,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // reset model after updating href
                     m.Item.Model = m.FileModel.ModelWithCache;
                 }
-            });
+            },
+            _context.MaxParallelism);
         }
 
         private void ApplySystemMetadata()
@@ -335,7 +339,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // Append system metadata to model
                     m.Item.Model.Content = metadata;
                 }
-            });
+            },
+            _context.MaxParallelism);
         }
 
         private IDictionary<string, object> FeedGlobalVariables()
@@ -348,7 +353,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             IDictionary<string, object> metadata = initialGlobalVariables == null ?
                 new Dictionary<string, object>() :
                 initialGlobalVariables.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
-            var sharedObjects = new Dictionary<string, object>();
+            var sharedObjects = new ConcurrentDictionary<string, object>();
             _manifestWithContext.RunAll(m =>
             {
                 if (m.TemplateBundle == null)
@@ -364,7 +369,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                         sharedObjects[m.Item.Key] = m.Item.Model.Content;
                     }
                 }
-            });
+            },
+            _context.MaxParallelism);
 
             metadata["_shared"] = sharedObjects;
             return metadata;
