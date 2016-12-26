@@ -294,8 +294,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                         continue;
                     }
                     FileAttributeItem item;
-                    if (_parameters.Changes == null || _parameters.Changes.ContainsKey(key) ||
-                        LastBuildVersionInfo == null || !LastBuildVersionInfo.Attributes.TryGetValue(key, out item))
+                    if (!TryGetFileAttributeFromLast(key, out item))
                     {
                         fileAttributes[key] = new FileAttributeItem
                         {
@@ -589,6 +588,28 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     }
                 }
             }
+        }
+
+        private bool TryGetFileAttributeFromLast(string pathFromWorkingFolder, out FileAttributeItem item)
+        {
+            item = null;
+            if (_parameters.Changes == null)
+            {
+                return false;
+            }
+            if (_parameters.Changes.ContainsKey(pathFromWorkingFolder) && _parameters.Changes[pathFromWorkingFolder] != ChangeKindWithDependency.None)
+            {
+                return false;
+            }
+            if (LastBuildVersionInfo == null)
+            {
+                return false;
+            }
+            if (!LastBuildVersionInfo.Attributes.TryGetValue(pathFromWorkingFolder, out item))
+            {
+                return false;
+            }
+            return true;
         }
 
         private void InitChanges()
