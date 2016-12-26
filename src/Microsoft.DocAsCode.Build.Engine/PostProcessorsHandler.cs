@@ -13,12 +13,20 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
-    public class HandlePostProcessors : IDisposable
+    internal class PostProcessorsHandler : IDisposable
     {
         private readonly List<PostProcessor> _postProcessors;
 
-        public HandlePostProcessors(CompositionHost container, ImmutableArray<string> postProcessorNames)
+        public PostProcessorsHandler(CompositionHost container, ImmutableArray<string> postProcessorNames)
         {
+            if (container == null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+            if (postProcessorNames == null)
+            {
+                throw new ArgumentNullException(nameof(postProcessorNames));
+            }
             _postProcessors = GetPostProcessor(container, postProcessorNames);
         }
 
@@ -27,7 +35,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var postProcessor in _postProcessors)
             {
                 using (new LoggerPhaseScope($"Prepare metadata in post processor {postProcessor.ContractName}", false))
-                using (new PerformanceScope($"Prepare metadata in post processor {postProcessor.ContractName}", LogLevel.Verbose))
+                using (new PerformanceScope($"Prepare metadata in post processor {postProcessor.ContractName}"))
                 {
                     metadata = postProcessor.Processor.PrepareMetadata(metadata);
                     if (metadata == null)
@@ -38,9 +46,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public void PostProcess(Manifest manifest, string outputFolder)
+        public void Handle(Manifest manifest, string outputFolder)
         {
-            // post process
             foreach (var postProcessor in _postProcessors)
             {
                 using (new LoggerPhaseScope($"Process in post processor {postProcessor.ContractName}", false))

@@ -57,7 +57,6 @@ namespace Microsoft.DocAsCode.Common
                 SourceBasePath = manifests.FirstOrDefault()?.SourceBasePath,
                 IncrementalInfo = incrementalInfos.Count > 0 ? incrementalInfos : null,
             };
-
         }
     }
 }

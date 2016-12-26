@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 DocfxVersion = typeof(DocumentBuilder).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
             };
         private readonly BuildInfo _lastBuildInfo;
-        private readonly HandlePostProcessors _handlePostProcessors;
+        private readonly PostProcessorsHandler _postProcessorsHandler;
 
         public DocumentBuilder(
             IEnumerable<Assembly> assemblies,
@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 _intermediateFolder = Path.GetFullPath(expanded);
             }
             _lastBuildInfo = BuildInfo.Load(_intermediateFolder);
-            _handlePostProcessors = new HandlePostProcessors(_container, postProcessorNames);
+            _postProcessorsHandler = new PostProcessorsHandler(_container, postProcessorNames);
         }
 
         public void Build(DocumentBuildParameters parameter)
@@ -120,7 +120,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     transformDocument = true;
                 }
-                _handlePostProcessors.PrepareMetadata(parameter.Metadata);
+                _postProcessorsHandler.PrepareMetadata(parameter.Metadata);
                 if (!string.IsNullOrEmpty(parameter.VersionName))
                 {
                     Logger.LogInfo($"Start building for version: {parameter.VersionName}");
@@ -140,7 +140,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var generatedManifest = ManifestUtility.MergeManifest(manifests);
 
             ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
-            _handlePostProcessors.PostProcess(generatedManifest, outputDirectory);
+            _postProcessorsHandler.Handle(generatedManifest, outputDirectory);
 
             // Save to manifest.json
             SaveManifest(generatedManifest);
@@ -215,7 +215,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void Dispose()
         {
-            _handlePostProcessors.Dispose();
+            _postProcessorsHandler.Dispose();
         }
     }
 }
