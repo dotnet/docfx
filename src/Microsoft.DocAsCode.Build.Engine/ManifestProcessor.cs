@@ -40,30 +40,35 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void Process()
         {
-            using (new LoggerPhaseScope("UpdateContext", true))
+            using (new LoggerPhaseScope("UpdateContext", false))
+            using (new PerformanceScope("UpdateContext", LogLevel.Verbose))
             {
                 UpdateContext();
             }
 
             // Run getOptions from Template
-            using (new LoggerPhaseScope("FeedOptions", true))
+            using (new LoggerPhaseScope("FeedOptions", false))
+            using (new PerformanceScope("FeedOptions", LogLevel.Verbose))
             {
                 FeedOptions();
             }
 
             // Template can feed back xref map, actually, the anchor # location can only be determined in template
-            using (new LoggerPhaseScope("FeedXRefMap", true))
+            using (new LoggerPhaseScope("FeedXRefMap", false))
+            using (new PerformanceScope("FeedXRefMap", LogLevel.Verbose))
             {
                 FeedXRefMap();
             }
 
-            using (new LoggerPhaseScope("UpdateHref", true))
+            using (new LoggerPhaseScope("UpdateHref", false))
+            using (new PerformanceScope("UpdateHref", LogLevel.Verbose))
             {
                 UpdateHref();
             }
 
             // Afterwards, m.Item.Model.Content is always IDictionary
-            using (new LoggerPhaseScope("ApplySystemMetadata", true))
+            using (new LoggerPhaseScope("ApplySystemMetadata", false))
+            using (new PerformanceScope("ApplySystemMetadata", LogLevel.Verbose))
             {
                 ApplySystemMetadata();
             }
@@ -380,7 +385,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             // Register global variables after href are all updated
             IDictionary<string, object> globalVariables;
-            using (new LoggerPhaseScope("FeedGlobalVariables", true))
+            using (new LoggerPhaseScope("FeedGlobalVariables", false))
+            using (new PerformanceScope("FeedGlobalVariables", LogLevel.Verbose))
             {
                 globalVariables = FeedGlobalVariables();
             }
