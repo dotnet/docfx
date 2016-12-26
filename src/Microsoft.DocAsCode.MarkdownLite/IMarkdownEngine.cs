@@ -28,7 +28,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// <summary>
         /// Mark markdown text.
         /// </summary>
-        /// <param name="markdown">The markdown text.</param>
         /// <param name="context">The markdown context contains rules.</param>
         /// <param name="sourceInfo">The line info for markdown text.</param>
         /// <returns>Rendered text.</returns>
