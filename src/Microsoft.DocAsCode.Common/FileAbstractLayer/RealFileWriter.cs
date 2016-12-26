@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Common
         {
             var f = Path.Combine(ExpandedOutputFolder, destFileName.RemoveWorkingFolder());
             Directory.CreateDirectory(Path.GetDirectoryName(f));
-            File.Copy(Environment.ExpandEnvironmentVariables(sourceFileName.PhysicalPath), f);
+            File.Copy(Environment.ExpandEnvironmentVariables(sourceFileName.PhysicalPath), f, true);
             File.SetAttributes(f, FileAttributes.Normal);
         }
 
