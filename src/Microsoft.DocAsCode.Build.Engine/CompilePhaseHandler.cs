@@ -3,8 +3,8 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
@@ -13,6 +13,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal class CompilePhaseHandler : IPhaseHandler
     {
+        private readonly List<RestructureTableOfContent> _delegates = new List<RestructureTableOfContent>();
+
         public string Name => nameof(CompilePhaseHandler);
 
         public BuildPhase Phase => BuildPhase.Compile;
@@ -38,8 +40,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         Prebuild(hostService);
                     }
+
+                    // Register all the delegates to handler
+                    if (hostService.RestructureTableOfContentDelegates != null)
+                    {
+                        _delegates.AddRange(hostService.RestructureTableOfContentDelegates);
+                    }
                 }
             }
+
+            DistributeTocDelegates(hostServices);
+
             foreach (var hostService in hostServices)
             {
                 using (new LoggerPhaseScope(hostService.Processor.Name, true))
@@ -74,6 +85,19 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         m.LocalPathFromRoot = StringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
                     }
+                }
+            }
+        }
+
+        private void DistributeTocDelegates(List<HostService> hostServices)
+        {
+            if (_delegates.Count > 0)
+            {
+                var delegates = _delegates.ToImmutableArray();
+                // Distribute delegates to all the hostServices
+                foreach (var hostService in hostServices)
+                {
+                    hostService.RestructureTableOfContentDelegates = delegates;
                 }
             }
         }

@@ -15,6 +15,10 @@ namespace Microsoft.DocAsCode.Plugins
         ImmutableList<FileModel> GetModels(DocumentType? type = null);
         ImmutableList<FileModel> LookupByUid(string uid);
 
+        bool ShouldRestructureTableOfContent();
+        void InvokeRestructuringTableOfContent(TreeItem tree);
+        void RegisterRestructuringTableOfContent(params RestructureTableOfContent[] delegates);
+
         /// <summary>
         /// report dependency to
         /// </summary>
