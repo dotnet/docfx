@@ -43,29 +43,31 @@ namespace Microsoft.DocAsCode.Build.Common
                 {
                     context.LinkToUids.Add(val);
                 }
-
-                var list = obj as IEnumerable;
-                if (list != null)
+                else
                 {
-                    foreach (var i in list)
+                    var list = obj as IEnumerable;
+                    if (list != null)
                     {
-                        if (i != null)
+                        foreach (var i in list)
                         {
-                            var item = i as string;
-                            if (item != null)
+                            if (i != null)
                             {
-                                context.LinkToUids.Add(item);
-                            }
-                            else
-                            {
-                                throw new NotSupportedException($"Type {obj.GetType()} inside IEnumerable is NOT a supported item type for {nameof(UniqueIdentityReferenceAttribute)}");
+                                var item = i as string;
+                                if (item != null)
+                                {
+                                    context.LinkToUids.Add(item);
+                                }
+                                else
+                                {
+                                    throw new NotSupportedException($"Type {obj.GetType()} inside IEnumerable is NOT a supported item type for {nameof(UniqueIdentityReferenceAttribute)}");
+                                }
                             }
                         }
                     }
-                }
-                else
-                {
-                    throw new NotSupportedException($"Type {obj.GetType()} is NOT a supported type for {nameof(UniqueIdentityReferenceAttribute)}");
+                    else
+                    {
+                        throw new NotSupportedException($"Type {obj.GetType()} is NOT a supported type for {nameof(UniqueIdentityReferenceAttribute)}");
+                    }
                 }
             }
         }
