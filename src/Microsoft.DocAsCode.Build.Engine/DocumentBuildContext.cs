@@ -71,11 +71,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public int MaxParallelism { get; }
 
-        public Dictionary<string, string> FileMap { get; } = new Dictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
+        public ConcurrentDictionary<string, string> FileMap { get; } = new ConcurrentDictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
         public ConcurrentDictionary<string, XRefSpec> XRefSpecMap { get; } = new ConcurrentDictionary<string, XRefSpec>();
 
-        public Dictionary<string, HashSet<string>> TocMap { get; } = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
+        public ConcurrentDictionary<string, HashSet<string>> TocMap { get; } = new ConcurrentDictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
         public HashSet<string> XRef { get; } = new HashSet<string>();
 
