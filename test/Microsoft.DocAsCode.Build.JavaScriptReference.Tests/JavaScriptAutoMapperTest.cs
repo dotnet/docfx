@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Common.Git;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Tests.Common;
 
     using AutoMapper;
     using Xunit;
@@ -18,12 +17,12 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
     [Trait("EntityType", "JavaScriptDocumentProcessor")]
     public class JavaScriptAutoMapperTest
     {
+        private static readonly string[] SupportedLanguages = { Constants.DevLang.JavaScript };
+
         [Fact]
         public void MapToApiReferenceBuildOutputShouldSucceed()
         {
             // Arrange
-            var supportedLanguages = new[] { Constants.DevLang.JavaScript };
-
             var reference = new ReferenceViewModel
             {
                 Uid = "uid",
@@ -74,7 +73,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
             // Act
             Mapper.Initialize(cfg =>
             {
-                cfg.AddProfile(new ApiReferenceBuildOutputProfile(supportedLanguages));
+                cfg.AddProfile(new ApiReferenceBuildOutputProfile(SupportedLanguages));
             });
             Mapper.Configuration.AssertConfigurationIsValid();
             var dto = Mapper.Map<ReferenceViewModel, ApiReferenceBuildOutput>(reference);
@@ -161,7 +160,6 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                 Inheritance = new List<string> { "inheritance" },
                 Metadata = { ["metaKey"] = "metaValue" }
             };
-            var supportedLanguages = new[] { Constants.DevLang.JavaScript };
             var expected = new ApiBuildOutput
             {
                 Uid = "uid",
@@ -342,7 +340,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
             // Act
             Mapper.Initialize(cfg =>
             {
-                cfg.AddProfile(new ApiBuildOutputProfile(supportedLanguages));
+                cfg.AddProfile(new ApiBuildOutputProfile(SupportedLanguages));
             });
             Mapper.Configuration.AssertConfigurationIsValid();
             var dto = Mapper.Map<ItemViewModel, ApiBuildOutput>(input);
@@ -426,7 +424,6 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                     }
                 }
             };
-            var supportedLanguages = new[] { Constants.DevLang.JavaScript };
             var expected = new ApiBuildOutput
             {
                 Uid = "KeyVaultClient",
