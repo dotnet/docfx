@@ -12,9 +12,14 @@ namespace Microsoft.DocAsCode.Build.Common
     {
         public IHostService host { get; set; }
         public bool SkipMarkup { get; set; }
+        public bool EnableContentPlaceholder { get; set; }
+        public string PlaceholderContent { get; set; }
+
         public FileAndType FileAndType { get; set; }
         public HashSet<string> LinkToFiles { get; set; } = new HashSet<string>();
         public List<string> LinkToUids { get; set; } = new List<string>();
         public List<UidDefinition> Uids { get; set; } = new List<UidDefinition>();
+        public Dictionary<string, List<LinkSourceInfo>> UidLinkSources { get; set; } = new Dictionary<string, List<LinkSourceInfo>>();
+        public Dictionary<string, List<LinkSourceInfo>> FileLinkSources { get; set; } = new Dictionary<string, List<LinkSourceInfo>>();
     }
 }
