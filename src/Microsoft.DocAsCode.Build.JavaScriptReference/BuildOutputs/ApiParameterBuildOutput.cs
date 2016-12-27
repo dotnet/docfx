@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
 
         [YamlMember(Alias = "type")]
         [JsonProperty("type")]
-        public List<ApiNames> Type { get; set; }
+        public List<ApiReferenceBuildOutput> Type { get; set; }
 
         [YamlMember(Alias = "description")]
         [JsonProperty("description")]

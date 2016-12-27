@@ -20,10 +20,6 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
         [JsonProperty("uid")]
         public string Uid { get; set; }
 
-        [YamlMember(Alias = "id")]
-        [JsonProperty("id")]
-        public string Id { get; set; }
-
         [YamlMember(Alias = "parent")]
         [JsonProperty("parent")]
         public ApiReferenceBuildOutput Parent { get; set; }
@@ -38,7 +34,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
 
         [YamlMember(Alias = "langs")]
         [JsonProperty("langs")]
-        public string[] SupportedLanguages { get; set; } = { "js" };
+        public string[] SupportedLanguages { get; set; } = { Constants.DevLang.JavaScript};
 
         [YamlMember(Alias = "name")]
         [JsonProperty("name")]
@@ -90,7 +86,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
 
         [YamlMember(Alias = "overridden")]
         [JsonProperty("overridden")]
-        public ApiNames Overridden { get; set; }
+        public ApiReferenceBuildOutput Overridden { get; set; }
 
         [YamlMember(Alias = "exceptions")]
         [JsonProperty("exceptions")]
@@ -120,7 +116,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
 
         [YamlMember(Alias = "implements")]
         [JsonProperty("implements")]
-        public List<ApiNames> Implements { get; set; }
+        public List<ApiReferenceBuildOutput> Implements { get; set; }
 
         [YamlMember(Alias = "inheritedMembers")]
         [JsonProperty("inheritedMembers")]

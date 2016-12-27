@@ -5,13 +5,10 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
-    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]
@@ -20,10 +17,6 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
         [YamlMember(Alias = "uid")]
         [JsonProperty("uid")]
         public string Uid { get; set; }
-
-        [YamlMember(Alias = "id")]
-        [JsonProperty("id")]
-        public string Id { get; set; }
 
         [YamlMember(Alias = "parent")]
         [JsonProperty("parent")]
@@ -52,11 +45,11 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
         [YamlMember(Alias = "fullName")]
         [JsonProperty("fullName")]
         public List<ApiLanguageValuePair> FullName { get; set; }
-
+        
         [YamlMember(Alias = "specName")]
         [JsonProperty("specName")]
         public List<ApiLanguageValuePair> Spec { get; set; }
-
+        
         [ExtensibleMember]
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
