@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
             foreach (var prop in _props)
             {
-                if (prop.Attr != null)
+                if (ShouldHandle(prop, obj, context))
                 {
                     HandleCurrentProperty(obj, prop.Prop, context);
                 }
@@ -71,6 +71,11 @@ namespace Microsoft.DocAsCode.Build.Common
                     }
                 }
             }
+        }
+
+        protected virtual bool ShouldHandle(PropInfo currentPropInfo, object declaringObject, HandleModelAttributesContext context)
+        {
+            return currentPropInfo.Attr != null;
         }
 
         protected virtual PropInfo[] GetProps(Type type)
