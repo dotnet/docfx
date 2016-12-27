@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public sealed class DocumentBuildContext : IDocumentBuildContext
     {
-        private readonly Dictionary<string, TocInfo> _tableOfContents = new Dictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
+        private readonly ConcurrentDictionary<string, TocInfo> _tableOfContents = new ConcurrentDictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
         private readonly Task<IXRefContainerReader> _reader;
 
         public DocumentBuildContext(string buildOutputFolder)
@@ -330,15 +330,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (string.IsNullOrEmpty(fileKey)) throw new ArgumentNullException(nameof(fileKey));
             if (string.IsNullOrEmpty(tocFileKey)) throw new ArgumentNullException(nameof(tocFileKey));
-            HashSet<string> sets;
-            if (TocMap.TryGetValue(fileKey, out sets))
-            {
-                sets.Add(tocFileKey);
-            }
-            else
-            {
-                TocMap[fileKey] = new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { tocFileKey };
-            }
+
+            TocMap.AddOrUpdate(
+                fileKey,
+                new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { tocFileKey },
+                (k, v) => { v.Add(tocFileKey); return v; });
         }
 
         public void RegisterTocInfo(TocInfo toc)
