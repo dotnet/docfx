@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var resourceName = _embeddedResourceNames.FirstOrDefault(s => resourceNamePredicator(s, name, _resourcePrefix));
             if (resourceName != null)
             {
-                Logger.LogVerbose($"Resource {name} is found in embedded resources.");
+                Logger.LogDiagnostic($"Resource {name} is found in embedded resources.");
                 return new ArchiveResourceCollection(_assembly.GetManifestResourceStream(resourceName),
                     $"embedded resource {resourceName}");
             }
@@ -61,14 +61,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             var directory = Path.Combine(_baseDirectory, name);
             if (Directory.Exists(directory))
             {
-                Logger.LogVerbose($"Resource {name} is found from {directory}.");
+                Logger.LogDiagnostic($"Resource {name} is found from {directory}.");
                 return new FileResourceCollection(directory);
             }
 
             var fileName = Path.Combine(_baseDirectory, $"{name}.zip");
             if (File.Exists(fileName))
             {
-                Logger.LogVerbose($"Resource {name} is found from {fileName}.");
+                Logger.LogDiagnostic($"Resource {name} is found from {fileName}.");
                 return new ArchiveResourceCollection(new FileStream(fileName, FileMode.Open, FileAccess.Read), fileName);
             }
 
