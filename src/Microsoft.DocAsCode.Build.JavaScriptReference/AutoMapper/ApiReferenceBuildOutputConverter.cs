@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
             }
             if (supportedLanguages.Length == 0)
             {
-                throw new ArgumentException(nameof(supportedLanguages));
+                throw new ArgumentException($"{nameof(supportedLanguages)} cannot be empty");
             }
             _supportedLanguages = supportedLanguages;
             _references = references ?? new Dictionary<string, ApiReferenceBuildOutput>();

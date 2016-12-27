@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
             }
             if (model.Items == null || model.Items.Count == 0)
             {
-                throw new ArgumentException(nameof(model));
+                throw new ArgumentException($"{nameof(model)} must contain at least one item");
             }
 
             var supportedLanguages = model.Items?[0].SupportedLanguages ?? new[] { Constants.DevLang.JavaScript };

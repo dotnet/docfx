@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
 
         [YamlMember(Alias = "langs")]
         [JsonProperty("langs")]
-        public string[] SupportedLanguages { get; set; } = { Constants.DevLang.JavaScript};
+        public string[] SupportedLanguages { get; set; } = { Constants.DevLang.JavaScript };
 
         [YamlMember(Alias = "name")]
         [JsonProperty("name")]
