@@ -119,7 +119,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             var headerNode = document.DocumentNode.SelectSingleNode("//h1|//h2|//h3");
             content.Title = StringHelper.HtmlDecode(headerNode?.InnerText);
 
-            if (headerNode != null && document.DocumentNode.FirstChild == headerNode)
+            if (headerNode != null && GetFirstNoneCommentChild(document.DocumentNode) == headerNode)
             {
                 content.RawTitle = headerNode.OuterHtml;
                 headerNode.Remove();
@@ -132,6 +132,16 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             content.Content = document.DocumentNode.OuterHtml;
 
             return content;
+        }
+
+        private static HtmlNode GetFirstNoneCommentChild(HtmlNode node)
+        {
+            var result = node.FirstChild;
+            while (result != null && (result.NodeType == HtmlNodeType.Comment || string.IsNullOrWhiteSpace(result.OuterHtml)))
+            {
+                result = result.NextSibling;
+            }
+            return result;
         }
 
         private class HtmlInfo
