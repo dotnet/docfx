@@ -71,11 +71,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var tocRelativePath = parentTocPath.MakeRelativeTo(file);
                 attrs.RelativePathToToc = tocRelativePath;
                 attrs.TocKey = parentToc.Key;
-                Logger.LogVerbose($"TOC file {parentTocPath} is found for {item.LocalPathFromRoot}.");
+                Logger.LogDiagnostic($"TOC file {parentTocPath} is found for {item.LocalPathFromRoot}.");
             }
             else
             {
-                Logger.LogVerbose($"TOC file for {item.LocalPathFromRoot} is not found.");
+                Logger.LogDiagnostic($"TOC file for {item.LocalPathFromRoot} is not found.");
             }
 
             return attrs;
@@ -93,11 +93,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var rootTocRelativePath = rootTocPath.MakeRelativeTo(file);
                     attrs.RelativePathToRootToc = rootTocRelativePath;
                     attrs.RootTocKey = rootToc.Key;
-                    Logger.LogVerbose($"Root TOC file {rootTocPath} is found.");
+                    Logger.LogDiagnostic($"Root TOC file {rootTocPath} is found.");
                 }
                 else
                 {
-                    Logger.LogVerbose(
+                    Logger.LogDiagnostic(
                         $"Root TOC file from output folder is not found, the toppest TOC file is {rootTocPath}");
                 }
             }
