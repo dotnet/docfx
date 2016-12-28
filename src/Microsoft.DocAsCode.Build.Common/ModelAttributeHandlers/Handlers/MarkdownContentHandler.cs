@@ -4,15 +4,14 @@
 namespace Microsoft.DocAsCode.Build.Common
 {
     using System;
-    using System.Collections;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Linq;
     using System.Reflection;
 
     using Microsoft.DocAsCode.DataContracts.Common.Attributes;
-    using System.Linq;
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using Plugins;
+    using Microsoft.DocAsCode.Plugins;
 
     public class MarkdownContentHandler : IModelAttributeHandler
     {
@@ -105,7 +104,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     }
                 }
 
-                return currentPropInfo.Attr != null;
+                return base.ShouldHandle(currentPropInfo, declaringObject, context);
             }
 
             private bool IsPlaceholderContent(string content)
@@ -120,23 +119,20 @@ namespace Microsoft.DocAsCode.Build.Common
                     return content;
                 }
 
-                if (context.EnableContentPlaceholder)
+                if (context.EnableContentPlaceholder && IsPlaceholderContent(content))
                 {
-                    if (IsPlaceholderContent(content))
+                    if (string.IsNullOrEmpty(context.PlaceholderContent))
                     {
-                        if (string.IsNullOrEmpty(context.PlaceholderContent))
+                        return context.PlaceholderContent;
+                    }
+                    else
+                    {
+                        if (placeholderContentAfterMarkup == null)
                         {
-                            return context.PlaceholderContent;
+                            placeholderContentAfterMarkup = MarkupCore(context.PlaceholderContent, context);
                         }
-                        else
-                        {
-                            if (placeholderContentAfterMarkup == null)
-                            {
-                                placeholderContentAfterMarkup = MarkupCore(context.PlaceholderContent, context);
-                            }
 
-                            return placeholderContentAfterMarkup;
-                        }
+                        return placeholderContentAfterMarkup;
                     }
                 }
 
@@ -148,22 +144,10 @@ namespace Microsoft.DocAsCode.Build.Common
                 var host = context.host;
                 var mr = host.Markup(content, context.FileAndType);
                 context.LinkToUids.AddRange(mr.LinkToUids);
-                AddRange(context.LinkToFiles, mr.LinkToFiles);
+                context.LinkToFiles.UnionWith(mr.LinkToFiles);
                 AddRange(context.FileLinkSources, mr.FileLinkSources);
                 AddRange(context.UidLinkSources, mr.UidLinkSources);
                 return mr.Html;
-            }
-
-            private static void AddRange(HashSet<string> left, IEnumerable<string> right)
-            {
-                if (right == null)
-                {
-                    return;
-                }
-                foreach (var i in right)
-                {
-                    left.Add(i);
-                }
             }
 
             private static void AddRange(Dictionary<string, List<LinkSourceInfo>> left, ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> right)
