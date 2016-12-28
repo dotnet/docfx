@@ -140,7 +140,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var generatedManifest = ManifestUtility.MergeManifest(manifests);
 
             ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
-            _postProcessorsManager.PostProcess(generatedManifest, outputDirectory);
+            _postProcessorsManager.Process(generatedManifest, outputDirectory);
 
             // Save to manifest.json
             SaveManifest(generatedManifest);

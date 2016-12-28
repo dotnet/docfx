@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public void PostProcess(Manifest manifest, string outputFolder)
+        public void Process(Manifest manifest, string outputFolder)
         {
             foreach (var postProcessor in _postProcessors)
             {
