@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
     public class MarkdownContentHandler : IModelAttributeHandler
     {
-        private readonly static ConcurrentDictionary<Type, MarkdownContentHandlerImpl> _cache = new ConcurrentDictionary<Type, MarkdownContentHandlerImpl>();
+        private static readonly ConcurrentDictionary<Type, MarkdownContentHandlerImpl> _cache = new ConcurrentDictionary<Type, MarkdownContentHandlerImpl>();
 
         public void Handle(object obj, HandleModelAttributesContext context)
         {
@@ -41,7 +41,6 @@ namespace Microsoft.DocAsCode.Build.Common
         private sealed class MarkdownContentHandlerImpl : BaseModelAttributeHandler<MarkdownContentAttribute>
         {
             private const string ContentPlaceholder = "*content";
-            private string placeholderContentAfterMarkup = null;
 
             public MarkdownContentHandlerImpl(Type type, IModelAttributeHandler handler) : base(type, handler)
             {
@@ -92,6 +91,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     {
                         throw new NotSupportedException($"Type {declaringObject.GetType()} is NOT a supported type for {nameof(MarkdownContentAttribute)}");
                     }
+
                     return false;
                 }
 
@@ -127,12 +127,8 @@ namespace Microsoft.DocAsCode.Build.Common
                     }
                     else
                     {
-                        if (placeholderContentAfterMarkup == null)
-                        {
-                            placeholderContentAfterMarkup = MarkupCore(context.PlaceholderContent, context);
-                        }
-
-                        return placeholderContentAfterMarkup;
+                        // TODO: Add cache to Markup
+                        return MarkupCore(context.PlaceholderContent, context);
                     }
                 }
 
