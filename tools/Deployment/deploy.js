@@ -357,7 +357,7 @@ function pushChocoPackage() {
 }
 
 let clearReleaseStep = removePromiseFn(config.docfx.releaseFolder);
-let docfxBuildStep = util.execPromiseFn("build.cmd", ["-prod"], config.docfx.home);
+let docfxBuildStep = util.execPromiseFn("powershell", ["./build.ps1", "-prod"], config.docfx.home);
 let genereateDocsStep = util.execPromiseFn(path.resolve(config.docfx.exe), ["docfx.json"], config.docfx.docFolder);
 let uploadDevMygetStep = uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.dev);
 let uploadMasterMygetStep = uploadMygetPromiseFn(config.myget.exe, config.docfx.releaseFolder, config.myget.apiKey, config.myget.url.master);
@@ -426,7 +426,7 @@ switch (branchValue.toLowerCase()) {
     util.runSteps([
       // step 1: clear the possible release exists
       clearReleaseStep,
-      // step2: run build.cmd
+      // step2: run build.ps1
       docfxBuildStep,
       // step3: run e2e test
       e2eTestStep,
@@ -438,7 +438,7 @@ switch (branchValue.toLowerCase()) {
     util.runSteps([
       // step 1: clear the possible release exists
       clearReleaseStep,
-      // step2: run build.cmd
+      // step2: run build.ps1
       docfxBuildStep,
       // step3: run e2e test
       e2eTestStep,
@@ -452,7 +452,7 @@ switch (branchValue.toLowerCase()) {
     util.runSteps([
       // step 1: clear the possible release exists
       clearReleaseStep,
-      // step2: run build.cmd
+      // step2: run build.ps1
       docfxBuildStep,
       // step3: run e2e test
       e2eTestStep,
