@@ -315,6 +315,47 @@ test2
 ", File.ReadAllText(outputFilePath2));
         }
 
+        [Trait("Related", "TemplateProcessor")]
+        [Trait("Related", "Mustache")]
+        [Fact]
+        public void TestMustacheTemplateWithScriptWithLongStringInModelShouldWork()
+        {
+            var templateName = "TemplateFolder.html";
+            string defaultTemplate = @"{{name}}";
+            var name = "this is a looooooooooooooooooooooooooooooooooooog name";
+            var longName = string.Concat(Enumerable.Repeat(name, 20000));
+            string script = @"
+exports.transform = function (model){
+    return {
+        name: JSON.stringify(model)
+    };
+}";
+
+            var model = new
+            {
+                model = new 
+               {
+                   name = longName,
+               }
+            };
+
+            string inputFolder = null;
+            var item1 = new InternalManifestItem
+            {
+                FileWithoutExtension = "TestMustacheTemplateWithScriptWithLongStringInModelShouldWork",
+                Key = "x.yml",
+                DocumentType = "Conceptual",
+                LocalPathFromRoot = "TestMustacheTemplateWithScriptWithLongStringInModelShouldWork.md",
+            };
+            ProcessTemplate(templateName, inputFolder, new[] { item1 }, model, _outputFolder,
+                Tuple.Create("default.html.tmpl", defaultTemplate),
+                Tuple.Create("default.html.js", script)
+                );
+            var outputFilePath1 = Path.Combine(_outputFolder, "TestMustacheTemplateWithScriptWithLongStringInModelShouldWork.html");
+            Assert.True(File.Exists(outputFilePath1));
+            Assert.Equal($"{{&quot;model&quot;:{{&quot;name&quot;:&quot;{longName}&quot;}},&quot;__global&quot;:{{}}}}", File.ReadAllText(outputFilePath1));
+        }
+
         #endregion
 
         #region Liquid template processor test
