@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
     {
         [YamlMember(Alias = "type")]
         [JsonProperty("type")]
-        public ApiNames Type { get; set; }
+        public ApiReferenceBuildOutput Type { get; set; }
 
         [YamlMember(Alias = "description")]
         [JsonProperty("description")]

@@ -11,6 +11,7 @@
     ]
   },
   "dependencies": {
+    "AutoMapper": "5.2.0",
     "Microsoft.DocAsCode.Common": "1.0.0",
     "Microsoft.DocAsCode.DataContracts.Common": "1.0.0",
     "Microsoft.DocAsCode.YamlSerialization": "1.0.0",
@@ -30,6 +31,10 @@
     }
   },
   "frameworks": {
-    "net452": {}
+    "net452": {
+      "frameworkAssemblies": {
+        "System.Web": "4.0.0.0"
+      }
+    }
   }
 }
