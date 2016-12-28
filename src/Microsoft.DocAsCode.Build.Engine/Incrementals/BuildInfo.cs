@@ -45,6 +45,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// The file info for each version.
         /// </summary>
         public List<BuildVersionInfo> Versions { get; } = new List<BuildVersionInfo>();
+        /// <summary>
+        /// The post process information
+        /// </summary>
+        public PostProcessInfo PostProcessInfo { get; set; }
 
         public static BuildInfo Load(string baseDir)
         {
@@ -57,10 +61,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             try
             {
                 buildInfo = JsonUtility.Deserialize<BuildInfo>(Path.Combine(baseDir, FileName));
+                var targetDirecroty = Path.Combine(baseDir, buildInfo.DirectoryName);
                 foreach (var version in buildInfo.Versions)
                 {
-                    version.Load(Path.Combine(baseDir, buildInfo.DirectoryName));
+                    version.Load(targetDirecroty);
                 }
+                buildInfo.PostProcessInfo?.Load(targetDirecroty);
             }
             catch (Exception ex)
             {
@@ -72,10 +78,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public void Save(string baseDir)
         {
+            var targetDirecroty = Path.Combine(baseDir, DirectoryName);
             foreach (var version in Versions)
             {
-                version.Save(Path.Combine(baseDir, DirectoryName));
+                version.Save(targetDirecroty);
             }
+            PostProcessInfo?.Save(targetDirecroty);
             JsonUtility.Serialize(Path.Combine(baseDir, FileName), this);
         }
     }
