@@ -92,7 +92,7 @@ if ($prod -eq $true)
 
 # Restore package
 Write-Host "Start to restore package"
-foreach ($folder in @("src", "test", "tools"))
+foreach ($folder in @("src", "test", "tools", "plugins"))
 {
     CD $folder
     & dotnet restore
@@ -102,14 +102,14 @@ foreach ($folder in @("src", "test", "tools"))
 
 # Build project
 Write-Host "Start to build project"
-foreach ($folder in (dir "src"))
+foreach ($folder in (dir @("src", "plugins")))
 {
     DotnetBuild($folder)
 }
 
 # Publish project
 Write-Host "Start to publish project"
-foreach ($folder in (dir "src"))
+foreach ($folder in (dir @("src", "plugins")))
 {
     DotnetPublish($folder)
 }
@@ -141,7 +141,7 @@ foreach ($folder in (dir "tools"))
 
 # Pack artifacts
 Write-Host "Publish artifacts"
-foreach ($folder in (dir "src"))
+foreach ($folder in (dir @("src", "plugins")))
 {
     DotnetPack($folder)
 }
