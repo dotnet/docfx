@@ -143,10 +143,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var list = new List<RestructureTableOfContent>(methods);
             lock (_tocSyncRoot)
             {
-                if (RestructureTableOfContentDelegates != null)
-                {
-                    list.AddRange(RestructureTableOfContentDelegates);
-                }
+                list.AddRange(RestructureTableOfContentDelegates);
                 RestructureTableOfContentDelegates = list.ToImmutableArray();
             }
         }

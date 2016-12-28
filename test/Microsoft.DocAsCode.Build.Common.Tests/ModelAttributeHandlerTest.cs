@@ -31,8 +31,8 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             var context = Handle(model);
 
             Assert.Equal(2, context.LinkToUids.Count);
-            Assert.Equal(model.Identity, context.LinkToUids[0]);
-            Assert.Equal(model.Identities[0], context.LinkToUids[1]);
+            Assert.True(context.LinkToUids.Contains(model.Identity));
+            Assert.True(context.LinkToUids.Contains(model.Identities[0]));
         }
 
         [Fact]
@@ -155,8 +155,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             context.PlaceholderContent = model.Content;
             context = Handle(model, context);
 
-            // LinkToUids is List instead of Hashset
-            Assert.Equal(4, context.LinkToUids.Count);
+            Assert.Equal(1, context.LinkToUids.Count);
             Assert.Equal(1, context.LinkToFiles.Count);
             Assert.Equal(1, context.FileLinkSources.Count);
             Assert.Equal(1, context.UidLinkSources.Count);
