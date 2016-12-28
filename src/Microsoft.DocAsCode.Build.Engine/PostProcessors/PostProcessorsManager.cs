@@ -13,11 +13,11 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
-    internal class PostProcessorsHandler : IDisposable
+    internal class PostProcessorsManager : IDisposable
     {
         private readonly List<PostProcessor> _postProcessors;
 
-        public PostProcessorsHandler(CompositionHost container, ImmutableArray<string> postProcessorNames)
+        public PostProcessorsManager(CompositionHost container, ImmutableArray<string> postProcessorNames)
         {
             if (container == null)
             {
@@ -34,6 +34,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             foreach (var postProcessor in _postProcessors)
             {
+                // TODO: add overload method for LoggerPhaseScope
                 using (new LoggerPhaseScope($"Prepare metadata in post processor {postProcessor.ContractName}", false))
                 using (new PerformanceScope($"Prepare metadata in post processor {postProcessor.ContractName}"))
                 {
@@ -46,7 +47,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public void Handle(Manifest manifest, string outputFolder)
+        public void Process(Manifest manifest, string outputFolder)
         {
             foreach (var postProcessor in _postProcessors)
             {
@@ -104,12 +105,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                         },
                     }
                 });
-        }
-
-        private sealed class PostProcessor
-        {
-            public string ContractName { get; set; }
-            public IPostProcessor Processor { get; set; }
         }
 
         public void Dispose()

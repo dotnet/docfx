@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (outputFolder == null)
             {
-                throw new ArgumentNullException("Base directory can not be null");
+                throw new ArgumentNullException(nameof(outputFolder));
             }
             foreach (var handler in Handlers)
             {
