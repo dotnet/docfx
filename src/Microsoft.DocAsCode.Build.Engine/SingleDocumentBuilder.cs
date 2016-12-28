@@ -80,7 +80,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private Manifest BuildCore(DocumentBuildParameters parameters)
         {
-            using (new LoggerPhaseScope(PhaseName, true))
+            using (new LoggerPhaseScope(PhaseName, false))
+            using (new PerformanceScope(PhaseName, LogLevel.Verbose))
             {
                 Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism}.");
                 Directory.CreateDirectory(parameters.OutputBaseDir);
@@ -106,7 +107,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     using (var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
                     {
-                        using (new LoggerPhaseScope("Prepare", true))
+                        using (new LoggerPhaseScope("Prepare", false))
+                        using (new PerformanceScope("Prepare", LogLevel.Verbose))
                         {
                             if (MarkdownService == null)
                             {
@@ -123,7 +125,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 out hostServiceCreator,
                                 out phaseProcessor);
                         }
-                        using (new LoggerPhaseScope("Load", true))
+                        using (new LoggerPhaseScope("Load", false))
+                        using (new PerformanceScope("Load", LogLevel.Verbose))
                         {
                             hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator).ToList();
                         }
@@ -237,7 +240,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (IntermediateFolder != null && parameters.ApplyTemplateSettings.TransformDocument)
             {
-                using (new LoggerPhaseScope("CreateIncrementalBuildContext", true))
+                using (new LoggerPhaseScope("CreateIncrementalBuildContext", false))
+                using (new PerformanceScope("CreateIncrementalBuildContext", LogLevel.Verbose))
                 {
                     context.IncrementalBuildContext = IncrementalBuildContext.Create(parameters, CurrentBuildInfo, LastBuildInfo, IntermediateFolder, markdownServiceContextHash);
                 }
