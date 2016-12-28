@@ -5,5 +5,20 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     public class PostProcessorInfo : ProcessorInfoBase
     {
+        public override bool Equals(object obj)
+        {
+            var another = obj as PostProcessorInfo;
+            if (another == null)
+            {
+                return false;
+            }
+
+            return Name == another.Name && IncrementalContextHash == another.IncrementalContextHash;
+        }
+
+        public override int GetHashCode()
+        {
+            return Name?.GetHashCode() ?? 0;
+        }
     }
 }
