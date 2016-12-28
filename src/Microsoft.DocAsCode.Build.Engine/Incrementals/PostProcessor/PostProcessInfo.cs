@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// <summary>
         /// The post processor information
         /// </summary>
-        public List<PostProcessorInfo> PostProcessorInfos { get; set; }
+        public List<PostProcessorInfo> PostProcessorInfos { get; set; } = new List<PostProcessorInfo>();
         /// <summary>
         /// The file link for post process outputs (type is <see cref="PostProcessOutputs"/>).
         /// </summary>
@@ -36,6 +36,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 PostProcessOutputs = IncrementalUtility.LoadIntermediateFile<PostProcessOutputs>(Path.Combine(baseDir, PostProcessOutputsFile));
             }
+            foreach (var postProcessorInfos in PostProcessorInfos)
+            {
+                postProcessorInfos.Load(baseDir);
+            }
         }
 
         internal void Save(string baseDir)
@@ -45,6 +49,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 PostProcessOutputsFile = IncrementalUtility.CreateRandomFileName(baseDir);
             }
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, PostProcessOutputsFile), PostProcessOutputs);
+            foreach (var postProcessorInfos in PostProcessorInfos)
+            {
+                postProcessorInfos.Save(baseDir);
+            }
         }
     }
 }
