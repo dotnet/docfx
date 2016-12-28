@@ -140,7 +140,7 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 var host = context.host;
                 var mr = host.Markup(content, context.FileAndType);
-                context.LinkToUids.AddRange(mr.LinkToUids);
+                context.LinkToUids.UnionWith(mr.LinkToUids);
                 context.LinkToFiles.UnionWith(mr.LinkToFiles);
                 AddRange(context.FileLinkSources, mr.FileLinkSources);
                 AddRange(context.UidLinkSources, mr.UidLinkSources);
