@@ -61,12 +61,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             try
             {
                 buildInfo = JsonUtility.Deserialize<BuildInfo>(Path.Combine(baseDir, FileName));
-                var targetDirecroty = Path.Combine(baseDir, buildInfo.DirectoryName);
+                var targetDirectory = Path.Combine(baseDir, buildInfo.DirectoryName);
                 foreach (var version in buildInfo.Versions)
                 {
-                    version.Load(targetDirecroty);
+                    version.Load(targetDirectory);
                 }
-                buildInfo.PostProcessInfo?.Load(targetDirecroty);
+                buildInfo.PostProcessInfo?.Load(targetDirectory);
             }
             catch (Exception ex)
             {
@@ -78,12 +78,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public void Save(string baseDir)
         {
-            var targetDirecroty = Path.Combine(baseDir, DirectoryName);
+            var targetDirectory = Path.Combine(baseDir, DirectoryName);
             foreach (var version in Versions)
             {
-                version.Save(targetDirecroty);
+                version.Save(targetDirectory);
             }
-            PostProcessInfo?.Save(targetDirecroty);
+            PostProcessInfo?.Save(targetDirectory);
             JsonUtility.Serialize(Path.Combine(baseDir, FileName), this);
         }
     }
