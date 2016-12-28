@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
     public class MarkdownContentHandler : IModelAttributeHandler
     {
-        private static readonly ConcurrentDictionary<Type, MarkdownContentHandlerImpl> _cache = new ConcurrentDictionary<Type, MarkdownContentHandlerImpl>();
+        private readonly ConcurrentDictionary<Type, MarkdownContentHandlerImpl> _cache = new ConcurrentDictionary<Type, MarkdownContentHandlerImpl>();
 
         public void Handle(object obj, HandleModelAttributesContext context)
         {
@@ -127,7 +127,8 @@ namespace Microsoft.DocAsCode.Build.Common
                     }
                     else
                     {
-                        // TODO: Add cache to Markup
+                        // Not using cache considering: multiple *content is not common condition
+                        // Key should be context.FileAndType & context.PlaceholderContent, context.PlaceholderContent can be long
                         return MarkupCore(context.PlaceholderContent, context);
                     }
                 }

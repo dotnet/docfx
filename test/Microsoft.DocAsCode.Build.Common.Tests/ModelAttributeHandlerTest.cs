@@ -156,7 +156,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             context = Handle(model, context);
 
             // LinkToUids is List instead of Hashset
-            Assert.Equal(2, context.LinkToUids.Count);
+            Assert.Equal(4, context.LinkToUids.Count);
             Assert.Equal(1, context.LinkToFiles.Count);
             Assert.Equal(1, context.FileLinkSources.Count);
             Assert.Equal(1, context.UidLinkSources.Count);

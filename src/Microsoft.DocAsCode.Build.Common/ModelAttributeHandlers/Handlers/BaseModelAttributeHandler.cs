@@ -33,6 +33,11 @@ namespace Microsoft.DocAsCode.Build.Common
 
         public virtual void Handle(object obj, HandleModelAttributesContext context)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             if (obj == null)
             {
                 return;
