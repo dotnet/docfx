@@ -5,11 +5,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System.Collections.Generic;
 
-    public class ProcessorInfo : ProcessorInfoBase
+    public class PostProcessOutputs : Dictionary<string, string>
     {
-        /// <summary>
-        /// The information for steps.
-        /// </summary>
-        public List<ProcessorStepInfo> Steps { get; } = new List<ProcessorStepInfo>();
     }
 }
