@@ -186,18 +186,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 foreach (var toc in result.TocMap)
                 {
-                    HashSet<string> list;
-                    if (context.TocMap.TryGetValue(toc.Key, out list))
-                    {
-                        foreach (var item in toc.Value)
+                    context.TocMap.AddOrUpdate(
+                        toc.Key,
+                        toc.Value,
+                        (k, v) =>
                         {
-                            list.Add(item);
-                        }
-                    }
-                    else
-                    {
-                        context.TocMap[toc.Key] = toc.Value;
-                    }
+                            foreach (var item in toc.Value)
+                            {
+                                v.Add(item);
+                            }
+                            return v;
+                        });
                 }
             }
         }
