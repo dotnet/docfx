@@ -59,7 +59,31 @@ namespace Microsoft.DocAsCode.Common.Git
                 throw new GitException("Can't find git command in current environment");
             }
 
-            return Cache.GetOrAdd(directory, GetRepoInfoCore);
+            if (IsGitRoot(directory))
+            {
+                return Cache.GetOrAdd(directory, GetRepoInfoCore);
+            }
+
+            var parentDirInfo = Directory.GetParent(directory);
+            return Cache.GetOrAdd(directory, GetRepoInfo(parentDirInfo?.FullName));
+        }
+
+        public static bool IsGitRoot(string directory)
+        {
+            if (!PathUtility.IsDirectory(directory))
+            {
+                throw new ArgumentException($"{directory} should be a directory");
+            }
+
+            if (!Directory.Exists(directory))
+            {
+                throw new FileNotFoundException($"{directory} can't be found");
+            }
+
+            var gitPath = Path.Combine(directory, ".git");
+
+            // git submodule contains only a .git file instead of a .git folder
+            return Directory.Exists(gitPath) || File.Exists(gitPath);
         }
 
         #region Private Methods
