@@ -96,7 +96,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         private static IEnumerable<ManifestItemWithContext> ExportManifest(HostService hostService, DocumentBuildContext context)
         {
             var manifestItems = new List<ManifestItemWithContext>();
-            using (new LoggerPhaseScope("Save", true))
+            using (new LoggerPhaseScope("Save", false))
+            using (new PerformanceScope("Save", LogLevel.Verbose))
             {
                 hostService.Models.RunAll(m =>
                 {
