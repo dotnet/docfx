@@ -102,22 +102,14 @@ foreach ($folder in @("src", "test", "tools", "plugins"))
 
 # Build project
 Write-Host "Start to build project"
-foreach ($folder in (dir "src"))
-{
-    DotnetBuild($folder)
-}
-foreach ($folder in (dir "plugins"))
+foreach ($folder in (dir @("src", "plugins")))
 {
     DotnetBuild($folder)
 }
 
 # Publish project
 Write-Host "Start to publish project"
-foreach ($folder in (dir "src"))
-{
-    DotnetPublish($folder)
-}
-foreach ($folder in (dir "plugins"))
+foreach ($folder in (dir @("src", "plugins")))
 {
     DotnetPublish($folder)
 }
@@ -149,11 +141,7 @@ foreach ($folder in (dir "tools"))
 
 # Pack artifacts
 Write-Host "Publish artifacts"
-foreach ($folder in (dir "src"))
-{
-    DotnetPack($folder)
-}
-foreach ($folder in (dir "plugins"))
+foreach ($folder in (dir @("src", "plugins")))
 {
     DotnetPack($folder)
 }
