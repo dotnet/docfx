@@ -198,7 +198,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
         {
             return new HandleModelAttributesContext
             {
-                host = new HostService(null, Enumerable.Empty<FileModel>())
+                Host = new HostService(null, Enumerable.Empty<FileModel>())
                 {
                     MarkdownService = new DfmServiceProvider().CreateMarkdownService(new MarkdownServiceParameters { BasePath = string.Empty }),
                     SourceFiles = ImmutableDictionary.Create<string, FileAndType>()

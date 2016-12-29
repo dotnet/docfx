@@ -29,9 +29,9 @@ namespace Microsoft.DocAsCode.Build.Common
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (context.host == null)
+            if (context.Host == null)
             {
-                throw new ArgumentNullException(nameof(context.host));
+                throw new ArgumentNullException(nameof(context.Host));
             }
 
             var type = obj.GetType();
@@ -129,7 +129,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
             private string MarkupCore(string content, HandleModelAttributesContext context)
             {
-                var host = context.host;
+                var host = context.Host;
                 var mr = host.Markup(content, context.FileAndType);
                 context.LinkToUids.UnionWith(mr.LinkToUids);
                 context.LinkToFiles.UnionWith(mr.LinkToFiles);

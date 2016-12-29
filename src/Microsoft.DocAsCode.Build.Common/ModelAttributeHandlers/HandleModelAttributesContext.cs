@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
     public class HandleModelAttributesContext
     {
-        public IHostService host { get; set; }
+        public IHostService Host { get; set; }
         public bool SkipMarkup { get; set; }
         public bool EnableContentPlaceholder { get; set; }
         public string PlaceholderContent { get; set; }
