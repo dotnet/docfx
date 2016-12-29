@@ -29,9 +29,9 @@ namespace Microsoft.DocAsCode.Build.Common
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (context.host == null)
+            if (context.Host == null)
             {
-                throw new ArgumentNullException(nameof(context.host));
+                throw new ArgumentNullException(nameof(context.Host));
             }
 
             var type = obj.GetType();
@@ -121,16 +121,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
                 if (context.EnableContentPlaceholder && IsPlaceholderContent(content))
                 {
-                    if (string.IsNullOrEmpty(context.PlaceholderContent))
-                    {
-                        return context.PlaceholderContent;
-                    }
-                    else
-                    {
-                        // Not using cache considering: multiple *content is not common condition
-                        // Key should be context.FileAndType & context.PlaceholderContent, context.PlaceholderContent can be long
-                        return MarkupCore(context.PlaceholderContent, context);
-                    }
+                    return context.PlaceholderContent;
                 }
 
                 return MarkupCore(content, context);
@@ -138,7 +129,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
             private string MarkupCore(string content, HandleModelAttributesContext context)
             {
-                var host = context.host;
+                var host = context.Host;
                 var mr = host.Markup(content, context.FileAndType);
                 context.LinkToUids.UnionWith(mr.LinkToUids);
                 context.LinkToFiles.UnionWith(mr.LinkToFiles);
