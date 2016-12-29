@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.Plugins
             var source = GetPhysicalPath(sourceFileName);
             var dest = GetOutputPhysicalPath(destFileName);
             Directory.CreateDirectory(Path.GetDirectoryName(dest));
-            File.Copy(source, dest);
+            File.Copy(source, dest, true);
             File.SetAttributes(dest, FileAttributes.Normal);
         }
 

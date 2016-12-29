@@ -45,7 +45,8 @@ namespace Microsoft.DocAsCode.Plugins
             if (Path.IsPathRooted(sourceFileName) || Path.IsPathRooted(destFileName))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
-                File.Copy(sourceFileName, destFileName);
+                File.Copy(sourceFileName, destFileName, true);
+                File.SetAttributes(destFileName, FileAttributes.Normal);
             }
             else
             {
