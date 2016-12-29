@@ -8,6 +8,7 @@ namespace DfmHttpService
     using System.Net;
     using System.Text;
     using System.Threading;
+    using System.Net.Http;
 
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
@@ -16,8 +17,9 @@ namespace DfmHttpService
 
     public class DfmHttpService
     {
-        private bool _keepGoing = true;
-        private const string UrlPrefix = "http://localhost:4001/";
+        private volatile bool _keepGoing = true;
+        private const int DefaultPort = 4001;
+        private const string UrlPrefixTemplate = "http://localhost:{0}/";
 
         public void StartService(string urlPrefix)
         {
@@ -93,7 +95,7 @@ namespace DfmHttpService
         public static string GetAvailablePrefix()
         {
             // TODO: generate new random port if default port is not avaliable
-            return UrlPrefix;
+            return string.Format(UrlPrefixTemplate, DefaultPort);
         }
 
         private static string GenerateTokenTree(string documentation, string filePath, string workspacePath = null)
@@ -114,9 +116,9 @@ namespace DfmHttpService
 
         private static CommandMessage GetCommandMessage(HttpListenerRequest request)
         {
-            if (!request.HasEntityBody)
+            if (!request.HasEntityBody || request.HttpMethod != HttpMethod.Post.ToString())
             {
-                throw new HttpListenerException(Constants.ClientErrorStatusCode, "No body in this request");
+                throw new HttpListenerException((int) HttpStatusCode.BadRequest, "No body in this request");
             }
 
             string content;
@@ -136,6 +138,7 @@ namespace DfmHttpService
             var response = context.Response;
             var buffer = Encoding.UTF8.GetBytes(content);
             response.ContentLength64 = buffer.Length;
+            response.ContentType = Constants.ReplyContentType;
             using (var write = response.OutputStream)
             {
                 write.Write(buffer, 0, buffer.Length);
@@ -145,23 +148,23 @@ namespace DfmHttpService
 
         private static void ReplyClientErrorResponse(HttpListenerContext context, string message)
         {
-            ReplayResponse(context, Constants.ClientErrorStatusCode, message);
+            ReplayResponse(context, HttpStatusCode.BadRequest, message);
         }
 
         private static void ReplyServerErrorResponse(HttpListenerContext context, string message)
         {
-            ReplayResponse(context, Constants.ServerErrorStatusCode, message);
+            ReplayResponse(context, HttpStatusCode.InternalServerError, message);
         }
 
         private static void ReplyExitResponse(HttpListenerContext context, string message)
         {
-            ReplayResponse(context, Constants.ServiceExitStatusCode, message);
+            ReplayResponse(context, HttpStatusCode.NoContent, message);
         }
 
-        private static void ReplayResponse(HttpListenerContext context, int statusCode, string message)
+        private static void ReplayResponse(HttpListenerContext context, HttpStatusCode statusCode, string message)
         {
             var response = context.Response;
-            response.StatusCode = statusCode;
+            response.StatusCode = (int) statusCode;
             response.StatusDescription = message;
             response.Close();
         }

@@ -9,9 +9,6 @@ namespace DfmHttpService
         public const string GenerateTokenTreeCommand = "generateTokenTree";
         public const string ExitServiceCommand = "exit";
 
-        public const int ClientErrorStatusCode = 400;
-        public const int ServerErrorStatusCode = 500;
-        public const int ServiceExitStatusCode = 204;
-
+        public const string ReplyContentType = "application/html";
     }
 }
