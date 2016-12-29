@@ -140,9 +140,9 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.J
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.JavaScriptReference", "plugins\Microsoft.DocAsCode.Build.JavaScriptReference\Microsoft.DocAsCode.Build.JavaScriptReference.xproj", "{D609EB39-0CBD-41C1-8F4D-46720491BE40}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MethodLevelManagedReference", "MethodLevelManagedReference", "{1D6213AE-4FD9-4155-987B-29FE16F56E18}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MemberLevelManagedReference", "MemberLevelManagedReference", "{1D6213AE-4FD9-4155-987B-29FE16F56E18}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.MethodLevelManagedReference", "plugins\Microsoft.DocAsCode.Build.MethodLevelManagedReference\Microsoft.DocAsCode.Build.MethodLevelManagedReference.xproj", "{2746DA6E-D310-4F07-B41B-929BB3D6E14B}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.MemberLevelManagedReference", "plugins\Microsoft.DocAsCode.Build.MemberLevelManagedReference\Microsoft.DocAsCode.Build.MemberLevelManagedReference.xproj", "{2746DA6E-D310-4F07-B41B-929BB3D6E14B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

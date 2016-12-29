@@ -7,7 +7,7 @@
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
     <ProjectGuid>2746da6e-d310-4f07-b41b-929bb3d6e14b</ProjectGuid>
-    <RootNamespace>Microsoft.DocAsCode.Build.MethodLevelManagedReference</RootNamespace>
+    <RootNamespace>Microsoft.DocAsCode.Build.MemberLevelManagedReference</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
   </PropertyGroup>
