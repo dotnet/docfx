@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Common
         public const string ManagedReference = YamlMimePrefix + nameof(ManagedReference);
         public const string TableOfContent = YamlMimePrefix + nameof(TableOfContent);
         public const string XRefMap = YamlMimePrefix + nameof(XRefMap);
+        public const string JavaScriptReference = YamlMimePrefix + nameof(JavaScriptReference);
 
         public static string ReadMime(TextReader reader)
         {

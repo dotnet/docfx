@@ -1,0 +1,174 @@
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Microsoft.DocAsCode.Build.JavaScriptReference
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Composition;
+    using System.IO;
+    using System.Linq;
+    using System.Runtime.Serialization.Formatters.Binary;
+
+    using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
+
+    using Newtonsoft.Json;
+
+    [Export(typeof(IDocumentProcessor))]
+    public class JavaScriptReferenceDocumentProcessor : ReferenceDocumentProcessorBase
+    {
+        #region ReferenceDocumentProcessorBase Members
+
+        protected override string ProcessedDocumentType { get; } = "JavaScriptReference";
+
+        protected override FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata)
+        {
+            var page = YamlUtility.Deserialize<PageViewModel>(file.File);
+            if (page.Items == null || page.Items.Count == 0)
+            {
+                return null;
+            }
+            if (page.Metadata == null)
+            {
+                page.Metadata = metadata.ToDictionary(p => p.Key, p => p.Value);
+            }
+            else
+            {
+                foreach (var item in metadata.Where(item => !page.Metadata.ContainsKey(item.Key)))
+                {
+                    page.Metadata[item.Key] = item.Value;
+                }
+            }
+
+            var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
+
+            return new FileModel(file, page, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
+            {
+                Uids = (from item in page.Items select new UidDefinition(item.Uid, localPathFromRoot)).ToImmutableArray(),
+                LocalPathFromRoot = localPathFromRoot
+            };
+        }
+
+        #endregion
+
+        #region IDocumentProcessor Members
+
+        [ImportMany(nameof(JavaScriptReferenceDocumentProcessor))]
+        public override IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
+
+        public override string Name => nameof(JavaScriptReferenceDocumentProcessor);
+
+        public override ProcessingPriority GetProcessingPriority(FileAndType file)
+        {
+            switch (file.Type)
+            {
+                case DocumentType.Article:
+                    if (".yml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase) ||
+                        ".yaml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
+                    {
+                        var mime = YamlMime.ReadMime(file.File);
+                        switch (mime)
+                        {
+                            case YamlMime.JavaScriptReference:
+                                return ProcessingPriority.Normal;
+                            case null:
+                                // A YAML without YamlMime is treated as ManagedReference by default
+                                return ProcessingPriority.NotSupported;
+                            default:
+                                return ProcessingPriority.NotSupported;
+                        }
+                    }
+
+                    if (".jsyml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase) ||
+                        ".jsyaml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
+                    {
+                        return ProcessingPriority.Normal;
+                    }
+
+                    break;
+                case DocumentType.Overwrite:
+                    if (".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
+                    {
+                        return ProcessingPriority.Normal;
+                    }
+                    break;
+            }
+            return ProcessingPriority.NotSupported;
+        }
+
+        public override SaveResult Save(FileModel model)
+        {
+            var vm = (PageViewModel)model.Content;
+
+            var result = base.Save(model);
+            result.XRefSpecs = (from item in vm.Items
+                                from xref in GetXRefInfo(item, model.Key, vm.References)
+                                group xref by xref.Uid
+                                into g
+                                select g.First()).ToImmutableArray();
+            result.ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray();
+
+            model.Content = ((PageViewModel) model.Content).ToApiBuildOutput();
+
+            return result;
+        }
+
+        #endregion
+
+        #region Protected/Private Methods
+
+        private static IEnumerable<XRefSpec> GetXRefFromReference(PageViewModel vm)
+        {
+            if (vm.References == null)
+            {
+                yield break;
+            }
+            foreach (var reference in vm.References)
+            {
+                if (reference != null && reference.IsExternal != false)
+                {
+                    var dict = YamlUtility.ConvertTo<Dictionary<string, object>>(reference);
+                    if (dict != null)
+                    {
+                        var spec = new XRefSpec();
+                        foreach (var pair in dict)
+                        {
+                            var s = pair.Value as string;
+                            if (s != null)
+                            {
+                                spec[pair.Key] = s;
+                            }
+                        }
+                        yield return spec;
+                    }
+                }
+            }
+        }
+
+        private static IEnumerable<XRefSpec> GetXRefInfo(ItemViewModel item, string key,
+            List<DataContracts.Common.ReferenceViewModel> references)
+        {
+            var result = new XRefSpec
+            {
+                Uid = item.Uid,
+                Name = item.Name,
+                Href = key,
+            };
+            if (!string.IsNullOrEmpty(item.FullName))
+            {
+                result["fullName"] = item.FullName;
+            }
+            if (!string.IsNullOrEmpty(item.NameWithType))
+            {
+                result["nameWithType"] = item.NameWithType;
+            }
+            yield return result;
+        }
+
+
+        #endregion
+    }
+}
