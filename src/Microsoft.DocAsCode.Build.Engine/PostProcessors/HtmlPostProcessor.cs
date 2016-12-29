@@ -17,6 +17,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal sealed class HtmlPostProcessor : IPostProcessor, ISupportIncrementalPostProcessor
     {
+        public IPostProcessorHost PostProcessorHost { get; set; }
+
         public string GetIncrementalContextHash()
         {
             return null;

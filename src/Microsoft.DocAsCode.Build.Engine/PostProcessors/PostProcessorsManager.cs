@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     internal class PostProcessorsManager : IDisposable
     {
         private readonly List<PostProcessor> _postProcessors;
-        private PostProcessorsHandler _postProcessorsHandler;
+        private IPostProcessorsHandler _postProcessorsHandler;
 
         public PostProcessorsManager(CompositionHost container, ImmutableArray<string> postProcessorNames)
         {
@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (intermediateFolder != null && false)
             {
                 var increPostProcessorsContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, _postProcessors, !forceBuild);
-                _postProcessorsHandler = new PostProcessorsHandlerWithIncremental(increPostProcessorsContext);
+                _postProcessorsHandler = new PostProcessorsHandlerWithIncremental(_postProcessorsHandler, increPostProcessorsContext);
             }
         }
 
@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     metadata = postProcessor.Processor.PrepareMetadata(metadata);
                     if (metadata == null)
                     {
-                        throw new DocfxException($"Plugin {postProcessor.ContractName} should not return null metadata");
+                        throw new DocfxException($"Post processor {postProcessor.ContractName} should not return null metadata");
                     }
                 }
             }

@@ -10,14 +10,10 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
-    internal class PostProcessorsHandler
+    internal class PostProcessorsHandler : IPostProcessorsHandler
     {
-        public virtual void Handle(List<PostProcessor> postProcessors, Manifest manifest, string outputFolder)
+        public void Handle(List<PostProcessor> postProcessors, Manifest manifest, string outputFolder)
         {
-            if (postProcessors == null)
-            {
-                throw new ArgumentNullException(nameof(postProcessors));
-            }
             if (manifest == null)
             {
                 throw new ArgumentNullException(nameof(manifest));
@@ -35,7 +31,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     manifest = postProcessor.Processor.Process(manifest, outputFolder);
                     if (manifest == null)
                     {
-                        throw new DocfxException($"Plugin {postProcessor.ContractName} should not return null manifest");
+                        throw new DocfxException($"Post processor {postProcessor.ContractName} should not return null manifest");
                     }
 
                     // To make sure post processor won't generate duplicate output files

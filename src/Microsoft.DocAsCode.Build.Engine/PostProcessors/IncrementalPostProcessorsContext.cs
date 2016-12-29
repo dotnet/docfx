@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <summary>
         /// Whether to post process incrementally
         /// </summary>
-        public bool CanInrementalPostProcess { get; }
+        public bool CanIncrementalPostProcess { get; }
 
         #endregion
 
@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             ShouldTraceIncrementalInfo = GetShouldTraceIncrementalInfo();
-            CanInrementalPostProcess = GetCanInrementalPostProcess();
+            CanIncrementalPostProcess = GetCanIncrementalPostProcess();
             if (ShouldTraceIncrementalInfo)
             {
                 currentBuildInfo.PostProcessInfo = GeneratePostProcessInfo();
@@ -87,14 +87,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return true;
             }
 
-            var message = $"Cannot support incremental post processors, because following post processors doesn't implement {nameof(ISupportIncrementalPostProcessor)} interface:" +
+            var message = $"Cannot support incremental post processors, because following post processors don't implement {nameof(ISupportIncrementalPostProcessor)} interface:" +
                           $" {string.Join(",", _postProcessors.Where(p => !(p.Processor is ISupportIncrementalPostProcessor)).Select(p => p.ContractName))}.";
             Logger.LogVerbose(message);
             return false;
         }
 
         // TODO: report incremental info in manifest
-        private bool GetCanInrementalPostProcess()
+        private bool GetCanIncrementalPostProcess()
         {
             if (!ShouldTraceIncrementalInfo)
             {
@@ -102,7 +102,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (!EnableIncremental)
             {
-                const string message = "Disable incremental post process.";
+                const string message = "Disable incremental post processing.";
                 Logger.LogVerbose(message);
                 return false;
             }

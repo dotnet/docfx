@@ -104,7 +104,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             Logger.LogInfo($"Markdown engine is {parameters[0].MarkdownEngineName}");
 
-            _postProcessorsManager.Initialize(_intermediateFolder, _currentBuildInfo, _lastBuildInfo, parameters[0].ForceRebuild);
+            _postProcessorsManager.IncrementalInitialize(_intermediateFolder, _currentBuildInfo, _lastBuildInfo, parameters[0].ForceRebuild);
 
             var manifests = new List<Manifest>();
             bool transformDocument = false;

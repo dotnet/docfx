@@ -8,25 +8,27 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Plugins;
 
-    internal class PostProcessorsHandlerWithIncremental : PostProcessorsHandler
+    internal class PostProcessorsHandlerWithIncremental : IPostProcessorsHandler
     {
+        private readonly IPostProcessorsHandler _innerHandler;
         private readonly IncrementalPostProcessorsContext _incrementalPostProcessorsContext;
 
-        public PostProcessorsHandlerWithIncremental(IncrementalPostProcessorsContext incrementalPostProcessorsContext)
+        public PostProcessorsHandlerWithIncremental(IPostProcessorsHandler innerPostProcessorsHandler, IncrementalPostProcessorsContext incrementalPostProcessorsContext)
         {
+            if (innerPostProcessorsHandler == null)
+            {
+                throw new ArgumentNullException(nameof(innerPostProcessorsHandler));
+            }
             if (incrementalPostProcessorsContext == null)
             {
                 throw new ArgumentNullException(nameof(incrementalPostProcessorsContext));
             }
+            _innerHandler = innerPostProcessorsHandler;
             _incrementalPostProcessorsContext = incrementalPostProcessorsContext;
         }
 
-        public override void Handle(List<PostProcessor> postProcessors, Manifest manifest, string outputFolder)
+        public void Handle(List<PostProcessor> postProcessors, Manifest manifest, string outputFolder)
         {
-            if (postProcessors == null)
-            {
-                throw new ArgumentNullException(nameof(postProcessors));
-            }
             if (manifest == null)
             {
                 throw new ArgumentNullException(nameof(manifest));
@@ -37,7 +39,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             // TODO: incremental things
-            base.Handle(postProcessors, manifest, outputFolder);
+            _innerHandler.Handle(postProcessors, manifest, outputFolder);
         }
     }
 }

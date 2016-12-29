@@ -6,6 +6,11 @@ namespace Microsoft.DocAsCode.Plugins
     public interface ISupportIncrementalPostProcessor
     {
         /// <summary>
+        /// Get post processor host
+        /// </summary>
+        IPostProcessorHost PostProcessorHost { get; set; }
+
+        /// <summary>
         /// Get the hash of incremental context, skip incremental if it is different from latest one.
         /// </summary>
         /// <returns>the hash.</returns>
