@@ -14,6 +14,10 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         public void Handle(List<PostProcessor> postProcessors, Manifest manifest, string outputFolder)
         {
+            if (postProcessors == null)
+            {
+                throw new ArgumentNullException(nameof(postProcessors));
+            }
             if (manifest == null)
             {
                 throw new ArgumentNullException(nameof(manifest));
