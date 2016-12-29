@@ -20,32 +20,44 @@ namespace Microsoft.DocAsCode.Common
         public override void Copy(PathMapping sourceFilePath, RelativePath destFilePath)
         {
             var key = destFilePath.GetPathFromWorkingFolder();
-            _mapping[key] = new PathMapping(key, sourceFilePath.PhysicalPath)
+            var pm = new PathMapping(key, sourceFilePath.PhysicalPath)
             {
                 Properties = sourceFilePath.Properties,
             };
+            lock (_mapping)
+            {
+                _mapping[key] = pm;
+            }
         }
 
         public override Stream Create(RelativePath file)
         {
             var key = file.GetPathFromWorkingFolder();
+            bool getResult;
             PathMapping pm;
-            if (_mapping.TryGetValue(key, out pm) &&
-                pm.PhysicalPath.StartsWith(OutputFolder))
+            lock (_mapping)
+            {
+                getResult = _mapping.TryGetValue(key, out pm);
+            }
+            if (getResult && pm.PhysicalPath.StartsWith(OutputFolder))
             {
                 return File.Create(Environment.ExpandEnvironmentVariables(pm.PhysicalPath));
             }
             var pair = CreateRandomFileStream();
-            _mapping[key] =
-                new PathMapping(
-                    key,
-                    Path.Combine(OutputFolder, pair.Item1));
+            pm = new PathMapping(key, Path.Combine(OutputFolder, pair.Item1));
+            lock (_mapping)
+            {
+                _mapping[key] = pm;
+            }
             return pair.Item2;
         }
 
         public override IFileReader CreateReader()
         {
-            return new LinkFileReader(_mapping.Values);
+            lock (_mapping)
+            {
+                return new LinkFileReader(_mapping.Values);
+            }
         }
 
         #endregion
