@@ -121,16 +121,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
                 if (context.EnableContentPlaceholder && IsPlaceholderContent(content))
                 {
-                    if (string.IsNullOrEmpty(context.PlaceholderContent))
-                    {
-                        return context.PlaceholderContent;
-                    }
-                    else
-                    {
-                        // Not using cache considering: multiple *content is not common condition
-                        // Key should be context.FileAndType & context.PlaceholderContent, context.PlaceholderContent can be long
-                        return MarkupCore(context.PlaceholderContent, context);
-                    }
+                    return context.PlaceholderContent;
                 }
 
                 return MarkupCore(content, context);

@@ -152,7 +152,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
             var context = GetDefaultContext();
             context.EnableContentPlaceholder = true;
-            context.PlaceholderContent = model.Content;
+            context.PlaceholderContent = "placeholder";
             context = Handle(model, context);
 
             Assert.Equal(1, context.LinkToUids.Count);
@@ -162,9 +162,9 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             var expected = @"<p sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1"">Hello <em>world</em>, <xref href=""xref"" data-throw-if-not-resolved=""False"" data-raw-source=""@xref"" sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1""></xref>, <a href=""link.md"" data-raw-source=""[link](link.md)"" sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1"">link</a></p>
 ".Replace("\r\n", "\n");
             Assert.Equal(expected, model.Content);
-            Assert.Equal(expected, model.Content2);
-            Assert.Equal(expected, model.Inner.Content);
-            Assert.Equal(expected, model.Inner.Content2);
+            Assert.Equal(context.PlaceholderContent, model.Content2);
+            Assert.Equal(context.PlaceholderContent, model.Inner.Content);
+            Assert.Equal(context.PlaceholderContent, model.Inner.Content2);
         }
 
         [Fact]
