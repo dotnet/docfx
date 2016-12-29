@@ -246,9 +246,27 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
             {
-                foreach (var file in h.GetUnloadedModelFiles(IncrementalContext))
+                foreach (var file in GetFilesToRelayMessages(h))
                 {
                     LastBuildMessageInfo.Replay(file);
+                }
+            }
+        }
+
+        private IEnumerable<string> GetFilesToRelayMessages(HostService hs)
+        {
+            foreach (var f in hs.GetUnloadedModelFiles(IncrementalContext))
+            {
+                yield return f;
+
+                // warnings from token file won't be delegated to article, so we need to add it manually
+                var key = ((RelativePath)f).GetPathFromWorkingFolder();
+                foreach (var item in CurrentBuildVersionInfo.Dependency.GetAllDependencyFrom(key))
+                {
+                    if (item.Type == DependencyTypeName.Include)
+                    {
+                        yield return ((RelativePath)item.To).RemoveWorkingFolder();
+                    }
                 }
             }
         }
