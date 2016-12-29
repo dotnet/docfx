@@ -7,6 +7,7 @@ namespace DfmHttpService
     using System.IO;
     using System.Net;
     using System.Text;
+    using System.Threading;
 
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
@@ -15,7 +16,7 @@ namespace DfmHttpService
 
     public class DfmHttpService
     {
-        private bool KeepGoing { get; set; } = true;
+        private bool _keepGoing = true;
         private const string UrlPrefix = "http://localhost:4001/";
 
         public void StartService(string urlPrefix)
@@ -24,19 +25,20 @@ namespace DfmHttpService
             listener.Prefixes.Add(urlPrefix);
             listener.Start();
 
-            while (KeepGoing)
+            while (_keepGoing)
             {
                 var context = listener.GetContext();
-                HandleRequest(context);
+                ThreadPool.QueueUserWorkItem(HandleRequest, context);
             }
 
             listener.Stop();
             listener.Close();
         }
 
-        private void HandleRequest(HttpListenerContext context)
+        private void HandleRequest(object ctx)
         {
             // TODO: Add log for request information
+            var context = (HttpListenerContext) ctx;
             var request = context.Request;
 
             CommandMessage command;
@@ -52,7 +54,7 @@ namespace DfmHttpService
 
             switch (command.Name)
             {
-                case "preview":
+                case Constants.PreviewCommand:
                     string content;
                     try
                     {
@@ -65,7 +67,7 @@ namespace DfmHttpService
                     }
                     ReplySuccessfulResponse(context, content);
                     return;
-                case "generateTokenTree":
+                case Constants.GenerateTokenTreeCommand:
                     string tokenTree;
                     try
                     {
@@ -78,8 +80,8 @@ namespace DfmHttpService
                     }
                     ReplySuccessfulResponse(context, tokenTree);
                     return;
-                case "exit":
-                    KeepGoing = false;
+                case Constants.ExitServiceCommand:
+                    _keepGoing = false;
                     ReplyExitResponse(context, "Dfm service exit");
                     return;
                 default:
@@ -114,7 +116,7 @@ namespace DfmHttpService
         {
             if (!request.HasEntityBody)
             {
-                throw new HttpListenerException(400, "No body in this request");
+                throw new HttpListenerException(Constants.ClientErrorStatusCode, "No body in this request");
             }
 
             string content;
@@ -143,24 +145,23 @@ namespace DfmHttpService
 
         private static void ReplyClientErrorResponse(HttpListenerContext context, string message)
         {
-            var response = context.Response;
-            response.StatusCode = 400;
-            response.StatusDescription = message;
-            response.Close();
+            ReplayResponse(context, Constants.ClientErrorStatusCode, message);
         }
 
         private static void ReplyServerErrorResponse(HttpListenerContext context, string message)
         {
-            var response = context.Response;
-            response.StatusCode = 500;
-            response.StatusDescription = message;
-            response.Close();
+            ReplayResponse(context, Constants.ServerErrorStatusCode, message);
         }
 
         private static void ReplyExitResponse(HttpListenerContext context, string message)
         {
+            ReplayResponse(context, Constants.ServiceExitStatusCode, message);
+        }
+
+        private static void ReplayResponse(HttpListenerContext context, int statusCode, string message)
+        {
             var response = context.Response;
-            response.StatusCode = 204;
+            response.StatusCode = statusCode;
             response.StatusDescription = message;
             response.Close();
         }
