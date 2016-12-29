@@ -72,22 +72,12 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
                         var mime = YamlMime.ReadMime(file.File);
                         switch (mime)
                         {
-                            case YamlMime.JavaScriptReference:
+                            case Constants.JavaScriptReferenceYamlMime:
                                 return ProcessingPriority.Normal;
-                            case null:
-                                // A YAML without YamlMime is treated as ManagedReference by default
-                                return ProcessingPriority.NotSupported;
                             default:
                                 return ProcessingPriority.NotSupported;
                         }
                     }
-
-                    if (".jsyml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase) ||
-                        ".jsyaml".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
-                    {
-                        return ProcessingPriority.Normal;
-                    }
-
                     break;
                 case DocumentType.Overwrite:
                     if (".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
