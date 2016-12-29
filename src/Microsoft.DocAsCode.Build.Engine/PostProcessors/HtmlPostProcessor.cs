@@ -15,8 +15,13 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    internal sealed class HtmlPostProcessor : IPostProcessor
+    internal sealed class HtmlPostProcessor : IPostProcessor, ISupportIncrementalPostProcessor
     {
+        public string GetIncrementalContextHash()
+        {
+            return null;
+        }
+
         public List<HtmlDocumentHandler> Handlers { get; } = new List<HtmlDocumentHandler>();
 
         public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)
