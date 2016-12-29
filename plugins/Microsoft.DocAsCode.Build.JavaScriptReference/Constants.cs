@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
 
     internal static class Constants
     {
-        public const string JavaScriptReferenceYamlMime = YamlMime.YamlMimePrefix + "JavaScriptReference";
+        public const string JavaScriptReferenceName = "JavaScriptReference";
+        public const string JavaScriptReferenceYamlMime = YamlMime.YamlMimePrefix + JavaScriptReferenceName;
     }
 }

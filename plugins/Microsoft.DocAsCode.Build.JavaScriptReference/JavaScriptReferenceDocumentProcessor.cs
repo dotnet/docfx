@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
     {
         #region ReferenceDocumentProcessorBase Members
 
-        protected override string ProcessedDocumentType { get; } = "JavaScriptReference";
+        protected override string ProcessedDocumentType => Constants.JavaScriptReferenceName;
 
         protected override FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata)
         {

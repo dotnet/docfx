@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.DataContracts.Common;
+    using CommonConstants = Microsoft.DocAsCode.DataContracts.Common.Constants;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(JavaScriptReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
             return OverwriteDocumentReader.Transform<ItemViewModel>(
                 fileModel,
                 uid,
-                s => BuildJavaScriptReferenceDocument.BuildItem(host, s, fileModel, content => content != null && content.Trim() == Constants.ContentPlaceholder));
+                s => BuildJavaScriptReferenceDocument.BuildItem(host, s, fileModel, content => content != null && content.Trim() == CommonConstants.ContentPlaceholder));
         }
 
         public IEnumerable<ItemViewModel> GetItemsToOverwrite(FileModel fileModel, string uid, IHostService host)
