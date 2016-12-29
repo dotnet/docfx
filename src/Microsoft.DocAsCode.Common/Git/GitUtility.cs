@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Common.Git
     {
         private static readonly string CommandName = "git";
         private static readonly int GitTimeOut = 1000;
+        private static int _existGitCommand = -1;
 
         private static readonly string GetRepoRootCommand = "rev-parse --show-toplevel";
         private static readonly string GetLocalBranchCommand = "rev-parse --abbrev-ref HEAD";
@@ -42,7 +43,26 @@ namespace Microsoft.DocAsCode.Common.Git
             return detail;
         }
 
-        public static GitRepoInfo GetRepoInfo(string directory)
+        public static bool IsGitRoot(string directory)
+        {
+            if (!PathUtility.IsDirectory(directory))
+            {
+                throw new ArgumentException($"{directory} should be a directory");
+            }
+
+            if (!Directory.Exists(directory))
+            {
+                throw new DirectoryNotFoundException($"{directory} can't be found");
+            }
+
+            var gitPath = Path.Combine(directory, ".git");
+
+            // git submodule contains only a .git file instead of a .git folder
+            return Directory.Exists(gitPath) || File.Exists(gitPath);
+        }
+
+        #region Private Methods
+        private static GitRepoInfo GetRepoInfo(string directory)
         {
             if (directory == null)
             {
@@ -68,25 +88,6 @@ namespace Microsoft.DocAsCode.Common.Git
             return Cache.GetOrAdd(directory, GetRepoInfo(parentDirInfo?.FullName));
         }
 
-        public static bool IsGitRoot(string directory)
-        {
-            if (!PathUtility.IsDirectory(directory))
-            {
-                throw new ArgumentException($"{directory} should be a directory");
-            }
-
-            if (!Directory.Exists(directory))
-            {
-                throw new FileNotFoundException($"{directory} can't be found");
-            }
-
-            var gitPath = Path.Combine(directory, ".git");
-
-            // git submodule contains only a .git file instead of a .git folder
-            return Directory.Exists(gitPath) || File.Exists(gitPath);
-        }
-
-        #region Private Methods
         private static GitDetail GetFileDetailCore(string filePath)
         {
             if (!Path.IsPathRooted(filePath))
@@ -237,7 +238,11 @@ namespace Microsoft.DocAsCode.Common.Git
 
         private static bool ExistGitCommand()
         {
-            return CommandUtility.ExistCommand(CommandName);
+            if (_existGitCommand == -1)
+            {
+                _existGitCommand = CommandUtility.ExistCommand(CommandName) ? 1 : 0;
+            }
+            return _existGitCommand == 1;
         }
         #endregion
     }
