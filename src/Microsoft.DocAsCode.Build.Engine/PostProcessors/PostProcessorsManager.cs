@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Composition.Hosting;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
@@ -16,6 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     internal class PostProcessorsManager : IDisposable
     {
         private readonly List<PostProcessor> _postProcessors;
+        private IPostProcessorsHandler _postProcessorsHandler;
 
         public PostProcessorsManager(CompositionHost container, ImmutableArray<string> postProcessorNames)
         {
@@ -28,6 +30,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(postProcessorNames));
             }
             _postProcessors = GetPostProcessor(container, postProcessorNames);
+            _postProcessorsHandler = new PostProcessorsHandler();
+        }
+
+        public void IncrementalInitialize(string intermediateFolder, BuildInfo currentBuildInfo, BuildInfo lastBuildInfo, bool forceBuild)
+        {
+            // TODO: enable after implementation and integration
+            if (intermediateFolder != null && false)
+            {
+                var increPostProcessorsContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, _postProcessors, !forceBuild);
+                _postProcessorsHandler = new PostProcessorsHandlerWithIncremental(_postProcessorsHandler, increPostProcessorsContext);
+            }
         }
 
         public void PrepareMetadata(ImmutableDictionary<string, object> metadata)
@@ -41,7 +54,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     metadata = postProcessor.Processor.PrepareMetadata(metadata);
                     if (metadata == null)
                     {
-                        throw new DocfxException($"Plugin {postProcessor.ContractName} should not return null metadata");
+                        throw new DocfxException($"Post processor {postProcessor.ContractName} should not return null metadata");
                     }
                 }
             }
@@ -49,21 +62,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void Process(Manifest manifest, string outputFolder)
         {
-            foreach (var postProcessor in _postProcessors)
-            {
-                using (new LoggerPhaseScope($"Process in post processor {postProcessor.ContractName}", false))
-                using (new PerformanceScope($"Process in post processor {postProcessor.ContractName}"))
-                {
-                    manifest = postProcessor.Processor.Process(manifest, outputFolder);
-                    if (manifest == null)
-                    {
-                        throw new DocfxException($"Plugin {postProcessor.ContractName} should not return null manifest");
-                    }
-
-                    // To make sure post processor won't generate duplicate output files
-                    ManifestUtility.RemoveDuplicateOutputFiles(manifest.Files);
-                }
-            }
+            _postProcessorsHandler.Handle(_postProcessors, manifest, outputFolder);
         }
 
         private static List<PostProcessor> GetPostProcessor(CompositionHost container, ImmutableArray<string> processors)
