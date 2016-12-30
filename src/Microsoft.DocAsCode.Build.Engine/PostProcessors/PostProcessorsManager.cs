@@ -33,31 +33,33 @@ namespace Microsoft.DocAsCode.Build.Engine
             _postProcessorsHandler = new PostProcessorsHandler();
         }
 
-        public void IncrementalInitialize(string intermediateFolder, BuildInfo currentBuildInfo, BuildInfo lastBuildInfo, bool forceBuild)
+        public void IncrementalInitialize(string intermediateFolder, BuildInfo currentBuildInfo, BuildInfo lastBuildInfo, bool forcePostProcess)
         {
             // TODO: enable after implementation and integration
             if (intermediateFolder != null && false)
             {
-                var increPostProcessorsContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, _postProcessors, !forceBuild);
+                var increPostProcessorsContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, _postProcessors, !forcePostProcess);
                 _postProcessorsHandler = new PostProcessorsHandlerWithIncremental(_postProcessorsHandler, increPostProcessorsContext);
             }
         }
 
-        public void PrepareMetadata(ImmutableDictionary<string, object> metadata)
+        public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)
         {
+            var updatedMetadata = metadata;
             foreach (var postProcessor in _postProcessors)
             {
                 // TODO: add overload method for LoggerPhaseScope
                 using (new LoggerPhaseScope($"Prepare metadata in post processor {postProcessor.ContractName}", false))
                 using (new PerformanceScope($"Prepare metadata in post processor {postProcessor.ContractName}"))
                 {
-                    metadata = postProcessor.Processor.PrepareMetadata(metadata);
-                    if (metadata == null)
+                    updatedMetadata = postProcessor.Processor.PrepareMetadata(metadata);
+                    if (updatedMetadata == null)
                     {
                         throw new DocfxException($"Post processor {postProcessor.ContractName} should not return null metadata");
                     }
                 }
             }
+            return updatedMetadata;
         }
 
         public void Process(Manifest manifest, string outputFolder)

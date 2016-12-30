@@ -104,7 +104,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             Logger.LogInfo($"Markdown engine is {parameters[0].MarkdownEngineName}");
 
-            _postProcessorsManager.IncrementalInitialize(_intermediateFolder, _currentBuildInfo, _lastBuildInfo, parameters[0].ForceRebuild);
+            _postProcessorsManager.IncrementalInitialize(_intermediateFolder, _currentBuildInfo, _lastBuildInfo, parameters[0].ForcePostProcess);
 
             var manifests = new List<Manifest>();
             bool transformDocument = false;
@@ -122,7 +122,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     transformDocument = true;
                 }
-                _postProcessorsManager.PrepareMetadata(parameter.Metadata);
+                parameter.Metadata = _postProcessorsManager.PrepareMetadata(parameter.Metadata);
                 if (!string.IsNullOrEmpty(parameter.VersionName))
                 {
                     Logger.LogInfo($"Start building for version: {parameter.VersionName}");
