@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Common.Git
     {
         private static readonly string CommandName = "git";
         private static readonly int GitTimeOut = 1000;
+        private static bool? _existGitCommand;
 
         private static readonly string GetRepoRootCommand = "rev-parse --show-toplevel";
         private static readonly string GetLocalBranchCommand = "rev-parse --abbrev-ref HEAD";
@@ -25,15 +26,10 @@ namespace Microsoft.DocAsCode.Common.Git
 
         public static GitDetail TryGetFileDetail(string filePath)
         {
-            if (string.IsNullOrEmpty(filePath))
-            {
-                return null;
-            }
-
             GitDetail detail = null;
             try
             {
-                detail = GetFileDetailCore(filePath);
+                detail = GetFileDetail(filePath);
             }
             catch (Exception)
             {
@@ -42,16 +38,16 @@ namespace Microsoft.DocAsCode.Common.Git
             return detail;
         }
 
-        public static GitRepoInfo GetRepoInfo(string directory)
+        public static GitDetail GetFileDetail(string filePath)
         {
-            if (directory == null)
+            if (string.IsNullOrEmpty(filePath))
             {
-                throw new ArgumentNullException(nameof(directory));
+                return null;
             }
 
-            if (!Path.IsPathRooted(directory))
+            if (!Path.IsPathRooted(filePath))
             {
-                throw new GitException($"{nameof(directory)} should be an absolute path");
+                throw new GitException($"{nameof(filePath)} should be an absolute path");
             }
 
             if (!ExistGitCommand())
@@ -59,17 +55,37 @@ namespace Microsoft.DocAsCode.Common.Git
                 throw new GitException("Can't find git command in current environment");
             }
 
-            return Cache.GetOrAdd(directory, GetRepoInfoCore);
+            var detail = GetFileDetailCore(filePath);
+            return detail;
         }
 
         #region Private Methods
-        private static GitDetail GetFileDetailCore(string filePath)
+        private static bool IsGitRoot(string directory)
         {
-            if (!Path.IsPathRooted(filePath))
+            var gitPath = Path.Combine(directory, ".git");
+
+            // git submodule contains only a .git file instead of a .git folder
+            return Directory.Exists(gitPath) || File.Exists(gitPath);
+        }
+
+        private static GitRepoInfo GetRepoInfo(string directory)
+        {
+            if (IsGitRoot(directory))
             {
-                throw new GitException($"{nameof(filePath)} should be an absolute path");
+                return Cache.GetOrAdd(directory, GetRepoInfoCore);
             }
 
+            var parentDirInfo = Directory.GetParent(directory);
+            if (parentDirInfo == null)
+            {
+                return null;
+            }
+
+            return Cache.GetOrAdd(directory, GetRepoInfo(parentDirInfo.FullName));
+        }
+
+        private static GitDetail GetFileDetailCore(string filePath)
+        {
             string directory;
             if (PathUtility.IsDirectory(filePath))
             {
@@ -80,11 +96,7 @@ namespace Microsoft.DocAsCode.Common.Git
                 directory = Path.GetDirectoryName(filePath);
             }
 
-            GitRepoInfo repoInfo;
-            if (!Cache.TryGetValue(directory, out repoInfo))
-            {
-                repoInfo = GetRepoInfo(directory);
-            }
+            var repoInfo = Cache.GetOrAdd(directory, GetRepoInfo);
 
             return new GitDetail
             {
@@ -213,7 +225,11 @@ namespace Microsoft.DocAsCode.Common.Git
 
         private static bool ExistGitCommand()
         {
-            return CommandUtility.ExistCommand(CommandName);
+            if (_existGitCommand == null)
+            {
+                _existGitCommand = CommandUtility.ExistCommand(CommandName);
+            }
+            return _existGitCommand == true;
         }
         #endregion
     }
