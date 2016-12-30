@@ -209,7 +209,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             config.Force |= options.ForceRebuild;
             // When force to rebuild, should force to post process as well
-            config.ForcePostProcess = config.ForcePostProcess | options.ForcePostProcess | options.ForceRebuild;
+            config.ForcePostProcess = config.ForcePostProcess | options.ForcePostProcess | config.Force;
             config.ExportRawModel |= options.ExportRawModel;
             config.ExportViewModel |= options.ExportViewModel;
             if (!string.IsNullOrEmpty(options.RawModelOutputFolder))
