@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Plugins
     public interface ISupportIncrementalPostProcessor
     {
         /// <summary>
-        /// Get post processor host
+        /// Get or set post processor host
         /// </summary>
         IPostProcessorHost PostProcessorHost { get; set; }
 
