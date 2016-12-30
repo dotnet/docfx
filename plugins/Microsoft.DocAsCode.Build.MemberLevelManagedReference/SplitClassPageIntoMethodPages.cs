@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
-    [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
+    [Export("ManagedReferenceDocumentProcessor", typeof(IDocumentBuildStep))]
     public class SplitClassPageIntoMethodPages : BaseDocumentBuildStep
     {
         public override string Name => nameof(SplitClassPageIntoMethodPages);
