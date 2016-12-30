@@ -36,10 +36,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 PostProcessOutputs = IncrementalUtility.LoadIntermediateFile<PostProcessOutputs>(Path.Combine(baseDir, PostProcessOutputsFile));
             }
-            foreach (var postProcessorInfos in PostProcessorInfos)
-            {
-                postProcessorInfos.Load(baseDir);
-            }
         }
 
         internal void Save(string baseDir)
@@ -49,10 +45,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 PostProcessOutputsFile = IncrementalUtility.CreateRandomFileName(baseDir);
             }
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, PostProcessOutputsFile), PostProcessOutputs);
-            foreach (var postProcessorInfos in PostProcessorInfos)
-            {
-                postProcessorInfos.Save(baseDir);
-            }
         }
     }
 }
