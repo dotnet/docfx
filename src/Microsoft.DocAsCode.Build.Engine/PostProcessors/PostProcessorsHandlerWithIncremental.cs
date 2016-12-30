@@ -11,28 +11,24 @@ namespace Microsoft.DocAsCode.Build.Engine
     internal class PostProcessorsHandlerWithIncremental : IPostProcessorsHandler
     {
         private readonly IPostProcessorsHandler _innerHandler;
-        private readonly IncrementalPostProcessorsContext _incrementalPostProcessorsContext;
+        private readonly IncrementalPostProcessorsContext _increContext;
 
-        public PostProcessorsHandlerWithIncremental(IPostProcessorsHandler innerPostProcessorsHandler, IncrementalPostProcessorsContext incrementalPostProcessorsContext)
+        public PostProcessorsHandlerWithIncremental(IPostProcessorsHandler innerPostProcessorsHandler, IncrementalPostProcessorsContext increContext)
         {
             if (innerPostProcessorsHandler == null)
             {
                 throw new ArgumentNullException(nameof(innerPostProcessorsHandler));
             }
-            if (incrementalPostProcessorsContext == null)
+            if (increContext == null)
             {
-                throw new ArgumentNullException(nameof(incrementalPostProcessorsContext));
+                throw new ArgumentNullException(nameof(increContext));
             }
             _innerHandler = innerPostProcessorsHandler;
-            _incrementalPostProcessorsContext = incrementalPostProcessorsContext;
+            _increContext = increContext;
         }
 
         public void Handle(List<PostProcessor> postProcessors, Manifest manifest, string outputFolder)
         {
-            if (postProcessors == null)
-            {
-                throw new ArgumentNullException(nameof(postProcessors));
-            }
             if (manifest == null)
             {
                 throw new ArgumentNullException(nameof(manifest));
