@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
     using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.Common.EntityMergers;
-    using Microsoft.DocAsCode.DataContracts.Common;
     using Newtonsoft.Json;
 
     [Serializable]

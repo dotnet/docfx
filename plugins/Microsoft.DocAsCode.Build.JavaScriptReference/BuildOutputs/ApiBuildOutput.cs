@@ -10,7 +10,6 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
     using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.DataContracts.Common;
-    using CommonConstants = Microsoft.DocAsCode.DataContracts.Common.Constants;
     using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.YamlSerialization;
 
@@ -35,7 +34,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
 
         [YamlMember(Alias = "langs")]
         [JsonProperty("langs")]
-        public string[] SupportedLanguages { get; set; } = { CommonConstants.DevLang.JavaScript };
+        public string[] SupportedLanguages { get; set; } = { Constants.JavaScriptDevLang};
 
         [YamlMember(Alias = "name")]
         [JsonProperty("name")]

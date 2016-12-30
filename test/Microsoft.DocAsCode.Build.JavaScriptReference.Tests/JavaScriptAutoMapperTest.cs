@@ -17,7 +17,8 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
     [Trait("EntityType", "JavaScriptDocumentProcessor")]
     public class JavaScriptAutoMapperTest
     {
-        private static readonly string[] SupportedLanguages = { Constants.DevLang.JavaScript };
+        private static readonly string[] SupportedLanguages = { "js" };
+        private const string JavaScriptDevLang = "js";
 
         [Fact]
         public void MapToApiReferenceBuildOutputShouldSucceed()
@@ -47,7 +48,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                 {
                     new ApiLanguageValuePair()
                     {
-                        Language = Constants.DevLang.JavaScript,
+                        Language = JavaScriptDevLang,
                         Value = "name"
                     }
                 },
@@ -55,7 +56,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                 {
                     new ApiLanguageValuePair
                     {
-                        Language = Constants.DevLang.JavaScript,
+                        Language = JavaScriptDevLang,
                         Value = "nameWithType"
                     }
                 },
@@ -63,7 +64,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                 {
                     new ApiLanguageValuePair
                     {
-                        Language = Constants.DevLang.JavaScript,
+                        Language = JavaScriptDevLang,
                         Value = "fullName"
                     }
                 },
@@ -169,7 +170,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                     {
                         new ApiLanguageValuePair
                         {
-                            Language = Constants.DevLang.JavaScript,
+                            Language = JavaScriptDevLang,
                             Value = "parent"
                         }
                     }
@@ -179,7 +180,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                 {
                     new ApiLanguageValuePair
                     {
-                        Language = Constants.DevLang.JavaScript,
+                        Language = JavaScriptDevLang,
                         Value = "name"
                     }
                 },
@@ -187,7 +188,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                 {
                     new ApiLanguageValuePair
                     {
-                        Language = Constants.DevLang.JavaScript,
+                        Language = JavaScriptDevLang,
                         Value = "nameWithType"
                     }
                 },
@@ -195,7 +196,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                 {
                     new ApiLanguageValuePair
                     {
-                        Language = Constants.DevLang.JavaScript,
+                        Language = JavaScriptDevLang,
                         Value = "fullName"
                     }
                 },
@@ -227,7 +228,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                     {
                         new ApiLanguageValuePair
                         {
-                            Language = Constants.DevLang.JavaScript,
+                            Language = JavaScriptDevLang,
                             Value = "namespace"
                         }
                     }
@@ -241,7 +242,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                     {
                         new ApiLanguageValuePair
                         {
-                            Language = Constants.DevLang.JavaScript,
+                            Language = JavaScriptDevLang,
                             Value = "syntax"
                         }
                     },
@@ -258,7 +259,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                                     {
                                         new ApiLanguageValuePair
                                         {
-                                            Language = Constants.DevLang.JavaScript,
+                                            Language = JavaScriptDevLang,
                                             Value = "string"
                                         }
                                     }
@@ -274,7 +275,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                     {
                         new ApiLanguageValuePair
                         {
-                            Language = Constants.DevLang.JavaScript,
+                            Language = JavaScriptDevLang,
                             Value = "overridden"
                         }
                     }
@@ -289,7 +290,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                             {
                                 new ApiLanguageValuePair
                                 {
-                                    Language = Constants.DevLang.JavaScript,
+                                    Language = JavaScriptDevLang,
                                     Value = "exceptionType"
                                 }
                             }
@@ -313,7 +314,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                             {
                                 new ApiLanguageValuePair
                                 {
-                                    Language = Constants.DevLang.JavaScript,
+                                    Language = JavaScriptDevLang,
                                     Value = "type"
                                 }
                             }
@@ -328,7 +329,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                         {
                             new ApiLanguageValuePair
                             {
-                                Language = Constants.DevLang.JavaScript,
+                                Language = JavaScriptDevLang,
                                 Value = "inheritance"
                             }
                         }
@@ -431,7 +432,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                 {
                     new ApiLanguageValuePair
                     {
-                        Language = Constants.DevLang.JavaScript,
+                        Language = JavaScriptDevLang,
                         Value = "KeyVaultClient"
                     }
                 },
@@ -440,7 +441,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                 {
                     new ApiLanguageValuePair
                     {
-                        Language = Constants.DevLang.JavaScript,
+                        Language = JavaScriptDevLang,
                         Value = "KeyVaultClient"
                     }
                 },
@@ -456,7 +457,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                             {
                                 new ApiLanguageValuePair
                                 {
-                                    Language = Constants.DevLang.JavaScript,
+                                    Language = JavaScriptDevLang,
                                     Value = "KeyVaultClient",
                                 }
                             }
@@ -465,7 +466,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                         {
                             new ApiLanguageValuePair
                             {
-                                Language = Constants.DevLang.JavaScript,
+                                Language = JavaScriptDevLang,
                                 Value = "KeyVaultClient(credentials, options)"
                             }
                         },
@@ -473,7 +474,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                         {
                             new ApiLanguageValuePair
                             {
-                                Language = Constants.DevLang.JavaScript,
+                                Language = JavaScriptDevLang,
                                 Value = "KeyVaultClient.KeyVaultClient(credentials, options)"
                             }
                         },
@@ -496,7 +497,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                                             {
                                                 new ApiLanguageValuePair
                                                 {
-                                                    Language = Constants.DevLang.JavaScript,
+                                                    Language = JavaScriptDevLang,
                                                     Value = "credentials"
                                                 }
                                             },
@@ -504,7 +505,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                                             {
                                                 new ApiLanguageValuePair
                                                 {
-                                                    Language = Constants.DevLang.JavaScript,
+                                                    Language = JavaScriptDevLang,
                                                     Value = "credentials"
                                                 }
                                             }
@@ -525,7 +526,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                                             {
                                                 new ApiLanguageValuePair
                                                 {
-                                                    Language = Constants.DevLang.JavaScript,
+                                                    Language = JavaScriptDevLang,
                                                     Value = "Array"
                                                 }
                                             },
@@ -533,7 +534,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                                             {
                                                 new ApiLanguageValuePair
                                                 {
-                                                    Language = Constants.DevLang.JavaScript,
+                                                    Language = JavaScriptDevLang,
                                                     Value = "Array"
                                                 }
                                             }
@@ -546,7 +547,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                             {
                                 new ApiLanguageValuePair
                                 {
-                                    Language = Constants.DevLang.JavaScript,
+                                    Language = JavaScriptDevLang,
                                     Value = "new KeyVaultClient(credentials, options)"
                                 }
                             }
