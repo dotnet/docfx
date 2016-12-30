@@ -72,6 +72,9 @@ namespace Microsoft.DocAsCode
         [JsonProperty("force")]
         public bool? Force { get; set; }
 
+        [JsonProperty("forcePostProcess")]
+        public bool? ForcePostProcess { get; set; }
+
         [JsonProperty("port")]
         public string Port { get; set; }
 

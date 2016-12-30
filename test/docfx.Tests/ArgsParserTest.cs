@@ -127,12 +127,37 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal(typeof(BuildCommand), command.GetType());
             var buildCommand = (BuildCommand)command;
             Assert.Equal(true, buildCommand.Config.Force);
+            Assert.Equal(true, buildCommand.Config.ForcePostProcess);
             Assert.Equal(@"Assets\docfx.json_metadata_build", buildCommand.Config.BaseDirectory);
             Assert.Equal(@"output", buildCommand.Config.OutputFolder);
 
             args = new string[] { "build", "Assets/docfx.json_empty/docfx.json" };
             controller = ArgsParser.Instance.Parse(args);
             Assert.Throws<DocumentException>(() => controller.Create());
+
+            args = new string[] { "build", "Assets/docfx.json_metadata_build/docfx.json", "-f", "--forcePostProcess" };
+            controller = ArgsParser.Instance.Parse(args);
+            command = controller.Create();
+            Assert.Equal(typeof(BuildCommand), command.GetType());
+            buildCommand = (BuildCommand)command;
+            Assert.Equal(true, buildCommand.Config.Force);
+            Assert.Equal(true, buildCommand.Config.ForcePostProcess);
+
+            args = new string[] { "build", "Assets/docfx.json_metadata_build/docfx.json", "--forcePostProcess" };
+            controller = ArgsParser.Instance.Parse(args);
+            command = controller.Create();
+            Assert.Equal(typeof(BuildCommand), command.GetType());
+            buildCommand = (BuildCommand)command;
+            Assert.Null(buildCommand.Config.Force);
+            Assert.Equal(true, buildCommand.Config.ForcePostProcess);
+
+            args = new string[] { "build", "Assets/docfx.json_metadata_build/docfx.json" };
+            controller = ArgsParser.Instance.Parse(args);
+            command = controller.Create();
+            Assert.Equal(typeof(BuildCommand), command.GetType());
+            buildCommand = (BuildCommand)command;
+            Assert.Null(buildCommand.Config.Force);
+            Assert.Null(buildCommand.Config.ForcePostProcess);
         }
 
         [Fact]
