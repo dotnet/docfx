@@ -390,7 +390,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 return null;
             }
 
-            var dict = new Dictionary<string, ChangeKindWithDependency>();
+            var dict = new Dictionary<string, ChangeKindWithDependency>(FilePathComparer.OSPlatformSensitiveComparer);
             foreach (var file in files.EnumerateFiles())
             {
                 string fileKey = ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
@@ -404,7 +404,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 // always put the change into dict because docfx could access files outside its own scope, like tokens.
                 dict[fileKey] = change.Kind;
             }
-            return dict.ToImmutableDictionary();
+            return dict.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveComparer);
         }
 
         private class FileMappingParameters : Dictionary<FileMappingType, FileMapping>
