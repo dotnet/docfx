@@ -37,10 +37,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             });
 
         private readonly HashSet<DependencyItem> _dependencyItems;
-        private ImmutableDictionary<string, DependencyType> _types;
         private readonly object _typeSync = new object();
         private readonly Dictionary<string, HashSet<DependencyItem>> _indexOnFrom = new Dictionary<string, HashSet<DependencyItem>>();
         private readonly Dictionary<string, HashSet<DependencyItem>> _indexOnReportedBy = new Dictionary<string, HashSet<DependencyItem>>();
+        private ImmutableDictionary<string, DependencyType> _types;
 
         #endregion
 
@@ -213,9 +213,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                         return;
                     }
                 }
-                var types = new Dictionary<string, DependencyType>(_types);
-                types[dt.Name] = dt;
-                _types = types.ToImmutableDictionary();
+                _types = _types.SetItem(dt.Name, dt);
                 Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, IsTransitive: {dt.IsTransitive}, Phase to work on: {dt.Phase}.");
             }
         }
