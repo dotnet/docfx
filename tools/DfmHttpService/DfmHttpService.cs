@@ -56,7 +56,7 @@ namespace DfmHttpService
 
             switch (command.Name)
             {
-                case Constants.PreviewCommand:
+                case CommandName.Preview:
                     string content;
                     try
                     {
@@ -67,9 +67,9 @@ namespace DfmHttpService
                         ReplyServerErrorResponse(context, ex.Message);
                         return;
                     }
-                    ReplySuccessfulResponse(context, content);
+                    ReplySuccessfulResponse(context, content, ContentType.Html);
                     return;
-                case Constants.GenerateTokenTreeCommand:
+                case CommandName.GenerateTokenTree:
                     string tokenTree;
                     try
                     {
@@ -80,9 +80,9 @@ namespace DfmHttpService
                         ReplyServerErrorResponse(context, ex.Message);
                         return;
                     }
-                    ReplySuccessfulResponse(context, tokenTree);
+                    ReplySuccessfulResponse(context, tokenTree, ContentType.Json);
                     return;
-                case Constants.ExitServiceCommand:
+                case CommandName.Exit:
                     _keepGoing = false;
                     ReplyExitResponse(context, "Dfm service exit");
                     return;
@@ -133,12 +133,12 @@ namespace DfmHttpService
             return JsonConvert.DeserializeObject<CommandMessage>(content);
         }
 
-        private static void ReplySuccessfulResponse(HttpListenerContext context, string content)
+        private static void ReplySuccessfulResponse(HttpListenerContext context, string content, string contentType)
         {
             var response = context.Response;
             var buffer = Encoding.UTF8.GetBytes(content);
             response.ContentLength64 = buffer.Length;
-            response.ContentType = Constants.ReplyContentType;
+            response.ContentType = contentType;
             using (var write = response.OutputStream)
             {
                 write.Write(buffer, 0, buffer.Length);
@@ -148,20 +148,20 @@ namespace DfmHttpService
 
         private static void ReplyClientErrorResponse(HttpListenerContext context, string message)
         {
-            ReplayResponse(context, HttpStatusCode.BadRequest, message);
+            ReplyResponse(context, HttpStatusCode.BadRequest, message);
         }
 
         private static void ReplyServerErrorResponse(HttpListenerContext context, string message)
         {
-            ReplayResponse(context, HttpStatusCode.InternalServerError, message);
+            ReplyResponse(context, HttpStatusCode.InternalServerError, message);
         }
 
         private static void ReplyExitResponse(HttpListenerContext context, string message)
         {
-            ReplayResponse(context, HttpStatusCode.NoContent, message);
+            ReplyResponse(context, HttpStatusCode.NoContent, message);
         }
 
-        private static void ReplayResponse(HttpListenerContext context, HttpStatusCode statusCode, string message)
+        private static void ReplyResponse(HttpListenerContext context, HttpStatusCode statusCode, string message)
         {
             var response = context.Response;
             response.StatusCode = (int) statusCode;

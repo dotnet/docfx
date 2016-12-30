@@ -5,10 +5,10 @@ namespace DfmHttpService
 {
     using Newtonsoft.Json;
 
-    public class CommandMessage
+    internal class CommandMessage
     {
         [JsonProperty("name")]
-        public string Name { get; set; }
+        public CommandName Name { get; set; }
 
         [JsonProperty("filePath")]
         public string FilePath { get; set; }
