@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
 
     using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.DataContracts.Common;
+    using CommonConstants = Microsoft.DocAsCode.DataContracts.Common.Constants;
     using Microsoft.DocAsCode.YamlSerialization;
 
     using Newtonsoft.Json;
@@ -17,13 +18,13 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
     [Serializable]
     public class ItemViewModel : IOverwriteDocumentViewModel
     {
-        [YamlMember(Alias = Constants.PropertyName.Uid)]
-        [JsonProperty(Constants.PropertyName.Uid)]
+        [YamlMember(Alias = CommonConstants.PropertyName.Uid)]
+        [JsonProperty(CommonConstants.PropertyName.Uid)]
         [MergeOption(MergeOption.MergeKey)]
         public string Uid { get; set; }
 
-        [YamlMember(Alias = Constants.PropertyName.Id)]
-        [JsonProperty(Constants.PropertyName.Id)]
+        [YamlMember(Alias = CommonConstants.PropertyName.Id)]
+        [JsonProperty(CommonConstants.PropertyName.Id)]
         public string Id { get; set; }
 
         [YamlMember(Alias = "parent")]
@@ -35,8 +36,8 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
         [JsonProperty("children")]
         public List<string> Children { get; set; }
 
-        [YamlMember(Alias = Constants.PropertyName.Href)]
-        [JsonProperty(Constants.PropertyName.Href)]
+        [YamlMember(Alias = CommonConstants.PropertyName.Href)]
+        [JsonProperty(CommonConstants.PropertyName.Href)]
         public string Href { get; set; }
 
         [YamlMember(Alias = "langs")]
@@ -55,16 +56,16 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
         [JsonProperty("fullName")]
         public string FullName { get; set; }
 
-        [YamlMember(Alias = Constants.PropertyName.Type)]
-        [JsonProperty(Constants.PropertyName.Type)]
+        [YamlMember(Alias = CommonConstants.PropertyName.Type)]
+        [JsonProperty(CommonConstants.PropertyName.Type)]
         public MemberType? Type { get; set; }
 
-        [YamlMember(Alias = Constants.PropertyName.Source)]
-        [JsonProperty(Constants.PropertyName.Source)]
+        [YamlMember(Alias = CommonConstants.PropertyName.Source)]
+        [JsonProperty(CommonConstants.PropertyName.Source)]
         public SourceDetail Source { get; set; }
 
-        [YamlMember(Alias = Constants.PropertyName.Documentation)]
-        [JsonProperty(Constants.PropertyName.Documentation)]
+        [YamlMember(Alias = CommonConstants.PropertyName.Documentation)]
+        [JsonProperty(CommonConstants.PropertyName.Documentation)]
         public SourceDetail Documentation { get; set; }
 
         // Can be used to save npm package name
@@ -136,8 +137,8 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
         [JsonProperty("extensionMethods")]
         public List<string> ExtensionMethods { get; set; }
 
-        [YamlMember(Alias = Constants.PropertyName.Conceptual)]
-        [JsonProperty(Constants.PropertyName.Conceptual)]
+        [YamlMember(Alias = CommonConstants.PropertyName.Conceptual)]
+        [JsonProperty(CommonConstants.PropertyName.Conceptual)]
         public string Conceptual { get; set; }
 
         [YamlMember(Alias = "platform")]

@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
     using System.Linq;
 
     using Microsoft.DocAsCode.DataContracts.Common;
+    using CommonConstants = Microsoft.DocAsCode.DataContracts.Common.Constants;
 
     using AutoMapper;
 
@@ -24,7 +25,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
                 throw new ArgumentException($"{nameof(model)} must contain at least one item");
             }
 
-            var supportedLanguages = model.Items?[0].SupportedLanguages ?? new[] { Constants.DevLang.JavaScript };
+            var supportedLanguages = model.Items?[0].SupportedLanguages ?? new[] { CommonConstants.DevLang.JavaScript };
 
             Mapper.Initialize(cfg =>
             {
