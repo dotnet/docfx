@@ -26,6 +26,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
 
             var supportedLanguages = model.Items?[0].SupportedLanguages ?? new[] { Constants.JavaScriptDevLang };
 
+            // map references
             Mapper.Initialize(cfg =>
             {
                 cfg.AddProfile(new ApiReferenceBuildOutputProfile(supportedLanguages));
@@ -42,9 +43,10 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
                 }
             }
 
+            // map items
             Mapper.Initialize(cfg =>
             {
-                cfg.AddProfile(new ApiBuildOutputProfile(supportedLanguages, references));
+                cfg.AddProfile(new ApiBuildOutputProfile(supportedLanguages, model.Metadata, references));
             });
             var items = Mapper.Map<List<ItemViewModel>, List<ApiBuildOutput>>(model.Items);
             var result = items[0];

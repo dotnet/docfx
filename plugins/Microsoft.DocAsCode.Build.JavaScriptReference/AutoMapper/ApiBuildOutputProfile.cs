@@ -9,15 +9,19 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
 
     public class ApiBuildOutputProfile : Profile
     {
-        public ApiBuildOutputProfile(string[] supportedLanguages, IReadOnlyDictionary<string, ApiReferenceBuildOutput> references = null)
+        public ApiBuildOutputProfile(string[] supportedLanguages,
+            IReadOnlyDictionary<string, object> metadata = null,
+            IReadOnlyDictionary<string, ApiReferenceBuildOutput> references = null)
         {
             CreateMap<ItemViewModel, ApiBuildOutput>()
                 // Children will be mapped with special logic
                 .ForMember(dest => dest.Children, opt => opt.Ignore())
+                // Merge metadata
+                .ForMember(dest => dest.Metadata, opt => opt.ResolveUsing(new ApiBuildOutputMetadataResolver(metadata)))
                 // Null should be mapped to null
                 .ForMember(dest => dest.Name, opt => opt.Condition(src => (src.Name != null)))
-                .ForMember(dest => dest.NameWithType, opt => opt.Condition(src => (src.NameWithType!= null)))
-                .ForMember(dest => dest.FullName, opt => opt.Condition(src => (src.FullName!= null)))
+                .ForMember(dest => dest.NameWithType, opt => opt.Condition(src => (src.NameWithType != null)))
+                .ForMember(dest => dest.FullName, opt => opt.Condition(src => (src.FullName != null)))
                 .ForMember(dest => dest.PackageNameList, opt => opt.Condition(src => (src.PackageNameList != null)))
                 .ForMember(dest => dest.Examples, opt => opt.Condition(src => (src.Examples != null)))
                 .ForMember(dest => dest.Exceptions, opt => opt.Condition(src => (src.Exceptions != null)))
