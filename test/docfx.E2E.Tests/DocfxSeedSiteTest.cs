@@ -281,8 +281,7 @@ namespace Microsoft.DocAsCode.E2E.Tests
         private void TestPageCommon()
         {
             // check logo
-            IWebElement element = _driver.FindElement(By.Id("logo"));
-            Assert.Equal("svg", element.TagName);
+            Assert.NotEmpty(_driver.FindElements(By.Id("logo")));
 
             // check title
             Assert.Contains(_driver.FindElement(By.TagName("h1")).Text, _driver.Title);
