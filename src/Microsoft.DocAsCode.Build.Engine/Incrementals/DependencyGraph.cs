@@ -195,35 +195,41 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private void RegisterDependencyTypeCore(DependencyType dt)
         {
-            DependencyType stored;
-            if (_types.TryGetValue(dt.Name, out stored))
+            lock (_types)
             {
-                // to-do: add check for phase when new value overwrites old value
-                if (stored.IsTransitive != dt.IsTransitive)
+                DependencyType stored;
+                if (_types.TryGetValue(dt.Name, out stored))
                 {
-                    Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
-                    throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
+                    // to-do: add check for phase when new value overwrites old value
+                    if (stored.IsTransitive != dt.IsTransitive)
+                    {
+                        Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
+                        throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
+                    }
+                    if (stored.Phase == null)
+                    {
+                        stored.Phase = dt.Phase;
+                    }
+                    Logger.LogVerbose($"Same dependency type with name {dt.Name} has already been registered, ignored.");
+                    return;
                 }
-                if (stored.Phase == null)
-                {
-                    stored.Phase = dt.Phase;
-                }
-                Logger.LogVerbose($"Same dependency type with name {dt.Name} has already been registered, ignored.");
-                return;
+                _types[dt.Name] = dt;
+                Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, IsTransitive: {dt.IsTransitive}, Phase to work on: {dt.Phase}.");
             }
-            _types[dt.Name] = dt;
-            Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, IsTransitive: {dt.IsTransitive}, Phase to work on: {dt.Phase}.");
         }
 
         private void ReportDependencyCore(DependencyItem dependency)
         {
             if (IsValidDependency(dependency))
             {
-                if (_dependencyItems.Add(dependency))
+                lock (_dependencyItems)
                 {
-                    CreateOrUpdate(_indexOnFrom, dependency.From, dependency);
-                    CreateOrUpdate(_indexOnReportedBy, dependency.ReportedBy, dependency);
-                    Logger.LogDiagnostic($"Dependency item is successfully reported: {JsonUtility.Serialize(dependency)}.");
+                    if (_dependencyItems.Add(dependency))
+                    {
+                        CreateOrUpdate(_indexOnFrom, dependency.From, dependency);
+                        CreateOrUpdate(_indexOnReportedBy, dependency.ReportedBy, dependency);
+                        Logger.LogDiagnostic($"Dependency item is successfully reported: {JsonUtility.Serialize(dependency)}.");
+                    }
                 }
             }
         }
