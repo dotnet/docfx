@@ -369,6 +369,11 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                         Children = new List<string>
                         {
                             "KeyVaultClient.#ctor"
+                        },
+                        Metadata =
+                        {
+                            ["key1"] = "will be overwritten",
+                            ["key3"] = "value3"
                         }
                     },
                     new ItemViewModel
@@ -423,6 +428,11 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                         FullName = "Array",
                         IsExternal = true
                     }
+                },
+                Metadata =
+                {
+                    ["key1"] = "value1",
+                    ["key2"] = "value2"
                 }
             };
             var expected = new ApiBuildOutput
@@ -551,8 +561,20 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                                     Value = "new KeyVaultClient(credentials, options)"
                                 }
                             }
+                        },
+                        Metadata =
+                        {
+                            ["key1"] = "value1",
+                            ["key2"] = "value2"
                         }
+
                     }
+                },
+                Metadata =
+                {
+                    ["key1"] = "value1",
+                    ["key2"] = "value2",
+                    ["key3"] = "value3"
                 }
             };
 
