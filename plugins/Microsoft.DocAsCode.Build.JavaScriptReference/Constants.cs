@@ -9,5 +9,6 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
     {
         public const string JavaScriptReferenceName = "JavaScriptReference";
         public const string JavaScriptReferenceYamlMime = YamlMime.YamlMimePrefix + JavaScriptReferenceName;
+        public const string JavaScriptDevLang = "js";
     }
 }
