@@ -250,10 +250,6 @@ tagRules : [
             finally
             {
                 CleanUp();
-                Directory.Delete(outputFolder, true);
-                Directory.Delete(templateFolder, true);
-                Directory.Delete(inputFolder, true);
-                Directory.Delete(intermediateFolder, true);
             }
         }
 
@@ -444,10 +440,6 @@ tagRules : [
             finally
             {
                 CleanUp();
-                Directory.Delete(outputFolder, true);
-                Directory.Delete(templateFolder, true);
-                Directory.Delete(inputFolder, true);
-                Directory.Delete(intermediateFolder, true);
             }
         }
 
@@ -640,10 +632,6 @@ tagRules : [
             finally
             {
                 CleanUp();
-                Directory.Delete(outputFolder, true);
-                Directory.Delete(templateFolder, true);
-                Directory.Delete(inputFolder, true);
-                Directory.Delete(intermediateFolder, true);
             }
         }
 
@@ -860,10 +848,6 @@ tagRules : [
             finally
             {
                 CleanUp();
-                Directory.Delete(outputFolder, true);
-                Directory.Delete(templateFolder, true);
-                Directory.Delete(inputFolder, true);
-                Directory.Delete(intermediateFolder, true);
             }
         }
 
@@ -1069,10 +1053,6 @@ tagRules : [
             finally
             {
                 CleanUp();
-                Directory.Delete(outputFolder, true);
-                Directory.Delete(templateFolder, true);
-                Directory.Delete(inputFolder, true);
-                Directory.Delete(intermediateFolder, true);
             }
         }
 
@@ -1194,10 +1174,6 @@ tagRules : [
             finally
             {
                 CleanUp();
-                Directory.Delete(outputFolder, true);
-                Directory.Delete(templateFolder, true);
-                Directory.Delete(inputFolder, true);
-                Directory.Delete(intermediateFolder, true);
             }
         }
 
@@ -1321,10 +1297,232 @@ tagRules : [
             finally
             {
                 CleanUp();
-                Directory.Delete(outputFolder, true);
-                Directory.Delete(templateFolder, true);
-                Directory.Delete(inputFolder, true);
-                Directory.Delete(intermediateFolder, true);
+            }
+        }
+
+        [Fact]
+        public void TestSrcFileUpdate()
+        {
+            // conceptual1--->conceptual2(phase 2)
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
+
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "# Hello World",
+                    "Test link: [link text](test/test.md)",
+                },
+                inputFolder);
+            var conceptualFile2 = CreateFile("test/test.md",
+                new[]
+                {
+                    "# Hello World",
+                    "test",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2 });
+            #endregion
+
+            Init("IncrementalBuild.TestSrcFileUpdate");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestSrcFileUpdate");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestSrcFileUpdate.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestSrcFileUpdate.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestSrcFileUpdate-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // update src file
+                UpdateFile(
+                    "test.md",
+                    new[]
+                    {
+                        "# Hello World3",
+                        "Test link: [link text](test/test.md)",
+                    },
+                    inputFolder);
+                using (new LoggerPhaseScope("IncrementalBuild.TestSrcFileUpdate-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestSrcFileUpdate-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(2, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestSrcFileUpdate-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestSrcFileUpdate-second", "IncrementalBuild.TestSrcFileUpdate-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact(Skip = "wait for DfmRenderer fix")]
+        public void TestSrcFileWithInvalidToken()
+        {
+            // conceptual1--->invalid token(phase 1)
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
+
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "# Hello World",
+                    "Test token:",
+                    "[!INCLUDE [Token](token.md)]",
+                },
+                inputFolder);
+            var token = CreateFile("token.md",
+                new[]
+                {
+                    "> [!NOTE] If you are using an identity provider other than Google, change the value passed to the **login** method above to one of the following: _MicrosoftAccount_, _Facebook_, _Twitter_, or _windowsazureactivedirectory_.",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { conceptualFile });
+            #endregion
+
+            Init("IncrementalBuild.TestSrcFileWithInvalidToken");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestSrcFileWithInvalidToken");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestSrcFileWithInvalidToken.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestSrcFileWithInvalidToken.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestSrcFileWithInvalidToken-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // no changes
+                using (new LoggerPhaseScope("IncrementalBuild.TestSrcFileWithInvalidToken-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestSrcFileWithInvalidToken-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(1, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestSrcFileWithInvalidToken-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestSrcFileWithInvalidToken-second", "IncrementalBuild.TestSrcFileWithInvalidToken-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
             }
         }
 
