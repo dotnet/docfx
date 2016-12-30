@@ -37,7 +37,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             });
 
         private readonly HashSet<DependencyItem> _dependencyItems;
-        private readonly Dictionary<string, DependencyType> _types;
+        private ImmutableDictionary<string, DependencyType> _types;
+        private readonly object _typeSync = new object();
         private readonly Dictionary<string, HashSet<DependencyItem>> _indexOnFrom = new Dictionary<string, HashSet<DependencyItem>>();
         private readonly Dictionary<string, HashSet<DependencyItem>> _indexOnReportedBy = new Dictionary<string, HashSet<DependencyItem>>();
 
@@ -55,7 +56,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         private DependencyGraph(HashSet<DependencyItem> dependencies, Dictionary<string, DependencyType> types)
         {
             _dependencyItems = dependencies;
-            _types = types;
+            _types = types.ToImmutableDictionary();
             RebuildIndex();
         }
 
@@ -195,7 +196,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private void RegisterDependencyTypeCore(DependencyType dt)
         {
-            lock (_types)
+            lock (_typeSync)
             {
                 DependencyType stored;
                 if (_types.TryGetValue(dt.Name, out stored))
@@ -206,14 +207,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                         Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
                         throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
                     }
-                    if (stored.Phase == null)
+                    if (stored.Phase != null)
                     {
-                        stored.Phase = dt.Phase;
+                        Logger.LogVerbose($"Same dependency type with name {dt.Name} has already been registered, ignored.");
+                        return;
                     }
-                    Logger.LogVerbose($"Same dependency type with name {dt.Name} has already been registered, ignored.");
-                    return;
                 }
-                _types[dt.Name] = dt;
+                var types = new Dictionary<string, DependencyType>(_types);
+                types[dt.Name] = dt;
+                _types = types.ToImmutableDictionary();
                 Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, IsTransitive: {dt.IsTransitive}, Phase to work on: {dt.Phase}.");
             }
         }
