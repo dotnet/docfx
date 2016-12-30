@@ -18,6 +18,11 @@ namespace Microsoft.DocAsCode.Common
         }
 
         public LoggerPhaseScope(string phaseName, bool enablePerformanceScope)
+            : this(phaseName, enablePerformanceScope, LogLevel.Diagnostic)
+        {
+        }
+
+        public LoggerPhaseScope(string phaseName, bool enablePerformanceScope, LogLevel perfLogLevel)
         {
             if (string.IsNullOrWhiteSpace(phaseName))
             {
@@ -28,7 +33,7 @@ namespace Microsoft.DocAsCode.Common
             SetPhaseName(phaseName);
             if (enablePerformanceScope)
             {
-                _performanceScope = new PerformanceScope("Scope:" + phaseName, LogLevel.Diagnostic);
+                _performanceScope = new PerformanceScope("Scope:" + phaseName, perfLogLevel);
             }
         }
 

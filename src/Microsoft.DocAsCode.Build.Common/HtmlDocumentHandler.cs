@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.Common
         public void HandleWithScopeWrapper(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
         {
             string phase = this.GetType().Name;
-            using (new LoggerPhaseScope(phase, false))
+            using (new LoggerPhaseScope(phase))
             {
                 Handle(document, manifestItem, inputFile, outputFile);
             }
@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Build.Common
         public Manifest PostHandleWithScopeWrapper(Manifest manifest)
         {
             string phase = this.GetType().Name;
-            using (new LoggerPhaseScope(phase, false))
+            using (new LoggerPhaseScope(phase))
             {
                 return PostHandle(manifest);
             }
@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Build.Common
         public Manifest PreHandleWithScopeWrapper(Manifest manifest)
         {
             string phase = this.GetType().Name;
-            using (new LoggerPhaseScope(phase, false))
+            using (new LoggerPhaseScope(phase))
             {
                 return PreHandle(manifest);
             }

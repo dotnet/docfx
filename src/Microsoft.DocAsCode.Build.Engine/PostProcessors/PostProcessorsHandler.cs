@@ -29,8 +29,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             foreach (var postProcessor in postProcessors)
             {
-                using (new LoggerPhaseScope($"Process in post processor {postProcessor.ContractName}", false))
-                using (new PerformanceScope($"Process in post processor {postProcessor.ContractName}"))
+                using (new LoggerPhaseScope($"Process in post processor {postProcessor.ContractName}", true, LogLevel.Verbose))
                 {
                     manifest = postProcessor.Processor.Process(manifest, outputFolder);
                     if (manifest == null)
