@@ -60,6 +60,9 @@ namespace Microsoft.DocAsCode
         [Option('f', "force", HelpText = "Force re-build all the documentation")]
         public bool ForceRebuild { get; set; }
 
+        [Option("forcePostProcess", HelpText = "Force to re-process the documentation in post processors. It will be cascaded from force option.")]
+        public bool ForcePostProcess { get; set; }
+
         [Option("globalMetadata", HelpText = "Specify global metadata key-value pair in json format. It overrides the globalMetadata settings from the config file.")]
         public string GlobalMetadata { get; set; }
 

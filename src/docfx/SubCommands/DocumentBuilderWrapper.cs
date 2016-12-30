@@ -190,9 +190,12 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private static IEnumerable<DocumentBuildParameters> ConfigToParameter(BuildJsonConfig config, TemplateManager templateManager, ChangeList changeList, string baseDirectory, string outputDirectory, string templateDir)
         {
-            var parameters = new DocumentBuildParameters();
-            parameters.OutputBaseDir = outputDirectory;
-            parameters.ForceRebuild = config.Force ?? false;
+            var parameters = new DocumentBuildParameters
+            {
+                OutputBaseDir = outputDirectory,
+                ForceRebuild = config.Force ?? false,
+                ForcePostProcess = config.ForcePostProcess ?? false
+            };
             if (config.GlobalMetadata != null)
             {
                 parameters.Metadata = config.GlobalMetadata.ToImmutableDictionary();
