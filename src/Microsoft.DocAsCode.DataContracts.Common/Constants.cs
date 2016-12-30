@@ -30,7 +30,6 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         {
             public const string CSharp = "csharp";
             public const string VB = "vb";
-            public const string JavaScript = "js";
         }
     }
 }
