@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
@@ -10,11 +11,11 @@ namespace Microsoft.DocAsCode.Dfm
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public class DfmRenderer : HtmlRenderer
+    public class DfmRenderer : HtmlRenderer, IDisposable
     {
-        private static readonly DocfxFlavoredIncHelper _inlineInclusionHelper = new DocfxFlavoredIncHelper();
-        private static readonly DocfxFlavoredIncHelper _blockInclusionHelper = new DocfxFlavoredIncHelper();
-        private static readonly DfmCodeExtractor _dfmCodeExtractor = new DfmCodeExtractor();
+        private readonly DocfxFlavoredIncHelper _inlineInclusionHelper = new DocfxFlavoredIncHelper();
+        private readonly DocfxFlavoredIncHelper _blockInclusionHelper = new DocfxFlavoredIncHelper();
+        private readonly DfmCodeExtractor _dfmCodeExtractor = new DfmCodeExtractor();
 
         public ImmutableDictionary<string, string> Tokens { get; set; }
 
@@ -191,6 +192,12 @@ namespace Microsoft.DocAsCode.Dfm
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmVideoBlockToken token, MarkdownBlockContext context)
         {
             return token.SourceInfo.Markdown;
+        }
+
+        public void Dispose()
+        {
+            _inlineInclusionHelper.Dispose();
+            _blockInclusionHelper.Dispose();
         }
     }
 }

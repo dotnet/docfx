@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Composition.Hosting;
     using System.Collections.Immutable;
     using System.Text;
 
@@ -324,6 +323,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogVerbose($"Disposing processor {processor.Name} ...");
                 (processor as IDisposable)?.Dispose();
             }
+            (MarkdownService as IDisposable)?.Dispose();
+            MarkdownService = null;
         }
     }
 }

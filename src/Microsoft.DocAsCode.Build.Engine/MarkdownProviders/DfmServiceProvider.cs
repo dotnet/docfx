@@ -46,11 +46,13 @@ namespace Microsoft.DocAsCode.Build.Engine
         [ImportMany]
         public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; }
 
-        private sealed class DfmService : IMarkdownService, IHasIncrementalContext
+        private sealed class DfmService : IMarkdownService, IHasIncrementalContext, IDisposable
         {
             private readonly DfmEngineBuilder _builder;
 
             private readonly ImmutableDictionary<string, string> _tokens;
+
+            private readonly DfmRenderer _renderer;
 
             private readonly string _incrementalContextHash;
 
@@ -61,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, templateDir, options, fallbackFolders);
                 _builder.TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(tokenTreeValidator);
                 _tokens = tokens;
-
+                _renderer = new DfmRenderer { Tokens = _tokens };
                 _incrementalContextHash = ComputeIncrementalContextHash(baseDir, templateDir, tokenTreeValidator);
             }
 
@@ -99,7 +101,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             public MarkupResult Markup(string src, string path)
             {
                 var dependency = new HashSet<string>();
-                var html = _builder.CreateDfmEngine(new DfmRenderer() { Tokens = _tokens }).Markup(src, path, dependency);
+                var html = _builder.CreateDfmEngine(_renderer).Markup(src, path, dependency);
                 var result = new MarkupResult
                 {
                     Html = html,
@@ -112,6 +114,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             public string GetIncrementalContextHash() => _incrementalContextHash;
+
+            public void Dispose()
+            {
+                _renderer.Dispose();
+            }
         }
     }
 }
