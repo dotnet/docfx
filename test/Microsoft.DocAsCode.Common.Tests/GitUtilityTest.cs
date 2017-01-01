@@ -19,14 +19,6 @@ namespace Microsoft.DocAsCode.Common.Tests
     {
 
         [Fact]
-        public void GitHead_ForBranchName()
-        {
-            var info = GitUtility.GetFileDetail(Directory.GetCurrentDirectory());
-            Assert.NotEqual("HEAD", info.RemoteBranch);
-            Assert.NotEqual("special-branch", info.RemoteBranch);
-        }
-
-        [Fact]
         public void Environment_ForBranchName()
         {
             const string envName = "Git_Branch";
