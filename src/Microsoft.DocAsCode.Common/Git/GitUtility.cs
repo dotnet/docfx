@@ -1,9 +1,10 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace Microsoft.DocAsCode.Common.Git
 {
     using System;
+    using System.Linq;
     using System.IO;
     using System.Text;
     using System.Collections.Concurrent;
@@ -21,6 +22,16 @@ namespace Microsoft.DocAsCode.Common.Git
         private static readonly string GetOriginUrlCommand = "config --get remote.origin.url";
         private static readonly string GetLocalHeadIdCommand = "rev-parse HEAD";
         private static readonly string GetRemoteHeadIdCommand = "rev-parse @{u}";
+      
+        private static readonly string[] BuildSystemBranchName = new[]
+        {
+            "APPVEYOR_REPO_BRANCH",   // AppVeyor
+            "Git_Branch",             // Team City
+            "CI_BUILD_REF_NAME",      // GitLab CI
+            "GIT_LOCAL_BRANCH",       // Jenkins
+            "GIT_BRANCH",             // Jenkins
+            "BUILD_SOURCEBRANCH"      // VSO Agent
+        };
 
         private static readonly ConcurrentDictionary<string, GitRepoInfo> Cache = new ConcurrentDictionary<string, GitRepoInfo>();
 
@@ -111,22 +122,35 @@ namespace Microsoft.DocAsCode.Common.Git
         private static GitRepoInfo GetRepoInfoCore(string directory)
         {
             var repoRootPath = RunGitCommandAndGetFirstLine(directory, GetRepoRootCommand);
-            var localBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
-
+          
+            // Many build systems use a "detach head", which means that the normal git commands
+            // to get branch names do not work.  Thankfully, they set an environment variable.
+            string localBranch = BuildSystemBranchName
+                .Select(Environment.GetEnvironmentVariable)
+                .Where(name => !string.IsNullOrEmpty(name))
+                .FirstOrDefault();
             string remoteBranch;
-            try
+            if (localBranch != null)
             {
-                remoteBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetRemoteBranchCommand);
-                var index = remoteBranch.IndexOf('/');
-                if (index > 0)
-                {
-                    remoteBranch = remoteBranch.Substring(index + 1);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogInfo($"Can't find remote branch in this repo and fallback to use local branch [{localBranch}]: {ex.Message}");
                 remoteBranch = localBranch;
+            }
+            else
+            {
+                localBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
+                try
+                {
+                    remoteBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetRemoteBranchCommand);
+                    var index = remoteBranch.IndexOf('/');
+                    if (index > 0)
+                    {
+                        remoteBranch = remoteBranch.Substring(index + 1);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogInfo($"Can't find remote branch in this repo and fallback to use local branch [{localBranch}]: {ex.Message}");
+                    remoteBranch = localBranch;
+                }
             }
 
             var originUrl = RunGitCommandAndGetFirstLine(repoRootPath, GetOriginUrlCommand);
