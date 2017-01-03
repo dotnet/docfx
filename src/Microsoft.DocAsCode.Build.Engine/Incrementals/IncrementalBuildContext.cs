@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     {
         private DocumentBuildParameters _parameters;
         private Dictionary<string, Dictionary<string, BuildPhase?>> _modelLoadInfo = new Dictionary<string, Dictionary<string, BuildPhase?>>();
-        private Dictionary<string, ChangeKindWithDependency> _changeDict = new Dictionary<string, ChangeKindWithDependency>(FilePathComparer.OSPlatformSensitiveComparer);
+        private Dictionary<string, ChangeKindWithDependency> _changeDict = new Dictionary<string, ChangeKindWithDependency>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
         public string BaseDir { get; }
 
@@ -126,7 +126,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             string name = hostService.Processor.Name;
             if (!_modelLoadInfo.TryGetValue(name, out mi))
             {
-                _modelLoadInfo[name] = mi = new Dictionary<string, BuildPhase?>(FilePathComparer.OSPlatformSensitiveComparer);
+                _modelLoadInfo[name] = mi = new Dictionary<string, BuildPhase?>(FilePathComparer.OSPlatformSensitiveStringComparer);
             }
             mi[file] = phase;
         }
@@ -557,7 +557,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private IEnumerable<FileItem> GetFilesToCalculateAttributes()
         {
-            var keys = new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer);
+            var keys = new HashSet<string>(FilePathComparer.OSPlatformSensitiveStringComparer);
             foreach (var f in _parameters.Files.EnumerateFiles())
             {
                 var fileKey = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString();
