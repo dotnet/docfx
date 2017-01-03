@@ -573,13 +573,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 foreach (var f in CurrentBuildVersionInfo.Dependency.GetAllDependentNodes())
                 {
-                    var p = RelativePath.TryParse(f);
-                    if (p == null)
+                    if (keys.Contains(f))
                     {
                         continue;
                     }
-                    var fullPath = PathUtility.GetFullPath(EnvironmentContext.BaseDirectory, p.RemoveWorkingFolder());
-                    if (!keys.Contains(f) && File.Exists(fullPath))
+                    string fullPath = TryGetFullPath(f);
+                    if (fullPath != null && File.Exists(fullPath))
                     {
                         yield return new FileItem
                         {
@@ -590,6 +589,25 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     }
                 }
             }
+        }
+
+        private string TryGetFullPath(string path)
+        {
+            string fullPath = null;
+            try
+            {
+                var p = RelativePath.TryParse(path);
+                if (p == null)
+                {
+                    return null;
+                }
+                fullPath = PathUtility.GetFullPath(EnvironmentContext.BaseDirectory, p.RemoveWorkingFolder());
+            }
+            catch (ArgumentException)
+            {
+                // ignore the file if it contains illegal characters
+            }
+            return fullPath;
         }
 
         private bool TryGetFileAttributeFromLast(string pathFromWorkingFolder, out FileAttributeItem item)
