@@ -37,6 +37,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string MarkdownEngineName { get; set; } = "dfm";
 
+        [IncrementalIgnore]
         public ImmutableDictionary<string, object> MarkdownEngineParameters { get; set; } = ImmutableDictionary<string, object>.Empty;
 
         [IncrementalIgnore]
