@@ -8,7 +8,7 @@
     <title>Introduction to DocFX Template System | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to DocFX Template System | DocFX website ">
-    <meta name="generator" content="docfx 2.9.3.0">
+    <meta name="generator" content="docfx 2.10.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -106,8 +106,8 @@
 <pre><code class="lang-markdown">[Link To B](B.md)
 </code></pre><p><em>DocFX Template System</em> produces two output files for <code>A.md</code>: <code>A.html</code> and <code>A.mta.json</code>, and also two output files for <code>B.md</code>: <code>B.html</code> and <code>B.mta.json</code>. According to <code>conceptual.html.primary.tmpl</code>, <code>.html</code> is the <strong>primary</strong> output file, the link from <code>A.md</code> to <code>B.md</code> is resolved to <code>B.html</code> instead of <code>B.mta.json</code>, which is to say, the content of <code>A.md</code> is transformed to:</p>
 <pre><code class="lang-html">&lt;a href=&quot;B.html&quot;&gt;Link To B&lt;/a&gt;
-</code></pre><blockquote><p>If no <code>primary</code> <em>Renderer</em> is defined, DocFX randomly picks one <em>Renderer</em> as the primary one, and the result is unpredictable.</p>
-</blockquote>
+</code></pre><div class="NOTE"><h5>Note</h5><p>If no <code>primary</code> <em>Renderer</em> is defined, DocFX randomly picks one <em>Renderer</em> as the primary one, and the result is unpredictable.</p>
+</div>
 <h3 id="renderer-in-mustache-syntax"><em>Renderer</em> in Mustache syntax</h3>
 <h4 id="introduction-to-mustache">Introduction to Mustache</h4>
 <p><a href="http://mustache.github.io">Mustache</a> is a logic-less template syntax containing only <em>tag</em>s. It works by expanding tags in a template using values provided in a hash or object. <em>Tag</em>s are indicated by the double mustaches. <code>{{name}}</code> is a tag, it tries to find the <strong>name</strong> key in current context, and replace it with the value of <strong>name</strong>. <a href="http://mustache.github.io/mustache.5.html">mustache.5</a> lists the syntax of Mustache in detail.</p>
@@ -130,8 +130,9 @@ Inside Partial
 <p>DocFX introduces the following syntax to define the dependency for the <em>Renderer</em>:</p>
 <pre><code class="lang-mustache">{{!include(&#39;&lt;file_name&gt;&#39;)}}
 </code></pre><p><code>docfx</code> copies these dependencies to output folder preserving its relative path to the <em>Renderer</em> file.</p>
-<blockquote><p>Tips: Mustache is logic-less, and for a specific <code>{{name}}</code> tag, Mustache searches its context and its parent context recursively. So most of the time <a href="#preprocessor"><em>Preprocessor File</em></a> is used to re-define the data model used by the Mustache <em>Renderer</em>.</p>
-</blockquote>
+<div class="TIP"><h5>Tip</h5><p>Mustache is logic-less, and for a specific <code>{{name}}</code> tag, Mustache searches its context and its parent context recursively.
+So most of the time <a href="#preprocessor"><em>Preprocessor File</em></a> is used to re-define the data model used by the Mustache <em>Renderer</em>.</p>
+</div>
 <h3 id="renderer-in-liquid-syntax"><em>Renderer</em> in Liquid syntax</h3>
 <h4 id="naming-rule-1">Naming rule</h4>
 <p><em>Renderer</em>s in <a href="https://github.com/Shopify/liquid">Liquid</a> syntax <strong>MUST</strong> end with <code>.liquid</code> extension. Liquid contains <a href="https://help.shopify.com/themes/liquid/tags/theme-tags#include">include</a> tag to support partials, we follow the ruby partials naming convention to have <code>_&lt;partialName&gt;.liquid</code> as partial template. </p>
@@ -157,8 +158,8 @@ The Module syntax in <em>Preprocessor</em> is simple,</p>
 common.util();
 </code></pre></li>
 </ol>
-<blockquote><p>Only relative path starting with <code>./</code> is supported.</p>
-</blockquote>
+<div class="NOTE"><h5>Note</h5><p>Only relative path starting with <code>./</code> is supported.</p>
+</div>
 <h4 id="log">Log</h4>
 <p>You can call the following functions to log messages with different error level: <code>console.log</code>, <code>console.warn</code> or <code>console.warning</code> and <code>console.err</code>.</p>
 <h3 id="function-signature">Function Signature</h3>
@@ -200,8 +201,9 @@ common.util();
 <pre><code class="lang-mustache">{{{_title}}}
 </code></pre><p>Then Markdown file <code>A.md</code> is transformed to <code>A.txt</code> with content:</p>
 <pre><code>Hello World
-</code></pre><blockquote><p>Tip: For each file, the input data model can be exported to a JSON file by calling <code>docfx build --exportRawModel</code>. And the returned <em>View Model</em> can be exported to a JSON file by calling <code>docfx build --exportViewModel</code>.</p>
-</blockquote>
+</code></pre><div class="TIP"><h5>Tip</h5><p>For each file, the input data model can be exported to a JSON file by calling <code>docfx build --exportRawModel</code>.
+And the returned <em>View Model</em> can be exported to a JSON file by calling <code>docfx build --exportViewModel</code>.</p>
+</div>
 <h2 id="the-input-data-model">The Input Data Model</h2>
 <p>The input data model used by <code>transform</code> not only contains properties extracted from the content of the file, but also system generated properties and globally shared properties.</p>
 <h3 id="system-generated-properties">System Generated Properties</h3>
@@ -248,8 +250,8 @@ common.util();
 </tr>
 </tbody>
 </table>
-<blockquote><p>Users can also override system generated properties by using <em>YAML Header</em>, <code>fileMetadata</code> or <code>globalMetadata</code>.</p>
-</blockquote>
+<div class="NOTE"><h5>Note</h5><p>Users can also override system generated properties by using <em>YAML Header</em>, <code>fileMetadata</code> or <code>globalMetadata</code>.</p>
+</div>
 <h3 id="globally-shared-properties">Globally Shared Properties</h3>
 <p>Globally shared properties are stored in <code>__global</code> key for every data model. Its initial value is read from <code>global.json</code> inside the <em>Template</em> if the file exists.
 If a data model has <code>isShared</code> equal to <code>true</code> with the above <code>getOptions</code> function property, it is stored in <code>__global._shared</code> with the original path starting with <code>~/</code> as the key.</p>

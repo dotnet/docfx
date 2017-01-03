@@ -8,7 +8,7 @@
     <title>Links and Cross References | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Links and Cross References | DocFX website ">
-    <meta name="generator" content="docfx 2.9.3.0">
+    <meta name="generator" content="docfx 2.10.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -99,12 +99,16 @@ This is especially common in API reference docs, for example, you may want to us
 </code></pre><p>DocFX converts it to a relative path in output folder structure:</p>
 <pre><code class="lang-html">&lt;a href=&quot;subfolder/file2.html&quot;&gt;file2&lt;/a&gt;
 </code></pre><p>You can see the source file name (<code>.md</code>) is replaced with output file name (<code>.html</code>).</p>
-<blockquote><p>DocFX does not simply replace the file extension here (<code>.md</code> to <code>.html</code>), it also tracks the mapping between input and output files to make sure source file path will resolve to correct output path. For example, if in the above case, <code>subfolder</code> is renamed to <code>subfolder2</code> using <a href="docfx.exe_user_manual.html#4-supported-file-mapping-format">file mapping</a> in <code>docfx.json</code>, in output html, the link url will also resolve to <code>subfolder2/file2.html</code>.</p>
-</blockquote>
+<div class="NOTE"><h5>Note</h5><p>DocFX does not simply replace the file extension here (<code>.md</code> to <code>.html</code>), it also tracks the mapping between input and
+output files to make sure source file path will resolve to correct output path. For example, if in the above case,
+<code>subfolder</code> is renamed to <code>subfolder2</code> using <a href="docfx.exe_user_manual.html#4-supported-file-mapping-format">file mapping</a> in
+<code>docfx.json</code>, in output html, the link url will also resolve to <code>subfolder2/file2.html</code>.</p>
+</div>
 <h3 id="relative-path-vs-absolute-path">Relative path vs. absolute path</h3>
 <p>It&#39;s recommended to always use relative path to reference another file in the same project. Relative path will be resolved during build and produce build warning if the target file does not exist.</p>
-<blockquote><p>Tip: File must be included in <code>docfx.json</code> to be processed by DocFX, so if you see a build warning about broken link but the file actually exists in your file system, go and check whether this file is included in <code>docfx.json</code>.</p>
-</blockquote>
+<div class="TIP"><h5>Tip</h5><p>File must be included in <code>docfx.json</code> to be processed by DocFX, so if you see a build warning about broken link but the file
+actually exists in your file system, go and check whether this file is included in <code>docfx.json</code>.</p>
+</div>
 <p>You can also use absolute path (path starts with <code>/</code>) to link to another file, but DocFX won&#39;t check its correctness for you and will keep it as-is in the output HTML.
 That means you should use the output file path as absolute path. For example, in the above case, you can also write the link as follows:</p>
 <pre><code class="lang-markdown">[file2](/subfolder/file2.html)
@@ -115,15 +119,20 @@ This kind of path will also be validated and resolved during build. For example,
 
 [file1](../file1.md)
 </code></pre><p>Both will resolve to <code>../file1.html</code> in output html.</p>
-<blockquote><p><a href="https://daringfireball.net/projects/markdown/syntax#autolink">Automatic link</a> doesn&#39;t support relative path. If you write something like <code>&lt;file.md&gt;</code>, it will be treated as an HTML tag rather than a link.</p>
-</blockquote>
+<div class="WARNING"><h5>Warning</h5><p><a href="https://daringfireball.net/projects/markdown/syntax#autolink">Automatic link</a> doesn&#39;t support relative path.
+If you write something like <code>&lt;file.md&gt;</code>, it will be treated as an HTML tag rather than a link.</p>
+</div>
 <h3 id="links-in-file-includes">Links in file includes</h3>
 <p>If you use <a href="../spec/docfx_flavored_markdown.html#file-inclusion">file include</a> to include another file, the links in included file is relative to the included file. For example, if <code>file1.md</code> includes <code>file2.md</code>:</p>
 <pre><code class="lang-markdown">[!include[file2](subfolder/file2.md)]
 </code></pre><p>All links in <code>file2.md</code> are relative to the <code>file2.md</code> itself, even when it&#39;s included by <code>file1.md</code>.</p>
-<p>Please note that the file path in include syntax is handled differently than Markdown link. You can only use relative path to specify location of the included file. And DocFX doesn&#39;t require included file to be included in <code>docfx.json</code>.</p>
-<blockquote><p>Each file in <code>docfx.json</code> will build into an output file. But included files usually don&#39;t need to build into individual topics. So it&#39;s not recommended to include them in <code>docfx.json</code>.</p>
-</blockquote>
+<div class="NOTE"><h5>Note</h5><p>Please note that the file path in include syntax is handled differently than Markdown link.
+You can only use relative path to specify location of the included file.
+And DocFX doesn&#39;t require included file to be included in <code>docfx.json</code>.</p>
+</div>
+<div class="TIP"><h5>Tip</h5><p>Each file in <code>docfx.json</code> will build into an output file. But included files usually don&#39;t need to build into individual
+topics. So it&#39;s not recommended to include them in <code>docfx.json</code>.</p>
+</div>
 <h3 id="links-in-inline-html">Links in inline HTML</h3>
 <p>Markdown supports <a href="https://daringfireball.net/projects/markdown/syntax#html">inline HTML</a>. DocFX also supports to use relative path in inline HTML. Path in HTML link (<code>&lt;a&gt;</code>), image (<code>&lt;img&gt;</code>), script (<code>&lt;script&gt;</code>) and css (<code>&lt;link&gt;</code>) will also be resolved if they&#39;re relative path.</p>
 <h2 id="using-cross-reference">Using cross reference</h2>
@@ -138,8 +147,8 @@ This kind of path will also be validated and resolved during build. For example,
 </code></pre><p>This is similar to <a href="https://daringfireball.net/projects/markdown/syntax#autolink">automatic link</a> syntax in Markdown but with a <code>xref</code> scheme. This link will build into:</p>
 <pre><code class="lang-html">&lt;a href=&quot;path_of_another_file&quot;&gt;title_of_another_file&lt;/a&gt;
 </code></pre><p>As you can see, one benefit of using cross reference is that you don&#39;t need to specify the link text and DocFX will automatically resolve it for you.</p>
-<blockquote><p>Title is extracted from the first heading of the Markdown file. Or you can also specify title using title metadata.</p>
-</blockquote>
+<div class="NOTE"><h5>Note</h5><p>Title is extracted from the first heading of the Markdown file. Or you can also specify title using title metadata.</p>
+</div>
 <h3 id="define-uid">Define UID</h3>
 <p>The unique identifier of a file is called UID (stands for unique identifier) in DocFX. For Markdown file, you can specify its UID by adding a UID metadata in <a href="../spec/docfx_flavored_markdown.html#yaml-header">YAML header</a>. For example, the following Markdown defined a UID &quot;fileA&quot;.</p>
 <pre><code class="lang-markdown">---
@@ -148,11 +157,11 @@ uid: fileA
 
 # This is fileA
 ...
-</code></pre><blockquote><p>UID is supposed to be unique inside a project. If you define duplicate UID for two files, the resolve result is undetermined.</p>
-</blockquote>
+</code></pre><div class="NOTE"><h5>Note</h5><p>UID is supposed to be unique inside a project. If you define duplicate UID for two files, the resolve result is undetermined.</p>
+</div>
 <p>For API reference files, UID is auto generated by mangling API&#39;s signature. For example, System.String class&#39;s UID is <code>System.String</code>. You can open the generated YAML files to lookup the value of UID.</p>
-<blockquote><p>Conceptual Markdown file doesn&#39;t have UID generated by default. So it cannot be cross referenced unless you give it a UID.</p>
-</blockquote>
+<div class="NOTE"><h5>Note</h5><p>Conceptual Markdown file doesn&#39;t have UID generated by default. So it cannot be cross referenced unless you give it a UID.</p>
+</div>
 <h3 id="different-syntax-of-cross-reference">Different syntax of cross reference</h3>
 <p>Besides the auto link, we also support some other ways to use cross references:</p>
 <h4 id="markdown-link">Markdown link</h4>
@@ -183,8 +192,9 @@ uid: fileA
 [link_text](xref:uid_to_file#anchor_name]
 </code></pre><p>Both urls will resolve to <code>url_to_file#anchor_name</code> in output HTML.</p>
 <p>The link text still resolves to the title of the whole file. If it&#39;s not what you need, you can specify your own link text.</p>
-<blockquote><p>Hashtag in <code>xref</code> is always treated as separator between file name and anchor name. That means if you have <code>#</code> in UID, it has to be <a href="https://en.wikipedia.org/wiki/Percent-encoding">encoded</a> to <code>%23</code>.</p>
-</blockquote>
+<div class="NOTE"><h5>Note</h5><p>Hashtag in <code>xref</code> is always treated as separator between file name and anchor name. That means if you have <code>#</code> in UID, it has
+to be <a href="https://en.wikipedia.org/wiki/Percent-encoding">encoded</a> to <code>%23</code>.</p>
+</div>
 <p>Hashtag is not supported in <code>@</code> form.</p>
 <h3 id="link-to-overwrite-files">Link to overwrite files</h3>
 <p><a href="intro_overwrite_files.html">Overwrite file</a> itself doesn&#39;t build into individual output file. It&#39;s merged with the API reference item model to build into a single file. If you want to link to the content inside an overwrite file (for example, an anchor), you cannot use the path to the overwrite file. Instead, you should either cross reference its UID, or link to the YAML file that contains the API.</p>
@@ -214,8 +224,9 @@ uid: fileA
 </ul>
 </li>
 </ol>
-<blockquote><p>Topic is not necessarily to be a file, it can also be a section inside a file. For example, a method in a class. In this case its url could be an anchor in a file.</p>
-</blockquote>
+<div class="TIP"><h5>Tip</h5><p>Topic is not necessarily to be a file, it can also be a section inside a file. For example, a method in a class. 
+In this case its url could be an anchor in a file.</p>
+</div>
 <h3 id="using-cross-reference-map">Using cross reference map</h3>
 <p>You can import a cross reference map file in your DocFX then all UIDs defined that file can be cross referenced.</p>
 <p>To use a cross reference map, add a <code>xrefMaps</code> config to <code>build</code> section of <code>docfx.json</code>:</p>
@@ -228,14 +239,17 @@ uid: fileA
   }
 }
 </code></pre><p>The value of <code>xrefMaps</code> could be a string or a list of strings that contain the path/url to cross reference maps.</p>
-<blockquote><p>DocFX supports reading cross reference map from a local file or a web location. It&#39;s recommended to deploy <code>xrefmap.yml</code> to the website together with topic files so that others can directly use its url in <code>docfx.json</code> instead of downloading it to local.</p>
-</blockquote>
+<div class="NOTE"><h5>Note</h5><p>DocFX supports reading cross reference map from a local file or a web location. It&#39;s recommended to deploy <code>xrefmap.yml</code> to
+the website together with topic files so that others can directly use its url in <code>docfx.json</code> instead of downloading it to
+local.</p>
+</div>
 <p>Then you can use any cross reference syntax in your Markdown file, DocFX will be able to resolve it to the right target url.</p>
 <h3 id="cross-reference-net-bcl-types">Cross reference .NET BCL types</h3>
 <p>When creating documentation for your own .NET library, it is needed to link to the types in .NET base class library. The .NET Framework reference documentation is not generated by DocFX, so we created a cross reference map for you so that you can use it in your project to reference .NET BCL types.</p>
 <p>This can be downloaded on <a href="https://www.nuget.org/packages/msdn.4.5.2">nuget</a>.</p>
-<blockquote><p>You can also manually create <code>xrefmap.yml</code> for project that is not generated by DocFX to be able to cross reference topics in it.</p>
-</blockquote>
+<div class="TIP"><h5>Tip</h5><p>You can also manually create <code>xrefmap.yml</code> for project that is not generated by DocFX to be able to cross reference topics in
+it.</p>
+</div>
 <h2 id="advanced-more-options-for-cross-reference">Advanced: more options for cross reference</h2>
 <p>You can create a cross link with following options:</p>
 <ul>

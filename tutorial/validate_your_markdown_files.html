@@ -8,7 +8,7 @@
     <title>Validate Your Markdown Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Validate Your Markdown Files | DocFX website ">
-    <meta name="generator" content="docfx 2.9.3.0">
+    <meta name="generator" content="docfx 2.10.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -78,8 +78,8 @@
 <p>In Markdown, we can write any document with valid syntax. For example, Markdown supports to directly write HTML tag, we can write HTML tag <code>&lt;h1&gt;title&lt;/h1&gt;</code> instead of Markdown syntax <code>#title</code>.
 But for some purpose, some behaviors are unwanted, for example, you may not want to allow <code>&lt;script&gt;</code> tag in Markdown that can insert any javascript.</p>
 <p>In this document, you&#39;ll learn how to define markdown validation rules, which will help you to validate markdown documents in an efficient way.</p>
-<blockquote><p>Markdown validation is part of DFM, if you switch Markdown engine to other engine, validation might not work.</p>
-</blockquote>
+<div class="NOTE"><h5>Note</h5><p>Markdown validation is part of DFM, if you switch Markdown engine to other engine, validation might not work.</p>
+</div>
 <p>There&#39;re three kinds of validation rules provided by DocFX:</p>
 <ol>
 <li>HTML tag rule, which is used to validate HTML tags in Markdown. There is a common need to restrict usage of HTML tags in Markdown to only allow &quot;safe&quot; HTML tags, so we created this built-in rule for you.</li>
@@ -188,9 +188,9 @@ Now your DocFX project should look like this:</p>
 </code></pre></li>
 <li>Run <code>docfx</code> you&#39;ll see your rule being executed.</li>
 </ol>
-<blockquote><p>The folder <code>rules</code> is actually a template folder. In DocFX, template is a place for you to customize build, render, validation behavior.
+<div class="NOTE"><h5>Note</h5><p>The folder <code>rules</code> is actually a template folder. In DocFX, template is a place for you to customize build, render, validation behavior.
 For more information about template, please refer to our <a href="howto_build_your_own_type_of_documentation_with_custom_plug-in.html">template</a> and <a href="howto_build_your_own_type_of_documentation_with_custom_plug-in.html">plugin</a> documentation.</p>
-</blockquote>
+</div>
 <h2 id="markdown-token-validation-rules">Markdown token validation rules</h2>
 <p>Besides HTML tags, you may also want to validate Markdown syntax like heading or links. For example, in Markdown, you may want to limit code snippet to only support a set of languages.</p>
 <p>To create such rule, follow the following steps:</p>
@@ -225,8 +225,8 @@ public class MyMarkdownTokenValidatorProvider : IMarkdownTokenValidatorProvider
 <h3 id="logging-in-your-rules">Logging in your rules</h3>
 <p>As you can see in the above example, you can throw <a class="xref" href="../api/Microsoft.DocAsCode.Plugins.DocumentException.html">DocumentException</a> to raise an error, this will stop the build immediately.</p>
 <p>You can also use <a class="xref" href="../api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogWarning_System_String_System_String_System_String_System_String_">LogWarning(String, String, String, String)</a> and <a class="xref" href="../api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogError_System_String_System_String_System_String_System_String_">LogError(String, String, String, String)</a> to report a warning and an error respectively.</p>
-<blockquote><p>To use these methods, you need to install nuget package <code>Microsoft.DocAsCode.Common</code> first.</p>
-</blockquote>
+<div class="NOTE"><h5>Note</h5><p>To use these methods, you need to install nuget package <code>Microsoft.DocAsCode.Common</code> first.</p>
+</div>
 <p>The different between <code>ReportError</code> and throw <code>DocumentException</code> is throwing exception will stop the build immediately but <code>ReportError</code> won&#39;t stop build but will eventually fail the build after rules are run.</p>
 <h3 id="advanced-validating-tokens-with-file-context">Advanced: validating tokens with file context</h3>
 <p>For some cases, we need to validate some tokens with file context.</p>
@@ -281,8 +281,8 @@ And we allow to add some plug-ins to validate metadata written in markdown files
 <li>Global metadata and file metaata in <code>docfx.json</code>.</li>
 <li>Global metadata and file metadata defined in separate <code>.json</code> files.</li>
 </ol>
-<blockquote><p>For more information about global metadata and global metadata, see <a href="docfx.exe_user_manual.html#3-docfxjson-format">docfx.json format</a>.</p>
-</blockquote>
+<div class="TIP"><h5>Tip</h5><p>For more information about global metadata and global metadata, see <a href="docfx.exe_user_manual.html#3-docfxjson-format">docfx.json format</a>.</p>
+</div>
 <h3 id="create-validation-plug-ins">Create validation plug-ins</h3>
 <ol>
 <li>Create a project in your code editor (e.g. Visual Studio).</li>

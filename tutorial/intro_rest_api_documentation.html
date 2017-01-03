@@ -8,7 +8,7 @@
     <title>Introduction to REST API Documentation | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to REST API Documentation | DocFX website ">
-    <meta name="generator" content="docfx 2.9.3.0">
+    <meta name="generator" content="docfx 2.10.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -117,8 +117,9 @@
     }
   }
 }
-</code></pre><blockquote><p>It is recommended that user provides a well-formed <code>operationId</code> name. We suggest that the <code>operationId</code> is one word in camelCase or snake_case.</p>
-</blockquote>
+</code></pre><div class="TIP"><h5>Tip</h5><p>It is recommended that user provides a well-formed <code>operationId</code> name.
+We suggest that the <code>operationId</code> is one word in camelCase or snake_case.</p>
+</div>
 <p>A REST API <strong>File</strong> could also contain multiple tags. The tag is a <a href="http://swagger.io/specification/#tagObject">Tag Object</a>, which is optional and used by <a href="http://swagger.io/specification/#operationObject">Operation Object</a>. The <strong>UID</strong>(Unique IDentifier) for this tag is defined as the combination of <strong>UID</strong> of the <strong>File</strong>, <code>tag</code>, and <code>name</code> of the <a href="http://swagger.io/specification/#tagObject">Tag Object</a>. For example, the following tag <code>Basic</code> has <strong>UID</strong> <code>microsoft.com/docfx/Contacts/1.6/tag/Basic</code>:</p>
 <pre><code class="lang-json">{
   &quot;swagger&quot;: &quot;2.0&quot;,

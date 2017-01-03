@@ -8,7 +8,7 @@
     <title>DocFX Flavored Markdown | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFX Flavored Markdown | DocFX website ">
-    <meta name="generator" content="docfx 2.9.3.0">
+    <meta name="generator" content="docfx 2.10.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -76,14 +76,14 @@
               <h1 id="docfx-flavored-markdown">DocFX Flavored Markdown</h1>
               
 <p>DocFX supports <code>DocFX Flavored Markdown</code>, or DFM. It supports all <a href="https://guides.github.com/features/mastering-markdown/">GitHub Flavored Markdown</a> syntax with 2 exceptions when resolving <a href="#differences-between-dfm-and-gfm">list</a>. Also, DFM adds new syntax to support additional functionalities, including cross reference and file inclusion.</p>
-<h3 id="yaml-header">Yaml Header</h3>
+<h2 id="yaml-header">Yaml Header</h2>
 <p>Yaml header in DFM is considered as the metadata for the Markdown file. It will transform to <code>yamlheader</code> tag when processed.
 Yaml header MUST be the first thing in the file and MUST take the form of valid YAML set between triple-dashed lines. Here is a basic example:</p>
 <pre><code class="lang-md">---
 uid: A.md
 title: A
 ---
-</code></pre><h3 id="cross-reference">Cross Reference</h3>
+</code></pre><h2 id="cross-reference">Cross Reference</h2>
 <p>Cross reference allows you to link to another topic by using its unique identifier (called UID) instead of using its file path.</p>
 <p>For conceptual Markdown files UID can be defined by adding a <code>uid</code> metadata in YAML header:</p>
 <pre><code class="lang-md">---
@@ -102,16 +102,22 @@ This is a conceptual topic with `uid` specified.
 <pre><code class="lang-html">&lt;a href=&quot;url_of_the_topic&quot;&gt;link_text&lt;/a&gt;
 </code></pre><p>If <code>link_text</code> is not specified, DocFX will extract the title from the target topic and use it as the link text.</p>
 <p>For more information, see <a href="../tutorial/links_and_cross_references.html#using-cross-reference">cross reference</a>.</p>
-<h3 id="file-inclusion">File Inclusion</h3>
-<p>DFM adds syntax to include other file parts into current file, the included file will also be considered as in DFM syntax. <em>NOTE</em> that YAML header is <strong>NOT</strong> supported when the file is an inclusion.
-There are two types of file inclusion: Inline and block, as similar to inline code span and block code.</p>
-<h4 id="inline">Inline</h4>
-<p>Inline file inclusion is in the following syntax, in which <code>&lt;title&gt;</code> stands for the title of the included file, and <code>&lt;filepath&gt;</code> stands for the file path of the included file. The file path can be either absolute or relative.<code>&lt;filepath&gt;</code> can be wrapped by <code>&#39;</code> or <code>&quot;</code>. <em>NOTE</em> that for inline file inclusion, the file included will be considered as containing only inline tags, for example, <code>###header</code> inside the file will not transfer since <code>&lt;h3&gt;</code> is a block tag, while <code>[a](b)</code> will transform to <code>&lt;a href=&#39;b&#39;&gt;a&lt;/a&gt;</code> since <code>&lt;a&gt;</code> is an inline tag.</p>
+<h2 id="file-inclusion">File Inclusion</h2>
+<p>DFM adds syntax to include other file parts into current file, the included file will also be considered as in DFM syntax.</p>
+<p>There are two types of file inclusion: Inline and block, as similar to inline code span and block code.</p>
+<div class="NOTE"><h5>Note</h5><p>YAML header is <strong>NOT</strong> supported when the file is an inclusion.</p>
+</div>
+<h3 id="inline">Inline</h3>
+<p>Inline file inclusion is in the following syntax, in which <code>&lt;title&gt;</code> stands for the title of the included file, and <code>&lt;filepath&gt;</code> stands for the file path of the included file. The file path can be either absolute or relative.<code>&lt;filepath&gt;</code> can be wrapped by <code>&#39;</code> or <code>&quot;</code>.</p>
+<div class="NOTE"><h5>Note</h5><p>For inline file inclusion, the file included will be considered as containing only inline tags, for example,
+<code>###header</code> inside the file will not transfer since <code>&lt;h3&gt;</code> is a block tag, while <code>[a](b)</code> will transform to
+<code>&lt;a href=&#39;b&#39;&gt;a&lt;/a&gt;</code> since <code>&lt;a&gt;</code> is an inline tag.</p>
+</div>
 <pre><code class="lang-md">...Other inline contents... [!include[&lt;title&gt;](&lt;filepath&gt;)]
-</code></pre><h4 id="block">Block</h4>
+</code></pre><h3 id="block">Block</h3>
 <p>Block file inclusion must be in a single line and with no prefix characters before the start <code>[</code>. Content inside the included file will transform using DFM syntax.</p>
 <pre><code class="lang-md">[!include[&lt;title&gt;](&lt;filepath&gt;)]
-</code></pre><h3 id="section-definition">Section definition</h3>
+</code></pre><h2 id="section-definition">Section definition</h2>
 <p>User may need to define section. Mostly used for code table.
 Give an example below.</p>
 <pre><code>&gt; [!div class=&quot;tabbedCodeSnippets&quot; data-resources=&quot;OutlookServices.Calendar&quot;]
@@ -126,7 +132,7 @@ Give an example below.</p>
   &lt;pre&gt;&lt;code&gt;cs code text&lt;/code&gt;&lt;/pre&gt;
   &lt;pre&gt;&lt;code&gt;js code text&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-</code></pre><h3 id="code-snippet">Code Snippet</h3>
+</code></pre><h2 id="code-snippet">Code Snippet</h2>
 <p>Allows you to insert code with code language specified. The content of specified code path will expand.</p>
 <pre><code class="lang-md">[!code-&lt;language&gt;[&lt;name&gt;](&lt;codepath&gt;&lt;queryoption&gt;&lt;queryoptionvalue&gt; &quot;&lt;title&gt;&quot;)]
 </code></pre><ul>
@@ -175,7 +181,7 @@ Give an example below.</p>
 <li>If <code>dedent</code> isn&#39;t specified, the maximum common indent will be trimmed automatically.</li>
 <li><strong><code>&lt;title&gt;</code></strong> can be omitted.</li>
 </ul>
-<h4 id="code-snippet-sample">Code Snippet Sample</h4>
+<h3 id="code-snippet-sample">Code Snippet Sample</h3>
 <pre><code class="lang-md">[!code-csharp[Main](Program.cs)]
 
 [!code[Main](Program.cs#L12-L16 &quot;This is source file&quot;)]
@@ -185,7 +191,7 @@ Give an example below.</p>
 [!code-javascript[Main](../jquery.js?name=testsnippet)]
 [!code[Main](index.xml?range=2,5-7,9-) &quot;This includes the lines 2, 5, 6, 7 and lines 9 to the last line&quot;]
 [!code[Main](index.xml?highlight=2,5-7,9-) &quot;This includes the whole file with lines 2,5-7,9- highlighted&quot;]
-</code></pre><h4 id="tag-name-representation-in-code-snippet-source-file">Tag Name Representation in Code Snippet Source File</h4>
+</code></pre><h3 id="tag-name-representation-in-code-snippet-source-file">Tag Name Representation in Code Snippet Source File</h3>
 <p>DFM currently only supports the following <strong><code>&lt;language&gt;</code></strong> values to be able to retrieve by tag name:</p>
 <ul>
 <li>C#: cs, csharp</li>
@@ -197,7 +203,7 @@ Give an example below.</p>
 <li>SQL: sql</li>
 <li>Javascript: javascript</li>
 </ul>
-<h3 id="note-warningtipimportant">Note (Warning/Tip/Important)</h3>
+<h2 id="note-warningtipimportant">Note (Warning/Tip/Important)</h2>
 <p>Using specific syntax inside block quote to indicate the following content is Note.</p>
 <pre><code>&gt; [!NOTE]
 &gt; &lt;note content&gt;
@@ -320,7 +326,9 @@ Give an example below.</p>
 2. b
 </code></pre><p>In GFM, it will be rendered as one paragraph with content <code>text 1. a 2. b</code>.<br>In DFM, it will be rendered as a paragraph (with content <code>text</code>) and a list.</p>
 <h2 id="differences-introduced-by-dfm-syntax">Differences introduced by DFM syntax</h2>
-<p>Please note that DFM introduces more syntax to support more functionalities. When GFM does not support them, preview the Markdown file inside <em>GFM Preview</em> can lead to different results.</p>
+<div class="WARNING"><h5>Warning</h5><p>Please note that DFM introduces more syntax to support more functionalities. When GFM does not support them, preview the
+Markdown file inside <em>GFM Preview</em> can lead to different results.</p>
+</div>
 <h3 id="yaml-header-1">YAML header</h3>
 <p>In GFM, YAML header must start at the very beginning of the Markdown file.
 In DFM, YAML header contains more powerful meanings. Refer to <a href="#yaml-header">Yaml Header</a> for details.</p>

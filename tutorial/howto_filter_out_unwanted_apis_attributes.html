@@ -8,7 +8,7 @@
     <title>How-to: Filter Out Unwanted APIs or Attributes  | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Filter Out Unwanted APIs or Attributes  | DocFX website ">
-    <meta name="generator" content="docfx 2.9.3.0">
+    <meta name="generator" content="docfx 2.10.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -109,11 +109,10 @@
 <h2 id="the-format-of-the-filter-configuration-file">The format of the filter configuration file</h2>
 <h3 id="1-api-filter-rules">1. API Filter Rules</h3>
 <p>To filter out APIs, you could specify <code>apiRules</code> with a list of <code>exclude</code> or <code>include</code> rules.</p>
-<blockquote><p><em>Note</em></p>
-<p>The rules would be executed sequentially and the matching process would stop once one rule is matched. 
-Namely, you need to put the most detailed rule in the top.</p>
-<p>If no rule is matched the API would be included by default.</p>
-</blockquote>
+<div class="NOTE"><h5>Note</h5><p>The rules would be executed sequentially and the matching process would stop once one rule is matched.
+Namely, you need to put the most detailed rule in the top.
+If no rule is matched the API would be included by default.</p>
+</div>
 <h4 id="1-exclude-or-include-apis-by-matching-their-uid-with-the-regex-uidregex">1) <code>exclude</code> or <code>include</code> APIs by matching their uid with the Regex <code>uidRegex</code>.</h4>
 <p>The sample below excludes all APIs whose uids start with &#39;Microsoft.DevDiv&#39; except those that start with &#39;Microsoft.DevDiv.SpecialCase&#39;.</p>
 <pre><code>  - include:
@@ -136,12 +135,11 @@ Namely, you need to put the most detailed rule in the top.</p>
 <li><code>Method</code></li>
 <li><code>Property</code></li>
 </ul>
-<blockquote><p><em>Note</em></p>
-<p><code>Type</code> could be <code>Class</code>, <code>Struct</code>, <code>Enum</code>, <code>Interface</code>, or <code>Delegate</code>. <code>Member</code> could be <code>Event</code>, <code>Field</code>, <code>Method</code>, or <code>Property</code>.</p>
+<div class="NOTE"><h5>Note</h5><p><code>Type</code> could be <code>Class</code>, <code>Struct</code>, <code>Enum</code>, <code>Interface</code>, or <code>Delegate</code>. <code>Member</code> could be <code>Event</code>, <code>Field</code>, <code>Method</code>, or <code>Property</code>.</p>
 <p><code>Namespace</code> is flattened. Namely, excluding namespace &#39;A.B&#39; has nothing to do with namespace &#39;A.B.C&#39;.</p>
 <p>If a namespace is excluded, all types/members defined in the namespace would also be excluded.
 If a type is excluded, all members defined in the type would also be excluded.</p>
-</blockquote>
+</div>
 <p>The below sample would exclude all APIs whose uid starts with &#39;Microsoft.DevDiv&#39; and type is <code>Type</code>, namely <code>Class</code>, <code>Struct</code>,
 <code>Enum</code>, <code>Interface</code>, or <code>Delegate</code>.</p>
 <pre><code>  - exclude:

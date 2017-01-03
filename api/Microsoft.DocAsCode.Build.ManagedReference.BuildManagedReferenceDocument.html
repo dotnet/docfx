@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class BuildManagedReferenceDocument
    | DocFX website ">
-    <meta name="generator" content="docfx 2.9.3.0">
+    <meta name="generator" content="docfx 2.10.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -85,10 +85,20 @@
                 <h5>Inheritance</h5>
                   <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
                   <div class="level1"><a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html">BaseDocumentBuildStep</a></div>
-                  <div class="level2"><span class="xref">BuildManagedReferenceDocument</span></div>
+                  <div class="level2"><a class="xref" href="Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html">BuildReferenceDocumentBase</a></div>
+                  <div class="level3"><span class="xref">BuildManagedReferenceDocument</span></div>
               </div>
               <div class="inheritedMembers">
                 <h5>Inherited Members</h5>
+                <div>
+                  <a class="xref" href="Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildOrder">BuildReferenceDocumentBase.BuildOrder</a>
+                </div>
+                <div>
+                  <a class="xref" href="Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_">BuildReferenceDocumentBase.Build(FileModel, IHostService)</a>
+                </div>
+                <div>
+                  <a class="xref" href="Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildOverwrite_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_Plugins_FileModel_">BuildReferenceDocumentBase.BuildOverwrite(IHostService, FileModel)</a>
+                </div>
                 <div>
                   <a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Prebuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_">BaseDocumentBuildStep.Prebuild(ImmutableList&lt;FileModel&gt;, IHostService)</a>
                 </div>
@@ -122,48 +132,16 @@
               <h5 id="Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_syntax">Syntax</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[Export(&quot;ManagedReferenceDocumentProcessor&quot;, typeof (IDocumentBuildStep))]
-public class BuildManagedReferenceDocument : BaseDocumentBuildStep, IDocumentBuildStep</code></pre>
+public class BuildManagedReferenceDocument : BuildReferenceDocumentBase, IDocumentBuildStep</code></pre>
               </div>
               <h3 id="properties">Properties
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_BuildOrder.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildOrder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildManagedReferenceDocument.cs/#L26">View Source</a>
-              </span>
-              <a id="Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_BuildOrder_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildOrder*"></a>
-              <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_BuildOrder" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildOrder">BuildOrder</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public override int BuildOrder { get; }</code></pre>
-              </div>
-              <h5 class="propertyValue">Property Value</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="overrides">Overrides</h5>
-              <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_BuildOrder">BaseDocumentBuildStep.BuildOrder</a></div>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildManagedReferenceDocument.cs/#L24">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildManagedReferenceDocument.cs/#L21">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_Name_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.Name*"></a>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_Name" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.Name">Name</h4>
@@ -194,18 +172,18 @@ public class BuildManagedReferenceDocument : BaseDocumentBuildStep, IDocumentBui
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.Build(Microsoft.DocAsCode.Plugins.FileModel%2CMicrosoft.DocAsCode.Plugins.IHostService)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_BuildArticle_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_Plugins_FileModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildArticle(Microsoft.DocAsCode.Plugins.IHostService%2CMicrosoft.DocAsCode.Plugins.FileModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildManagedReferenceDocument.cs/#L28">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildManagedReferenceDocument.cs/#L25">View Source</a>
               </span>
-              <a id="Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_Build_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.Build*"></a>
-              <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.Build(Microsoft.DocAsCode.Plugins.FileModel,Microsoft.DocAsCode.Plugins.IHostService)">Build(FileModel, IHostService)</h4>
+              <a id="Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_BuildArticle_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildArticle*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_BuildArticle_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_Plugins_FileModel_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildArticle(Microsoft.DocAsCode.Plugins.IHostService,Microsoft.DocAsCode.Plugins.FileModel)">BuildArticle(IHostService, FileModel)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public override void Build(FileModel model, IHostService host)</code></pre>
+                <pre><code class="lang-csharp hljs">protected override void BuildArticle(IHostService host, FileModel model)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -218,25 +196,25 @@ public class BuildManagedReferenceDocument : BaseDocumentBuildStep, IDocumentBui
                 </thead>
                 <tbody>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
-                    <td><span class="parametername">model</span></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.IHostService.html">IHostService</a></td>
+                    <td><span class="parametername">host</span></td>
                     <td></td>
                   </tr>
                   <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.IHostService.html">IHostService</a></td>
-                    <td><span class="parametername">host</span></td>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
+                    <td><span class="parametername">model</span></td>
                     <td></td>
                   </tr>
                 </tbody>
               </table>
               <h5 class="overrides">Overrides</h5>
-              <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_">BaseDocumentBuildStep.Build(FileModel, IHostService)</a></div>
+              <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildArticle_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_Plugins_FileModel_">BuildReferenceDocumentBase.BuildArticle(IHostService, FileModel)</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_BuildItem_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_DataContracts_ManagedReference_ItemViewModel_Microsoft_DocAsCode_Plugins_FileModel_System_Func_System_String_System_Boolean__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildItem(Microsoft.DocAsCode.Plugins.IHostService%2CMicrosoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel%2CMicrosoft.DocAsCode.Plugins.FileModel%2CSystem.Func%7BSystem.String%2CSystem.Boolean%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildManagedReferenceDocument.cs/#L47">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildManagedReferenceDocument.cs/#L36">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_BuildItem_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildItem*"></a>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_BuildItem_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_DataContracts_ManagedReference_ItemViewModel_Microsoft_DocAsCode_Plugins_FileModel_System_Func_System_String_System_Boolean__" data-uid="Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildItem(Microsoft.DocAsCode.Plugins.IHostService,Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel,Microsoft.DocAsCode.Plugins.FileModel,System.Func{System.String,System.Boolean})">BuildItem(IHostService, ItemViewModel, FileModel, Func&lt;String, Boolean&gt;)</h4>
@@ -308,7 +286,7 @@ public class BuildManagedReferenceDocument : BaseDocumentBuildStep, IDocumentBui
                     <a href="https://github.com/dotnet/docfx/new/dev/Documentation/apispec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildManagedReferenceDocument.cs/#L19" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/BuildManagedReferenceDocument.cs/#L18" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

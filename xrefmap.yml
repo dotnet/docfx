@@ -1513,6 +1513,18 @@ references:
   commentId: T:Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument
   fullName: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument
   nameWithType: ApplyOverwriteDocument
+- uid: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.#ctor
+  name: ApplyOverwriteDocument()
+  href: api/Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.html#Microsoft_DocAsCode_Build_Common_ApplyOverwriteDocument__ctor
+  commentId: M:Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.#ctor
+  fullName: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.ApplyOverwriteDocument()
+  nameWithType: ApplyOverwriteDocument.ApplyOverwriteDocument()
+- uid: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.#ctor*
+  name: ApplyOverwriteDocument
+  href: api/Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.html#Microsoft_DocAsCode_Build_Common_ApplyOverwriteDocument__ctor_
+  commentId: Overload:Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.#ctor
+  fullName: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.ApplyOverwriteDocument
+  nameWithType: ApplyOverwriteDocument.ApplyOverwriteDocument
 - uid: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.ApplyOverwrite(Microsoft.DocAsCode.Plugins.IHostService,System.Collections.Generic.List{Microsoft.DocAsCode.Plugins.FileModel},System.String,System.Collections.Generic.List{Microsoft.DocAsCode.Plugins.FileModel})
   name: ApplyOverwrite(IHostService, List<FileModel>, String, List<FileModel>)
   href: api/Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.html#Microsoft_DocAsCode_Build_Common_ApplyOverwriteDocument_ApplyOverwrite_Microsoft_DocAsCode_Plugins_IHostService_System_Collections_Generic_List_Microsoft_DocAsCode_Plugins_FileModel__System_String_System_Collections_Generic_List_Microsoft_DocAsCode_Plugins_FileModel__
@@ -1552,18 +1564,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.ApplyOverwrites
   fullName: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.ApplyOverwrites
   nameWithType: ApplyOverwriteDocument.ApplyOverwrites
-- uid: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Merger
-  name: Merger
-  href: api/Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.html#Microsoft_DocAsCode_Build_Common_ApplyOverwriteDocument_Merger
-  commentId: P:Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Merger
-  fullName: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Merger
-  nameWithType: ApplyOverwriteDocument.Merger
-- uid: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Merger*
-  name: Merger
-  href: api/Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.html#Microsoft_DocAsCode_Build_Common_ApplyOverwriteDocument_Merger_
-  commentId: Overload:Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Merger
-  fullName: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Merger
-  nameWithType: ApplyOverwriteDocument.Merger
+- uid: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.GetMerger
+  name: GetMerger()
+  href: api/Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.html#Microsoft_DocAsCode_Build_Common_ApplyOverwriteDocument_GetMerger
+  commentId: M:Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.GetMerger
+  fullName: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.GetMerger()
+  nameWithType: ApplyOverwriteDocument.GetMerger()
+- uid: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.GetMerger*
+  name: GetMerger
+  href: api/Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.html#Microsoft_DocAsCode_Build_Common_ApplyOverwriteDocument_GetMerger_
+  commentId: Overload:Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.GetMerger
+  fullName: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.GetMerger
+  nameWithType: ApplyOverwriteDocument.GetMerger
 - uid: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Postbuild(System.Collections.Immutable.ImmutableList{Microsoft.DocAsCode.Plugins.FileModel},Microsoft.DocAsCode.Plugins.IHostService)
   name: Postbuild(ImmutableList<FileModel>, IHostService)
   href: api/Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.html#Microsoft_DocAsCode_Build_Common_ApplyOverwriteDocument_Postbuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_
@@ -1651,6 +1663,60 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.Prebuild
   fullName: Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.Prebuild
   nameWithType: BaseDocumentBuildStep.Prebuild
+- uid: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase
+  name: BuildReferenceDocumentBase
+  href: api/Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html
+  commentId: T:Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase
+  fullName: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase
+  nameWithType: BuildReferenceDocumentBase
+- uid: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.Build(Microsoft.DocAsCode.Plugins.FileModel,Microsoft.DocAsCode.Plugins.IHostService)
+  name: Build(FileModel, IHostService)
+  href: api/Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_
+  commentId: M:Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.Build(Microsoft.DocAsCode.Plugins.FileModel,Microsoft.DocAsCode.Plugins.IHostService)
+  fullName: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.Build(Microsoft.DocAsCode.Plugins.FileModel, Microsoft.DocAsCode.Plugins.IHostService)
+  nameWithType: BuildReferenceDocumentBase.Build(FileModel, IHostService)
+- uid: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.Build*
+  name: Build
+  href: api/Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_Build_
+  commentId: Overload:Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.Build
+  fullName: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.Build
+  nameWithType: BuildReferenceDocumentBase.Build
+- uid: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildArticle(Microsoft.DocAsCode.Plugins.IHostService,Microsoft.DocAsCode.Plugins.FileModel)
+  name: BuildArticle(IHostService, FileModel)
+  href: api/Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildArticle_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_Plugins_FileModel_
+  commentId: M:Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildArticle(Microsoft.DocAsCode.Plugins.IHostService,Microsoft.DocAsCode.Plugins.FileModel)
+  fullName: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildArticle(Microsoft.DocAsCode.Plugins.IHostService, Microsoft.DocAsCode.Plugins.FileModel)
+  nameWithType: BuildReferenceDocumentBase.BuildArticle(IHostService, FileModel)
+- uid: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildArticle*
+  name: BuildArticle
+  href: api/Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildArticle_
+  commentId: Overload:Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildArticle
+  fullName: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildArticle
+  nameWithType: BuildReferenceDocumentBase.BuildArticle
+- uid: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildOrder
+  name: BuildOrder
+  href: api/Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildOrder
+  commentId: P:Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildOrder
+  fullName: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildOrder
+  nameWithType: BuildReferenceDocumentBase.BuildOrder
+- uid: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildOrder*
+  name: BuildOrder
+  href: api/Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildOrder_
+  commentId: Overload:Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildOrder
+  fullName: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildOrder
+  nameWithType: BuildReferenceDocumentBase.BuildOrder
+- uid: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildOverwrite(Microsoft.DocAsCode.Plugins.IHostService,Microsoft.DocAsCode.Plugins.FileModel)
+  name: BuildOverwrite(IHostService, FileModel)
+  href: api/Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildOverwrite_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_Plugins_FileModel_
+  commentId: M:Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildOverwrite(Microsoft.DocAsCode.Plugins.IHostService,Microsoft.DocAsCode.Plugins.FileModel)
+  fullName: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildOverwrite(Microsoft.DocAsCode.Plugins.IHostService, Microsoft.DocAsCode.Plugins.FileModel)
+  nameWithType: BuildReferenceDocumentBase.BuildOverwrite(IHostService, FileModel)
+- uid: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildOverwrite*
+  name: BuildOverwrite
+  href: api/Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildOverwrite_
+  commentId: Overload:Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildOverwrite
+  fullName: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildOverwrite
+  nameWithType: BuildReferenceDocumentBase.BuildOverwrite
 - uid: Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor
   name: DisposableDocumentProcessor
   href: api/Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html
@@ -1957,12 +2023,12 @@ references:
   commentId: T:Microsoft.DocAsCode.Build.Common.MarkdownReader
   fullName: Microsoft.DocAsCode.Build.Common.MarkdownReader
   nameWithType: MarkdownReader
-- uid: Microsoft.DocAsCode.Build.Common.MarkdownReader.ReadMarkdownAsConceptual(System.String,System.String)
-  name: ReadMarkdownAsConceptual(String, String)
-  href: api/Microsoft.DocAsCode.Build.Common.MarkdownReader.html#Microsoft_DocAsCode_Build_Common_MarkdownReader_ReadMarkdownAsConceptual_System_String_System_String_
-  commentId: M:Microsoft.DocAsCode.Build.Common.MarkdownReader.ReadMarkdownAsConceptual(System.String,System.String)
-  fullName: Microsoft.DocAsCode.Build.Common.MarkdownReader.ReadMarkdownAsConceptual(System.String, System.String)
-  nameWithType: MarkdownReader.ReadMarkdownAsConceptual(String, String)
+- uid: Microsoft.DocAsCode.Build.Common.MarkdownReader.ReadMarkdownAsConceptual(System.String)
+  name: ReadMarkdownAsConceptual(String)
+  href: api/Microsoft.DocAsCode.Build.Common.MarkdownReader.html#Microsoft_DocAsCode_Build_Common_MarkdownReader_ReadMarkdownAsConceptual_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Common.MarkdownReader.ReadMarkdownAsConceptual(System.String)
+  fullName: Microsoft.DocAsCode.Build.Common.MarkdownReader.ReadMarkdownAsConceptual(System.String)
+  nameWithType: MarkdownReader.ReadMarkdownAsConceptual(String)
 - uid: Microsoft.DocAsCode.Build.Common.MarkdownReader.ReadMarkdownAsConceptual*
   name: ReadMarkdownAsConceptual
   href: api/Microsoft.DocAsCode.Build.Common.MarkdownReader.html#Microsoft_DocAsCode_Build_Common_MarkdownReader_ReadMarkdownAsConceptual_
@@ -2113,6 +2179,81 @@ references:
   fullName.vb: Microsoft.DocAsCode.Build.Common.OverwriteDocumentReader.Transform(Of T)(Microsoft.DocAsCode.Plugins.FileModel, System.String, System.Func(Of T, T))
   nameWithType: OverwriteDocumentReader.Transform<T>(FileModel, String, Func<T, T>)
   nameWithType.vb: Transform(Of T)(FileModel, String, Func(Of T, T))
+- uid: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase
+  name: ReferenceDocumentProcessorBase
+  href: api/Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html
+  commentId: T:Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase
+  fullName: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase
+  nameWithType: ReferenceDocumentProcessorBase
+- uid: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.Load(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})
+  name: Load(FileAndType, ImmutableDictionary<String, Object>)
+  href: api/Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__
+  commentId: M:Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.Load(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})
+  name.vb: Load(FileAndType, ImmutableDictionary(Of String, Object))
+  fullName: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.Load(Microsoft.DocAsCode.Plugins.FileAndType, System.Collections.Immutable.ImmutableDictionary<System.String, System.Object>)
+  fullName.vb: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.Load(Microsoft.DocAsCode.Plugins.FileAndType, System.Collections.Immutable.ImmutableDictionary(Of System.String, System.Object))
+  nameWithType: ReferenceDocumentProcessorBase.Load(FileAndType, ImmutableDictionary<String, Object>)
+  nameWithType.vb: Load(FileAndType, ImmutableDictionary(Of String, Object))
+- uid: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.Load*
+  name: Load
+  href: api/Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_Load_
+  commentId: Overload:Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.Load
+  fullName: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.Load
+  nameWithType: ReferenceDocumentProcessorBase.Load
+- uid: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.LoadArticle(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})
+  name: LoadArticle(FileAndType, ImmutableDictionary<String, Object>)
+  href: api/Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_LoadArticle_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__
+  commentId: M:Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.LoadArticle(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})
+  name.vb: LoadArticle(FileAndType, ImmutableDictionary(Of String, Object))
+  fullName: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.LoadArticle(Microsoft.DocAsCode.Plugins.FileAndType, System.Collections.Immutable.ImmutableDictionary<System.String, System.Object>)
+  fullName.vb: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.LoadArticle(Microsoft.DocAsCode.Plugins.FileAndType, System.Collections.Immutable.ImmutableDictionary(Of System.String, System.Object))
+  nameWithType: ReferenceDocumentProcessorBase.LoadArticle(FileAndType, ImmutableDictionary<String, Object>)
+  nameWithType.vb: LoadArticle(FileAndType, ImmutableDictionary(Of String, Object))
+- uid: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.LoadArticle*
+  name: LoadArticle
+  href: api/Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_LoadArticle_
+  commentId: Overload:Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.LoadArticle
+  fullName: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.LoadArticle
+  nameWithType: ReferenceDocumentProcessorBase.LoadArticle
+- uid: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.LoadOverwrite(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})
+  name: LoadOverwrite(FileAndType, ImmutableDictionary<String, Object>)
+  href: api/Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_LoadOverwrite_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__
+  commentId: M:Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.LoadOverwrite(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})
+  name.vb: LoadOverwrite(FileAndType, ImmutableDictionary(Of String, Object))
+  fullName: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.LoadOverwrite(Microsoft.DocAsCode.Plugins.FileAndType, System.Collections.Immutable.ImmutableDictionary<System.String, System.Object>)
+  fullName.vb: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.LoadOverwrite(Microsoft.DocAsCode.Plugins.FileAndType, System.Collections.Immutable.ImmutableDictionary(Of System.String, System.Object))
+  nameWithType: ReferenceDocumentProcessorBase.LoadOverwrite(FileAndType, ImmutableDictionary<String, Object>)
+  nameWithType.vb: LoadOverwrite(FileAndType, ImmutableDictionary(Of String, Object))
+- uid: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.LoadOverwrite*
+  name: LoadOverwrite
+  href: api/Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_LoadOverwrite_
+  commentId: Overload:Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.LoadOverwrite
+  fullName: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.LoadOverwrite
+  nameWithType: ReferenceDocumentProcessorBase.LoadOverwrite
+- uid: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.ProcessedDocumentType
+  name: ProcessedDocumentType
+  href: api/Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_ProcessedDocumentType
+  commentId: P:Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.ProcessedDocumentType
+  fullName: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.ProcessedDocumentType
+  nameWithType: ReferenceDocumentProcessorBase.ProcessedDocumentType
+- uid: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.ProcessedDocumentType*
+  name: ProcessedDocumentType
+  href: api/Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_ProcessedDocumentType_
+  commentId: Overload:Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.ProcessedDocumentType
+  fullName: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.ProcessedDocumentType
+  nameWithType: ReferenceDocumentProcessorBase.ProcessedDocumentType
+- uid: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.Save(Microsoft.DocAsCode.Plugins.FileModel)
+  name: Save(FileModel)
+  href: api/Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_Save_Microsoft_DocAsCode_Plugins_FileModel_
+  commentId: M:Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.Save(Microsoft.DocAsCode.Plugins.FileModel)
+  fullName: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.Save(Microsoft.DocAsCode.Plugins.FileModel)
+  nameWithType: ReferenceDocumentProcessorBase.Save(FileModel)
+- uid: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.Save*
+  name: Save
+  href: api/Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.html#Microsoft_DocAsCode_Build_Common_ReferenceDocumentProcessorBase_Save_
+  commentId: Overload:Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.Save
+  fullName: Microsoft.DocAsCode.Build.Common.ReferenceDocumentProcessorBase.Save
+  nameWithType: ReferenceDocumentProcessorBase.Save
 - uid: Microsoft.DocAsCode.Build.Common.RemoveDebugInfo
   name: RemoveDebugInfo
   href: api/Microsoft.DocAsCode.Build.Common.RemoveDebugInfo.html
@@ -3148,6 +3289,18 @@ references:
   commentId: T:Microsoft.DocAsCode.Build.Engine.BuildPhaseUtility
   fullName: Microsoft.DocAsCode.Build.Engine.BuildPhaseUtility
   nameWithType: BuildPhaseUtility
+- uid: Microsoft.DocAsCode.Build.Engine.BuildPhaseUtility.GetPhaseMessageInfo(Microsoft.DocAsCode.Build.Engine.Incrementals.BuildMessage,Microsoft.DocAsCode.Plugins.BuildPhase)
+  name: GetPhaseMessageInfo(BuildMessage, BuildPhase)
+  href: api/Microsoft.DocAsCode.Build.Engine.BuildPhaseUtility.html#Microsoft_DocAsCode_Build_Engine_BuildPhaseUtility_GetPhaseMessageInfo_Microsoft_DocAsCode_Build_Engine_Incrementals_BuildMessage_Microsoft_DocAsCode_Plugins_BuildPhase_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.BuildPhaseUtility.GetPhaseMessageInfo(Microsoft.DocAsCode.Build.Engine.Incrementals.BuildMessage,Microsoft.DocAsCode.Plugins.BuildPhase)
+  fullName: Microsoft.DocAsCode.Build.Engine.BuildPhaseUtility.GetPhaseMessageInfo(Microsoft.DocAsCode.Build.Engine.Incrementals.BuildMessage, Microsoft.DocAsCode.Plugins.BuildPhase)
+  nameWithType: BuildPhaseUtility.GetPhaseMessageInfo(BuildMessage, BuildPhase)
+- uid: Microsoft.DocAsCode.Build.Engine.BuildPhaseUtility.GetPhaseMessageInfo*
+  name: GetPhaseMessageInfo
+  href: api/Microsoft.DocAsCode.Build.Engine.BuildPhaseUtility.html#Microsoft_DocAsCode_Build_Engine_BuildPhaseUtility_GetPhaseMessageInfo_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.BuildPhaseUtility.GetPhaseMessageInfo
+  fullName: Microsoft.DocAsCode.Build.Engine.BuildPhaseUtility.GetPhaseMessageInfo
+  nameWithType: BuildPhaseUtility.GetPhaseMessageInfo
 - uid: Microsoft.DocAsCode.Build.Engine.BuildPhaseUtility.RunBuildSteps(System.Collections.Generic.IEnumerable{Microsoft.DocAsCode.Plugins.IDocumentBuildStep},System.Action{Microsoft.DocAsCode.Plugins.IDocumentBuildStep})
   name: RunBuildSteps(IEnumerable<IDocumentBuildStep>, Action<IDocumentBuildStep>)
   href: api/Microsoft.DocAsCode.Build.Engine.BuildPhaseUtility.html#Microsoft_DocAsCode_Build_Engine_BuildPhaseUtility_RunBuildSteps_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_Plugins_IDocumentBuildStep__System_Action_Microsoft_DocAsCode_Plugins_IDocumentBuildStep__
@@ -5397,6 +5550,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.File
   fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.File
   nameWithType: FileAttributeItem.File
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.IsFromSource
+  name: IsFromSource
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_FileAttributeItem_IsFromSource
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.IsFromSource
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.IsFromSource
+  nameWithType: FileAttributeItem.IsFromSource
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.IsFromSource*
+  name: IsFromSource
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_FileAttributeItem_IsFromSource_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.IsFromSource
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.IsFromSource
+  nameWithType: FileAttributeItem.IsFromSource
 - uid: Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.LastModifiedTime
   name: LastModifiedTime
   href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.FileAttributeItem.html#Microsoft_DocAsCode_Build_Engine_Incrementals_FileAttributeItem_LastModifiedTime
@@ -7733,18 +7898,18 @@ references:
   commentId: T:Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument
   fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument
   nameWithType: BuildManagedReferenceDocument
-- uid: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.Build(Microsoft.DocAsCode.Plugins.FileModel,Microsoft.DocAsCode.Plugins.IHostService)
-  name: Build(FileModel, IHostService)
-  href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.html#Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_
-  commentId: M:Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.Build(Microsoft.DocAsCode.Plugins.FileModel,Microsoft.DocAsCode.Plugins.IHostService)
-  fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.Build(Microsoft.DocAsCode.Plugins.FileModel, Microsoft.DocAsCode.Plugins.IHostService)
-  nameWithType: BuildManagedReferenceDocument.Build(FileModel, IHostService)
-- uid: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.Build*
-  name: Build
-  href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.html#Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_Build_
-  commentId: Overload:Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.Build
-  fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.Build
-  nameWithType: BuildManagedReferenceDocument.Build
+- uid: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildArticle(Microsoft.DocAsCode.Plugins.IHostService,Microsoft.DocAsCode.Plugins.FileModel)
+  name: BuildArticle(IHostService, FileModel)
+  href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.html#Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_BuildArticle_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_Plugins_FileModel_
+  commentId: M:Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildArticle(Microsoft.DocAsCode.Plugins.IHostService,Microsoft.DocAsCode.Plugins.FileModel)
+  fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildArticle(Microsoft.DocAsCode.Plugins.IHostService, Microsoft.DocAsCode.Plugins.FileModel)
+  nameWithType: BuildManagedReferenceDocument.BuildArticle(IHostService, FileModel)
+- uid: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildArticle*
+  name: BuildArticle
+  href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.html#Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_BuildArticle_
+  commentId: Overload:Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildArticle
+  fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildArticle
+  nameWithType: BuildManagedReferenceDocument.BuildArticle
 - uid: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildItem(Microsoft.DocAsCode.Plugins.IHostService,Microsoft.DocAsCode.DataContracts.ManagedReference.ItemViewModel,Microsoft.DocAsCode.Plugins.FileModel,System.Func{System.String,System.Boolean})
   name: BuildItem(IHostService, ItemViewModel, FileModel, Func<String, Boolean>)
   href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.html#Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_BuildItem_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_DataContracts_ManagedReference_ItemViewModel_Microsoft_DocAsCode_Plugins_FileModel_System_Func_System_String_System_Boolean__
@@ -7760,18 +7925,6 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildItem
   fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildItem
   nameWithType: BuildManagedReferenceDocument.BuildItem
-- uid: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildOrder
-  name: BuildOrder
-  href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.html#Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_BuildOrder
-  commentId: P:Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildOrder
-  fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildOrder
-  nameWithType: BuildManagedReferenceDocument.BuildOrder
-- uid: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildOrder*
-  name: BuildOrder
-  href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.html#Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_BuildOrder_
-  commentId: Overload:Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildOrder
-  fullName: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.BuildOrder
-  nameWithType: BuildManagedReferenceDocument.BuildOrder
 - uid: Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.Name
   name: Name
   href: api/Microsoft.DocAsCode.Build.ManagedReference.BuildManagedReferenceDocument.html#Microsoft_DocAsCode_Build_ManagedReference_BuildManagedReferenceDocument_Name
@@ -9386,21 +9539,21 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.GetSerializer
   fullName: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.GetSerializer
   nameWithType: ManagedReferenceDocumentProcessor.GetSerializer
-- uid: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Load(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})
-  name: Load(FileAndType, ImmutableDictionary<String, Object>)
-  href: api/Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.html#Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__
-  commentId: M:Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Load(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})
-  name.vb: Load(FileAndType, ImmutableDictionary(Of String, Object))
-  fullName: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Load(Microsoft.DocAsCode.Plugins.FileAndType, System.Collections.Immutable.ImmutableDictionary<System.String, System.Object>)
-  fullName.vb: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Load(Microsoft.DocAsCode.Plugins.FileAndType, System.Collections.Immutable.ImmutableDictionary(Of System.String, System.Object))
-  nameWithType: ManagedReferenceDocumentProcessor.Load(FileAndType, ImmutableDictionary<String, Object>)
-  nameWithType.vb: Load(FileAndType, ImmutableDictionary(Of String, Object))
-- uid: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Load*
-  name: Load
-  href: api/Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.html#Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_Load_
-  commentId: Overload:Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Load
-  fullName: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Load
-  nameWithType: ManagedReferenceDocumentProcessor.Load
+- uid: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.LoadArticle(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})
+  name: LoadArticle(FileAndType, ImmutableDictionary<String, Object>)
+  href: api/Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.html#Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_LoadArticle_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__
+  commentId: M:Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.LoadArticle(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})
+  name.vb: LoadArticle(FileAndType, ImmutableDictionary(Of String, Object))
+  fullName: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.LoadArticle(Microsoft.DocAsCode.Plugins.FileAndType, System.Collections.Immutable.ImmutableDictionary<System.String, System.Object>)
+  fullName.vb: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.LoadArticle(Microsoft.DocAsCode.Plugins.FileAndType, System.Collections.Immutable.ImmutableDictionary(Of System.String, System.Object))
+  nameWithType: ManagedReferenceDocumentProcessor.LoadArticle(FileAndType, ImmutableDictionary<String, Object>)
+  nameWithType.vb: LoadArticle(FileAndType, ImmutableDictionary(Of String, Object))
+- uid: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.LoadArticle*
+  name: LoadArticle
+  href: api/Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.html#Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_LoadArticle_
+  commentId: Overload:Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.LoadArticle
+  fullName: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.LoadArticle
+  nameWithType: ManagedReferenceDocumentProcessor.LoadArticle
 - uid: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.LoadIntermediateModel(System.IO.Stream)
   name: LoadIntermediateModel(Stream)
   href: api/Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.html#Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_LoadIntermediateModel_System_IO_Stream_
@@ -9425,6 +9578,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Name
   fullName: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Name
   nameWithType: ManagedReferenceDocumentProcessor.Name
+- uid: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.ProcessedDocumentType
+  name: ProcessedDocumentType
+  href: api/Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.html#Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_ProcessedDocumentType
+  commentId: P:Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.ProcessedDocumentType
+  fullName: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.ProcessedDocumentType
+  nameWithType: ManagedReferenceDocumentProcessor.ProcessedDocumentType
+- uid: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.ProcessedDocumentType*
+  name: ProcessedDocumentType
+  href: api/Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.html#Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_ProcessedDocumentType_
+  commentId: Overload:Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.ProcessedDocumentType
+  fullName: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.ProcessedDocumentType
+  nameWithType: ManagedReferenceDocumentProcessor.ProcessedDocumentType
 - uid: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.Save(Microsoft.DocAsCode.Plugins.FileModel)
   name: Save(FileModel)
   href: api/Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.html#Microsoft_DocAsCode_Build_ManagedReference_ManagedReferenceDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_
@@ -9839,6 +10004,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.GetChildItemsToOverwrite
   fullName: Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.GetChildItemsToOverwrite
   nameWithType: ApplyOverwriteDocumentForRestApi.GetChildItemsToOverwrite
+- uid: Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.GetMerger
+  name: GetMerger()
+  href: api/Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.html#Microsoft_DocAsCode_Build_RestApi_ApplyOverwriteDocumentForRestApi_GetMerger
+  commentId: M:Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.GetMerger
+  fullName: Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.GetMerger()
+  nameWithType: ApplyOverwriteDocumentForRestApi.GetMerger()
+- uid: Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.GetMerger*
+  name: GetMerger
+  href: api/Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.html#Microsoft_DocAsCode_Build_RestApi_ApplyOverwriteDocumentForRestApi_GetMerger_
+  commentId: Overload:Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.GetMerger
+  fullName: Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.GetMerger
+  nameWithType: ApplyOverwriteDocumentForRestApi.GetMerger
 - uid: Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.GetRootItemsFromOverwriteDocument(Microsoft.DocAsCode.Plugins.FileModel,System.String,Microsoft.DocAsCode.Plugins.IHostService)
   name: GetRootItemsFromOverwriteDocument(FileModel, String, IHostService)
   href: api/Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.html#Microsoft_DocAsCode_Build_RestApi_ApplyOverwriteDocumentForRestApi_GetRootItemsFromOverwriteDocument_Microsoft_DocAsCode_Plugins_FileModel_System_String_Microsoft_DocAsCode_Plugins_IHostService_
@@ -9887,18 +10064,6 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.GetTagsFromOverwriteDocument
   fullName: Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.GetTagsFromOverwriteDocument
   nameWithType: ApplyOverwriteDocumentForRestApi.GetTagsFromOverwriteDocument
-- uid: Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.Merger
-  name: Merger
-  href: api/Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.html#Microsoft_DocAsCode_Build_RestApi_ApplyOverwriteDocumentForRestApi_Merger
-  commentId: P:Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.Merger
-  fullName: Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.Merger
-  nameWithType: ApplyOverwriteDocumentForRestApi.Merger
-- uid: Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.Merger*
-  name: Merger
-  href: api/Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.html#Microsoft_DocAsCode_Build_RestApi_ApplyOverwriteDocumentForRestApi_Merger_
-  commentId: Overload:Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.Merger
-  fullName: Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.Merger
-  nameWithType: ApplyOverwriteDocumentForRestApi.Merger
 - uid: Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.Name
   name: Name
   href: api/Microsoft.DocAsCode.Build.RestApi.ApplyOverwriteDocumentForRestApi.html#Microsoft_DocAsCode_Build_RestApi_ApplyOverwriteDocumentForRestApi_Name
@@ -10052,36 +10217,6 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.Save
   fullName: Microsoft.DocAsCode.Build.RestApi.RestApiDocumentProcessor.Save
   nameWithType: RestApiDocumentProcessor.Save
-- uid: Microsoft.DocAsCode.Build.RestApi.RestApiHelper
-  name: RestApiHelper
-  href: api/Microsoft.DocAsCode.Build.RestApi.RestApiHelper.html
-  commentId: T:Microsoft.DocAsCode.Build.RestApi.RestApiHelper
-  fullName: Microsoft.DocAsCode.Build.RestApi.RestApiHelper
-  nameWithType: RestApiHelper
-- uid: Microsoft.DocAsCode.Build.RestApi.RestApiHelper.FormatDefinitionSinglePath(System.String)
-  name: FormatDefinitionSinglePath(String)
-  href: api/Microsoft.DocAsCode.Build.RestApi.RestApiHelper.html#Microsoft_DocAsCode_Build_RestApi_RestApiHelper_FormatDefinitionSinglePath_System_String_
-  commentId: M:Microsoft.DocAsCode.Build.RestApi.RestApiHelper.FormatDefinitionSinglePath(System.String)
-  fullName: Microsoft.DocAsCode.Build.RestApi.RestApiHelper.FormatDefinitionSinglePath(System.String)
-  nameWithType: RestApiHelper.FormatDefinitionSinglePath(String)
-- uid: Microsoft.DocAsCode.Build.RestApi.RestApiHelper.FormatDefinitionSinglePath*
-  name: FormatDefinitionSinglePath
-  href: api/Microsoft.DocAsCode.Build.RestApi.RestApiHelper.html#Microsoft_DocAsCode_Build_RestApi_RestApiHelper_FormatDefinitionSinglePath_
-  commentId: Overload:Microsoft.DocAsCode.Build.RestApi.RestApiHelper.FormatDefinitionSinglePath
-  fullName: Microsoft.DocAsCode.Build.RestApi.RestApiHelper.FormatDefinitionSinglePath
-  nameWithType: RestApiHelper.FormatDefinitionSinglePath
-- uid: Microsoft.DocAsCode.Build.RestApi.RestApiHelper.FormatReferenceFullPath(System.String)
-  name: FormatReferenceFullPath(String)
-  href: api/Microsoft.DocAsCode.Build.RestApi.RestApiHelper.html#Microsoft_DocAsCode_Build_RestApi_RestApiHelper_FormatReferenceFullPath_System_String_
-  commentId: M:Microsoft.DocAsCode.Build.RestApi.RestApiHelper.FormatReferenceFullPath(System.String)
-  fullName: Microsoft.DocAsCode.Build.RestApi.RestApiHelper.FormatReferenceFullPath(System.String)
-  nameWithType: RestApiHelper.FormatReferenceFullPath(String)
-- uid: Microsoft.DocAsCode.Build.RestApi.RestApiHelper.FormatReferenceFullPath*
-  name: FormatReferenceFullPath
-  href: api/Microsoft.DocAsCode.Build.RestApi.RestApiHelper.html#Microsoft_DocAsCode_Build_RestApi_RestApiHelper_FormatReferenceFullPath_
-  commentId: Overload:Microsoft.DocAsCode.Build.RestApi.RestApiHelper.FormatReferenceFullPath
-  fullName: Microsoft.DocAsCode.Build.RestApi.RestApiHelper.FormatReferenceFullPath
-  nameWithType: RestApiHelper.FormatReferenceFullPath
 - uid: Microsoft.DocAsCode.Build.RestApi.Swagger
   name: Microsoft.DocAsCode.Build.RestApi.Swagger
   href: api/Microsoft.DocAsCode.Build.RestApi.Swagger.html
@@ -10544,6 +10679,66 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.RestApi.Swagger.TagItemObject.Name
   fullName: Microsoft.DocAsCode.Build.RestApi.Swagger.TagItemObject.Name
   nameWithType: TagItemObject.Name
+- uid: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference
+  name: SwaggerFormattedReference
+  href: api/Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.html
+  commentId: T:Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference
+  fullName: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference
+  nameWithType: SwaggerFormattedReference
+- uid: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Name
+  name: Name
+  href: api/Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.html#Microsoft_DocAsCode_Build_RestApi_SwaggerFormattedReference_Name
+  commentId: P:Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Name
+  fullName: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Name
+  nameWithType: SwaggerFormattedReference.Name
+- uid: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Name*
+  name: Name
+  href: api/Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.html#Microsoft_DocAsCode_Build_RestApi_SwaggerFormattedReference_Name_
+  commentId: Overload:Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Name
+  fullName: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Name
+  nameWithType: SwaggerFormattedReference.Name
+- uid: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Path
+  name: Path
+  href: api/Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.html#Microsoft_DocAsCode_Build_RestApi_SwaggerFormattedReference_Path
+  commentId: P:Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Path
+  fullName: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Path
+  nameWithType: SwaggerFormattedReference.Path
+- uid: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Path*
+  name: Path
+  href: api/Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.html#Microsoft_DocAsCode_Build_RestApi_SwaggerFormattedReference_Path_
+  commentId: Overload:Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Path
+  fullName: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Path
+  nameWithType: SwaggerFormattedReference.Path
+- uid: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Type
+  name: Type
+  href: api/Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.html#Microsoft_DocAsCode_Build_RestApi_SwaggerFormattedReference_Type
+  commentId: P:Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Type
+  fullName: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Type
+  nameWithType: SwaggerFormattedReference.Type
+- uid: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Type*
+  name: Type
+  href: api/Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.html#Microsoft_DocAsCode_Build_RestApi_SwaggerFormattedReference_Type_
+  commentId: Overload:Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Type
+  fullName: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReference.Type
+  nameWithType: SwaggerFormattedReference.Type
+- uid: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReferenceType
+  name: SwaggerFormattedReferenceType
+  href: api/Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReferenceType.html
+  commentId: T:Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReferenceType
+  fullName: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReferenceType
+  nameWithType: SwaggerFormattedReferenceType
+- uid: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReferenceType.ExternalReference
+  name: ExternalReference
+  href: api/Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReferenceType.html#Microsoft_DocAsCode_Build_RestApi_SwaggerFormattedReferenceType_ExternalReference
+  commentId: F:Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReferenceType.ExternalReference
+  fullName: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReferenceType.ExternalReference
+  nameWithType: SwaggerFormattedReferenceType.ExternalReference
+- uid: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReferenceType.InternalReference
+  name: InternalReference
+  href: api/Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReferenceType.html#Microsoft_DocAsCode_Build_RestApi_SwaggerFormattedReferenceType_InternalReference
+  commentId: F:Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReferenceType.InternalReference
+  fullName: Microsoft.DocAsCode.Build.RestApi.SwaggerFormattedReferenceType.InternalReference
+  nameWithType: SwaggerFormattedReferenceType.InternalReference
 - uid: Microsoft.DocAsCode.Build.RestApi.SwaggerModelConverter
   name: SwaggerModelConverter
   href: api/Microsoft.DocAsCode.Build.RestApi.SwaggerModelConverter.html
@@ -12465,6 +12660,12 @@ references:
   commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayer.Copy(Microsoft.DocAsCode.Common.RelativePath,Microsoft.DocAsCode.Common.RelativePath)
   fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.Copy(Microsoft.DocAsCode.Common.RelativePath, Microsoft.DocAsCode.Common.RelativePath)
   nameWithType: FileAbstractLayer.Copy(RelativePath, RelativePath)
+- uid: Microsoft.DocAsCode.Common.FileAbstractLayer.Copy(System.String,System.String)
+  name: Copy(String, String)
+  href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_Copy_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayer.Copy(System.String,System.String)
+  fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.Copy(System.String, System.String)
+  nameWithType: FileAbstractLayer.Copy(String, String)
 - uid: Microsoft.DocAsCode.Common.FileAbstractLayer.Copy*
   name: Copy
   href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_Copy_
@@ -12477,6 +12678,12 @@ references:
   commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayer.Create(Microsoft.DocAsCode.Common.RelativePath)
   fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.Create(Microsoft.DocAsCode.Common.RelativePath)
   nameWithType: FileAbstractLayer.Create(RelativePath)
+- uid: Microsoft.DocAsCode.Common.FileAbstractLayer.Create(System.String)
+  name: Create(String)
+  href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_Create_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayer.Create(System.String)
+  fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.Create(System.String)
+  nameWithType: FileAbstractLayer.Create(String)
 - uid: Microsoft.DocAsCode.Common.FileAbstractLayer.Create*
   name: Create
   href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_Create_
@@ -12507,6 +12714,12 @@ references:
   commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayer.Exists(Microsoft.DocAsCode.Common.RelativePath)
   fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.Exists(Microsoft.DocAsCode.Common.RelativePath)
   nameWithType: FileAbstractLayer.Exists(RelativePath)
+- uid: Microsoft.DocAsCode.Common.FileAbstractLayer.Exists(System.String)
+  name: Exists(String)
+  href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_Exists_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayer.Exists(System.String)
+  fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.Exists(System.String)
+  nameWithType: FileAbstractLayer.Exists(String)
 - uid: Microsoft.DocAsCode.Common.FileAbstractLayer.Exists*
   name: Exists
   href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_Exists_
@@ -12537,24 +12750,86 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Common.FileAbstractLayer.GetAllOutputFiles
   fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.GetAllOutputFiles
   nameWithType: FileAbstractLayer.GetAllOutputFiles
+- uid: Microsoft.DocAsCode.Common.FileAbstractLayer.GetPhysicalPath(Microsoft.DocAsCode.Common.RelativePath)
+  name: GetPhysicalPath(RelativePath)
+  href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_GetPhysicalPath_Microsoft_DocAsCode_Common_RelativePath_
+  commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayer.GetPhysicalPath(Microsoft.DocAsCode.Common.RelativePath)
+  fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.GetPhysicalPath(Microsoft.DocAsCode.Common.RelativePath)
+  nameWithType: FileAbstractLayer.GetPhysicalPath(RelativePath)
+- uid: Microsoft.DocAsCode.Common.FileAbstractLayer.GetPhysicalPath(System.String)
+  name: GetPhysicalPath(String)
+  href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_GetPhysicalPath_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayer.GetPhysicalPath(System.String)
+  fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.GetPhysicalPath(System.String)
+  nameWithType: FileAbstractLayer.GetPhysicalPath(String)
+- uid: Microsoft.DocAsCode.Common.FileAbstractLayer.GetPhysicalPath*
+  name: GetPhysicalPath
+  href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_GetPhysicalPath_
+  commentId: Overload:Microsoft.DocAsCode.Common.FileAbstractLayer.GetPhysicalPath
+  fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.GetPhysicalPath
+  nameWithType: FileAbstractLayer.GetPhysicalPath
 - uid: Microsoft.DocAsCode.Common.FileAbstractLayer.GetProperties(Microsoft.DocAsCode.Common.RelativePath)
   name: GetProperties(RelativePath)
   href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_GetProperties_Microsoft_DocAsCode_Common_RelativePath_
   commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayer.GetProperties(Microsoft.DocAsCode.Common.RelativePath)
   fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.GetProperties(Microsoft.DocAsCode.Common.RelativePath)
   nameWithType: FileAbstractLayer.GetProperties(RelativePath)
+- uid: Microsoft.DocAsCode.Common.FileAbstractLayer.GetProperties(System.String)
+  name: GetProperties(String)
+  href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_GetProperties_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayer.GetProperties(System.String)
+  fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.GetProperties(System.String)
+  nameWithType: FileAbstractLayer.GetProperties(String)
 - uid: Microsoft.DocAsCode.Common.FileAbstractLayer.GetProperties*
   name: GetProperties
   href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_GetProperties_
   commentId: Overload:Microsoft.DocAsCode.Common.FileAbstractLayer.GetProperties
   fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.GetProperties
   nameWithType: FileAbstractLayer.GetProperties
+- uid: Microsoft.DocAsCode.Common.FileAbstractLayer.Microsoft#DocAsCode#Plugins#IFileAbstractLayer#GetAllInputFiles
+  name: IFileAbstractLayer.GetAllInputFiles()
+  href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_Microsoft_DocAsCode_Plugins_IFileAbstractLayer_GetAllInputFiles
+  commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayer.Microsoft#DocAsCode#Plugins#IFileAbstractLayer#GetAllInputFiles
+  name.vb: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllInputFiles()
+  fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllInputFiles()
+  nameWithType: FileAbstractLayer.IFileAbstractLayer.GetAllInputFiles()
+  nameWithType.vb: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllInputFiles()
+- uid: Microsoft.DocAsCode.Common.FileAbstractLayer.Microsoft#DocAsCode#Plugins#IFileAbstractLayer#GetAllInputFiles*
+  name: IFileAbstractLayer.GetAllInputFiles
+  href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_Microsoft_DocAsCode_Plugins_IFileAbstractLayer_GetAllInputFiles_
+  commentId: Overload:Microsoft.DocAsCode.Common.FileAbstractLayer.Microsoft#DocAsCode#Plugins#IFileAbstractLayer#GetAllInputFiles
+  name.vb: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllInputFiles
+  fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllInputFiles
+  nameWithType: FileAbstractLayer.IFileAbstractLayer.GetAllInputFiles
+  nameWithType.vb: FileAbstractLayer.Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllInputFiles
+- uid: Microsoft.DocAsCode.Common.FileAbstractLayer.Microsoft#DocAsCode#Plugins#IFileAbstractLayer#GetAllOutputFiles
+  name: IFileAbstractLayer.GetAllOutputFiles()
+  href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_Microsoft_DocAsCode_Plugins_IFileAbstractLayer_GetAllOutputFiles
+  commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayer.Microsoft#DocAsCode#Plugins#IFileAbstractLayer#GetAllOutputFiles
+  name.vb: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllOutputFiles()
+  fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllOutputFiles()
+  nameWithType: FileAbstractLayer.IFileAbstractLayer.GetAllOutputFiles()
+  nameWithType.vb: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllOutputFiles()
+- uid: Microsoft.DocAsCode.Common.FileAbstractLayer.Microsoft#DocAsCode#Plugins#IFileAbstractLayer#GetAllOutputFiles*
+  name: IFileAbstractLayer.GetAllOutputFiles
+  href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_Microsoft_DocAsCode_Plugins_IFileAbstractLayer_GetAllOutputFiles_
+  commentId: Overload:Microsoft.DocAsCode.Common.FileAbstractLayer.Microsoft#DocAsCode#Plugins#IFileAbstractLayer#GetAllOutputFiles
+  name.vb: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllOutputFiles
+  fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllOutputFiles
+  nameWithType: FileAbstractLayer.IFileAbstractLayer.GetAllOutputFiles
+  nameWithType.vb: FileAbstractLayer.Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllOutputFiles
 - uid: Microsoft.DocAsCode.Common.FileAbstractLayer.OpenRead(Microsoft.DocAsCode.Common.RelativePath)
   name: OpenRead(RelativePath)
   href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_OpenRead_Microsoft_DocAsCode_Common_RelativePath_
   commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayer.OpenRead(Microsoft.DocAsCode.Common.RelativePath)
   fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.OpenRead(Microsoft.DocAsCode.Common.RelativePath)
   nameWithType: FileAbstractLayer.OpenRead(RelativePath)
+- uid: Microsoft.DocAsCode.Common.FileAbstractLayer.OpenRead(System.String)
+  name: OpenRead(String)
+  href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_OpenRead_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayer.OpenRead(System.String)
+  fullName: Microsoft.DocAsCode.Common.FileAbstractLayer.OpenRead(System.String)
+  nameWithType: FileAbstractLayer.OpenRead(String)
 - uid: Microsoft.DocAsCode.Common.FileAbstractLayer.OpenRead*
   name: OpenRead
   href: api/Microsoft.DocAsCode.Common.FileAbstractLayer.html#Microsoft_DocAsCode_Common_FileAbstractLayer_OpenRead_
@@ -12603,6 +12878,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Common.FileAbstractLayerBuilder.Create
   fullName: Microsoft.DocAsCode.Common.FileAbstractLayerBuilder.Create
   nameWithType: FileAbstractLayerBuilder.Create
+- uid: Microsoft.DocAsCode.Common.FileAbstractLayerBuilder.CreateBuilder(Microsoft.DocAsCode.Common.FileAbstractLayer)
+  name: CreateBuilder(FileAbstractLayer)
+  href: api/Microsoft.DocAsCode.Common.FileAbstractLayerBuilder.html#Microsoft_DocAsCode_Common_FileAbstractLayerBuilder_CreateBuilder_Microsoft_DocAsCode_Common_FileAbstractLayer_
+  commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayerBuilder.CreateBuilder(Microsoft.DocAsCode.Common.FileAbstractLayer)
+  fullName: Microsoft.DocAsCode.Common.FileAbstractLayerBuilder.CreateBuilder(Microsoft.DocAsCode.Common.FileAbstractLayer)
+  nameWithType: FileAbstractLayerBuilder.CreateBuilder(FileAbstractLayer)
+- uid: Microsoft.DocAsCode.Common.FileAbstractLayerBuilder.CreateBuilder*
+  name: CreateBuilder
+  href: api/Microsoft.DocAsCode.Common.FileAbstractLayerBuilder.html#Microsoft_DocAsCode_Common_FileAbstractLayerBuilder_CreateBuilder_
+  commentId: Overload:Microsoft.DocAsCode.Common.FileAbstractLayerBuilder.CreateBuilder
+  fullName: Microsoft.DocAsCode.Common.FileAbstractLayerBuilder.CreateBuilder
+  nameWithType: FileAbstractLayerBuilder.CreateBuilder
 - uid: Microsoft.DocAsCode.Common.FileAbstractLayerBuilder.Default
   name: Default
   href: api/Microsoft.DocAsCode.Common.FileAbstractLayerBuilder.html#Microsoft_DocAsCode_Common_FileAbstractLayerBuilder_Default
@@ -12711,30 +12998,6 @@ references:
   commentId: T:Microsoft.DocAsCode.Common.FileAbstractLayerExtensions
   fullName: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions
   nameWithType: FileAbstractLayerExtensions
-- uid: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.Copy(Microsoft.DocAsCode.Common.FileAbstractLayer,System.String,System.String)
-  name: Copy(FileAbstractLayer, String, String)
-  href: api/Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Common_FileAbstractLayerExtensions_Copy_Microsoft_DocAsCode_Common_FileAbstractLayer_System_String_System_String_
-  commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.Copy(Microsoft.DocAsCode.Common.FileAbstractLayer,System.String,System.String)
-  fullName: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.Copy(Microsoft.DocAsCode.Common.FileAbstractLayer, System.String, System.String)
-  nameWithType: FileAbstractLayerExtensions.Copy(FileAbstractLayer, String, String)
-- uid: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.Copy*
-  name: Copy
-  href: api/Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Common_FileAbstractLayerExtensions_Copy_
-  commentId: Overload:Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.Copy
-  fullName: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.Copy
-  nameWithType: FileAbstractLayerExtensions.Copy
-- uid: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.Create(Microsoft.DocAsCode.Common.FileAbstractLayer,System.String)
-  name: Create(FileAbstractLayer, String)
-  href: api/Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Common_FileAbstractLayerExtensions_Create_Microsoft_DocAsCode_Common_FileAbstractLayer_System_String_
-  commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.Create(Microsoft.DocAsCode.Common.FileAbstractLayer,System.String)
-  fullName: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.Create(Microsoft.DocAsCode.Common.FileAbstractLayer, System.String)
-  nameWithType: FileAbstractLayerExtensions.Create(FileAbstractLayer, String)
-- uid: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.Create*
-  name: Create
-  href: api/Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Common_FileAbstractLayerExtensions_Create_
-  commentId: Overload:Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.Create
-  fullName: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.Create
-  nameWithType: FileAbstractLayerExtensions.Create
 - uid: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.CreateText(Microsoft.DocAsCode.Common.FileAbstractLayer,Microsoft.DocAsCode.Common.RelativePath)
   name: CreateText(FileAbstractLayer, RelativePath)
   href: api/Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Common_FileAbstractLayerExtensions_CreateText_Microsoft_DocAsCode_Common_FileAbstractLayer_Microsoft_DocAsCode_Common_RelativePath_
@@ -12765,18 +13028,6 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.Exists
   fullName: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.Exists
   nameWithType: FileAbstractLayerExtensions.Exists
-- uid: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.GetProperties(Microsoft.DocAsCode.Common.FileAbstractLayer,System.String)
-  name: GetProperties(FileAbstractLayer, String)
-  href: api/Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Common_FileAbstractLayerExtensions_GetProperties_Microsoft_DocAsCode_Common_FileAbstractLayer_System_String_
-  commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.GetProperties(Microsoft.DocAsCode.Common.FileAbstractLayer,System.String)
-  fullName: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.GetProperties(Microsoft.DocAsCode.Common.FileAbstractLayer, System.String)
-  nameWithType: FileAbstractLayerExtensions.GetProperties(FileAbstractLayer, String)
-- uid: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.GetProperties*
-  name: GetProperties
-  href: api/Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Common_FileAbstractLayerExtensions_GetProperties_
-  commentId: Overload:Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.GetProperties
-  fullName: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.GetProperties
-  nameWithType: FileAbstractLayerExtensions.GetProperties
 - uid: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.GetProperty(Microsoft.DocAsCode.Common.FileAbstractLayer,Microsoft.DocAsCode.Common.RelativePath,System.String)
   name: GetProperty(FileAbstractLayer, RelativePath, String)
   href: api/Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Common_FileAbstractLayerExtensions_GetProperty_Microsoft_DocAsCode_Common_FileAbstractLayer_Microsoft_DocAsCode_Common_RelativePath_System_String_
@@ -12813,18 +13064,6 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.HasProperty
   fullName: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.HasProperty
   nameWithType: FileAbstractLayerExtensions.HasProperty
-- uid: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.OpenRead(Microsoft.DocAsCode.Common.FileAbstractLayer,System.String)
-  name: OpenRead(FileAbstractLayer, String)
-  href: api/Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Common_FileAbstractLayerExtensions_OpenRead_Microsoft_DocAsCode_Common_FileAbstractLayer_System_String_
-  commentId: M:Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.OpenRead(Microsoft.DocAsCode.Common.FileAbstractLayer,System.String)
-  fullName: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.OpenRead(Microsoft.DocAsCode.Common.FileAbstractLayer, System.String)
-  nameWithType: FileAbstractLayerExtensions.OpenRead(FileAbstractLayer, String)
-- uid: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.OpenRead*
-  name: OpenRead
-  href: api/Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Common_FileAbstractLayerExtensions_OpenRead_
-  commentId: Overload:Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.OpenRead
-  fullName: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.OpenRead
-  nameWithType: FileAbstractLayerExtensions.OpenRead
 - uid: Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.OpenReadText(Microsoft.DocAsCode.Common.FileAbstractLayer,Microsoft.DocAsCode.Common.RelativePath)
   name: OpenReadText(FileAbstractLayer, RelativePath)
   href: api/Microsoft.DocAsCode.Common.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Common_FileAbstractLayerExtensions_OpenReadText_Microsoft_DocAsCode_Common_FileAbstractLayer_Microsoft_DocAsCode_Common_RelativePath_
@@ -24855,6 +25094,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.CurrentMarkdown
   fullName: Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.CurrentMarkdown
   nameWithType: IMarkdownParsingContext.CurrentMarkdown
+- uid: Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.File
+  name: File
+  href: api/Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_File
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.File
+  fullName: Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.File
+  nameWithType: IMarkdownParsingContext.File
+- uid: Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.File*
+  name: File
+  href: api/Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_File_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.File
+  fullName: Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.File
+  nameWithType: IMarkdownParsingContext.File
 - uid: Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.IsInParagraph
   name: IsInParagraph
   href: api/Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_IsInParagraph
@@ -24867,6 +25118,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.IsInParagraph
   fullName: Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.IsInParagraph
   nameWithType: IMarkdownParsingContext.IsInParagraph
+- uid: Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.LineNumber
+  name: LineNumber
+  href: api/Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_LineNumber
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.LineNumber
+  fullName: Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.LineNumber
+  nameWithType: IMarkdownParsingContext.LineNumber
+- uid: Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.LineNumber*
+  name: LineNumber
+  href: api/Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_LineNumber_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.LineNumber
+  fullName: Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.LineNumber
+  nameWithType: IMarkdownParsingContext.LineNumber
 - uid: Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer
   name: IMarkdownRenderer
   href: api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html
@@ -34919,6 +35182,18 @@ references:
   commentId: T:Microsoft.DocAsCode.Plugins.BuildPhase
   fullName: Microsoft.DocAsCode.Plugins.BuildPhase
   nameWithType: BuildPhase
+- uid: Microsoft.DocAsCode.Plugins.BuildPhase.Compile
+  name: Compile
+  href: api/Microsoft.DocAsCode.Plugins.BuildPhase.html#Microsoft_DocAsCode_Plugins_BuildPhase_Compile
+  commentId: F:Microsoft.DocAsCode.Plugins.BuildPhase.Compile
+  fullName: Microsoft.DocAsCode.Plugins.BuildPhase.Compile
+  nameWithType: BuildPhase.Compile
+- uid: Microsoft.DocAsCode.Plugins.BuildPhase.Link
+  name: Link
+  href: api/Microsoft.DocAsCode.Plugins.BuildPhase.html#Microsoft_DocAsCode_Plugins_BuildPhase_Link
+  commentId: F:Microsoft.DocAsCode.Plugins.BuildPhase.Link
+  fullName: Microsoft.DocAsCode.Plugins.BuildPhase.Link
+  nameWithType: BuildPhase.Link
 - uid: Microsoft.DocAsCode.Plugins.BuildPhase.PostBuild
   name: PostBuild
   href: api/Microsoft.DocAsCode.Plugins.BuildPhase.html#Microsoft_DocAsCode_Plugins_BuildPhase_PostBuild
@@ -34931,6 +35206,144 @@ references:
   commentId: F:Microsoft.DocAsCode.Plugins.BuildPhase.PreBuildBuild
   fullName: Microsoft.DocAsCode.Plugins.BuildPhase.PreBuildBuild
   nameWithType: BuildPhase.PreBuildBuild
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer
+  name: DefaultFileAbstractLayer
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html
+  commentId: T:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer
+  nameWithType: DefaultFileAbstractLayer
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.CanRead
+  name: CanRead
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_CanRead
+  commentId: P:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.CanRead
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.CanRead
+  nameWithType: DefaultFileAbstractLayer.CanRead
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.CanRead*
+  name: CanRead
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_CanRead_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.CanRead
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.CanRead
+  nameWithType: DefaultFileAbstractLayer.CanRead
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.CanWrite
+  name: CanWrite
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_CanWrite
+  commentId: P:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.CanWrite
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.CanWrite
+  nameWithType: DefaultFileAbstractLayer.CanWrite
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.CanWrite*
+  name: CanWrite
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_CanWrite_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.CanWrite
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.CanWrite
+  nameWithType: DefaultFileAbstractLayer.CanWrite
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Copy(System.String,System.String)
+  name: Copy(String, String)
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_Copy_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Copy(System.String,System.String)
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Copy(System.String, System.String)
+  nameWithType: DefaultFileAbstractLayer.Copy(String, String)
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Copy*
+  name: Copy
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_Copy_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Copy
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Copy
+  nameWithType: DefaultFileAbstractLayer.Copy
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Create(System.String)
+  name: Create(String)
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_Create_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Create(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Create(System.String)
+  nameWithType: DefaultFileAbstractLayer.Create(String)
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Create*
+  name: Create
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_Create_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Create
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Create
+  nameWithType: DefaultFileAbstractLayer.Create
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Exists(System.String)
+  name: Exists(String)
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_Exists_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Exists(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Exists(System.String)
+  nameWithType: DefaultFileAbstractLayer.Exists(String)
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Exists*
+  name: Exists
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_Exists_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Exists
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.Exists
+  nameWithType: DefaultFileAbstractLayer.Exists
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetAllInputFiles
+  name: GetAllInputFiles()
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_GetAllInputFiles
+  commentId: M:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetAllInputFiles
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetAllInputFiles()
+  nameWithType: DefaultFileAbstractLayer.GetAllInputFiles()
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetAllInputFiles*
+  name: GetAllInputFiles
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_GetAllInputFiles_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetAllInputFiles
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetAllInputFiles
+  nameWithType: DefaultFileAbstractLayer.GetAllInputFiles
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetAllOutputFiles
+  name: GetAllOutputFiles()
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_GetAllOutputFiles
+  commentId: M:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetAllOutputFiles
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetAllOutputFiles()
+  nameWithType: DefaultFileAbstractLayer.GetAllOutputFiles()
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetAllOutputFiles*
+  name: GetAllOutputFiles
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_GetAllOutputFiles_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetAllOutputFiles
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetAllOutputFiles
+  nameWithType: DefaultFileAbstractLayer.GetAllOutputFiles
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetOutputPhysicalPath(System.String)
+  name: GetOutputPhysicalPath(String)
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_GetOutputPhysicalPath_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetOutputPhysicalPath(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetOutputPhysicalPath(System.String)
+  nameWithType: DefaultFileAbstractLayer.GetOutputPhysicalPath(String)
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetOutputPhysicalPath*
+  name: GetOutputPhysicalPath
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_GetOutputPhysicalPath_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetOutputPhysicalPath
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetOutputPhysicalPath
+  nameWithType: DefaultFileAbstractLayer.GetOutputPhysicalPath
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetPhysicalPath(System.String)
+  name: GetPhysicalPath(String)
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_GetPhysicalPath_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetPhysicalPath(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetPhysicalPath(System.String)
+  nameWithType: DefaultFileAbstractLayer.GetPhysicalPath(String)
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetPhysicalPath*
+  name: GetPhysicalPath
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_GetPhysicalPath_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetPhysicalPath
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetPhysicalPath
+  nameWithType: DefaultFileAbstractLayer.GetPhysicalPath
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetProperties(System.String)
+  name: GetProperties(String)
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_GetProperties_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetProperties(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetProperties(System.String)
+  nameWithType: DefaultFileAbstractLayer.GetProperties(String)
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetProperties*
+  name: GetProperties
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_GetProperties_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetProperties
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.GetProperties
+  nameWithType: DefaultFileAbstractLayer.GetProperties
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.OpenRead(System.String)
+  name: OpenRead(String)
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_OpenRead_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.OpenRead(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.OpenRead(System.String)
+  nameWithType: DefaultFileAbstractLayer.OpenRead(String)
+- uid: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.OpenRead*
+  name: OpenRead
+  href: api/Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_DefaultFileAbstractLayer_OpenRead_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.OpenRead
+  fullName: Microsoft.DocAsCode.Plugins.DefaultFileAbstractLayer.OpenRead
+  nameWithType: DefaultFileAbstractLayer.OpenRead
 - uid: Microsoft.DocAsCode.Plugins.DependencyType
   name: DependencyType
   href: api/Microsoft.DocAsCode.Plugins.DependencyType.html
@@ -35198,6 +35611,120 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Plugins.EnvironmentContext.BaseDirectory
   fullName: Microsoft.DocAsCode.Plugins.EnvironmentContext.BaseDirectory
   nameWithType: EnvironmentContext.BaseDirectory
+- uid: Microsoft.DocAsCode.Plugins.EnvironmentContext.FileAbstractLayer
+  name: FileAbstractLayer
+  href: api/Microsoft.DocAsCode.Plugins.EnvironmentContext.html#Microsoft_DocAsCode_Plugins_EnvironmentContext_FileAbstractLayer
+  commentId: P:Microsoft.DocAsCode.Plugins.EnvironmentContext.FileAbstractLayer
+  fullName: Microsoft.DocAsCode.Plugins.EnvironmentContext.FileAbstractLayer
+  nameWithType: EnvironmentContext.FileAbstractLayer
+- uid: Microsoft.DocAsCode.Plugins.EnvironmentContext.FileAbstractLayer*
+  name: FileAbstractLayer
+  href: api/Microsoft.DocAsCode.Plugins.EnvironmentContext.html#Microsoft_DocAsCode_Plugins_EnvironmentContext_FileAbstractLayer_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.EnvironmentContext.FileAbstractLayer
+  fullName: Microsoft.DocAsCode.Plugins.EnvironmentContext.FileAbstractLayer
+  nameWithType: EnvironmentContext.FileAbstractLayer
+- uid: Microsoft.DocAsCode.Plugins.EnvironmentContext.OutputDirectory
+  name: OutputDirectory
+  href: api/Microsoft.DocAsCode.Plugins.EnvironmentContext.html#Microsoft_DocAsCode_Plugins_EnvironmentContext_OutputDirectory
+  commentId: P:Microsoft.DocAsCode.Plugins.EnvironmentContext.OutputDirectory
+  fullName: Microsoft.DocAsCode.Plugins.EnvironmentContext.OutputDirectory
+  nameWithType: EnvironmentContext.OutputDirectory
+- uid: Microsoft.DocAsCode.Plugins.EnvironmentContext.OutputDirectory*
+  name: OutputDirectory
+  href: api/Microsoft.DocAsCode.Plugins.EnvironmentContext.html#Microsoft_DocAsCode_Plugins_EnvironmentContext_OutputDirectory_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.EnvironmentContext.OutputDirectory
+  fullName: Microsoft.DocAsCode.Plugins.EnvironmentContext.OutputDirectory
+  nameWithType: EnvironmentContext.OutputDirectory
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions
+  name: FileAbstractLayerExtensions
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html
+  commentId: T:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions
+  nameWithType: FileAbstractLayerExtensions
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.CreateText(Microsoft.DocAsCode.Plugins.IFileAbstractLayer,System.String)
+  name: CreateText(IFileAbstractLayer, String)
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Plugins_FileAbstractLayerExtensions_CreateText_Microsoft_DocAsCode_Plugins_IFileAbstractLayer_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.CreateText(Microsoft.DocAsCode.Plugins.IFileAbstractLayer,System.String)
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.CreateText(Microsoft.DocAsCode.Plugins.IFileAbstractLayer, System.String)
+  nameWithType: FileAbstractLayerExtensions.CreateText(IFileAbstractLayer, String)
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.CreateText*
+  name: CreateText
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Plugins_FileAbstractLayerExtensions_CreateText_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.CreateText
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.CreateText
+  nameWithType: FileAbstractLayerExtensions.CreateText
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.GetProperty(Microsoft.DocAsCode.Plugins.IFileAbstractLayer,System.String,System.String)
+  name: GetProperty(IFileAbstractLayer, String, String)
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Plugins_FileAbstractLayerExtensions_GetProperty_Microsoft_DocAsCode_Plugins_IFileAbstractLayer_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.GetProperty(Microsoft.DocAsCode.Plugins.IFileAbstractLayer,System.String,System.String)
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.GetProperty(Microsoft.DocAsCode.Plugins.IFileAbstractLayer, System.String, System.String)
+  nameWithType: FileAbstractLayerExtensions.GetProperty(IFileAbstractLayer, String, String)
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.GetProperty*
+  name: GetProperty
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Plugins_FileAbstractLayerExtensions_GetProperty_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.GetProperty
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.GetProperty
+  nameWithType: FileAbstractLayerExtensions.GetProperty
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.HasProperty(Microsoft.DocAsCode.Plugins.IFileAbstractLayer,System.String,System.String)
+  name: HasProperty(IFileAbstractLayer, String, String)
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Plugins_FileAbstractLayerExtensions_HasProperty_Microsoft_DocAsCode_Plugins_IFileAbstractLayer_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.HasProperty(Microsoft.DocAsCode.Plugins.IFileAbstractLayer,System.String,System.String)
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.HasProperty(Microsoft.DocAsCode.Plugins.IFileAbstractLayer, System.String, System.String)
+  nameWithType: FileAbstractLayerExtensions.HasProperty(IFileAbstractLayer, String, String)
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.HasProperty*
+  name: HasProperty
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Plugins_FileAbstractLayerExtensions_HasProperty_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.HasProperty
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.HasProperty
+  nameWithType: FileAbstractLayerExtensions.HasProperty
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.OpenReadText(Microsoft.DocAsCode.Plugins.IFileAbstractLayer,System.String)
+  name: OpenReadText(IFileAbstractLayer, String)
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Plugins_FileAbstractLayerExtensions_OpenReadText_Microsoft_DocAsCode_Plugins_IFileAbstractLayer_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.OpenReadText(Microsoft.DocAsCode.Plugins.IFileAbstractLayer,System.String)
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.OpenReadText(Microsoft.DocAsCode.Plugins.IFileAbstractLayer, System.String)
+  nameWithType: FileAbstractLayerExtensions.OpenReadText(IFileAbstractLayer, String)
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.OpenReadText*
+  name: OpenReadText
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Plugins_FileAbstractLayerExtensions_OpenReadText_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.OpenReadText
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.OpenReadText
+  nameWithType: FileAbstractLayerExtensions.OpenReadText
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.ReadAllLines(Microsoft.DocAsCode.Plugins.IFileAbstractLayer,System.String)
+  name: ReadAllLines(IFileAbstractLayer, String)
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Plugins_FileAbstractLayerExtensions_ReadAllLines_Microsoft_DocAsCode_Plugins_IFileAbstractLayer_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.ReadAllLines(Microsoft.DocAsCode.Plugins.IFileAbstractLayer,System.String)
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.ReadAllLines(Microsoft.DocAsCode.Plugins.IFileAbstractLayer, System.String)
+  nameWithType: FileAbstractLayerExtensions.ReadAllLines(IFileAbstractLayer, String)
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.ReadAllLines*
+  name: ReadAllLines
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Plugins_FileAbstractLayerExtensions_ReadAllLines_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.ReadAllLines
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.ReadAllLines
+  nameWithType: FileAbstractLayerExtensions.ReadAllLines
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.ReadAllText(Microsoft.DocAsCode.Plugins.IFileAbstractLayer,System.String)
+  name: ReadAllText(IFileAbstractLayer, String)
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Plugins_FileAbstractLayerExtensions_ReadAllText_Microsoft_DocAsCode_Plugins_IFileAbstractLayer_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.ReadAllText(Microsoft.DocAsCode.Plugins.IFileAbstractLayer,System.String)
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.ReadAllText(Microsoft.DocAsCode.Plugins.IFileAbstractLayer, System.String)
+  nameWithType: FileAbstractLayerExtensions.ReadAllText(IFileAbstractLayer, String)
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.ReadAllText*
+  name: ReadAllText
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Plugins_FileAbstractLayerExtensions_ReadAllText_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.ReadAllText
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.ReadAllText
+  nameWithType: FileAbstractLayerExtensions.ReadAllText
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.WriteAllText(Microsoft.DocAsCode.Plugins.IFileAbstractLayer,System.String,System.String)
+  name: WriteAllText(IFileAbstractLayer, String, String)
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Plugins_FileAbstractLayerExtensions_WriteAllText_Microsoft_DocAsCode_Plugins_IFileAbstractLayer_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.WriteAllText(Microsoft.DocAsCode.Plugins.IFileAbstractLayer,System.String,System.String)
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.WriteAllText(Microsoft.DocAsCode.Plugins.IFileAbstractLayer, System.String, System.String)
+  nameWithType: FileAbstractLayerExtensions.WriteAllText(IFileAbstractLayer, String, String)
+- uid: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.WriteAllText*
+  name: WriteAllText
+  href: api/Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.html#Microsoft_DocAsCode_Plugins_FileAbstractLayerExtensions_WriteAllText_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.WriteAllText
+  fullName: Microsoft.DocAsCode.Plugins.FileAbstractLayerExtensions.WriteAllText
+  nameWithType: FileAbstractLayerExtensions.WriteAllText
 - uid: Microsoft.DocAsCode.Plugins.FileAndType
   name: FileAndType
   href: api/Microsoft.DocAsCode.Plugins.FileAndType.html
@@ -35993,6 +36520,132 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Plugins.IDocumentProcessor.UpdateHref
   fullName: Microsoft.DocAsCode.Plugins.IDocumentProcessor.UpdateHref
   nameWithType: IDocumentProcessor.UpdateHref
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer
+  name: IFileAbstractLayer
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html
+  commentId: T:Microsoft.DocAsCode.Plugins.IFileAbstractLayer
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer
+  nameWithType: IFileAbstractLayer
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.CanRead
+  name: CanRead
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_CanRead
+  commentId: P:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.CanRead
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.CanRead
+  nameWithType: IFileAbstractLayer.CanRead
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.CanRead*
+  name: CanRead
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_CanRead_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.CanRead
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.CanRead
+  nameWithType: IFileAbstractLayer.CanRead
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.CanWrite
+  name: CanWrite
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_CanWrite
+  commentId: P:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.CanWrite
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.CanWrite
+  nameWithType: IFileAbstractLayer.CanWrite
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.CanWrite*
+  name: CanWrite
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_CanWrite_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.CanWrite
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.CanWrite
+  nameWithType: IFileAbstractLayer.CanWrite
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Copy(System.String,System.String)
+  name: Copy(String, String)
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_Copy_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Copy(System.String,System.String)
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Copy(System.String, System.String)
+  nameWithType: IFileAbstractLayer.Copy(String, String)
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Copy*
+  name: Copy
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_Copy_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Copy
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Copy
+  nameWithType: IFileAbstractLayer.Copy
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Create(System.String)
+  name: Create(String)
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_Create_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Create(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Create(System.String)
+  nameWithType: IFileAbstractLayer.Create(String)
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Create*
+  name: Create
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_Create_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Create
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Create
+  nameWithType: IFileAbstractLayer.Create
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Exists(System.String)
+  name: Exists(String)
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_Exists_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Exists(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Exists(System.String)
+  nameWithType: IFileAbstractLayer.Exists(String)
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Exists*
+  name: Exists
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_Exists_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Exists
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.Exists
+  nameWithType: IFileAbstractLayer.Exists
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllInputFiles
+  name: GetAllInputFiles()
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_GetAllInputFiles
+  commentId: M:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllInputFiles
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllInputFiles()
+  nameWithType: IFileAbstractLayer.GetAllInputFiles()
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllInputFiles*
+  name: GetAllInputFiles
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_GetAllInputFiles_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllInputFiles
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllInputFiles
+  nameWithType: IFileAbstractLayer.GetAllInputFiles
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllOutputFiles
+  name: GetAllOutputFiles()
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_GetAllOutputFiles
+  commentId: M:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllOutputFiles
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllOutputFiles()
+  nameWithType: IFileAbstractLayer.GetAllOutputFiles()
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllOutputFiles*
+  name: GetAllOutputFiles
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_GetAllOutputFiles_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllOutputFiles
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetAllOutputFiles
+  nameWithType: IFileAbstractLayer.GetAllOutputFiles
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetPhysicalPath(System.String)
+  name: GetPhysicalPath(String)
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_GetPhysicalPath_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetPhysicalPath(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetPhysicalPath(System.String)
+  nameWithType: IFileAbstractLayer.GetPhysicalPath(String)
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetPhysicalPath*
+  name: GetPhysicalPath
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_GetPhysicalPath_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetPhysicalPath
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetPhysicalPath
+  nameWithType: IFileAbstractLayer.GetPhysicalPath
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetProperties(System.String)
+  name: GetProperties(String)
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_GetProperties_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetProperties(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetProperties(System.String)
+  nameWithType: IFileAbstractLayer.GetProperties(String)
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetProperties*
+  name: GetProperties
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_GetProperties_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetProperties
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.GetProperties
+  nameWithType: IFileAbstractLayer.GetProperties
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.OpenRead(System.String)
+  name: OpenRead(String)
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_OpenRead_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.OpenRead(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.OpenRead(System.String)
+  nameWithType: IFileAbstractLayer.OpenRead(String)
+- uid: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.OpenRead*
+  name: OpenRead
+  href: api/Microsoft.DocAsCode.Plugins.IFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_IFileAbstractLayer_OpenRead_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IFileAbstractLayer.OpenRead
+  fullName: Microsoft.DocAsCode.Plugins.IFileAbstractLayer.OpenRead
+  nameWithType: IFileAbstractLayer.OpenRead
 - uid: Microsoft.DocAsCode.Plugins.IHasIncrementalContext
   name: IHasIncrementalContext
   href: api/Microsoft.DocAsCode.Plugins.IHasIncrementalContext.html
@@ -36278,6 +36931,90 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Plugins.IMarkdownServiceProvider.CreateMarkdownService
   fullName: Microsoft.DocAsCode.Plugins.IMarkdownServiceProvider.CreateMarkdownService
   nameWithType: IMarkdownServiceProvider.CreateMarkdownService
+- uid: Microsoft.DocAsCode.Plugins.IncrementalInfo
+  name: IncrementalInfo
+  href: api/Microsoft.DocAsCode.Plugins.IncrementalInfo.html
+  commentId: T:Microsoft.DocAsCode.Plugins.IncrementalInfo
+  fullName: Microsoft.DocAsCode.Plugins.IncrementalInfo
+  nameWithType: IncrementalInfo
+- uid: Microsoft.DocAsCode.Plugins.IncrementalInfo.Processors
+  name: Processors
+  href: api/Microsoft.DocAsCode.Plugins.IncrementalInfo.html#Microsoft_DocAsCode_Plugins_IncrementalInfo_Processors
+  commentId: P:Microsoft.DocAsCode.Plugins.IncrementalInfo.Processors
+  fullName: Microsoft.DocAsCode.Plugins.IncrementalInfo.Processors
+  nameWithType: IncrementalInfo.Processors
+- uid: Microsoft.DocAsCode.Plugins.IncrementalInfo.Processors*
+  name: Processors
+  href: api/Microsoft.DocAsCode.Plugins.IncrementalInfo.html#Microsoft_DocAsCode_Plugins_IncrementalInfo_Processors_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IncrementalInfo.Processors
+  fullName: Microsoft.DocAsCode.Plugins.IncrementalInfo.Processors
+  nameWithType: IncrementalInfo.Processors
+- uid: Microsoft.DocAsCode.Plugins.IncrementalInfo.ReportProcessorStatus(System.String,System.Boolean,System.String)
+  name: ReportProcessorStatus(String, Boolean, String)
+  href: api/Microsoft.DocAsCode.Plugins.IncrementalInfo.html#Microsoft_DocAsCode_Plugins_IncrementalInfo_ReportProcessorStatus_System_String_System_Boolean_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.IncrementalInfo.ReportProcessorStatus(System.String,System.Boolean,System.String)
+  fullName: Microsoft.DocAsCode.Plugins.IncrementalInfo.ReportProcessorStatus(System.String, System.Boolean, System.String)
+  nameWithType: IncrementalInfo.ReportProcessorStatus(String, Boolean, String)
+- uid: Microsoft.DocAsCode.Plugins.IncrementalInfo.ReportProcessorStatus*
+  name: ReportProcessorStatus
+  href: api/Microsoft.DocAsCode.Plugins.IncrementalInfo.html#Microsoft_DocAsCode_Plugins_IncrementalInfo_ReportProcessorStatus_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IncrementalInfo.ReportProcessorStatus
+  fullName: Microsoft.DocAsCode.Plugins.IncrementalInfo.ReportProcessorStatus
+  nameWithType: IncrementalInfo.ReportProcessorStatus
+- uid: Microsoft.DocAsCode.Plugins.IncrementalInfo.ReportStatus(System.Boolean,System.String)
+  name: ReportStatus(Boolean, String)
+  href: api/Microsoft.DocAsCode.Plugins.IncrementalInfo.html#Microsoft_DocAsCode_Plugins_IncrementalInfo_ReportStatus_System_Boolean_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.IncrementalInfo.ReportStatus(System.Boolean,System.String)
+  fullName: Microsoft.DocAsCode.Plugins.IncrementalInfo.ReportStatus(System.Boolean, System.String)
+  nameWithType: IncrementalInfo.ReportStatus(Boolean, String)
+- uid: Microsoft.DocAsCode.Plugins.IncrementalInfo.ReportStatus*
+  name: ReportStatus
+  href: api/Microsoft.DocAsCode.Plugins.IncrementalInfo.html#Microsoft_DocAsCode_Plugins_IncrementalInfo_ReportStatus_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IncrementalInfo.ReportStatus
+  fullName: Microsoft.DocAsCode.Plugins.IncrementalInfo.ReportStatus
+  nameWithType: IncrementalInfo.ReportStatus
+- uid: Microsoft.DocAsCode.Plugins.IncrementalInfo.Status
+  name: Status
+  href: api/Microsoft.DocAsCode.Plugins.IncrementalInfo.html#Microsoft_DocAsCode_Plugins_IncrementalInfo_Status
+  commentId: P:Microsoft.DocAsCode.Plugins.IncrementalInfo.Status
+  fullName: Microsoft.DocAsCode.Plugins.IncrementalInfo.Status
+  nameWithType: IncrementalInfo.Status
+- uid: Microsoft.DocAsCode.Plugins.IncrementalInfo.Status*
+  name: Status
+  href: api/Microsoft.DocAsCode.Plugins.IncrementalInfo.html#Microsoft_DocAsCode_Plugins_IncrementalInfo_Status_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IncrementalInfo.Status
+  fullName: Microsoft.DocAsCode.Plugins.IncrementalInfo.Status
+  nameWithType: IncrementalInfo.Status
+- uid: Microsoft.DocAsCode.Plugins.IncrementalStatus
+  name: IncrementalStatus
+  href: api/Microsoft.DocAsCode.Plugins.IncrementalStatus.html
+  commentId: T:Microsoft.DocAsCode.Plugins.IncrementalStatus
+  fullName: Microsoft.DocAsCode.Plugins.IncrementalStatus
+  nameWithType: IncrementalStatus
+- uid: Microsoft.DocAsCode.Plugins.IncrementalStatus.CanIncremental
+  name: CanIncremental
+  href: api/Microsoft.DocAsCode.Plugins.IncrementalStatus.html#Microsoft_DocAsCode_Plugins_IncrementalStatus_CanIncremental
+  commentId: P:Microsoft.DocAsCode.Plugins.IncrementalStatus.CanIncremental
+  fullName: Microsoft.DocAsCode.Plugins.IncrementalStatus.CanIncremental
+  nameWithType: IncrementalStatus.CanIncremental
+- uid: Microsoft.DocAsCode.Plugins.IncrementalStatus.CanIncremental*
+  name: CanIncremental
+  href: api/Microsoft.DocAsCode.Plugins.IncrementalStatus.html#Microsoft_DocAsCode_Plugins_IncrementalStatus_CanIncremental_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IncrementalStatus.CanIncremental
+  fullName: Microsoft.DocAsCode.Plugins.IncrementalStatus.CanIncremental
+  nameWithType: IncrementalStatus.CanIncremental
+- uid: Microsoft.DocAsCode.Plugins.IncrementalStatus.Details
+  name: Details
+  href: api/Microsoft.DocAsCode.Plugins.IncrementalStatus.html#Microsoft_DocAsCode_Plugins_IncrementalStatus_Details
+  commentId: P:Microsoft.DocAsCode.Plugins.IncrementalStatus.Details
+  fullName: Microsoft.DocAsCode.Plugins.IncrementalStatus.Details
+  nameWithType: IncrementalStatus.Details
+- uid: Microsoft.DocAsCode.Plugins.IncrementalStatus.Details*
+  name: Details
+  href: api/Microsoft.DocAsCode.Plugins.IncrementalStatus.html#Microsoft_DocAsCode_Plugins_IncrementalStatus_Details_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IncrementalStatus.Details
+  fullName: Microsoft.DocAsCode.Plugins.IncrementalStatus.Details
+  nameWithType: IncrementalStatus.Details
 - uid: Microsoft.DocAsCode.Plugins.IPostProcessor
   name: IPostProcessor
   href: api/Microsoft.DocAsCode.Plugins.IPostProcessor.html
@@ -36575,6 +37312,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Plugins.Manifest.Homepages
   fullName: Microsoft.DocAsCode.Plugins.Manifest.Homepages
   nameWithType: Manifest.Homepages
+- uid: Microsoft.DocAsCode.Plugins.Manifest.IncrementalInfo
+  name: IncrementalInfo
+  href: api/Microsoft.DocAsCode.Plugins.Manifest.html#Microsoft_DocAsCode_Plugins_Manifest_IncrementalInfo
+  commentId: P:Microsoft.DocAsCode.Plugins.Manifest.IncrementalInfo
+  fullName: Microsoft.DocAsCode.Plugins.Manifest.IncrementalInfo
+  nameWithType: Manifest.IncrementalInfo
+- uid: Microsoft.DocAsCode.Plugins.Manifest.IncrementalInfo*
+  name: IncrementalInfo
+  href: api/Microsoft.DocAsCode.Plugins.Manifest.html#Microsoft_DocAsCode_Plugins_Manifest_IncrementalInfo_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.Manifest.IncrementalInfo
+  fullName: Microsoft.DocAsCode.Plugins.Manifest.IncrementalInfo
+  nameWithType: Manifest.IncrementalInfo
 - uid: Microsoft.DocAsCode.Plugins.Manifest.SourceBasePath
   name: SourceBasePath
   href: api/Microsoft.DocAsCode.Plugins.Manifest.html#Microsoft_DocAsCode_Plugins_Manifest_SourceBasePath
@@ -37071,6 +37820,144 @@ references:
   fullName.vb: Microsoft.DocAsCode.Plugins.PropertyChangedEventArgs(Of T).Original
   nameWithType: PropertyChangedEventArgs<T>.Original
   nameWithType.vb: PropertyChangedEventArgs(Of T).Original
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer
+  name: RootedFileAbstractLayer
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html
+  commentId: T:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer
+  nameWithType: RootedFileAbstractLayer
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.#ctor(Microsoft.DocAsCode.Plugins.IFileAbstractLayer)
+  name: RootedFileAbstractLayer(IFileAbstractLayer)
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer__ctor_Microsoft_DocAsCode_Plugins_IFileAbstractLayer_
+  commentId: M:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.#ctor(Microsoft.DocAsCode.Plugins.IFileAbstractLayer)
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.RootedFileAbstractLayer(Microsoft.DocAsCode.Plugins.IFileAbstractLayer)
+  nameWithType: RootedFileAbstractLayer.RootedFileAbstractLayer(IFileAbstractLayer)
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.#ctor*
+  name: RootedFileAbstractLayer
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer__ctor_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.#ctor
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.RootedFileAbstractLayer
+  nameWithType: RootedFileAbstractLayer.RootedFileAbstractLayer
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.CanRead
+  name: CanRead
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_CanRead
+  commentId: P:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.CanRead
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.CanRead
+  nameWithType: RootedFileAbstractLayer.CanRead
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.CanRead*
+  name: CanRead
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_CanRead_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.CanRead
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.CanRead
+  nameWithType: RootedFileAbstractLayer.CanRead
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.CanWrite
+  name: CanWrite
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_CanWrite
+  commentId: P:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.CanWrite
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.CanWrite
+  nameWithType: RootedFileAbstractLayer.CanWrite
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.CanWrite*
+  name: CanWrite
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_CanWrite_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.CanWrite
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.CanWrite
+  nameWithType: RootedFileAbstractLayer.CanWrite
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Copy(System.String,System.String)
+  name: Copy(String, String)
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_Copy_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Copy(System.String,System.String)
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Copy(System.String, System.String)
+  nameWithType: RootedFileAbstractLayer.Copy(String, String)
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Copy*
+  name: Copy
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_Copy_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Copy
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Copy
+  nameWithType: RootedFileAbstractLayer.Copy
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Create(System.String)
+  name: Create(String)
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_Create_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Create(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Create(System.String)
+  nameWithType: RootedFileAbstractLayer.Create(String)
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Create*
+  name: Create
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_Create_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Create
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Create
+  nameWithType: RootedFileAbstractLayer.Create
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Exists(System.String)
+  name: Exists(String)
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_Exists_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Exists(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Exists(System.String)
+  nameWithType: RootedFileAbstractLayer.Exists(String)
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Exists*
+  name: Exists
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_Exists_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Exists
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.Exists
+  nameWithType: RootedFileAbstractLayer.Exists
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetAllInputFiles
+  name: GetAllInputFiles()
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_GetAllInputFiles
+  commentId: M:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetAllInputFiles
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetAllInputFiles()
+  nameWithType: RootedFileAbstractLayer.GetAllInputFiles()
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetAllInputFiles*
+  name: GetAllInputFiles
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_GetAllInputFiles_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetAllInputFiles
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetAllInputFiles
+  nameWithType: RootedFileAbstractLayer.GetAllInputFiles
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetAllOutputFiles
+  name: GetAllOutputFiles()
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_GetAllOutputFiles
+  commentId: M:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetAllOutputFiles
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetAllOutputFiles()
+  nameWithType: RootedFileAbstractLayer.GetAllOutputFiles()
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetAllOutputFiles*
+  name: GetAllOutputFiles
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_GetAllOutputFiles_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetAllOutputFiles
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetAllOutputFiles
+  nameWithType: RootedFileAbstractLayer.GetAllOutputFiles
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetPhysicalPath(System.String)
+  name: GetPhysicalPath(String)
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_GetPhysicalPath_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetPhysicalPath(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetPhysicalPath(System.String)
+  nameWithType: RootedFileAbstractLayer.GetPhysicalPath(String)
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetPhysicalPath*
+  name: GetPhysicalPath
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_GetPhysicalPath_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetPhysicalPath
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetPhysicalPath
+  nameWithType: RootedFileAbstractLayer.GetPhysicalPath
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetProperties(System.String)
+  name: GetProperties(String)
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_GetProperties_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetProperties(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetProperties(System.String)
+  nameWithType: RootedFileAbstractLayer.GetProperties(String)
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetProperties*
+  name: GetProperties
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_GetProperties_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetProperties
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.GetProperties
+  nameWithType: RootedFileAbstractLayer.GetProperties
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.OpenRead(System.String)
+  name: OpenRead(String)
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_OpenRead_System_String_
+  commentId: M:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.OpenRead(System.String)
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.OpenRead(System.String)
+  nameWithType: RootedFileAbstractLayer.OpenRead(String)
+- uid: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.OpenRead*
+  name: OpenRead
+  href: api/Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.html#Microsoft_DocAsCode_Plugins_RootedFileAbstractLayer_OpenRead_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.OpenRead
+  fullName: Microsoft.DocAsCode.Plugins.RootedFileAbstractLayer.OpenRead
+  nameWithType: RootedFileAbstractLayer.OpenRead
 - uid: Microsoft.DocAsCode.Plugins.SaveResult
   name: SaveResult
   href: api/Microsoft.DocAsCode.Plugins.SaveResult.html

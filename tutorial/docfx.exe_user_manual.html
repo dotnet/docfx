@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.9.3.0">
+    <meta name="generator" content="docfx 2.10.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -133,7 +133,10 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
 <pre><code>docfx build [-o:&lt;output_path&gt;] [-t:&lt;template folder&gt;]
 </code></pre><p><code>docfx build</code> generates documentation for current folder.</p>
 <p>If <code>toc.yml</code> or <code>toc.md</code> is found in current folder, it will be rendered as the top level TABLE-OF-CONTENT. As in website, it will be rendered as the top navigation bar.</p>
-<p><strong>NOTE</strong> that <code>homepage</code> is not supported in <code>toc.md</code>. And if <code>href</code> is referencing to a <strong>folder</strong>, it must end with <code>/</code>.</p>
+<blockquote><p>![Note]
+Please note that <code>homepage</code> is not supported in <code>toc.md</code>.
+And if <code>href</code> is referencing to a <strong>folder</strong>, it must end with <code>/</code>.</p>
+</blockquote>
 <p><strong>toc.yml syntax</strong>
 <code>toc.yml</code> is an array of items. Each item can have following properties:</p>
 <table>
@@ -376,9 +379,11 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
     }
   ... 
 }
-</code></pre><blockquote><p>The template path could either be a zip file called <code>&lt;template&gt;.zip</code> or a folder called <code>&lt;template&gt;</code>.</p>
-<p>DocFX has embedded templates: <code>default</code>, <code>iframe.html</code>, <code>statictoc</code> and <code>common</code>. Please avoid using these as template folder name.</p>
-</blockquote>
+</code></pre><div class="NOTE"><h5>Note</h5><p>The template path could either be a zip file called <code>&lt;template&gt;.zip</code> or a folder called <code>&lt;template&gt;</code>.</p>
+</div>
+<div class="WARNING"><h5>Warning</h5><p>DocFX has embedded templates: <code>default</code>, <code>iframe.html</code>, <code>statictoc</code> and <code>common</code>.
+Please avoid using these as template folder name.</p>
+</div>
 <p>To custom theme, one way is to specify theme name with <code>--theme</code> command option, multiple themes must be separated by <code>,</code> with no spaces. The other way is to set key-value mapping in <code>docfx.json</code> as similar to defining template. Also, both <code>.zip</code> file and folder are supported.</p>
 <p>Please refer to <a href="howto_create_custom_template.html">How to Create Custom Templates</a> to create custom templates.</p>
 <p><strong>Sample</strong></p>
