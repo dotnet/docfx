@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.10)
+﻿Version Notes (Current Version: v2.10.1)
 =======================================
+v2.10.1
+-----------
+1.  Relative path add check for character `?*`.
+
 v2.10
 -----------
 1.  Bug fixes:
