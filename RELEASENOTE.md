@@ -1,5 +1,8 @@
-﻿Version Notes (Current Version: v2.10)
+﻿Version Notes (Current Version: v2.11)
 =======================================
+v2.11(Pre-Release)
+-----------
+
 v2.10
 -----------
 1.  Bug fixes:
