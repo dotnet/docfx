@@ -573,12 +573,20 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 foreach (var f in CurrentBuildVersionInfo.Dependency.GetAllDependentNodes())
                 {
-                    var p = RelativePath.TryParse(f);
-                    if (p == null)
+                    string fullPath = null;
+                    try
+                    {
+                        var p = RelativePath.TryParse(f);
+                        if (p == null)
+                        {
+                            continue;
+                        }
+                        fullPath = PathUtility.GetFullPath(EnvironmentContext.BaseDirectory, p.RemoveWorkingFolder());
+                    }
+                    catch (Exception)
                     {
                         continue;
                     }
-                    var fullPath = PathUtility.GetFullPath(EnvironmentContext.BaseDirectory, p.RemoveWorkingFolder());
                     if (!keys.Contains(f) && File.Exists(fullPath))
                     {
                         yield return new FileItem
