@@ -16,13 +16,13 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
             var apiLanguageValuePairTypeConverter = new ApiLanguageValuePairTypeConverter(supportedLanguages);
 
             CreateMap<ReferenceViewModel, ApiReferenceBuildOutput>()
+                .ForMember(dest => dest.Metadata, opt => opt.MapFrom(src => src.Additional))
+                .ForMember(dest => dest.Spec,
+                    opt => opt.ResolveUsing(new ApiReferenceBuildOutputSpecResolver(supportedLanguages)))
                 // Null should be mapped to null
                 .ForMember(dest => dest.Name, opt => opt.Condition(src => (src.Name != null)))
                 .ForMember(dest => dest.NameWithType, opt => opt.Condition(src => (src.NameWithType != null)))
-                .ForMember(dest => dest.FullName, opt => opt.Condition(src => (src.FullName != null)))
-                .ForMember(dest => dest.Spec, opt => opt.Condition(src => (src.Specs!= null)))
-                .ForMember(dest => dest.Spec, opt => opt.Ignore()) // js doesn't use it fow now
-                .ForMember(dest => dest.Metadata, opt => opt.MapFrom(src => src.Additional));
+                .ForMember(dest => dest.FullName, opt => opt.Condition(src => (src.FullName != null)));
             CreateMap<string, List<ApiLanguageValuePair>>()
                 .ConvertUsing(apiLanguageValuePairTypeConverter);
         }
