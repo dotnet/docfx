@@ -1,5 +1,10 @@
-﻿Version Notes (Current Version: v2.10.1)
+﻿Version Notes (Current Version: v2.10.2)
 =======================================
+v2.10.2
+-----------
+1.  Remove the check for character `?` in relative path.
+2.  LinkFileSystem: not throw DirectoryNotFoundException when no output.
+
 v2.10.1
 -----------
 1.  Relative path add check for character `?*`.
