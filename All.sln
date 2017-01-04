@@ -144,8 +144,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MemberLevelManagedReference
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.MemberLevelManagedReference", "plugins\Microsoft.DocAsCode.Build.MemberLevelManagedReference\Microsoft.DocAsCode.Build.MemberLevelManagedReference.xproj", "{2746DA6E-D310-4F07-B41B-929BB3D6E14B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DfmHttpService", "DfmHttpService", "{B739E46B-0445-4088-BA73-80EEA88D474B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DfmHttpService", "DfmHttpService", "{E45253E7-60E1-4643-85D5-6B095A954FF3}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DfmHttpService", "tools\DfmHttpService\DfmHttpService.xproj", "{083B3870-4B3F-4841-AFC2-F3B6FF95F776}"
