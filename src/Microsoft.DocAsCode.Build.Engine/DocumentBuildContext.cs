@@ -240,6 +240,62 @@ namespace Microsoft.DocAsCode.Build.Engine
             FileMap[key] = filePath;
         }
 
+        public string UpdateHref(string href)
+        {
+            if (href == null)
+            {
+                throw new ArgumentNullException(nameof(href));
+            }
+            return UpdateHrefCore(href, null);
+        }
+
+        public string UpdateHref(string href, RelativePath fromFile)
+        {
+            if (href == null)
+            {
+                throw new ArgumentNullException(nameof(href));
+            }
+            if (fromFile != null && !fromFile.IsFromWorkingFolder())
+            {
+                throw new ArgumentException("File must be from working folder (i.e. start with '~/').", nameof(fromFile));
+            }
+            return UpdateHrefCore(href, fromFile);
+        }
+
+        private string UpdateHrefCore(string href, RelativePath fromFile)
+        {
+            if (href.Length == 0)
+            {
+                return string.Empty;
+            }
+            var path = UriUtility.GetPath(href);
+            if (path.Length == 0)
+            {
+                return href;
+            }
+            var qf = UriUtility.GetQueryStringAndFragment(href);
+            var rp = RelativePath.TryParse(path);
+            if (rp == null || !rp.IsFromWorkingFolder())
+            {
+                return href;
+            }
+            string filePath;
+            if (!FileMap.TryGetValue(rp.UrlDecode(), out filePath))
+            {
+                return href;
+            }
+            string modifiedPath;
+            if (fromFile == null)
+            {
+                modifiedPath = ((RelativePath)filePath).UrlEncode();
+            }
+            else
+            {
+                modifiedPath = ((RelativePath)filePath - fromFile).UrlEncode();
+            }
+            return modifiedPath + qf;
+        }
+
         // TODO: use this method instead of directly accessing UidMap
         public void RegisterInternalXrefSpec(XRefSpec xrefSpec)
         {
