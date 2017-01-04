@@ -150,6 +150,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DfmHttpService", "tools\Dfm
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Plugins.Tests", "test\Microsoft.DocAsCode.Plugins.Tests\Microsoft.DocAsCode.Plugins.Tests.xproj", "{B3EEB5FE-CF39-4CC7-9650-5709E71D2BA9}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ManagedReference.Tests", "test\Microsoft.DocAsCode.Build.ManagedReference.Tests\Microsoft.DocAsCode.Build.ManagedReference.Tests.xproj", "{958DF90F-0528-4C50-9AC2-E86C60971B7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -494,6 +496,14 @@ Global
 		{B3EEB5FE-CF39-4CC7-9650-5709E71D2BA9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B3EEB5FE-CF39-4CC7-9650-5709E71D2BA9}.Release|x86.ActiveCfg = Release|Any CPU
 		{B3EEB5FE-CF39-4CC7-9650-5709E71D2BA9}.Release|x86.Build.0 = Release|Any CPU
+		{958DF90F-0528-4C50-9AC2-E86C60971B7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{958DF90F-0528-4C50-9AC2-E86C60971B7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{958DF90F-0528-4C50-9AC2-E86C60971B7D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{958DF90F-0528-4C50-9AC2-E86C60971B7D}.Debug|x86.Build.0 = Debug|Any CPU
+		{958DF90F-0528-4C50-9AC2-E86C60971B7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{958DF90F-0528-4C50-9AC2-E86C60971B7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{958DF90F-0528-4C50-9AC2-E86C60971B7D}.Release|x86.ActiveCfg = Release|Any CPU
+		{958DF90F-0528-4C50-9AC2-E86C60971B7D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -564,5 +574,6 @@ Global
 		{E45253E7-60E1-4643-85D5-6B095A954FF3} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
 		{083B3870-4B3F-4841-AFC2-F3B6FF95F776} = {E45253E7-60E1-4643-85D5-6B095A954FF3}
 		{B3EEB5FE-CF39-4CC7-9650-5709E71D2BA9} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
+		{958DF90F-0528-4C50-9AC2-E86C60971B7D} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 	EndGlobalSection
 EndGlobal

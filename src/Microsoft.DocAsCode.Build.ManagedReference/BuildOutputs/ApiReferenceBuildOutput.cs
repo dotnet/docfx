@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
@@ -11,6 +12,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.YamlSerialization;
@@ -134,7 +136,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("extensionMethods")]
         public List<string> ExtensionMethods { get; set; }
 
-        [ExtensibleMember("modifiers.")]
+        [ExtensibleMember(ModifiersPrefix)]
         [JsonIgnore]
         public SortedList<string, List<string>> Modifiers { get; set; } = new SortedList<string, List<string>>();
 
@@ -156,23 +158,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [YamlIgnore]
-        [JsonExtensionData(ReadData = false, WriteData = true)]
-        public Dictionary<string, object> MetadataJson
+        [JsonExtensionData]
+        public JsonExtensionDictionary MetadataJson
         {
             get
             {
-                var dict = new Dictionary<string, object>();
-                foreach (var item in Modifiers)
-                {
-                    dict["modifiers." + item.Key] = item.Value;
-                }
-                foreach (var item in Metadata)
-                {
-                    dict[item.Key] = item.Value;
-                }
-                return dict;
+                return Create(Modifiers, Metadata);
             }
-            set { }
+            set
+            {
+            }
         }
 
         private bool _needExpand = true;
@@ -302,6 +297,15 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
             // If href exists, return name with href
             return ApiBuildOutputUtility.GetXref(svm.Uid, svm.Name, svm.FullName);
+        }
+
+        private const string ModifiersPrefix = "modifiers.";
+
+        private static JsonExtensionDictionary Create(SortedList<string, List<string>> modifiers, Dictionary<string, object> mta)
+        {
+            var modifiersHandler = JsonExtensionDataHandlersCreator.CreatePrefixHandler(modifiers, ModifiersPrefix);
+            var defaultHandler = JsonExtensionDataHandlersCreator.CreateDefaultHandler(mta);
+            return new JsonExtensionDictionary(modifiersHandler, defaultHandler);
         }
     }
 }

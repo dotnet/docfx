@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0",
+  "testRunner": "xunit",
+  "dependencies": {
+    "xunit": "2.2.0-beta2-build3300",
+    "Microsoft.DocAsCode.Build.Engine": "1.0.0",
+    "Microsoft.DocAsCode.Build.ManagedReference": "1.0.0",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029"
+  },
+  "buildOptions": {
+    "compile": {
+      "includeFiles": "../Shared/TestBase.cs"
+    },
+    "copyToOutput": [
+      "TestData/mref/CatLibrary.Cat-2.yml",
+      "TestData/overwrite/mref.overwrite.default.md",
+      "TestData/overwrite/mref.overwrite.invalid.md",
+      "TestData/overwrite/mref.overwrite.multi.uid.md",
+      "TestData/overwrite/mref.overwrite.not.predefined.md",
+      "TestData/overwrite/mref.overwrite.overload.md",
+      "TestData/overwrite/mref.overwrite.parameters.md",
+      "TestData/overwrite/mref.overwrite.remarks.md",
+      "TestData/overwrite/mref.overwrite.simple.md"
+    ]
+  },
+  "frameworks": {
+    "net452": {}
+  }
+}
