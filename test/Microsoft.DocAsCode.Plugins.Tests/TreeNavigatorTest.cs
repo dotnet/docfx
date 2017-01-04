@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode.Plugins.Tests
             flag = nav.RemoveChild(s => GetName(s) == "leaf2");
             Assert.True(flag);
             Assert.Equal(3, treeItem.Items.Count);
-            Assert.Equal("leaf3", treeItem.Items[3].Metadata["name"]);
+            Assert.Equal("leaf4", treeItem.Items[2].Metadata["name"]);
             Assert.Equal("root", GetName(nav.Current));
         }
 
