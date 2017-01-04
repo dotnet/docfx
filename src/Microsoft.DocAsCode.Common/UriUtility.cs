@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(uriString));
             }
             var index = uriString.IndexOfAny(QueryAndFragmentMarkers);
-            return index == -1 ? uriString : uriString.Substring(index);
+            return index == -1 ? string.Empty : uriString.Substring(index);
         }
     }
 }
