@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Common.Tests
     public class UriUtilityTest
     {
         [InlineData("", "", "", "", "", "")]
-        [InlineData("abc", "abc", "", "", "abc", "abc")]
+        [InlineData("abc", "abc", "", "", "", "abc")]
         [InlineData("abc#def", "abc", "", "#def", "#def", "abc")]
         [InlineData("#def", "", "", "#def", "#def", "")]
         [InlineData("abc?def=ghi", "abc", "?def=ghi", "", "?def=ghi", "abc?def=ghi")]
