@@ -40,12 +40,10 @@ namespace Microsoft.DocAsCode.Build.Common
             _linksWithBookmark[outputFile] =
                 (from node in GetNodesWithAttribute(document, "href")
                  let link = node.GetAttributeValue("href", null)
-                 let bookmarkIndex = link.IndexOf("#")
-                 where bookmarkIndex != -1
-                 let bookmark = link.Substring(bookmarkIndex + 1)
-                 let index = link.IndexOfAny(new[] { '?', '#' })
-                 let decodedLink = HttpUtility.UrlDecode(link.Remove(index))
-                 where !WhiteList.Contains(bookmark) && PathUtility.IsRelativePath(decodedLink)
+                 let bookmark = UriUtility.GetFragment(link).TrimStart('#')
+                 let decodedLink = RelativePath.TryParse(HttpUtility.UrlDecode(UriUtility.GetPath(link)))
+                 where !string.IsNullOrEmpty(bookmark) && !WhiteList.Contains(bookmark)
+                 where decodedLink != null
                  select new LinkItem
                  {
                      Title = node.InnerText,
@@ -105,9 +103,9 @@ namespace Microsoft.DocAsCode.Build.Common
             return html.DocumentNode.SelectNodes(string.Format(XPathTemplate, attribute)) ?? Enumerable.Empty<HtmlNode>();
         }
 
-        private static string TransformPath(string basePathFromRoot, string relativePath)
+        private static string TransformPath(string basePathFromRoot, RelativePath relativePath)
         {
-            return ((RelativePath)basePathFromRoot + (RelativePath)relativePath).RemoveWorkingFolder();
+            return ((RelativePath)basePathFromRoot + relativePath).RemoveWorkingFolder();
         }
 
         private class LinkItem
