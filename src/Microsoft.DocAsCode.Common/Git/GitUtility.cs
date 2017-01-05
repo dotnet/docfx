@@ -135,6 +135,7 @@ namespace Microsoft.DocAsCode.Common.Git
             if (localBranch != null)
             {
                 remoteBranch = localBranch;
+                Logger.LogInfo($"Using branch '{localBranch}' from the environment variable.");
             }
             else
             {
