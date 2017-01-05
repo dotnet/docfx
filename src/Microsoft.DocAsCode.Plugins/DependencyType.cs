@@ -27,9 +27,9 @@ namespace Microsoft.DocAsCode.Plugins
         public BuildPhase? Phase { get; set; }
 
         /// <summary>
-        /// the transitivity of the dependency.
+        /// the transitivity of the dependency. [TO-DO]: remove the nullable ? when old value is overwritten
         /// </summary>
-        public Transitivity Transitivity { get; set; }
+        public DependencyTransitivity? Transitivity { get; set; }
 
         public bool CouldTransit(DependencyType other)
         {
@@ -37,11 +37,11 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 throw new ArgumentNullException(nameof(other));
             }
-            if (Transitivity == Transitivity.All)
+            if (Transitivity == DependencyTransitivity.All)
             {
                 return true;
             }
-            if ((Transitivity == Transitivity.SameType || IsTransitive) && Name == other.Name)
+            if ((Transitivity == DependencyTransitivity.SameType || IsTransitive) && Name == other.Name)
             {
                 return true;
             }

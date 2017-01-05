@@ -23,21 +23,21 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 Name = DependencyTypeName.Include,
                 IsTransitive = true,
                 Phase = BuildPhase.Compile,
-                Transitivity = Transitivity.All,
+                Transitivity = DependencyTransitivity.All,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.Uid,
                 IsTransitive = false,
                 Phase = BuildPhase.Link,
-                Transitivity = Transitivity.None,
+                Transitivity = DependencyTransitivity.None,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.File,
                 IsTransitive = false,
                 Phase = BuildPhase.Link,
-                Transitivity = Transitivity.None,
+                Transitivity = DependencyTransitivity.None,
             });
 
         private readonly HashSet<DependencyItem> _dependencyItems;
@@ -186,7 +186,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                         Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
                         throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
                     }
-                    if (stored.Phase != null && stored.Transitivity == dt.Transitivity)
+                    if (stored.Phase != null && stored.Transitivity != null)
                     {
                         Logger.LogVerbose($"Same dependency type with name {dt.Name} has already been registered, ignored.");
                         return;

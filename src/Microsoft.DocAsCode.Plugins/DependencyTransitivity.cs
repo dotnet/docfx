@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
-    public enum Transitivity
+    public enum DependencyTransitivity
     {
         None,
         SameType,
