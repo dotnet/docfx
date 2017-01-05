@@ -34,6 +34,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 [Constants.PropertyName.Type] = "Conceptual",
                 [Constants.PropertyName.Source] = new SourceDetail { Remote = repoInfo },
                 [Constants.PropertyName.Path] = file,
+                [Constants.PropertyName.Documentation] = new SourceDetail { Remote = repoInfo}
             };
         }
 

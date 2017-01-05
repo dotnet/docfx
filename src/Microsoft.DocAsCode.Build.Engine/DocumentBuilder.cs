@@ -110,6 +110,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             bool transformDocument = false;
             foreach (var parameter in parameters)
             {
+                EnvironmentContext.FileAbstractLayerImpl =
+                    FileAbstractLayerBuilder.Default
+                    .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
+                    .WriteToRealFileSystem(parameter.OutputBaseDir)
+                    .Create();
                 if (parameter.Files.Count == 0)
                 {
                     Logger.LogWarning(string.IsNullOrEmpty(parameter.VersionName)
@@ -127,11 +132,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     Logger.LogInfo($"Start building for version: {parameter.VersionName}");
                 }
-                EnvironmentContext.FileAbstractLayerImpl =
-                    FileAbstractLayerBuilder.Default
-                    .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                    .WriteToRealFileSystem(parameter.OutputBaseDir)
-                    .Create();
                 manifests.Add(BuildCore(parameter, markdownServiceProvider));
             }
             EnvironmentContext.FileAbstractLayerImpl =

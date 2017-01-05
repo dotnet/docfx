@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     {
         private DocumentBuildParameters _parameters;
         private Dictionary<string, Dictionary<string, BuildPhase?>> _modelLoadInfo = new Dictionary<string, Dictionary<string, BuildPhase?>>();
-        private Dictionary<string, ChangeKindWithDependency> _changeDict = new Dictionary<string, ChangeKindWithDependency>();
+        private Dictionary<string, ChangeKindWithDependency> _changeDict = new Dictionary<string, ChangeKindWithDependency>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
         public string BaseDir { get; }
 
@@ -126,7 +126,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             string name = hostService.Processor.Name;
             if (!_modelLoadInfo.TryGetValue(name, out mi))
             {
-                _modelLoadInfo[name] = mi = new Dictionary<string, BuildPhase?>();
+                _modelLoadInfo[name] = mi = new Dictionary<string, BuildPhase?>(FilePathComparer.OSPlatformSensitiveStringComparer);
             }
             mi[file] = phase;
         }
@@ -557,7 +557,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private IEnumerable<FileItem> GetFilesToCalculateAttributes()
         {
-            var keys = new HashSet<string>();
+            var keys = new HashSet<string>(FilePathComparer.OSPlatformSensitiveStringComparer);
             foreach (var f in _parameters.Files.EnumerateFiles())
             {
                 var fileKey = ((RelativePath)f.File).GetPathFromWorkingFolder().ToString();
@@ -573,13 +573,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 foreach (var f in CurrentBuildVersionInfo.Dependency.GetAllDependentNodes())
                 {
-                    var p = RelativePath.TryParse(f);
-                    if (p == null)
+                    if (keys.Contains(f))
                     {
                         continue;
                     }
-                    var fullPath = PathUtility.GetFullPath(EnvironmentContext.BaseDirectory, p.RemoveWorkingFolder());
-                    if (!keys.Contains(f) && File.Exists(fullPath))
+                    string fullPath = TryGetFullPath(f);
+                    if (fullPath != null && File.Exists(fullPath))
                     {
                         yield return new FileItem
                         {
@@ -590,6 +589,25 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     }
                 }
             }
+        }
+
+        private string TryGetFullPath(string path)
+        {
+            string fullPath = null;
+            try
+            {
+                var p = RelativePath.TryParse(path);
+                if (p == null)
+                {
+                    return null;
+                }
+                fullPath = PathUtility.GetFullPath(EnvironmentContext.BaseDirectory, p.RemoveWorkingFolder());
+            }
+            catch (ArgumentException)
+            {
+                // ignore the file if it contains illegal characters
+            }
+            return fullPath;
         }
 
         private bool TryGetFileAttributeFromLast(string pathFromWorkingFolder, out FileAttributeItem item)

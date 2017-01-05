@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using System.Collections.Generic;
     using System.IO;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json;
@@ -65,7 +66,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// deserialized attributes
         /// </summary>
         [JsonIgnore]
-        public IDictionary<string, FileAttributeItem> Attributes { get; set; } = new Dictionary<string, FileAttributeItem>();
+        public IDictionary<string, FileAttributeItem> Attributes { get; set; } = new Dictionary<string, FileAttributeItem>(FilePathComparer.OSPlatformSensitiveStringComparer);
         /// <summary>
         /// deserialized manifestitems
         /// </summary>

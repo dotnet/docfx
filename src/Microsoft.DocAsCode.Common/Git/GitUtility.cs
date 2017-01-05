@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Common.Git
 
         private static readonly string GetRepoRootCommand = "rev-parse --show-toplevel";
         private static readonly string GetLocalBranchCommand = "rev-parse --abbrev-ref HEAD";
+        private static readonly string GetLocalBranchCommitIdCommand = "rev-parse HEAD";
         private static readonly string GetRemoteBranchCommand = "rev-parse --abbrev-ref @{u}";
         // TODO: only get default remote's url currently.
         private static readonly string GetOriginUrlCommand = "config --get remote.origin.url";
@@ -136,7 +137,7 @@ namespace Microsoft.DocAsCode.Common.Git
             }
             else
             {
-                localBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
+                localBranch = GetLocalBranchName(repoRootPath);
                 try
                 {
                     remoteBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetRemoteBranchCommand);
@@ -165,6 +166,19 @@ namespace Microsoft.DocAsCode.Common.Git
                 RepoRootPath = repoRootPath,
                 RemoteBranch = remoteBranch,
             };
+        }
+
+        private static string GetLocalBranchName(string repoRootPath)
+        {
+            var localBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
+
+            // Fallback to use commit id
+            if (localBranch.Equals("HEAD"))
+            {
+                localBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommitIdCommand);
+                Logger.LogInfo("Fallback to use commit id as the branch name.");
+            }
+            return localBranch;
         }
 
         private static void ProcessErrorMessage(string message)

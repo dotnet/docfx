@@ -1,10 +1,27 @@
-﻿Version Notes (Current Version: v2.10)
+﻿Version Notes (Current Version: v2.11)
 =======================================
-v2.10(Pre-Release)
+v2.11(Pre-Release)
+-----------
+
+v2.10
 -----------
 1.  Bug fixes:
     1. Markdown table content is misplaced if there is empty column in it.
     2. Markdown include should not share link context.
+    3. Fix rawTitle when article's first line is HTML comment.
+
+v2.9.3
+-----------
+1.  hotfix for wrong file link check message.
+
+v2.9.2
+-----------
+1.  Remove commit id to avoid config hash changed.
+
+v2.9.1
+-----------
+1.  Enable to show derived classes.
+2.  Add log for config hash.
 
 v2.9
 -----------
