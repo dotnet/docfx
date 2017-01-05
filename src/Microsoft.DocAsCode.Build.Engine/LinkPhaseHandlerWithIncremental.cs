@@ -201,7 +201,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                    Path = output.RelativePath,
                                    SourcePath = m.SourceRelativePath,
                                } into items
-                               group items by items.SourcePath).ToDictionary(g => g.Key, g => g.Select(p => p.Path).ToList());
+                               group items by items.SourcePath).ToDictionary(g => g.Key, g => g.Select(p => p.Path).Distinct().ToList());
 
             foreach (var h in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
             {
