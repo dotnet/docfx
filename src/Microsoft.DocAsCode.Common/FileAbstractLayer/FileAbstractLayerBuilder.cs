@@ -6,6 +6,8 @@ namespace Microsoft.DocAsCode.Common
     using System;
     using System.Collections.Immutable;
 
+    using Microsoft.DocAsCode.Plugins;
+
     public class FileAbstractLayerBuilder
     {
         #region Fields
@@ -49,6 +51,15 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(mappings));
             }
             return new FileAbstractLayerBuilder(new LinkFileReader(mappings), _writer);
+        }
+
+        public FileAbstractLayerBuilder ReadFromManifest(Manifest manifest, string manifestFolder)
+        {
+            if (manifest == null)
+            {
+                throw new ArgumentNullException(nameof(manifest));
+            }
+            return new FileAbstractLayerBuilder(new ManifestFileReader(manifest, manifestFolder), _writer);
         }
 
         public FileAbstractLayerBuilder FallbackReadFromInput(FileAbstractLayer fal)
