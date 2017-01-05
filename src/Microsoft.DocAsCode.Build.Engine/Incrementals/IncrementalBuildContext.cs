@@ -89,10 +89,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 XRefSpecMapFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 FileMapFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 BuildMessageFile = IncrementalUtility.CreateRandomFileName(baseDir),
-                Dependency = ConstructDependencyGraphFromLast(lbv?.Dependency),
             };
             cb.Versions.Add(cbv);
             var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, buildInfoIncrementalStatus, parameters, cbv, lbv);
+            context.InitDependency();
             context.InitFileAttributes();
             context.InitChanges();
             return context;
@@ -613,6 +613,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         private bool TryGetFileAttributeFromLast(string pathFromWorkingFolder, out FileAttributeItem item)
         {
             item = null;
+            if (!CanVersionIncremental)
+            {
+                return false;
+            }
             if (_parameters.Changes == null)
             {
                 return false;
@@ -630,6 +634,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 return false;
             }
             return true;
+        }
+
+        private void InitDependency()
+        {
+            if (CanVersionIncremental)
+            {
+                CurrentBuildVersionInfo.Dependency = ConstructDependencyGraphFromLast(LastBuildVersionInfo.Dependency);
+            }
+            else
+            {
+                CurrentBuildVersionInfo.Dependency = new DependencyGraph();
+            }
         }
 
         private void InitChanges()
