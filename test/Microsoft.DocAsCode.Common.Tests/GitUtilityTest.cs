@@ -17,7 +17,6 @@ namespace Microsoft.DocAsCode.Common.Tests
     [Trait("Owner", "makaretu")]
     public class GitUtilityTest
     {
-
         [Fact]
         public void Environment_ForBranchName()
         {
