@@ -6,12 +6,12 @@
     {{^leaf}}
     <span class="expand-stub"></span>
     {{/leaf}}
-    {{#href}}
+    {{#topicHref}}
     <a href="{{topicHref}}" name="{{tocHref}}" title="{{name}}">{{name}}</a>
-    {{/href}}
-    {{^href}}
+    {{/topicHref}}
+    {{^topicHref}}
     <a>{{{name}}}</a>
-    {{/href}}
+    {{/topicHref}}
     {{^leaf}}
       {{>partials/li}}
     {{/leaf}}
