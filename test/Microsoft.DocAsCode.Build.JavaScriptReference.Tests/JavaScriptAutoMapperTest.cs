@@ -68,6 +68,14 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                         Value = "fullName"
                     }
                 },
+                Spec = new List<ApiLanguageValuePair>
+                {
+                    new ApiLanguageValuePair
+                    {
+                        Language = JavaScriptDevLang,
+                        Value = "<xref href=\"uid\" text=\"name\" alt=\"fullName\"/>"
+                    }
+                },
                 Metadata = { ["metaKey"] = "metaValue" },
             };
 
@@ -518,6 +526,14 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                                                     Language = JavaScriptDevLang,
                                                     Value = "credentials"
                                                 }
+                                            },
+                                            Spec = new List<ApiLanguageValuePair>
+                                            {
+                                                new ApiLanguageValuePair
+                                                {
+                                                    Language = JavaScriptDevLang,
+                                                    Value = "<xref href=\"credentials\" text=\"credentials\" alt=\"credentials\"/>"
+                                                }
                                             }
                                         }
                                     },
@@ -546,6 +562,14 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference.Tests
                                                 {
                                                     Language = JavaScriptDevLang,
                                                     Value = "Array"
+                                                }
+                                            },
+                                            Spec = new List<ApiLanguageValuePair>
+                                            {
+                                                new ApiLanguageValuePair
+                                                {
+                                                    Language = JavaScriptDevLang,
+                                                    Value = "<xref href=\"Array\" text=\"Array\" alt=\"Array\"/>"
                                                 }
                                             }
                                         }
