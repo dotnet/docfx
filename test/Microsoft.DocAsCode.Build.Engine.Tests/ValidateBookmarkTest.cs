@@ -47,6 +47,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     new ManifestItem { SourceRelativePath = "b.md", OutputFiles = new Dictionary<string, OutputFileInfo> { { ".html", new OutputFileInfo { RelativePath = "b.html" } } } },
                     new ManifestItem { SourceRelativePath = "c.md", OutputFiles = new Dictionary<string, OutputFileInfo> { { ".html", new OutputFileInfo { RelativePath = "c.html" } } } },
                     new ManifestItem { SourceRelativePath = "d.md", OutputFiles = new Dictionary<string, OutputFileInfo> { { ".html", new OutputFileInfo { RelativePath = "d.html" } } } },
+                    new ManifestItem { SourceRelativePath = "e.md", OutputFiles = new Dictionary<string, OutputFileInfo> { { ".html", new OutputFileInfo { RelativePath = "e.html" } } } },
                 }
             };
 
@@ -54,6 +55,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             File.WriteAllText(Path.Combine(_outputFolder, "b.html"), @"<a href='a.html#b1' sourceFile='b.md' sourceStartLineNumber='1'>bookmark existed</a><a href='a.html#b2' data-raw-source='[link with source info](a.md#b2)' sourceFile='b.md' sourceStartLineNumber='1'>link with source info</a> <a href='a.html#b3' data-raw-source='[link in token file](a.md#b3)' sourceFile='token.md' sourceStartLineNumber='1'>link in token file</a><a href='a.html#b4'>link without source info</a>");
             File.WriteAllText(Path.Combine(_outputFolder, "c.html"), @"<a href='illegal_path_%3Cillegal character%3E.html#b1'>Test illegal link path</a>");
             File.WriteAllText(Path.Combine(_outputFolder, "d.html"), @"<a href='illegal_path_*illegal character.html#b1'>Test illegal link path with wildchar *</a>");
+            File.WriteAllText(Path.Combine(_outputFolder, "e.html"), @"<a href='illegal_path_%3Fillegal character.html#b1'>Test illegal link path with wildchar ?</a>");
 
             Logger.RegisterListener(_listener);
             using (new LoggerPhaseScope("validate_bookmark"))

@@ -40,12 +40,10 @@ namespace Microsoft.DocAsCode.Build.Common
             _linksWithBookmark[outputFile] =
                 (from node in GetNodesWithAttribute(document, "href")
                  let link = node.GetAttributeValue("href", null)
-                 let bookmarkIndex = link.IndexOf("#")
-                 where bookmarkIndex != -1
-                 let bookmark = link.Substring(bookmarkIndex + 1)
-                 let index = link.IndexOfAny(new[] { '?', '#' })
-                 let decodedLink = RelativePath.TryParse(HttpUtility.UrlDecode(link.Remove(index)))
-                 where !WhiteList.Contains(bookmark) && decodedLink != null
+                 let bookmark = UriUtility.GetFragment(link).TrimStart('#')
+                 let decodedLink = RelativePath.TryParse(HttpUtility.UrlDecode(UriUtility.GetPath(link)))
+                 where !string.IsNullOrEmpty(bookmark) && !WhiteList.Contains(bookmark)
+                 where decodedLink != null
                  select new LinkItem
                  {
                      Title = node.InnerText,
