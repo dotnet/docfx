@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var updatedMetadata = metadata;
             foreach (var postProcessor in _postProcessors)
             {
-                using (new LoggerPhaseScope($"Prepare metadata in post processor {postProcessor.ContractName}", true, LogLevel.Verbose))
+                using (new LoggerPhaseScope($"Prepare metadata in post processor {postProcessor.ContractName}", LogLevel.Verbose))
                 {
                     updatedMetadata = postProcessor.Processor.PrepareMetadata(metadata);
                     if (updatedMetadata == null)

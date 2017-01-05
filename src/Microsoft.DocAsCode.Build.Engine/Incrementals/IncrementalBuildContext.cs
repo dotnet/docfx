@@ -283,7 +283,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public void InitFileAttributes()
         {
-            using (new LoggerPhaseScope("InitFileAttributes", true, LogLevel.Verbose))
+            using (new LoggerPhaseScope("InitFileAttributes", LogLevel.Verbose))
             {
                 var fileAttributes = CurrentBuildVersionInfo.Attributes;
                 foreach (var f in GetFilesToCalculateAttributes())
@@ -459,7 +459,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private static DependencyGraph ConstructDependencyGraphFromLast(DependencyGraph ldg)
         {
-            using (new LoggerPhaseScope("ConstructDgFromLast", true, LogLevel.Verbose))
+            using (new LoggerPhaseScope("ConstructDgFromLast", LogLevel.Verbose))
             {
                 var dg = new DependencyGraph();
                 if (ldg == null)
