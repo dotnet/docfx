@@ -26,6 +26,7 @@ namespace Microsoft.DocAsCode.Common.Git
       
         private static readonly string[] BuildSystemBranchName = new[]
         {
+            "DOCFX_SOURCE_BRANCH_NAME",
             "APPVEYOR_REPO_BRANCH",   // AppVeyor
             "Git_Branch",             // Team City
             "CI_BUILD_REF_NAME",      // GitLab CI
