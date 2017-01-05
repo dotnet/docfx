@@ -23,18 +23,21 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 Name = DependencyTypeName.Include,
                 IsTransitive = true,
                 Phase = BuildPhase.Compile,
+                Transitivity = DependencyTransitivity.All,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.Uid,
                 IsTransitive = false,
                 Phase = BuildPhase.Link,
+                Transitivity = DependencyTransitivity.None,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.File,
                 IsTransitive = false,
                 Phase = BuildPhase.Link,
+                Transitivity = DependencyTransitivity.None,
             });
 
         private readonly HashSet<DependencyItem> _dependencyItems;
@@ -177,20 +180,20 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 DependencyType stored;
                 if (_types.TryGetValue(dt.Name, out stored))
                 {
-                    // to-do: add check for phase when new value overwrites old value
+                    // to-do: add check for phase/transitivity when new value overwrites old value
                     if (stored.IsTransitive != dt.IsTransitive)
                     {
                         Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
                         throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
                     }
-                    if (stored.Phase != null)
+                    if (stored.Phase != null && stored.Transitivity != null)
                     {
                         Logger.LogVerbose($"Same dependency type with name {dt.Name} has already been registered, ignored.");
                         return;
                     }
                 }
                 _types = _types.SetItem(dt.Name, dt);
-                Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, IsTransitive: {dt.IsTransitive}, Phase to work on: {dt.Phase}.");
+                Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, IsTransitive: {dt.IsTransitive}, Phase to work on: {dt.Phase}, Transitivity: {dt.Transitivity}.");
             }
         }
 
@@ -243,7 +246,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 var current = queue.Dequeue();
                 foreach (var item in GetDependencyFromNoLock(current.To))
                 {
-                    if (current.Type == item.Type && _types[item.Type].IsTransitive && result.Add(item))
+                    if (_types[current.Type].CouldTransit(_types[item.Type]) && result.Add(item))
                     {
                         queue.Enqueue(item);
                     }
