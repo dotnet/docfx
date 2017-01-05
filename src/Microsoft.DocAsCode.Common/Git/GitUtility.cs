@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Common.Git
             "CI_BUILD_REF_NAME",      // GitLab CI
             "GIT_LOCAL_BRANCH",       // Jenkins
             "GIT_BRANCH",             // Jenkins
-            "BUILD_SOURCEBRANCH"      // VSO Agent
+            "BUILD_SOURCEBRANCHNAME"  // VSO Agent
         };
 
         private static readonly ConcurrentDictionary<string, GitRepoInfo> Cache = new ConcurrentDictionary<string, GitRepoInfo>();
