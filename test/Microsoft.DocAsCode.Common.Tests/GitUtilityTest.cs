@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Common.Tests
         [Fact]
         public void Environment_ForBranchName()
         {
-            const string envName = "Git_Branch";
+            const string envName = "DOCFX_SOURCE_BRANCH_NAME";
             var original = Environment.GetEnvironmentVariable(envName);
             try
             {

@@ -26,7 +26,6 @@ namespace Microsoft.DocAsCode.Common.Git
       
         private static readonly string[] BuildSystemBranchName = new[]
         {
-            "DOCFX_SOURCE_BRANCH_NAME",
             "APPVEYOR_REPO_BRANCH",   // AppVeyor
             "Git_Branch",             // Team City
             "CI_BUILD_REF_NAME",      // GitLab CI
@@ -124,15 +123,26 @@ namespace Microsoft.DocAsCode.Common.Git
         private static GitRepoInfo GetRepoInfoCore(string directory)
         {
             var repoRootPath = RunGitCommandAndGetFirstLine(directory, GetRepoRootCommand);
-          
-            // Many build systems use a "detach head", which means that the normal git commands
-            // to get branch names do not work.  Thankfully, they set an environment variable.
-            string localBranch = BuildSystemBranchName
-                .Select(Environment.GetEnvironmentVariable)
-                .Where(name => !string.IsNullOrEmpty(name))
-                .FirstOrDefault();
+
+            // The "docfx..". environment variable specifies the branch name to use.
+            var localBranch = Environment.GetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME");
             string remoteBranch;
-            if (localBranch != null)
+
+            // Many build systems use a "detached head", which means that the normal git commands
+            // to get branch names do not work.  Thankfully, they set an environment variable.
+            if (string.IsNullOrEmpty(localBranch))
+            {
+                var isDetached = "HEAD" == RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
+                if (isDetached)
+                {
+                    localBranch = BuildSystemBranchName
+                        .Select(Environment.GetEnvironmentVariable)
+                        .Where(name => !string.IsNullOrEmpty(name))
+                        .FirstOrDefault();
+                }
+            }
+
+            if (!string.IsNullOrEmpty(localBranch))
             {
                 remoteBranch = localBranch;
                 Logger.LogInfo($"Using branch '{localBranch}' from the environment variable.");
