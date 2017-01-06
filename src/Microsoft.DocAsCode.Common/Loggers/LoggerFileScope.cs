@@ -51,6 +51,48 @@ namespace Microsoft.DocAsCode.Common
             return new LoggerFileScope(capturedScope.FileName);
         }
 
+        public void Execute(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception)
+            {
+                Logger.LogError("Error occurred.");
+                throw;
+            }
+        }
+
+        public TResult Execute<TResult>(Func<TResult> func)
+        {
+            try
+            {
+                return func();
+            }
+            catch (Exception)
+            {
+                Logger.LogError("Error occurred.");
+                throw;
+            }
+        }
+
+        public static void Execute(string fileName, Action action)
+        {
+            using (var scope = new LoggerFileScope(fileName))
+            {
+                scope.Execute(action);
+            }
+        }
+
+        public static TResult Execute<TResult>(string fileName, Func<TResult> func)
+        {
+            using (var scope = new LoggerFileScope(fileName))
+            {
+                return scope.Execute(func);
+            }
+        }
+
         private sealed class CapturedLoggerFileScope
         {
             public string FileName { get; } = GetFileName();
