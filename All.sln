@@ -152,11 +152,11 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Plugins
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ManagedReference.Tests", "test\Microsoft.DocAsCode.Build.ManagedReference.Tests\Microsoft.DocAsCode.Build.ManagedReference.Tests.xproj", "{958DF90F-0528-4C50-9AC2-E86C60971B7D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MergeOverride", "MergeOverride", "{1C46FAD9-9D99-4102-8E57-82AF959A4B40}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MergeOverwrite", "MergeOverwrite", "{1C46FAD9-9D99-4102-8E57-82AF959A4B40}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.MergeOverride", "plugins\Microsoft.DocAsCode.Build.MergeOverride\Microsoft.DocAsCode.Build.MergeOverride.xproj", "{8C50AA79-A360-43A3-BCC2-658633B099EC}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.MergeOverwrite", "plugins\Microsoft.DocAsCode.Build.MergeOverwrite\Microsoft.DocAsCode.Build.MergeOverwrite.xproj", "{8C50AA79-A360-43A3-BCC2-658633B099EC}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.MergeOverride.Tests", "test\Microsoft.DocAsCode.Build.MergeOverride.Tests\Microsoft.DocAsCode.Build.MergeOverride.Tests.xproj", "{BC834D62-F7F1-4227-9D5F-3DF45197B335}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.MergeOverwrite.Tests", "test\Microsoft.DocAsCode.Build.MergeOverwrite.Tests\Microsoft.DocAsCode.Build.MergeOverwrite.Tests.xproj", "{BC834D62-F7F1-4227-9D5F-3DF45197B335}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

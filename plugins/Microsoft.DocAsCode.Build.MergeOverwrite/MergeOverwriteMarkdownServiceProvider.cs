@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.MergeOverride
+namespace Microsoft.DocAsCode.Build.MergeOverwrite
 {
     using System.Collections;
     using System.Collections.Generic;
@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Build.MergeOverride
     using Microsoft.DocAsCode.Plugins;
 
     [Export("momd", typeof(IMarkdownServiceProvider))]
-    public class MergeOverrideMarkdownServiceProvider : IMarkdownServiceProvider
+    public class MergeOverwriteMarkdownServiceProvider : IMarkdownServiceProvider
     {
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
         {

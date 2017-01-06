@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.MergeOverride.Tests
+namespace Microsoft.DocAsCode.Build.MergeOverwrite.Tests
 {
     using System.Collections.Generic;
 
-    using Microsoft.DocAsCode.Build.MergeOverride;
+    using Microsoft.DocAsCode.Build.MergeOverwrite;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Common.Git;
     using Microsoft.DocAsCode.DataContracts.Common;
@@ -13,8 +13,8 @@ namespace Microsoft.DocAsCode.Build.MergeOverride.Tests
     using Xunit;
 
     [Trait("Owner", "yufeih")]
-    [Trait("EntityType", "MergeOverrideProcessor")]
-    public class MergeOverrideTest
+    [Trait("EntityType", "MergeOverwriteProcessor")]
+    public class MergeOverwriteTest
     {
     }
 }
