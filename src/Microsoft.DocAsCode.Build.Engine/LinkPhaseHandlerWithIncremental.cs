@@ -214,7 +214,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     foreach (var path in items)
                     {
-                        // for redirection, path might be duplicate
+                        // path might be duplicate. for example, files with same name in different input folders are mapped to same output folder.
                         if (CurrentBuildVersionInfo.BuildOutputs.ContainsKey(path))
                         {
                             continue;
