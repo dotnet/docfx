@@ -214,6 +214,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     foreach (var path in items)
                     {
+                        // path might be duplicate. for example, files with same name in different input folders are mapped to same output folder.
+                        if (CurrentBuildVersionInfo.BuildOutputs.ContainsKey(path))
+                        {
+                            continue;
+                        }
                         string fileName = IncrementalUtility.GetRandomEntry(IncrementalContext.BaseDir);
                         string fullPath = Path.Combine(outputDir, path);
                         IncrementalUtility.RetryIO(() =>
@@ -235,7 +240,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             }
 
                             File.Copy(fullPath, Path.Combine(IncrementalContext.BaseDir, fileName));
-                            CurrentBuildVersionInfo.BuildOutputs.Add(path, fileName);
+                            CurrentBuildVersionInfo.BuildOutputs[path] = fileName;
                         });
                     }
                 }
