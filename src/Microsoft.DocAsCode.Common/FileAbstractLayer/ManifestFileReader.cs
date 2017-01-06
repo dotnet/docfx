@@ -12,28 +12,16 @@ namespace Microsoft.DocAsCode.Common
 
     public class ManifestFileReader : IFileReader
     {
-        private readonly object _syncRoot;
-
         public Manifest Manifest { get; }
 
         public string ManifestFolder { get; }
 
         public ManifestFileReader(Manifest manifest, string manifestFolder)
-            : this(manifest, manifestFolder, new object())
-        {
-        }
-
-        public ManifestFileReader(Manifest manifest, string manifestFolder, object syncRoot)
         {
             if (manifest == null)
             {
                 throw new ArgumentNullException(nameof(manifest));
             }
-            if (syncRoot == null)
-            {
-                throw new ArgumentNullException(nameof(syncRoot));
-            }
-            _syncRoot = syncRoot;
             Manifest = manifest;
             ManifestFolder = manifestFolder;
         }
@@ -43,7 +31,7 @@ namespace Microsoft.DocAsCode.Common
         public PathMapping? FindFile(RelativePath file)
         {
             OutputFileInfo entry;
-            lock (_syncRoot)
+            lock (Manifest)
             {
                 entry = FindEntryInManifest(file.RemoveWorkingFolder());
             }
@@ -56,11 +44,11 @@ namespace Microsoft.DocAsCode.Common
 
         public IEnumerable<RelativePath> EnumerateFiles()
         {
-            lock (_syncRoot)
+            lock (Manifest)
             {
                 return (from f in Manifest.Files
                         from ofi in f.OutputFiles.Values
-                        select ((RelativePath)ofi.RelativePath).GetPathFromWorkingFolder()).ToList();
+                        select ((RelativePath)ofi.RelativePath).GetPathFromWorkingFolder()).Distinct().ToList();
             }
         }
 

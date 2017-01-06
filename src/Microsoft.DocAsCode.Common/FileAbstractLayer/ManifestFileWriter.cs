@@ -12,36 +12,26 @@ namespace Microsoft.DocAsCode.Common
 
     public class ManifestFileWriter : FileWriterBase
     {
-        private readonly object _syncRoot;
-
         public Manifest Manifest { get; }
 
         public string ManifestFolder { get; }
 
         public ManifestFileWriter(Manifest manifest, string manifestFolder, string outputFolder)
-            : this(manifest, manifestFolder, outputFolder, new object()) { }
-
-        public ManifestFileWriter(Manifest manifest, string manifestFolder, string outputFolder, object syncRoot)
             : base(outputFolder)
         {
             if (manifest == null)
             {
                 throw new ArgumentNullException(nameof(manifest));
             }
-            if (syncRoot == null)
-            {
-                throw new ArgumentNullException(nameof(syncRoot));
-            }
             Manifest = manifest;
             ManifestFolder = manifestFolder;
-            _syncRoot = syncRoot;
         }
 
         #region Overrides
 
         public override void Copy(PathMapping sourceFileName, RelativePath destFileName)
         {
-            lock (_syncRoot)
+            lock (Manifest)
             {
                 var entry = FindEntryInManifest(destFileName.RemoveWorkingFolder());
                 if (entry == null)
@@ -55,7 +45,7 @@ namespace Microsoft.DocAsCode.Common
 
         public override Stream Create(RelativePath file)
         {
-            lock (_syncRoot)
+            lock (Manifest)
             {
                 var entry = FindEntryInManifest(file.RemoveWorkingFolder());
                 if (entry == null)
@@ -63,14 +53,14 @@ namespace Microsoft.DocAsCode.Common
                     throw new InvalidOperationException("File entry not found.");
                 }
                 var pair = CreateRandomFileStream();
-                entry.LinkToPath = pair.Item1;
+                entry.LinkToPath = Path.Combine(OutputFolder, pair.Item1);
                 return pair.Item2;
             }
         }
 
         public override IFileReader CreateReader()
         {
-            return new ManifestFileReader(Manifest, ManifestFolder, _syncRoot);
+            return new ManifestFileReader(Manifest, ManifestFolder);
         }
 
         #endregion

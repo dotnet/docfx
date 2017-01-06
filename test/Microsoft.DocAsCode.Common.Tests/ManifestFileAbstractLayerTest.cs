@@ -50,5 +50,68 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.Equal("👍", fal.ReadAllText("temp.txt"));
             Assert.Equal(new[] { (RelativePath)"~/temp.txt" }, fal.GetAllInputFiles());
         }
+
+        [Fact]
+        public void TestFileAbstractLayerFromManifestShouldWriteFileCorrectly()
+        {
+            var manifestFolder = GetRandomFolder();
+            var output = GetRandomFolder();
+            var manifest = new Manifest
+            {
+                Files = new List<ManifestItem>
+                {
+                    new ManifestItem
+                    {
+                        SourceRelativePath = "temp.md",
+                        OutputFiles = new Dictionary<string, OutputFileInfo>
+                        {
+                            [".txt"] = new OutputFileInfo
+                            {
+                                RelativePath = "temp.txt"
+                            }
+                        }
+                    }
+                }
+            };
+            File.WriteAllText(Path.Combine(manifestFolder, "temp.txt"), "👍");
+
+            var fal = FileAbstractLayerBuilder.Default
+                .ReadFromManifest(manifest, manifestFolder)
+                .WriteToManifest(manifest, manifestFolder, output)
+                .Create();
+
+            manifest.AddFile("temp.md", ".html", "temp.html");
+            fal.WriteAllText("temp.html", "😎");
+
+            Assert.True(fal.Exists("~/temp.txt"));
+            Assert.True(fal.Exists("temp.txt"));
+            Assert.True(fal.Exists("~/temp.html"));
+            Assert.True(fal.Exists("temp.html"));
+            Assert.False(fal.Exists("~/temp.jpg"));
+            Assert.False(fal.Exists("temp.jpg"));
+
+            Assert.Equal("👍", fal.ReadAllText("temp.txt"));
+            Assert.Equal("😎", fal.ReadAllText("temp.html"));
+            Assert.Equal(
+                new[] { "~/temp.html", "~/temp.txt", },
+                from f in fal.GetAllInputFiles()
+                select (string)f into f
+                orderby f
+                select f);
+
+            {
+                var pp = fal.GetPhysicalPath("temp.txt");
+                Assert.Null(manifest.Files.First(mi => mi.SourceRelativePath == "temp.md").OutputFiles[".txt"].LinkToPath);
+                Assert.True(File.Exists(pp));
+                Assert.Equal("👍", File.ReadAllText(pp));
+            }
+
+            {
+                var pp = fal.GetPhysicalPath("temp.html");
+                Assert.Equal(pp, manifest.Files.First(mi => mi.SourceRelativePath == "temp.md").OutputFiles[".html"].LinkToPath);
+                Assert.True(File.Exists(pp));
+                Assert.Equal("😎", File.ReadAllText(pp));
+            }
+        }
     }
 }
