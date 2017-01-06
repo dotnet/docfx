@@ -16,10 +16,14 @@ namespace Microsoft.DocAsCode.Common
 
         public override void Copy(PathMapping sourceFileName, RelativePath destFileName)
         {
-            var f = Path.Combine(ExpandedOutputFolder, destFileName.RemoveWorkingFolder());
-            Directory.CreateDirectory(Path.GetDirectoryName(f));
-            File.Copy(Environment.ExpandEnvironmentVariables(sourceFileName.PhysicalPath), f, true);
-            File.SetAttributes(f, FileAttributes.Normal);
+            var dest = Path.Combine(ExpandedOutputFolder, destFileName.RemoveWorkingFolder());
+            Directory.CreateDirectory(Path.GetDirectoryName(dest));
+            var source = Environment.ExpandEnvironmentVariables(sourceFileName.PhysicalPath);
+            if (!FilePathComparer.OSPlatformSensitiveStringComparer.Equals(source, dest))
+            {
+                File.Copy(source, dest, true);
+            }
+            File.SetAttributes(dest, FileAttributes.Normal);
         }
 
         public override Stream Create(RelativePath file)
