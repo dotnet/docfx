@@ -201,7 +201,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                    Path = output.RelativePath,
                                    SourcePath = m.SourceRelativePath,
                                } into items
-                               group items by items.SourcePath).ToDictionary(g => g.Key, g => g.Select(p => p.Path).Distinct().ToList());
+                               group items by items.SourcePath).ToDictionary(g => g.Key, g => g.Select(p => p.Path).ToList());
 
             foreach (var h in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
             {
@@ -214,6 +214,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     foreach (var path in items)
                     {
+                        // for redirection, path might be duplicate
+                        if (CurrentBuildVersionInfo.BuildOutputs.ContainsKey(path))
+                        {
+                            continue;
+                        }
                         string fileName = IncrementalUtility.GetRandomEntry(IncrementalContext.BaseDir);
                         string fullPath = Path.Combine(outputDir, path);
                         IncrementalUtility.RetryIO(() =>
@@ -235,7 +240,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             }
 
                             File.Copy(fullPath, Path.Combine(IncrementalContext.BaseDir, fileName));
-                            CurrentBuildVersionInfo.BuildOutputs.Add(path, fileName);
+                            CurrentBuildVersionInfo.BuildOutputs[path] = fileName;
                         });
                     }
                 }
