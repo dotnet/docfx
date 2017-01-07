@@ -113,11 +113,17 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         protected static async Task<XRefMap> DownloadFromWebAsync(Uri uri)
         {
+            var baseUrl = uri.GetLeftPart(UriPartial.Path);
+            baseUrl = baseUrl.Substring(0, baseUrl.LastIndexOf('/') + 1);
+
             using (var wc = new WebClient())
             using (var stream = await wc.OpenReadTaskAsync(uri))
             using (var sr = new StreamReader(stream))
             {
-                return YamlUtility.Deserialize<XRefMap>(sr);
+                var map = YamlUtility.Deserialize<XRefMap>(sr);
+                map.BaseUrl = baseUrl;
+                UpdateHref(map, null);
+                return map;
             }
         }
 
