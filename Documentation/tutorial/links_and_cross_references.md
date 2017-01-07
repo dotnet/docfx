@@ -261,12 +261,12 @@ It's a YAML object that contains following properties:
 
 You can import a cross reference map file in your DocFX then all UIDs defined that file can be cross referenced.
 
-To use a cross reference map, add a `xrefMaps` config to `build` section of `docfx.json`:
+To use a cross reference map, add a `xref` config to `build` section of `docfx.json`:
 
 ```json
 {
   "build": {
-    "xrefMaps": [
+    "xref": [
       "<path_to_xrefmap>"
     ],
     ...
@@ -274,7 +274,7 @@ To use a cross reference map, add a `xrefMaps` config to `build` section of `doc
 }
 ```
 
-The value of `xrefMaps` could be a string or a list of strings that contain the path/url to cross reference maps.
+The value of `xref` could be a string or a list of strings that contain the path/url to cross reference maps.
 
 > [!Note]
 > DocFX supports reading cross reference map from a local file or a web location. It's recommended to deploy `xrefmap.yml` to
