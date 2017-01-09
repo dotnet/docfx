@@ -43,7 +43,11 @@ namespace Microsoft.DocAsCode.Tests.Common
             {
                 throw new ArgumentNullException(nameof(lines));
             }
-            return CreateFile(fileName, string.Join(string.Empty, lines), baseFolder);
+            var dir = Path.GetDirectoryName(fileName);
+            dir = CreateDirectory(dir, baseFolder);
+            var file = Path.Combine(baseFolder, fileName);
+            File.WriteAllLines(file, lines);
+            return file;
         }
 
         protected static string CreateFile(string fileName, string content, string baseFolder)
