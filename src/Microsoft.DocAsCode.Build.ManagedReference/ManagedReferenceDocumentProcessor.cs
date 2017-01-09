@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
@@ -219,46 +220,43 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         }
 
         private static IEnumerable<XRefSpec> GetXRefInfo(ItemViewModel item, string key,
-            List<DataContracts.Common.ReferenceViewModel> references)
+            List<ReferenceViewModel> references)
         {
             var result = new XRefSpec
             {
                 Uid = item.Uid,
                 Name = item.Name,
-                Href = key,
+                Href = ((RelativePath)key).UrlEncode().ToString(),
                 CommentId = item.CommentId,
             };
-            if (!string.IsNullOrEmpty(item.NameForCSharp))
+            if (item.Names.Count > 0)
             {
-                result["name.csharp"] = item.NameForCSharp;
-            }
-            if (!string.IsNullOrEmpty(item.NameForVB))
-            {
-                result["name.vb"] = item.NameForVB;
+                foreach (var pair in item.Names)
+                {
+                    result["name." + pair.Key] = pair.Value;
+                }
             }
             if (!string.IsNullOrEmpty(item.FullName))
             {
                 result["fullName"] = item.FullName;
             }
-            if (!string.IsNullOrEmpty(item.FullNameForCSharp))
+            if (item.FullNames.Count > 0)
             {
-                result["fullName.csharp"] = item.FullNameForCSharp;
-            }
-            if (!string.IsNullOrEmpty(item.FullNameForVB))
-            {
-                result["fullName.vb"] = item.FullNameForVB;
+                foreach (var pair in item.FullNames)
+                {
+                    result["fullName." + pair.Key] = pair.Value;
+                }
             }
             if (!string.IsNullOrEmpty(item.NameWithType))
             {
                 result["nameWithType"] = item.NameWithType;
             }
-            if (!string.IsNullOrEmpty(item.NameWithTypeForCSharp))
+            if (item.NamesWithType.Count > 0)
             {
-                result["nameWithType.csharp"] = item.NameWithTypeForCSharp;
-            }
-            if (!string.IsNullOrEmpty(item.NameWithTypeForVB))
-            {
-                result["nameWithType.vb"] = item.NameWithTypeForVB;
+                foreach (var pair in item.NamesWithType)
+                {
+                    result["nameWithType." + pair.Key] = pair.Value;
+                }
             }
             yield return result;
             // generate overload xref spec.
@@ -272,47 +270,43 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
         }
 
-        private static XRefSpec GetXRefInfo(DataContracts.Common.ReferenceViewModel item, string key)
+        private static XRefSpec GetXRefInfo(ReferenceViewModel item, string key)
         {
             var result = new XRefSpec
             {
                 Uid = item.Uid,
                 Name = item.Name,
-                Href = key,
+                Href = ((RelativePath)key).UrlEncode().ToString(),
                 CommentId = item.CommentId,
             };
-            string name;
-            if (item.NameInDevLangs.TryGetValue("csharp", out name))
+            if (item.NameInDevLangs.Count > 0)
             {
-                result["name.csharp"] = name;
-            }
-            if (item.NameInDevLangs.TryGetValue("vb", out name))
-            {
-                result["name.vb"] = name;
+                foreach (var pair in item.NameInDevLangs)
+                {
+                    result["name." + pair.Key] = pair.Value;
+                }
             }
             if (!string.IsNullOrEmpty(item.FullName))
             {
                 result["fullName"] = item.FullName;
             }
-            if (item.FullNameInDevLangs.TryGetValue("csharp", out name))
+            if (item.FullNameInDevLangs.Count > 0)
             {
-                result["fullName.csharp"] = name;
-            }
-            if (item.FullNameInDevLangs.TryGetValue("vb", out name))
-            {
-                result["fullName.vb"] = name;
+                foreach (var pair in item.FullNameInDevLangs)
+                {
+                    result["fullName." + pair.Key] = pair.Value;
+                }
             }
             if (!string.IsNullOrEmpty(item.NameWithType))
             {
                 result["nameWithType"] = item.NameWithType;
             }
-            if (item.NameWithTypeInDevLangs.TryGetValue("csharp", out name))
+            if (item.NameWithTypeInDevLangs.Count > 0)
             {
-                result["nameWithType.csharp"] = name;
-            }
-            if (item.NameWithTypeInDevLangs.TryGetValue("vb", out name))
-            {
-                result["nameWithType.vb"] = name;
+                foreach (var pair in item.NameWithTypeInDevLangs)
+                {
+                    result["nameWithType." + pair.Key] = pair.Value;
+                }
             }
             return result;
         }
