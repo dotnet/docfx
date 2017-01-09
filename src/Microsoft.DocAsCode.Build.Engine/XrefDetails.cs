@@ -46,22 +46,28 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (node.Name != "xref") throw new NotSupportedException("Only xref node is supported!");
             var xref = new XRefDetails();
-
-            var rawUid = GetRawUid(node);
+            var uid = node.GetAttributeValue("uid", null);
+            var rawHref = node.GetAttributeValue("href", null);
             NameValueCollection queryString = null;
-            if (!string.IsNullOrEmpty(rawUid))
+
+            if (!string.IsNullOrEmpty(rawHref))
             {
+                if (!string.IsNullOrEmpty(uid))
+                {
+                    Logger.LogWarning($"Both href and uid attribute are defined for {node.OuterHtml}, use href instead of uid.");
+                }
+
                 string others;
-                var anchorIndex = rawUid.IndexOf("#");
+                var anchorIndex = rawHref.IndexOf("#");
                 if (anchorIndex == -1)
                 {
                     xref.Anchor = string.Empty;
-                    others = rawUid;
+                    others = rawHref;
                 }
                 else
                 {
-                    xref.Anchor = rawUid.Substring(anchorIndex);
-                    others = rawUid.Remove(anchorIndex);
+                    xref.Anchor = rawHref.Substring(anchorIndex);
+                    others = rawHref.Remove(anchorIndex);
                 }
                 var queryIndex = others.IndexOf("?");
                 if (queryIndex == -1)
@@ -73,6 +79,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                     xref.Uid = HttpUtility.UrlDecode(others.Remove(queryIndex));
                     queryString = HttpUtility.ParseQueryString(others.Substring(queryIndex));
                 }
+            }
+            else
+            {
+                xref.Uid = node.GetAttributeValue("uid", null);
             }
 
             xref.InnerHtml = node.InnerHtml;
@@ -237,16 +247,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
             return null;
-        }
-
-        private static string GetRawUid(HtmlAgilityPack.HtmlNode node)
-        {
-            string href = node.GetAttributeValue("href", null);
-            if (!string.IsNullOrEmpty(href))
-            {
-                return href;
-            }
-            return node.GetAttributeValue("uid", null);
         }
 
         public static HtmlAgilityPack.HtmlNode ConvertXrefLinkNodeToXrefNode(HtmlAgilityPack.HtmlNode node)
