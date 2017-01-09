@@ -32,6 +32,12 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
+        public LoggerPhaseScope(string phaseName, LogLevel perfLogLevel)
+            :this(phaseName, false)
+        {
+            _performanceScope = new PerformanceScope("Scope:" + phaseName, perfLogLevel);
+        }
+
         private LoggerPhaseScope(CapturedLoggerPhaseScope captured, bool enablePerformanceScope)
         {
             _originPhaseName = GetPhaseName();
