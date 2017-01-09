@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Common.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
@@ -30,6 +31,14 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.False(fal.Exists("temp.jpg"));
             Assert.Equal("👍", fal.ReadAllText("temp.txt"));
             Assert.Equal(new[] { (RelativePath)"~/temp.txt" }, fal.GetAllInputFiles());
+            Assert.Equal(
+                new[]
+                {
+                    new KeyValuePair<RelativePath, string>(
+                        (RelativePath)"~/temp.txt",
+                        Path.Combine(input, "temp.txt")),
+                },
+                fal.GetAllPhysicalPaths());
         }
 
         [Fact]

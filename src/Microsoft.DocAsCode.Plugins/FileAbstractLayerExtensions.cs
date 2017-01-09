@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Plugins
 {
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     public static class FileAbstractLayerExtensions
     {
@@ -57,5 +58,9 @@ namespace Microsoft.DocAsCode.Plugins
             dict.TryGetValue(propertyName, out result);
             return result;
         }
+
+        public static IEnumerable<KeyValuePair<string, string>> GetAllPhysicalPaths(this IFileAbstractLayer fal) =>
+            from r in fal.GetAllInputFiles()
+            select new KeyValuePair<string, string>(r, fal.GetPhysicalPath(r));
     }
 }

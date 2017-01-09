@@ -22,8 +22,6 @@ namespace Microsoft.DocAsCode.Plugins
 
         public IEnumerable<string> GetAllInputFiles() => _impl.GetAllInputFiles();
 
-        public IEnumerable<string> GetAllOutputFiles() => _impl.GetAllOutputFiles();
-
         public bool Exists(string file) =>
             Path.IsPathRooted(file) ? File.Exists(file) : _impl.Exists(file);
 
