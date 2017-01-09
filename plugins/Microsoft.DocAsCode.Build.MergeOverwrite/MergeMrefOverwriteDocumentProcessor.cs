@@ -25,7 +25,13 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite
 
         public string Name => nameof(MergeMrefOverwriteDocumentProcessor);
 
-        public ProcessingPriority GetProcessingPriority(FileAndType file) => _mrefProcessor.GetProcessingPriority(file);
+        public ProcessingPriority GetProcessingPriority(FileAndType file)
+        {
+            var priority = _mrefProcessor.GetProcessingPriority(file);
+            if (priority == ProcessingPriority.NotSupported) return ProcessingPriority.NotSupported;
+            
+            return (priority + 1); // Ensure the build engine favor us over ManagedReferenceDocumentProcessor
+        }
 
         public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host) => models;
 

@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite.Tests
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Engine;
+    using Microsoft.DocAsCode.Build.ManagedReference;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
@@ -43,6 +44,7 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite.Tests
 
             var assemblies = new[]
             {
+                typeof(ManagedReferenceDocumentProcessor).Assembly,
                 typeof(MergeMrefOverwriteDocumentProcessor).Assembly,
             };
 
