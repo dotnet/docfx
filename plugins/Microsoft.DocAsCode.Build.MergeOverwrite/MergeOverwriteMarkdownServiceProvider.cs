@@ -74,31 +74,39 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite
                 }
                 return result;
             }
+        }
 
-            private sealed class YamlHeaderMarkdownRenderer : DfmMarkdownRenderer
+        public class YamlHeaderMarkdownRenderer
+        {
+            private readonly MarkdownRendererAdapter _dfmMarkdownRenderer = new MarkdownRendererAdapter(null, new DfmMarkdownRenderer(), null, null);
+
+            public StringBuffer Render(IMarkdownRenderer render, IMarkdownToken token, IMarkdownContext context)
             {
-                public override StringBuffer Render(IMarkdownRenderer render, DfmYamlHeaderBlockToken token, MarkdownBlockContext context)
+                var yamlHeader = token as DfmYamlHeaderBlockToken;
+                if (yamlHeader != null) return RenderYamlHeader(render, yamlHeader, context);
+
+                return StringHelper.HtmlEncode(_dfmMarkdownRenderer.Render(token));
+            }
+
+            private StringBuffer RenderYamlHeader(IMarkdownRenderer render, DfmYamlHeaderBlockToken token, IMarkdownContext context)
+            {
+                if (string.IsNullOrEmpty(token.Content))
                 {
-                    if (string.IsNullOrEmpty(token.Content))
-                    {
-                        return StringBuffer.Empty;
-                    }
-                    var startLine = token.SourceInfo.LineNumber;
-                    var endLine = startLine + token.Content.Count(ch => ch == '\n') + 2;
-                    var sourceFile = token.SourceInfo.File;
-
-                    StringBuffer result = $"<yamlheader start=\"{startLine}\" end=\"{endLine}\"";
-                    if (!string.IsNullOrEmpty(sourceFile))
-                    {
-                        sourceFile = StringHelper.HtmlEncode(sourceFile);
-                        result += $" sourceFile=\"{sourceFile}\"";
-                    }
-                    result += ">";
-                    result += StringHelper.HtmlEncode(token.Content);
-                    return result + "</yamlheader>";
+                    return StringBuffer.Empty;
                 }
+                var startLine = token.SourceInfo.LineNumber;
+                var endLine = startLine + token.Content.Count(ch => ch == '\n') + 2;
+                var sourceFile = token.SourceInfo.File;
 
-                // TODO : override other method, and html encode it.
+                StringBuffer result = $"<yamlheader start=\"{startLine}\" end=\"{endLine}\"";
+                if (!string.IsNullOrEmpty(sourceFile))
+                {
+                    sourceFile = StringHelper.HtmlEncode(sourceFile);
+                    result += $" sourceFile=\"{sourceFile}\"";
+                }
+                result += ">";
+                result += StringHelper.HtmlEncode(token.Content);
+                return result + "</yamlheader>";
             }
         }
     }
