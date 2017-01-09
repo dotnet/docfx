@@ -32,6 +32,7 @@
     },
     "copyToOutput": [
       "PostProcessors/Data/manifest_basic.json",
+      "PostProcessors/Data/manifest_incremental.json",
       "TestData/System.Console.csyml",
       "TestData/System.ConsoleColor.csyml",
       "tmpl/tmpl1/sub/file1",

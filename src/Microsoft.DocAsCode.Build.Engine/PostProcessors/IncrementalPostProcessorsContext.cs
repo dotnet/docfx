@@ -62,8 +62,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(postProcessors));
             }
 
+            _postProcessors = postProcessors;
+
             ShouldTraceIncrementalInfo = GetShouldTraceIncrementalInfo();
-            CanIncrementalPostProcess = GetCanIncrementalPostProcess();
             if (ShouldTraceIncrementalInfo)
             {
                 currentBuildInfo.PostProcessInfo = GeneratePostProcessInfo();
@@ -73,7 +74,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             CurrentBaseDir = Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName);
             LastBaseDir = lastBuildInfo == null ? null : Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName);
             EnableIncremental = enableIncremental;
-            _postProcessors = postProcessors;
+            CanIncrementalPostProcess = GetCanIncrementalPostProcess();
         }
 
         #endregion
