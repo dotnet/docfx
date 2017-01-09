@@ -1616,42 +1616,6 @@ tagRules : [
             yield return typeof(TocDocumentProcessor).Assembly;
         }
 
-        #region Utility Method
-
-        private static string CreateFile(string fileName, string[] lines, string baseFolder)
-        {
-            var dir = Path.GetDirectoryName(fileName);
-            dir = CreateDirectory(dir, baseFolder);
-            var file = Path.Combine(baseFolder, fileName);
-            File.WriteAllLines(file, lines);
-            return file;
-        }
-
-        private static string CreateFile(string fileName, string content, string baseFolder)
-        {
-            var dir = Path.GetDirectoryName(fileName);
-            dir = CreateDirectory(dir, baseFolder);
-            var file = Path.Combine(baseFolder, fileName);
-            File.WriteAllText(file, content);
-            return file;
-        }
-
-        private static string UpdateFile(string fileName, string[] lines, string baseFolder)
-        {
-            File.Delete(Path.Combine(baseFolder, fileName));
-            return CreateFile(fileName, lines, baseFolder);
-        }
-
-        private static string CreateDirectory(string dir, string baseFolder)
-        {
-            if (string.IsNullOrEmpty(dir)) return string.Empty;
-            var subDirectory = Path.Combine(baseFolder, dir);
-            Directory.CreateDirectory(subDirectory);
-            return subDirectory;
-        }
-
-        #endregion
-
         #region Listener
 
         private class LogListener : ILoggerListener
