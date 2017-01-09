@@ -56,6 +56,7 @@ namespace Microsoft.DocAsCode.Common.Git
                 throw new GitException("Can't find git command in current environment");
             }
 
+            filePath = PathUtility.NormalizePath(filePath);
             var detail = GetFileDetailCore(filePath);
             return detail;
         }
