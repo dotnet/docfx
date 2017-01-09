@@ -82,7 +82,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             else
             {
-                xref.Uid = node.GetAttributeValue("uid", null);
+                xref.Uid = uid;
             }
 
             xref.InnerHtml = node.InnerHtml;
