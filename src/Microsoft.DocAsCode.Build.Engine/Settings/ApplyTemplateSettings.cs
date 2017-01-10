@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using System.IO;
+    using Microsoft.DocAsCode.Plugins;
 
     public class ApplyTemplateSettings
     {
@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public bool TransformDocument { get; set; } = true;
         public ExportSettings RawModelExportSettings { get; set; } = new ExportSettings(DefaultRawModelExportSettings);
         public ExportSettings ViewModelExportSettings { get; set; } = new ExportSettings(DefaultViewModelExportSettings);
+        public ICustomHrefGenerator HrefGenerator { get; set; }
 
         public ApplyTemplateSettings(string inputFolder, string outputFolder)
         {
