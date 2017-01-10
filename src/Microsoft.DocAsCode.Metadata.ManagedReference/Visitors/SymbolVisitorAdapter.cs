@@ -133,7 +133,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             item.Type = MemberType.Assembly;
             _references = new Dictionary<string, ReferenceItem>();
 
-            var typeMembers = symbol.GlobalNamespace.GetTypeMembers();
+            var typeMembers = symbol.GlobalNamespace.GetTypeMembers().Where(member => member.DeclaredAccessibility == Accessibility.Public);
             if (typeMembers.Any())
             {
                 Logger.LogWarning($"DocFX currently only supports generating metadata with namespace defined. The following types in assembly \"{symbol.MetadataName}\" will have no metadata generated: {string.Join(", ", typeMembers.Select(m => m.MetadataName))}. ");
@@ -533,13 +533,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (item.Type == MemberType.Default)
             {
                 // If Default, then it is Property get/set or Event add/remove/raise, ignore
-                return null;
-            }
-
-            var syntaxRef = symbol.DeclaringSyntaxReferences.FirstOrDefault();
-            Debug.Assert(syntaxRef != null || item.Type == MemberType.Constructor);
-            if (syntaxRef == null)
-            {
                 return null;
             }
 

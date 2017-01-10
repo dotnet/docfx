@@ -29,7 +29,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static readonly string[] SupportedSourceFileExtensions = { ".cs", ".vb" };
         private static readonly string[] SupportedVBSourceFileExtensions = { ".vb" };
         private static readonly string[] SupportedCSSourceFileExtensions = { ".cs" };
-        private static List<string> SupportedExtensions = new List<string>();
+        private static readonly string[] SupportedAssemblyExtensions = { ".dll", ".exe" };
+        private static readonly List<string> SupportedExtensions = new List<string>();
         private readonly ExtractMetadataInputModel _validInput;
         private readonly ExtractMetadataInputModel _rawInput;
         private readonly bool _rebuild;
@@ -43,6 +44,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             SupportedExtensions.AddRange(SupportedSolutionExtensions);
             SupportedExtensions.AddRange(SupportedProjectExtensions);
             SupportedExtensions.AddRange(SupportedSourceFileExtensions);
+            SupportedExtensions.AddRange(SupportedAssemblyExtensions);
         }
 
         public ExtractMetadataWorker(ExtractMetadataInputModel input, bool rebuild, bool useCompatibilityFileName)
@@ -80,7 +82,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         }
 
         #region Internal For UT
-        internal static MetadataItem GenerateYamlMetadata(Compilation compilation, bool preserveRawInlineComments = false, string filterConfigFile = null, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods = null)
+        internal static MetadataItem GenerateYamlMetadata(Compilation compilation, IAssemblySymbol assembly = null, bool preserveRawInlineComments = false, string filterConfigFile = null, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods = null)
         {
             if (compilation == null)
             {
@@ -104,11 +106,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return null;
             }
 
-            MetadataItem item = compilation.Assembly.Accept(visitor);
+            assembly = assembly ?? compilation.Assembly;
+            MetadataItem item = assembly.Accept(visitor);
             return item;
         }
 
-        internal static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethods(IEnumerable<Compilation> compilations)
+        internal static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethodsFromCompilation(IEnumerable<Compilation> compilations)
         {
             var methods = new Dictionary<Compilation, IEnumerable<IMethodSymbol>>();
             foreach (var compilation in compilations)
@@ -121,6 +124,33 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     if (extensions.Count > 0)
                     {
                         methods[compilation] = extensions;
+                    }
+                }
+            }
+            return methods;
+        }
+
+        internal static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethodsFromAssembly(Compilation compilation, IEnumerable<IAssemblySymbol> assemblies)
+        {
+            var methods = new Dictionary<Compilation, IEnumerable<IMethodSymbol>>();
+            foreach (var assembly in assemblies)
+            {
+                if (assembly.MightContainExtensionMethods)
+                {
+                    var extensions = (from n in GetAllNamespaceMembers(assembly).Distinct()
+                                      from m in GetExtensionMethodPerNamespace(n)
+                                      select m).ToList();
+                    if (extensions.Count > 0)
+                    {
+                        IEnumerable<IMethodSymbol> ext;
+                        if (methods.TryGetValue(compilation, out ext))
+                        {
+                            methods[compilation] = ext.Union(extensions);
+                        }
+                        else
+                        {
+                            methods[compilation] = extensions;
+                        }
                     }
                 }
             }
@@ -149,6 +179,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static bool IsSupportedSourceFile(string filePath)
         {
             return IsSupported(filePath, SupportedSourceFileExtensions);
+        }
+
+        private static bool IsSupportedAssemblyFile(string filePath)
+        {
+            return IsSupported(filePath, SupportedAssemblyExtensions);
         }
 
         private static bool IsSupportedVBSourceFile(string filePath)
@@ -240,9 +275,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var projects = inputs.Where(s => IsSupportedProject(s));
 
             var sourceFiles = inputs.Where(s => IsSupportedSourceFile(s));
+            var assemblyFiles = inputs.Where(s => IsSupportedAssemblyFile(s));
 
             // Exclude not supported files from inputs
-            inputs = solutions.Concat(projects).Concat(sourceFiles);
+            inputs = solutions.Concat(projects).Concat(sourceFiles).Concat(assemblyFiles);
 
             // Add filter config file into inputs and cache
             if (!string.IsNullOrEmpty(_filterConfigFile))
@@ -306,7 +342,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var applicationCache = ApplicationLevelCache.Get(inputs);
             if (!forceRebuild)
             {
-                BuildInfo buildInfo = applicationCache.GetValidConfig(inputs);
+                var buildInfo = applicationCache.GetValidConfig(inputs);
                 if (buildInfo != null && buildInfo.ShouldSkipMarkup == _shouldSkipMarkup)
                 {
                     IncrementalCheck check = new IncrementalCheck(buildInfo);
@@ -360,7 +396,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             List<MetadataItem> projectMetadataList = new List<MetadataItem>();
             ConcurrentDictionary<string, bool> projectRebuildInfo = new ConcurrentDictionary<string, bool>();
             ConcurrentDictionary<string, Compilation> compilationCache = await GetProjectCompilationAsync(projectCache);
-            var extensionMethods = GetAllExtensionMethods(compilationCache.Values);
+            var extensionMethods = GetAllExtensionMethodsFromCompilation(compilationCache.Values);
 
             foreach (var key in GetTopologicalSortedItems(projectDependencyGraph))
             {
@@ -392,6 +428,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     var vbMetadata = await GetFileMetadataFromCacheAsync(vbFiles, vbCompilation, outputFolder, forceRebuild, _preserveRawInlineComments, _shouldSkipMarkup, _filterConfigFile, extensionMethods);
                     if (vbMetadata != null) projectMetadataList.Add(vbMetadata.Item1);
+                }
+            }
+
+            if (assemblyFiles.Any())
+            {
+                var assemblyCompilation = CompilationUtility.CreateCompilationFromAssembly(assemblyFiles);
+                if (assemblyCompilation != null)
+                {
+                    var referencedAssemblyList = CompilationUtility.GetAssemblyFromAssemblyComplation(assemblyCompilation);
+                    var assemblyExtension = GetAllExtensionMethodsFromAssembly(assemblyCompilation, referencedAssemblyList);
+                    var assemblyMetadataValues = from assembly in referencedAssemblyList
+                                                 let metadata = GetAssemblyMetadataFromCacheAsync(assemblyFiles, assemblyCompilation, assembly, outputFolder, forceRebuild, _filterConfigFile, assemblyExtension)
+                                                 select metadata.Result.Item1;
+                    if (assemblyMetadataValues.Any())
+                    {
+                        projectMetadataList.AddRange(assemblyMetadataValues);
+                    }
                 }
             }
 
@@ -516,6 +569,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 new[] { projectFilePath, filterConfigFile },
                 s => Task.FromResult(forceRebuild || s.AreFilesModified(k.Concat(new string[] { filterConfigFile })) || isReferencedProjectRebuilt),
                 s => Task.FromResult(compilation),
+                s => Task.FromResult(compilation.Assembly),
                 s =>
                 {
                     return new Dictionary<string, List<string>> { { StringExtension.ToNormalizedFullPath(s.FilePath), k.ToList() } };
@@ -527,6 +581,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 extensionMethods);
         }
 
+        private static Task<Tuple<MetadataItem, bool>> GetAssemblyMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, IAssemblySymbol assembly, string outputFolder, bool forceRebuild, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods)
+        {
+            if (files == null || !files.Any()) return null;
+            return GetMetadataFromProjectLevelCacheAsync(
+                files,
+                files.Concat(new string[] { filterConfigFile }), s => Task.FromResult(forceRebuild || s.AreFilesModified(files.Concat(new string[] { filterConfigFile }))),
+                s => Task.FromResult(compilation),
+                s => Task.FromResult(assembly),
+                s => null,
+                outputFolder,
+                false,
+                false,
+                filterConfigFile,
+                extensionMethods);
+        }
+
         private static Task<Tuple<MetadataItem, bool>> GetFileMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, string outputFolder, bool forceRebuild, bool shouldSkipMarkup, bool preserveRawInlineComments, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods)
         {
             if (files == null || !files.Any()) return null;
@@ -534,6 +604,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 files,
                 files.Concat(new string[] { filterConfigFile }), s => Task.FromResult(forceRebuild || s.AreFilesModified(files.Concat(new string[] { filterConfigFile }))),
                 s => Task.FromResult(compilation),
+                s => Task.FromResult(compilation.Assembly),
                 s => null,
                 outputFolder,
                 preserveRawInlineComments,
@@ -547,6 +618,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             IEnumerable<string> inputKey,
             Func<IncrementalCheck, Task<bool>> rebuildChecker,
             Func<T, Task<Compilation>> compilationProvider,
+            Func<T, Task<IAssemblySymbol>> assemblyProvider,
             Func<T, IDictionary<string, List<string>>> containedFilesProvider,
             string outputFolder,
             bool preserveRawInlineComments,
@@ -581,8 +653,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             var compilation = await compilationProvider(input);
+            var assembly = await assemblyProvider(input);
 
-            projectMetadata = GenerateYamlMetadata(compilation, preserveRawInlineComments, filterConfigFile, extensionMethods);
+            projectMetadata = GenerateYamlMetadata(compilation, assembly, preserveRawInlineComments, filterConfigFile, extensionMethods);
             var file = Path.GetRandomFileName();
             var cacheOutputFolder = projectLevelCache.OutputFolder;
             var path = Path.Combine(cacheOutputFolder, file);
