@@ -5,6 +5,6 @@ namespace Microsoft.DocAsCode.Build.Common
 {
     public interface IModelAttributeHandler
     {
-        void Handle(object obj, HandleModelAttributesContext context);
+        object Handle(object obj, HandleModelAttributesContext context);
     }
 }

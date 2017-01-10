@@ -14,14 +14,14 @@ namespace Microsoft.DocAsCode.Build.Common
     {
         private readonly ConcurrentDictionary<Type, UniqueIdentityHandlerImpl> _cache = new ConcurrentDictionary<Type, UniqueIdentityHandlerImpl>();
 
-        public void Handle(object obj, HandleModelAttributesContext context)
+        public object Handle(object obj, HandleModelAttributesContext context)
         {
             if (obj == null)
             {
-                return;
+                return null;
             }
             var type = obj.GetType();
-            _cache.GetOrAdd(type, new UniqueIdentityHandlerImpl(type, this)).Handle(obj, context);
+            return _cache.GetOrAdd(type, new UniqueIdentityHandlerImpl(type, this)).Handle(obj, context);
         }
 
         private sealed class UniqueIdentityHandlerImpl : BaseModelAttributeHandler<UniqueIdentityReferenceAttribute>

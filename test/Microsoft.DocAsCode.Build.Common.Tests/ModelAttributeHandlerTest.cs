@@ -146,6 +146,10 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
                     Content3 = new List<string>
                     {
                         "*content"
+                    },
+                    Content4 = new Dictionary<string, object>
+                    {
+                        ["key1"] = "*content"
                     }
                 }
             };
@@ -165,6 +169,8 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             Assert.Equal(context.PlaceholderContent, model.Content2);
             Assert.Equal(context.PlaceholderContent, model.Inner.Content);
             Assert.Equal(context.PlaceholderContent, model.Inner.Content2);
+            Assert.Equal(context.PlaceholderContent, model.Inner.Content3[0]);
+            Assert.Equal(context.PlaceholderContent, model.Inner.Content4["key1"]);
         }
 
         [Fact]
@@ -211,7 +217,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
         #region Test Data
 
-        private class MarkdownModel1
+        public class MarkdownModel1
         {
             [MarkdownContent]
             public string Content { get; set; }
@@ -221,15 +227,17 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             public List<string> Content3 { get; set; }
 
             public MarkdownModel1 Inner { get; set; }
+
+            public Dictionary<string, object> Content4 { get; set; }
         }
 
-        private class InvalidMarkdownModel1
+        public class InvalidMarkdownModel1
         {
             [MarkdownContent]
             public List<string> Content { get; set; }
         }
 
-        private class SimpleModel
+        public class SimpleModel
         {
             [UniqueIdentityReference]
             public string Identity { get; set; }
@@ -237,7 +245,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             public List<object> Identities { get; set; }
         }
 
-        private class InvalidModel
+        public class InvalidModel
         {
             [UniqueIdentityReference]
             public int InvalidIdentity { get; set; }
@@ -246,13 +254,13 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             public string Identity { get; set; }
         }
 
-        private class InvalidModel2
+        public class InvalidModel2
         {
             [UniqueIdentityReference]
             public List<int> Identities { get; set; }
         }
 
-        private class ComplexModel
+        public class ComplexModel
         {
             [UniqueIdentityReference]
             public string Identity { get; set; }
@@ -270,13 +278,13 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             public string OtherProperty { get; set; }
         }
 
-        private class InnerModel
+        public class InnerModel
         {
             public string Identity { get; set; }
             public TestCrefType CrefType { get; set; }
         }
 
-        private enum TestCrefType
+        public enum TestCrefType
         {
             Href,
             Cref

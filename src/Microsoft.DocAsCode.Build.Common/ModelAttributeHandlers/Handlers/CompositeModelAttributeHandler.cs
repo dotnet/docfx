@@ -11,12 +11,14 @@ namespace Microsoft.DocAsCode.Build.Common
             _handlers = handlers;
         }
 
-        public void Handle(object obj, HandleModelAttributesContext context)
+        public object Handle(object obj, HandleModelAttributesContext context)
         {
             foreach (var handler in _handlers)
             {
-                handler.Handle(obj, context);
+                obj = handler.Handle(obj, context);
             }
+
+            return obj;
         }
     }
 }
