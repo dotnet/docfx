@@ -72,7 +72,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             catch (Exception e)
             {
                 Logger.Log(LogLevel.Warning, $"Error generating compilation from assemblies {string.Join(Environment.NewLine, assemblyPaths)}: {e.Message}. Ignored.");
-                throw;
+                return null;
             }
         }
 
