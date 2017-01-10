@@ -12,13 +12,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     internal class AppendIntegerPostProcessor : IPostProcessor, ISupportIncrementalPostProcessor
     {
-        public const string AppendInteger = "-1024";
+        public static readonly string HashValue = 1024.ToString();
+
+        public static readonly string AppendInteger = $"-{HashValue}";
 
         public IPostProcessorHost PostProcessorHost { get; set; }
 
         public string GetIncrementalContextHash()
         {
-            return new Random().Next(int.MaxValue).ToString();
+            return HashValue;
         }
 
         public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)

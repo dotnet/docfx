@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <summary>
         /// Whether to post process incrementally
         /// </summary>
-        public bool CanIncrementalPostProcess { get; }
+        public bool CanIncremental { get; }
 
         #endregion
 
@@ -74,7 +74,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             CurrentBaseDir = Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName);
             LastBaseDir = lastBuildInfo == null ? null : Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName);
             EnableIncremental = enableIncremental;
-            CanIncrementalPostProcess = GetCanIncrementalPostProcess();
+            CanIncremental = GetCanIncremental();
         }
 
         #endregion
@@ -95,7 +95,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         // TODO: report incremental info in manifest
-        private bool GetCanIncrementalPostProcess()
+        private bool GetCanIncremental()
         {
             if (!ShouldTraceIncrementalInfo)
             {

@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     using Microsoft.DocAsCode.Plugins;
 
-    internal class NotSupportIncrementalPostProcessor : IPostProcessor
+    internal class NonIncrementalPostProcessor : IPostProcessor
     {
         public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)
         {

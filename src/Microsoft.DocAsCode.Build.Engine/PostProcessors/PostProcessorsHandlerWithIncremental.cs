@@ -53,9 +53,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             PreHandle(manifest, outputFolder, increItems, noneIncreItems);
             {
-                CheckNoIncrementalItems(manifest);
+                CheckNoIncrementalItems(manifest, "Before processing");
                 _innerHandler.Handle(postProcessors, manifest, outputFolder);
-                CheckNoIncrementalItems(manifest);
+                CheckNoIncrementalItems(manifest, "After processing");
             }
             TraceIntermediateInfo(outputFolder, increItems, noneIncreItems);
             PostHandle(manifest, increItems);
@@ -65,12 +65,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void PreHandle(Manifest manifest, string outputFolder, List<ManifestItem> increItems, List<ManifestItem> noneIncreItems)
         {
-            if (_increContext.CanIncrementalPostProcess)
+            if (_increContext.CanIncremental)
             {
                 CopyToOutput(increItems, outputFolder);
 
-                // Set none incremental items to post processors
-                manifest.Files = noneIncreItems;
+                // Copy none incremental items to post processors
+                manifest.Files = noneIncreItems.ToList();
             }
             else
             {
@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void PostHandle(Manifest manifest, List<ManifestItem> increItems)
         {
-            if (_increContext.CanIncrementalPostProcess)
+            if (_increContext.CanIncremental)
             {
                 // Add back incremental items
                 manifest.Files.AddRange(increItems);
@@ -117,7 +117,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 if (!_increContext.LastInfo.PostProcessOutputs.TryGetValue(outputRelPath, out lastCachedRelPath))
                 {
-                    throw new BuildCacheException($"Last incremental post processor outputs shuold contain {outputRelPath}.");
+                    throw new BuildCacheException($"Last incremental post processor outputs should contain {outputRelPath}.");
                 }
 
                 IncrementalUtility.RetryIO(() =>
@@ -136,12 +136,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             foreach (var outputRelPath in GetOutputRelativePaths(noneIncreItems))
             {
-                string lastCachedRelPath;
-                if (_increContext.LastInfo != null && _increContext.LastInfo.PostProcessOutputs.TryGetValue(outputRelPath, out lastCachedRelPath))
-                {
-                    throw new BuildCacheException($"Last incremental post processor outputs shuold not contain {outputRelPath}.");
-                }
-
                 IncrementalUtility.RetryIO(() =>
                 {
                     var outputPath = Path.Combine(outputFolder, outputRelPath);
@@ -156,6 +150,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #endregion
 
+        #region Private methods
+
         private void CopyToOutput(List<ManifestItem> increItems, string outputFolder)
         {
             foreach (var outputRelPath in GetOutputRelativePaths(increItems))
@@ -163,7 +159,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 string lastCachedRelPath;
                 if (!_increContext.LastInfo.PostProcessOutputs.TryGetValue(outputRelPath, out lastCachedRelPath))
                 {
-                    throw new BuildCacheException($"Last incremental post processor outputs shuold contain {outputRelPath}.");
+                    throw new BuildCacheException($"Last incremental post processor outputs should contain {outputRelPath}.");
                 }
 
                 IncrementalUtility.RetryIO(() =>
@@ -171,7 +167,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // Copy last cached file to output
                     var outputPath = Path.Combine(outputFolder, outputRelPath);
                     var lastCachedFile = Path.Combine(_increContext.LastBaseDir, lastCachedRelPath);
-                    Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
+                    var outputDir = Path.GetDirectoryName(outputPath);
+                    if (!string.IsNullOrEmpty(outputDir))
+                    {
+                        Directory.CreateDirectory(outputDir);
+                    }
                     File.Copy(lastCachedFile, outputPath, true);
                 });
             }
@@ -184,12 +184,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                 select output.RelativePath;
         }
 
-        private static void CheckNoIncrementalItems(Manifest manifest)
+        private static void CheckNoIncrementalItems(Manifest manifest, string prependString)
         {
             if (manifest.Files.Any(i => i.IsIncremental))
             {
-                throw new DocfxException("Manifest items are not supposed to have any incremental items.");
+                throw new DocfxException($"{prependString} in inner post processor handler, manifest items should not have any incremental items.");
             }
         }
+
+        #endregion
     }
 }
