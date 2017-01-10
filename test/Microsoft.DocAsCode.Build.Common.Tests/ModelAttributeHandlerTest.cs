@@ -150,6 +150,10 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
                     Content4 = new Dictionary<string, object>
                     {
                         ["key1"] = "*content"
+                    },
+                    Content5 = new SortedList<string, object>
+                    {
+                        ["key1"] = "*content"
                     }
                 }
             };
@@ -171,6 +175,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             Assert.Equal(context.PlaceholderContent, model.Inner.Content2);
             Assert.Equal(context.PlaceholderContent, model.Inner.Content3[0]);
             Assert.Equal(context.PlaceholderContent, model.Inner.Content4["key1"]);
+            Assert.Equal(context.PlaceholderContent, model.Inner.Content5["key1"]);
         }
 
         [Fact]
@@ -229,6 +234,8 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             public MarkdownModel1 Inner { get; set; }
 
             public Dictionary<string, object> Content4 { get; set; }
+
+            public SortedList<string, object> Content5 { get; set; }
         }
 
         public class InvalidMarkdownModel1

@@ -55,10 +55,11 @@ namespace Microsoft.DocAsCode.Build.Common
             public override object Handle(object obj, HandleModelAttributesContext context)
             {
                 // Special handle for *content
-                if (obj.GetType() == typeof(string))
+                var val = obj as string;
+                if (val != null)
                 {
                     string marked;
-                    if (TryMarkupPlaceholderContent((string)obj, context, out marked))
+                    if (TryMarkupPlaceholderContent(val, context, out marked))
                     {
                         return marked;
                     }
@@ -79,9 +80,10 @@ namespace Microsoft.DocAsCode.Build.Common
                     return;
                 }
 
-                if (obj.GetType() == typeof(string))
+                var val = obj as string;
+                if (val != null)
                 {
-                    var marked = Markup((string)obj, context);
+                    var marked = Markup(val, context);
                     currentPropertyInfo.SetValue(declaringObject, marked);
                 }
                 else
@@ -93,7 +95,7 @@ namespace Microsoft.DocAsCode.Build.Common
             protected override void HandleDictionaryType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
             {
                 var type = currentPropertyInfo.PropertyType;
-                if (type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+                if (ReflectionHelper.ImplementsGenericDefintion(type, typeof(IDictionary<,>)))
                 {
                     dynamic dict = currentPropertyInfo.GetValue(declaringObject);
                     if (dict != null && dict.Count > 0)
@@ -116,7 +118,7 @@ namespace Microsoft.DocAsCode.Build.Common
             protected override void HandleEnumerableType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
             {
                 var type = currentPropertyInfo.PropertyType;
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+                if (ReflectionHelper.ImplementsGenericDefintion(type, typeof(IList<>)))
                 {
                     dynamic list = currentPropertyInfo.GetValue(declaringObject);
                     if (list != null && list.Count > 0)
