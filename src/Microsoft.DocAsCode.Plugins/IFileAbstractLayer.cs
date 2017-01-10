@@ -15,8 +15,6 @@ namespace Microsoft.DocAsCode.Plugins
 
         IEnumerable<string> GetAllInputFiles();
 
-        IEnumerable<string> GetAllOutputFiles();
-
         bool Exists(string file);
 
         Stream OpenRead(string file);

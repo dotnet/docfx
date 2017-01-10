@@ -39,16 +39,6 @@ namespace Microsoft.DocAsCode.Common
             return Reader.EnumerateFiles();
         }
 
-        public IEnumerable<RelativePath> GetAllOutputFiles()
-        {
-            EnsureNotDisposed();
-            if (!CanWrite)
-            {
-                throw new InvalidOperationException();
-            }
-            return Writer.CreateReader().EnumerateFiles();
-        }
-
         public bool Exists(RelativePath file)
         {
             if (file == null)
@@ -132,12 +122,6 @@ namespace Microsoft.DocAsCode.Common
         IEnumerable<string> IFileAbstractLayer.GetAllInputFiles()
         {
             return from r in GetAllInputFiles()
-                   select (string)r.RemoveWorkingFolder();
-        }
-
-        IEnumerable<string> IFileAbstractLayer.GetAllOutputFiles()
-        {
-            return from r in GetAllOutputFiles()
                    select (string)r.RemoveWorkingFolder();
         }
 
