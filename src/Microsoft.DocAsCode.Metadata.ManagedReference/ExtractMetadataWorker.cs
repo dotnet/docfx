@@ -318,8 +318,27 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             await projects.ForEachInParallelAsync(async path =>
             {
                 var project = await GetProjectAsync(path);
+
+                //var assemblies = AppDomain.CurrentDomain
+                //    .GetAssemblies();
+                //foreach (var asm in assemblies)
+                //{
+                //    string codebase = "???";
+                //    try
+                //    {
+                //        codebase = asm.CodeBase;
+                //    }
+                //    catch (Exception)
+                //    {
+
+                //    }
+                //    Console.WriteLine(" asm {0} - {1}", asm.FullName, codebase);
+                //}
                 if (project != null)
                 {
+                    Console.WriteLine("adding project {0}", path);
+                    foreach (var x in project.MetadataReferences)
+                        Console.WriteLine("  ref {0}", x.Display);
                     projectCache.GetOrAdd(path, s => project);
                 }
             }, 60);
@@ -564,6 +583,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             var projectFilePath = project.FilePath;
             var k = documentCache.GetDocuments(projectFilePath);
+            foreach (var doc in k)
+                Console.WriteLine("Project doc, exits {1},  {0}", doc, File.Exists(doc));
+
             return GetMetadataFromProjectLevelCacheAsync(
                 project,
                 new[] { projectFilePath, filterConfigFile },
