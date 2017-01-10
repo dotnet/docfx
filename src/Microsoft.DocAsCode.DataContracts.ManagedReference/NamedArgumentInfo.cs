@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 {
+    using Microsoft.DocAsCode.DataContracts.Attributes;
+
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
@@ -11,9 +13,12 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [YamlMember(Alias = "name")]
         [JsonProperty("name")]
         public string Name { get; set; }
+
         [YamlMember(Alias = "type")]
         [JsonProperty("type")]
+        [UniqueIdentityReference]
         public string Type { get; set; }
+
         [YamlMember(Alias = "value")]
         [JsonProperty("value")]
         public object Value { get; set; }

@@ -9,8 +9,8 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using System.Linq;
 
     using Microsoft.DocAsCode.Common.EntityMergers;
+    using Microsoft.DocAsCode.DataContracts.Attributes;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.DataContracts.Common.Attributes;
     using Microsoft.DocAsCode.YamlSerialization;
 
     using Newtonsoft.Json;
@@ -42,11 +42,13 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [YamlMember(Alias = "parent")]
         [JsonProperty("parent")]
+        [UniqueIdentityReference]
         public string Parent { get; set; }
 
         [YamlMember(Alias = "children")]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
         [JsonProperty("children")]
+        [UniqueIdentityReference]
         public List<string> Children { get; set; }
 
         [YamlMember(Alias = Constants.PropertyName.Href)]
@@ -237,6 +239,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [YamlMember(Alias = "namespace")]
         [JsonProperty("namespace")]
+        [UniqueIdentityReference]
         public string NamespaceName { get; set; }
 
         [YamlMember(Alias = "summary")]
@@ -265,6 +268,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [YamlMember(Alias = "overload")]
         [JsonProperty("overload")]
+        [UniqueIdentityReference]
         public string Overload { get; set; }
 
         [YamlMember(Alias = "exceptions")]
@@ -316,6 +320,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [YamlMember(Alias = "extensionMethods")]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
         [JsonProperty("extensionMethods")]
+        [UniqueIdentityReference]
         public List<string> ExtensionMethods { get; set; }
 
         [ExtensibleMember("modifiers.")]

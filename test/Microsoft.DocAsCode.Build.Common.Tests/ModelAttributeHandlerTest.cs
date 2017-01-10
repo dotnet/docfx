@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
     using Xunit;
 
     using Microsoft.DocAsCode.Build.Engine;
-    using Microsoft.DocAsCode.DataContracts.Common.Attributes;
+    using Microsoft.DocAsCode.DataContracts.Attributes;
     using Microsoft.DocAsCode.Plugins;
 
     [Trait("Owner", "lianwei")]
