@@ -1417,7 +1417,7 @@ tagRules : [
             }
         }
 
-        [Fact(Skip = "wait for DfmRenderer fix")]
+        [Fact]
         public void TestSrcFileWithInvalidToken()
         {
             // conceptual1--->invalid token(phase 1)

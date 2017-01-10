@@ -104,14 +104,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     writer,
                     bm.ToDictionary(
                         p => p.Key,
-                        p =>
-                        {
-                            using (var sw = new StringWriter())
-                            {
-                                p.Value.Save(sw);
-                                return sw.ToString();
-                            }
-                        }));
+                        p => GetSerializedBuildMessageInfo(p.Value, Path.GetDirectoryName(fileName))));
             }
         }
 
@@ -190,6 +183,33 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     if (count++ >= MaxRetry)
                     {
                         throw;
+                    }
+                }
+            }
+        }
+
+        private static string GetSerializedBuildMessageInfo(BuildMessageInfo bmi, string baseDir)
+        {
+            var tempFile = CreateRandomFileName(baseDir);
+            try
+            {
+                using (var fs = new FileStream(tempFile, FileMode.Create, FileAccess.ReadWrite))
+                using (var writer = new StreamWriter(fs))
+                {
+                    bmi.Save(writer);
+                }
+                return File.ReadAllText(tempFile);
+            }
+            finally
+            {
+                if (File.Exists(tempFile))
+                {
+                    try
+                    {
+                        File.Delete(tempFile);
+                    }
+                    catch
+                    {
                     }
                 }
             }
