@@ -206,7 +206,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return StringExtension.ToDisplayPath(modelPath);
         }
 
-        private static void TransformDocument(string result, string extension, IDocumentBuildContext context, string destFilePath, HashSet<string> missingUids, ManifestItem manifestItem)
+        private void TransformDocument(string result, string extension, IDocumentBuildContext context, string destFilePath, HashSet<string> missingUids, ManifestItem manifestItem)
         {
             Task<byte[]> hashTask;
             using (var stream = EnvironmentContext.FileAbstractLayer.Create(destFilePath).WithMd5Hash(out hashTask))
@@ -248,7 +248,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             });
         }
 
-        private static void TransformHtml(IDocumentBuildContext context, string html, string sourceFilePath, string destFilePath, StreamWriter outputWriter)
+        private void TransformHtml(IDocumentBuildContext context, string html, string sourceFilePath, string destFilePath, StreamWriter outputWriter)
         {
             // Update href and xref
             HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
@@ -263,7 +263,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static List<CrossReferenceNotResolvedException> TransformHtmlCore(IDocumentBuildContext context, string sourceFilePath, string destFilePath, HtmlAgilityPack.HtmlDocument html)
+        private List<CrossReferenceNotResolvedException> TransformHtmlCore(IDocumentBuildContext context, string sourceFilePath, string destFilePath, HtmlAgilityPack.HtmlDocument html)
         {
             var xrefLinkNodes = html.DocumentNode.SelectNodes("//a[starts-with(@href, 'xref:')]");
             if (xrefLinkNodes != null)
@@ -337,31 +337,67 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static void UpdateHref(HtmlAgilityPack.HtmlNode link, string attribute, IDocumentBuildContext context, string sourceFilePath, string destFilePath)
+        private void UpdateHref(HtmlAgilityPack.HtmlNode link, string attribute, IDocumentBuildContext context, string sourceFilePath, string destFilePath)
         {
             var originalHref = link.GetAttributeValue(attribute, null);
             var anchor = link.GetAttributeValue("anchor", null);
             link.Attributes.Remove("anchor");
-            string href;
             var path = RelativePath.TryParse(originalHref);
 
-            if (path?.IsFromWorkingFolder() == true)
+            if (path == null)
             {
-                var targetPath = (RelativePath)context.GetFilePath(path.UrlDecode());
+                return;
+            }
 
-                if (targetPath != null)
+            var hi = new FileLinkInfo
+            {
+                FromFileInSource = sourceFilePath,
+                FromFileInDest = destFilePath,
+            };
+
+            if (path.IsFromWorkingFolder())
+            {
+                var targetInSource = path.UrlDecode();
+                hi.ToFileInSource = targetInSource.RemoveWorkingFolder();
+                hi.ToFileInDest = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(targetInSource));
+                hi.FileLinkInSource = targetInSource - (RelativePath)sourceFilePath;
+                if (hi.ToFileInDest != null)
                 {
-                    href = (targetPath.RemoveWorkingFolder() - (RelativePath)destFilePath).UrlEncode();
+                    var resolved = (RelativePath)hi.ToFileInDest - (RelativePath)destFilePath;
+                    hi.FileLinkInDest = resolved;
+                    hi.Href = resolved.UrlEncode();
                 }
                 else
                 {
-                    Logger.LogInfo($"File {path} is not found in {destFilePath}.");
-                    // TODO: what to do if file path not exists?
-                    // CURRENT: fallback to the original one
-                    href = (path.UrlDecode().RemoveWorkingFolder() - ((RelativePath)sourceFilePath).RemoveWorkingFolder()).UrlEncode();
+                    hi.Href = (targetInSource.RemoveWorkingFolder() - ((RelativePath)sourceFilePath).RemoveWorkingFolder()).UrlEncode();
                 }
-                link.SetAttributeValue(attribute, href + anchor);
             }
+            else
+            {
+                hi.FileLinkInSource = path.UrlDecode();
+                hi.ToFileInSource = ((RelativePath)sourceFilePath + path).RemoveWorkingFolder();
+                hi.FileLinkInDest = hi.FileLinkInSource;
+                hi.Href = originalHref;
+            }
+            var href = _settings.HrefGenerator?.GenerateHref(hi) ?? hi.Href;
+            link.SetAttributeValue(attribute, href + anchor);
+        }
+
+        private struct FileLinkInfo : IFileLinkInfo
+        {
+            public string Href { get; set; }
+
+            public string FromFileInDest { get; set; }
+
+            public string FromFileInSource { get; set; }
+
+            public string ToFileInDest { get; set; }
+
+            public string ToFileInSource { get; set; }
+
+            public string FileLinkInSource { get; set; }
+
+            public string FileLinkInDest { get; set; }
         }
     }
 }
