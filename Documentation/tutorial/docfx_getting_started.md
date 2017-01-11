@@ -26,7 +26,10 @@ For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored
 > [!Note]
 > Please make sure [Visual Studio 2015](https://www.visualstudio.com/vs/) or [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159) is installed before running DocFX.
 
-*Step1.* DocFX ships as a [chocolatey package](https://chocolatey.org/packages/docfx). Alternatively, you can download and unzip *docfx.zip* from https://github.com/dotnet/docfx/releases, extract it to a local folder, and add it to PATH so you can run it anywhere.
+*Step1.* DocFX ships as a [chocolatey package](https://chocolatey.org/packages/docfx).
+Install docfx through [Chocolatey](https://chocolatey.org/install) by calling `cinst docfx -y`.
+
+Alternatively, you can download and unzip *docfx.zip* from https://github.com/dotnet/docfx/releases, extract it to a local folder, and add it to PATH so you can run it anywhere.
 
 *Step2.* Create a sample project
 ```
@@ -67,9 +70,9 @@ namespace WebApplication1
 4. Use *DocFX* with a Build Server
 ---------------
 
-*DocFX* can be used in a Continuous Integration environment. 
+*DocFX* can be used in a Continuous Integration environment.
 
-Most build systems do not checkout the branch that is being built, but 
+Most build systems do not checkout the branch that is being built, but
 use a `detached head` for the specific commit.  DoxFX needs the the branch name to implement the `View Source` link in the API documentation.
 
 Setting the environment variable `DOCFX_SOURCE_BRANCH_NAME` tells DocFX which branch name to use.
@@ -83,6 +86,8 @@ Many build systems set an environment variable with the branch name.  DocFX uses
 - `GIT_BRANCH` - [Jenkins](https://jenkins.io/)
 - `GIT_LOCAL_BRANCH` - [Jenkins](https://jenkins.io/)
 
+> [!NOTE]
+> *Known issue in AppVeyor*: Currently `platform: Any CPU` in *appveyor.yml* causes `docfx metadata` failure. https://github.com/dotnet/docfx/issues/1078
 
 5. Build from source code
 ----------------
