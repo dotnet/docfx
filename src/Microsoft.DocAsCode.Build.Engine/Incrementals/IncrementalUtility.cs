@@ -79,7 +79,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 var content = JsonUtility.Deserialize<Dictionary<BuildPhase, string>>(reader);
                 foreach (var c in content)
                 {
-                    using (var sr = new StringReader(c.Value))
+                    using (var sr = new StreamReader(Path.Combine(Path.GetDirectoryName(file), c.Value)))
                     {
                         bm[c.Key] = BuildMessageInfo.Load(sr);
                     }
@@ -104,14 +104,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     writer,
                     bm.ToDictionary(
                         p => p.Key,
-                        p =>
-                        {
-                            using (var sw = new StringWriter())
-                            {
-                                p.Value.Save(sw);
-                                return sw.ToString();
-                            }
-                        }));
+                        p => SaveSerializedBuildMessageInfo(p.Value, Path.GetDirectoryName(fileName))));
             }
         }
 
@@ -194,5 +187,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 }
             }
         }
+
+        private static string SaveSerializedBuildMessageInfo(BuildMessageInfo bmi, string baseDir) =>
+            RetryIO(() =>
+            {
+                var tempFile = GetRandomEntry(baseDir);
+                using (var fs = File.Create(Path.Combine(baseDir, tempFile)))
+                using (var writer = new StreamWriter(fs))
+                {
+                    bmi.Save(writer);
+                }
+                return tempFile;
+            });
     }
 }

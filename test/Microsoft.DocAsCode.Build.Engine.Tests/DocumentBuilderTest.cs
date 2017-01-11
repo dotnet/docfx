@@ -743,6 +743,56 @@ exports.getOptions = function (){
             }
         }
 
+        [Fact]
+        public void TestBuildWithInvalidPathWithTokenAndMapping()
+        {
+            #region Prepare test data
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
+
+            var conceptualFile = CreateFile("a/a.md",
+                new[]
+                {
+                    "[link a](invalid-a.md)",
+                    "[link b](../b/invalid-b.md)",
+                    "[!include[](../b/token.md)]",
+                },
+                _inputFolder);
+            var tokenFile = CreateFile("b/token.md",
+                new[]
+                {
+                    "[link a](../a/invalid-a.md)",
+                    "[link b](invalid-b.md)",
+                },
+                _inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { conceptualFile }, Path.Combine(_inputFolder, "a"), ".");
+            #endregion
+
+            using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
+            {
+                BuildDocument(
+                    files,
+                    new Dictionary<string, object>(),
+                    templateFolder: _templateFolder);
+            }
+            {
+                // check conceptual.
+                var conceptualOutputPath = Path.Combine(_outputFolder, "a.html");
+                Assert.True(File.Exists(conceptualOutputPath));
+                Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension("a.md", RawModelFileExtension))));
+                Assert.Equal(
+                    string.Join(
+                        "\n",
+                        "<p><a href=\"invalid-a.md\">link a</a>",
+                        "<a href=\"../b/invalid-b.md\">link b</a></p>",
+                        $"<!-- BEGIN INCLUDE: Include content from &quot;{_inputFolder}/b/token.md&quot; --><p><a href=\"invalid-a.md\">link a</a>",
+                        "<a href=\"../b/invalid-b.md\">link b</a></p>",
+                        "<!--END INCLUDE -->"),
+                    File.ReadAllText(conceptualOutputPath));
+            }
+        }
+
         private static void AssertMetadataEqual(object expected, object actual)
         {
             var expectedJObject = JObject.FromObject(expected);
@@ -791,32 +841,6 @@ exports.getOptions = function (){
         {
             Logger.UnregisterListener(Listener);
             Listener = null;
-        }
-
-        private string CreateFile(string fileName, string[] lines, string baseFolder)
-        {
-            var dir = Path.GetDirectoryName(fileName);
-            dir = CreateDirectory(dir, baseFolder);
-            var file = Path.Combine(baseFolder, fileName);
-            File.WriteAllLines(file, lines);
-            return file;
-        }
-
-        private string CreateFile(string fileName, string content, string baseFolder)
-        {
-            var dir = Path.GetDirectoryName(fileName);
-            dir = CreateDirectory(dir, baseFolder);
-            var file = Path.Combine(baseFolder, fileName);
-            File.WriteAllText(file, content);
-            return file;
-        }
-
-        private string CreateDirectory(string dir, string baseFolder)
-        {
-            if (string.IsNullOrEmpty(dir)) return string.Empty;
-            var subDirectory = Path.Combine(baseFolder, dir);
-            Directory.CreateDirectory(subDirectory);
-            return subDirectory;
         }
     }
 }

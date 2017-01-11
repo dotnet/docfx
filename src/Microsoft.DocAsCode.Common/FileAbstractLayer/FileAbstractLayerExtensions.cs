@@ -3,8 +3,9 @@
 
 namespace Microsoft.DocAsCode.Common
 {
-    using System.Collections.Immutable;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     public static class FileAbstractLayerExtensions
     {
@@ -64,5 +65,9 @@ namespace Microsoft.DocAsCode.Common
 
         public static string GetProperty(this FileAbstractLayer fal, string file, string propertyName) =>
             GetProperty(fal, (RelativePath)file, propertyName);
+
+        public static IEnumerable<KeyValuePair<RelativePath, string>> GetAllPhysicalPaths(this FileAbstractLayer fal) =>
+            from r in fal.GetAllInputFiles()
+            select new KeyValuePair<RelativePath, string>(r, fal.GetPhysicalPath(r));
     }
 }

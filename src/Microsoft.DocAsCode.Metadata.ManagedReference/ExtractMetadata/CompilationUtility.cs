@@ -4,6 +4,8 @@
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System;
+    using System.Linq;
+    using System.Collections.Generic;
 
     using Microsoft.CodeAnalysis;
 
@@ -52,6 +54,35 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Logger.Log(LogLevel.Warning, $"Error generating compilation for VB code {GetAbbreviateString(code)}: {e.Message}. Ignored.");
                 return null;
             }
+        }
+
+        //TODO: Only process CSharp assembly currently
+        public static Compilation CreateCompilationFromAssembly(IEnumerable<string> assemblyPaths)
+        {
+            try
+            {
+                var paths = assemblyPaths.ToList();
+                //TODO: "mscorlib" should be ignored while extracting metadata from .NET Core/.NET Framework
+                paths.Add(typeof(object).Assembly.Location);
+                var assemblies = (from path in paths
+                                  select MetadataReference.CreateFromFile(path)).ToList();
+                var complilation = CS.CSharpCompilation.Create("EmptyProjectWithAssembly", new SyntaxTree[] { }, assemblies);
+                return complilation;
+            }
+            catch (Exception e)
+            {
+                Logger.Log(LogLevel.Warning, $"Error generating compilation from assemblies {string.Join(Environment.NewLine, assemblyPaths)}: {e.Message}. Ignored.");
+                return null;
+            }
+        }
+
+        public static List<IAssemblySymbol> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation)
+        {
+            return (from reference in assemblyCompilation.References
+                    let assembly = (IAssemblySymbol)assemblyCompilation.GetAssemblyOrModuleSymbol(reference)
+                    //TODO: "mscorlib" shouldn't be ignored while extracting metadata from .NET Core/.NET Framework
+                    where assembly?.Identity?.Name != "mscorlib"
+                    select assembly).ToList();
         }
 
         private static string GetAbbreviateString(string input, int length = 20)

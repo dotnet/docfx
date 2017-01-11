@@ -198,17 +198,19 @@ In Markdown link or auto link, you can add a hashtag (`#`) followed by the ancho
 <xref:uid_to_file#anchor_name>
 
 [link_text](xref:uid_to_file#anchor_name]
+
+@uid_to_file#anchor_name
 ```
 
-Both urls will resolve to `url_to_file#anchor_name` in output HTML.
+Will all resolve to `url_to_file#anchor_name` in output HTML.
 
 The link text still resolves to the title of the whole file. If it's not what you need, you can specify your own link text.
 
 > [!Note]
 > Hashtag in `xref` is always treated as separator between file name and anchor name. That means if you have `#` in UID, it has
 > to be [encoded](https://en.wikipedia.org/wiki/Percent-encoding) to `%23`.
-
-Hashtag is not supported in `@` form.
+>
+> Actually `xref` format follows URI standard so all [reserved characters](https://tools.ietf.org/html/rfc3986#section-2.2) should be encoded.
 
 ### Link to overwrite files
 
@@ -261,12 +263,12 @@ It's a YAML object that contains following properties:
 
 You can import a cross reference map file in your DocFX then all UIDs defined that file can be cross referenced.
 
-To use a cross reference map, add a `xrefMaps` config to `build` section of `docfx.json`:
+To use a cross reference map, add a `xref` config to `build` section of `docfx.json`:
 
 ```json
 {
   "build": {
-    "xrefMaps": [
+    "xref": [
       "<path_to_xrefmap>"
     ],
     ...
@@ -274,7 +276,7 @@ To use a cross reference map, add a `xrefMaps` config to `build` section of `doc
 }
 ```
 
-The value of `xrefMaps` could be a string or a list of strings that contain the path/url to cross reference maps.
+The value of `xref` could be a string or a list of strings that contain the path/url to cross reference maps.
 
 > [!Note]
 > DocFX supports reading cross reference map from a local file or a web location. It's recommended to deploy `xrefmap.yml` to

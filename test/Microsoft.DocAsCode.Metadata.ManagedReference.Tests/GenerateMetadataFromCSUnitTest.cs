@@ -137,7 +137,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            MetadataItem output_preserveRaw = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), true);
+            MetadataItem output_preserveRaw = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), null, true);
             Assert.Equal(1, output.Items.Count);
             {
                 var type = output.Items[0].Items[0];
@@ -1014,7 +1014,7 @@ namespace Test1
 }
 ";
             var compilation = CreateCompilationFromCSharpCode(code);
-            MetadataItem output = GenerateYamlMetadata(compilation, extensionMethods: GetAllExtensionMethods(new[] { compilation }));
+            MetadataItem output = GenerateYamlMetadata(compilation, extensionMethods: GetAllExtensionMethodsFromCompilation(new[] { compilation }));
             Assert.Equal(1, output.Items.Count);
             // FooImple<T>
             {

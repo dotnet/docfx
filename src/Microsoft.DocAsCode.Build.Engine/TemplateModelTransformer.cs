@@ -206,17 +206,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             return StringExtension.ToDisplayPath(modelPath);
         }
 
-        private static void TransformDocument(string result, string extension, IDocumentBuildContext context, string relativeOutputPath, HashSet<string> missingUids, ManifestItem manifestItem)
+        private static void TransformDocument(string result, string extension, IDocumentBuildContext context, string destFilePath, HashSet<string> missingUids, ManifestItem manifestItem)
         {
             Task<byte[]> hashTask;
-            using (var stream = EnvironmentContext.FileAbstractLayer.Create(relativeOutputPath).WithMd5Hash(out hashTask))
+            using (var stream = EnvironmentContext.FileAbstractLayer.Create(destFilePath).WithMd5Hash(out hashTask))
             using (var sw = new StreamWriter(stream))
             {
                 if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
                 {
                     try
                     {
-                        TransformHtml(context, result, relativeOutputPath, sw);
+                        TransformHtml(context, result, manifestItem.SourceRelativePath, destFilePath, sw);
                     }
                     catch (AggregateException e)
                     {
@@ -242,19 +242,19 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             manifestItem.OutputFiles.Add(extension, new OutputFileInfo
             {
-                RelativePath = relativeOutputPath,
+                RelativePath = destFilePath,
                 LinkToPath = null,
                 Hash = Convert.ToBase64String(hashTask.Result)
             });
         }
 
-        private static void TransformHtml(IDocumentBuildContext context, string html, string relativeModelPath, StreamWriter outputWriter)
+        private static void TransformHtml(IDocumentBuildContext context, string html, string sourceFilePath, string destFilePath, StreamWriter outputWriter)
         {
             // Update href and xref
             HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
             document.LoadHtml(html);
 
-            var xrefExceptions = TransformHtmlCore(context, relativeModelPath, document);
+            var xrefExceptions = TransformHtmlCore(context, sourceFilePath, destFilePath, document);
 
             document.Save(outputWriter);
             if (xrefExceptions.Count > 0)
@@ -263,7 +263,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static List<CrossReferenceNotResolvedException> TransformHtmlCore(IDocumentBuildContext context, string relativeModelPath, HtmlAgilityPack.HtmlDocument html)
+        private static List<CrossReferenceNotResolvedException> TransformHtmlCore(IDocumentBuildContext context, string sourceFilePath, string destFilePath, HtmlAgilityPack.HtmlDocument html)
         {
             var xrefLinkNodes = html.DocumentNode.SelectNodes("//a[starts-with(@href, 'xref:')]");
             if (xrefLinkNodes != null)
@@ -275,7 +275,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             var xrefExceptions = new List<CrossReferenceNotResolvedException>();
-            var xrefNodes = html.DocumentNode.SelectNodes("//xref/@href");
+            var xrefNodes = html.DocumentNode.SelectNodes("//xref")?
+                .Where(s => s.GetAttributeValue("href", null) != null || s.GetAttributeValue("uid", null) != null).ToList();
             if (xrefNodes != null)
             {
                 foreach (var xref in xrefNodes)
@@ -295,7 +296,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (srcNodes != null)
                 foreach (var link in srcNodes)
                 {
-                    UpdateHref(link, "src", context, relativeModelPath);
+                    UpdateHref(link, "src", context, sourceFilePath, destFilePath);
                 }
 
             var hrefNodes = html.DocumentNode.SelectNodes("//*/@href");
@@ -303,7 +304,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 foreach (var link in hrefNodes)
                 {
-                    UpdateHref(link, "href", context, relativeModelPath);
+                    UpdateHref(link, "href", context, sourceFilePath, destFilePath);
                 }
             }
 
@@ -336,7 +337,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static void UpdateHref(HtmlAgilityPack.HtmlNode link, string attribute, IDocumentBuildContext context, string relativePath)
+        private static void UpdateHref(HtmlAgilityPack.HtmlNode link, string attribute, IDocumentBuildContext context, string sourceFilePath, string destFilePath)
         {
             var originalHref = link.GetAttributeValue(attribute, null);
             var anchor = link.GetAttributeValue("anchor", null);
@@ -350,14 +351,14 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 if (targetPath != null)
                 {
-                    href = (targetPath.RemoveWorkingFolder() - (RelativePath)relativePath).UrlEncode();
+                    href = (targetPath.RemoveWorkingFolder() - (RelativePath)destFilePath).UrlEncode();
                 }
                 else
                 {
-                    Logger.LogInfo($"File {path} is not found in {relativePath}.");
+                    Logger.LogInfo($"File {path} is not found in {destFilePath}.");
                     // TODO: what to do if file path not exists?
                     // CURRENT: fallback to the original one
-                    href = (path.UrlDecode().RemoveWorkingFolder() - (RelativePath)relativePath).UrlEncode();
+                    href = (path.UrlDecode().RemoveWorkingFolder() - ((RelativePath)sourceFilePath).RemoveWorkingFolder()).UrlEncode();
                 }
                 link.SetAttributeValue(attribute, href + anchor);
             }

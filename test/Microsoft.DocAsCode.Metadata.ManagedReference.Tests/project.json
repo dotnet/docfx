@@ -16,7 +16,9 @@
       "TestData/filterconfig.yml",
       "TestData/filterconfig_attribute.yml",
       "TestData/System.Console.csyml",
-      "TestData/System.ConsoleColor.csyml"
+      "TestData/System.ConsoleColor.csyml",
+      "TestData/CatLibrary.dll",
+      "TestData/BaseClassForTestClass1.dll"
     ]
   },
   "frameworks": {

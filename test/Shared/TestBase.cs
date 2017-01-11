@@ -35,6 +35,77 @@ namespace Microsoft.DocAsCode.Tests.Common
             return folder;
         }
 
+        #region IO related
+
+        protected static string CreateFile(string fileName, string[] lines, string baseFolder)
+        {
+            if (lines == null)
+            {
+                throw new ArgumentNullException(nameof(lines));
+            }
+            var dir = Path.GetDirectoryName(fileName);
+            dir = CreateDirectory(dir, baseFolder);
+            var file = Path.Combine(baseFolder, fileName);
+            File.WriteAllLines(file, lines);
+            return file;
+        }
+
+        protected static string CreateFile(string fileName, string content, string baseFolder)
+        {
+            if (fileName == null)
+            {
+                throw new ArgumentNullException(nameof(fileName));
+            }
+            if (content == null)
+            {
+                throw new ArgumentNullException(nameof(content));
+            }
+            if (baseFolder == null)
+            {
+                throw new ArgumentNullException(nameof(baseFolder));
+            }
+            var dir = Path.GetDirectoryName(fileName);
+            dir = CreateDirectory(dir, baseFolder);
+            var file = Path.Combine(baseFolder, fileName);
+            File.WriteAllText(file, content);
+            return file;
+        }
+
+        protected static string UpdateFile(string fileName, string[] lines, string baseFolder)
+        {
+            if (fileName == null)
+            {
+                throw new ArgumentNullException(nameof(fileName));
+            }
+            if (lines == null)
+            {
+                throw new ArgumentNullException(nameof(lines));
+            }
+            if (baseFolder == null)
+            {
+                throw new ArgumentNullException(nameof(baseFolder));
+            }
+            File.Delete(Path.Combine(baseFolder, fileName));
+            return CreateFile(fileName, lines, baseFolder);
+        }
+
+        protected static string CreateDirectory(string dir, string baseFolder)
+        {
+            if (string.IsNullOrEmpty(dir))
+            {
+                return string.Empty;
+            }
+            if (baseFolder == null)
+            {
+                throw new ArgumentNullException(nameof(baseFolder));
+            }
+            var subDirectory = Path.Combine(baseFolder, dir);
+            Directory.CreateDirectory(subDirectory);
+            return subDirectory;
+        }
+
+        #endregion
+
         public virtual void Dispose()
         {
             try

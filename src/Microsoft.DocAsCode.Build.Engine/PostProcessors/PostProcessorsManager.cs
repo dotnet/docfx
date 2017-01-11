@@ -35,8 +35,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void IncrementalInitialize(string intermediateFolder, BuildInfo currentBuildInfo, BuildInfo lastBuildInfo, bool forcePostProcess)
         {
-            // TODO: enable after implementation and integration
-            if (intermediateFolder != null && false)
+            if (intermediateFolder != null)
             {
                 var increPostProcessorsContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, _postProcessors, !forcePostProcess);
                 _postProcessorsHandler = new PostProcessorsHandlerWithIncremental(_postProcessorsHandler, increPostProcessorsContext);
@@ -48,9 +47,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var updatedMetadata = metadata;
             foreach (var postProcessor in _postProcessors)
             {
-                // TODO: add overload method for LoggerPhaseScope
-                using (new LoggerPhaseScope($"Prepare metadata in post processor {postProcessor.ContractName}", false))
-                using (new PerformanceScope($"Prepare metadata in post processor {postProcessor.ContractName}"))
+                using (new LoggerPhaseScope($"Prepare metadata in post processor {postProcessor.ContractName}", LogLevel.Verbose))
                 {
                     updatedMetadata = postProcessor.Processor.PrepareMetadata(metadata);
                     if (updatedMetadata == null)

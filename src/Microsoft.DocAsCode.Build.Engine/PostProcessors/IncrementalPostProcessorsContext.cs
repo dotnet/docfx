@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <summary>
         /// Whether to post process incrementally
         /// </summary>
-        public bool CanIncrementalPostProcess { get; }
+        public bool IsIncremental { get; }
 
         #endregion
 
@@ -62,8 +62,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(postProcessors));
             }
 
+            _postProcessors = postProcessors;
+
             ShouldTraceIncrementalInfo = GetShouldTraceIncrementalInfo();
-            CanIncrementalPostProcess = GetCanIncrementalPostProcess();
             if (ShouldTraceIncrementalInfo)
             {
                 currentBuildInfo.PostProcessInfo = GeneratePostProcessInfo();
@@ -73,7 +74,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             CurrentBaseDir = Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName);
             LastBaseDir = lastBuildInfo == null ? null : Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName);
             EnableIncremental = enableIncremental;
-            _postProcessors = postProcessors;
+            IsIncremental = GetIsIncremental();
         }
 
         #endregion
@@ -84,6 +85,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (_postProcessors.All(p => p.Processor is ISupportIncrementalPostProcessor))
             {
+                Logger.LogVerbose("Should trace post processing incremental info, because all post processors support incremental.");
                 return true;
             }
 
@@ -94,7 +96,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         // TODO: report incremental info in manifest
-        private bool GetCanIncrementalPostProcess()
+        private bool GetIsIncremental()
         {
             if (!ShouldTraceIncrementalInfo)
             {
@@ -108,13 +110,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (LastInfo == null)
             {
-                const string message = "Cannot support incremental post processors, because last post processor info is null.";
+                const string message = "Cannot support incremental post processing, because last post processor info is null.";
                 Logger.LogVerbose(message);
                 return false;
             }
             if (CurrentInfo.PostProcessorInfos.Count != LastInfo.PostProcessorInfos.Count)
             {
-                var message = $"Cannot support incremental post processors, because post processor info count mismatch: last has {LastInfo.PostProcessorInfos.Count} while current has {CurrentInfo.PostProcessorInfos.Count}.";
+                var message = $"Cannot support incremental post processing, because post processor info count mismatch: last has {LastInfo.PostProcessorInfos.Count} while current has {CurrentInfo.PostProcessorInfos.Count}.";
                 Logger.LogVerbose(message);
                 return false;
             }
@@ -124,12 +126,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var lastPostProcessorInfo = LastInfo.PostProcessorInfos[i];
                 if (!currentPostProcessorInfo.Equals(lastPostProcessorInfo))
                 {
-                    var message = $"Cannot support incremental post processors, because post processor info changed from last {lastPostProcessorInfo.ToJsonString()} to current {currentPostProcessorInfo.ToJsonString()}.";
+                    var message = $"Cannot support incremental post processing, because post processor info changed from last {lastPostProcessorInfo.ToJsonString()} to current {currentPostProcessorInfo.ToJsonString()}.";
                     Logger.LogVerbose(message);
                     return false;
                 }
             }
 
+            Logger.LogVerbose("Can support incremental post processing.");
             return true;
         }
 

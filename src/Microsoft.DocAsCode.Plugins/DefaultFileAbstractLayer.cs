@@ -22,15 +22,8 @@ namespace Microsoft.DocAsCode.Plugins
                    select f.Substring(folder.Length + 1);
         }
 
-        public IEnumerable<string> GetAllOutputFiles()
-        {
-            var folder = Path.GetFullPath(GetOutputPhysicalPath("."));
-            return from f in Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories)
-                   select f.Substring(folder.Length + 1);
-        }
-
         public bool Exists(string file) =>
-            File.Exists(GetPhysicalPath(file));
+                File.Exists(GetPhysicalPath(file));
 
         public Stream OpenRead(string file) =>
             File.OpenRead(GetPhysicalPath(file));

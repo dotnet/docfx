@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.IO;
     using System.Linq;
 
-    using Microsoft.CodeAnalysis;
     using Microsoft.DocAsCode.Common;
 
     internal class ApplicationLevelCache : CacheBase

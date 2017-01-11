@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return null;
             }
 
-            return str.ToString().Substring(2);
+            return str.Substring(2);
         }
 
         public static string GetCommentId(ISymbol symbol)
