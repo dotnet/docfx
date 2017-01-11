@@ -114,5 +114,8 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("changesFile")]
         public string ChangesFile { get; set; }
+
+        [JsonProperty("customLinkResolver")]
+        public string CustomLinkResolver { get; set; }
     }
 }

@@ -110,6 +110,18 @@ namespace Microsoft.DocAsCode.Build.Engine
             bool transformDocument = false;
             foreach (var parameter in parameters)
             {
+                if (parameter.CustomLinkResolver != null)
+                {
+                    ICustomHrefGenerator chg;
+                    if (_container.TryGetExport(parameter.CustomLinkResolver, out chg))
+                    {
+                        parameter.ApplyTemplateSettings.HrefGenerator = chg;
+                    }
+                    else
+                    {
+                        Logger.LogWarning($"Custom href generator({parameter.CustomLinkResolver}) is not found.");
+                    }
+                }
                 EnvironmentContext.FileAbstractLayerImpl =
                     FileAbstractLayerBuilder.Default
                     .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
