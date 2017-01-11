@@ -1,0 +1,43 @@
+﻿{
+  "files": [
+    {
+      "type": "Conceptual",
+      "source_relative_path": "a.md",
+      "output": {
+        ".html": {
+          "relative_path": "a.html"
+        },
+        ".mta.json": {
+          "relative_path": "a.mta.json"
+        }
+      },
+      "is_incremental": true
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "b.md",
+      "output": {
+        ".html": {
+          "relative_path": "b.html"
+        },
+        ".mta.json": {
+          "relative_path": "b.mta.json"
+        }
+      },
+      "is_incremental": true
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "c.md",
+      "output": {
+        ".html": {
+          "relative_path": "c.html"
+        },
+        ".mta.json": {
+          "relative_path": "c.mta.json"
+        }
+      },
+      "is_incremental": false
+    }
+  ]
+}
