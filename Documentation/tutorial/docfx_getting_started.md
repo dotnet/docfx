@@ -64,7 +64,27 @@ namespace WebApplication1
 
 *Step4.* Right click on the website project, and click *View* -> *View in Browser*, navigate to `/_site` sub URL to view your website!
 
-4. Build from source code
+4. Use *DocFX* with a Build Server
+---------------
+
+*DocFX* can be used in a Continuous Integration environment. 
+
+Most build systems do not checkout the branch that is being built, but 
+use a `detached head` for the specific commit.  DoxFX needs the the branch name to implement the `View Source` link in the API documentation.
+
+Setting the environment variable `DOCFX_SOURCE_BRANCH_NAME` tells DocFX which branch name to use.
+
+Many build systems set an environment variable with the branch name.  DocFX uses the following:
+
+- `APPVEYOR_REPO_BRANCH` - [AppVeyor](https://www.appveyor.com/)
+- `BUILD_SOURCEBRANCHNAME` - [Visual Studio Online](https://www.visualstudio.com/vso/)
+- `CI_BUILD_REF_NAME` - [GitLab CI](https://about.gitlab.com/gitlab-ci/)
+- `Git_Branch` - [TeamCity](https://www.jetbrains.com/teamcity/)
+- `GIT_BRANCH` - [Jenkins](https://jenkins.io/)
+- `GIT_LOCAL_BRANCH` - [Jenkins](https://jenkins.io/)
+
+
+5. Build from source code
 ----------------
 As a prerequisite, you need:
 - [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159)
@@ -80,7 +100,7 @@ As a prerequisite, you need:
 
 *Step4.* Follow steps in #2, #3, #4 to use *DocFX* in command-line, IDE or .NET Core.
 
-5. A seed project to play with *DocFX*
+6. A seed project to play with *DocFX*
 -------------------------
 Here is a seed project https://github.com/docascode/docfx-seed. It contains
 
@@ -93,7 +113,7 @@ Here is a seed project https://github.com/docascode/docfx-seed. It contains
 > [!Tip]
 > It is a good practice to separate files with different type into different folders.
 
-6. Q&A
+7. Q&A
 -------------------------
 1. Q: How do I quickly reference APIs from other APIs or conceptual files?
    A: Use `@uid` syntax.
