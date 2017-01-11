@@ -31,6 +31,10 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectDescriptors
                     {
                         scalarStyle = ScalarStyle.DoubleQuoted;
                     }
+                    else if (Regexes.NullLike.IsMatch(s))
+                    {
+                        scalarStyle = ScalarStyle.DoubleQuoted;
+                    }
                     else if (Regexes.IntegerLike.IsMatch(s))
                     {
                         scalarStyle = ScalarStyle.DoubleQuoted;
