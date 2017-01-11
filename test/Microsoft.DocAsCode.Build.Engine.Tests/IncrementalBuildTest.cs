@@ -18,17 +18,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
-    using Microsoft.DocAsCode.Tests.Common;
 
     using Xunit;
 
     [Trait("Owner", "xuzho")]
     [Trait("EntityType", "DocumentBuilder")]
     [Collection("docfx STA")]
-    public class IncrementalBuildTest : TestBase
+    public class IncrementalBuildTest : IncrementalTestBase
     {
-        private LogListener Listener { get; set; }
-
         public IncrementalBuildTest()
         {
             EnvironmentContext.SetBaseDirectory(Directory.GetCurrentDirectory());
@@ -40,6 +37,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             base.Dispose();
         }
 
+        // TODO: update incremental actions
         [Fact]
         public void TestBasic()
         {
@@ -1526,26 +1524,6 @@ tagRules : [
             }
         }
 
-        private void Init(string phaseName)
-        {
-            Listener = new LogListener(phaseName) { LogLevelThreshold = LogLevel.Warning };
-            Logger.RegisterListener(Listener);
-        }
-
-        private void CleanUp()
-        {
-            Logger.UnregisterListener(Listener);
-            Listener = null;
-        }
-
-        private void ClearListener()
-        {
-            if (Listener != null)
-            {
-                Listener.Items.Clear();
-            }
-        }
-
         private static bool CompareDir(string path1, string path2)
         {
             var files1 = new DirectoryInfo(path1).GetFiles("*.*", SearchOption.AllDirectories).Where(f => f.Name != "xrefmap.yml" && f.Name != "manifest.json").OrderBy(f => f.FullName).ToList();
@@ -1566,15 +1544,6 @@ tagRules : [
                 }
             }
             return true;
-        }
-
-        private List<string> GetLogMessages(params string[] phasePrefixes)
-        {
-            return (from i in Listener.Items
-                    from p in phasePrefixes
-                    where i.Phase.StartsWith(p)
-                    orderby i.Message
-                    select i.Message).ToList();
         }
 
         private void BuildDocument(
@@ -1616,47 +1585,5 @@ tagRules : [
             yield return typeof(ResourceDocumentProcessor).Assembly;
             yield return typeof(TocDocumentProcessor).Assembly;
         }
-
-        #region Listener
-
-        private class LogListener : ILoggerListener
-        {
-            public string Phase { get; }
-
-            public List<ILogItem> Items { get; } = new List<ILogItem>();
-
-            public LogLevel LogLevelThreshold { get; set; }
-
-            public LogListener(string phase)
-            {
-                Phase = phase;
-            }
-
-            public void Dispose()
-            {
-            }
-
-            public void Flush()
-            {
-            }
-
-            public void WriteLine(ILogItem item)
-            {
-                if (item.LogLevel < LogLevelThreshold)
-                {
-                    return;
-                }
-                if (item.Phase == Phase)
-                {
-                    Items.Add(item);
-                }
-                else if (item.Phase != null && item.Phase.StartsWith(Phase))
-                {
-                    Items.Add(item);
-                }
-            }
-        }
-
-        #endregion
     }
 }
