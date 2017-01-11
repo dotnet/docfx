@@ -29,6 +29,11 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [YamlMember(Alias = "altText")]
         [JsonProperty("altText")]
         public string AltText { get; set; }
+
+        public LinkInfo Clone()
+        {
+            return (LinkInfo)MemberwiseClone();
+        }
     }
 
     [Serializable]

@@ -34,5 +34,11 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty("attributes")]
         [MergeOption(MergeOption.Ignore)]
         public List<AttributeInfo> Attributes { get; set; }
+
+        public void CopyIneritedData(ApiParameter src)
+        {
+            if (Description == null)
+                Description = src.Description;
+        }
     }
 }

@@ -12,5 +12,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public bool PreserveRawInlineComments { get; set; }
 
         public Dictionary<string, ReferenceItem> References { get; set; }
+
+        public Dictionary<string, MetadataItem> Members { get; set; }
     }
 }

@@ -27,5 +27,28 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [YamlMember(Alias = "return")]
         [JsonProperty("return")]
         public ApiParameter Return { get; set; }
+
+        public void CopyIneritedData(SyntaxDetail src)
+        {
+            CopyInheritedParameterList(Parameters, src.Parameters);
+            CopyInheritedParameterList(TypeParameters, src.TypeParameters);
+            if (Return != null && src.Return != null)
+                Return.CopyIneritedData(src.Return);
+        }
+
+        static void CopyInheritedParameterList(List<ApiParameter> dest, List<ApiParameter> src)
+        {
+            if (dest == null || src == null || dest.Count != src.Count)
+                return;
+            for (int ndx = 0; ndx < dest.Count; ndx++)
+            {
+                var myParam = dest[ndx];
+                var srcParam = src[ndx];
+                if (myParam.Name == srcParam.Name && myParam.Type == srcParam.Type)
+                {
+                    myParam.CopyIneritedData(srcParam);
+                }
+            }
+        }
     }
 }
