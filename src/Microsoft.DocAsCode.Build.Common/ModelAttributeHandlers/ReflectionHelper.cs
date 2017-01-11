@@ -63,6 +63,26 @@ namespace Microsoft.DocAsCode.Build.Common
             return typeof(IEnumerable).IsAssignableFrom(t);
         }
 
+        public static bool TryGetGenericType(Type type, Type genericTypeDefinition, out Type genericType)
+        {
+            genericType = null;
+            if (IsGenericType(type, genericTypeDefinition))
+            {
+                genericType = type;
+                return true;
+            }
+            foreach (var i in type.GetInterfaces())
+            {
+                if (IsGenericType(i, genericTypeDefinition))
+                {
+                    genericType = i;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public static bool ImplementsGenericDefintion(Type type, Type genericTypeDefinition)
         {
             if (IsGenericType(type, genericTypeDefinition))
