@@ -188,6 +188,10 @@ You can also use `@uid_to_another_file` to quickly reference another file. There
 
 The render result of `@` form is same as auto link form. For example, `@System.String` is same as `<xref:System.String>`.
 
+> [!Warning]
+> Since `@` is a common character in a document, DocFX doesn't show a warning if UID isn't found for a shorthand form xref link.
+> Warnings for missing links are shown for auto links and Markdown links.
+
 #### Using hashtag in cross reference
 
 Sometimes you need to link to the middle of a file (an anchor) rather than jump to the beginning of a file. DocFX also allows you to do that.
