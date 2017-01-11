@@ -48,7 +48,7 @@ namespace DfmHttpService
             _processing = null;
         }
 
-        private async Task RunServerCore()
+        private void RunServerCore()
         {
             _listener.BeginGetContext(async ar =>
             {
@@ -71,12 +71,11 @@ namespace DfmHttpService
                     }
                     catch (Exception ex)
                     {
-                        Utility.ReplyServerErrorResponse(context, $"Error occurs, {ex.Message}");
+                        Utility.ReplyServerErrorResponse(context, $"Error occurs, {ex.ToString()}");
                     }
                 }
-                catch (HttpListenerException ex)
+                catch (HttpListenerException)
                 {
-                    Logger.LogError($"Error occurs while processing context, {ex.Message}");
                 }
             }, null);
         }
