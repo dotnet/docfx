@@ -79,7 +79,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 var content = JsonUtility.Deserialize<Dictionary<BuildPhase, string>>(reader);
                 foreach (var c in content)
                 {
-                    using (var sr = new StringReader(c.Value))
+                    using (var sr = new StreamReader(Path.Combine(Path.GetDirectoryName(file), c.Value)))
                     {
                         bm[c.Key] = BuildMessageInfo.Load(sr);
                     }
@@ -104,7 +104,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     writer,
                     bm.ToDictionary(
                         p => p.Key,
-                        p => GetSerializedBuildMessageInfo(p.Value, Path.GetDirectoryName(fileName))));
+                        p => SaveSerializedBuildMessageInfo(p.Value, Path.GetDirectoryName(fileName))));
             }
         }
 
@@ -188,31 +188,16 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
-        private static string GetSerializedBuildMessageInfo(BuildMessageInfo bmi, string baseDir)
-        {
-            var tempFile = CreateRandomFileName(baseDir);
-            try
+        private static string SaveSerializedBuildMessageInfo(BuildMessageInfo bmi, string baseDir) =>
+            RetryIO(() =>
             {
-                using (var fs = new FileStream(tempFile, FileMode.Create, FileAccess.ReadWrite))
+                var tempFile = GetRandomEntry(baseDir);
+                using (var fs = File.Create(Path.Combine(baseDir, tempFile)))
                 using (var writer = new StreamWriter(fs))
                 {
                     bmi.Save(writer);
                 }
-                return File.ReadAllText(tempFile);
-            }
-            finally
-            {
-                if (File.Exists(tempFile))
-                {
-                    try
-                    {
-                        File.Delete(tempFile);
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
-        }
+                return tempFile;
+            });
     }
 }
