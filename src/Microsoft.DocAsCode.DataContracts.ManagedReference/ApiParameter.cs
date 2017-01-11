@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.Common.EntityMergers;
-    using Microsoft.DocAsCode.DataContracts.Attributes;
+    using Microsoft.DocAsCode.DataContracts.Common;
 
     [Serializable]
     public class ApiParameter

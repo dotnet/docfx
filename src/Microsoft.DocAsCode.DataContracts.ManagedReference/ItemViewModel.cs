@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using System.Linq;
 
     using Microsoft.DocAsCode.Common.EntityMergers;
-    using Microsoft.DocAsCode.DataContracts.Attributes;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.YamlSerialization;
 

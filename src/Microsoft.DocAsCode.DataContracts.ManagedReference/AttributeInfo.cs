@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 {
     using System.Collections.Generic;
 
-    using Microsoft.DocAsCode.DataContracts.Attributes;
+    using Microsoft.DocAsCode.DataContracts.Common;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;

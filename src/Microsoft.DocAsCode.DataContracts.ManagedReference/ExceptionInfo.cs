@@ -6,7 +6,6 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using System;
 
     using Microsoft.DocAsCode.Common.EntityMergers;
-    using Microsoft.DocAsCode.DataContracts.Attributes;
     using Microsoft.DocAsCode.DataContracts.Common;
 
     using Newtonsoft.Json;

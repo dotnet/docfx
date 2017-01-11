@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Build.Common
     using System.Collections.Concurrent;
     using System.Reflection;
 
-    using Microsoft.DocAsCode.DataContracts.Attributes;
+    using Microsoft.DocAsCode.DataContracts.Common;
 
     public class UniqueIdentityReferenceHandler : IModelAttributeHandler
     {

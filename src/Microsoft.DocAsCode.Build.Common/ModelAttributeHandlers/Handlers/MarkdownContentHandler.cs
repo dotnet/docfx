@@ -11,7 +11,6 @@ namespace Microsoft.DocAsCode.Build.Common
     using System.Reflection;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.DataContracts.Common.Attributes;
     using Microsoft.DocAsCode.Plugins;
 
     public class MarkdownContentHandler : IModelAttributeHandler
