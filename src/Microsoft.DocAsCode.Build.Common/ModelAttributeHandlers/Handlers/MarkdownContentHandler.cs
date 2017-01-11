@@ -95,13 +95,11 @@ namespace Microsoft.DocAsCode.Build.Common
             protected override void HandleDictionaryType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
             {
                 HandleItems(typeof(IDictionary<,>), typeof(HandleIDictionaryItems<,>), declaringObject, currentPropertyInfo, context);
-                base.HandleDictionaryType(declaringObject, currentPropertyInfo, context);
             }
 
             protected override void HandleEnumerableType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
             {
                 HandleItems(typeof(IList<>), typeof(HandleIListItems<>), declaringObject, currentPropertyInfo, context);
-                base.HandleEnumerableType(declaringObject, currentPropertyInfo, context);
             }
 
             protected override void HandleNonPrimitiveType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
