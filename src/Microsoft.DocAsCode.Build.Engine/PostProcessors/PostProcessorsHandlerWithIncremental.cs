@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
@@ -46,7 +47,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(outputFolder));
             }
 
-            // TODO: add logs
             // TODO: replay warning
             var increItems = manifest.Files.Where(i => i.IsIncremental).ToList();
             var noneIncreItems = manifest.Files.Where(i => !i.IsIncremental).ToList();
@@ -65,31 +65,40 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void PreHandle(Manifest manifest, string outputFolder, List<ManifestItem> increItems, List<ManifestItem> noneIncreItems)
         {
-            if (_increContext.CanIncremental)
+            using (new PerformanceScope("Pre-handle in incremental post processing"))
             {
-                CopyToOutput(increItems, outputFolder);
-
-                // Copy none incremental items to post processors
-                manifest.Files = noneIncreItems.ToList();
-            }
-            else
-            {
-                // If cannot incremental post process, set all incremental flags to false
-                foreach (var item in manifest.Files)
+                if (_increContext.CanIncremental)
                 {
-                    item.IsIncremental = false;
+                    CopyToOutput(increItems, outputFolder);
+
+                    // Copy none incremental items to post processors
+                    manifest.Files = noneIncreItems.ToList();
+
+                    Logger.LogVerbose($"Copied {increItems.Count} incremental items from cache, prepare to handle {noneIncreItems.Count} not incremental items.");
                 }
-                noneIncreItems.AddRange(increItems);
-                increItems.Clear();
+                else
+                {
+                    // If cannot incremental post process, set all incremental flags to false
+                    foreach (var item in manifest.Files)
+                    {
+                        item.IsIncremental = false;
+                    }
+                    noneIncreItems.AddRange(increItems);
+                    increItems.Clear();
+                    Logger.LogVerbose("Set all incremental flags to false, since cannot support incremental post processing.");
+                }
             }
         }
 
         private void PostHandle(Manifest manifest, List<ManifestItem> increItems)
         {
-            if (_increContext.CanIncremental)
+            using (new PerformanceScope("Post-handle in incremental post processing"))
             {
-                // Add back incremental items
-                manifest.Files.AddRange(increItems);
+                if (_increContext.CanIncremental)
+                {
+                    // Add back incremental items
+                    manifest.Files.AddRange(increItems);
+                }
             }
         }
 
@@ -101,8 +110,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (_increContext.ShouldTraceIncrementalInfo)
             {
-                TraceIncremental(increItems);
-                TraceNoneIncremental(outputFolder, noneIncreItems);
+                using (new PerformanceScope("Trace intermediate info in incremental post processing"))
+                {
+                    TraceIncremental(increItems);
+                    TraceNoneIncremental(outputFolder, noneIncreItems);
+                }
             }
         }
 

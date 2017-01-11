@@ -90,8 +90,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         }
 
         [Fact]
-        public void TestIncrementalWithFirstNonIncrementalButSecondIncremental()
+        public void TestIncrementalWithFirstCannotIncrementalButSecondCanIncremental()
         {
+            //        | Should trace incremental info | Can incremental |
+            // -----------------------------------------------
+            // First  |               yes             |       no       |
+            // Second |               yes             |       yes        |
+
             // Step 1: trace intermediate info
             var intermediateFolder = GetRandomFolder();
             var currentBuildInfo = new BuildInfo
@@ -177,6 +182,209 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
             Assert.Equal(6, postProcessOutputs.Count);
             VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, appendString, "a", "b", "c");
+        }
+
+        [Fact]
+        public void TestIncrementalWithFirstCanIncrementalButSecondCannotIncremental()
+        {
+            //        | Should trace incremental info | Can incremental |
+            // -----------------------------------------------
+            // First  |               yes             |       yes       |
+            // Second |               yes             |       no        |
+
+            // Step 1: trace intermediate info and post process incrementally
+            var intermediateFolder = GetRandomFolder();
+            var currentBuildInfo = new BuildInfo
+            {
+                DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder)
+            };
+            var lastBuildInfo = new BuildInfo
+            {
+                DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder),
+                PostProcessInfo = new PostProcessInfo()
+            };
+            lastBuildInfo.PostProcessInfo.PostProcessorInfos.Add(new PostProcessorInfo
+            {
+                Name = typeof(AppendStringPostProcessor).Name
+            });
+
+            // Exclude c, which is not incremental
+            PrepareCachedOutput(Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName), lastBuildInfo.PostProcessInfo.PostProcessOutputs,
+                AppendStringPostProcessor.AppendString, "a", "b");
+
+            var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
+            var appendString = $"{AppendStringPostProcessor.AppendString}";
+            var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+
+            // Check context
+            Assert.True(increContext.ShouldTraceIncrementalInfo);
+            Assert.True(increContext.CanIncremental);
+
+            var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
+            var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+            var outputFolder = GetRandomFolder();
+            PrepareOutput(outputFolder, "a", "b", "c");
+            increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
+
+            // Check incremental flag
+            Assert.Equal(3, manifest.Files.Count);
+            Assert.True(manifest.Files.Single(i => i.SourceRelativePath == "a.md").IsIncremental);
+            Assert.True(manifest.Files.Single(i => i.SourceRelativePath == "b.md").IsIncremental);
+            Assert.False(manifest.Files.Single(i => i.SourceRelativePath == "c.md").IsIncremental);
+
+            // Check output content
+            VerifyOutput(outputFolder, appendString, "a", "b", "c");
+
+            // Check cached PostProcessInfo
+            Assert.NotNull(currentBuildInfo.PostProcessInfo);
+
+            var postProcessorInfos = currentBuildInfo.PostProcessInfo.PostProcessorInfos;
+            Assert.Equal(1, currentBuildInfo.PostProcessInfo.PostProcessorInfos.Count);
+            Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
+            Assert.Null(postProcessorInfos[0].IncrementalContextHash);
+
+            var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
+            Assert.Equal(6, postProcessOutputs.Count);
+            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, appendString, "a", "b", "c");
+
+            // Step 2: disable incremental post process
+            const bool enableIncremental = false;
+            currentBuildInfo = new BuildInfo
+            {
+                DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder)
+            };
+            lastBuildInfo = new BuildInfo
+            {
+                DirectoryName = Path.GetFileName(increContext.CurrentBaseDir),
+                PostProcessInfo = increContext.CurrentInfo
+            };
+            increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, enableIncremental);
+
+            // Check context
+            Assert.True(increContext.ShouldTraceIncrementalInfo);
+            Assert.False(increContext.CanIncremental);
+
+            increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
+            manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+            outputFolder = GetRandomFolder();
+            PrepareOutput(outputFolder, "a", "b", "c");
+            increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
+
+            // Check incremental flag
+            Assert.True(manifest.Files.All(f => f.IsIncremental == false));
+
+            // Check output content
+            VerifyOutput(outputFolder, appendString, "a", "b", "c");
+
+            // Check cached PostProcessInfo
+            Assert.NotNull(currentBuildInfo.PostProcessInfo);
+
+            postProcessorInfos = currentBuildInfo.PostProcessInfo.PostProcessorInfos;
+            Assert.Equal(1, currentBuildInfo.PostProcessInfo.PostProcessorInfos.Count);
+            Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
+            Assert.Null(postProcessorInfos[0].IncrementalContextHash);
+
+            postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
+            Assert.Equal(6, postProcessOutputs.Count);
+            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, appendString, "a", "b", "c");
+        }
+
+        [Fact]
+        public void TestIncrementalWithFirstCanIncrementalButSecondShouldnotTraceIncrementalInfo()
+        {
+            //        | Should trace incremental info | Can incremental |
+            // -----------------------------------------------
+            // First  |               yes             |       yes       |
+            // Second |               no              |       no        |
+
+            // Step 1: trace intermediate info and post process incrementally
+            var intermediateFolder = GetRandomFolder();
+            var currentBuildInfo = new BuildInfo
+            {
+                DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder)
+            };
+            var lastBuildInfo = new BuildInfo
+            {
+                DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder),
+                PostProcessInfo = new PostProcessInfo()
+            };
+            lastBuildInfo.PostProcessInfo.PostProcessorInfos.Add(new PostProcessorInfo
+            {
+                Name = typeof(AppendStringPostProcessor).Name
+            });
+
+            // Exclude c, which is not incremental
+            PrepareCachedOutput(Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName), lastBuildInfo.PostProcessInfo.PostProcessOutputs,
+                AppendStringPostProcessor.AppendString, "a", "b");
+
+            var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
+            var appendString = $"{AppendStringPostProcessor.AppendString}";
+            var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+
+            // Check context
+            Assert.True(increContext.ShouldTraceIncrementalInfo);
+            Assert.True(increContext.CanIncremental);
+
+            var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
+            var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+            var outputFolder = GetRandomFolder();
+            PrepareOutput(outputFolder, "a", "b", "c");
+            increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
+
+            // Check incremental flag
+            Assert.Equal(3, manifest.Files.Count);
+            Assert.True(manifest.Files.Single(i => i.SourceRelativePath == "a.md").IsIncremental);
+            Assert.True(manifest.Files.Single(i => i.SourceRelativePath == "b.md").IsIncremental);
+            Assert.False(manifest.Files.Single(i => i.SourceRelativePath == "c.md").IsIncremental);
+
+            // Check output content
+            VerifyOutput(outputFolder, appendString, "a", "b", "c");
+
+            // Check cached PostProcessInfo
+            Assert.NotNull(currentBuildInfo.PostProcessInfo);
+
+            var postProcessorInfos = currentBuildInfo.PostProcessInfo.PostProcessorInfos;
+            Assert.Equal(1, currentBuildInfo.PostProcessInfo.PostProcessorInfos.Count);
+            Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
+            Assert.Null(postProcessorInfos[0].IncrementalContextHash);
+
+            var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
+            Assert.Equal(6, postProcessOutputs.Count);
+            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, appendString, "a", "b", "c");
+
+            // Step 2: should not trace inter incremental post process
+            currentBuildInfo = new BuildInfo
+            {
+                DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder)
+            };
+            lastBuildInfo = new BuildInfo
+            {
+                DirectoryName = Path.GetFileName(increContext.CurrentBaseDir),
+                PostProcessInfo = increContext.CurrentInfo
+            };
+
+            // Add post processor which not supports 
+            postProcessors.AddRange(GetPostProcessors(typeof(NonIncrementalPostProcessor)));
+            increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+
+            // Check context
+            Assert.False(increContext.ShouldTraceIncrementalInfo);
+            Assert.False(increContext.CanIncremental);
+
+            increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
+            manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+            outputFolder = GetRandomFolder();
+            PrepareOutput(outputFolder, "a", "b", "c");
+            increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
+
+            // Check incremental flag
+            Assert.True(manifest.Files.All(f => f.IsIncremental == false));
+
+            // Check output content
+            VerifyOutput(outputFolder, appendString, "a", "b", "c");
+
+            // Check cached PostProcessInfo should be null
+            Assert.Null(currentBuildInfo.PostProcessInfo);
         }
 
         [Fact]
