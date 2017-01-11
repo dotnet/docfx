@@ -5,13 +5,14 @@ namespace Microsoft.DocAsCode.Build.Common
 {
     using System;
     using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
     public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler where T: Attribute
     {
-        private readonly PropInfo[] _props;
-        private readonly IModelAttributeHandler _handler;
+        protected readonly PropInfo[] Props;
+        protected readonly IModelAttributeHandler Handler;
 
         protected BaseModelAttributeHandler(Type type, IModelAttributeHandler handler)
         {
@@ -25,13 +26,13 @@ namespace Microsoft.DocAsCode.Build.Common
                 throw new ArgumentNullException(nameof(handler));
             }
 
-            _props = GetProps(type);
-            _handler = handler;
+            Props = GetProps(type);
+            Handler = handler;
         }
 
         protected abstract void HandleCurrentProperty(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context);
 
-        public virtual void Handle(object obj, HandleModelAttributesContext context)
+        public virtual object Handle(object obj, HandleModelAttributesContext context)
         {
             if (context == null)
             {
@@ -40,10 +41,10 @@ namespace Microsoft.DocAsCode.Build.Common
 
             if (obj == null)
             {
-                return;
+                return null;
             }
 
-            foreach (var prop in _props)
+            foreach (var prop in Props)
             {
                 if (ShouldHandle(prop, obj, context))
                 {
@@ -54,33 +55,88 @@ namespace Microsoft.DocAsCode.Build.Common
                     var type = prop.Prop.PropertyType;
                     if (ReflectionHelper.IsDictionaryType(type))
                     {
-                        // Not supported
+                        HandleDictionaryType(obj, prop.Prop, context);
                     }
                     else if (type != typeof(string) && ReflectionHelper.IsIEnumerableType(type))
                     {
-                        var propertyValue = prop.Prop.GetValue(obj);
-                        if (propertyValue != null)
-                        {
-                            var value = (IEnumerable)propertyValue;
-                            foreach (var i in value)
-                            {
-                                object temp = i;
-                                _handler.Handle(temp, context);
-                            }
-                        }
+                        HandleEnumerableType(obj, prop.Prop, context);
                     }
-                    else if (!type.IsPrimitive)
+                    else if (type.IsPrimitive)
                     {
-                        var propertyObject = prop.Prop.GetValue(obj);
-                        _handler.Handle(propertyObject, context);
+                        HandlePrimitiveType(obj, prop.Prop, context);
+                    }
+                    else
+                    {
+                        HandleNonPrimitiveType(obj, prop.Prop, context);
                     }
                 }
             }
+
+            return obj;
         }
 
         protected virtual bool ShouldHandle(PropInfo currentPropInfo, object declaringObject, HandleModelAttributesContext context)
         {
             return currentPropInfo.Attr != null;
+        }
+
+        /// <summary>
+        /// By default enumerate Dictionary's value if it does not have defined Attribute
+        /// </summary>
+        /// <param name="declaringObject"></param>
+        /// <param name="currentPropertyInfo"></param>
+        /// <param name="context"></param>
+        protected virtual void HandleDictionaryType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
+        {
+            dynamic propertyValue = currentPropertyInfo.GetValue(declaringObject);
+            if (propertyValue != null)
+            {
+                foreach (var i in propertyValue)
+                {
+                    Handler.Handle(i.Value, context);
+                }
+            }
+        }
+
+        /// <summary>
+        /// By default enumerate Enumerable type if it does not have defined Attribute
+        /// </summary>
+        /// <param name="declaringObject"></param>
+        /// <param name="currentPropertyInfo"></param>
+        /// <param name="context"></param>
+        protected virtual void HandleEnumerableType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
+        {
+            var propertyValue = currentPropertyInfo.GetValue(declaringObject);
+            if (propertyValue != null)
+            {
+                var value = (IEnumerable)propertyValue;
+                foreach (var i in value)
+                {
+                    Handler.Handle(i, context);
+                }
+            }
+        }
+
+        /// <summary>
+        /// By default skip Primitive type if it does not have defined Attribute
+        /// </summary>
+        /// <param name="decalringObject"></param>
+        /// <param name="currentPropertyInfo"></param>
+        /// <param name="context"></param>
+        protected virtual void HandlePrimitiveType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
+        {
+        }
+
+        /// <summary>
+        /// By default step into NonPrimitive type if it does not have defined Attribute
+        /// </summary>
+        /// <param name="decalringObject"></param>
+        /// <param name="currentPropertyInfo"></param>
+        /// <param name="context"></param>
+        protected virtual void HandleNonPrimitiveType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
+        {
+            var propertyObject = currentPropertyInfo.GetValue(declaringObject);
+            Handler.Handle(propertyObject, context);
         }
 
         protected virtual PropInfo[] GetProps(Type type)
