@@ -11,26 +11,26 @@ namespace DfmHttpService
 
     public class DfmPreviewHandler : IHttpHandler
     {
-        public bool IsSupport(HttpContext wrapper)
+        public bool IsSupport(ServiceContext context)
         {
-            return wrapper.Message.Name == CommandName.Preview;
+            return context.Message.Name == CommandName.Preview;
         }
 
-        public Task HandleAsync(HttpContext wrapper)
+        public Task HandleAsync(ServiceContext context)
         {
             return Task.Run(() =>
             {
                 string content;
                 try
                 {
-                    content = Preview(wrapper.Message.Documentation, wrapper.Message.FilePath, wrapper.Message.WorkspacePath);
+                    content = Preview(context.Message.Documentation, context.Message.FilePath, context.Message.WorkspacePath);
                 }
                 catch (Exception ex)
                 {
-                    Utility.ReplyServerErrorResponse(wrapper.Context, ex.Message);
+                    Utility.ReplyServerErrorResponse(context.HttpContext, ex.Message);
                     return;
                 }
-                Utility.ReplySuccessfulResponse(wrapper.Context, content, ContentType.Html);
+                Utility.ReplySuccessfulResponse(context.HttpContext, content, ContentType.Html);
             });
         }
 

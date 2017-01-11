@@ -6,6 +6,7 @@ namespace DfmHttpService
     using System;
     using System.Net;
     using System.Threading;
+    using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Common;
 
@@ -47,9 +48,9 @@ namespace DfmHttpService
             _processing = null;
         }
 
-        private void RunServerCore()
+        private async Task RunServerCore()
         {
-            _listener.BeginGetContext(ar =>
+            _listener.BeginGetContext(async ar =>
             {
                 try
                 {
@@ -57,26 +58,20 @@ namespace DfmHttpService
                     RunServerCore();
                     try
                     {
-                        var wrapper = new HttpContext { Context = context, Server = this };
-                        _handler.HandleAsync(wrapper).Wait();
+                        var wrapper = new ServiceContext { HttpContext = context, Server = this };
+                        await _handler.HandleAsync(wrapper);
                     }
-                    catch (AggregateException ae)
+                    catch (HandlerClientException ex)
                     {
-                        foreach (var ex in ae.InnerExceptions)
-                        {
-                            if (ex is HandlerClientException)
-                            {
-                                Utility.ReplyClientErrorResponse(context, $"Error occurs while handling context, {ex.Message}");
-                            }
-                            else if (ex is HandlerServerException)
-                            {
-                                Utility.ReplyServerErrorResponse(context, $"Error occurs while handling context, {ex.Message}");
-                            }
-                            else
-                            {
-                                throw;
-                            }
-                        }
+                        Utility.ReplyClientErrorResponse(context, $"Error occurs while handling context, {ex.Message}");
+                    }
+                    catch (HandlerServerException ex)
+                    {
+                        Utility.ReplyServerErrorResponse(context, $"Error occurs while handling context, {ex.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Utility.ReplyServerErrorResponse(context, $"Error occurs, {ex.Message}");
                     }
                 }
                 catch (HttpListenerException ex)

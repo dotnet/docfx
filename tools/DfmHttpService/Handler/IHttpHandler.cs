@@ -7,8 +7,8 @@ namespace DfmHttpService
 
     public interface IHttpHandler
     {
-        bool IsSupport(HttpContext wrapper);
+        bool IsSupport(ServiceContext context);
 
-        Task HandleAsync(HttpContext wrapper);
+        Task HandleAsync(ServiceContext context);
     }
 }

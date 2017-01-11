@@ -5,9 +5,9 @@ namespace DfmHttpService
 {
     using System.Net;
 
-    public class HttpContext
+    public class ServiceContext
     {
-        public HttpListenerContext Context { get; set; }
+        public HttpListenerContext HttpContext { get; set; }
 
         public DfmHttpServer Server { get; set; }
 
@@ -17,7 +17,7 @@ namespace DfmHttpService
         {
             get
             {
-                _message = _message ?? Utility.GetCommandMessage(Context);
+                _message = _message ?? Utility.GetCommandMessage(HttpContext);
                 return _message;
             }
         }

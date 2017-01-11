@@ -7,17 +7,17 @@ namespace DfmHttpService
 
     public class ExitHandler : IHttpHandler
     {
-        public bool IsSupport(HttpContext wrapper)
+        public bool IsSupport(ServiceContext context)
         {
-            return wrapper.Message.Name == CommandName.Exit;
+            return context.Message.Name == CommandName.Exit;
         }
 
-        public Task HandleAsync(HttpContext wrapper)
+        public Task HandleAsync(ServiceContext context)
         {
             return Task.Run(() =>
             {
-                Utility.ReplyExitResponse(wrapper.Context, "Dfm service exit");
-                wrapper.Server.Stop();
+                Utility.ReplyExitResponse(context.HttpContext, "Dfm service exit");
+                context.Server.Stop();
             });
         }
     }

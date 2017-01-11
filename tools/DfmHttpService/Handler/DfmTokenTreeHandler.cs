@@ -11,26 +11,26 @@ namespace DfmHttpService
 
     public class DfmTokenTreeHandler : IHttpHandler
     {
-        public bool IsSupport(HttpContext wrapper)
+        public bool IsSupport(ServiceContext context)
         {
-            return wrapper.Message.Name == CommandName.GenerateTokenTree;
+            return context.Message.Name == CommandName.GenerateTokenTree;
         }
 
-        public Task HandleAsync(HttpContext wrapper)
+        public Task HandleAsync(ServiceContext context)
         {
             return Task.Run(() =>
             {
                 string tokenTree;
                 try
                 {
-                    tokenTree = GenerateTokenTree(wrapper.Message.Documentation, wrapper.Message.FilePath, wrapper.Message.WorkspacePath);
+                    tokenTree = GenerateTokenTree(context.Message.Documentation, context.Message.FilePath, context.Message.WorkspacePath);
                 }
                 catch (Exception ex)
                 {
-                    Utility.ReplyServerErrorResponse(wrapper.Context, ex.Message);
+                    Utility.ReplyServerErrorResponse(context.HttpContext, ex.Message);
                     return;
                 }
-                Utility.ReplySuccessfulResponse(wrapper.Context, tokenTree, ContentType.Json);
+                Utility.ReplySuccessfulResponse(context.HttpContext, tokenTree, ContentType.Json);
             });
         }
 

@@ -31,22 +31,22 @@ namespace DfmHttpService
             _handlers.AddRange(handlers);
         }
 
-        public bool IsSupport(HttpContext wrapper)
+        public bool IsSupport(ServiceContext context)
         {
             throw new System.NotImplementedException();
         }
 
-        public async Task HandleAsync(HttpContext wrapper)
+        public async Task HandleAsync(ServiceContext context)
         {
             foreach (var handler in _handlers)
             {
-                if (handler.IsSupport(wrapper))
+                if (handler.IsSupport(context))
                 {
-                    await handler.HandleAsync(wrapper);
+                    await handler.HandleAsync(context);
                     return;
                 }
             }
-            Utility.ReplyClientErrorResponse(wrapper.Context, "No handler processes the context");
+            Utility.ReplyClientErrorResponse(context.HttpContext, "No handler processes the context");
         }
     }
 }
