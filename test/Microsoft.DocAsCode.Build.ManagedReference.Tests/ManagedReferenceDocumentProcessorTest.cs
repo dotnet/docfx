@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.RestApi.Tests
+namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -84,9 +84,9 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
 
             Assert.Equal(2, model.Syntax.TypeParameters.Count);
             Assert.Equal("T", model.Syntax.TypeParameters[0].Name);
-            Assert.Equal("This type should be class and can new instance.", model.Syntax.TypeParameters[0].Description);
+            Assert.Equal("<p sourcefile=\"TestData/mref/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">This type should be class and can new instance.</p>\n", model.Syntax.TypeParameters[0].Description);
             Assert.Equal("K", model.Syntax.TypeParameters[1].Name);
-            Assert.Equal("This type is a struct type, class type can't be used for this parameter.", model.Syntax.TypeParameters[1].Description);
+            Assert.Equal("<p sourcefile=\"TestData/mref/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">This type is a struct type, class type can&#39;t be used for this parameter.</p>\n", model.Syntax.TypeParameters[1].Description);
 
             Assert.Equal(20, model.Children.Count);
         }

@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.Common
     using System.Reflection;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.DataContracts.Common.Attributes;
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
     public class MarkdownContentHandler : IModelAttributeHandler
@@ -94,48 +94,12 @@ namespace Microsoft.DocAsCode.Build.Common
 
             protected override void HandleDictionaryType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
             {
-                var type = currentPropertyInfo.PropertyType;
-                if (ReflectionHelper.ImplementsGenericDefintion(type, typeof(IDictionary<,>)))
-                {
-                    dynamic dict = currentPropertyInfo.GetValue(declaringObject);
-                    if (dict != null && dict.Count > 0)
-                    {
-                        var keys = new List<dynamic>(dict.Keys);
-                        foreach (var key in keys)
-                        {
-                            var val = dict[key];
-                            var handled = Handler.Handle(val, context);
-                            if (!ReferenceEquals(val, handled))
-                            {
-                                dict[key] = handled;
-                            }
-                        }
-                    }
-                }
-                base.HandleDictionaryType(declaringObject, currentPropertyInfo, context);
+                HandleItems(typeof(IDictionary<,>), typeof(HandleIDictionaryItems<,>), declaringObject, currentPropertyInfo, context);
             }
 
             protected override void HandleEnumerableType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
             {
-                var type = currentPropertyInfo.PropertyType;
-                if (ReflectionHelper.ImplementsGenericDefintion(type, typeof(IList<>)))
-                {
-                    dynamic list = currentPropertyInfo.GetValue(declaringObject);
-                    if (list != null && list.Count > 0)
-                    {
-                        for(var i = 0; i < list.Count; i++)
-                        {
-                            var val = list[i];
-                            var handled = Handler.Handle(val, context);
-                            if (!ReferenceEquals(val, handled))
-                            {
-                                list[i] = handled;
-                            }
-                        }
-                    }
-                }
-
-                base.HandleEnumerableType(declaringObject, currentPropertyInfo, context);
+                HandleItems(typeof(IList<>), typeof(HandleIListItems<>), declaringObject, currentPropertyInfo, context);
             }
 
             protected override void HandleNonPrimitiveType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
@@ -211,6 +175,69 @@ namespace Microsoft.DocAsCode.Build.Common
                 context.FileLinkSources = context.FileLinkSources.Merge(mr.FileLinkSources.Select(s => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(s.Key, s.Value)));
                 context.UidLinkSources = context.UidLinkSources.Merge(mr.UidLinkSources.Select(s => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(s.Key, s.Value)));
                 return mr.Html;
+            }
+
+            private void HandleItems(Type genericInterface, Type implHandlerType, object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
+            {
+                var type = currentPropertyInfo.PropertyType;
+                Type genericType;
+                if (ReflectionHelper.TryGetGenericType(type, genericInterface, out genericType))
+                {
+                    var obj = currentPropertyInfo.GetValue(declaringObject);
+                    if (obj != null)
+                    {
+                        var implType = implHandlerType.MakeGenericType(genericType.GetGenericArguments());
+                        var instance = (IHandleItems)Activator.CreateInstance(implType, obj);
+                        instance.Handle(s => Handler.Handle(s, context));
+                    }
+                }
+            }
+
+            private interface IHandleItems
+            {
+                void Handle(Func<object, object> handler);
+            }
+
+            private class HandleIListItems<T> : IHandleItems
+            {
+                private readonly IList<T> _list;
+                public HandleIListItems(IList<T> list)
+                {
+                    _list = list;
+                }
+                public void Handle(Func<object, object> handler)
+                {
+                    Handle(s => (T)handler((T)s));
+                }
+
+                private void Handle(Func<T, T> handler)
+                {
+                    for (int i = 0; i < _list.Count; i++)
+                    {
+                        _list[i] = handler(_list[i]);
+                    }
+                }
+            }
+
+            private class HandleIDictionaryItems<TKey, TValue> : IHandleItems
+            {
+                private readonly IDictionary<TKey, TValue> _dict;
+                public HandleIDictionaryItems(IDictionary<TKey, TValue> dict)
+                {
+                    _dict = dict;
+                }
+                public void Handle(Func<object, object> handler)
+                {
+                    Handle(s => (TValue)handler(s));
+                }
+
+                private void Handle(Func<TValue, TValue> handler)
+                {
+                    foreach (var key in _dict.Keys.ToList())
+                    {
+                        _dict[key] = handler(_dict[key]);
+                    }
+                }
             }
         }
     }

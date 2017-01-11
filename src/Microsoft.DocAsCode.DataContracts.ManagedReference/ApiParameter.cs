@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.Common.EntityMergers;
+    using Microsoft.DocAsCode.DataContracts.Common;
 
     [Serializable]
     public class ApiParameter
@@ -21,10 +22,12 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [YamlMember(Alias = "type")]
         [JsonProperty("type")]
+        [UniqueIdentityReference]
         public string Type { get; set; }
 
         [YamlMember(Alias = "description")]
         [JsonProperty("description")]
+        [MarkdownContent]
         public string Description { get; set; }
 
         [YamlMember(Alias = "attributes")]
