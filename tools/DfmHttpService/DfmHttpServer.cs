@@ -6,9 +6,6 @@ namespace DfmHttpService
     using System;
     using System.Net;
     using System.Threading;
-    using System.Threading.Tasks;
-
-    using Microsoft.DocAsCode.Common;
 
     public class DfmHttpServer
     {
@@ -16,7 +13,8 @@ namespace DfmHttpService
         private const string UrlPrefixTemplate = "http://localhost:{0}/";
         private readonly HttpListener _listener;
         private readonly IHttpHandler _handler;
-        private CountdownEvent _processing;
+        private ManualResetEvent _processing;
+        private int _status;
 
         // TODO: make UrlPrefix configurable
         private static string UrlPrefix => string.Format(UrlPrefixTemplate, DefaultPort);
@@ -30,20 +28,31 @@ namespace DfmHttpService
 
         public void Start()
         {
+            var status = Interlocked.CompareExchange(ref _status, 1, 0);
+            if (status != 0)
+            {
+                return;
+            }
+
             _listener.Start();
-            _processing = new CountdownEvent(1);
+            _processing = new ManualResetEvent(false);
             RunServerCore();
         }
 
-        public void Stop()
+        public void Terminate()
         {
+            var status = Interlocked.CompareExchange(ref _status, 0, 1);
+            if (status != 1)
+            {
+                return;
+            }
             _listener.Stop();
-            _processing.Signal();
+            _processing.Set();
         }
 
         public void WaitForExit()
         {
-            _processing.Wait();
+            _processing.WaitOne();
             _listener.Close();
             _processing = null;
         }
