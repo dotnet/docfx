@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
             catch (Exception ex)
             {
-                Logger.LogWarning($"Exception occurs when loading build info from '{Path.Combine(baseDir, FileName)}', message: {ex.Message}.");
+                Logger.LogInfo($"Exception occurs when loading build info from '{Path.Combine(baseDir, FileName)}', message: {ex.Message}.");
                 return null;
             }
             return buildInfo;
