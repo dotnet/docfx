@@ -15,6 +15,6 @@
     <tags>Documentation API Metadata docascode docfx</tags>
   </metadata>
   <files>
-    <file src="**" target="content\plugins\"/>
+    <file src="**" target="content\plugins\" exclude="**\*.pdb"/>
   </files>
 </package>
