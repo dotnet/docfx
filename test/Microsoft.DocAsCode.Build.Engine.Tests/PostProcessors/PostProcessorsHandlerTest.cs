@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Check context
             Assert.True(increContext.ShouldTraceIncrementalInfo);
-            Assert.True(increContext.CanIncremental);
+            Assert.True(increContext.IsIncremental);
 
             var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
             var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Check context
             Assert.True(increContext.ShouldTraceIncrementalInfo);
-            Assert.False(increContext.CanIncremental);
+            Assert.False(increContext.IsIncremental);
 
             var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
             var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
@@ -152,7 +152,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Check context
             Assert.True(increContext.ShouldTraceIncrementalInfo);
-            Assert.True(increContext.CanIncremental);
+            Assert.True(increContext.IsIncremental);
 
             increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
             manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
@@ -218,7 +218,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Check context
             Assert.True(increContext.ShouldTraceIncrementalInfo);
-            Assert.True(increContext.CanIncremental);
+            Assert.True(increContext.IsIncremental);
 
             var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
             var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
@@ -262,7 +262,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Check context
             Assert.True(increContext.ShouldTraceIncrementalInfo);
-            Assert.False(increContext.CanIncremental);
+            Assert.False(increContext.IsIncremental);
 
             increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
             manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
@@ -323,7 +323,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Check context
             Assert.True(increContext.ShouldTraceIncrementalInfo);
-            Assert.True(increContext.CanIncremental);
+            Assert.True(increContext.IsIncremental);
 
             var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
             var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
@@ -369,7 +369,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Check context
             Assert.False(increContext.ShouldTraceIncrementalInfo);
-            Assert.False(increContext.CanIncremental);
+            Assert.False(increContext.IsIncremental);
 
             increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
             manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
@@ -414,7 +414,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Check context
             Assert.True(increContext.ShouldTraceIncrementalInfo);
-            Assert.True(increContext.CanIncremental);
+            Assert.True(increContext.IsIncremental);
 
             var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
             var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental_with_directory.json");
@@ -467,7 +467,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Check context
             Assert.True(increContext.ShouldTraceIncrementalInfo);
-            Assert.False(increContext.CanIncremental);
+            Assert.False(increContext.IsIncremental);
 
             var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
             var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
@@ -518,7 +518,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Check context
             Assert.True(increContext.ShouldTraceIncrementalInfo);
-            Assert.False(increContext.CanIncremental);
+            Assert.False(increContext.IsIncremental);
             Assert.False(increContext.EnableIncremental);
 
             var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
@@ -561,7 +561,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Check context
             Assert.True(increContext.ShouldTraceIncrementalInfo);
-            Assert.False(increContext.CanIncremental);
+            Assert.False(increContext.IsIncremental);
 
             var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
             var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
@@ -612,7 +612,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Check context
             Assert.False(increContext.ShouldTraceIncrementalInfo);
-            Assert.False(increContext.CanIncremental);
+            Assert.False(increContext.IsIncremental);
 
             var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
             var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");

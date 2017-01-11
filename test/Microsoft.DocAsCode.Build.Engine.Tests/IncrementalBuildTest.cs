@@ -1603,6 +1603,7 @@ tagRules : [
                     TemplateManager = new TemplateManager(null, null, new List<string> { templateFolder }, null, null),
                     TemplateDir = templateFolder,
                     Changes = changes?.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveStringComparer),
+                    ForcePostProcess = true,
                 };
                 builder.Build(parameters);
             }

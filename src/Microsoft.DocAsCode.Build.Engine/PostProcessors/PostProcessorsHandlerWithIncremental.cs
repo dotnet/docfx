@@ -49,32 +49,32 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             // TODO: replay warning
             var increItems = manifest.Files.Where(i => i.IsIncremental).ToList();
-            var noneIncreItems = manifest.Files.Where(i => !i.IsIncremental).ToList();
+            var nonIncreItems = manifest.Files.Where(i => !i.IsIncremental).ToList();
 
-            PreHandle(manifest, outputFolder, increItems, noneIncreItems);
+            PreHandle(manifest, outputFolder, increItems, nonIncreItems);
             {
                 CheckNoIncrementalItems(manifest, "Before processing");
                 _innerHandler.Handle(postProcessors, manifest, outputFolder);
                 CheckNoIncrementalItems(manifest, "After processing");
             }
-            TraceIntermediateInfo(outputFolder, increItems, noneIncreItems);
+            TraceIntermediateInfo(outputFolder, increItems, nonIncreItems);
             PostHandle(manifest, increItems);
         }
 
         #region Handle related
 
-        private void PreHandle(Manifest manifest, string outputFolder, List<ManifestItem> increItems, List<ManifestItem> noneIncreItems)
+        private void PreHandle(Manifest manifest, string outputFolder, List<ManifestItem> increItems, List<ManifestItem> nonIncreItems)
         {
             using (new PerformanceScope("Pre-handle in incremental post processing"))
             {
-                if (_increContext.CanIncremental)
+                if (_increContext.IsIncremental)
                 {
                     CopyToOutput(increItems, outputFolder);
 
                     // Copy none incremental items to post processors
-                    manifest.Files = noneIncreItems.ToList();
+                    manifest.Files = nonIncreItems.ToList();
 
-                    Logger.LogVerbose($"Copied {increItems.Count} incremental items from cache, prepare to handle {noneIncreItems.Count} not incremental items.");
+                    Logger.LogVerbose($"Copied {increItems.Count} incremental items from cache, prepare to handle {nonIncreItems.Count} not incremental items.");
                 }
                 else
                 {
@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         item.IsIncremental = false;
                     }
-                    noneIncreItems.AddRange(increItems);
+                    nonIncreItems.AddRange(increItems);
                     increItems.Clear();
                     Logger.LogVerbose("Set all incremental flags to false, since cannot support incremental post processing.");
                 }
@@ -94,7 +94,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (new PerformanceScope("Post-handle in incremental post processing"))
             {
-                if (_increContext.CanIncremental)
+                if (_increContext.IsIncremental)
                 {
                     // Add back incremental items
                     manifest.Files.AddRange(increItems);
@@ -106,14 +106,14 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Trace intermediate info
 
-        private void TraceIntermediateInfo(string outputFolder, List<ManifestItem> increItems, List<ManifestItem> noneIncreItems)
+        private void TraceIntermediateInfo(string outputFolder, List<ManifestItem> increItems, List<ManifestItem> nonIncreItems)
         {
             if (_increContext.ShouldTraceIncrementalInfo)
             {
                 using (new PerformanceScope("Trace intermediate info in incremental post processing"))
                 {
                     TraceIncremental(increItems);
-                    TraceNoneIncremental(outputFolder, noneIncreItems);
+                    TraceNoneIncremental(outputFolder, nonIncreItems);
                 }
             }
         }
@@ -144,9 +144,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void TraceNoneIncremental(string outputFolder, List<ManifestItem> noneIncreItems)
+        private void TraceNoneIncremental(string outputFolder, List<ManifestItem> nonIncreItems)
         {
-            foreach (var outputRelPath in GetOutputRelativePaths(noneIncreItems))
+            foreach (var outputRelPath in GetOutputRelativePaths(nonIncreItems))
             {
                 IncrementalUtility.RetryIO(() =>
                 {
