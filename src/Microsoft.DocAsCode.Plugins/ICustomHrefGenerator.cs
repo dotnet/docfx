@@ -5,6 +5,6 @@ namespace Microsoft.DocAsCode.Plugins
 {
     public interface ICustomHrefGenerator
     {
-        string GenerateHref(IHrefInfo href);
+        string GenerateHref(IFileLinkInfo href);
     }
 }
