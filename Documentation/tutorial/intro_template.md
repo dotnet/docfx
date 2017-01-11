@@ -64,7 +64,7 @@ There are two Markdown files `A.md` and `B.md`, the content for `A.md` is:
 *Renderer*s in [Mustache](http://mustache.github.io) syntax **MUST** end with `.tmpl` extension.
 
 #### Mustache Partials
-[Mustache Partials](http://mustache.github.io/mustache.5.html#partials) is also supported in *DocFX Template System*. **Partials** are common sections of *Renderer* that can be shared by multiple *Renderer* files. **Partials** **MUST** end with `.tmpl.partial`.
+[Mustache Partials](http://mustache.github.io/mustache.5.html#Partials) is also supported in *DocFX Template System*. **Partials** are common sections of *Renderer* that can be shared by multiple *Renderer* files. **Partials** **MUST** end with `.tmpl.partial`.
 
 For example, inside a *Template*, there is a **Partial** file `part.tmpl.partial` with content:
 ```mustache
