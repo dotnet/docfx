@@ -359,10 +359,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var targetInSource = path.UrlDecode();
                 hi.TargetFileInSource = targetInSource.RemoveWorkingFolder();
                 hi.TargetFileInDest = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(targetInSource));
-                hi.TargetFileFromSourceFile = targetInSource - (RelativePath)sourceFilePath;
+                hi.OriginalFileLink = targetInSource - (RelativePath)sourceFilePath;
                 if (hi.TargetFileInDest != null)
                 {
-                    hi.DefaultHref = ((RelativePath)hi.TargetFileInDest - (RelativePath)destFilePath).UrlEncode();
+                    var resolved = (RelativePath)hi.TargetFileInDest - (RelativePath)destFilePath;
+                    hi.ResolvedFileLink = resolved;
+                    hi.DefaultHref = resolved.UrlEncode();
                 }
                 else
                 {
@@ -371,7 +373,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             else
             {
-                hi.TargetFileFromSourceFile = path.UrlDecode();
+                hi.OriginalFileLink = path.UrlDecode();
+                hi.TargetFileInSource = ((RelativePath)sourceFilePath + path).RemoveWorkingFolder();
+                hi.ResolvedFileLink = hi.OriginalFileLink;
                 hi.DefaultHref = originalHref;
             }
             var href = _settings.HrefGenerator?.GenerateHref(hi) ?? hi.DefaultHref;
@@ -390,7 +394,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             public string TargetFileInSource { get; set; }
 
-            public string TargetFileFromSourceFile { get; set; }
+            public string OriginalFileLink { get; set; }
+
+            public string ResolvedFileLink { get; set; }
         }
     }
 }
