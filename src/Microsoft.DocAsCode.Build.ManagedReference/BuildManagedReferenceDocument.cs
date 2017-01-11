@@ -25,6 +25,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         protected override void BuildArticle(IHostService host, FileModel model)
         {
             var page = (PageViewModel)model.Content;
+            model.Uids = (from item in page.Items select new UidDefinition(item.Uid, model.LocalPathFromRoot)).ToImmutableArray();
             foreach (var item in page.Items)
             {
                 BuildItem(host, item, model);
