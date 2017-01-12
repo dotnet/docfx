@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     var filePath = Path.Combine(file.BaseDir, file.File);
                     var swagger = SwaggerJsonParser.Parse(filePath);
                     swagger.Metadata[DocumentTypeKey] = RestApiDocumentType;
-                    swagger.Raw = File.ReadAllText(filePath);
+                    swagger.Raw = EnvironmentContext.FileAbstractLayer.ReadAllText(filePath);
                     CheckOperationId(swagger, file.File);
 
                     var repoInfo = GitUtility.TryGetFileDetail(filePath);
@@ -196,7 +196,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
         {
             try
             {
-                using (var streamReader = File.OpenText(filePath))
+                using (var streamReader = EnvironmentContext.FileAbstractLayer.OpenReadText(filePath))
                 using (JsonReader reader = new JsonTextReader(streamReader))
                 {
                     var jObject = JObject.Load(reader);
