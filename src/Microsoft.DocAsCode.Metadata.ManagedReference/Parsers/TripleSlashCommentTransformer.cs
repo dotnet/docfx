@@ -14,13 +14,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using System.Reflection;
 
-    public class TripleSlashCommentTransformer
+    public static class TripleSlashCommentTransformer
     {
         private static readonly XslCompiledTransform _transform;
 
         static TripleSlashCommentTransformer()
         {
-            var assembly = Assembly.GetExecutingAssembly();
+            var assembly = typeof(TripleSlashCommentTransformer).Assembly;
             var xsltFilePath = $"{assembly.GetName().Name}.Transform.TripleSlashCommentTransform.xsl";
             using (var stream = assembly.GetManifestResourceStream(xsltFilePath))
             using (var reader = XmlReader.Create(stream))
@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        public XDocument Transform(string xml, SyntaxLanguage language)
+        public static XDocument Transform(string xml, SyntaxLanguage language)
         {
             using (var ms = new MemoryStream())
             using (var writer = new XHtmlWriter(new StreamWriter(ms)))
