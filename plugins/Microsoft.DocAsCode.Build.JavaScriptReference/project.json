@@ -37,5 +37,10 @@
         "System.Web": "4.0.0.0"
       }
     }
+  },
+  "publishOptions": {
+    "include": [
+      "docfx.plugins.config"
+    ]
   }
 }
