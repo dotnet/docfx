@@ -57,6 +57,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         [IncrementalIgnore]
         public bool ForcePostProcess { get; set; }
 
+        public string CustomLinkResolver { get; set; }
+
         public DocumentBuildParameters Clone() =>
             (DocumentBuildParameters)MemberwiseClone();
     }
