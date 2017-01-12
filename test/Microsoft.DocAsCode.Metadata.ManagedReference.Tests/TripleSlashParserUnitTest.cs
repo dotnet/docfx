@@ -28,6 +28,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
         ```
     </summary>
     <remarks>
+    <see href=""https://example.org""/>
+    <see href=""https://example.org"">example</see>
     <para>This is <paramref name='ref'/> <paramref />a sample of exception node</para>
     <list type='bullet'>
         <item>
@@ -121,6 +123,8 @@ Classes in assemblies are by definition complete.
 
             var remarks = commentModel.Remarks;
             Assert.Equal(@"
+<a href=""https://example.org"">https://example.org</a>
+<a href=""https://example.org"">example</a>
 <p>This is <span class=""paramref"">ref</span> a sample of exception node</p>
 <ul><li>
 <pre><code class=""c#"">public class XmlElement
