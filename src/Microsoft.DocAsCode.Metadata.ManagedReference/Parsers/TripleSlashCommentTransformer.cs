@@ -12,14 +12,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using System.Reflection;
 
     public class TripleSlashCommentTransformer
     {
-        private readonly XslCompiledTransform _transform;
+        private static readonly XslCompiledTransform _transform;
 
-        public TripleSlashCommentTransformer()
+        static TripleSlashCommentTransformer()
         {
-            var assembly = this.GetType().Assembly;
+            var assembly = Assembly.GetExecutingAssembly();
             var xsltFilePath = $"{assembly.GetName().Name}.Transform.TripleSlashCommentTransform.xsl";
             using (var stream = assembly.GetManifestResourceStream(xsltFilePath))
             using (var reader = XmlReader.Create(stream))
