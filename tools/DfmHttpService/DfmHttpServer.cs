@@ -12,7 +12,7 @@ namespace DfmHttpService
         private const int DefaultPort = 4001;
         private const string UrlPrefixTemplate = "http://localhost:{0}/";
         private readonly HttpListener _listener = new HttpListener();
-        private ManualResetEvent _processing = new ManualResetEvent(false);
+        private ManualResetEvent _processing = new ManualResetEvent(true);
         private readonly IHttpHandler _handler;
         private int _status;
 
@@ -34,6 +34,7 @@ namespace DfmHttpService
             }
 
             _listener.Start();
+            _processing.Reset();
             RunServerCore();
         }
 
@@ -61,24 +62,24 @@ namespace DfmHttpService
             {
                 try
                 {
-                    var context = _listener.EndGetContext(ar);
+                    var httpContext = _listener.EndGetContext(ar);
                     RunServerCore();
                     try
                     {
-                        var wrapper = new ServiceContext { HttpContext = context, Server = this };
-                        await _handler.HandleAsync(wrapper);
+                        var context = new ServiceContext { HttpContext = httpContext, Server = this };
+                        await _handler.HandleAsync(context);
                     }
                     catch (HandlerClientException ex)
                     {
-                        Utility.ReplyClientErrorResponse(context, $"Error occurs while handling context, {ex.Message}");
+                        Utility.ReplyClientErrorResponse(httpContext, $"Error occurs while handling context, {ex.Message}");
                     }
                     catch (HandlerServerException ex)
                     {
-                        Utility.ReplyServerErrorResponse(context, $"Error occurs while handling context, {ex.Message}");
+                        Utility.ReplyServerErrorResponse(httpContext, $"Error occurs while handling context, {ex.Message}");
                     }
                     catch (Exception ex)
                     {
-                        Utility.ReplyServerErrorResponse(context, $"Error occurs, {ex.ToString()}");
+                        Utility.ReplyServerErrorResponse(httpContext, $"Error occurs, {ex.ToString()}");
                     }
                 }
                 catch (HttpListenerException)

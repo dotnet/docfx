@@ -22,17 +22,15 @@ namespace DfmHttpService
         {
             return Task.Run(() =>
             {
-                string tokenTree;
                 try
                 {
-                    tokenTree = GenerateTokenTree(context.Message.Documentation, context.Message.FilePath, context.Message.WorkspacePath);
+                    var tokenTree = GenerateTokenTree(context.Message.Documentation, context.Message.FilePath, context.Message.WorkspacePath);
+                    Utility.ReplySuccessfulResponse(context.HttpContext, tokenTree, ContentType.Json);
                 }
                 catch (Exception ex)
                 {
                     Utility.ReplyServerErrorResponse(context.HttpContext, ex.Message);
-                    return;
                 }
-                Utility.ReplySuccessfulResponse(context.HttpContext, tokenTree, ContentType.Json);
             });
         }
 

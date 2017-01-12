@@ -22,10 +22,9 @@ namespace DfmHttpService
         {
             return Task.Run(() =>
             {
-                string content;
                 try
                 {
-                    content = Preview(context.Message.Documentation, context.Message.FilePath, context.Message.WorkspacePath);
+                    var content = Preview(context.Message.Documentation, context.Message.FilePath, context.Message.WorkspacePath);
                     Utility.ReplySuccessfulResponse(context.HttpContext, content, ContentType.Html);
                 }
                 catch (Exception ex)

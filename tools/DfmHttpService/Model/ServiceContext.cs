@@ -7,11 +7,12 @@ namespace DfmHttpService
 
     internal class ServiceContext
     {
+        private CommandMessage _message;
+
         public HttpListenerContext HttpContext { get; set; }
 
         public DfmHttpServer Server { get; set; }
 
-        private CommandMessage _message;
 
         public CommandMessage Message
         {
