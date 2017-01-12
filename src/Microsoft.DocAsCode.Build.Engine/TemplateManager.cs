@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void ProcessTheme(string outputDirectory, bool overwrite)
         {
-            using (new LoggerPhaseScope("Apply Theme", true))
+            using (new LoggerPhaseScope("Apply Theme", LogLevel.Verbose))
             {
                 if (_themes != null && _themes.Count > 0)
                 {
@@ -87,7 +87,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (!resourceNames.Any()) return false;
             bool isEmpty = true;
 
-            using (new LoggerPhaseScope("ExportResourceFiles", true))
+            using (new LoggerPhaseScope("ExportResourceFiles", LogLevel.Verbose))
             using (var templateResource = CreateTemplateResource(resourceNames))
             {
                 if (templateResource.IsEmpty)

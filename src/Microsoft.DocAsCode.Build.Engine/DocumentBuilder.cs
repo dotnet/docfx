@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             string commitToSHA = null)
         {
             Logger.LogVerbose("Loading plug-in...");
-            using (new LoggerPhaseScope("ImportPlugins", true))
+            using (new LoggerPhaseScope("ImportPlugins", LogLevel.Verbose))
             {
                 var assemblyList = assemblies?.ToList() ?? new List<Assembly>();
                 assemblyList.Add(typeof(DocumentBuilder).Assembly);

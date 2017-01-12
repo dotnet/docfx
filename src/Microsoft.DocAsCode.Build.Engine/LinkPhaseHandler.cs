@@ -28,10 +28,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             foreach (var hostService in hostServices)
             {
-                using (new LoggerPhaseScope(hostService.Processor.Name, true))
+                using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
                 {
                     Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postbuilding...");
-                    using (new LoggerPhaseScope("Postbuild", true))
+                    using (new LoggerPhaseScope("Postbuild", LogLevel.Verbose))
                     {
                         Postbuild(hostService);
                     }
@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 buildStep =>
                 {
                     Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Postbuilding...");
-                    using (new LoggerPhaseScope(buildStep.Name, true))
+                    using (new LoggerPhaseScope(buildStep.Name, LogLevel.Verbose))
                     {
                         buildStep.Postbuild(hostService.Models, hostService);
                     }

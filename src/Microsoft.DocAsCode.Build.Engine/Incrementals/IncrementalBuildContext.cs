@@ -443,7 +443,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private static string ComputeConfigHash(DocumentBuildParameters parameter, string markdownServiceContextHash)
         {
-            using (new LoggerPhaseScope("ComputeConfigHash", true))
+            using (new LoggerPhaseScope("ComputeConfigHash", LogLevel.Diagnostic))
             {
                 var json = JsonConvert.SerializeObject(
                 parameter,
@@ -468,13 +468,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 }
 
                 // reregister dependency types from last dependency graph
-                using (new LoggerPhaseScope("RegisterDependencyTypeFromLastBuild", true))
+                using (new LoggerPhaseScope("RegisterDependencyTypeFromLastBuild", LogLevel.Diagnostic))
                 {
                     dg.RegisterDependencyType(ldg.DependencyTypes.Values);
                 }
 
                 // restore dependency graph from last dependency graph
-                using (new LoggerPhaseScope("ReportDependencyFromLastBuild", true))
+                using (new LoggerPhaseScope("ReportDependencyFromLastBuild", LogLevel.Diagnostic))
                 {
                     dg.ReportDependency(from r in ldg.ReportedBys
                                         from i in ldg.GetDependencyReportedBy(r)
@@ -650,12 +650,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (CanVersionIncremental)
             {
-                using (new LoggerPhaseScope("LoadChanges", true))
+                using (new LoggerPhaseScope("LoadChanges", LogLevel.Diagnostic))
                 {
                     LoadChanges();
                 }
                 Logger.LogDiagnostic($"Before expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
-                using (new LoggerPhaseScope("ExpandDependency", true))
+                using (new LoggerPhaseScope("ExpandDependency", LogLevel.Diagnostic))
                 {
                     ExpandDependency(d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.Compile || CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].TriggerBuild);
                 }

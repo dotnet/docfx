@@ -79,8 +79,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private Manifest BuildCore(DocumentBuildParameters parameters)
         {
-            using (new LoggerPhaseScope(PhaseName, false))
-            using (new PerformanceScope(PhaseName, LogLevel.Verbose))
+            using (new LoggerPhaseScope(PhaseName, LogLevel.Verbose))
             {
                 Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism}.");
                 Directory.CreateDirectory(parameters.OutputBaseDir);
@@ -106,12 +105,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     using (var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
                     {
-                        using (new LoggerPhaseScope("Prepare", false))
-                        using (new PerformanceScope("Prepare", LogLevel.Verbose))
+                        using (new LoggerPhaseScope("Prepare", LogLevel.Verbose))
                         {
                             if (MarkdownService == null)
                             {
-                                using (new LoggerPhaseScope("CreateMarkdownService", true))
+                                using (new LoggerPhaseScope("CreateMarkdownService", LogLevel.Verbose))
                                 {
                                     MarkdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
                                 }
@@ -124,8 +122,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 out hostServiceCreator,
                                 out phaseProcessor);
                         }
-                        using (new LoggerPhaseScope("Load", false))
-                        using (new PerformanceScope("Load", LogLevel.Verbose))
+                        using (new LoggerPhaseScope("Load", LogLevel.Verbose))
                         {
                             hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator).ToList();
                         }
@@ -215,7 +212,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                       item,
                                   }).AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism))
             {
-                using (new LoggerPhaseScope(pair.processor.Name, true))
+                using (new LoggerPhaseScope(pair.processor.Name, LogLevel.Verbose))
                 {
                     var hostService = creator.CreateHostService(
                         parameters,
@@ -239,8 +236,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (IntermediateFolder != null && parameters.ApplyTemplateSettings.TransformDocument)
             {
-                using (new LoggerPhaseScope("CreateIncrementalBuildContext", false))
-                using (new PerformanceScope("CreateIncrementalBuildContext", LogLevel.Verbose))
+                using (new LoggerPhaseScope("CreateIncrementalBuildContext", LogLevel.Verbose))
                 {
                     context.IncrementalBuildContext = IncrementalBuildContext.Create(parameters, CurrentBuildInfo, LastBuildInfo, IntermediateFolder, markdownServiceContextHash);
                 }

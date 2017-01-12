@@ -102,7 +102,7 @@ namespace Microsoft.DocAsCode.SubCommands
         public static void BuildDocument(BuildJsonConfig config, TemplateManager templateManager, string baseDirectory, string outputDirectory, string pluginDirectory, string templateDirectory)
         {
             IEnumerable<Assembly> assemblies;
-            using (new LoggerPhaseScope("LoadPluginAssemblies", true))
+            using (new LoggerPhaseScope("LoadPluginAssemblies", LogLevel.Verbose))
             {
                 assemblies = LoadPluginAssemblies(pluginDirectory);
             }

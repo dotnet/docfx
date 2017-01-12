@@ -13,11 +13,6 @@ namespace Microsoft.DocAsCode.Common
         private readonly PerformanceScope _performanceScope;
 
         public LoggerPhaseScope(string phaseName)
-            : this(phaseName, false)
-        {
-        }
-
-        public LoggerPhaseScope(string phaseName, bool enablePerformanceScope)
         {
             if (string.IsNullOrWhiteSpace(phaseName))
             {
@@ -26,14 +21,13 @@ namespace Microsoft.DocAsCode.Common
             _originPhaseName = GetPhaseName();
             phaseName = _originPhaseName == null ? phaseName : _originPhaseName + "." + phaseName;
             SetPhaseName(phaseName);
-            if (enablePerformanceScope)
-            {
-                _performanceScope = new PerformanceScope("Scope:" + phaseName, LogLevel.Diagnostic);
-            }
         }
 
+        public LoggerPhaseScope(string phaseName, bool enablePerformanceScope)
+            : this(phaseName, LogLevel.Diagnostic) { }
+
         public LoggerPhaseScope(string phaseName, LogLevel perfLogLevel)
-            :this(phaseName, false)
+            : this(phaseName)
         {
             _performanceScope = new PerformanceScope("Scope:" + phaseName, perfLogLevel);
         }
