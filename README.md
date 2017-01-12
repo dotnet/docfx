@@ -32,6 +32,19 @@ We currently support C# and VB projects.
 ## How do I play with *DocFX*?
 Please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
 
+## Integrate with Continuous Integration environment
+
+1. Install docfx through [chocolatey package](https://chocolatey.org/packages/docfx)
+`cinst docfx -y`
+
+2. Call docfx
+`docfx docfx.json`
+
+[docfx-seed](https://github.com/docascode/docfx-seed/blob/master/appveyor.yml) project provides a sample integrating with AppVeyor.
+
+> [!NOTE]
+> *Known issue in AppVeyor*: Currently `platform: Any CPU` in *appveyor.yml* causes `docfx metadata` failure. https://github.com/dotnet/docfx/issues/1078
+
 ## What's included?
 File/Folder     | Description
 :----------     | :----------
