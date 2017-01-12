@@ -23,10 +23,19 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// </summary>
         public string PostProcessOutputsFile { get; set; }
         /// <summary>
+        /// The file link for the log message file.
+        /// </summary>
+        public string MessageInfoFile { get; set; }
+        /// <summary>
         /// Deserialized post process outputs
         /// </summary>
         [JsonIgnore]
         public PostProcessOutputs PostProcessOutputs { get; private set; } = new PostProcessOutputs();
+        /// <summary>
+        /// Deserialized log message information
+        /// </summary>
+        [JsonIgnore]
+        public BuildMessageInfo MessageInfo { get; private set; } = new BuildMessageInfo();
 
         #endregion
 
@@ -36,6 +45,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 PostProcessOutputs = IncrementalUtility.LoadIntermediateFile<PostProcessOutputs>(Path.Combine(baseDir, PostProcessOutputsFile));
             }
+            if (MessageInfoFile != null)
+            {
+                using (var sr = new StreamReader(Path.Combine(baseDir, MessageInfoFile)))
+                {
+                    MessageInfo = BuildMessageInfo.Load(sr);
+                }
+            }
         }
 
         internal void Save(string baseDir)
@@ -44,7 +60,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 PostProcessOutputsFile = IncrementalUtility.CreateRandomFileName(baseDir);
             }
+            if (MessageInfoFile == null)
+            {
+                MessageInfoFile = IncrementalUtility.CreateRandomFileName(baseDir);
+            }
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, PostProcessOutputsFile), PostProcessOutputs);
+            using (var sw = new StreamWriter(Path.Combine(baseDir, MessageInfoFile)))
+            {
+                MessageInfo.Save(sw);
+            }
         }
     }
 }

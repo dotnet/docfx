@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
@@ -26,7 +27,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
         public SwaggerObjectBase Read(string swaggerPath)
         {
-            using (JsonReader reader = new JsonTextReader(File.OpenText(swaggerPath)))
+            using (JsonReader reader = new JsonTextReader(EnvironmentContext.FileAbstractLayer.OpenReadText(swaggerPath)))
             {
                 _documentObjectCache = new Dictionary<string, SwaggerObjectBase>();
                 var token = JToken.ReadFrom(reader);
@@ -145,11 +146,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
         private static JObject LoadExternalReference(string externalSwaggerPath)
         {
-            if (!File.Exists(externalSwaggerPath))
+            if (!EnvironmentContext.FileAbstractLayer.Exists(externalSwaggerPath))
             {
                 throw new DocfxException($"External swagger path not exist: {externalSwaggerPath}.");
             }
-            using (JsonReader reader = new JsonTextReader(File.OpenText(externalSwaggerPath)))
+            using (JsonReader reader = new JsonTextReader(EnvironmentContext.FileAbstractLayer.OpenReadText(externalSwaggerPath)))
             {
                 return JObject.Load(reader);
             }

@@ -47,7 +47,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(outputFolder));
             }
 
-            // TODO: replay warning
             var increItems = manifest.Files.Where(i => i.IsIncremental).ToList();
             var nonIncreItems = manifest.Files.Where(i => !i.IsIncremental).ToList();
 
@@ -87,6 +86,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     increItems.Clear();
                     Logger.LogVerbose("Set all incremental flags to false, since cannot support incremental post processing.");
                 }
+
+                if (_increContext.ShouldTraceIncrementalInfo)
+                {
+                    Logger.RegisterListener(_increContext.CurrentInfo.MessageInfo.GetListener());
+                }
             }
         }
 
@@ -96,8 +100,18 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (_increContext.IsIncremental)
                 {
+                    foreach (var increItem in increItems)
+                    {
+                        _increContext.LastInfo.MessageInfo.Replay(increItem.SourceRelativePath);
+                    }
+
                     // Add back incremental items
                     manifest.Files.AddRange(increItems);
+                }
+
+                if (_increContext.ShouldTraceIncrementalInfo)
+                {
+                    Logger.UnregisterListener(_increContext.CurrentInfo.MessageInfo.GetListener());
                 }
             }
         }

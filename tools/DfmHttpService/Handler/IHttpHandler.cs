@@ -3,10 +3,12 @@
 
 namespace DfmHttpService
 {
-    internal enum CommandName
+    using System.Threading.Tasks;
+
+    internal interface IHttpHandler
     {
-        Preview,
-        GenerateTokenTree,
-        Exit
+        bool CanHandle(ServiceContext context);
+
+        Task HandleAsync(ServiceContext context);
     }
 }

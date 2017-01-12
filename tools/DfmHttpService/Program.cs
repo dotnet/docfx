@@ -3,13 +3,23 @@
 
 namespace DfmHttpService
 {
+    using System.Collections.Generic;
+
     public class Program
     {
         public static void Main(string[] args)
         {
-            var service = new DfmHttpService();
-            var urlPrefix = DfmHttpService.GetAvailablePrefix();
-            service.StartService(urlPrefix);
+            var handler = new CompositeHandler(
+                new List<IHttpHandler>
+                {
+                    new DfmPreviewHandler(),
+                    new DfmTokenTreeHandler(),
+                    new ExitHandler()
+                });
+
+            var service = new DfmHttpServer(handler);
+            service.Start();
+            service.WaitForExit();
         }
     }
 }
