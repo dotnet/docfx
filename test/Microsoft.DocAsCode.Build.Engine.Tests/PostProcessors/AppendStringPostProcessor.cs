@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                                     from output in file.OutputFiles
                                     select new
                                     {
-                                        IsHtml = output.Key.Equals(".html"),
+                                        IsHtml = output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase),
                                         output.Value.RelativePath,
                                         file.SourceRelativePath
                                     })
