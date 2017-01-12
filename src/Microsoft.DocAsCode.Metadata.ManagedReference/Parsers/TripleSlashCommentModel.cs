@@ -26,7 +26,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static Regex CodeElementRegex = new Regex(@"<code[^>]*>([\s\S]*?)</code>", RegexOptions.Compiled);
 
         private readonly ITripleSlashCommentParserContext _context;
-        private readonly TripleSlashCommentTransformer _transformer = new TripleSlashCommentTransformer();
 
         public string Summary { get; private set; }
         public string Remarks { get; private set; }
@@ -41,7 +40,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private TripleSlashCommentModel(string xml, SyntaxLanguage language, ITripleSlashCommentParserContext context)
         {
             // Transform triple slash comment
-            XDocument doc = _transformer.Transform(xml, language);
+            XDocument doc = TripleSlashCommentTransformer.Transform(xml, language);
 
             _context = context;
             if (!context.PreserveRawInlineComments)
