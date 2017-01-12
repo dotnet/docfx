@@ -7,13 +7,12 @@ namespace DfmHttpService
     using System.Linq;
     using System.Threading.Tasks;
 
-    public class CompositeHandler : IHttpHandler
+    internal class CompositeHandler : IHttpHandler
     {
         private readonly List<IHttpHandler> _handlers;
 
-        public CompositeHandler()
+        public CompositeHandler() : this(new List<IHttpHandler>())
         {
-            _handlers = new List<IHttpHandler>();
         }
 
         public CompositeHandler(IEnumerable<IHttpHandler> handlers)
@@ -31,16 +30,16 @@ namespace DfmHttpService
             _handlers.AddRange(handlers);
         }
 
-        public bool IsSupport(ServiceContext context)
+        public bool CanHandle(ServiceContext context)
         {
-            throw new System.NotImplementedException();
+            throw new System.NotSupportedException();
         }
 
         public async Task HandleAsync(ServiceContext context)
         {
             foreach (var handler in _handlers)
             {
-                if (handler.IsSupport(context))
+                if (handler.CanHandle(context))
                 {
                     await handler.HandleAsync(context);
                     return;

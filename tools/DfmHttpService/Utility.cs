@@ -10,14 +10,34 @@ namespace DfmHttpService
 
     using Newtonsoft.Json;
 
-    public class Utility
+    internal class Utility
     {
         public static CommandMessage GetCommandMessage(HttpListenerContext context)
         {
+            if (context == null)
+            {
+                throw new HandlerServerException($"{nameof(context)} can't be null");
+            }
+
             var request = context.Request;
-            if (!request.HasEntityBody || request.HttpMethod != HttpMethod.Post.ToString())
+            if (request == null)
+            {
+                throw new HandlerServerException($"{nameof(request)} can't be null");
+            }
+
+            if (request.HttpMethod != HttpMethod.Post.ToString())
+            {
+                throw new HandlerClientException("Only POST method allowed.");
+            }
+
+            if (!request.HasEntityBody)
             {
                 throw new HandlerClientException("No body in this request");
+            }
+
+            if (request.ContentType != ContentType.Json)
+            {
+                throw new HandlerClientException("Only JSON format in body allowed.");
             }
 
             string content;

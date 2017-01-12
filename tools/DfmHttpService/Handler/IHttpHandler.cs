@@ -5,9 +5,9 @@ namespace DfmHttpService
 {
     using System.Threading.Tasks;
 
-    public interface IHttpHandler
+    internal interface IHttpHandler
     {
-        bool IsSupport(ServiceContext context);
+        bool CanHandle(ServiceContext context);
 
         Task HandleAsync(ServiceContext context);
     }

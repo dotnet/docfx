@@ -9,9 +9,11 @@ namespace DfmHttpService
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
 
-    public class DfmPreviewHandler : IHttpHandler
+    internal class DfmPreviewHandler : IHttpHandler
     {
-        public bool IsSupport(ServiceContext context)
+        private readonly DfmServiceProvider _provider = new DfmServiceProvider();
+
+        public bool CanHandle(ServiceContext context)
         {
             return context.Message.Name == CommandName.Preview;
         }
@@ -24,20 +26,18 @@ namespace DfmHttpService
                 try
                 {
                     content = Preview(context.Message.Documentation, context.Message.FilePath, context.Message.WorkspacePath);
+                    Utility.ReplySuccessfulResponse(context.HttpContext, content, ContentType.Html);
                 }
                 catch (Exception ex)
                 {
                     Utility.ReplyServerErrorResponse(context.HttpContext, ex.Message);
-                    return;
                 }
-                Utility.ReplySuccessfulResponse(context.HttpContext, content, ContentType.Html);
             });
         }
 
-        private static string Preview(string documentation, string filePath, string workspacePath = null)
+        private string Preview(string documentation, string filePath, string workspacePath = null)
         {
-            var provider = new DfmServiceProvider();
-            var service = provider.CreateMarkdownService(new MarkdownServiceParameters { BasePath = workspacePath });
+            var service = _provider.CreateMarkdownService(new MarkdownServiceParameters { BasePath = workspacePath });
 
             return service.Markup(documentation, filePath).Html;
         }

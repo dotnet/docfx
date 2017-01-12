@@ -7,13 +7,13 @@ namespace DfmHttpService
     using System.Net;
     using System.Threading;
 
-    public class DfmHttpServer
+    internal class DfmHttpServer
     {
         private const int DefaultPort = 4001;
         private const string UrlPrefixTemplate = "http://localhost:{0}/";
-        private readonly HttpListener _listener;
+        private readonly HttpListener _listener = new HttpListener();
+        private ManualResetEvent _processing = new ManualResetEvent(false);
         private readonly IHttpHandler _handler;
-        private ManualResetEvent _processing;
         private int _status;
 
         // TODO: make UrlPrefix configurable
@@ -21,7 +21,6 @@ namespace DfmHttpService
 
         public DfmHttpServer(IHttpHandler handler)
         {
-            _listener = new HttpListener();
             _listener.Prefixes.Add(UrlPrefix);
             _handler = handler;
         }
@@ -35,7 +34,6 @@ namespace DfmHttpService
             }
 
             _listener.Start();
-            _processing = new ManualResetEvent(false);
             RunServerCore();
         }
 

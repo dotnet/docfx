@@ -3,7 +3,7 @@
 
 namespace DfmHttpService
 {
-    public enum CommandName
+    internal enum CommandName
     {
         NotDefined,
         Preview,

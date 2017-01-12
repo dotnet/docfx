@@ -5,7 +5,7 @@ namespace DfmHttpService
 {
     using Newtonsoft.Json;
 
-    public class CommandMessage
+    internal class CommandMessage
     {
         [JsonProperty("name")]
         public CommandName Name { get; set; }

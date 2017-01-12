@@ -3,9 +3,9 @@
 
 namespace DfmHttpService
 {
-    public class HandlerClientException : HandlerException
+    internal class HandlerClientException : HandlerException
     {
-        public HandlerClientException() : this("Error happens while handling http context")
+        public HandlerClientException() : this("Client error happens while handling http context")
         {
         }
 

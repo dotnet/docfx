@@ -5,7 +5,7 @@ namespace DfmHttpService
 {
     using System.Net;
 
-    public class ServiceContext
+    internal class ServiceContext
     {
         public HttpListenerContext HttpContext { get; set; }
 

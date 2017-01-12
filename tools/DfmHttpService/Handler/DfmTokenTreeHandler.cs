@@ -9,9 +9,11 @@ namespace DfmHttpService
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
 
-    public class DfmTokenTreeHandler : IHttpHandler
+    internal class DfmTokenTreeHandler : IHttpHandler
     {
-        public bool IsSupport(ServiceContext context)
+        private readonly DfmServiceProvider _provider = new DfmServiceProvider();
+
+        public bool CanHandle(ServiceContext context)
         {
             return context.Message.Name == CommandName.GenerateTokenTree;
         }
@@ -34,10 +36,9 @@ namespace DfmHttpService
             });
         }
 
-        private static string GenerateTokenTree(string documentation, string filePath, string workspacePath = null)
+        private string GenerateTokenTree(string documentation, string filePath, string workspacePath = null)
         {
-            var provider = new DfmJsonTokenTreeServiceProvider();
-            var service = provider.CreateMarkdownService(new MarkdownServiceParameters { BasePath = workspacePath });
+            var service = _provider.CreateMarkdownService(new MarkdownServiceParameters { BasePath = workspacePath });
 
             return service.Markup(documentation, filePath).Html;
         }

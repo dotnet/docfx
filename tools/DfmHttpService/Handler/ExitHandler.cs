@@ -5,9 +5,9 @@ namespace DfmHttpService
 {
     using System.Threading.Tasks;
 
-    public class ExitHandler : IHttpHandler
+    internal class ExitHandler : IHttpHandler
     {
-        public bool IsSupport(ServiceContext context)
+        public bool CanHandle(ServiceContext context)
         {
             return context.Message.Name == CommandName.Exit;
         }
@@ -16,7 +16,7 @@ namespace DfmHttpService
         {
             return Task.Run(() =>
             {
-                Utility.ReplyExitResponse(context.HttpContext, "Dfm service exit");
+                Utility.ReplyExitResponse(context.HttpContext, "Dfm service exits");
                 context.Server.Terminate();
             });
         }
