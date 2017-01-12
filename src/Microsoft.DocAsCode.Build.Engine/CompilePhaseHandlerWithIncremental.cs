@@ -89,9 +89,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private IEnumerable<string> GetFilesToRelayMessages(HostService hs)
         {
+            var files = new HashSet<string>();
             foreach (var f in hs.GetUnloadedModelFiles(IncrementalContext))
             {
-                yield return f;
+                files.Add(f);
 
                 // warnings from token file won't be delegated to article, so we need to add it manually
                 var key = ((RelativePath)f).GetPathFromWorkingFolder();
@@ -99,10 +100,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     if (item.Type == DependencyTypeName.Include)
                     {
-                        yield return ((RelativePath)item.To).RemoveWorkingFolder();
+                        files.Add(((RelativePath)item.To).RemoveWorkingFolder());
                     }
                 }
             }
+            return files;
         }
 
         private void ReportDependency(IEnumerable<HostService> hostServices)
