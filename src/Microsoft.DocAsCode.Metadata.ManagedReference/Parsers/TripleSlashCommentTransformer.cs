@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
-    using System.Reflection;
 
     public static class TripleSlashCommentTransformer
     {
