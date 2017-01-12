@@ -257,6 +257,10 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 parameters.MarkdownEngineParameters = config.MarkdownEngineProperties.ToImmutableDictionary();
             }
+            if (config.CustomLinkResolver != null)
+            {
+                parameters.CustomLinkResolver = config.CustomLinkResolver;
+            }
 
             parameters.TemplateDir = templateDir;
 

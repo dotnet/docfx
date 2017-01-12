@@ -43,6 +43,23 @@ function DotnetPack {
     }
 }
 
+function NugetPack {
+    param($folder, $version)
+    $nuspec = Join-Path $folder.FullName ($folder.Name + ".nuspec")
+    if (Test-Path $nuspec)
+    {
+        $basepath = Join-Path target (Join-Path $configuration $folder.Name)
+        if ((Test-Path $basepath) -and (Test-Path (Join-Path $folder.FullName "project.json")))
+        {
+            & $nuget pack $nuspec -Version $version -OutputDirectory artifacts\$configuration -BasePath $basepath
+        }
+    }
+    Else
+    {
+        DotnetPack($folder)
+    }
+}
+
 function ProcessLastExitCode {
     param($exitCode, $msg)
     if ($exitCode -ne 0)
@@ -141,9 +158,23 @@ foreach ($folder in (dir "tools"))
 
 # Pack artifacts
 Write-Host "Publish artifacts"
-foreach ($folder in (dir @("src", "plugins")))
+foreach ($folder in (dir "src"))
 {
     DotnetPack($folder)
+}
+
+# Get version
+$version = "1.0.0"
+if (Test-Path "TEMP/version.txt")
+{
+    $version = cat "TEMP/version.txt"
+    $version = $version.Substring(1)
+}
+
+# Pack plugins
+foreach ($folder in (dir "plugins"))
+{
+    NugetPack $folder $version
 }
 
 # Pack docfx.console
@@ -151,12 +182,6 @@ Copy-Item -Path "target\$configuration\docfx\*.dll" -Destination "src\nuspec\doc
 Copy-Item -Path "target\$configuration\docfx\*.exe" -Destination "src\nuspec\docfx.console\tools\"
 Copy-Item -Path "target\$configuration\docfx\*.exe.config" -Destination "src\nuspec\docfx.console\tools\"
 
-$version = "1.0.0"
-if (Test-Path "TEMP/version.txt")
-{
-    $version = cat "TEMP/version.txt"
-    $version = $version.Substring(1)
-}
 & $nuget pack "src\nuspec\docfx.console\docfx.console.nuspec" -Version $version -OutputDirectory artifacts\$configuration
 ProcessLastExitCode $lastexitcode "nuget pack docfx.console error"
 
@@ -170,12 +195,6 @@ Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.exe.config" -
 src\VscPreviewExtension\buildVscPreviewExe.cmd -c $configuration
 ProcessLastExitCode $lastexitcode "build VscPreviewExe error"
 
-$version = "1.0.0"
-if (Test-Path "TEMP/version.txt")
-{
-    $version = cat "TEMP/version.txt"
-    $version = $version.Substring(1)
-}
 & $nuget pack "src\nuspec\AzureMarkdownRewriterTool\AzureMarkdownRewriterTool.nuspec" -Version $version -OutputDirectory artifacts\$configuration
 ProcessLastExitCode $lastexitcode "nuget pack AzureMarkdownRewriterTool error"
 

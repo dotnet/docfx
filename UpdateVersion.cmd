@@ -77,7 +77,7 @@ IF NOT '%ERRORLEVEL%'=='0' (
 
 :UpdateVersion
 mkdir TEMP 2>NUL
-ECHO %VERSION% > TEMP\version.txt
+ECHO %VERSION%> TEMP\version.txt
 PUSHD tools
 :: Install npm packages
 CALL npm install
