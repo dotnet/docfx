@@ -53,10 +53,4 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("incrementalPhase")]
         public IncrementalPhase IncrementalPhase { get; set; }
     }
-
-    public enum IncrementalPhase
-    {
-        Build,
-        PostProcessing,
-    }
 }
