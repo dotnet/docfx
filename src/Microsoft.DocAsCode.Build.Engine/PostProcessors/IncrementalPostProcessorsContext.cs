@@ -28,6 +28,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string LastBaseDir { get; }
 
+        public IncrementalInfo IncrementalInfo { get; } = new IncrementalInfo();
+
         /// <summary>
         /// Whether to trace the incremental info in intermediate folder
         /// </summary>
@@ -95,28 +97,35 @@ namespace Microsoft.DocAsCode.Build.Engine
             return false;
         }
 
-        // TODO: report incremental info in manifest
         private bool GetIsIncremental()
         {
+            const string prependWarning = "Cannot support incremental post processing, the reason is:";
+            string message;
             if (!ShouldTraceIncrementalInfo)
             {
+                message = $"{prependWarning} should not trace intermediate info.";
+                IncrementalInfo.ReportStatus(false, IncrementalPhase.PostProcessing, message);
+                Logger.LogVerbose(message);
                 return false;
             }
             if (!EnableIncremental)
             {
-                const string message = "Disable incremental post processing.";
+                message = $"{prependWarning} it's disabled.";
+                IncrementalInfo.ReportStatus(false, IncrementalPhase.PostProcessing, message);
                 Logger.LogVerbose(message);
                 return false;
             }
             if (LastInfo == null)
             {
-                const string message = "Cannot support incremental post processing, because last post processor info is null.";
+                message = $"{prependWarning} last post processor info is null.";
+                IncrementalInfo.ReportStatus(false, IncrementalPhase.PostProcessing, message);
                 Logger.LogVerbose(message);
                 return false;
             }
             if (CurrentInfo.PostProcessorInfos.Count != LastInfo.PostProcessorInfos.Count)
             {
-                var message = $"Cannot support incremental post processing, because post processor info count mismatch: last has {LastInfo.PostProcessorInfos.Count} while current has {CurrentInfo.PostProcessorInfos.Count}.";
+                message = $"{prependWarning} post processor info count mismatch: last has {LastInfo.PostProcessorInfos.Count} while current has {CurrentInfo.PostProcessorInfos.Count}.";
+                IncrementalInfo.ReportStatus(false, IncrementalPhase.PostProcessing, message);
                 Logger.LogVerbose(message);
                 return false;
             }
@@ -126,13 +135,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var lastPostProcessorInfo = LastInfo.PostProcessorInfos[i];
                 if (!currentPostProcessorInfo.Equals(lastPostProcessorInfo))
                 {
-                    var message = $"Cannot support incremental post processing, because post processor info changed from last {lastPostProcessorInfo.ToJsonString()} to current {currentPostProcessorInfo.ToJsonString()}.";
+                    message = $"{prependWarning} post processor info changed from last {lastPostProcessorInfo.ToJsonString()} to current {currentPostProcessorInfo.ToJsonString()}.";
+                    IncrementalInfo.ReportStatus(false, IncrementalPhase.PostProcessing, message);
                     Logger.LogVerbose(message);
                     return false;
                 }
             }
 
-            Logger.LogVerbose("Can support incremental post processing.");
+            message = "Can support incremental post processing.";
+            IncrementalInfo.ReportStatus(true, IncrementalPhase.PostProcessing, message);
+            Logger.LogVerbose(message);
             return true;
         }
 

@@ -113,6 +113,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     Logger.UnregisterListener(_increContext.CurrentInfo.MessageInfo.GetListener());
                 }
+
+                if (manifest.IncrementalInfo == null)
+                {
+                    manifest.IncrementalInfo = new List<IncrementalInfo>();
+                }
+                manifest.IncrementalInfo.Add(_increContext.IncrementalInfo);
             }
         }
 
