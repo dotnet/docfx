@@ -109,9 +109,16 @@ namespace Microsoft.DocAsCode.Common.Tests
             {
                 var pp = fal.GetPhysicalPath("temp.html");
                 Assert.Equal(pp, manifest.Files.First(mi => mi.SourceRelativePath == "temp.md").OutputFiles[".html"].LinkToPath);
+                Assert.False(File.Exists(Path.Combine(manifestFolder, "temp.html")));
                 Assert.True(File.Exists(pp));
                 Assert.Equal("😎", File.ReadAllText(pp));
             }
+
+            manifest.Dereference(manifestFolder);
+
+            Assert.Null(manifest.Files.First(mi => mi.SourceRelativePath == "temp.md").OutputFiles[".html"].LinkToPath);
+            Assert.True(File.Exists(Path.Combine(manifestFolder, "temp.html")));
+            Assert.Equal("😎", File.ReadAllText(Path.Combine(manifestFolder, "temp.html")));
         }
     }
 }

@@ -32,7 +32,11 @@ namespace Microsoft.DocAsCode.Plugins
         {
             if (Path.IsPathRooted(file))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(file));
+                var dir = Path.GetDirectoryName(file);
+                if (!string.IsNullOrEmpty(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
                 return File.Create(file);
             }
             return _impl.Create(file);
@@ -42,7 +46,11 @@ namespace Microsoft.DocAsCode.Plugins
         {
             if (Path.IsPathRooted(sourceFileName) || Path.IsPathRooted(destFileName))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
+                var dir = Path.GetDirectoryName(destFileName);
+                if (!string.IsNullOrEmpty(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
                 File.Copy(sourceFileName, destFileName, true);
                 File.SetAttributes(destFileName, FileAttributes.Normal);
             }
