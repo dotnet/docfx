@@ -4,7 +4,7 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Collections.Immutable;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
@@ -58,6 +58,42 @@ namespace Microsoft.DocAsCode.Common
                 }
             }
             return false;
+        }
+
+        public static void RemoveLinks(this Manifest manifest, string manifestFolder)
+        {
+            if (manifest == null)
+            {
+                throw new ArgumentNullException(nameof(manifest));
+            }
+            if (manifestFolder == null)
+            {
+                throw new ArgumentNullException(nameof(manifestFolder));
+            }
+            Directory.CreateDirectory(manifestFolder);
+            lock (manifest)
+            {
+                var ofiList = (from f in manifest.Files
+                               from ofi in f.OutputFiles.Values
+                               where ofi.LinkToPath != null
+                               select ofi).ToList();
+                if (ofiList.Count == 0)
+                {
+                    return;
+                }
+                var fal = FileAbstractLayerBuilder.Default
+                    .ReadFromManifest(manifest, manifestFolder)
+                    .WriteToRealFileSystem(manifestFolder)
+                    .Create();
+                foreach (var rp in ofiList)
+                {
+                    fal.Copy(rp.RelativePath, rp.RelativePath);
+                }
+                foreach (var ofi in ofiList)
+                {
+                    ofi.LinkToPath = null;
+                }
+            }
         }
     }
 }
