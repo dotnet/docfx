@@ -48,6 +48,9 @@
             {{#isEnum}}
               {{>partials/enum}}
             {{/isEnum}}
+            {{#_customContent}}
+              {{>partials/customContent}}
+            {{/_customContent}}
             </article>
           </div>
           {{^_disableAffix}}
