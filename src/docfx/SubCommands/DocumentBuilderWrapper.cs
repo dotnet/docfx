@@ -397,7 +397,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 return null;
             }
 
-            var dict = new Dictionary<string, ChangeKindWithDependency>(FilePathComparer.OSPlatformSensitiveStringComparer);
+            var dict = new OSPlatformSensitiveDictionary<ChangeKindWithDependency>();
             foreach (var file in files.EnumerateFiles())
             {
                 string fileKey = ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();

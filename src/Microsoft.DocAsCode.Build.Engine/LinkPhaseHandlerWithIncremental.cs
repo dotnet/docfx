@@ -288,7 +288,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     where h.CanIncrementalBuild
                     from f in h.GetUnloadedModelFiles(IncrementalContext)
                     from mani in LastBuildVersionInfo.Manifest
-                    where f == mani.SourceRelativePath
+                    where FilePathComparer.OSPlatformSensitiveStringComparer.Equals(f, mani.SourceRelativePath)
                     let copied = mani.Clone(isIncremental: true)
                     select copied).ToList();
         }

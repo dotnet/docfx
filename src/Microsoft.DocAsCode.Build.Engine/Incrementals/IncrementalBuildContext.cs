@@ -16,8 +16,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     internal class IncrementalBuildContext
     {
         private DocumentBuildParameters _parameters;
-        private Dictionary<string, Dictionary<string, BuildPhase?>> _modelLoadInfo = new Dictionary<string, Dictionary<string, BuildPhase?>>();
-        private Dictionary<string, ChangeKindWithDependency> _changeDict = new Dictionary<string, ChangeKindWithDependency>(FilePathComparer.OSPlatformSensitiveStringComparer);
+        private Dictionary<string, OSPlatformSensitiveDictionary<BuildPhase?>> _modelLoadInfo = new Dictionary<string, OSPlatformSensitiveDictionary<BuildPhase?>>();
+        private OSPlatformSensitiveDictionary<ChangeKindWithDependency> _changeDict = new OSPlatformSensitiveDictionary<ChangeKindWithDependency>();
 
         public string BaseDir { get; }
 
@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
-        public IReadOnlyDictionary<string, Dictionary<string, BuildPhase?>> ModelLoadInfo
+        public IReadOnlyDictionary<string, OSPlatformSensitiveDictionary<BuildPhase?>> ModelLoadInfo
         {
             get
             {
@@ -122,11 +122,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// <param name="phase">the buildphase that the model was loaded at</param>
         public void ReportModelLoadInfo(HostService hostService, string file, BuildPhase? phase)
         {
-            Dictionary<string, BuildPhase?> mi = null;
+            OSPlatformSensitiveDictionary<BuildPhase?> mi = null;
             string name = hostService.Processor.Name;
             if (!_modelLoadInfo.TryGetValue(name, out mi))
             {
-                _modelLoadInfo[name] = mi = new Dictionary<string, BuildPhase?>(FilePathComparer.OSPlatformSensitiveStringComparer);
+                _modelLoadInfo[name] = mi = new OSPlatformSensitiveDictionary<BuildPhase?>();
             }
             mi[file] = phase;
         }
@@ -152,7 +152,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new InvalidOperationException($"HostService: {name} doesn't record incremental info, cannot call the method to get model load info.");
             }
-            Dictionary<string, BuildPhase?> mi;
+            OSPlatformSensitiveDictionary<BuildPhase?> mi;
             if (ModelLoadInfo.TryGetValue(name, out mi))
             {
                 return mi;
