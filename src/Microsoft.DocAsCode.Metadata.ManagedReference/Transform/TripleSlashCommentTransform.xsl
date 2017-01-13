@@ -111,6 +111,34 @@
     </xsl:if>
   </xsl:template>
 
+  <xsl:template match="note">
+    <xsl:variable name="type">
+      <xsl:value-of select="normalize-space(@type)"/>
+    </xsl:variable>
+
+    <div>
+      <xsl:attribute name="class">
+        <xsl:choose>
+          <xsl:when test="$type = 'warning'">WARNING alert alert-warning</xsl:when>
+          <xsl:when test="$type = 'caution'">CAUTION alert alert-danger</xsl:when>
+          <xsl:when test="$type = 'important'">IMPORTANT alert alert-danger</xsl:when>
+          <xsl:otherwise>NOTE alert alert-info</xsl:otherwise>
+        </xsl:choose>    
+      </xsl:attribute>
+      <h5>
+        <xsl:choose>
+          <xsl:when test="not($type = '')">
+            <xsl:value-of select="$type"/>
+            </xsl:when>
+          <xsl:otherwise>Note</xsl:otherwise>
+        </xsl:choose>    
+      </h5>
+      <p>
+        <xsl:apply-templates select="node()"/>
+      </p>
+    </div>
+  </xsl:template>
+  
   <xsl:template match="list">
     <xsl:variable name="listtype">
       <xsl:value-of select="normalize-space(@type)"/>
