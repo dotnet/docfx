@@ -87,6 +87,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
             Assert.Equal(6, postProcessOutputs.Count);
             VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, "a", "b", "c");
+
+            // Check incremental info
+            Assert.Equal(1, manifest.IncrementalInfo.Count);
+            Assert.Equal(true, manifest.IncrementalInfo[0].Status.CanIncremental);
+            Assert.Equal(IncrementalPhase.PostProcessing, manifest.IncrementalInfo[0].Status.IncrementalPhase);
+            Assert.Equal("Can support incremental post processing.", manifest.IncrementalInfo[0].Status.Details);
         }
 
         [Fact]
@@ -515,6 +521,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
             Assert.Equal(6, postProcessOutputs.Count);
             VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendIntegerPostProcessor.AppendInteger, "a", "b", "c");
+
+            // Check incremental info
+            Assert.Equal(1, manifest.IncrementalInfo.Count);
+            Assert.Equal(false, manifest.IncrementalInfo[0].Status.CanIncremental);
+            Assert.Equal(IncrementalPhase.PostProcessing, manifest.IncrementalInfo[0].Status.IncrementalPhase);
+            Assert.Equal(@"Cannot support incremental post processing, the reason is: post processor info changed from last {""Name"":""AppendIntegerPostProcessor""} to current {""Name"":""AppendIntegerPostProcessor"",""IncrementalContextHash"":""1024""}.",
+                manifest.IncrementalInfo[0].Status.Details);
         }
 
         [Fact]
@@ -567,6 +580,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
             Assert.Equal(6, postProcessOutputs.Count);
             VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, "a", "b", "c");
+
+            // Check incremental info
+            Assert.Equal(1, manifest.IncrementalInfo.Count);
+            Assert.Equal(false, manifest.IncrementalInfo[0].Status.CanIncremental);
+            Assert.Equal(IncrementalPhase.PostProcessing, manifest.IncrementalInfo[0].Status.IncrementalPhase);
+            Assert.Equal("Cannot support incremental post processing, the reason is: it's disabled.", manifest.IncrementalInfo[0].Status.Details);
         }
 
         [Fact]
@@ -609,6 +628,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
             Assert.Equal(6, postProcessOutputs.Count);
             VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, "a", "b", "c");
+
+            // Check incremental info
+            Assert.Equal(1, manifest.IncrementalInfo.Count);
+            Assert.Equal(false, manifest.IncrementalInfo[0].Status.CanIncremental);
+            Assert.Equal(IncrementalPhase.PostProcessing, manifest.IncrementalInfo[0].Status.IncrementalPhase);
+            Assert.Equal("Cannot support incremental post processing, the reason is: last post processor info is null.", manifest.IncrementalInfo[0].Status.Details);
         }
 
         [Fact]
@@ -651,6 +676,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Check cached PostProcessInfo is null
             Assert.Null(currentBuildInfo.PostProcessInfo);
+
+            // Check incremental info
+            Assert.Equal(1, manifest.IncrementalInfo.Count);
+            Assert.Equal(false, manifest.IncrementalInfo[0].Status.CanIncremental);
+            Assert.Equal(IncrementalPhase.PostProcessing, manifest.IncrementalInfo[0].Status.IncrementalPhase);
+            Assert.Equal("Cannot support incremental post processing, the reason is: should not trace intermediate info.", manifest.IncrementalInfo[0].Status.Details);
         }
 
         #region Private methods

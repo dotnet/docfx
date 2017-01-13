@@ -513,28 +513,28 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (!buildInfoIncrementalStatus.CanIncremental)
             {
-                IncrementalInfo.ReportStatus(false, buildInfoIncrementalStatus.Details);
+                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, buildInfoIncrementalStatus.Details);
                 Logger.LogVerbose(buildInfoIncrementalStatus.Details);
                 return false;
             }
             if (LastBuildVersionInfo == null)
             {
                 string message = $"Cannot build incrementally because last build didn't contain version {Version}.";
-                IncrementalInfo.ReportStatus(false, message);
+                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, message);
                 Logger.LogVerbose(message);
                 return false;
             }
             if (CurrentBuildVersionInfo.ConfigHash != LastBuildVersionInfo.ConfigHash)
             {
                 string message = "Cannot build incrementally because config changed.";
-                IncrementalInfo.ReportStatus(false, message);
+                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, message);
                 Logger.LogVerbose(message);
                 return false;
             }
             if (_parameters.ForceRebuild)
             {
                 string message = $"Disable incremental build by force rebuild option.";
-                IncrementalInfo.ReportStatus(false, message);
+                IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, message);
                 Logger.LogVerbose(message);
                 return false;
             }
@@ -544,12 +544,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 if ((options & (ApplyTemplateOptions.ExportRawModel | ApplyTemplateOptions.ExportViewModel)) != ApplyTemplateOptions.None)
                 {
                     string message = $"Disable incremental build because ExportRawModel/ExportViewModel option enabled.";
-                    IncrementalInfo.ReportStatus(false, message);
+                    IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, message);
                     Logger.LogVerbose(message);
                     return false;
                 }
             }
-            IncrementalInfo.ReportStatus(true);
+            IncrementalInfo.ReportStatus(true, IncrementalPhase.Build);
             return true;
         }
 

@@ -18,15 +18,13 @@ namespace Microsoft.DocAsCode.Plugins
 
         [YamlMember(Alias = "processors")]
         [JsonProperty("processors")]
-        public IReadOnlyDictionary<string, IncrementalStatus> Processors
-        {
-            get { return _processors; }
-        }
+        public IReadOnlyDictionary<string, IncrementalStatus> Processors => _processors;
 
-        public void ReportStatus(bool canIncremental, string details = null)
+        public void ReportStatus(bool canIncremental, IncrementalPhase incrementalPhase, string details = null)
         {
             Status.CanIncremental = canIncremental;
             Status.Details = details;
+            Status.IncrementalPhase = incrementalPhase;
         }
 
         public void ReportProcessorStatus(string processor, bool canIncremental, string details = null)
@@ -50,5 +48,9 @@ namespace Microsoft.DocAsCode.Plugins
         [YamlMember(Alias = "details")]
         [JsonProperty("details")]
         public string Details { get; set; }
+
+        [YamlMember(Alias = "incrementalPhase")]
+        [JsonProperty("incrementalPhase")]
+        public IncrementalPhase IncrementalPhase { get; set; }
     }
 }

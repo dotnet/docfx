@@ -177,7 +177,7 @@ tagRules : [
                     Assert.Equal(6, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
-                    Assert.Equal(1, incrementalInfo.Count);
+                    Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
@@ -414,7 +414,7 @@ tagRules : [
                     Assert.Equal(8, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
-                    Assert.Equal(1, incrementalInfo.Count);
+                    Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
@@ -606,7 +606,7 @@ tagRules : [
                     Assert.Equal(8, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
-                    Assert.Equal(1, incrementalInfo.Count);
+                    Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
@@ -822,7 +822,7 @@ tagRules : [
                     Assert.Equal(8, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
-                    Assert.Equal(1, incrementalInfo.Count);
+                    Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
@@ -1027,7 +1027,7 @@ tagRules : [
                     Assert.Equal(8, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
-                    Assert.Equal(1, incrementalInfo.Count);
+                    Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
@@ -1147,7 +1147,7 @@ tagRules : [
                     Assert.Equal(1, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
-                    Assert.Equal(1, incrementalInfo.Count);
+                    Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.False(incrementalStatus.CanIncremental);
                     Assert.Equal(incrementalStatus.Details, "Cannot build incrementally because config changed.");
@@ -1270,7 +1270,7 @@ tagRules : [
                     Assert.Equal(1, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
-                    Assert.Equal(1, incrementalInfo.Count);
+                    Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.False(incrementalStatus.CanIncremental);
                     Assert.Equal(incrementalStatus.Details, "Cannot build incrementally because template changed.");
@@ -1395,7 +1395,7 @@ tagRules : [
                     Assert.Equal(2, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
-                    Assert.Equal(1, incrementalInfo.Count);
+                    Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
@@ -1504,7 +1504,7 @@ tagRules : [
                     Assert.Equal(1, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
-                    Assert.Equal(1, incrementalInfo.Count);
+                    Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
