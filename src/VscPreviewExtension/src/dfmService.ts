@@ -8,25 +8,23 @@ import { DfmServiceResult } from './dfmServiceResult';
 export class DfmService {
     private static client = new DfmHttpClient();
 
-    static async PreviewAsync(content: String): Promise<DfmServiceResult> {
+    static async previewAsync(content: String): Promise<DfmServiceResult> {
         if (!content) {
             return null;
         }
 
-        let markup = await DfmService.client.SendPostRequestAsync("preview", content);
-        return markup;
+        return await DfmService.client.sendPostRequestAsync("preview", content);
     }
 
-    static async GetTokenTreeAsync(content: String): Promise<DfmServiceResult> {
+    static async getTokenTreeAsync(content: String): Promise<DfmServiceResult> {
         if (!content) {
             return null;
         }
 
-        let tokenTree = await DfmService.client.SendPostRequestAsync("generateTokenTree", content);
-        return tokenTree;
+        return await DfmService.client.sendPostRequestAsync("generateTokenTree", content);
     }
 
-    static async ExitAsync() {
-        await DfmService.client.SendPostRequestAsync("exit", null);
+    static async exitAsync() {
+        await DfmService.client.sendPostRequestAsync("exit", null);
     }
 }

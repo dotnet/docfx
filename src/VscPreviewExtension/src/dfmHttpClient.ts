@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import axios from 'axios';
-import { AxiosResponse } from 'axios'
+import { default as Axios, AxiosResponse } from 'axios'
 
 import { DfmServiceResult } from './dfmServiceResult';
 
@@ -9,8 +8,8 @@ export class DfmHttpClient {
     // TODO: make the urlPrefix configurable
     private urlPrefix = "http://localhost:4001";
 
-    async SendPostRequestAsync(command: String, content: String): Promise<DfmServiceResult> {
-        let promise = axios.post(this.urlPrefix, {
+    async sendPostRequestAsync(command: String, content: String): Promise<DfmServiceResult> {
+        let promise = Axios.post(this.urlPrefix, {
             name: command,
             documentation: content
         });
