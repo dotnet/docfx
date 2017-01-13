@@ -35,11 +35,6 @@ namespace DfmHttpService
                 throw new HandlerClientException("No body in this request");
             }
 
-            if (request.ContentType != ContentType.Json)
-            {
-                throw new HandlerClientException("Only JSON format in body allowed.");
-            }
-
             string content;
             using (var body = request.InputStream)
             {
