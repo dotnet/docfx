@@ -36,6 +36,16 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
+        private LoggerPhaseScope(CapturedLoggerPhaseScope captured, LogLevel? perfLogLevel)
+        {
+            _originPhaseName = GetPhaseName();
+            SetPhaseName(captured.PhaseName);
+            if (perfLogLevel != null)
+            {
+                _performanceScope = new PerformanceScope("Scope:" + captured.PhaseName, perfLogLevel.Value);
+            }
+        }
+
         public void Dispose()
         {
             _performanceScope?.Dispose();
@@ -74,7 +84,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 return null;
             }
-            return new LoggerPhaseScope(capturedScope.PhaseName, perfLogLevel);
+            return new LoggerPhaseScope(capturedScope, perfLogLevel);
         }
 
         private sealed class CapturedLoggerPhaseScope
