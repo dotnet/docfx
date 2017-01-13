@@ -564,9 +564,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             var projectFilePath = project.FilePath;
             var k = documentCache.GetDocuments(projectFilePath);
-            foreach (var doc in k)
-                Console.WriteLine("Project doc, exits {1},  {0}", doc, File.Exists(doc));
-
             return GetMetadataFromProjectLevelCacheAsync(
                 project,
                 new[] { projectFilePath, filterConfigFile },
