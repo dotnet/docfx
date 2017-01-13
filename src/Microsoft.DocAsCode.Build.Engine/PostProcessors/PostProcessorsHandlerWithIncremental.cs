@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private readonly IPostProcessorsHandler _innerHandler;
         private readonly IncrementalPostProcessorsContext _increContext;
+        private const string ExcludeType = "Resource"; // TODO: use FAL to copy the resources
 
         public PostProcessorsHandlerWithIncremental(IPostProcessorsHandler innerPostProcessorsHandler, IncrementalPostProcessorsContext increContext)
         {
@@ -49,6 +50,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             var increItems = manifest.Files.Where(i => i.IsIncremental).ToList();
             var nonIncreItems = manifest.Files.Where(i => !i.IsIncremental).ToList();
+            if (increItems.Any(i => i.DocumentType.Equals(ExcludeType, StringComparison.OrdinalIgnoreCase)))
+            {
+                throw new NotSupportedException($"Currently incremental post processing logic doesn't support type {ExcludeType}.");
+            }
 
             PreHandle(manifest, outputFolder, increItems, nonIncreItems);
             {
@@ -166,7 +171,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void TraceNoneIncremental(string outputFolder, List<ManifestItem> nonIncreItems)
         {
-            foreach (var outputRelPath in GetOutputRelativePaths(nonIncreItems))
+            foreach (var outputRelPath in GetOutputRelativePaths(nonIncreItems, ExcludeType))
             {
                 IncrementalUtility.RetryIO(() =>
                 {
@@ -209,11 +214,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static IEnumerable<string> GetOutputRelativePaths(List<ManifestItem> items)
+        private static IEnumerable<string> GetOutputRelativePaths(List<ManifestItem> items, string excludeType = null)
         {
             return from item in items
+                   where !item.DocumentType.Equals(excludeType, StringComparison.OrdinalIgnoreCase)
                    from output in item.OutputFiles.Values
-                select output.RelativePath;
+                   select output.RelativePath;
         }
 
         private static void CheckNoIncrementalItems(Manifest manifest, string prependString)
