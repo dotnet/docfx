@@ -42,7 +42,9 @@ namespace Microsoft.DocAsCode.Common.Tests
                         Assert.NotNull(captured);
                         callback = shouldLogPerformance =>
                         {
-                            using (LoggerPhaseScope.Restore(captured, LogLevel.Diagnostic))
+                            using (shouldLogPerformance ?
+                                LoggerPhaseScope.Restore(captured, LogLevel.Diagnostic) :
+                                LoggerPhaseScope.Restore(captured))
                             {
                                 Logger.LogInfo("test in captured phase scope B");
                             }
