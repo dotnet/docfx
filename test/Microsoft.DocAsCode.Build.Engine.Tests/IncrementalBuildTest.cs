@@ -1524,6 +1524,232 @@ tagRules : [
             }
         }
 
+        [Fact]
+        public void TestServerFileCaseChange()
+        {
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
+
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "# Hello World",
+                    "<p>",
+                    "test",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { conceptualFile });
+            #endregion
+
+            Init("IncrementalBuild.TestServerFileCaseChange");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestServerFileCaseChange");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestServerFileCaseChange.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestServerFileCaseChange.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestServerFileCaseChange-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // rename to uppercase
+                var newConceptualFile = UpdateFile(
+                    "TEST.md",
+                    new[]
+                    {
+                        "# Hello World",
+                        "<p>",
+                        "test",
+                    },
+                    inputFolder);
+                var newFiles = new FileCollection(Directory.GetCurrentDirectory());
+                newFiles.Add(DocumentType.Article, new[] { newConceptualFile });
+                using (new LoggerPhaseScope("IncrementalBuild.TestServerFileCaseChange-second"))
+                {
+                    BuildDocument(
+                        newFiles,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder,
+                        changes: new Dictionary<string, ChangeKindWithDependency>
+                        {
+                            { ((RelativePath)newConceptualFile).GetPathFromWorkingFolder(), ChangeKindWithDependency.Updated },
+                        });
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestServerFileCaseChange-forcebuild-second"))
+                {
+                    BuildDocument(
+                        newFiles,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(1, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestServerFileCaseChange-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestServerFileCaseChange-second", "IncrementalBuild.TestServerFileCaseChange-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact]
+        public void TestLocalFileCaseChange()
+        {
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
+
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "# Hello World",
+                    "<p>",
+                    "test",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { conceptualFile });
+            #endregion
+
+            Init("IncrementalBuild.TestLocalFileCaseChange");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestLocalFileCaseChange");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestLocalFileCaseChange.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestLocalFileCaseChange.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestLocalFileCaseChange-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // rename to uppercase
+                var newConceptualFile = UpdateFile(
+                    "TEST.md",
+                    new[]
+                    {
+                        "# Hello World",
+                        "<p>",
+                        "test",
+                    },
+                    inputFolder);
+                var newFiles = new FileCollection(Directory.GetCurrentDirectory());
+                newFiles.Add(DocumentType.Article, new[] { newConceptualFile });
+                using (new LoggerPhaseScope("IncrementalBuild.TestLocalFileCaseChange-second"))
+                {
+                    BuildDocument(
+                        newFiles,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestLocalFileCaseChange-forcebuild-second"))
+                {
+                    BuildDocument(
+                        newFiles,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(1, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(1, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestLocalFileCaseChange-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestLocalFileCaseChange-second", "IncrementalBuild.TestLocalFileCaseChange-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
         private static bool CompareDir(string path1, string path2)
         {
             var files1 = new DirectoryInfo(path1).GetFiles("*.*", SearchOption.AllDirectories).Where(f => f.Name != "xrefmap.yml" && f.Name != "manifest.json").OrderBy(f => f.FullName).ToList();
