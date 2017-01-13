@@ -42,14 +42,16 @@ namespace Microsoft.DocAsCode.Common.Tests
                         Assert.NotNull(captured);
                         callback = shouldLogPerformance =>
                         {
-                            using (LoggerPhaseScope.Restore(captured, shouldLogPerformance))
+                            using (shouldLogPerformance ?
+                                LoggerPhaseScope.Restore(captured, LogLevel.Diagnostic) :
+                                LoggerPhaseScope.Restore(captured))
                             {
                                 Logger.LogInfo("test in captured phase scope B");
                             }
                         };
                     } // exit scope B.
 
-                    using (new LoggerPhaseScope("C", true))
+                    using (new LoggerPhaseScope("C", LogLevel.Diagnostic))
                     {
                         Logger.LogInfo("test in phase scope C");
                         Assert.Equal("A.C", listener.TakeAndRemove().Phase);

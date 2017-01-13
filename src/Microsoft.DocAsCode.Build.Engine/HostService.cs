@@ -440,7 +440,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     if (buildStep is ISupportIncrementalBuildStep)
                     {
                         Logger.LogVerbose($"Processor {Processor.Name}, step {buildStep.Name}: Registering DependencyType...");
-                        using (new LoggerPhaseScope(buildStep.Name, true))
+                        using (new LoggerPhaseScope(buildStep.Name, LogLevel.Diagnostic))
                         {
                             var types = (buildStep as ISupportIncrementalBuildStep).GetDependencyTypesToRegister();
                             if (types == null)

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#if !NetCore
 namespace Microsoft.DocAsCode.Common
 {
     using System;
@@ -13,11 +12,16 @@ namespace Microsoft.DocAsCode.Common
         private readonly PerformanceScope _performanceScope;
 
         public LoggerPhaseScope(string phaseName)
-            : this(phaseName, false)
-        {
-        }
+            : this(phaseName, null) { }
 
+        [Obsolete]
         public LoggerPhaseScope(string phaseName, bool enablePerformanceScope)
+            : this(phaseName, enablePerformanceScope ? (LogLevel?)LogLevel.Diagnostic : null) { }
+
+        public LoggerPhaseScope(string phaseName, LogLevel perfLogLevel)
+            : this(phaseName, (LogLevel?)perfLogLevel) { }
+
+        private LoggerPhaseScope(string phaseName, LogLevel? perfLogLevel)
         {
             if (string.IsNullOrWhiteSpace(phaseName))
             {
@@ -26,25 +30,19 @@ namespace Microsoft.DocAsCode.Common
             _originPhaseName = GetPhaseName();
             phaseName = _originPhaseName == null ? phaseName : _originPhaseName + "." + phaseName;
             SetPhaseName(phaseName);
-            if (enablePerformanceScope)
+            if (perfLogLevel != null)
             {
-                _performanceScope = new PerformanceScope("Scope:" + phaseName, LogLevel.Diagnostic);
+                _performanceScope = new PerformanceScope("Scope:" + phaseName, perfLogLevel.Value);
             }
         }
 
-        public LoggerPhaseScope(string phaseName, LogLevel perfLogLevel)
-            :this(phaseName, false)
-        {
-            _performanceScope = new PerformanceScope("Scope:" + phaseName, perfLogLevel);
-        }
-
-        private LoggerPhaseScope(CapturedLoggerPhaseScope captured, bool enablePerformanceScope)
+        private LoggerPhaseScope(CapturedLoggerPhaseScope captured, LogLevel? perfLogLevel)
         {
             _originPhaseName = GetPhaseName();
             SetPhaseName(captured.PhaseName);
-            if (enablePerformanceScope)
+            if (perfLogLevel != null)
             {
-                _performanceScope = new PerformanceScope("Scope:" + captured.PhaseName, LogLevel.Diagnostic);
+                _performanceScope = new PerformanceScope("Scope:" + captured.PhaseName, perfLogLevel.Value);
             }
         }
 
@@ -69,17 +67,24 @@ namespace Microsoft.DocAsCode.Common
             return new CapturedLoggerPhaseScope();
         }
 
-        public static LoggerPhaseScope Restore(object captured)
-            => Restore(captured, false);
+        public static LoggerPhaseScope Restore(object captured) =>
+            Restore(captured, null);
 
-        public static LoggerPhaseScope Restore(object captured, bool enablePerformanceScope)
+        [Obsolete]
+        public static LoggerPhaseScope Restore(object captured, bool enablePerformanceScope) =>
+            Restore(captured, enablePerformanceScope ? (LogLevel?)LogLevel.Diagnostic : null);
+
+        public static LoggerPhaseScope Restore(object captured, LogLevel perfLogLevel) =>
+            Restore(captured, (LogLevel?)perfLogLevel);
+
+        private static LoggerPhaseScope Restore(object captured, LogLevel? perfLogLevel)
         {
             var capturedScope = captured as CapturedLoggerPhaseScope;
             if (capturedScope == null)
             {
                 return null;
             }
-            return new LoggerPhaseScope(capturedScope, enablePerformanceScope);
+            return new LoggerPhaseScope(capturedScope, perfLogLevel);
         }
 
         private sealed class CapturedLoggerPhaseScope
@@ -93,4 +98,3 @@ namespace Microsoft.DocAsCode.Common
         }
     }
 }
-#endif

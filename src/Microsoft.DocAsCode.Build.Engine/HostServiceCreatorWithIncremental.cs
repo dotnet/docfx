@@ -90,7 +90,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void PostCreate(HostService hostService, IEnumerable<FileAndType> files)
         {
-            using (new LoggerPhaseScope("ReportModelLoadInfo", true))
+            using (new LoggerPhaseScope("ReportModelLoadInfo", LogLevel.Diagnostic))
             {
                 if (!hostService.ShouldTraceIncrementalInfo)
                 {

@@ -31,12 +31,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             Prepare(hostServices);
             foreach (var hostService in hostServices)
             {
-                using (new LoggerPhaseScope(hostService.Processor.Name, true))
+                using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
                 {
                     var steps = string.Join("=>", hostService.Processor.BuildSteps.OrderBy(step => step.BuildOrder).Select(s => s.Name));
                     Logger.LogInfo($"Building {hostService.Models.Count} file(s) in {hostService.Processor.Name}({steps})...");
                     Logger.LogVerbose($"Processor {hostService.Processor.Name}: Prebuilding...");
-                    using (new LoggerPhaseScope("Prebuild", true))
+                    using (new LoggerPhaseScope("Prebuild", LogLevel.Verbose))
                     {
                         Prebuild(hostService);
                     }
@@ -53,10 +53,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             foreach (var hostService in hostServices)
             {
-                using (new LoggerPhaseScope(hostService.Processor.Name, true))
+                using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
                 {
                     Logger.LogVerbose($"Processor {hostService.Processor.Name}: Building...");
-                    using (new LoggerPhaseScope("Build", true))
+                    using (new LoggerPhaseScope("Build", LogLevel.Verbose))
                     {
                         BuildArticle(hostService, maxParallelism);
                     }
@@ -109,7 +109,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 buildStep =>
                 {
                     Logger.LogVerbose($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Prebuilding...");
-                    using (new LoggerPhaseScope(buildStep.Name, true))
+                    using (new LoggerPhaseScope(buildStep.Name, LogLevel.Verbose))
                     {
                         var models = buildStep.Prebuild(hostService.Models, hostService);
                         if (!object.ReferenceEquals(models, hostService.Models))
@@ -134,7 +134,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             buildStep =>
                             {
                                 Logger.LogDiagnostic($"Processor {hostService.Processor.Name}, step {buildStep.Name}: Building...");
-                                using (new LoggerPhaseScope(buildStep.Name, true))
+                                using (new LoggerPhaseScope(buildStep.Name, LogLevel.Diagnostic))
                                 {
                                     buildStep.Build(m, hostService);
                                 }

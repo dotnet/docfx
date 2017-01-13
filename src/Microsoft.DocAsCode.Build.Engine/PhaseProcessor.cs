@@ -15,8 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             foreach (var h in Handlers)
             {
-                using (new LoggerPhaseScope(h.Name, false))
-                using (new PerformanceScope(h.Name, LogLevel.Verbose))
+                using (new LoggerPhaseScope(h.Name, LogLevel.Verbose))
                 {
                     h.Handle(hostServices, maxParallelism);
                 }

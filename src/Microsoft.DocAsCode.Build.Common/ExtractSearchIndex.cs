@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 var filePath = Path.Combine(outputFolder, relativePath);
                 var html = new HtmlDocument();
-                Logger.LogVerbose($"Extracting index data from {filePath}");
+                Logger.LogDiagnostic($"Extracting index data from {filePath}");
 
                 if (EnvironmentContext.FileAbstractLayer.Exists(filePath))
                 {
