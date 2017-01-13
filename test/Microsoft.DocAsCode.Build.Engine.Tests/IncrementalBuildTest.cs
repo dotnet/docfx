@@ -1419,6 +1419,7 @@ tagRules : [
         public void TestSrcFileWithInvalidToken()
         {
             // conceptual1--->invalid token(phase 1)
+            // conceptual2--->invalid token(phase 1)
             #region Prepare test data
 
             var inputFolder = GetRandomFolder();
@@ -1435,6 +1436,14 @@ tagRules : [
                     "[!INCLUDE [Token](token.md)]",
                 },
                 inputFolder);
+            var conceptualFile2 = CreateFile("test2.md",
+                new[]
+                {
+                    "# Hello World2",
+                    "Test token:",
+                    "[!INCLUDE [Token](token.md)]",
+                },
+                inputFolder);
             var token = CreateFile("token.md",
                 new[]
                 {
@@ -1443,7 +1452,7 @@ tagRules : [
                 inputFolder);
 
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, new[] { conceptualFile });
+            files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2 });
             #endregion
 
             Init("IncrementalBuild.TestSrcFileWithInvalidToken");
@@ -1501,7 +1510,7 @@ tagRules : [
                     var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
-                    Assert.Equal(1, manifest.Files.Count);
+                    Assert.Equal(2, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
                     Assert.Equal(2, incrementalInfo.Count);
