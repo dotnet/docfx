@@ -11,7 +11,7 @@ namespace DfmHttpService
 
     internal class DfmTokenTreeHandler : IHttpHandler
     {
-        private readonly DfmServiceProvider _provider = new DfmServiceProvider();
+        private readonly DfmJsonTokenTreeServiceProvider _provider = new DfmJsonTokenTreeServiceProvider();
 
         public bool CanHandle(ServiceContext context)
         {
