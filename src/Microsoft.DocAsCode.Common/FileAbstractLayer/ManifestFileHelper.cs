@@ -60,7 +60,7 @@ namespace Microsoft.DocAsCode.Common
             return false;
         }
 
-        public static void RemoveLinks(this Manifest manifest, string manifestFolder)
+        public static void Dereference(this Manifest manifest, string manifestFolder)
         {
             if (manifest == null)
             {

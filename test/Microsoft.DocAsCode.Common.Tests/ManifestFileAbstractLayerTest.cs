@@ -114,12 +114,11 @@ namespace Microsoft.DocAsCode.Common.Tests
                 Assert.Equal("😎", File.ReadAllText(pp));
             }
 
-            manifest.RemoveLinks(manifestFolder);
+            manifest.Dereference(manifestFolder);
 
             Assert.Null(manifest.Files.First(mi => mi.SourceRelativePath == "temp.md").OutputFiles[".html"].LinkToPath);
             Assert.True(File.Exists(Path.Combine(manifestFolder, "temp.html")));
             Assert.Equal("😎", File.ReadAllText(Path.Combine(manifestFolder, "temp.html")));
-
         }
     }
 }
