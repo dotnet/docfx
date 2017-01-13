@@ -130,7 +130,7 @@
           <xsl:when test="not($type = '')">
             <xsl:value-of select="$type"/>
             </xsl:when>
-          <xsl:otherwise>Note</xsl:otherwise>
+          <xsl:otherwise>note</xsl:otherwise>
         </xsl:choose>    
       </h5>
       <p>
