@@ -60,14 +60,14 @@ function NugetPack {
     }
 }
 
-function PackSelfContainProject {
+function PackNuspecProject {
     param($assemblyFolder, $nuspecPath)
 
     $nuspecFile = Get-Item $nuspecPath
     $nuspecName = $nuspecFile.Name
     $nuspecFolder = $nuspecFile.Directory.FullName
     $nuspecFolderName = $nuspecFile.Directory.Name
-    $targetFolder = "PACK\$nuspecFolderName"
+    $targetFolder = "TEMP\$nuspecFolderName"
 
     if (Test-Path $targetFolder)
     {
