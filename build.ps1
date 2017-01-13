@@ -203,13 +203,13 @@ foreach ($folder in (dir "plugins"))
 }
 
 # Pack docfx.console
-PackSelfContainProject "target\$configuration\docfx" "src\nuspec\docfx.console\docfx.console.nuspec"
+PackNuspecProject "target\$configuration\docfx" "src\nuspec\docfx.console\docfx.console.nuspec"
 
 # Pack azure tools
-PackSelfContainProject "target\$configuration\AzureMarkdownRewriterTool" "src\nuspec\AzureMarkdownRewriterTool\AzureMarkdownRewriterTool.nuspec"
+PackNuspecProject "target\$configuration\AzureMarkdownRewriterTool" "src\nuspec\AzureMarkdownRewriterTool\AzureMarkdownRewriterTool.nuspec"
 
 # Pack DfmHttpService
-PackSelfContainProject "target\$configuration\DfmHttpService" "src\nuspec\DfmHttpService\DfmHttpService.nuspec"
+PackNuspecProject "target\$configuration\DfmHttpService" "src\nuspec\DfmHttpService\DfmHttpService.nuspec"
 
 # Build VscPreviewExe
 src\VscPreviewExtension\buildVscPreviewExe.cmd -c $configuration
