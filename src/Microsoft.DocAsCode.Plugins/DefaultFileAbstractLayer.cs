@@ -31,7 +31,11 @@ namespace Microsoft.DocAsCode.Plugins
         public Stream Create(string file)
         {
             var f = GetOutputPhysicalPath(file);
-            Directory.CreateDirectory(Path.GetDirectoryName(f));
+            var dir = Path.GetDirectoryName(f);
+            if (!string.IsNullOrEmpty(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
             return File.Create(f);
         }
 
@@ -39,7 +43,11 @@ namespace Microsoft.DocAsCode.Plugins
         {
             var source = GetPhysicalPath(sourceFileName);
             var dest = GetOutputPhysicalPath(destFileName);
-            Directory.CreateDirectory(Path.GetDirectoryName(dest));
+            var dir = Path.GetDirectoryName(dest);
+            if (!string.IsNullOrEmpty(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
             File.Copy(source, dest, true);
             File.SetAttributes(dest, FileAttributes.Normal);
         }

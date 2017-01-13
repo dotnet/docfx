@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentNullException(nameof(manifestFolder));
             }
-            Directory.CreateDirectory(manifestFolder);
+            FileWriterBase.EnsureFolder(manifestFolder);
             lock (manifest)
             {
                 var ofiList = (from f in manifest.Files

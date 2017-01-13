@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Common
         public override void Copy(PathMapping sourceFileName, RelativePath destFileName)
         {
             var dest = Path.Combine(ExpandedOutputFolder, destFileName.RemoveWorkingFolder());
-            Directory.CreateDirectory(Path.GetDirectoryName(dest));
+            EnsureFolder(Path.GetDirectoryName(dest));
             var source = Environment.ExpandEnvironmentVariables(sourceFileName.PhysicalPath);
             if (!FilePathComparer.OSPlatformSensitiveStringComparer.Equals(source, dest))
             {
@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Common
         public override Stream Create(RelativePath file)
         {
             var f = Path.Combine(ExpandedOutputFolder, file.RemoveWorkingFolder());
-            Directory.CreateDirectory(Path.GetDirectoryName(f));
+            EnsureFolder(Path.GetDirectoryName(f));
             return File.Create(f);
         }
 

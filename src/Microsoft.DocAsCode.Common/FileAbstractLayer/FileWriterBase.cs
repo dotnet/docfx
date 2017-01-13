@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Common
         public FileWriterBase(string outputFolder)
         {
             ExpandedOutputFolder = Path.GetFullPath(Environment.ExpandEnvironmentVariables(outputFolder));
-            Directory.CreateDirectory(ExpandedOutputFolder);
+            EnsureFolder(ExpandedOutputFolder);
             OutputFolder = outputFolder;
         }
 
@@ -32,6 +32,18 @@ namespace Microsoft.DocAsCode.Common
         #endregion
 
         #region Help Methods
+
+        protected internal static void EnsureFolder(string folder)
+        {
+            if (string.IsNullOrEmpty(folder))
+            {
+                return;
+            }
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+        }
 
         protected string GetRandomEntry()
         {
