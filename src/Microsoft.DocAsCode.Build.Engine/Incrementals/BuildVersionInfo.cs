@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// deserialized xrefspecmap. Key is original file path from root. Value is XrefSpecs reported by the file.
         /// </summary>
         [JsonIgnore]
-        public IDictionary<string, IEnumerable<XRefSpec>> XRefSpecMap { get; private set; } = new Dictionary<string, IEnumerable<XRefSpec>>();
+        public IDictionary<string, IEnumerable<XRefSpec>> XRefSpecMap { get; private set; } = new OSPlatformSensitiveDictionary<IEnumerable<XRefSpec>>();
         /// <summary>
         /// deserialized filemap.
         /// </summary>
@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             Attributes = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<FileAttributeItem>>(Path.Combine(baseDir, AttributesFile));
             BuildOutputs = IncrementalUtility.LoadIntermediateFile<BuildOutputs>(Path.Combine(baseDir, OutputFile));
             Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(Path.Combine(baseDir, ManifestFile));
-            XRefSpecMap = IncrementalUtility.LoadIntermediateFile<IDictionary<string, IEnumerable<XRefSpec>>>(Path.Combine(baseDir, XRefSpecMapFile));
+            XRefSpecMap = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<IEnumerable<XRefSpec>>>(Path.Combine(baseDir, XRefSpecMapFile));
             FileMap = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<string>>(Path.Combine(baseDir, FileMapFile));
             BuildMessage = IncrementalUtility.LoadBuildMessage(Path.Combine(baseDir, BuildMessageFile));
             foreach (var processor in Processors)

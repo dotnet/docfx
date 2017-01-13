@@ -157,7 +157,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return mi;
             }
-            return new Dictionary<string, BuildPhase?>();
+            return new OSPlatformSensitiveDictionary<BuildPhase?>();
         }
 
         #endregion
@@ -214,7 +214,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 // get changelist from lastBuildInfo if user doesn't provide changelist
                 var fileAttributes = CurrentBuildVersionInfo.Attributes;
                 DateTime checkTime = LastBuildStartTime.Value;
-                foreach (var file in fileAttributes.Keys.Intersect(lastFileAttributes.Keys))
+                foreach (var file in fileAttributes.Keys.Intersect(lastFileAttributes.Keys, FilePathComparer.OSPlatformSensitiveStringComparer))
                 {
                     var last = lastFileAttributes[file];
                     var current = fileAttributes[file];

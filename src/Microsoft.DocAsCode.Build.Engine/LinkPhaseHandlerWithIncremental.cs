@@ -201,7 +201,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                    Path = output.RelativePath,
                                    SourcePath = m.SourceRelativePath,
                                } into items
-                               group items by items.SourcePath).ToDictionary(g => g.Key, g => g.Select(p => p.Path).ToList());
+                               group items by items.SourcePath).ToDictionary(g => g.Key, g => g.Select(p => p.Path).ToList(), FilePathComparer.OSPlatformSensitiveStringComparer);
 
             foreach (var h in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
             {
@@ -289,7 +289,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     from f in h.GetUnloadedModelFiles(IncrementalContext)
                     from mani in LastBuildVersionInfo.Manifest
                     where FilePathComparer.OSPlatformSensitiveStringComparer.Equals(f, mani.SourceRelativePath)
-                    let copied = mani.Clone(isIncremental: true)
+                    let copied = mani.Clone(isIncremental: true, sourceRelativePath: f)
                     select copied).ToList();
         }
 
