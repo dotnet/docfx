@@ -18,11 +18,6 @@ target/
 /**/_site/
 .vscode/
 .vs/
-src/nuspec/docfx.console/tools/*.dll
-src/nuspec/docfx.console/tools/*.exe
-src/nuspec/docfx.console/tools/*.exe.config
-src/nuspec/AzureMarkdownRewriterTool/tools/
-
 
 ###############
 #  temp file  #

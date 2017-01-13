@@ -60,6 +60,31 @@ function NugetPack {
     }
 }
 
+function PackNuspecProject {
+    param($assemblyFolder, $nuspecPath)
+
+    $nuspecFile = Get-Item $nuspecPath
+    $nuspecName = $nuspecFile.Name
+    $nuspecFolder = $nuspecFile.Directory.FullName
+    $nuspecFolderName = $nuspecFile.Directory.Name
+    $targetFolder = "TEMP\$nuspecFolderName"
+
+    if (Test-Path $targetFolder)
+    {
+        $null = Remove-Item $targetFolder -Force -Recurse
+    }
+    $null = New-Item -ItemType Directory -Force -Path $targetFolder
+    $null = New-Item -ItemType Directory -Force -Path "$targetFolder\tools\"
+
+    Copy-Item -Path "$nuspecFolder\**" -Destination "$targetFolder" -Force -Recurse
+    Copy-Item -Path "$assemblyFolder\*.dll" -Destination "$targetFolder\tools\" -Force
+    Copy-Item -Path "$assemblyFolder\*.exe" -Destination "$targetFolder\tools\" -Force
+    Copy-Item -Path "$assemblyFolder\*.exe.config" -Destination "$targetFolder\tools\" -Force
+
+    & $nuget pack "$targetFolder\$nuspecName" -Version $version -OutputDirectory artifacts\$configuration
+    ProcessLastExitCode $lastexitcode "nuget pack error while packing $nuspecPath"
+}
+
 function ProcessLastExitCode {
     param($exitCode, $msg)
     if ($exitCode -ne 0)
@@ -178,25 +203,17 @@ foreach ($folder in (dir "plugins"))
 }
 
 # Pack docfx.console
-Copy-Item -Path "target\$configuration\docfx\*.dll" -Destination "src\nuspec\docfx.console\tools\"
-Copy-Item -Path "target\$configuration\docfx\*.exe" -Destination "src\nuspec\docfx.console\tools\"
-Copy-Item -Path "target\$configuration\docfx\*.exe.config" -Destination "src\nuspec\docfx.console\tools\"
-
-& $nuget pack "src\nuspec\docfx.console\docfx.console.nuspec" -Version $version -OutputDirectory artifacts\$configuration
-ProcessLastExitCode $lastexitcode "nuget pack docfx.console error"
+PackSelfContainProject "target\$configuration\docfx" "src\nuspec\docfx.console\docfx.console.nuspec"
 
 # Pack azure tools
-$null = New-Item -ItemType Directory -Force -Path "src\nuspec\AzureMarkdownRewriterTool\tools\"
-Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.dll" -Destination "src\nuspec\AzureMarkdownRewriterTool\tools\"
-Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.exe" -Destination "src\nuspec\AzureMarkdownRewriterTool\tools\"
-Copy-Item -Path "target\$configuration\AzureMarkdownRewriterTool\*.exe.config" -Destination "src\nuspec\AzureMarkdownRewriterTool\tools\"
+PackSelfContainProject "target\$configuration\AzureMarkdownRewriterTool" "src\nuspec\AzureMarkdownRewriterTool\AzureMarkdownRewriterTool.nuspec"
+
+# Pack DfmHttpService
+PackSelfContainProject "target\$configuration\DfmHttpService" "src\nuspec\DfmHttpService\DfmHttpService.nuspec"
 
 # Build VscPreviewExe
 src\VscPreviewExtension\buildVscPreviewExe.cmd -c $configuration
 ProcessLastExitCode $lastexitcode "build VscPreviewExe error"
-
-& $nuget pack "src\nuspec\AzureMarkdownRewriterTool\AzureMarkdownRewriterTool.nuspec" -Version $version -OutputDirectory artifacts\$configuration
-ProcessLastExitCode $lastexitcode "nuget pack AzureMarkdownRewriterTool error"
 
 Write-Host "Build completed."
 Pop-Location
