@@ -61,14 +61,27 @@ function NugetPack {
 }
 
 function PackSelfContainProject {
-    param($sourceFolder, $nuspecPath)
-    $targetFolder = (Get-Item $nuspecPath).Directory.FullName
-    $null = New-Item -ItemType Directory -Force -Path "$targetFolder\tools\"
-    Copy-Item -Path "$sourceFolder\*.dll" -Destination "$targetFolder\tools\"
-    Copy-Item -Path "$sourceFolder\*.exe" -Destination "$targetFolder\tools\"
-    Copy-Item -Path "$sourceFolder\*.exe.config" -Destination "$targetFolder\tools\"
+    param($assemblyFolder, $nuspecPath)
 
-    & $nuget pack $nuspecPath -Version $version -OutputDirectory artifacts\$configuration
+    $nuspecFile = Get-Item $nuspecPath
+    $nuspecName = $nuspecFile.Name
+    $nuspecFolder = $nuspecFile.Directory.FullName
+    $nuspecFolderName = $nuspecFile.Directory.Name
+    $targetFolder = "PACK\$nuspecFolderName"
+
+    if (Test-Path $targetFolder)
+    {
+        $null = Remove-Item $targetFolder -Force -Recurse
+    }
+    $null = New-Item -ItemType Directory -Force -Path $targetFolder
+    $null = New-Item -ItemType Directory -Force -Path "$targetFolder\tools\"
+
+    Copy-Item -Path "$nuspecFolder\**" -Destination "$targetFolder" -Force -Recurse
+    Copy-Item -Path "$assemblyFolder\*.dll" -Destination "$targetFolder\tools\" -Force
+    Copy-Item -Path "$assemblyFolder\*.exe" -Destination "$targetFolder\tools\" -Force
+    Copy-Item -Path "$assemblyFolder\*.exe.config" -Destination "$targetFolder\tools\" -Force
+
+    & $nuget pack "$targetFolder\$nuspecName" -Version $version -OutputDirectory artifacts\$configuration
     ProcessLastExitCode $lastexitcode "nuget pack error while packing $nuspecPath"
 }
 
