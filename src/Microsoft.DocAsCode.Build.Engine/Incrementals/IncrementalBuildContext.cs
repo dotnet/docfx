@@ -197,14 +197,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 var lastSrcFiles = (from p in lastFileAttributes
                                     where p.Value.IsFromSource == true
                                     select p.Key).ToList();
-                foreach (var file in _parameters.Changes.Keys.Except(lastSrcFiles))
+                foreach (var file in _parameters.Changes.Keys.Except(lastSrcFiles, FilePathComparer.OSPlatformSensitiveStringComparer))
                 {
                     if (_changeDict[file] == ChangeKindWithDependency.None)
                     {
                         _changeDict[file] = ChangeKindWithDependency.Created;
                     }
                 }
-                foreach (var file in lastSrcFiles.Except(_parameters.Changes.Keys))
+                foreach (var file in lastSrcFiles.Except(_parameters.Changes.Keys, FilePathComparer.OSPlatformSensitiveStringComparer))
                 {
                     _changeDict[file] = ChangeKindWithDependency.Deleted;
                 }
@@ -236,11 +236,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     }
                 }
 
-                foreach (var file in lastFileAttributes.Keys.Except(fileAttributes.Keys))
+                foreach (var file in lastFileAttributes.Keys.Except(fileAttributes.Keys, FilePathComparer.OSPlatformSensitiveStringComparer))
                 {
                     _changeDict[file] = ChangeKindWithDependency.Deleted;
                 }
-                foreach (var file in fileAttributes.Keys.Except(lastFileAttributes.Keys))
+                foreach (var file in fileAttributes.Keys.Except(lastFileAttributes.Keys, FilePathComparer.OSPlatformSensitiveStringComparer))
                 {
                     _changeDict[file] = ChangeKindWithDependency.Created;
                 }
