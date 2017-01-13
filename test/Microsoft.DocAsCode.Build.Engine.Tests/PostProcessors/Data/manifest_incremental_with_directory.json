@@ -25,6 +25,16 @@
         }
       },
       "is_incremental": false
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "breadcrumb.json",
+      "output": {
+        "resource": {
+          "relative_path": "breadcrumb.json"
+        }
+      },
+      "is_incremental": false
     }
   ]
 }

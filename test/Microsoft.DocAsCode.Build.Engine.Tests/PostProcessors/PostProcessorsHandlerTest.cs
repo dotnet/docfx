@@ -449,15 +449,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental_with_directory.json");
             var outputFolder = GetRandomFolder();
             PrepareOutput(outputFolder, "a/b", "c");
+            CreateFile("breadcrumb.json", "breadcrumb", outputFolder);
             increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
 
             // Check incremental flag
-            Assert.Equal(2, manifest.Files.Count);
+            Assert.Equal(3, manifest.Files.Count);
             Assert.True(manifest.Files.Single(i => i.SourceRelativePath == "a/b.md").IsIncremental);
             Assert.False(manifest.Files.Single(i => i.SourceRelativePath == "c.md").IsIncremental);
+            Assert.False(manifest.Files.Single(i => i.SourceRelativePath == "breadcrumb.json").IsIncremental);
 
             // Check output content
             VerifyOutput(outputFolder, AppendStringPostProcessor.AppendString, "a/b", "c");
+            Assert.Equal("breadcrumb", File.ReadAllText(Path.Combine(outputFolder, "breadcrumb.json")));
 
             // Check cached PostProcessInfo
             Assert.NotNull(currentBuildInfo.PostProcessInfo);
