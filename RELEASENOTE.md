@@ -2,6 +2,10 @@
 =======================================
 v2.11(Pre-Release)
 -----------
+1.  Export custom href generator.
+2.  Bug fixes:
+    1. Generate overload name/fullname form generic method should not contain method parameter.
+    2. Fix href for markdown link to non-exist files in include files.
 
 v2.10
 -----------
