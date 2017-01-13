@@ -1621,7 +1621,7 @@ tagRules : [
                     Assert.Equal(1, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
-                    Assert.Equal(1, incrementalInfo.Count);
+                    Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                 }
@@ -1732,7 +1732,7 @@ tagRules : [
                     Assert.Equal(1, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
-                    Assert.Equal(1, incrementalInfo.Count);
+                    Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                 }
