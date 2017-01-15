@@ -32,10 +32,11 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
-        public ManifestItem Clone(bool isIncremental)
+        public ManifestItem Clone(bool isIncremental, string sourceRelativePath)
         {
             var cloned = Clone();
             cloned.IsIncremental = isIncremental;
+            cloned.SourceRelativePath = sourceRelativePath;
             return cloned;
         }
 

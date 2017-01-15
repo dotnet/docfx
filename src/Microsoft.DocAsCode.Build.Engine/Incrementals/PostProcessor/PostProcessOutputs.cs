@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System.Collections.Generic;
 
-    public class PostProcessOutputs : Dictionary<string, string>
+    public class PostProcessOutputs : OSPlatformSensitiveDictionary<string>
     {
     }
 }

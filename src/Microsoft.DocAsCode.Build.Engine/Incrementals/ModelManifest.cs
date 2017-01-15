@@ -7,6 +7,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
     public class ModelManifest
     {
-        public Dictionary<string, string> Models { get; } = new Dictionary<string, string>();
+        public OSPlatformSensitiveDictionary<string> Models { get; } = new OSPlatformSensitiveDictionary<string>();
     }
 }
