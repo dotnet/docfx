@@ -1,4 +1,7 @@
-﻿namespace Microsoft.DocAsCode.Metadata.ManagedReference
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
@@ -10,8 +13,6 @@
     /// </summary>
     public class CopyInherited : IResolverPipeline
     {
-        readonly List<string> mEmptyList = new List<string>();
-
         public void Run(MetadataModel yaml, ResolverContext context)
         {
             TreeIterator.Preorder(yaml.TocYamlViewModel, null,
@@ -67,7 +68,7 @@
 
                         if (parametersMatch)
                         {
-                            TryCopyFrom(dest, ctor, context);
+                            Copy(dest, ctor, context);
                             return;
                         }
                     }
@@ -76,12 +77,12 @@
                 case MemberType.Method:
                 case MemberType.Property:
                 case MemberType.Event:
-                    TryCopyFrom(dest, dest.Overridden, context);
+                    Copy(dest, dest.Overridden, context);
                     if (dest.Implements != null)
                     {
                         foreach (var item in dest.Implements)
                         {
-                            TryCopyFrom(dest, item, context);
+                            Copy(dest, item, context);
                         }
                     }
                     break;
@@ -89,36 +90,36 @@
                 case MemberType.Class:
                     if (dest.Inheritance.Count != 0)
                     {
-                        TryCopyFrom(dest, dest.Inheritance[dest.Inheritance.Count - 1], context);
+                        Copy(dest, dest.Inheritance[dest.Inheritance.Count - 1], context);
                     }
                     if (dest.Implements != null)
                     {
                         foreach (var item in dest.Implements)
                         {
-                            TryCopyFrom(dest, item, context);
+                            Copy(dest, item, context);
                         }
                     }
                     break;
             }
         }
 
-        static void TryCopyFrom(MetadataItem dest, string srcName, ResolverContext context)
+        static void Copy(MetadataItem dest, string srcName, ResolverContext context)
         {
             MetadataItem src;
             if (string.IsNullOrEmpty(srcName) || !context.Members.TryGetValue(srcName, out src))
                 return;
 
-            TryCopyFrom(dest, src, context);
+            Copy(dest, src, context);
         }
 
-        static void TryCopyFrom(MetadataItem dest, MetadataItem src, ResolverContext context)
+        static void Copy(MetadataItem dest, MetadataItem src, ResolverContext context)
         {
             if (src.IsInheritDoc)
             {
                 InheritDoc(src, context);
             }
 
-            dest.CopyIneritedData(src);
+            dest.CopyInheritedData(src);
         }
     }
 }

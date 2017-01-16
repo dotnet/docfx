@@ -35,8 +35,11 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [MergeOption(MergeOption.Ignore)]
         public List<AttributeInfo> Attributes { get; set; }
 
-        public void CopyIneritedData(ApiParameter src)
+        public void CopyInheritedData(ApiParameter src)
         {
+            if (src == null)
+                throw new ArgumentNullException(nameof(src));
+
             if (Description == null)
                 Description = src.Description;
         }

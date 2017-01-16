@@ -173,8 +173,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return MemberwiseClone();
         }
 
-        public void CopyIneritedData(MetadataItem src)
+        public void CopyInheritedData(MetadataItem src)
         {
+            if (src == null)
+                throw new ArgumentNullException(nameof(src));
+
             if (Summary == null)
                 Summary = src.Summary;
             if (Remarks == null)
@@ -190,9 +193,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Examples = new List<string>(src.Examples);
 
             if (CommentModel != null && src.CommentModel != null)
-                CommentModel.CopyIneritedData(src.CommentModel);
+                CommentModel.CopyInheritedData(src.CommentModel);
             if (Syntax != null && src.Syntax != null)
-                Syntax.CopyIneritedData(src.Syntax);
+                Syntax.CopyInheritedData(src.Syntax);
         }
     }
 }

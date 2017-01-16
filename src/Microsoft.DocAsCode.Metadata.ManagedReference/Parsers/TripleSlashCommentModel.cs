@@ -84,8 +84,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        public void CopyIneritedData(TripleSlashCommentModel src)
+        public void CopyInheritedData(TripleSlashCommentModel src)
         {
+            if (src == null)
+                throw new ArgumentNullException(nameof(src));
+
             if (Summary == null)
                 Summary = src.Summary;
             if (Remarks == null)

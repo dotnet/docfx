@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
+    using System;
     using System.Collections.Generic;
 
     using Newtonsoft.Json;
@@ -28,12 +29,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [JsonProperty("return")]
         public ApiParameter Return { get; set; }
 
-        public void CopyIneritedData(SyntaxDetail src)
+        public void CopyInheritedData(SyntaxDetail src)
         {
+            if (src == null)
+                throw new ArgumentNullException(nameof(src));
+
             CopyInheritedParameterList(Parameters, src.Parameters);
             CopyInheritedParameterList(TypeParameters, src.TypeParameters);
             if (Return != null && src.Return != null)
-                Return.CopyIneritedData(src.Return);
+                Return.CopyInheritedData(src.Return);
         }
 
         static void CopyInheritedParameterList(List<ApiParameter> dest, List<ApiParameter> src)
@@ -46,7 +50,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var srcParam = src[ndx];
                 if (myParam.Name == srcParam.Name && myParam.Type == srcParam.Type)
                 {
-                    myParam.CopyIneritedData(srcParam);
+                    myParam.CopyInheritedData(srcParam);
                 }
             }
         }
