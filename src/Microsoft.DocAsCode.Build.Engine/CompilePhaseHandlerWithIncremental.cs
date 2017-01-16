@@ -66,6 +66,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     hostService.RegisterDependencyType();
                 }
             }
+            ReloadDependency(hostServices);
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
@@ -85,6 +86,24 @@ namespace Microsoft.DocAsCode.Build.Engine
             ReportDependency(hostServices);
             IncrementalContext.UpdateBuildVersionInfoPerDependencyGraph();
             Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
+        }
+
+        private void ReloadDependency(IEnumerable<HostService> hostServices)
+        {
+            // restore dependency graph from last dependency graph
+            var unloaded = (from hs in hostServices
+                            where hs.CanIncrementalBuild
+                            from f in hs.GetUnloadedModelFiles(IncrementalContext)
+                            select ((RelativePath)f).GetPathFromWorkingFolder()).ToList();
+            if (unloaded.Count > 0)
+            {
+                using (new LoggerPhaseScope("ReportDependencyFromLastBuild", LogLevel.Diagnostic))
+                {
+                    CurrentBuildVersionInfo.Dependency.ReportDependency(from f in unloaded
+                                                                        from i in LastBuildVersionInfo.Dependency.GetDependencyReportedBy(f)
+                                                                        select i);
+                }
+            }
         }
 
         private IEnumerable<string> GetFilesToRelayMessages(HostService hs)

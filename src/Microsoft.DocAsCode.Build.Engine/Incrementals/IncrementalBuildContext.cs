@@ -247,16 +247,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
-        public List<string> ExpandDependency(Func<DependencyItem, bool> isValid)
+        public List<string> ExpandDependency(DependencyGraph dg, Func<DependencyItem, bool> isValid)
         {
             var newChanges = new List<string>();
-            var dependencyGraph = CurrentBuildVersionInfo.Dependency;
 
-            if (dependencyGraph != null)
+            if (dg != null)
             {
-                foreach (var from in dependencyGraph.FromNodes)
+                foreach (var from in dg.FromNodes)
                 {
-                    if (dependencyGraph.GetAllDependencyFrom(from).Any(d => isValid(d) && _changeDict.ContainsKey(d.To) && _changeDict[d.To] != ChangeKindWithDependency.None))
+                    if (dg.GetAllDependencyFrom(from).Any(d => isValid(d) && _changeDict.ContainsKey(d.To) && _changeDict[d.To] != ChangeKindWithDependency.None))
                     {
                         if (!_changeDict.ContainsKey(from))
                         {
@@ -473,13 +472,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     dg.RegisterDependencyType(ldg.DependencyTypes.Values);
                 }
 
-                // restore dependency graph from last dependency graph
-                using (new LoggerPhaseScope("ReportDependencyFromLastBuild", LogLevel.Diagnostic))
-                {
-                    dg.ReportDependency(from r in ldg.ReportedBys
-                                        from i in ldg.GetDependencyReportedBy(r)
-                                        select i);
-                }
                 return dg;
             }
         }
@@ -567,9 +559,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     IsFromSource = true,
                 };
             }
-            if (CurrentBuildVersionInfo.Dependency != null)
+            var dependency = LastBuildVersionInfo?.Dependency;
+            if (dependency != null)
             {
-                foreach (var f in CurrentBuildVersionInfo.Dependency.GetAllDependentNodes())
+                foreach (var f in dependency.GetAllDependentNodes())
                 {
                     if (keys.Contains(f))
                     {
@@ -657,7 +650,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 Logger.LogDiagnostic($"Before expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
                 using (new LoggerPhaseScope("ExpandDependency", LogLevel.Diagnostic))
                 {
-                    ExpandDependency(d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.Compile || CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].TriggerBuild);
+                    ExpandDependency(LastBuildVersionInfo?.Dependency, d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.Compile || CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].TriggerBuild);
                 }
                 Logger.LogDiagnostic($"After expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
             }
