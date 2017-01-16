@@ -5,10 +5,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System;
 
+    using Microsoft.DocAsCode.Common;
+
     using Newtonsoft.Json;
 
     public sealed class DependencyItem : IEquatable<DependencyItem>
     {
+        private static readonly StringComparer Comparer = FilePathComparer.OSPlatformSensitiveStringComparer;
+
         [JsonProperty("from")]
         public string From { get; }
 
@@ -40,9 +44,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return true;
             }
-            return From == dp.From &&
-                To == dp.To &&
-                ReportedBy == dp.ReportedBy &&
+            return Comparer.Equals(From, dp.From) &&
+                Comparer.Equals(To, dp.To) &&
+                Comparer.Equals(ReportedBy, dp.ReportedBy) &&
                 Type == dp.Type;
         }
 
@@ -58,7 +62,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public override int GetHashCode()
         {
-            return From.GetHashCode() ^ (To.GetHashCode() >> 1) ^ (ReportedBy.GetHashCode() << 1) ^ (Type.GetHashCode() >> 2);
+            return Comparer.GetHashCode(From) ^ (Comparer.GetHashCode(To) >> 1) ^ (Comparer.GetHashCode(ReportedBy) << 1) ^ (Type.GetHashCode() >> 2);
         }
     }
 }
