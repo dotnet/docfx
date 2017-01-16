@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Common
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
@@ -11,6 +12,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
     public class HandleModelAttributesContext
     {
+        internal Stack<Type> NestedType { get; set; } = new Stack<Type>();
         public IHostService Host { get; set; }
         public bool SkipMarkup { get; set; }
         public bool EnableContentPlaceholder { get; set; }
