@@ -43,8 +43,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         private readonly HashSet<DependencyItem> _dependencyItems;
         private readonly object _typeSync = new object();
         private readonly ReaderWriterLockSlim _itemsSync = new ReaderWriterLockSlim();
-        private readonly Dictionary<string, HashSet<DependencyItem>> _indexOnFrom = new Dictionary<string, HashSet<DependencyItem>>();
-        private readonly Dictionary<string, HashSet<DependencyItem>> _indexOnReportedBy = new Dictionary<string, HashSet<DependencyItem>>();
+        private readonly OSPlatformSensitiveDictionary<HashSet<DependencyItem>> _indexOnFrom = new OSPlatformSensitiveDictionary<HashSet<DependencyItem>>();
+        private readonly OSPlatformSensitiveDictionary<HashSet<DependencyItem>> _indexOnReportedBy = new OSPlatformSensitiveDictionary<HashSet<DependencyItem>>();
         private ImmutableDictionary<string, DependencyType> _types;
 
         #endregion
