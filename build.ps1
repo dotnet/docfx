@@ -111,6 +111,7 @@ $nuget = "$env:LOCALAPPDATA\Nuget\Nuget.exe"
 if (-not(Test-Path $nuget))
 {
     Write-Host "Downloading NuGet.exe..."
+    mkdir -Path "$env:LOCALAPPDATA\Nuget" -Force
     $ProgressPreference = 'SilentlyContinue'
     [Net.WebRequest]::DefaultWebProxy.Credentials = [Net.CredentialCache]::DefaultCredentials
     Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/latest/nuget.exe' -OutFile $nuget
