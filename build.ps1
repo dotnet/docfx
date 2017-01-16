@@ -108,6 +108,7 @@ if ((Get-Command "dotnet" -ErrorAction SilentlyContinue) -eq $null)
 
 # Check if nuget.exe exists
 $nuget = "$env:LOCALAPPDATA\Nuget\Nuget.exe"
+mkdir -Path "$env:LOCALAPPDATA\Nuget" -Force
 if (-not(Test-Path $nuget))
 {
     Write-Host "Downloading NuGet.exe..."
