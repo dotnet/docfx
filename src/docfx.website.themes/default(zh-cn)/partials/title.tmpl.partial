@@ -17,3 +17,24 @@
 {{#inDelegate}}
 {{name.0.value}} 委托
 {{/inDelegate}}
+{{#inConstructor}}
+{{name.0.value}} 构造函数
+{{/inConstructor}}
+{{#inField}}
+{{name.0.value}} 字段
+{{/inField}}
+{{#inProperty}}
+{{name.0.value}} 属性
+{{/inProperty}}
+{{#inMethod}}
+{{name.0.value}} 方法
+{{/inMethod}}
+{{#inEvent}}
+{{name.0.value}} 事件
+{{/inEvent}}
+{{#inOperator}}
+{{name.0.value}} 运算符
+{{/inOperator}}
+{{#inEii}}
+{{name.0.value}} 显式接口实现
+{{/inEii}}
