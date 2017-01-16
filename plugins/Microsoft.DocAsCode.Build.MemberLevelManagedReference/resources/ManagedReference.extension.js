@@ -2,21 +2,19 @@
 var common = require('./ManagedReference.common.js');
 
 exports.postTransform = function (model) {
-    var type = model.type;
-    var typePropertyName = common.getTypePropertyName(type);
-    if (!typePropertyName) {
-        console.error("Type " + model.type + " is not supported.");
-        return;
-    }
-
-    model.isCollection = false;
-    model.isItem = false;
-
-    if (model.children && model.children.length > 1) {
-        model.isCollection = true;
-        common.groupChildren(model, 'class');
-    } else {
-        model.isItem = true;
+    var type = model.type.toLowerCase();
+    var category = common.getCategory(type);
+    if (category == 'class') {
+        var typePropertyName = common.getTypePropertyName(type);
+        if (typePropertyName) {
+            model[typePropertyName] = true;
+        }
+        if (model.children && model.children.length > 0) {
+            model.isCollection = true;
+            common.groupChildren(model, 'class');
+        } else {
+            model.isItem = true;
+        }
     }
     return model;
 }
