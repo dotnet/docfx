@@ -36,8 +36,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         manifest = postProcessor.Processor.Process(manifest, outputFolder);
                         if (manifest == null)
                         {
-                            throw new DocfxException(
-                                $"Post processor {postProcessor.ContractName} should not return null manifest");
+                            throw new DocfxException($"Post processor {postProcessor.ContractName} should not return null manifest");
                         }
 
                         // To make sure post processor won't generate duplicate output files
