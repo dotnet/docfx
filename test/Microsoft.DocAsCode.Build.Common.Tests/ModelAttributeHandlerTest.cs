@@ -36,6 +36,19 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
         }
 
         [Fact]
+        public void TestModelWithLoopShouldSucceed()
+        {
+            var model = new LoopModel
+            {
+                Content = "Content1",
+                Identity = "Identity1",
+            };
+            model.Reference = model;
+            var context = Handle(model);
+            Assert.Equal(1, context.LinkToUids.Count);
+        }
+
+        [Fact]
         public void TestModelWithInvalidTypeShouldThrow()
         {
             var model = new InvalidModel
@@ -221,6 +234,18 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
         #endregion
 
         #region Test Data
+
+        public class LoopModel
+        {
+
+            [MarkdownContent]
+            public string Content { get; set; }
+
+            [UniqueIdentityReference]
+            public string Identity { get; set; }
+
+            public LoopModel Reference { get; set; }
+        }
 
         public class MarkdownModel1
         {

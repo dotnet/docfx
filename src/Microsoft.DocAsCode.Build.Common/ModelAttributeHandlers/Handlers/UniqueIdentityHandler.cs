@@ -30,22 +30,26 @@ namespace Microsoft.DocAsCode.Build.Common
             {
             }
 
-            protected override void HandleCurrentProperty(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
+            protected override object HandleCurrent(object currentObj, object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
             {
-                var obj = currentPropertyInfo.GetValue(declaringObject);
-                if (obj == null)
+                if (currentObj == null && currentPropertyInfo != null && declaringObject != null)
                 {
-                    return;
+                    currentObj = currentPropertyInfo.GetValue(declaringObject);
                 }
 
-                var val = obj as string;
+                if (currentObj == null)
+                {
+                    return null;
+                }
+
+                var val = currentObj as string;
                 if (val != null)
                 {
                     context.LinkToUids.Add(val);
                 }
                 else
                 {
-                    var list = obj as IEnumerable;
+                    var list = currentObj as IEnumerable;
                     if (list != null)
                     {
                         foreach (var i in list)
@@ -59,16 +63,18 @@ namespace Microsoft.DocAsCode.Build.Common
                                 }
                                 else
                                 {
-                                    throw new NotSupportedException($"Type {obj.GetType()} inside IEnumerable is NOT a supported item type for {nameof(UniqueIdentityReferenceAttribute)}");
+                                    throw new NotSupportedException($"Type {currentObj.GetType()} inside IEnumerable is NOT a supported item type for {nameof(UniqueIdentityReferenceAttribute)}");
                                 }
                             }
                         }
                     }
                     else
                     {
-                        throw new NotSupportedException($"Type {obj.GetType()} is NOT a supported type for {nameof(UniqueIdentityReferenceAttribute)}");
+                        throw new NotSupportedException($"Type {currentObj.GetType()} is NOT a supported type for {nameof(UniqueIdentityReferenceAttribute)}");
                     }
                 }
+
+                return currentObj;
             }
         }
     }
