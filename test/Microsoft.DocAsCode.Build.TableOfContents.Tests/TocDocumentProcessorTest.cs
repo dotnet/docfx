@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
+    using System.Web;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "TocDocumentProcessorTest")]
@@ -50,8 +51,42 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
         }
 
         [Fact]
+        public void ProcessMarkdownTocWithComplexHrefShouldSucceed()
+        {
+            var fileName = "#ctor";
+            var href = HttpUtility.UrlEncode(fileName);
+            var content = $@"
+#[Constructor]({href}.md)
+";
+            var file = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, fileNameWithoutExtension: fileName);
+            var toc = _fileCreator.CreateFile(content, FileType.MarkdownToc);
+            FileCollection files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { toc, file });
+            BuildDocument(files);
+
+            var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
+            var expectedModel = new TocItemViewModel
+            {
+                Items = new TocViewModel
+                {
+                    new TocItemViewModel
+                    {
+                        Name = "Constructor",
+                        Href = $"{href}.md",
+                        TopicHref = $"{href}.md",
+                    }
+                }
+            };
+
+            AssertTocEqual(expectedModel, model);
+        }
+
+        [Fact]
         public void ProcessMarkdownTocWithAbsoluteHrefShouldSucceed()
         {
+            var file1 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, "a");
             var content = @"
 #[Topic1](/href1)
 ##Topic1.1
@@ -548,7 +583,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                 _rootDir = rootDir ?? Directory.GetCurrentDirectory();
             }
 
-            public string CreateFile(string content, FileType type, string folder = null)
+            public string CreateFile(string content, FileType type, string folder = null, string fileNameWithoutExtension = null)
             {
                 string fileName;
                 switch (type)
@@ -560,7 +595,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                         fileName = YamlTocName;
                         break;
                     case FileType.MarkdownContent:
-                        fileName = Path.GetRandomFileName() + ".md";
+                        fileName = (fileNameWithoutExtension ?? Path.GetRandomFileName()) + ".md";
                         break;
                     default:
                         throw new NotSupportedException(type.ToString());
