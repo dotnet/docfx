@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
     public class HandleModelAttributesContext
     {
-        internal Stack<Type> NestedType { get; set; } = new Stack<Type>();
+        internal int NestedLevel { get; set; } = 0;
         public IHostService Host { get; set; }
         public bool SkipMarkup { get; set; }
         public bool EnableContentPlaceholder { get; set; }

@@ -11,9 +11,9 @@ namespace Microsoft.DocAsCode.Build.Common
     public abstract class BaseModelAttributeHandler<T> : IModelAttributeHandler where T: Attribute
     {
         private const int MaximumNestedLevel = 32;
-        protected readonly PropInfo[] Props;
+        private readonly TypeInfo _typeInfo;
         protected readonly IModelAttributeHandler Handler;
-
+        private Type _type;
         protected BaseModelAttributeHandler(Type type, IModelAttributeHandler handler)
         {
             if (type == null)
@@ -25,8 +25,8 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 throw new ArgumentNullException(nameof(handler));
             }
-
-            Props = GetProps(type);
+            _type = type;
+            _typeInfo = GetTypeInfo(type);
             Handler = handler;
         }
 
@@ -34,6 +34,12 @@ namespace Microsoft.DocAsCode.Build.Common
 
         public object Handle(object obj, HandleModelAttributesContext context)
         {
+            var type = obj.GetType();
+            if (type != _type)
+            {
+                throw new InvalidOperationException($"Input type {type} is not the supported type {_type}");
+            }
+
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
@@ -51,24 +57,23 @@ namespace Microsoft.DocAsCode.Build.Common
             }
             else
             {
-                if (context.NestedType.Count > MaximumNestedLevel)
+                if (context.NestedLevel > MaximumNestedLevel)
                 {
                     // If maximum nested level reached, return the object directly
                     return obj;
                 }
 
-                var type = obj.GetType();
-                context.NestedType.Push(type);
+                context.NestedLevel++;
 
-                if (ReflectionHelper.IsDictionaryType(type))
+                if (_typeInfo.TypeOfType == TypeOfType.IDictionary)
                 {
                     result = HandleDictionaryType(obj, context);
                 }
-                else if (type != typeof(string) && ReflectionHelper.IsIEnumerableType(type))
+                else if (_typeInfo.TypeOfType == TypeOfType.IEnumerable)
                 {
                     result = HandleIEnumerableType(obj, context);
                 }
-                else if (type.IsPrimitive)
+                else if (_typeInfo.TypeOfType == TypeOfType.Primitive)
                 {
                     result = ProcessPrimitiveType(obj, context);
                 }
@@ -77,7 +82,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     result = ProcessNonPrimitiveType(obj, context);
                 }
 
-                context.NestedType.Pop();
+                context.NestedLevel--;
             }
 
             return result;
@@ -151,7 +156,7 @@ namespace Microsoft.DocAsCode.Build.Common
             // skip string type
             if (currentObj != null && !(currentObj is string))
             {
-                foreach (var prop in Props)
+                foreach (var prop in _typeInfo.PropInfos)
                 {
                     var value = prop.Prop.GetValue(currentObj);
                     if (ShouldHandle(value, currentObj, prop, context))
@@ -164,8 +169,61 @@ namespace Microsoft.DocAsCode.Build.Common
                     }
                 }
             }
-
             return currentObj;
+        }
+
+        private TypeInfo GetTypeInfo(Type type)
+        {
+            if (type.IsPrimitive)
+            {
+                return new TypeInfo
+                {
+                    TypeOfType = TypeOfType.Primitive
+                };
+            }
+            if (type == typeof(string))
+            {
+                return new TypeInfo
+                {
+                    TypeOfType = TypeOfType.String
+                };
+            }
+            if (ReflectionHelper.IsDictionaryType(type))
+            {
+                return new TypeInfo
+                {
+                    TypeOfType = TypeOfType.IDictionary
+                };
+            }
+            if (ReflectionHelper.IsIEnumerableType(type))
+            {
+                return new TypeInfo
+                {
+                    TypeOfType = TypeOfType.IEnumerable
+                };
+            }
+
+            var propInfos = GetProps(type);
+            return new TypeInfo
+            {
+                TypeOfType = TypeOfType.NonPrimitive,
+                PropInfos = propInfos,
+            };
+        }
+
+        private sealed class TypeInfo
+        {
+            public PropInfo[] PropInfos { get; set; }
+            public TypeOfType TypeOfType { get; set; }
+        }
+
+        private enum TypeOfType
+        {
+            IDictionary,
+            IEnumerable,
+            Primitive,
+            String,
+            NonPrimitive,
         }
 
         protected virtual PropInfo[] GetProps(Type type)
