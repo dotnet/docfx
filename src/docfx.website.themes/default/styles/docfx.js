@@ -20,6 +20,15 @@ $(function () {
     $('.IMPORTANT, .CAUTION').addClass('alert alert-danger');
   })();  
 
+  // Enable anchors for headings.
+  (function () {
+    anchors.options = {
+      placement: 'left',
+      visible: 'touch'
+    };
+    anchors.add('h2, h3, h4, h5, h6');
+  })();
+
   // Enable highlight.js
   (function () {
     $('pre code').each(function(i, block) {

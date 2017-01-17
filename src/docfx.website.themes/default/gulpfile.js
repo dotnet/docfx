@@ -16,7 +16,8 @@ var vendor = {
        'bower_components/lunr.js/lunr.min.js',
        'bower_components/js-url/url.min.js',
        'bower_components/twbs-pagination/jquery.twbsPagination.min.js',
-       "bower_components/mark.js/dist/jquery.mark.min.js"
+       "bower_components/mark.js/dist/jquery.mark.min.js",
+       "bower_components/anchor-js/anchor.min.js"
       ],
   webWorker: {
     src: ['lunr.min.js'],
