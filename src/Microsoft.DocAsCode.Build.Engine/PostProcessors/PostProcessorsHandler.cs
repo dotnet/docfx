@@ -27,18 +27,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(outputFolder));
             }
 
-            foreach (var postProcessor in postProcessors)
+            using (new LoggerPhaseScope("HandlePostProcessors", LogLevel.Verbose))
             {
-                using (new LoggerPhaseScope($"Process in post processor {postProcessor.ContractName}", LogLevel.Verbose))
+                foreach (var postProcessor in postProcessors)
                 {
-                    manifest = postProcessor.Processor.Process(manifest, outputFolder);
-                    if (manifest == null)
+                    using (new LoggerPhaseScope($"Processing {postProcessor.ContractName}", LogLevel.Verbose))
                     {
-                        throw new DocfxException($"Post processor {postProcessor.ContractName} should not return null manifest");
-                    }
+                        manifest = postProcessor.Processor.Process(manifest, outputFolder);
+                        if (manifest == null)
+                        {
+                            throw new DocfxException($"Post processor {postProcessor.ContractName} should not return null manifest");
+                        }
 
-                    // To make sure post processor won't generate duplicate output files
-                    ManifestUtility.RemoveDuplicateOutputFiles(manifest.Files);
+                        // To make sure post processor won't generate duplicate output files
+                        ManifestUtility.RemoveDuplicateOutputFiles(manifest.Files);
+                    }
                 }
             }
         }
