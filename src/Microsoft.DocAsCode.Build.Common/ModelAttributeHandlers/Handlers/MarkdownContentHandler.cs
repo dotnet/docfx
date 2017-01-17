@@ -52,73 +52,54 @@ namespace Microsoft.DocAsCode.Build.Common
             {
             }
 
-            public override object Handle(object obj, HandleModelAttributesContext context)
-            {
-                // Special handle for *content
-                var val = obj as string;
-                if (val != null)
-                {
-                    string marked;
-                    if (TryMarkupPlaceholderContent(val, context, out marked))
-                    {
-                        return marked;
-                    }
-                    else
-                    {
-                        return obj;
-                    }
-                }
-
-                return base.Handle(obj, context);
-            }
-
-            protected override void HandleCurrentProperty(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
-            {
-                var obj = currentPropertyInfo.GetValue(declaringObject);
-                if (obj == null)
-                {
-                    return;
-                }
-
-                var val = obj as string;
-                if (val != null)
-                {
-                    var marked = Markup(val, context);
-                    currentPropertyInfo.SetValue(declaringObject, marked);
-                }
-                else
-                {
-                    throw new NotSupportedException($"Type {obj.GetType()} is NOT a supported type for {nameof(MarkdownContentAttribute)}");
-                }
-            }
-
-            protected override void HandleDictionaryType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
-            {
-                HandleItems(typeof(IDictionary<,>), typeof(HandleIDictionaryItems<,>), declaringObject, currentPropertyInfo, context);
-            }
-
-            protected override void HandleEnumerableType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
-            {
-                HandleItems(typeof(IList<>), typeof(HandleIListItems<>), declaringObject, currentPropertyInfo, context);
-            }
-
-            protected override void HandleNonPrimitiveType(object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
+            protected override bool ShouldHandle(object currentObj, object declaringObject, PropInfo currentPropInfo, HandleModelAttributesContext context)
             {
                 if (context.EnableContentPlaceholder)
                 {
-                    var type = currentPropertyInfo.PropertyType;
-                    if (type == typeof(string))
+                    var str = currentObj as string;
+                    if (IsPlaceholderContent(str))
                     {
-                        string result;
-                        var val = (string)currentPropertyInfo.GetValue(declaringObject);
-                        if (TryMarkupPlaceholderContent(val, context, out result) && result != val)
-                        {
-                            currentPropertyInfo.SetValue(declaringObject, result);
-                        }
+                        return true;
                     }
                 }
+                return base.ShouldHandle(currentObj, declaringObject, currentPropInfo, context);
+            }
 
-                base.HandleNonPrimitiveType(declaringObject, currentPropertyInfo, context);
+            protected override object HandleCurrent(object currentObj, object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
+            {
+                if (currentObj == null && currentPropertyInfo != null && declaringObject != null)
+                {
+                    currentObj = currentPropertyInfo.GetValue(declaringObject);
+                }
+
+                if (currentObj == null)
+                {
+                    return null;
+                }
+
+                var val = currentObj as string;
+                if (val != null)
+                {
+                    var marked = Markup(val, context);
+                    currentPropertyInfo?.SetValue(declaringObject, marked);
+                    return marked;
+                }
+                else
+                {
+                    throw new NotSupportedException($"Type {currentObj.GetType()} is NOT a supported type for {nameof(MarkdownContentAttribute)}");
+                }
+            }
+
+            protected override object HandleDictionaryType(object currentObj, HandleModelAttributesContext context)
+            {
+                HandleItems(typeof(IDictionary<,>), typeof(HandleIDictionaryItems<,>), currentObj, context);
+                return currentObj;
+            }
+
+            protected override object HandleIEnumerableType(object currentObj, HandleModelAttributesContext context)
+            {
+                HandleItems(typeof(IList<>), typeof(HandleIListItems<>), currentObj, context);
+                return currentObj;
             }
 
             protected override PropInfo[] GetProps(Type type)
@@ -177,19 +158,19 @@ namespace Microsoft.DocAsCode.Build.Common
                 return mr.Html;
             }
 
-            private void HandleItems(Type genericInterface, Type implHandlerType, object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
+            private void HandleItems(Type genericInterface, Type implHandlerType, object currentObj, HandleModelAttributesContext context)
             {
-                var type = currentPropertyInfo.PropertyType;
+                if (currentObj == null)
+                {
+                    return;
+                }
+                var type = currentObj.GetType();
                 Type genericType;
                 if (ReflectionHelper.TryGetGenericType(type, genericInterface, out genericType))
                 {
-                    var obj = currentPropertyInfo.GetValue(declaringObject);
-                    if (obj != null)
-                    {
-                        var implType = implHandlerType.MakeGenericType(genericType.GetGenericArguments());
-                        var instance = (IHandleItems)Activator.CreateInstance(implType, obj);
-                        instance.Handle(s => Handler.Handle(s, context));
-                    }
+                    var implType = implHandlerType.MakeGenericType(genericType.GetGenericArguments());
+                    var instance = (IHandleItems)Activator.CreateInstance(implType, currentObj);
+                    instance.Handle(s => Handler.Handle(s, context));
                 }
             }
 
