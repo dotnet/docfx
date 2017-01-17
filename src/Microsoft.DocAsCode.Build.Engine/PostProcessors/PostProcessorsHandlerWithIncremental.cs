@@ -48,21 +48,24 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(outputFolder));
             }
 
-            var increItems = manifest.Files.Where(i => i.IsIncremental).ToList();
-            var nonIncreItems = manifest.Files.Where(i => !i.IsIncremental).ToList();
-            if (increItems.Any(i => i.DocumentType.Equals(ExcludeType, StringComparison.OrdinalIgnoreCase)))
+            using (new LoggerPhaseScope("HandlePostProcessorsWithIncremental", LogLevel.Verbose))
             {
-                throw new NotSupportedException($"Currently incremental post processing logic doesn't support type {ExcludeType}.");
-            }
+                var increItems = manifest.Files.Where(i => i.IsIncremental).ToList();
+                var nonIncreItems = manifest.Files.Where(i => !i.IsIncremental).ToList();
+                if (increItems.Any(i => i.DocumentType.Equals(ExcludeType, StringComparison.OrdinalIgnoreCase)))
+                {
+                    throw new NotSupportedException($"Currently incremental post processing logic doesn't support type {ExcludeType}.");
+                }
 
-            PreHandle(manifest, outputFolder, increItems, nonIncreItems);
-            {
-                CheckNoIncrementalItems(manifest, "Before processing");
-                _innerHandler.Handle(postProcessors, manifest, outputFolder);
-                CheckNoIncrementalItems(manifest, "After processing");
+                PreHandle(manifest, outputFolder, increItems, nonIncreItems);
+                {
+                    CheckNoIncrementalItems(manifest, "Before processing");
+                    _innerHandler.Handle(postProcessors, manifest, outputFolder);
+                    CheckNoIncrementalItems(manifest, "After processing");
+                }
+                TraceIntermediateInfo(outputFolder, increItems, nonIncreItems);
+                PostHandle(manifest, increItems);
             }
-            TraceIntermediateInfo(outputFolder, increItems, nonIncreItems);
-            PostHandle(manifest, increItems);
         }
 
         #region Handle related
