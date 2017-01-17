@@ -86,7 +86,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
         [Fact]
         public void ProcessMarkdownTocWithAbsoluteHrefShouldSucceed()
         {
-            var file1 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, "a");
             var content = @"
 #[Topic1](/href1)
 ##Topic1.1
