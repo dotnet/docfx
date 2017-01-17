@@ -13,7 +13,8 @@ namespace Microsoft.DocAsCode.Common.Git
     {
         private static readonly string CommandName = "git";
         private static readonly int GitTimeOut = 1000;
-        private static bool? _existGitCommand;
+        private static readonly Lazy<bool> _existGitCommand =
+            new Lazy<bool>(() => CommandUtility.ExistCommand(CommandName));
 
         private static readonly string GetRepoRootCommand = "rev-parse --show-toplevel";
         private static readonly string GetLocalBranchCommand = "rev-parse --abbrev-ref HEAD";
@@ -280,11 +281,7 @@ namespace Microsoft.DocAsCode.Common.Git
 
         private static bool ExistGitCommand()
         {
-            if (_existGitCommand == null)
-            {
-                _existGitCommand = CommandUtility.ExistCommand(CommandName);
-            }
-            return _existGitCommand == true;
+            return _existGitCommand.Value;
         }
         #endregion
     }
