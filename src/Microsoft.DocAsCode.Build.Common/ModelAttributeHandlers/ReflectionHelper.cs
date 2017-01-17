@@ -18,6 +18,7 @@ namespace Microsoft.DocAsCode.Build.Common
         private static readonly ConcurrentDictionary<Type, bool> _isDictionaryCache = new ConcurrentDictionary<Type, bool>();
         private static readonly ConcurrentDictionary<Tuple<Type, Type>, Type> _genericTypeCache = new ConcurrentDictionary<Tuple<Type, Type>, Type>();
         private static readonly ConcurrentDictionary<PropertyInfo, Func<object, object>> _propertyGetterCache = new ConcurrentDictionary<PropertyInfo, Func<object, object>>();
+        private static readonly ConcurrentDictionary<PropertyInfo, Action<object, object>> _propertySetterCache = new ConcurrentDictionary<PropertyInfo, Action<object, object>>();
 
         public static List<PropertyInfo> GetSettableProperties(Type type)
         {
@@ -173,6 +174,43 @@ namespace Microsoft.DocAsCode.Build.Common
             }
             il.Emit(OpCodes.Ret);
             return (Func<object, object>)dm.CreateDelegate(typeof(Func<object, object>));
+        }
+
+        public static void SetPropertyValue(object instance, PropertyInfo prop, object value)
+        {
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+            if (prop == null)
+            {
+                throw new ArgumentNullException(nameof(prop));
+            }
+            var action = _propertySetterCache.GetOrAdd(prop, p => GetSetPropertyFunc(p));
+            action(instance, value);
+        }
+
+        private static Action<object, object> GetSetPropertyFunc(PropertyInfo prop)
+        {
+            var dm = new DynamicMethod(string.Empty, typeof(void), new[] { typeof(object), typeof(object) });
+            var il = dm.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            if (prop.DeclaringType.IsValueType)
+            {
+                il.Emit(OpCodes.Unbox, prop.DeclaringType);
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Unbox_Any, prop.PropertyType);
+                il.Emit(OpCodes.Call, prop.GetSetMethod());
+            }
+            else
+            {
+                il.Emit(OpCodes.Castclass, prop.DeclaringType);
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Unbox_Any, prop.PropertyType);
+                il.Emit(OpCodes.Callvirt, prop.GetSetMethod());
+            }
+            il.Emit(OpCodes.Ret);
+            return (Action<object, object>)dm.CreateDelegate(typeof(Action<object, object>));
         }
     }
 }
