@@ -222,7 +222,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
         #region Test Data
 
-        private class MarkdownModel1
+        public class MarkdownModel1
         {
             [MarkdownContent]
             public string Content { get; set; }
@@ -238,13 +238,13 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             public SortedList<string, object> Content5 { get; set; }
         }
 
-        private class InvalidMarkdownModel1
+        public class InvalidMarkdownModel1
         {
             [MarkdownContent]
             public List<string> Content { get; set; }
         }
 
-        private class SimpleModel
+        public class SimpleModel
         {
             [UniqueIdentityReference]
             public string Identity { get; set; }
@@ -252,7 +252,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             public List<object> Identities { get; set; }
         }
 
-        private class InvalidModel
+        public class InvalidModel
         {
             [UniqueIdentityReference]
             public int InvalidIdentity { get; set; }
@@ -261,13 +261,13 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             public string Identity { get; set; }
         }
 
-        private class InvalidModel2
+        public class InvalidModel2
         {
             [UniqueIdentityReference]
             public List<int> Identities { get; set; }
         }
 
-        private class ComplexModel
+        public class ComplexModel
         {
             [UniqueIdentityReference]
             public string Identity { get; set; }
@@ -285,13 +285,13 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             public string OtherProperty { get; set; }
         }
 
-        private class InnerModel
+        public class InnerModel
         {
             public string Identity { get; set; }
             public TestCrefType CrefType { get; set; }
         }
 
-        private enum TestCrefType
+        public enum TestCrefType
         {
             Href,
             Cref
