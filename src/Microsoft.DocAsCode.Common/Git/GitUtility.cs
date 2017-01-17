@@ -4,10 +4,10 @@
 namespace Microsoft.DocAsCode.Common.Git
 {
     using System;
+    using System.Collections.Concurrent;
+    using System.Diagnostics;
     using System.IO;
     using System.Text;
-    using System.Diagnostics;
-    using System.Collections.Concurrent;
 
     public static class GitUtility
     {
