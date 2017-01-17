@@ -1,5 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 var common = require('./common.js');
+var classCategory = 'class';
+var namespaceCategory = 'ns';
 
 exports.transform = function (model)  {
 
@@ -17,7 +19,7 @@ exports.transform = function (model)  {
     switch (model.type.toLowerCase()) {
       case 'namespace':
         model.isNamespace = true;
-        if (model.children) groupChildren(model, 'ns');
+        if (model.children) groupChildren(model, namespaceCategory);
         break;
       case 'class':
       case 'interface':
@@ -25,7 +27,7 @@ exports.transform = function (model)  {
       case 'delegate':
       case 'enum':
         model.isClass = true;
-        if (model.children) groupChildren(model, 'class');
+        if (model.children) groupChildren(model, classCategory);
         model[getTypePropertyName(model.type)] = true;
         handleNamespace(model);
         break;
@@ -58,6 +60,7 @@ exports.getBookmarks = function (model)  {
 
 exports.groupChildren = groupChildren;
 exports.getTypePropertyName = getTypePropertyName;
+exports.getCategory = getCategory;
 
 function groupChildren(model, category) {
   if (!model || !model.type) {
@@ -124,20 +127,31 @@ function getTypePropertyName(type) {
     return definition.typePropertyName;
   }
 
-  console.err("typePropertyName for " + key + " is undefined");
+  return undefined;
+}
+
+function getCategory(type) {
+  var classItems = getDefinitions(classCategory);
+  if (classItems.hasOwnProperty(type)) {
+    return classCategory;
+  }
+
+  var namespaceItems = getDefinitions(namespaceCategory);
+  if (namespaceItems.hasOwnProperty(type)) {
+    return namespaceCategory;
+  }
   return undefined;
 }
 
 function getDefinition(type) {
-  var classItems = getDefinitions('class');
+  var classItems = getDefinitions(classCategory);
   if (classItems.hasOwnProperty(type)) {
     return classItems[type];
   }
-  var namespaceItems = getDefinitions('ns');
+  var namespaceItems = getDefinitions(namespaceCategory);
   if (namespaceItems.hasOwnProperty(type)) {
     return namespaceItems[type];
   }
-  console.err("type '" + type + "' is not supported.");
   return undefined;
 }
 
