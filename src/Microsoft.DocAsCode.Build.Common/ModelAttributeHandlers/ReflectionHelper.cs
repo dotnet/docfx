@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.Common
         private static readonly ConcurrentDictionary<Type, List<PropertyInfo>> _settablePropertiesCache = new ConcurrentDictionary<Type, List<PropertyInfo>>();
         private static readonly ConcurrentDictionary<Type, List<PropertyInfo>> _gettablePropertiesCache = new ConcurrentDictionary<Type, List<PropertyInfo>>();
         private static readonly ConcurrentDictionary<Type, bool> _isDictionaryCache = new ConcurrentDictionary<Type, bool>();
+        private static readonly ConcurrentDictionary<Tuple<Type, Type>, Type> _genericTypeCache = new ConcurrentDictionary<Tuple<Type, Type>, Type>();
 
         public static List<PropertyInfo> GetSettableProperties(Type type)
         {
@@ -68,8 +69,8 @@ namespace Microsoft.DocAsCode.Build.Common
                 return true;
             }
 
-            return ImplementsGenericDefintion(type, typeof(IDictionary<,>))
-            || ImplementsGenericDefintion(type, typeof(IReadOnlyDictionary<,>));
+            return ImplementsGenericDefintion(type, typeof(IDictionary<,>)) ||
+                ImplementsGenericDefintion(type, typeof(IReadOnlyDictionary<,>));
         }
 
         public static bool IsIEnumerableType(Type t)
@@ -77,13 +78,17 @@ namespace Microsoft.DocAsCode.Build.Common
             return typeof(IEnumerable).IsAssignableFrom(t);
         }
 
-        public static bool TryGetGenericType(Type type, Type genericTypeDefinition, out Type genericType)
+        public static Type GetGenericType(Type type, Type genericTypeDefinition)
+        {
+            return _genericTypeCache.GetOrAdd(Tuple.Create(type, genericTypeDefinition), t => GetGenericTypeNoCache(t.Item1, t.Item2));
+        }
+
+        private static Type GetGenericTypeNoCache(Type type, Type genericTypeDefinition)
         {
             if (type.IsInterface == genericTypeDefinition.IsInterface &&
                 IsGenericType(type, genericTypeDefinition))
             {
-                genericType = type;
-                return true;
+                return type;
             }
             if (genericTypeDefinition.IsInterface)
             {
@@ -91,25 +96,27 @@ namespace Microsoft.DocAsCode.Build.Common
                 {
                     if (IsGenericType(i, genericTypeDefinition))
                     {
-                        genericType = i;
-                        return true;
+                        return i;
                     }
                 }
             }
-            genericType = null;
-            return false;
+            return null;
+        }
+
+        public static bool TryGetGenericType(Type type, Type genericTypeDefinition, out Type genericType)
+        {
+            genericType = GetGenericType(type, genericTypeDefinition);
+            return genericType != null;
         }
 
         public static bool ImplementsGenericDefintion(Type type, Type genericTypeDefinition)
         {
-            Type _;
-            return TryGetGenericType(type, genericTypeDefinition, out _);
+            return GetGenericType(type, genericTypeDefinition) != null;
         }
 
-        public static bool IsGenericType(Type type, Type genericType)
+        public static bool IsGenericType(Type type, Type genericTypeDefinition)
         {
-            return type.IsGenericType
-                && type.GetGenericTypeDefinition() == genericType;
+            return type.IsGenericType && type.GetGenericTypeDefinition() == genericTypeDefinition;
         }
 
         private static IEnumerable<PropertyInfo> GetProperties(Type type, BindingFlags bindingFlags)
