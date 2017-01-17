@@ -247,7 +247,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             public LoopModel Reference { get; set; }
         }
 
-        private class MarkdownModel1
+        public class MarkdownModel1
         {
             [MarkdownContent]
             public string Content { get; set; }
