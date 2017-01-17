@@ -90,17 +90,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void ReloadDependency(IEnumerable<HostService> hostServices)
         {
-            // restore dependency graph from last dependency graph
-            var unloaded = (from hs in hostServices
-                            where hs.CanIncrementalBuild
-                            from f in hs.GetUnloadedModelFiles(IncrementalContext)
-                            select ((RelativePath)f).GetPathFromWorkingFolder()).ToList();
-            if (unloaded.Count > 0)
+            // restore dependency graph from last dependency graph for unchanged files
+            using (new LoggerPhaseScope("ReportDependencyFromLastBuild", LogLevel.Diagnostic))
             {
-                using (new LoggerPhaseScope("ReportDependencyFromLastBuild", LogLevel.Diagnostic))
+                var ldg = LastBuildVersionInfo?.Dependency;
+                if (ldg != null)
                 {
-                    CurrentBuildVersionInfo.Dependency.ReportDependency(from f in unloaded
-                                                                        from i in LastBuildVersionInfo.Dependency.GetDependencyReportedBy(f)
+                    CurrentBuildVersionInfo.Dependency.ReportDependency(from r in ldg.ReportedBys
+                                                                        where !IncrementalContext.ChangeDict.ContainsKey(r) || IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
+                                                                        from i in ldg.GetDependencyReportedBy(r)
                                                                         select i);
                 }
             }
@@ -138,11 +136,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 foreach (var m in hostService.Models)
                 {
-                    var dps = GetUidDependency(m).ToList();
-                    if (dps.Count != 0)
-                    {
-                        CurrentBuildVersionInfo.Dependency.ReportDependency(dps);
-                    }
+                    var dps = GetUidDependency(m).Distinct();
+                    CurrentBuildVersionInfo.Dependency.ReportDependency(dps);
                 }
             }
         }
@@ -159,47 +154,100 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     if (m.LinkToFiles.Count != 0)
                     {
-                        string fromNode = ((RelativePath)m.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
-                        var dps = from f in m.LinkToFiles
-                                  select new DependencyItem(fromNode, f, fromNode, DependencyTypeName.File);
+                        var dps = GetFileDependency(m).Distinct();
                         CurrentBuildVersionInfo.Dependency.ReportDependency(dps);
                     }
                 }
             }
         }
 
-        private IEnumerable<DependencyItem> GetUidDependency(FileModel model)
+        private IEnumerable<DependencyItem> GetFileDependency(FileModel model)
         {
-            var uids = model.Type == DocumentType.Overwrite ? model.Uids.Select(u => u.File).ToImmutableHashSet() : model.LinkToUids;
-            if (uids.Count == 0)
-            {
-                yield break;
-            }
             string fromNode = ((RelativePath)model.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
-            foreach (var f in GetFilesFromUids(uids))
+            foreach (var f in model.LinkToFiles)
             {
-                yield return new DependencyItem(fromNode, f, fromNode, DependencyTypeName.Uid);
-                if (model.Type == DocumentType.Overwrite)
+                ImmutableList<LinkSourceInfo> list;
+                if (model.FileLinkSources.TryGetValue(f, out list))
                 {
-                    yield return new DependencyItem(f, fromNode, fromNode, DependencyTypeName.Uid);
+                    foreach (var fileLinkSourceFile in list)
+                    {
+                        yield return new DependencyItem(fileLinkSourceFile.SourceFile, f, fileLinkSourceFile.SourceFile, DependencyTypeName.File);
+                    }
+                }
+                else
+                {
+                    yield return new DependencyItem(fromNode, f, fromNode, DependencyTypeName.File);
                 }
             }
         }
 
-        private IEnumerable<string> GetFilesFromUids(IEnumerable<string> uids)
+        private IEnumerable<DependencyItem> GetUidDependency(FileModel model)
         {
+            var items = GetUidDependencyCore(model);
+            if (model.Type == DocumentType.Overwrite)
+            {
+                items = items.Concat(GetUidDependencyForOverwrite(model));
+            }
+            return items;
+        }
+
+        private IEnumerable<DependencyItem> GetUidDependencyForOverwrite(FileModel model)
+        {
+            if (model.Type != DocumentType.Overwrite)
+            {
+                yield break;
+            }
+            string fromNode = ((RelativePath)model.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
+            var uids = model.Uids.Select(u => u.File).ToImmutableHashSet();
             foreach (var uid in uids)
             {
-                if (string.IsNullOrEmpty(uid))
+                var f = GetFileFromUid(uid);
+                if (f == null)
                 {
                     continue;
                 }
-                XRefSpec spec;
-                if (Context.XRefSpecMap.TryGetValue(uid, out spec) && spec.Href != null)
+                yield return new DependencyItem(fromNode, f, fromNode, DependencyTypeName.Uid);
+                yield return new DependencyItem(f, fromNode, fromNode, DependencyTypeName.Uid);
+            }
+        }
+
+        private IEnumerable<DependencyItem> GetUidDependencyCore(FileModel model)
+        {
+            string fromNode = ((RelativePath)model.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
+            foreach (var uid in model.LinkToUids)
+            {
+                var f = GetFileFromUid(uid);
+                if (f == null)
                 {
-                    yield return spec.Href;
+                    continue;
+                }
+                ImmutableList<LinkSourceInfo> list;
+                if (model.UidLinkSources.TryGetValue(uid, out list))
+                {
+                    foreach (var uidLinkSourceFile in list)
+                    {
+                        yield return new DependencyItem(uidLinkSourceFile.SourceFile, f, uidLinkSourceFile.SourceFile, DependencyTypeName.Uid);
+                    }
+                }
+                else
+                {
+                    yield return new DependencyItem(fromNode, f, fromNode, DependencyTypeName.Uid);
                 }
             }
+        }
+
+        private string GetFileFromUid(string uid)
+        {
+            if (string.IsNullOrEmpty(uid))
+            {
+                return null;
+            }
+            XRefSpec spec;
+            if (Context.XRefSpecMap.TryGetValue(uid, out spec) && spec.Href != null)
+            {
+                return spec.Href;
+            }
+            return null;
         }
 
         #endregion
