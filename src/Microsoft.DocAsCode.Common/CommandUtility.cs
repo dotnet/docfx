@@ -116,7 +116,7 @@ namespace Microsoft.DocAsCode.Common
         public static bool ExistCommand(string commandName)
         {
             int exitCode;
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
+            if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
             {
                 exitCode = RunCommand(new CommandInfo
                 {
