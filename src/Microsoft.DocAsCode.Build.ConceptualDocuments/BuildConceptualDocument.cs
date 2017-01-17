@@ -20,7 +20,6 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     {
         private const string ConceptualKey = Constants.PropertyName.Conceptual;
         private const string DocumentTypeKey = "documentType";
-        private const int TitleThumbnailMaxLength = 30;
 
         public override string Name => nameof(BuildConceptualDocument);
 
@@ -79,7 +78,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                 model.Properties.XrefSpec = new XRefSpec
                 {
                     Uid = model.Uids[0].Name,
-                    Name = TitleThumbnail(content[Constants.PropertyName.Title] as string ?? model.Uids[0].Name, TitleThumbnailMaxLength),
+                    Name = content[Constants.PropertyName.Title] as string ?? model.Uids[0].Name,
                     Href = ((RelativePath)model.File).GetPathFromWorkingFolder()
                 };
             }
@@ -99,13 +98,6 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
         public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
 
         #endregion
-
-        private static string TitleThumbnail(string title, int maxLength)
-        {
-            if (string.IsNullOrEmpty(title)) return null;
-            if (title.Length <= maxLength) return title;
-            return title.Substring(0, maxLength) + "...";
-        }
 
         private static HtmlInfo SeparateHtml(string contentHtml)
         {
