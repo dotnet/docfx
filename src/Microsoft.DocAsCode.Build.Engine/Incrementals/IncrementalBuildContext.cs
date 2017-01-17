@@ -325,7 +325,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 return;
             }
             var fileAttributes = CurrentBuildVersionInfo.Attributes;
-            var nodesToUpdate = CurrentBuildVersionInfo.Dependency.GetAllDependentNodes().Except(fileAttributes.Keys);
+            var nodesToUpdate = CurrentBuildVersionInfo.Dependency.GetAllDependentNodes().Except(fileAttributes.Keys, FilePathComparer.OSPlatformSensitiveStringComparer);
             foreach (var node in nodesToUpdate)
             {
                 RelativePath path = RelativePath.TryParse(node);
