@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
     using System.Collections.Immutable;
     using System.IO;
     using System.Reflection;
+    using System.Web;
 
     using Xunit;
 
@@ -17,7 +18,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
-    using System.Web;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "TocDocumentProcessorTest")]

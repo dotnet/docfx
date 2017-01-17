@@ -7,13 +7,13 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using System.Collections.Immutable;
     using System.Composition;
     using System.IO;
+    using System.Web;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Common.Git;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
-    using System.Web;
 
     [Export(typeof(IDocumentProcessor))]
     public class TocDocumentProcessor : DisposableDocumentProcessor
