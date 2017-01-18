@@ -13,8 +13,19 @@ namespace Microsoft.DocAsCode.Build.Common
 
     public static class ReflectionHelper
     {
-        private static readonly ConcurrentDictionary<Type, List<PropertyInfo>> _settablePropertiesCache = new ConcurrentDictionary<Type, List<PropertyInfo>>();
+        private static readonly Func<Type, List<PropertyInfo>> _getGettableProperties =
+            t => (from prop in GetPublicProperties(t)
+                  where prop.GetGetMethod() != null
+                  where prop.GetIndexParameters().Length == 0
+                  select prop).ToList();
+        private static readonly Func<Type, List<PropertyInfo>> _getSettableProperties =
+            t => (from prop in GetPublicProperties(t)
+                  where prop.GetGetMethod() != null
+                  where prop.GetSetMethod() != null
+                  where prop.GetIndexParameters().Length == 0
+                  select prop).ToList();
         private static readonly ConcurrentDictionary<Type, List<PropertyInfo>> _gettablePropertiesCache = new ConcurrentDictionary<Type, List<PropertyInfo>>();
+        private static readonly ConcurrentDictionary<Type, List<PropertyInfo>> _settablePropertiesCache = new ConcurrentDictionary<Type, List<PropertyInfo>>();
         private static readonly ConcurrentDictionary<Type, bool> _isDictionaryCache = new ConcurrentDictionary<Type, bool>();
         private static readonly ConcurrentDictionary<Tuple<Type, Type>, Type> _genericTypeCache = new ConcurrentDictionary<Tuple<Type, Type>, Type>();
         private static readonly ConcurrentDictionary<PropertyInfo, Func<object, object>> _propertyGetterCache = new ConcurrentDictionary<PropertyInfo, Func<object, object>>();
@@ -27,13 +38,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 throw new ArgumentNullException(nameof(type));
             }
 
-            return _settablePropertiesCache.GetOrAdd(
-                type,
-                (from prop in GetPublicProperties(type)
-                 where prop.GetGetMethod() != null
-                 where prop.GetSetMethod() != null
-                 where prop.GetIndexParameters().Length == 0
-                 select prop).ToList());
+            return _settablePropertiesCache.GetOrAdd(type, _getSettableProperties);
         }
 
         public static List<PropertyInfo> GetGettableProperties(Type type)
@@ -43,12 +48,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 throw new ArgumentNullException(nameof(type));
             }
 
-            return _settablePropertiesCache.GetOrAdd(
-                type,
-                (from prop in GetPublicProperties(type)
-                 where prop.GetGetMethod() != null
-                 where prop.GetIndexParameters().Length == 0
-                 select prop).ToList());
+            return _gettablePropertiesCache.GetOrAdd(type, _getGettableProperties);
         }
 
         public static IEnumerable<PropertyInfo> GetPublicProperties(Type type)
