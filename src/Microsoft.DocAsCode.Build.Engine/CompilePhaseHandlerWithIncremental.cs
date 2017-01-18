@@ -204,8 +204,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     continue;
                 }
 
-                yield return new DependencyItem(fromNode, f, fromNode, DependencyTypeName.UidInclude);
-                yield return new DependencyItem(f, fromNode, fromNode, DependencyTypeName.UidInclude);
+                yield return new DependencyItem(fromNode, f, fromNode, DependencyTypeName.Overwrite);
+                yield return new DependencyItem(f, fromNode, fromNode, DependencyTypeName.Overwrite);
             }
         }
 
