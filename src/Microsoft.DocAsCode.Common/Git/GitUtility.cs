@@ -95,7 +95,7 @@ namespace Microsoft.DocAsCode.Common.Git
                 return null;
             }
 
-            return Cache.GetOrAdd(directory, GetRepoInfo(parentDirInfo.FullName));
+            return Cache.GetOrAdd(directory, d => GetRepoInfo(parentDirInfo.FullName));
         }
 
         private static GitDetail GetFileDetailCore(string filePath)

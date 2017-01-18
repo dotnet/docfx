@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var firstFile = normalizedFiles.First();
 
             string path = GetProjectLevelConfig(firstFile);
-            return _cache.GetOrAdd(path, new ProjectLevelCache(path));
+            return _cache.GetOrAdd(path, p => new ProjectLevelCache(p));
         }
     }
 }
