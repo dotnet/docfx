@@ -468,7 +468,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static void FillProjectDependencyGraph(ConcurrentDictionary<string, Project> projectCache, ConcurrentDictionary<string, List<string>> projectDependencyGraph, Project project)
         {
-            projectDependencyGraph.GetOrAdd(StringExtension.ToNormalizedFullPath(project.FilePath), GetTransitiveProjectReferences(projectCache, project).Distinct().ToList());
+            projectDependencyGraph.GetOrAdd(StringExtension.ToNormalizedFullPath(project.FilePath), _ => GetTransitiveProjectReferences(projectCache, project).Distinct().ToList());
         }
 
         private static IEnumerable<string> GetTransitiveProjectReferences(ConcurrentDictionary<string, Project> projectCache, Project project)
@@ -500,7 +500,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 try
                 {
                     var compilation = await project.Value.GetCompilationAsync();
-                    compilations.GetOrAdd(project.Key, compilation);
+                    compilations.TryAdd(project.Key, compilation);
                 }
                 catch (Exception e)
                 {

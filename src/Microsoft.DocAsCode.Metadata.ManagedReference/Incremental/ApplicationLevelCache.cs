@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             string path = GetApplicationLevelCache(files);
             if (string.IsNullOrEmpty(path)) return null;
-            return _cache.GetOrAdd(path, new ApplicationLevelCache(path));
+            return _cache.GetOrAdd(path, p => new ApplicationLevelCache(p));
         }
 
         private static string GetApplicationLevelCache(IEnumerable<string> files)

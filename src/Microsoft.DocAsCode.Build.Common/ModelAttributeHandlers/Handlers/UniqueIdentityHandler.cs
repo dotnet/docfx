@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 return null;
             }
             var type = obj.GetType();
-            return _cache.GetOrAdd(type, new UniqueIdentityHandlerImpl(type, this)).Handle(obj, context);
+            return _cache.GetOrAdd(type, t => new UniqueIdentityHandlerImpl(t, this)).Handle(obj, context);
         }
 
         private sealed class UniqueIdentityHandlerImpl : BaseModelAttributeHandler<UniqueIdentityReferenceAttribute>
