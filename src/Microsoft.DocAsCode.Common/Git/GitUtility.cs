@@ -129,7 +129,40 @@ namespace Microsoft.DocAsCode.Common.Git
             // the path of repo root got from git config file should be the same with path got from git command
             Debug.Assert(PathUtility.NormalizePath(repoRootPath) == PathUtility.NormalizePath(directory));
 
-            var localBranch = GetLocalBranchNames(repoRootPath);
+            var branchNames = GetBranchNames(repoRootPath);
+
+            var originUrl = RunGitCommandAndGetFirstLine(repoRootPath, GetOriginUrlCommand);
+            var repoInfo = new GitRepoInfo
+            {
+                // TODO: remove commit id to avoid config hash changed
+                //LocalHeadCommitId = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalHeadIdCommand),
+                //RemoteHeadCommitId = TryRunGitCommandAndGetFirstLine(repoRootPath, GetRemoteHeadIdCommand),
+                RemoteOriginUrl = originUrl,
+                RepoRootPath = repoRootPath,
+                LocalBranch = branchNames.Item1,
+                RemoteBranch = branchNames.Item2
+            };
+
+            return repoInfo;
+        }
+
+        private static Tuple<string, string> GetBranchNames(string repoRootPath)
+        {
+            // Use the branch name specified by the environment variable.
+            var localBranch = Environment.GetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME");
+            if (!string.IsNullOrEmpty(localBranch))
+            {
+                Logger.LogInfo($"For git repo <{repoRootPath}>, using branch '{localBranch}' from the environment variable DOCFX_SOURCE_BRANCH_NAME.");
+                return Tuple.Create(localBranch, localBranch);
+            }
+
+            var isDetachedHead = "HEAD" == RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
+            if (isDetachedHead)
+            {
+                return GetBranchNamesFromDetachedHead(repoRootPath);
+            }
+
+            localBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
             string remoteBranch;
             try
             {
@@ -145,43 +178,12 @@ namespace Microsoft.DocAsCode.Common.Git
                 Logger.LogInfo($"For git repo <{repoRootPath}>, can't find remote branch in this repo and fallback to use local branch [{localBranch}]: {ex.Message}");
                 remoteBranch = localBranch;
             }
-
-            var originUrl = RunGitCommandAndGetFirstLine(repoRootPath, GetOriginUrlCommand);
-            var repoInfo = new GitRepoInfo
-            {
-                // TODO: remove commit id to avoid config hash changed
-                //LocalHeadCommitId = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalHeadIdCommand),
-                //RemoteHeadCommitId = TryRunGitCommandAndGetFirstLine(repoRootPath, GetRemoteHeadIdCommand),
-                RemoteOriginUrl = originUrl,
-                RepoRootPath = repoRootPath,
-                LocalBranch = localBranch,
-                RemoteBranch = remoteBranch
-            };
-
-            return repoInfo;
-        }
-
-        private static string GetLocalBranchNames(string repoRootPath)
-        {
-            // Use the branch name specified by the environment variable.
-            var localBranch = Environment.GetEnvironmentVariable("DOCFX_SOURCE_BRANCH_NAME");
-            if (!string.IsNullOrEmpty(localBranch))
-            {
-                Logger.LogInfo($"For git repo <{repoRootPath}>, using branch '{localBranch}' from the environment variable DOCFX_SOURCE_BRANCH_NAME.");
-                return localBranch;
-            }
-
-            var isDetachedHead = "HEAD" == RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
-            if (isDetachedHead)
-            {
-                return GetLocalBranchNameFromDetachedHead(repoRootPath);
-            }
-            return RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
+            return Tuple.Create(localBranch, remoteBranch);
         }
 
         // Many build systems use a "detached head", which means that the normal git commands
         // to get branch names do not work. Thankfully, they set an environment variable.
-        private static string GetLocalBranchNameFromDetachedHead(string repoRootPath)
+        private static Tuple<string, string> GetBranchNamesFromDetachedHead(string repoRootPath)
         {
             foreach (var name in BuildSystemBranchName)
             {
@@ -189,14 +191,14 @@ namespace Microsoft.DocAsCode.Common.Git
                 if (!string.IsNullOrEmpty(branchName))
                 {
                     Logger.LogInfo($"For git repo <{repoRootPath}>, using branch '{branchName}' from the environment variable {name}.");
-                    return branchName;
+                    return Tuple.Create(branchName, branchName);
                 }
             }
 
             // Use the comment id as the branch name.
             var commitId = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommitIdCommand);
             Logger.LogInfo($"For git repo <{repoRootPath}>, using commit id {commitId} as the branch name.");
-            return commitId;
+            return Tuple.Create(commitId, commitId);
         }
 
         private static void ProcessErrorMessage(string message)
