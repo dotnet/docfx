@@ -121,6 +121,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
+            if (current.DerivedClasses?.Count > 0)
+            {
+                foreach (var item in current.DerivedClasses)
+                {
+                    yield return item;
+                }
+            }
+
             if (current.InheritedMembers?.Count > 0)
             {
                 foreach (var item in current.InheritedMembers)
