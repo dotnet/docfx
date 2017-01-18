@@ -6,6 +6,8 @@ namespace Microsoft.DocAsCode.Build.Common
     using System;
     using System.Collections;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
 
     using Microsoft.DocAsCode.DataContracts.Common;
@@ -75,6 +77,13 @@ namespace Microsoft.DocAsCode.Build.Common
                 }
 
                 return currentObj;
+            }
+
+            protected override IEnumerable<PropInfo> GetProps(Type type)
+            {
+                return from prop in base.GetProps(type)
+                       where !prop.Prop.IsDefined(typeof(UniqueIdentityReferenceIgnoreAttribute), false)
+                       select prop;
             }
         }
     }

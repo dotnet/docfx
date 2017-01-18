@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.Common
 {
     using System;
     using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
@@ -158,7 +159,7 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 foreach (var prop in _typeInfo.PropInfos)
                 {
-                    var value = prop.Prop.GetValue(currentObj);
+                    var value = ReflectionHelper.GetPropertyValue(currentObj, prop.Prop);
                     if (ShouldHandle(value, currentObj, prop, context))
                     {
                         HandleCurrent(value, currentObj, prop.Prop, context);
@@ -207,7 +208,7 @@ namespace Microsoft.DocAsCode.Build.Common
             return new TypeInfo
             {
                 TypeOfType = TypeOfType.NonPrimitive,
-                PropInfos = propInfos,
+                PropInfos = propInfos.ToArray(),
             };
         }
 
@@ -226,15 +227,15 @@ namespace Microsoft.DocAsCode.Build.Common
             NonPrimitive,
         }
 
-        protected virtual PropInfo[] GetProps(Type type)
+        protected virtual IEnumerable<PropInfo> GetProps(Type type)
         {
-            return (from prop in ReflectionHelper.GetGettableProperties(type)
-                    let attr = prop.GetCustomAttribute<T>()
-                    select new PropInfo
-                    {
-                        Prop = prop,
-                        Attr = attr
-                    }).ToArray();
+            return from prop in ReflectionHelper.GetGettableProperties(type)
+                   let attr = prop.GetCustomAttribute<T>()
+                   select new PropInfo
+                   {
+                       Prop = prop,
+                       Attr = attr,
+                   };
         }
 
         protected sealed class PropInfo

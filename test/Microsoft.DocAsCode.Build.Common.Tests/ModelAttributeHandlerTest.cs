@@ -126,7 +126,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             {
                 Content = "Hello *world*, @xref, [link](link.md)",
                 Content2 = "Content2",
-                Content3 = new List<string>
+                Content3 = new string[]
                  {
                      "Content3",
                      "Content3.1"
@@ -156,7 +156,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
                 {
                     Content = "*content",
                     Content2 = "*content",
-                    Content3 = new List<string>
+                    Content3 = new string[]
                     {
                         "*content"
                     },
@@ -189,6 +189,53 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             Assert.Equal(context.PlaceholderContent, model.Inner.Content3[0]);
             Assert.Equal(context.PlaceholderContent, model.Inner.Content4["key1"]);
             Assert.Equal(context.PlaceholderContent, model.Inner.Content5["key1"]);
+        }
+
+        [Fact]
+        public void TestMarkdownContentIgnoreAttributeShouldSucceed()
+        {
+            var model = new MarkdownModelWithIgnore
+            {
+                Content = "Hello *world*, @xref, [link](link.md)",
+                Content2 = "*content",
+                Inner = new MarkdownModelWithIgnore
+                {
+                    Content = "*content",
+                    Content2 = "*content",
+                    Content3 = new string[]
+                    {
+                        "Identity1",
+                        "Identity2"
+                    },
+                    Content4 = new Dictionary<string, object>
+                    {
+                        ["key1"] = "*content"
+                    },
+                    Content5 = new SortedList<string, object>
+                    {
+                        ["key1"] = "*content"
+                    }
+                }
+            };
+
+            var context = GetDefaultContext();
+            context.EnableContentPlaceholder = true;
+            context.PlaceholderContent = "placeholder";
+            context = Handle(model, context);
+
+            Assert.Equal(3, context.LinkToUids.Count);
+            Assert.Equal(1, context.LinkToFiles.Count);
+            Assert.Equal(1, context.FileLinkSources.Count);
+            Assert.Equal(1, context.UidLinkSources.Count);
+            var expected = @"<p sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1"">Hello <em>world</em>, <xref href=""xref"" data-throw-if-not-resolved=""False"" data-raw-source=""@xref"" sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1""></xref>, <a href=""link.md"" data-raw-source=""[link](link.md)"" sourcefile=""test"" sourcestartlinenumber=""1"" sourceendlinenumber=""1"">link</a></p>
+".Replace("\r\n", "\n");
+            Assert.Equal(expected, model.Content);
+            Assert.Equal(context.PlaceholderContent, model.Content2);
+            Assert.Equal("*content", model.Inner.Content);
+            Assert.Equal("*content", model.Inner.Content2);
+            Assert.Equal("Identity1", model.Inner.Content3[0]);
+            Assert.Equal("*content", model.Inner.Content4["key1"]);
+            Assert.Equal("*content", model.Inner.Content5["key1"]);
         }
 
         [Fact]
@@ -237,7 +284,6 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
         public class LoopModel
         {
-
             [MarkdownContent]
             public string Content { get; set; }
 
@@ -254,12 +300,41 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
             public string Content2 { get; set; }
 
-            public List<string> Content3 { get; set; }
+            [MarkdownContent]
+            public string ReadonlyContent { get; } = "*content";
+
+            [UniqueIdentityReference]
+            [UniqueIdentityReferenceIgnore]
+            public string[] Content3 { get; set; }
 
             public MarkdownModel1 Inner { get; set; }
 
             public Dictionary<string, object> Content4 { get; set; }
 
+            public SortedList<string, object> Content5 { get; set; }
+        }
+
+        public class MarkdownModelWithIgnore
+        {
+            [MarkdownContent]
+            public string Content { get; set; }
+
+            [MarkdownContent]
+            public string Content2 { get; set; }
+
+            [MarkdownContent]
+            public string ReadonlyContent { get; } = "*content";
+
+            [UniqueIdentityReference]
+            public string[] Content3 { get; set; }
+
+            [MarkdownContentIgnore]
+            public MarkdownModelWithIgnore Inner { get; set; }
+
+            [MarkdownContentIgnore]
+            public Dictionary<string, object> Content4 { get; set; }
+
+            [MarkdownContentIgnore]
             public SortedList<string, object> Content5 { get; set; }
         }
 
