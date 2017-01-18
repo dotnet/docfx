@@ -126,7 +126,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             {
                 Content = "Hello *world*, @xref, [link](link.md)",
                 Content2 = "Content2",
-                Content3 = new List<string>
+                Content3 = new string[]
                  {
                      "Content3",
                      "Content3.1"
@@ -156,7 +156,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
                 {
                     Content = "*content",
                     Content2 = "*content",
-                    Content3 = new List<string>
+                    Content3 = new string[]
                     {
                         "*content"
                     },
@@ -237,7 +237,6 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
         public class LoopModel
         {
-
             [MarkdownContent]
             public string Content { get; set; }
 
@@ -252,9 +251,16 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             [MarkdownContent]
             public string Content { get; set; }
 
+            [MarkdownContent]
+            [MarkdownContentIgnore]
             public string Content2 { get; set; }
 
-            public List<string> Content3 { get; set; }
+            [MarkdownContent]
+            public string ReadonlyContent { get; } = "*content";
+
+            [UniqueIdentityReference]
+            [UniqueIdentityReferenceIgnore]
+            public string[] Content3 { get; set; }
 
             public MarkdownModel1 Inner { get; set; }
 

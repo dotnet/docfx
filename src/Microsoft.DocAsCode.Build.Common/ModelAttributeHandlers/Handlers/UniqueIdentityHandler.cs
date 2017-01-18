@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Build.Common
     using System;
     using System.Collections;
     using System.Collections.Concurrent;
+    using System.Linq;
     using System.Reflection;
 
     using Microsoft.DocAsCode.DataContracts.Common;
@@ -28,6 +29,19 @@ namespace Microsoft.DocAsCode.Build.Common
         {
             public UniqueIdentityHandlerImpl(Type type, IModelAttributeHandler handler) : base(type, handler)
             {
+            }
+
+            protected override bool ShouldIgnore(object declaringObject, PropInfo currentPropInfo, HandleModelAttributesContext context)
+            {
+                if (currentPropInfo != null)
+                {
+                    if (currentPropInfo.Attrs.Any(s => s.GetType() == typeof(UniqueIdentityReferenceIgnore)))
+                    {
+                        return true;
+                    }
+                }
+
+                return base.ShouldIgnore(declaringObject, currentPropInfo, context);
             }
 
             protected override object HandleCurrent(object currentObj, object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)

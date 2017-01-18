@@ -52,6 +52,24 @@ namespace Microsoft.DocAsCode.Build.Common
             {
             }
 
+            protected override bool ShouldIgnore(object declaringObject, PropInfo currentPropInfo, HandleModelAttributesContext context)
+            {
+                if (currentPropInfo != null)
+                {
+                    if (!currentPropInfo.IsSettable)
+                    {
+                        return true;
+                    }
+
+                    if (currentPropInfo.Attrs.Any(s => s.GetType() == typeof(MarkdownContentIgnore)))
+                    {
+                        return true;
+                    }
+                }
+
+                return base.ShouldIgnore(declaringObject, currentPropInfo, context);
+            }
+
             protected override bool ShouldHandle(object currentObj, object declaringObject, PropInfo currentPropInfo, HandleModelAttributesContext context)
             {
                 if (context.EnableContentPlaceholder)
@@ -100,17 +118,6 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 HandleItems(typeof(IList<>), typeof(HandleIListItems<>), currentObj, context);
                 return currentObj;
-            }
-
-            protected override PropInfo[] GetProps(Type type)
-            {
-                return (from prop in ReflectionHelper.GetSettableProperties(type)
-                        let attr = prop.GetCustomAttribute<MarkdownContentAttribute>()
-                        select new PropInfo
-                        {
-                            Prop = prop,
-                            Attr = attr
-                        }).ToArray();
             }
 
             private string Markup(string content, HandleModelAttributesContext context)
