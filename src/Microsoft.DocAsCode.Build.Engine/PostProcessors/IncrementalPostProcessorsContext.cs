@@ -70,6 +70,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (ShouldTraceIncrementalInfo)
             {
                 currentBuildInfo.PostProcessInfo = GeneratePostProcessInfo();
+                foreach (var postProcessor in _postProcessors)
+                {
+                    ((ISupportIncrementalPostProcessor)postProcessor.Processor).PostProcessorHost = new IncrementalPostProcessorHost(this, postProcessor.ContractName);
+                }
             }
             CurrentInfo = currentBuildInfo.PostProcessInfo;
             LastInfo = lastBuildInfo?.PostProcessInfo;
