@@ -26,7 +26,7 @@ $(function () {
       placement: 'left',
       visible: 'touch'
     };
-    anchors.add('h2, h3, h4, h5, h6');
+    anchors.add('article h2, article h3, article h4, article h5, article h6');
   })();
 
   // Enable highlight.js
