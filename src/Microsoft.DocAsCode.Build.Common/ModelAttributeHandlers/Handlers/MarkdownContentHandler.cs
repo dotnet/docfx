@@ -81,7 +81,10 @@ namespace Microsoft.DocAsCode.Build.Common
                 if (val != null)
                 {
                     var marked = Markup(val, context);
-                    currentPropertyInfo?.SetValue(declaringObject, marked);
+                    if (currentPropertyInfo != null)
+                    {
+                        ReflectionHelper.SetPropertyValue(declaringObject, currentPropertyInfo, marked);
+                    }
                     return marked;
                 }
                 else

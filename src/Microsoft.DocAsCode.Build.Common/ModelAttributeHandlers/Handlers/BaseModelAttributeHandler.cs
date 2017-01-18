@@ -159,7 +159,7 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 foreach (var prop in _typeInfo.PropInfos)
                 {
-                    var value = prop.Prop.GetValue(currentObj);
+                    var value = ReflectionHelper.GetPropertyValue(currentObj, prop.Prop);
                     if (ShouldHandle(value, currentObj, prop, context))
                     {
                         HandleCurrent(value, currentObj, prop.Prop, context);
