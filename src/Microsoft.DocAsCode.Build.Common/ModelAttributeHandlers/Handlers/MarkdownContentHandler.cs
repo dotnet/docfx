@@ -81,7 +81,10 @@ namespace Microsoft.DocAsCode.Build.Common
                 if (val != null)
                 {
                     var marked = Markup(val, context);
-                    currentPropertyInfo?.SetValue(declaringObject, marked);
+                    if (currentPropertyInfo != null)
+                    {
+                        ReflectionHelper.SetPropertyValue(declaringObject, currentPropertyInfo, marked);
+                    }
                     return marked;
                 }
                 else
@@ -102,15 +105,12 @@ namespace Microsoft.DocAsCode.Build.Common
                 return currentObj;
             }
 
-            protected override PropInfo[] GetProps(Type type)
+            protected override IEnumerable<PropInfo> GetProps(Type type)
             {
-                return (from prop in ReflectionHelper.GetSettableProperties(type)
-                        let attr = prop.GetCustomAttribute<MarkdownContentAttribute>()
-                        select new PropInfo
-                        {
-                            Prop = prop,
-                            Attr = attr
-                        }).ToArray();
+                return from prop in base.GetProps(type)
+                       where prop.Prop.GetSetMethod() != null
+                       where !prop.Prop.IsDefined(typeof(MarkdownContentIgnoreAttribute), false)
+                       select prop;
             }
 
             private string Markup(string content, HandleModelAttributesContext context)
