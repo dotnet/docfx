@@ -32,13 +32,6 @@ namespace Microsoft.DocAsCode.Build.Common
             {
             }
 
-            protected override IEnumerable<PropInfo> GetProps(Type type)
-            {
-                return from prop in base.GetProps(type)
-                       where prop.Prop.IsDefined(typeof(UniqueIdentityReferenceIgnoreAttribute), false)
-                       select prop;
-            }
-
             protected override object HandleCurrent(object currentObj, object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)
             {
                 if (currentObj == null && currentPropertyInfo != null && declaringObject != null)
@@ -84,6 +77,13 @@ namespace Microsoft.DocAsCode.Build.Common
                 }
 
                 return currentObj;
+            }
+
+            protected override IEnumerable<PropInfo> GetProps(Type type)
+            {
+                return from prop in base.GetProps(type)
+                       where !prop.Prop.IsDefined(typeof(UniqueIdentityReferenceIgnoreAttribute), false)
+                       select prop;
             }
         }
     }

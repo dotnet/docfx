@@ -106,7 +106,7 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 return from prop in base.GetProps(type)
                        where prop.Prop.GetSetMethod() != null
-                       where prop.Prop.IsDefined(typeof(MarkdownContentIgnoreAttribute), false)
+                       where !prop.Prop.IsDefined(typeof(MarkdownContentIgnoreAttribute), false)
                        select prop;
             }
 
