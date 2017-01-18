@@ -153,13 +153,13 @@ namespace Microsoft.DocAsCode.Common.Git
             if (!string.IsNullOrEmpty(localBranch))
             {
                 Logger.LogInfo($"For git repo <{repoRootPath}>, using branch '{localBranch}' from the environment variable DOCFX_SOURCE_BRANCH_NAME.");
-                return new Tuple<string, string>(localBranch, localBranch);
+                return Tuple.Create(localBranch, localBranch);
             }
 
             var isDetachedHead = "HEAD" == RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
             if (isDetachedHead)
             {
-                return GetBranchNameFromDetachedHead(repoRootPath);
+                return GetBranchNamesFromDetachedHead(repoRootPath);
             }
 
             localBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
@@ -178,12 +178,12 @@ namespace Microsoft.DocAsCode.Common.Git
                 Logger.LogInfo($"For git repo <{repoRootPath}>, can't find remote branch in this repo and fallback to use local branch [{localBranch}]: {ex.Message}");
                 remoteBranch = localBranch;
             }
-            return new Tuple<string, string>(localBranch, remoteBranch);
+            return Tuple.Create(localBranch, remoteBranch);
         }
 
         // Many build systems use a "detached head", which means that the normal git commands
         // to get branch names do not work. Thankfully, they set an environment variable.
-        private static Tuple<string, string> GetBranchNameFromDetachedHead(string repoRootPath)
+        private static Tuple<string, string> GetBranchNamesFromDetachedHead(string repoRootPath)
         {
             foreach (var name in BuildSystemBranchName)
             {
@@ -191,14 +191,14 @@ namespace Microsoft.DocAsCode.Common.Git
                 if (!string.IsNullOrEmpty(branchName))
                 {
                     Logger.LogInfo($"For git repo <{repoRootPath}>, using branch '{branchName}' from the environment variable {name}.");
-                    return new Tuple<string, string>(branchName, branchName);
+                    return Tuple.Create(branchName, branchName);
                 }
             }
 
             // Use the comment id as the branch name.
             var commitId = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommitIdCommand);
             Logger.LogInfo($"For git repo <{repoRootPath}>, using commit id {commitId} as the branch name.");
-            return new Tuple<string, string>(commitId, commitId);
+            return Tuple.Create(commitId, commitId);
         }
 
         private static void ProcessErrorMessage(string message)
