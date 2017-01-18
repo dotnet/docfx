@@ -148,10 +148,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 foreach (var m in hostService.Models)
                 {
-                    if (m.Type == DocumentType.Overwrite)
-                    {
-                        continue;
-                    }
                     if (m.LinkToFiles.Count != 0)
                     {
                         var dps = GetFileDependency(m).Distinct();
@@ -171,7 +167,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     foreach (var fileLinkSourceFile in list)
                     {
-                        yield return new DependencyItem(fileLinkSourceFile.SourceFile, f, fileLinkSourceFile.SourceFile, DependencyTypeName.File);
+                        var sourceFile = fileLinkSourceFile.SourceFile != null ? ((RelativePath)fileLinkSourceFile.SourceFile).GetPathFromWorkingFolder().ToString() : fromNode;
+                        yield return new DependencyItem(sourceFile, f, sourceFile, DependencyTypeName.File);
                     }
                 }
                 else
@@ -206,8 +203,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     continue;
                 }
-                yield return new DependencyItem(fromNode, f, fromNode, DependencyTypeName.Uid);
-                yield return new DependencyItem(f, fromNode, fromNode, DependencyTypeName.Uid);
+
+                yield return new DependencyItem(fromNode, f, fromNode, DependencyTypeName.UidInclude);
+                yield return new DependencyItem(f, fromNode, fromNode, DependencyTypeName.UidInclude);
             }
         }
 
@@ -226,7 +224,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     foreach (var uidLinkSourceFile in list)
                     {
-                        yield return new DependencyItem(uidLinkSourceFile.SourceFile, f, uidLinkSourceFile.SourceFile, DependencyTypeName.Uid);
+                        var sourceFile = uidLinkSourceFile.SourceFile != null ? ((RelativePath)uidLinkSourceFile.SourceFile).GetPathFromWorkingFolder().ToString() : fromNode;
+                        yield return new DependencyItem(sourceFile, f, sourceFile, DependencyTypeName.Uid);
                     }
                 }
                 else

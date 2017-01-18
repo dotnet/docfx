@@ -27,6 +27,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             },
             new DependencyType
             {
+                Name = DependencyTypeName.UidInclude,
+                IsTransitive = true,
+                Phase = BuildPhase.Link,
+                Transitivity = DependencyTransitivity.All,
+            },
+            new DependencyType
+            {
                 Name = DependencyTypeName.Uid,
                 IsTransitive = false,
                 Phase = BuildPhase.Link,
