@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Build.Common
     using System;
     using System.Collections;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
@@ -31,17 +32,11 @@ namespace Microsoft.DocAsCode.Build.Common
             {
             }
 
-            protected override bool ShouldIgnore(object declaringObject, PropInfo currentPropInfo, HandleModelAttributesContext context)
+            protected override IEnumerable<PropInfo> GetProps(Type type)
             {
-                if (currentPropInfo != null)
-                {
-                    if (currentPropInfo.Attrs.Any(s => s.GetType() == typeof(UniqueIdentityReferenceIgnore)))
-                    {
-                        return true;
-                    }
-                }
-
-                return base.ShouldIgnore(declaringObject, currentPropInfo, context);
+                return from prop in base.GetProps(type)
+                       where prop.Prop.IsDefined(typeof(UniqueIdentityReferenceIgnoreAttribute), false)
+                       select prop;
             }
 
             protected override object HandleCurrent(object currentObj, object declaringObject, PropertyInfo currentPropertyInfo, HandleModelAttributesContext context)

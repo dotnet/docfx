@@ -52,24 +52,6 @@ namespace Microsoft.DocAsCode.Build.Common
             {
             }
 
-            protected override bool ShouldIgnore(object declaringObject, PropInfo currentPropInfo, HandleModelAttributesContext context)
-            {
-                if (currentPropInfo != null)
-                {
-                    if (!currentPropInfo.IsSettable)
-                    {
-                        return true;
-                    }
-
-                    if (currentPropInfo.Attrs.Any(s => s.GetType() == typeof(MarkdownContentIgnore)))
-                    {
-                        return true;
-                    }
-                }
-
-                return base.ShouldIgnore(declaringObject, currentPropInfo, context);
-            }
-
             protected override bool ShouldHandle(object currentObj, object declaringObject, PropInfo currentPropInfo, HandleModelAttributesContext context)
             {
                 if (context.EnableContentPlaceholder)
@@ -118,6 +100,14 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 HandleItems(typeof(IList<>), typeof(HandleIListItems<>), currentObj, context);
                 return currentObj;
+            }
+
+            protected override IEnumerable<PropInfo> GetProps(Type type)
+            {
+                return from prop in base.GetProps(type)
+                       where prop.Prop.GetSetMethod() != null
+                       where prop.Prop.IsDefined(typeof(MarkdownContentIgnoreAttribute), false)
+                       select prop;
             }
 
             private string Markup(string content, HandleModelAttributesContext context)

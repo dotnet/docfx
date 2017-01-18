@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.Common
 {
     using System;
     using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
 
@@ -45,9 +46,9 @@ namespace Microsoft.DocAsCode.Build.Common
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (obj == null || ShouldIgnore(null, null, context))
+            if (obj == null)
             {
-                return obj;
+                return null;
             }
 
             object result;
@@ -91,11 +92,6 @@ namespace Microsoft.DocAsCode.Build.Common
         protected virtual bool ShouldHandle(object currentObj, object declaringObject, PropInfo currentPropInfo, HandleModelAttributesContext context)
         {
             return currentPropInfo != null && currentPropInfo.Attr != null;
-        }
-
-        protected virtual bool ShouldIgnore(object declaringObject, PropInfo currentPropInfo, HandleModelAttributesContext context)
-        {
-            return false;
         }
 
         /// <summary>
@@ -163,10 +159,6 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 foreach (var prop in _typeInfo.PropInfos)
                 {
-                    if (ShouldIgnore(currentObj, prop, context))
-                    {
-                        continue;
-                    }
                     var value = prop.Prop.GetValue(currentObj);
                     if (ShouldHandle(value, currentObj, prop, context))
                     {
@@ -216,7 +208,7 @@ namespace Microsoft.DocAsCode.Build.Common
             return new TypeInfo
             {
                 TypeOfType = TypeOfType.NonPrimitive,
-                PropInfos = propInfos,
+                PropInfos = propInfos.ToArray(),
             };
         }
 
@@ -235,27 +227,21 @@ namespace Microsoft.DocAsCode.Build.Common
             NonPrimitive,
         }
 
-        protected virtual PropInfo[] GetProps(Type type)
+        protected virtual IEnumerable<PropInfo> GetProps(Type type)
         {
-            return (from prop in ReflectionHelper.GetGettableProperties(type)
-                    let attrs = prop.GetCustomAttributes()
-                    let attr = prop.GetCustomAttribute<T>()
-                    let isSettable = prop.GetSetMethod() != null 
-                    select new PropInfo
-                    {
-                        Prop = prop,
-                        Attr = attr,
-                        Attrs = attrs.ToArray(),
-                        IsSettable = isSettable
-                    }).ToArray();
+            return from prop in ReflectionHelper.GetGettableProperties(type)
+                   let attr = prop.GetCustomAttribute<T>()
+                   select new PropInfo
+                   {
+                       Prop = prop,
+                       Attr = attr,
+                   };
         }
 
         protected sealed class PropInfo
         {
             public PropertyInfo Prop { get; set; }
             public Attribute Attr { get; set; }
-            public Attribute[] Attrs { get; set; }
-            public bool IsSettable { get; set; }
         }
     }
 }
