@@ -119,10 +119,11 @@
     <div>
       <xsl:attribute name="class">
         <xsl:choose>
-          <xsl:when test="$type = 'warning'">WARNING alert alert-warning</xsl:when>
-          <xsl:when test="$type = 'caution'">CAUTION alert alert-danger</xsl:when>
-          <xsl:when test="$type = 'important'">IMPORTANT alert alert-danger</xsl:when>
-          <xsl:otherwise>NOTE alert alert-info</xsl:otherwise>
+          <xsl:when test="$type = 'tip'">TIP</xsl:when>
+          <xsl:when test="$type = 'warning'">WARNING</xsl:when>
+          <xsl:when test="$type = 'caution'">CAUTION</xsl:when>
+          <xsl:when test="$type = 'important'">IMPORTANT</xsl:when>
+          <xsl:otherwise>NOTE</xsl:otherwise>
         </xsl:choose>    
       </xsl:attribute>
       <h5>
