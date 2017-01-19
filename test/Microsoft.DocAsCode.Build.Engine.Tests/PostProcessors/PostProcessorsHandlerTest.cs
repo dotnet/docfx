@@ -146,6 +146,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                         Assert.Null(postProcessorInfos[0].IncrementalContextHash);
                         Assert.Equal($"{typeof(AppendIntegerPostProcessor).Name}", postProcessorInfos[1].Name);
                         Assert.Equal(AppendIntegerPostProcessor.HashValue, postProcessorInfos[1].IncrementalContextHash);
+                        Assert.NotNull(postProcessorInfos[1].ContextInfoFile);
+                        Assert.Equal(new List<string> { "a.html", "b.html", "c.html" },
+                            JsonUtility.Deserialize<List<string>>(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName, postProcessorInfos[1].ContextInfoFile)));
 
                         var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
                         Assert.Equal(6, postProcessOutputs.Count);
@@ -200,6 +203,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                         Assert.Null(postProcessorInfos[0].IncrementalContextHash);
                         Assert.Equal($"{typeof(AppendIntegerPostProcessor).Name}", postProcessorInfos[1].Name);
                         Assert.Equal(AppendIntegerPostProcessor.HashValue, postProcessorInfos[1].IncrementalContextHash);
+                        Assert.NotNull(postProcessorInfos[1].ContextInfoFile);
+                        Assert.Equal(new List<string> { "a.html", "b.html", "c.html" },
+                            JsonUtility.Deserialize<List<string>>(Path.Combine(intermediateFolder, secondBuildInfo.DirectoryName, postProcessorInfos[1].ContextInfoFile)));
 
                         var postProcessOutputs = secondBuildInfo.PostProcessInfo.PostProcessOutputs;
                         Assert.Equal(6, postProcessOutputs.Count);

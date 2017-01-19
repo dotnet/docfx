@@ -3,7 +3,20 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System.IO;
+
     public interface IPostProcessorHost
     {
+        /// <summary>
+        /// Load context info from last post processing.
+        /// </summary>
+        /// <returns>Stream to be read, return null when there is no last info.</returns>
+        Stream LoadContextInfo();
+
+        /// <summary>
+        /// Save context information to current post processing.
+        /// </summary>
+        /// <returns>Stream to be written</returns>
+        Stream SaveContextInfo();
     }
 }
