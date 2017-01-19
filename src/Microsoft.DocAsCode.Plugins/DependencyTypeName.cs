@@ -8,5 +8,6 @@ namespace Microsoft.DocAsCode.Plugins
         public const string Uid = "uid";
         public const string Include = "include";
         public const string File = "file";
+        public const string Overwrite = "overwrite";
     }
 }

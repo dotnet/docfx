@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void ReloadModelsPerChanges(IEnumerable<HostService> hostServices)
         {
-            var newChanges = IncrementalContext.ExpandDependency(d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == Phase);
+            var newChanges = IncrementalContext.ExpandDependency(CurrentBuildVersionInfo.Dependency, d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == Phase);
             foreach (var hostService in hostServices.Where(h => h.CanIncrementalBuild))
             {
                 hostService.ReloadModelsPerIncrementalChanges(IncrementalContext, newChanges, Phase);
