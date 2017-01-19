@@ -976,7 +976,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
         public static void Foo()
         {
         }
-        #endregion
+        #endregion Foo
     }
     #endregion
 }
@@ -1002,7 +1002,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
         public static void Foo()
         {
         }
-        #endregion
+        #endregion Foo
     }
     #endregion
 }
@@ -1101,7 +1101,7 @@ namespace ConsoleApplication1
         public static void Foo()
         {
         }
-        #endregion
+        #endregion Foo
     }
     #endregion
 }
@@ -1166,7 +1166,7 @@ namespace ConsoleApplication1
         public static void Foo()
         {
         }
-        #endregion
+        #endregion Foo
     }
     #endregion
 }
@@ -1222,7 +1222,7 @@ public static void Foo()
         public static void Foo()
         {
         }
-        #endregion
+        #endregion Foo
     }
     #endregion
 }";
