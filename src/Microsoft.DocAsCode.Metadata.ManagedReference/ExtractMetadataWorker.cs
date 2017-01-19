@@ -443,7 +443,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                                                  let metadata = GetAssemblyMetadataFromCacheAsync(assemblyFiles, assemblyCompilation, assembly, outputFolder, forceRebuild, _filterConfigFile, assemblyExtension)
                                                  select metadata.Result.Item1;
                     var commentFiles = (from file in assemblyFiles
-                                        let xmlFile = Path.ChangeExtension(file, SupportedCommentFileExtension)
+                                        select Path.ChangeExtension(file, SupportedCommentFileExtension) into xmlFile
                                         where File.Exists(xmlFile)
                                         select xmlFile).ToList();
 

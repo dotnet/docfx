@@ -3,12 +3,9 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
-    using System.Xml;
-
-    internal sealed class UidAndReader
+    internal sealed class CommentIdAndComment
     {
         public string CommentId { get; set; }
-        public XmlReader Reader { get; set; }
-        public UidAndComment ToUidAndElement() => new UidAndComment { CommentId = CommentId, Comment = Reader.ReadOuterXml() };
+        public string Comment { get; set; }
     }
 }

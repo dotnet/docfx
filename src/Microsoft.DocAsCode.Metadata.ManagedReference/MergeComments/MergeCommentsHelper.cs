@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 var list = from file in commentFiles
                            let name = Path.GetFileNameWithoutExtension(file)
-                           where name != null && name.Equals(item.Name, StringComparison.OrdinalIgnoreCase)
+                           where string .Equals(name, item.Name, StringComparison.OrdinalIgnoreCase)
                            from uidAndReader in EnumerateDeveloperComments(file)
                            select uidAndReader.ToUidAndElement();
 
@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private static void PatchMetadataItem(MetadataItem assembly, IEnumerable<UidAndComment> list)
+        private static void PatchMetadataItem(MetadataItem assembly, IEnumerable<CommentIdAndComment> list)
         {
             foreach (var uidAndComment in list)
             {
@@ -112,7 +112,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static void PatchViewModel(MetadataItem item, string comment)
         {
-            var commentModel = TripleSlashCommentModel.CreateModel(comment, SyntaxLanguage.CSharp, TripleSlashCommentParserContextNew.Instance);
+            var context = new TripleSlashCommentParserContext
+            {
+                AddReferenceDelegate = (s, e) => { },
+                Normalize = true,
+            };
+            var commentModel = TripleSlashCommentModel.CreateModel(comment, SyntaxLanguage.CSharp, context);
             var summary = commentModel.Summary;
             if (!string.IsNullOrEmpty(summary))
             {
@@ -179,7 +184,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // todo more.
         }
 
-        private static IEnumerable<UidAndReader> EnumerateDeveloperComments(string file)
+        private static IEnumerable<CommentIdAndReader> EnumerateDeveloperComments(string file)
         {
             Logger.LogInfo($"Loading developer comments from file: {file}");
             return from reader in
@@ -190,7 +195,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                    from apiReader in reader.Elements("member")
                    let commentId = apiReader.GetAttribute("name")
                    where commentId != null && commentId.Length > 2 && commentId[1] == ':'
-                   select new UidAndReader { CommentId = commentId, Reader = apiReader };
+                   select new CommentIdAndReader { CommentId = commentId, Reader = apiReader };
         }
         #endregion
     }
