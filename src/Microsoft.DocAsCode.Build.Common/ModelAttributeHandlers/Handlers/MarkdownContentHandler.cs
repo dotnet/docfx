@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.Common
             }
 
             var type = obj.GetType();
-            return _cache.GetOrAdd(type, new MarkdownContentHandlerImpl(type, this)).Handle(obj, context);
+            return _cache.GetOrAdd(type, t => new MarkdownContentHandlerImpl(t, this)).Handle(obj, context);
         }
 
         private sealed class MarkdownContentHandlerImpl : BaseModelAttributeHandler<MarkdownContentAttribute>
