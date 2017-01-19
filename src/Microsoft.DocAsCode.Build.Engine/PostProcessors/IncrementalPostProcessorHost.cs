@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var currentPostProcessorInfo = FindPostProcessorInfo(_increContext.CurrentInfo, _postProcessorName);
             currentPostProcessorInfo.ContextInfoFile = IncrementalUtility.CreateRandomFileName(_increContext.CurrentBaseDir);
 
-            return File.OpenWrite(Path.Combine(_increContext.CurrentBaseDir, currentPostProcessorInfo.ContextInfoFile));
+            return File.Create(Path.Combine(_increContext.CurrentBaseDir, currentPostProcessorInfo.ContextInfoFile));
         }
 
         private static PostProcessorInfo FindPostProcessorInfo(PostProcessInfo postProcessInfo, string postProcessorName)
