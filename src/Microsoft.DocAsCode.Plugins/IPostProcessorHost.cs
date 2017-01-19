@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Plugins
         /// <summary>
         /// Load context info from last post processing.
         /// </summary>
-        /// <returns>Stream to be read, Return null when there is no last info.</returns>
+        /// <returns>Stream to be read, return null when there is no last info.</returns>
         Stream LoadContextInfo();
 
         /// <summary>
