@@ -20,9 +20,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 var list = from file in commentFiles
                            let name = Path.GetFileNameWithoutExtension(file)
-                           where string .Equals(name, item.Name, StringComparison.OrdinalIgnoreCase)
+                           where string.Equals(name, item.Name, StringComparison.OrdinalIgnoreCase)
                            from uidAndReader in EnumerateDeveloperComments(file)
-                           select uidAndReader.ToUidAndElement();
+                           select uidAndReader.ToCommentIdAndComment();
 
                 PatchMetadataItem(item, list);
                 RebuildReference(item);
@@ -114,8 +114,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             var context = new TripleSlashCommentParserContext
             {
-                AddReferenceDelegate = (s, e) => { },
-                Normalize = true,
+                AddReferenceDelegate = (s, e) => { }
             };
             var commentModel = TripleSlashCommentModel.CreateModel(comment, SyntaxLanguage.CSharp, context);
             var summary = commentModel.Summary;

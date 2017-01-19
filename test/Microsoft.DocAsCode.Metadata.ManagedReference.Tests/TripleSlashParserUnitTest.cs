@@ -98,7 +98,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             var context = new TripleSlashCommentParserContext
             {
                 AddReferenceDelegate = null,
-                Normalize = true,
                 PreserveRawInlineComments = false,
             };
 

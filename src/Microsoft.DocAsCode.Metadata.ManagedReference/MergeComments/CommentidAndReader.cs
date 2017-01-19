@@ -9,6 +9,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         public string CommentId { get; set; }
         public XmlReader Reader { get; set; }
-        public CommentIdAndComment ToUidAndElement() => new CommentIdAndComment { CommentId = CommentId, Comment = Reader.ReadOuterXml() };
+        public CommentIdAndComment ToCommentIdAndComment() => new CommentIdAndComment { CommentId = CommentId, Comment = Reader.ReadOuterXml() };
     }
 }

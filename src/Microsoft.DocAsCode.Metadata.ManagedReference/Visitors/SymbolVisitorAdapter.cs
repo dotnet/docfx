@@ -767,7 +767,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return new TripleSlashCommentParserContext
             {
                 AddReferenceDelegate = GetAddReferenceDelegate(item),
-                Normalize = true,
                 PreserveRawInlineComments = preserve,
                 Source = item.Source
             };

@@ -9,8 +9,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     public class TripleSlashCommentParserContext : ITripleSlashCommentParserContext
     {
-        public bool Normalize { get; set; } = true;
-
         public bool PreserveRawInlineComments { get; set; }
 
         public Action<string, string> AddReferenceDelegate { get; set; }
