@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonProperty(Constants.PropertyName.Name)]
         public string Name { get; set; }
 
-        [ExtensibleMember(Constants.ExtensionMemerPrefix.Name)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
         [JsonIgnore]
         public SortedList<string, string> NameInDevLangs { get; } = new SortedList<string, string>();
 
@@ -123,7 +123,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
                 var dict = new Dictionary<string, object>();
                 foreach (var item in NameInDevLangs)
                 {
-                    dict[Constants.ExtensionMemerPrefix.Name + item.Key] = item.Value;
+                    dict[Constants.ExtensionMemberPrefix.Name + item.Key] = item.Value;
                 }
                 foreach (var item in Metadata)
                 {

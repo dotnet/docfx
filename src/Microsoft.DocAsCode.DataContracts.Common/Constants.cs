@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     {
         public const string YamlExtension = ".yml";
         public const string ContentPlaceholder = "*content";
-        public const string PrefixSeperator = ".";
+        public const string PrefixSeparator = ".";
 
         /// <summary>
         /// TODO: add other property name const
@@ -33,11 +33,11 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string TopicUid = "topicUid";
         }
 
-        public static class ExtensionMemerPrefix
+        public static class ExtensionMemberPrefix
         {
-            public const string FullName = PropertyName.FullName + PrefixSeperator;
-            public const string Name = PropertyName.Name + PrefixSeperator;
-            public const string Modifiers = "modifiers" + PrefixSeperator;
+            public const string FullName = PropertyName.FullName + PrefixSeparator;
+            public const string Name = PropertyName.Name + PrefixSeparator;
+            public const string Modifiers = "modifiers" + PrefixSeparator;
         }
 
         public static class DevLang
