@@ -1,0 +1,87 @@
+﻿namespace Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs
+{
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+
+    using Microsoft.DocAsCode.Common;
+
+    public class ExpandedDependencyMap
+    {
+        private HashSet<ExpandedDependencyItem> _dps;
+        private OSPlatformSensitiveDictionary<HashSet<ExpandedDependencyItem>> _index;
+        private OSPlatformSensitiveDictionary<HashSet<ExpandedDependencyItem>> _inverseIndex;
+
+        private ExpandedDependencyMap(IEnumerable<ExpandedDependencyItem> dps)
+        {
+            _dps = new HashSet<ExpandedDependencyItem>(dps);
+            BuildIndex();
+        }
+
+        public void Save(TextWriter writer)
+        {
+            JsonUtility.Serialize(writer, _dps);
+        }
+
+        public static ExpandedDependencyMap Load(TextReader reader)
+        {
+            var dependencies = JsonUtility.Deserialize<IEnumerable<ExpandedDependencyItem>>(reader);
+            return new ExpandedDependencyMap(dependencies);
+        }
+
+        public static ExpandedDependencyMap ConstructFromDependencyGraph(DependencyGraph dg)
+        {
+            var dps = from fn in dg.FromNodes
+                      from d in dg.GetAllDependencyFrom(fn)
+                      select ExpandedDependencyItem.ConvertFrom(d).ChangeFrom(fn);
+            return new ExpandedDependencyMap(dps);
+        }
+
+        public IEnumerable<ExpandedDependencyItem> GetDependencyFrom(string from)
+        {
+            if (string.IsNullOrEmpty(from))
+            {
+                throw new ArgumentNullException(nameof(from));
+            }
+            HashSet<ExpandedDependencyItem> items;
+            if (_index.TryGetValue(from, out items))
+            {
+                return items;
+            }
+            return Enumerable.Empty<ExpandedDependencyItem>();
+        }
+
+        public IEnumerable<ExpandedDependencyItem> GetDependencyTo(string to)
+        {
+            if (string.IsNullOrEmpty(to))
+            {
+                throw new ArgumentNullException(nameof(to));
+            }
+            HashSet<ExpandedDependencyItem> items;
+            if (_inverseIndex.TryGetValue(to, out items))
+            {
+                return items;
+            }
+            return Enumerable.Empty<ExpandedDependencyItem>();
+        }
+
+        private void BuildIndex()
+        {
+            foreach (var dp in _dps)
+            {
+                HashSet<ExpandedDependencyItem> items;
+                if (!_index.TryGetValue(dp.From, out items))
+                {
+                    _index[dp.From] = items = new HashSet<ExpandedDependencyItem>();
+                }
+                items.Add(dp);
+                if (!_inverseIndex.TryGetValue(dp.To, out items))
+                {
+                    _inverseIndex[dp.To] = items = new HashSet<ExpandedDependencyItem>();
+                }
+                items.Add(dp);
+            }
+        }
+    }
+}
