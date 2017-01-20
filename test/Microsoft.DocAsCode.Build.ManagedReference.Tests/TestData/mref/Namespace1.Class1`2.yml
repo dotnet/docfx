@@ -1,0 +1,50 @@
+### YamlMime:ManagedReference
+items:
+- uid: Namespace1.Class1`2
+  commentId: T:Namespace1.Class1`2
+  id: Class1`2
+  parent: Namespace1
+  children:
+  - Namespace1.Class1`2.#ctor
+  langs:
+  - csharp
+  - vb
+  name: Class1<T, K>
+  nameWithType: Class1<T, K>
+  fullName: Namespace1.Class1<T, K>
+  type: Class
+  assemblies:
+  - TestLibrary
+  namespace: Namespace1
+  summary: "[Constructor](xref:Namespace1.Class1`2.%23ctor#constructor)"
+  inheritance:
+  - System.Object
+  nameWithType.vb: Cat(Of T, K)
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+  fullName.vb: CatLibrary.Cat(Of T, K)
+  name.vb: Cat(Of T, K)
+references:
+- uid: Namespace1.Class1`2.#ctor
+  commentId: M:Class1`2.#ctor
+  id: '#ctor'
+  parent: Class1`2
+  langs:
+  - csharp
+  - vb
+  name: Class1()
+  nameWithType: Class1<T, K>.Class1()
+  fullName: Namespace1.Class1<T, K>.Class1()
+  type: Constructor
+  assemblies:
+  - TestLibrary
+  namespace: Namespace1
+  summary: "\nDefault constructor.\n"
+  example: []
+  syntax:
+    content: public Class1()
+    content.vb: Public Sub New

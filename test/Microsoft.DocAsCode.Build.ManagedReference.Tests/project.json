@@ -12,15 +12,7 @@
       "includeFiles": "../Shared/TestBase.cs"
     },
     "copyToOutput": [
-      "TestData/mref/CatLibrary.Cat-2.yml",
-      "TestData/overwrite/mref.overwrite.default.md",
-      "TestData/overwrite/mref.overwrite.invalid.md",
-      "TestData/overwrite/mref.overwrite.multi.uid.md",
-      "TestData/overwrite/mref.overwrite.not.predefined.md",
-      "TestData/overwrite/mref.overwrite.overload.md",
-      "TestData/overwrite/mref.overwrite.parameters.md",
-      "TestData/overwrite/mref.overwrite.remarks.md",
-      "TestData/overwrite/mref.overwrite.simple.md"
+      "TestData/**"
     ]
   },
   "frameworks": {
