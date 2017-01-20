@@ -483,12 +483,10 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
         {
             public static readonly TripleSlashCommentParserContext Instance = new TripleSlashCommentParserContext
             {
-                AddReferenceDelegate = (s, e) => { },
-                Normalize = true,
+                AddReferenceDelegate = (s, e) => { }
             };
 
             public Action<string, string> AddReferenceDelegate { get; set; }
-            public bool Normalize { get; set; }
             public bool PreserveRawInlineComments { get; set; }
             public SourceDetail Source { get; set; }
         }

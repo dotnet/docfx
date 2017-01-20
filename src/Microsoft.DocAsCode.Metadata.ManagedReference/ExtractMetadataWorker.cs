@@ -30,6 +30,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static readonly string[] SupportedVBSourceFileExtensions = { ".vb" };
         private static readonly string[] SupportedCSSourceFileExtensions = { ".cs" };
         private static readonly string[] SupportedAssemblyExtensions = { ".dll", ".exe" };
+        private static readonly string SupportedCommentFileExtension = ".xml";
         private static readonly List<string> SupportedExtensions = new List<string>();
         private readonly ExtractMetadataInputModel _validInput;
         private readonly ExtractMetadataInputModel _rawInput;
@@ -441,6 +442,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     var assemblyMetadataValues = from assembly in referencedAssemblyList
                                                  let metadata = GetAssemblyMetadataFromCacheAsync(assemblyFiles, assemblyCompilation, assembly, outputFolder, forceRebuild, _filterConfigFile, assemblyExtension)
                                                  select metadata.Result.Item1;
+                    var commentFiles = (from file in assemblyFiles
+                                        select Path.ChangeExtension(file, SupportedCommentFileExtension) into xmlFile
+                                        where File.Exists(xmlFile)
+                                        select xmlFile).ToList();
+
+                    MergeCommentsHelper.MergeComments(assemblyMetadataValues, commentFiles);
+
                     if (assemblyMetadataValues.Any())
                     {
                         projectMetadataList.AddRange(assemblyMetadataValues);
