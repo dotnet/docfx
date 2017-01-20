@@ -17,10 +17,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Plugins;
 
     [Export("ManagedReferenceDocumentProcessor", typeof(IDocumentBuildStep))]
-    public class SplitClassPageIntoMethodPages : BaseDocumentBuildStep
+    public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
     {
         private const char OverloadLastChar = '*';
-        public override string Name => nameof(SplitClassPageIntoMethodPages);
+        private const char Separator = '.';
+
+        public override string Name => nameof(SplitClassPageToMemberLevel);
 
         public override int BuildOrder => 1;
 
@@ -38,7 +40,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var treeMapping = new Dictionary<string, IEnumerable<TreeItem>>();
             foreach (var model in models)
             {
-                SplittedResult result = SplitModelToOverloadLevel(model);
+                var result = SplitModelToOverloadLevel(model);
                 if (result != null)
                 {
                     treeMapping.Add(result.Uid, result.TreeItems);
@@ -106,6 +108,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             page.References = itemsToSplit.Select(s => ConvertToReference(s)).Concat(page.References).ToList();
 
             page.Items = new List<ItemViewModel> { primaryItem };
+
+            // Regenerate uids
             model.Uids = CalculateUids(page, model.LocalPathFromRoot);
             model.Content = page;
 
@@ -133,37 +137,24 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 Uid = key,
                 Children = overload.Select(s => s.Uid).ToList(),
                 Type = firstMember.Type,
-                Name = GetOverloadItemName(key, primaryItem.Uid, firstMember.Type == MemberType.Constructor),
                 AssemblyNameList = firstMember.AssemblyNameList,
                 NamespaceName = firstMember.NamespaceName,
+                Metadata = new Dictionary<string, object>
+                {
+                    ["isOverload"] = true
+                }
             };
             var referenceItem = page.References.FirstOrDefault(s => s.Uid == key);
             if (referenceItem != null)
             {
-                newPrimaryItem.Name = referenceItem.Name;
-                newPrimaryItem.NameWithType = referenceItem.NameWithType;
-                newPrimaryItem.CommentId = referenceItem.CommentId;
-                newPrimaryItem.FullName = referenceItem.FullName;
-                string nameWithTypeForCSharp;
-                if (referenceItem.NameWithTypeInDevLangs.TryGetValue(Constants.DevLang.CSharp, out nameWithTypeForCSharp))
-                {
-                    newPrimaryItem.NameWithTypeForCSharp = nameWithTypeForCSharp;
-                }
-                string nameWithTypeForVB;
-                if (referenceItem.NameWithTypeInDevLangs.TryGetValue(Constants.DevLang.VB, out nameWithTypeForVB))
-                {
-                    newPrimaryItem.NameWithTypeForVB = nameWithTypeForVB;
-                }
-                if (referenceItem.FullNameInDevLangs.TryGetValue(Constants.DevLang.CSharp, out nameWithTypeForCSharp))
-                {
-                    newPrimaryItem.FullNameForCSharp = nameWithTypeForCSharp;
-                }
-                if (referenceItem.FullNameInDevLangs.TryGetValue(Constants.DevLang.VB, out nameWithTypeForVB))
-                {
-                    newPrimaryItem.FullNameForCSharp = nameWithTypeForVB;
-                }
+                MergeWithReference(newPrimaryItem, referenceItem);
             }
-            newPrimaryItem.Metadata["isOverload"] = true;
+
+            if (newPrimaryItem.Name == null)
+            {
+                newPrimaryItem.Name = GetOverloadItemName(key, primaryItem.Uid, firstMember.Type == MemberType.Constructor);
+            }
+
             var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { newPrimaryItem }.Concat(overload).ToList());
             var newModel = GenerateNewFileModel(model, newPage, overload.Key.Trim(OverloadLastChar));
             var tree = ConvertToTreeItem(
@@ -185,13 +176,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             if (isCtor)
             {
                 // Replace #ctor with parent name
-                var parts = parent.Split('.');
+                var parts = parent.Split(Separator);
                 return parts[parts.Length - 1];
             }
 
             if (overload.StartsWith(parent))
             {
-                return overload.Substring(parent.Length).Trim('.', OverloadLastChar);
+                return overload.Substring(parent.Length).Trim(Separator, OverloadLastChar);
             }
             return overload;
         }
@@ -204,9 +195,46 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 ?? GetPropertyValue<string>(metadata, Constants.PropertyName.TopicUid);
         }
 
+
+        /// <summary>
+        /// TODO: can save minimum info when ApiBuildOutput depends on global references instead of current page only
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         private ReferenceViewModel ConvertToReference(ItemViewModel item)
         {
+            // Use serializer to keep most info from item, e.g. reference's summary is possibly required by class template
             return YamlUtility.ConvertTo<ReferenceViewModel>(item);
+        }
+
+        private void MergeWithReference(ItemViewModel item, ReferenceViewModel reference)
+        {
+            item.Name = reference.Name;
+            item.NameWithType = reference.NameWithType;
+            item.FullName = reference.FullName;
+            item.CommentId = reference.CommentId;
+
+            if (reference.NameInDevLangs.Count > 0)
+            {
+                foreach (var pair in item.Names)
+                {
+                    item.Metadata[Constants.ExtensionMemberPrefix.Name + pair.Key] = pair.Value;
+                }
+            }
+            if (reference.FullNameInDevLangs.Count > 0)
+            {
+                foreach (var pair in item.FullNames)
+                {
+                    item.Metadata[Constants.ExtensionMemberPrefix.FullName + pair.Key] = pair.Value;
+                }
+            }
+            if (reference.NameWithTypeInDevLangs.Count > 0)
+            {
+                foreach (var pair in item.NamesWithType)
+                {
+                    item.Metadata[Constants.ExtensionMemberPrefix.NameWithType + pair.Key] = pair.Value;
+                }
+            }
         }
 
         private TreeItem ConvertToTreeItem(ItemViewModel item, Dictionary<string, object> overwriteMetadata = null)
@@ -220,7 +248,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 [Constants.PropertyName.NameWithType] = item.NameWithType,
                 [Constants.PropertyName.Type] = item.Type.ToString(),
             };
-
 
             if (item.Names.Count > 0)
             {
