@@ -3,10 +3,21 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System.Collections.Immutable;
     using System.IO;
 
     public interface IPostProcessorHost
     {
+        /// <summary>
+        /// Source file information
+        /// </summary>
+        IImmutableList<SourceFileInfo> SourceFileInfos { get; set; }
+
+        /// <summary>
+        /// Whether the post processor can be incremental.
+        /// </summary>
+        bool IsIncremental { get; set; }
+
         /// <summary>
         /// Load context info from last post processing.
         /// </summary>

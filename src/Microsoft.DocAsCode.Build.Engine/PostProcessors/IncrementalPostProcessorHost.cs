@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
@@ -29,7 +30,14 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             _increContext = increContext;
             _postProcessorName = postProcessorName;
+            IsIncremental = _increContext.IsIncremental;
         }
+
+        #region IPostProcessorHost
+
+        public IImmutableList<SourceFileInfo> SourceFileInfos { get; set; }
+
+        public bool IsIncremental { get; set; }
 
         public Stream LoadContextInfo()
         {
@@ -54,6 +62,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             return File.Create(Path.Combine(_increContext.CurrentBaseDir, currentPostProcessorInfo.ContextInfoFile));
         }
+
+        #endregion
 
         private static PostProcessorInfo FindPostProcessorInfo(PostProcessInfo postProcessInfo, string postProcessorName)
         {
