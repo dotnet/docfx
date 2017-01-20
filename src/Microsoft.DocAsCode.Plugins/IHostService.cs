@@ -7,6 +7,8 @@ namespace Microsoft.DocAsCode.Plugins
 
     public interface IHostService
     {
+        ImmutableList<TreeItemRestructure> TableOfContentRestructions { get; set; }
+
         MarkupResult Parse(MarkupResult markupResult, FileAndType ft);
         MarkupResult Markup(string markdown, FileAndType ft);
         MarkupResult Markup(string markdown, FileAndType ft, bool omitParse);
@@ -14,10 +16,6 @@ namespace Microsoft.DocAsCode.Plugins
         ImmutableHashSet<string> GetAllUids();
         ImmutableList<FileModel> GetModels(DocumentType? type = null);
         ImmutableList<FileModel> LookupByUid(string uid);
-
-        bool ShouldRestructureTableOfContent();
-        void InvokeRestructuringTableOfContent(TreeItem tree);
-        void RegisterRestructuringTableOfContent(params RestructureTableOfContent[] delegates);
 
         /// <summary>
         /// report dependency to

@@ -24,6 +24,19 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Title = "title";
             public const string Conceptual = "conceptual";
             public const string Documentation = "documentation";
+
+            public const string Name = "name";
+            public const string FullName = "fullName";
+            public const string TocHref = "tocHref";
+            public const string TopicHref = "topicHref";
+            public const string TopicUid = "topicUid";
+        }
+
+        public static class ExtensionMemerPrefix
+        {
+            public const string FullName = "fullName.";
+            public const string Name = "name.";
+            public const string Modifiers = "modifiers";
         }
 
         public static class DevLang

@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal class CompilePhaseHandler : IPhaseHandler
     {
-        private readonly List<RestructureTableOfContent> _delegates = new List<RestructureTableOfContent>();
+        private readonly List<TreeItemRestructure> _restructions = new List<TreeItemRestructure>();
 
         public string Name => nameof(CompilePhaseHandler);
 
@@ -42,14 +42,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
 
                     // Register all the delegates to handler
-                    if (hostService.RestructureTableOfContentDelegates != null)
+                    if (hostService.TableOfContentRestructions != null)
                     {
-                        _delegates.AddRange(hostService.RestructureTableOfContentDelegates);
+                        _restructions.AddRange(hostService.TableOfContentRestructions);
                     }
                 }
             }
 
-            DistributeTocDelegates(hostServices);
+            DistributeTocRestructions(hostServices);
 
             foreach (var hostService in hostServices)
             {
@@ -89,15 +89,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void DistributeTocDelegates(List<HostService> hostServices)
+        private void DistributeTocRestructions(List<HostService> hostServices)
         {
-            if (_delegates.Count > 0)
+            if (_restructions.Count > 0)
             {
-                var delegates = _delegates.ToImmutableArray();
+                var restructions = _restructions.ToImmutableList();
                 // Distribute delegates to all the hostServices
                 foreach (var hostService in hostServices)
                 {
-                    hostService.RestructureTableOfContentDelegates = delegates;
+                    hostService.TableOfContentRestructions = restructions;
                 }
             }
         }
