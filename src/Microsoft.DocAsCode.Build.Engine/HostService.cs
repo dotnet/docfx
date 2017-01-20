@@ -49,6 +49,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public bool CanIncrementalBuild { get; set; }
 
+        public ImmutableList<TreeItemRestructure> TableOfContentRestructions { get; set; }
         #endregion
 
         #region Constructors
@@ -123,40 +124,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             return MarkupCore(markdown, ft, omitParse);
         }
-
-        #region TableOfContent related
-
-        public ImmutableArray<RestructureTableOfContent> RestructureTableOfContentDelegates { get; set; } = ImmutableArray<RestructureTableOfContent>.Empty;
-
-        public bool ShouldRestructureTableOfContent()
-        {
-            return RestructureTableOfContentDelegates.Length > 0;
-        }
-
-        public void RegisterRestructuringTableOfContent(params RestructureTableOfContent[] methods)
-        {
-            if (methods == null || methods.Length == 0)
-            {
-                return;
-            }
-
-            var list = new List<RestructureTableOfContent>(methods);
-            lock (_tocSyncRoot)
-            {
-                list.AddRange(RestructureTableOfContentDelegates);
-                RestructureTableOfContentDelegates = list.ToImmutableArray();
-            }
-        }
-
-        public void InvokeRestructuringTableOfContent(TreeItem item)
-        {
-            foreach (var del in RestructureTableOfContentDelegates)
-            {
-                del.Invoke(item);
-            }
-        }
-
-        #endregion
 
         private MarkupResult MarkupCore(string markdown, FileAndType ft, bool omitParse)
         {

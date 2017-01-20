@@ -3,5 +3,9 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
-    public delegate void RestructureTableOfContent(TreeItem tree);
+    public enum TreeItemKeyType
+    {
+        TopicUid,
+        TopicHref
+    }
 }
