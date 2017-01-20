@@ -78,13 +78,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (_increContext.ShouldTraceIncrementalInfo)
                 {
                     var originalFileInfos = manifest.Files.Select(SourceFileInfo.FromManifestItem).ToImmutableList();
-                    foreach (var increPostProcessor in postProcessors.Select(postProcessor => (ISupportIncrementalPostProcessor)postProcessor.Processor))
+                    foreach (var postProcessor in postProcessors)
                     {
-                        increPostProcessor.PostProcessorHost.SourceFileInfos = originalFileInfos;
-                        if (_increContext.IsIncremental)
-                        {
-                            increPostProcessor.PostProcessorHost.IsIncremental = true;
-                        }
+                        var host = new IncrementalPostProcessorHost(_increContext, postProcessor.ContractName, originalFileInfos);
+                        ((ISupportIncrementalPostProcessor)postProcessor.Processor).PostProcessorHost = host;
                     }
                     Logger.RegisterListener(_increContext.CurrentInfo.MessageInfo.GetListener());
                 }

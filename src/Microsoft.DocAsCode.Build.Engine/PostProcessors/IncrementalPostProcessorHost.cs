@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly IncrementalPostProcessorsContext _increContext;
         private readonly string _postProcessorName;
 
-        public IncrementalPostProcessorHost(IncrementalPostProcessorsContext increContext, string postProcessorName)
+        public IncrementalPostProcessorHost(IncrementalPostProcessorsContext increContext, string postProcessorName, IImmutableList<SourceFileInfo> sourceFileInfos)
         {
             if (increContext == null)
             {
@@ -30,14 +30,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             _increContext = increContext;
             _postProcessorName = postProcessorName;
+            SourceFileInfos = sourceFileInfos;
             IsIncremental = _increContext.IsIncremental;
         }
 
         #region IPostProcessorHost
 
-        public IImmutableList<SourceFileInfo> SourceFileInfos { get; set; }
+        public IImmutableList<SourceFileInfo> SourceFileInfos { get; }
 
-        public bool IsIncremental { get; set; }
+        public bool IsIncremental { get; }
 
         public Stream LoadContextInfo()
         {

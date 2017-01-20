@@ -11,12 +11,12 @@ namespace Microsoft.DocAsCode.Plugins
         /// <summary>
         /// Source file information
         /// </summary>
-        IImmutableList<SourceFileInfo> SourceFileInfos { get; set; }
+        IImmutableList<SourceFileInfo> SourceFileInfos { get; }
 
         /// <summary>
         /// Whether the post processor can be incremental.
         /// </summary>
-        bool IsIncremental { get; set; }
+        bool IsIncremental { get; }
 
         /// <summary>
         /// Load context info from last post processing.
