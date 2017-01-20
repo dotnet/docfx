@@ -18,14 +18,14 @@ namespace Microsoft.DocAsCode.Common
         private static readonly char[] InvalidFilePathChars = Path.GetInvalidFileNameChars();
         private static readonly char[] InvalidPathChars = Path.GetInvalidPathChars();
 
-        public static string ToValidFilePath(this string input)
+        public static string ToValidFilePath(this string input, char replacement = '_')
         {
             if (string.IsNullOrEmpty(input))
             {
                 return Path.GetRandomFileName();
             }
 
-            string validPath = new string(input.Select(s => InvalidFilePathChars.Contains(s) ? '_' : s).ToArray());
+            string validPath = new string(input.Select(s => InvalidFilePathChars.Contains(s) ? replacement : s).ToArray());
 
             return validPath;
         }

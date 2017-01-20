@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
@@ -45,7 +46,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
 
         [ExtensibleMember("name.")]
         [JsonIgnore]
-        public SortedList<string, string> NameInDevLangs { get; } = new SortedList<string, string>();
+        public SortedList<string, string> NameInDevLangs { get; private set; } = new SortedList<string, string>();
 
         [YamlMember(Alias = "nameWithType")]
         [JsonProperty("nameWithType")]
@@ -53,7 +54,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
 
         [ExtensibleMember("nameWithType.")]
         [JsonIgnore]
-        public SortedList<string, string> NameWithTypeInDevLangs { get; } = new SortedList<string, string>();
+        public SortedList<string, string> NameWithTypeInDevLangs { get; private set; } = new SortedList<string, string>();
 
         [YamlMember(Alias = "fullName")]
         [JsonProperty("fullName")]
@@ -61,15 +62,15 @@ namespace Microsoft.DocAsCode.DataContracts.Common
 
         [ExtensibleMember("fullname.")]
         [JsonIgnore]
-        public SortedList<string, string> FullNameInDevLangs { get; } = new SortedList<string, string>();
+        public SortedList<string, string> FullNameInDevLangs { get; private set; } = new SortedList<string, string>();
 
         [ExtensibleMember("spec.")]
         [JsonIgnore]
-        public SortedList<string, List<SpecViewModel>> Specs { get; } = new SortedList<string, List<SpecViewModel>>();
+        public SortedList<string, List<SpecViewModel>> Specs { get; private set; } = new SortedList<string, List<SpecViewModel>>();
 
         [ExtensibleMember]
         [JsonIgnore]
-        public Dictionary<string, object> Additional { get; } = new Dictionary<string, object>();
+        public Dictionary<string, object> Additional { get; private set; } = new Dictionary<string, object>();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [YamlIgnore]
@@ -102,6 +103,17 @@ namespace Microsoft.DocAsCode.DataContracts.Common
                 return dict;
             }
             set { }
+        }
+
+        public ReferenceViewModel Clone()
+        {
+            var copied = (ReferenceViewModel)MemberwiseClone();
+            copied.Additional = new Dictionary<string, object>(Additional);
+            copied.FullNameInDevLangs = new SortedList<string, string>(FullNameInDevLangs);
+            copied.NameInDevLangs = new SortedList<string, string>(NameInDevLangs);
+            copied.NameWithTypeInDevLangs = new SortedList<string, string>(NameWithTypeInDevLangs);
+            copied.Specs = new SortedList<string, List<SpecViewModel>>(Specs.ToDictionary(s => s.Key, s => new List<SpecViewModel>(s.Value)));
+            return copied;
         }
     }
 }

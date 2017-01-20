@@ -12,12 +12,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
     [Export("ManagedReferenceDocumentProcessor", typeof(IDocumentBuildStep))]
     public class SplitClassPageIntoMethodPages : BaseDocumentBuildStep
     {
+        private const char OverloadLastChar = '*';
         public override string Name => nameof(SplitClassPageIntoMethodPages);
 
         public override int BuildOrder => 1;
@@ -30,8 +32,296 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         /// <returns></returns>
         public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
-            // TODO: split class page into method pages
-            return models;
+            var collection = new List<FileModel>(models);
+
+            // Separate items into different models if the PageViewModel contains more than one item
+            var treeMapping = new Dictionary<string, IEnumerable<TreeItem>>();
+            foreach (var model in models)
+            {
+                SplittedResult result = SplitModelToOverloadLevel(model);
+                if (result != null)
+                {
+                    treeMapping.Add(result.Uid, result.TreeItems);
+                    collection.AddRange(result.Models);
+                }
+            }
+
+            host.TableOfContentRestructions = (from item in treeMapping
+                                               select new TreeItemRestructure
+                                               {
+                                                   ActionType = TreeItemActionType.AppendChild,
+                                                   Key = item.Key,
+                                                   TypeOfKey = TreeItemKeyType.TopicUid,
+                                                   RestructuredItems = item.Value.ToImmutableList(),
+                                               }).ToImmutableList();
+
+            return collection;
+        }
+
+        private SplittedResult SplitModelToOverloadLevel(FileModel model)
+        {
+            if (model.Type != DocumentType.Article)
+            {
+                return null;
+            }
+
+            var page = (PageViewModel)model.Content;
+
+            if (page.Items.Count <= 1)
+            {
+                return null;
+            }
+
+            var primaryItem = page.Items[0];
+            var itemsToSplit = page.Items.Skip(1);
+
+            var children = new SortedList<string, TreeItem>();
+            var splittedModels = new List<FileModel>();
+
+            var group = (from item in itemsToSplit group item by item.Overload into o select o).ToList();
+
+            // Per Overload per page
+            foreach (var overload in group)
+            {
+                if (overload.Key == null)
+                {
+                    foreach (var i in overload)
+                    {
+                        var m = GenerateNonOverloadPage(page, model, i);
+                        splittedModels.Add(m.FileModel);
+
+                        // Order toc by display name
+                        children.Add(GetDisplayName(m.TreeItem), m.TreeItem);
+                    }
+                }
+                else
+                {
+                    var m = GenerateOverloadPage(page, model, overload);
+                    splittedModels.Add(m.FileModel);
+                    children.Add(GetDisplayName(m.TreeItem), m.TreeItem);
+                }
+            }
+
+            // Convert children to references
+            page.References = itemsToSplit.Select(s => ConvertToReference(s)).Concat(page.References).ToList();
+
+            page.Items = new List<ItemViewModel> { primaryItem };
+            model.Uids = CalculateUids(page, model.LocalPathFromRoot);
+            model.Content = page;
+
+            return new SplittedResult(primaryItem.Uid, children.Values, splittedModels);
+        }
+        
+        private ModelWrapper GenerateNonOverloadPage(PageViewModel page, FileModel model, ItemViewModel item)
+        {
+            var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { item });
+            var newModel = GenerateNewFileModel(model, newPage, item.Uid);
+            var tree = ConvertToTreeItem(item);
+            return new ModelWrapper(newPage, newModel, tree);
+        }
+
+        private ModelWrapper GenerateOverloadPage(PageViewModel page, FileModel model, IGrouping<string, ItemViewModel> overload)
+        {
+            var primaryItem = page.Items[0];
+
+            // For ctor, rename #ctor to class name
+            var firstMember = overload.First();
+            var key = overload.Key;
+
+            var newPrimaryItem = new ItemViewModel
+            {
+                Uid = key,
+                Children = overload.Select(s => s.Uid).ToList(),
+                Type = firstMember.Type,
+                Name = GetOverloadItemName(key, primaryItem.Uid, firstMember.Type == MemberType.Constructor),
+                AssemblyNameList = firstMember.AssemblyNameList,
+                NamespaceName = firstMember.NamespaceName,
+            };
+            var referenceItem = page.References.FirstOrDefault(s => s.Uid == key);
+            if (referenceItem != null)
+            {
+                newPrimaryItem.Name = referenceItem.Name;
+                newPrimaryItem.NameWithType = referenceItem.NameWithType;
+                newPrimaryItem.CommentId = referenceItem.CommentId;
+                newPrimaryItem.FullName = referenceItem.FullName;
+                string nameWithTypeForCSharp;
+                if (referenceItem.NameWithTypeInDevLangs.TryGetValue(Constants.DevLang.CSharp, out nameWithTypeForCSharp))
+                {
+                    newPrimaryItem.NameWithTypeForCSharp = nameWithTypeForCSharp;
+                }
+                string nameWithTypeForVB;
+                if (referenceItem.NameWithTypeInDevLangs.TryGetValue(Constants.DevLang.VB, out nameWithTypeForVB))
+                {
+                    newPrimaryItem.NameWithTypeForVB = nameWithTypeForVB;
+                }
+                if (referenceItem.FullNameInDevLangs.TryGetValue(Constants.DevLang.CSharp, out nameWithTypeForCSharp))
+                {
+                    newPrimaryItem.FullNameForCSharp = nameWithTypeForCSharp;
+                }
+                if (referenceItem.FullNameInDevLangs.TryGetValue(Constants.DevLang.VB, out nameWithTypeForVB))
+                {
+                    newPrimaryItem.FullNameForCSharp = nameWithTypeForVB;
+                }
+            }
+            newPrimaryItem.Metadata["isOverload"] = true;
+            var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { newPrimaryItem }.Concat(overload).ToList());
+            var newModel = GenerateNewFileModel(model, newPage, overload.Key.Trim(OverloadLastChar));
+            var tree = ConvertToTreeItem(
+                newPrimaryItem,
+                new Dictionary<string, object>
+                {
+                    [Constants.PropertyName.Type] = firstMember.Type
+                });
+            return new ModelWrapper(newPage, newModel, tree);
+        }
+
+        private string GetOverloadItemName(string overload, string parent, bool isCtor)
+        {
+            if (string.IsNullOrEmpty(overload) || string.IsNullOrEmpty(parent))
+            {
+                return overload;
+            }
+
+            if (isCtor)
+            {
+                // Replace #ctor with parent name
+                var parts = parent.Split('.');
+                return parts[parts.Length - 1];
+            }
+
+            if (overload.StartsWith(parent))
+            {
+                return overload.Substring(parent.Length).Trim('.', OverloadLastChar);
+            }
+            return overload;
+        }
+
+        private string GetDisplayName(TreeItem item)
+        {
+            var metadata = item.Metadata;
+            return GetPropertyValue<string>(metadata, Constants.PropertyName.Name)
+                ?? GetPropertyValue<string>(metadata, Constants.PropertyName.FullName)
+                ?? GetPropertyValue<string>(metadata, Constants.PropertyName.TopicUid);
+        }
+
+        private ReferenceViewModel ConvertToReference(ItemViewModel item)
+        {
+            return YamlUtility.ConvertTo<ReferenceViewModel>(item);
+        }
+
+        private TreeItem ConvertToTreeItem(ItemViewModel item, Dictionary<string, object> overwriteMetadata = null)
+        {
+            var result = new TreeItem();
+            result.Metadata = new Dictionary<string, object>()
+            {
+                [Constants.PropertyName.Name] = item.Name,
+                [Constants.PropertyName.FullName] = item.FullName,
+                [Constants.PropertyName.TopicUid] = item.Uid,
+                [Constants.PropertyName.NameWithType] = item.NameWithType,
+                [Constants.PropertyName.Type] = item.Type.ToString(),
+            };
+
+
+            if (item.Names.Count > 0)
+            {
+                foreach (var pair in item.Names)
+                {
+                    result.Metadata[Constants.ExtensionMemberPrefix.Name + pair.Key] = pair.Value;
+                }
+            }
+            if (item.FullNames.Count > 0)
+            {
+                foreach (var pair in item.FullNames)
+                {
+                    result.Metadata[Constants.ExtensionMemberPrefix.FullName + pair.Key] = pair.Value;
+                }
+            }
+            if (item.NamesWithType.Count > 0)
+            {
+                foreach (var pair in item.NamesWithType)
+                {
+                    result.Metadata[Constants.ExtensionMemberPrefix.NameWithType + pair.Key] = pair.Value;
+                }
+            }
+
+            if (overwriteMetadata != null)
+            {
+                foreach(var pair in overwriteMetadata)
+                {
+                    result.Metadata[pair.Key] = pair.Value;
+                }
+            }
+            return result;
+        }
+
+        private PageViewModel ExtractPageViewModel(PageViewModel page, List<ItemViewModel> items)
+        {
+            var newPage = new PageViewModel
+            {
+                Items = items,
+                Metadata = new Dictionary<string, object>(page.Metadata),
+                References = new List<ReferenceViewModel>(page.References.Select(s=>s.Clone())),
+                ShouldSkipMarkup = page.ShouldSkipMarkup
+            };
+            return newPage;
+        }
+
+        private FileModel GenerateNewFileModel(FileModel model, PageViewModel newPage, string key)
+        {
+            var initialFile = model.FileAndType.File;
+            var extension = Path.GetExtension(initialFile);
+            var directory = Path.GetDirectoryName(initialFile);
+            var newFileName = PathUtility.ToValidFilePath(key, '-') + extension;
+            var filePath = Path.Combine(directory, newFileName).ToNormalizedPath();
+            var newFileAndType = new FileAndType(model.FileAndType.BaseDir, filePath, model.FileAndType.Type, model.FileAndType.SourceDir, model.FileAndType.DestinationDir);
+            var newModel = new FileModel(newFileAndType, newPage, null, model.Serializer);
+            newModel.LocalPathFromRoot = model.LocalPathFromRoot;
+            newModel.Uids = CalculateUids(newPage, model.LocalPathFromRoot);
+            return newModel;
+        }
+
+        private ImmutableArray<UidDefinition> CalculateUids(PageViewModel page, string file)
+        {
+            return (from item in page.Items select new UidDefinition(item.Uid, file)).ToImmutableArray();
+        }
+
+        private T GetPropertyValue<T>(Dictionary<string, object> metadata, string key) where T : class
+        {
+            object result;
+            if (metadata != null && metadata.TryGetValue(key, out result))
+            {
+                return result as T;
+            }
+
+            return null;
+        }
+
+        private sealed class SplittedResult
+        {
+            public string Uid { get; }
+            public IEnumerable<TreeItem> TreeItems { get; }
+            public IEnumerable<FileModel> Models { get; }
+
+            public SplittedResult(string uid, IEnumerable<TreeItem> items, IEnumerable<FileModel> models)
+            {
+                Uid = uid;
+                TreeItems = items;
+                Models = models;
+            }
+        }
+
+        private sealed class ModelWrapper
+        {
+            public PageViewModel PageViewModel { get; }
+            public FileModel FileModel { get; }
+            public TreeItem TreeItem { get; }
+
+            public ModelWrapper(PageViewModel page, FileModel fileModel, TreeItem tree)
+            {
+                PageViewModel = page;
+                FileModel = fileModel;
+                TreeItem = tree;
+            }
         }
     }
 }

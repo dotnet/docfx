@@ -27,6 +27,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Documentation = "documentation";
 
             public const string Name = "name";
+            public const string NameWithType = "nameWithType";
             public const string FullName = "fullName";
             public const string TocHref = "tocHref";
             public const string TopicHref = "topicHref";
@@ -35,6 +36,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
 
         public static class ExtensionMemberPrefix
         {
+            public const string NameWithType = PropertyName.NameWithType + PrefixSeparator;
             public const string FullName = PropertyName.FullName + PrefixSeparator;
             public const string Name = PropertyName.Name + PrefixSeparator;
             public const string Modifiers = "modifiers" + PrefixSeparator;
