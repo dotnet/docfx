@@ -20,6 +20,9 @@ var index = lunr(function() {
 var searchData = {};
 var searchDataRequest = new XMLHttpRequest();
 searchDataRequest.onload = function() {
+  if (this.status != 200) {
+    return;
+  }
 
   // Store the pages data to be used in mapping query results back to pages
   searchData = JSON.parse(this.responseText);

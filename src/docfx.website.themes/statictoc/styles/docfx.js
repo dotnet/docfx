@@ -97,6 +97,9 @@ $(function () {
         if (indexPath) {
           searchDataRequest.open('GET', indexPath);
           searchDataRequest.onload = function () {
+            if (this.status != 200) {
+              return;
+            }
             searchData = JSON.parse(this.responseText);
             for (var prop in searchData) {
               lunrIndex.add(searchData[prop]);
