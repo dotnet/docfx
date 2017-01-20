@@ -183,8 +183,6 @@ root
         leaf1
         leaf2
     leaf3
-    node2
-        node1
     leaf4
     leaf5
 ");

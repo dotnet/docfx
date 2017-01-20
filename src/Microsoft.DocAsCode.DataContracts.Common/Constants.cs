@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     {
         public const string YamlExtension = ".yml";
         public const string ContentPlaceholder = "*content";
+        public const string PrefixSeperator = ".";
 
         /// <summary>
         /// TODO: add other property name const
@@ -34,9 +35,9 @@ namespace Microsoft.DocAsCode.DataContracts.Common
 
         public static class ExtensionMemerPrefix
         {
-            public const string FullName = "fullName.";
-            public const string Name = "name.";
-            public const string Modifiers = "modifiers";
+            public const string FullName = PropertyName.FullName + PrefixSeperator;
+            public const string Name = PropertyName.Name + PrefixSeperator;
+            public const string Modifiers = "modifiers" + PrefixSeperator;
         }
 
         public static class DevLang

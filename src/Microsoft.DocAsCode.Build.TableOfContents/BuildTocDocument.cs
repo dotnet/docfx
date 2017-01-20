@@ -111,7 +111,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private void RestructureCore(TocItemViewModel item, List<TocItemViewModel> parent, IList<TreeItemRestructure> restructures)
+        private void RestructureCore(TocItemViewModel item, List<TocItemViewModel> items, IList<TreeItemRestructure> restructures)
         {
             if (item.Items != null && item.Items.Count > 0)
             {
@@ -128,14 +128,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 if (Matches(item, restruction))
                 {
-                    RestructureItem(item, parent, restruction);
+                    RestructureItem(item, items, restruction);
                 }
             }
         }
 
-        private void RestructureItem(TocItemViewModel item, List<TocItemViewModel> parentItems, TreeItemRestructure restruction)
+        private void RestructureItem(TocItemViewModel item, List<TocItemViewModel> items, TreeItemRestructure restruction)
         {
-            var index = parentItems.IndexOf(item);
+            var index = items.IndexOf(item);
             if (index < 0)
             {
                 Logger.LogWarning($"Unable to find {restruction.Key}, it is probably removed or replaced by other restructions.");
@@ -156,12 +156,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         }
 
                         var roots = GetRoots(restruction.RestructuredItems);
-                        parentItems[index] = roots[0];
+                        items[index] = roots[0];
                         break;
                     }
                 case TreeItemActionType.DeleteSelf:
                     {
-                        parentItems.RemoveAt(index);
+                        items.RemoveAt(index);
                         break;
                     }
                 case TreeItemActionType.AppendChild:
@@ -201,7 +201,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                             return;
                         }
                         var roots = GetRoots(restruction.RestructuredItems);
-                        parentItems.InsertRange(index + 1, roots);
+                        items.InsertRange(index + 1, roots);
                         break;
                     }
                 case TreeItemActionType.InsertBefore:
@@ -211,7 +211,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                             return;
                         }
                         var roots = GetRoots(restruction.RestructuredItems);
-                        parentItems.InsertRange(index, roots);
+                        items.InsertRange(index, roots);
                         break;
                     }
                 default:
