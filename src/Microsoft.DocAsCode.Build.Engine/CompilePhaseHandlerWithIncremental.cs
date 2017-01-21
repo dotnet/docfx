@@ -168,7 +168,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                     foreach (var fileLinkSourceFile in list)
                     {
                         var sourceFile = fileLinkSourceFile.SourceFile != null ? ((RelativePath)fileLinkSourceFile.SourceFile).GetPathFromWorkingFolder().ToString() : fromNode;
-                        yield return new DependencyItem(sourceFile, f, sourceFile, DependencyTypeName.File);
+                        if (!string.IsNullOrEmpty(fileLinkSourceFile.Anchor))
+                        {
+                            yield return new DependencyItem(sourceFile, f, sourceFile, DependencyTypeName.Bookmark);
+                        }
+                        else
+                        {
+                            yield return new DependencyItem(sourceFile, f, sourceFile, DependencyTypeName.File);
+                        }
                     }
                 }
                 else

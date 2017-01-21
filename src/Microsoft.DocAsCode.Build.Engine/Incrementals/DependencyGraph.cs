@@ -45,6 +45,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 IsTransitive = false,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.None,
+            },
+            new DependencyType
+            {
+                Name = DependencyTypeName.Bookmark,
+                IsTransitive = false,
+                Phase = BuildPhase.Link,
+                Transitivity = DependencyTransitivity.None,
             });
 
         private readonly HashSet<DependencyItem> _dependencyItems;
