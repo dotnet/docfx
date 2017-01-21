@@ -10,8 +10,8 @@
     public class ExpandedDependencyMap
     {
         private HashSet<ExpandedDependencyItem> _dps;
-        private OSPlatformSensitiveDictionary<HashSet<ExpandedDependencyItem>> _index;
-        private OSPlatformSensitiveDictionary<HashSet<ExpandedDependencyItem>> _inverseIndex;
+        private OSPlatformSensitiveDictionary<HashSet<ExpandedDependencyItem>> _index = new OSPlatformSensitiveDictionary<HashSet<ExpandedDependencyItem>>();
+        private OSPlatformSensitiveDictionary<HashSet<ExpandedDependencyItem>> _inverseIndex = new OSPlatformSensitiveDictionary<HashSet<ExpandedDependencyItem>>();
 
         private ExpandedDependencyMap(IEnumerable<ExpandedDependencyItem> dps)
         {
