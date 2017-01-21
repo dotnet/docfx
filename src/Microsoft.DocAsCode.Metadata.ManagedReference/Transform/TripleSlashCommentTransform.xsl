@@ -113,9 +113,13 @@
 
   <xsl:template match="note">
     <xsl:variable name="type">
-      <xsl:value-of select="normalize-space(@type)"/>
+       <xsl:choose>
+          <xsl:when test="not(normalize-space(@type) = '')">
+            <xsl:value-of select="@type"/>
+          </xsl:when>
+          <xsl:otherwise>note</xsl:otherwise>
+       </xsl:choose>    
     </xsl:variable>
-
     <div>
       <xsl:attribute name="class">
         <xsl:choose>
@@ -126,17 +130,8 @@
           <xsl:otherwise>NOTE</xsl:otherwise>
         </xsl:choose>    
       </xsl:attribute>
-      <h5>
-        <xsl:choose>
-          <xsl:when test="not($type = '')">
-            <xsl:value-of select="$type"/>
-            </xsl:when>
-          <xsl:otherwise>note</xsl:otherwise>
-        </xsl:choose>    
-      </h5>
-      <p>
-        <xsl:apply-templates select="node()"/>
-      </p>
+      <h5><xsl:value-of select="$type"/></h5>
+      <p><xsl:apply-templates select="node()"/></p>
     </div>
   </xsl:template>
   
