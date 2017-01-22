@@ -12,7 +12,6 @@ namespace Microsoft.DocAsCode.Common
     public class CompositeDictionary
         : IDictionary<string, object>
     {
-
         private readonly ImmutableArray<Entry> _entries;
 
         private CompositeDictionary(ImmutableArray<Entry> entries)
@@ -224,6 +223,10 @@ namespace Microsoft.DocAsCode.Common
                 if (valueConverter == null)
                 {
                     valueConverter = o => (TValue)o;
+                }
+                if (_entries.Exists(e => e.Prefix == prefix))
+                {
+                    throw new InvalidOperationException();
                 }
                 _entries.Add(new Entry
                 {

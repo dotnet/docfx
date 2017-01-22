@@ -111,7 +111,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.Throws<InvalidCastException>(() => c.CD["D2.z"] = "a");
         }
 
-        private class C
+        private sealed class C
         {
             public Dictionary<string, object> D1 { get; } = new Dictionary<string, object>();
             public SortedDictionary<string, int> D2 { get; } = new SortedDictionary<string, int>();
