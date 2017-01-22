@@ -264,6 +264,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             // Check incremental post processor host
             var host = ((ISupportIncrementalPostProcessor)postProcessors.Single().Processor).PostProcessorHost;
             Assert.NotNull(host);
+            Assert.True(host.ShouldTraceIncrementalInfo);
             Assert.True(host.IsIncremental);
             Assert.Equal(3, host.SourceFileInfos.Count);
             Assert.Equal("Conceptual", host.SourceFileInfos.Select(f => f.DocumentType).Distinct().Single());
@@ -318,6 +319,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             // Check incremental post processor host
             host = ((ISupportIncrementalPostProcessor)postProcessors.Single().Processor).PostProcessorHost;
             Assert.NotNull(host);
+            Assert.True(host.ShouldTraceIncrementalInfo);
             Assert.False(host.IsIncremental);
             Assert.Equal(3, host.SourceFileInfos.Count);
             Assert.Equal("Conceptual", host.SourceFileInfos.Select(f => f.DocumentType).Distinct().Single());

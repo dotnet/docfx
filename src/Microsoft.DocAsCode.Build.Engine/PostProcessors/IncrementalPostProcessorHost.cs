@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
@@ -31,6 +32,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             _increContext = increContext;
             _postProcessorName = postProcessorName;
             SourceFileInfos = sourceFileInfos;
+            ShouldTraceIncrementalInfo = _increContext.ShouldTraceIncrementalInfo;
             IsIncremental = _increContext.IsIncremental;
         }
 
@@ -38,18 +40,22 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public IImmutableList<SourceFileInfo> SourceFileInfos { get; }
 
+        public bool ShouldTraceIncrementalInfo { get; }
+
         public bool IsIncremental { get; }
 
         public Stream LoadContextInfo()
         {
             if (_increContext.LastInfo == null)
             {
+                Logger.LogVerbose("Could not load last context info since last build has no incremental information.");
                 return null;
             }
 
             var lastPostProcessorInfo = FindPostProcessorInfo(_increContext.LastInfo, _postProcessorName);
             if (lastPostProcessorInfo.ContextInfoFile == null)
             {
+                Logger.LogVerbose("Could not load last context info since last build has no context file information.");
                 return null;
             }
 
@@ -58,6 +64,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public Stream SaveContextInfo()
         {
+            if (!_increContext.ShouldTraceIncrementalInfo)
+            {
+                Logger.LogVerbose("Could not save current context info since should not trace incremental information.");
+                return null;
+            }
+
             var currentPostProcessorInfo = FindPostProcessorInfo(_increContext.CurrentInfo, _postProcessorName);
             currentPostProcessorInfo.ContextInfoFile = IncrementalUtility.CreateRandomFileName(_increContext.CurrentBaseDir);
 

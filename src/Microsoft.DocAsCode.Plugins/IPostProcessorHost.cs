@@ -14,6 +14,11 @@ namespace Microsoft.DocAsCode.Plugins
         IImmutableList<SourceFileInfo> SourceFileInfos { get; }
 
         /// <summary>
+        /// Whether the post processor should trace incremental information.
+        /// </summary>
+        bool ShouldTraceIncrementalInfo { get; }
+
+        /// <summary>
         /// Whether the post processor can be incremental.
         /// </summary>
         bool IsIncremental { get; }
@@ -27,7 +32,7 @@ namespace Microsoft.DocAsCode.Plugins
         /// <summary>
         /// Save context information to current post processing.
         /// </summary>
-        /// <returns>Stream to be written</returns>
+        /// <returns>Stream to be written, return null when should not trace incremental information.</returns>
         Stream SaveContextInfo();
     }
 }
