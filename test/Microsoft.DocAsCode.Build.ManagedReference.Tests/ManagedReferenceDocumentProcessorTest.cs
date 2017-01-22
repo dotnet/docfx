@@ -26,6 +26,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         private string _templateFolder;
         private FileCollection _defaultFiles;
         private ApplyTemplateSettings _applyTemplateSettings;
+        private TemplateManager _templateManager;
 
         private const string RawModelFileExtension = ".raw.json";
         private const string MrefDirectory = "mref";
@@ -39,8 +40,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             _defaultFiles.Add(DocumentType.Article, new[] { "TestData/mref/CatLibrary.Cat-2.yml" }, "TestData/");
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder)
             {
-                RawModelExportSettings = {Export = true}
+                RawModelExportSettings = { Export = true },
+                TransformDocument = true,
             };
+
+            _templateManager = new TemplateManager(null, null, new List<string> { "template" }, null, "TestData/");
         }
 
         [Fact]
@@ -91,6 +95,27 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             Assert.Equal(20, model.Children.Count);
         }
 
+        [Fact]
+        public void ProcessMrefWithComplexFileNameShouldSucceed()
+        {
+            FileCollection files = new FileCollection(_defaultFiles);
+            files.RemoveAll(s => true);
+            files.Add(DocumentType.Article, new string[] { "TestData/mref/Namespace1.Class1`2.yml", "TestData/mref/Namespace1.Class1`2.#ctor.yml" }, "TestData/");
+            BuildDocument(files);
+
+            var outputRawModelPath = GetRawModelFilePath("Namespace1.Class1`2.yml");
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+            Assert.NotNull(model);
+            outputRawModelPath = GetRawModelFilePath("Namespace1.Class1`2.#ctor.yml");
+            Assert.True(File.Exists(outputRawModelPath));
+            model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+            Assert.NotNull(model);
+            var outputHtml = GetOutputFilePath("mref/Namespace1.Class1`2.html");
+            Assert.True(File.Exists(outputHtml));
+            var content = File.ReadAllText(outputHtml);
+            Assert.Equal("<p><a class=\"xref\" href=\"Namespace1.Class1%602.%23ctor.html#constructor\">Constructor</a></p>\n", content);
+        }
 
         [Fact]
         public void ProcessMrefWithXRefMapShouldSucceed()
@@ -226,7 +251,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Metadata = new Dictionary<string, object>
                 {
                     ["meta"] = "Hello world!",
-                }.ToImmutableDictionary()
+                }.ToImmutableDictionary(),
+                TemplateManager = _templateManager
             };
 
             using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
@@ -243,6 +269,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         private string GetRawModelFilePath(string fileName)
         {
             return Path.Combine(_outputFolder, MrefDirectory, Path.ChangeExtension(fileName, RawModelFileExtension));
+        }
+
+        private string GetOutputFilePath(string fileName)
+        {
+            return Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(fileName, "html")));
         }
     }
 }

@@ -1,0 +1,26 @@
+### YamlMime:ManagedReference
+items:
+- uid: Namespace1.Class1`2.#ctor
+  commentId: M:Class1`2.#ctor
+  id: '#ctor'
+  parent: Class1`2
+  langs:
+  - csharp
+  - vb
+  name: Class1()
+  nameWithType: Class1<T, K>.Class1()
+  fullName: Namespace1.Class1<T, K>.Class1()
+  type: Constructor
+  assemblies:
+  - TestLibrary
+  namespace: Namespace1
+  summary: "\nDefault constructor.\n"
+  example: []
+  syntax:
+    content: public Class1()
+    content.vb: Public Sub New
+  overload: Namespace1.Class1`2.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
