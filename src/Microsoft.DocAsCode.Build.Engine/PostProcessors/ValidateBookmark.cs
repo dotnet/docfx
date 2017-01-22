@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Common
+namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
@@ -26,9 +26,10 @@ namespace Microsoft.DocAsCode.Build.Common
 
         public override Manifest PreHandle(Manifest manifest)
         {
-            _registeredBookmarks = new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
+            // to-do: if a.md -> a`.html, might always leave a.html in the _fileMapping.
+            _registeredBookmarks = Context != null ? Context.Bookmarks : new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
             _linksWithBookmark = new Dictionary<string, List<LinkItem>>(FilePathComparer.OSPlatformSensitiveStringComparer);
-            _fileMapping = new Dictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
+            _fileMapping = Context != null ? Context.FileMapping : new Dictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
             return manifest;
         }
 

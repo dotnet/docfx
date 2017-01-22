@@ -41,8 +41,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(outputFolder));
             }
+            var context = HtmlPostProcessContext.Load(PostProcessorHost);
             foreach (var handler in Handlers)
             {
+                handler.SetContext(context);
                 manifest = handler.PreHandleWithScopeWrapper(manifest);
             }
             foreach (var tuple in from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
@@ -85,6 +87,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 manifest = handler.PostHandleWithScopeWrapper(manifest);
             }
+            context.Save();
             return manifest;
         }
     }
