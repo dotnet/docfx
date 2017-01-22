@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [YamlMember(Alias = "references")]
         [JsonProperty("references")]
+        [MarkdownContentIgnore]
         public List<ReferenceViewModel> References { get; set; } = new List<ReferenceViewModel>();
 
         [YamlMember(Alias = "shouldSkipMarkup")]
@@ -29,6 +30,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [ExtensibleMember]
         [JsonExtensionData]
+        [UniqueIdentityReferenceIgnore]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }
 }

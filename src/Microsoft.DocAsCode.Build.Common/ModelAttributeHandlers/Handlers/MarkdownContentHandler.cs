@@ -95,13 +95,15 @@ namespace Microsoft.DocAsCode.Build.Common
 
             protected override object HandleDictionaryType(object currentObj, HandleModelAttributesContext context)
             {
-                HandleItems(typeof(IDictionary<,>), typeof(HandleIDictionaryItems<,>), currentObj, context);
+                Func<object, object> handler = s => Handler.Handle(s, context);
+                HandleGenericItemsHelper.HandleIDictionary(currentObj, s => Handler.Handle(s, context));
                 return currentObj;
             }
 
             protected override object HandleIEnumerableType(object currentObj, HandleModelAttributesContext context)
             {
-                HandleItems(typeof(IList<>), typeof(HandleIListItems<>), currentObj, context);
+                Func<object, object> handler = s => Handler.Handle(s, context);
+                HandleGenericItemsHelper.HandleIList(currentObj, s => Handler.Handle(s, context));
                 return currentObj;
             }
 
@@ -156,69 +158,6 @@ namespace Microsoft.DocAsCode.Build.Common
                 context.FileLinkSources = context.FileLinkSources.Merge(mr.FileLinkSources.Select(s => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(s.Key, s.Value)));
                 context.UidLinkSources = context.UidLinkSources.Merge(mr.UidLinkSources.Select(s => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(s.Key, s.Value)));
                 return mr.Html;
-            }
-
-            private void HandleItems(Type genericInterface, Type implHandlerType, object currentObj, HandleModelAttributesContext context)
-            {
-                if (currentObj == null)
-                {
-                    return;
-                }
-                var type = currentObj.GetType();
-                Type genericType;
-                if (ReflectionHelper.TryGetGenericType(type, genericInterface, out genericType))
-                {
-                    var implType = implHandlerType.MakeGenericType(genericType.GetGenericArguments());
-                    var instance = (IHandleItems)Activator.CreateInstance(implType, currentObj);
-                    instance.Handle(s => Handler.Handle(s, context));
-                }
-            }
-
-            private interface IHandleItems
-            {
-                void Handle(Func<object, object> handler);
-            }
-
-            private class HandleIListItems<T> : IHandleItems
-            {
-                private readonly IList<T> _list;
-                public HandleIListItems(IList<T> list)
-                {
-                    _list = list;
-                }
-                public void Handle(Func<object, object> handler)
-                {
-                    Handle(s => (T)handler((T)s));
-                }
-
-                private void Handle(Func<T, T> handler)
-                {
-                    for (int i = 0; i < _list.Count; i++)
-                    {
-                        _list[i] = handler(_list[i]);
-                    }
-                }
-            }
-
-            private class HandleIDictionaryItems<TKey, TValue> : IHandleItems
-            {
-                private readonly IDictionary<TKey, TValue> _dict;
-                public HandleIDictionaryItems(IDictionary<TKey, TValue> dict)
-                {
-                    _dict = dict;
-                }
-                public void Handle(Func<object, object> handler)
-                {
-                    Handle(s => (TValue)handler(s));
-                }
-
-                private void Handle(Func<TValue, TValue> handler)
-                {
-                    foreach (var key in _dict.Keys.ToList())
-                    {
-                        _dict[key] = handler(_dict[key]);
-                    }
-                }
             }
         }
     }

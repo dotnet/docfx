@@ -30,6 +30,20 @@ namespace Microsoft.DocAsCode.Build.Common
         private static readonly ConcurrentDictionary<Tuple<Type, Type>, Type> _genericTypeCache = new ConcurrentDictionary<Tuple<Type, Type>, Type>();
         private static readonly ConcurrentDictionary<PropertyInfo, Func<object, object>> _propertyGetterCache = new ConcurrentDictionary<PropertyInfo, Func<object, object>>();
         private static readonly ConcurrentDictionary<PropertyInfo, Action<object, object>> _propertySetterCache = new ConcurrentDictionary<PropertyInfo, Action<object, object>>();
+        private static readonly ConcurrentDictionary<Tuple<Type, Type>, Type> _makeGenericTypeCache = new ConcurrentDictionary<Tuple<Type, Type>, Type>();
+        public static object CreateGenericObject(Type type, Type genericTypeDefinition, Type objectTypeToCreate, params object[] args)
+        {
+            var genericType = GetGenericType(type, genericTypeDefinition);
+            if (genericType != null)
+            {
+                var implType = _makeGenericTypeCache.GetOrAdd(
+                    Tuple.Create(genericType, objectTypeToCreate),
+                    s=>
+                    s.Item2.MakeGenericType(s.Item1.GetGenericArguments()));
+                return Activator.CreateInstance(implType, args);
+            }
+            return null;
+        }
 
         public static List<PropertyInfo> GetSettableProperties(Type type)
         {
