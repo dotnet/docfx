@@ -24,17 +24,27 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
         private static Regex LineBreakRegex = new Regex(@"\r?\n", RegexOptions.Compiled);
         private static Regex CodeElementRegex = new Regex(@"<code[^>]*>([\s\S]*?)</code>", RegexOptions.Compiled);
+        private static Regex RegionRegex = new Regex(@"^\s*#region\s*(.*)$");
+        private static Regex EndRegionRegex = new Regex(@"^\s*#endregion\s*.*$");
 
         private readonly ITripleSlashCommentParserContext _context;
 
         public string Summary { get; private set; }
+
         public string Remarks { get; private set; }
+
         public string Returns { get; private set; }
+
         public List<ExceptionInfo> Exceptions { get; private set; }
+
         public List<LinkInfo> Sees { get; private set; }
+
         public List<LinkInfo> SeeAlsos { get; private set; }
+
         public List<string> Examples { get; private set; }
+
         public Dictionary<string, string> Parameters { get; private set; }
+
         public Dictionary<string, string> TypeParameters { get; private set; }
 
         private TripleSlashCommentModel(string xml, SyntaxLanguage language, ITripleSlashCommentParserContext context)
@@ -48,6 +58,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ResolveSeeCref(doc, context.AddReferenceDelegate);
                 ResolveSeeAlsoCref(doc, context.AddReferenceDelegate);
             }
+            ResolveCodeSource(doc, context);
             var nav = doc.CreateNavigator();
             Summary = GetSummary(nav, context);
             Remarks = GetRemarks(nav, context);
@@ -65,6 +76,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (string.IsNullOrEmpty(xml)) return null;
+
             // Quick turnaround for badly formed XML comment
             if (xml.StartsWith("<!-- Badly formed XML comment ignored for member "))
             {
@@ -213,6 +225,72 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             return GetMultipleExampleNodes(nav, "/member/example").ToList();
+        }
+
+        private void ResolveCodeSource(XDocument doc, ITripleSlashCommentParserContext context)
+        {
+            foreach (XElement node in doc.XPathSelectElements("//code"))
+            {
+                var source = node.Attribute("source");
+                if (source == null)
+                {
+                    continue;
+                }
+
+                var region = node.Attribute("region");
+
+                var path = source.Value;
+                if (!Path.IsPathRooted(path))
+                {
+                    path = Path.Combine(context.Source?.BasePath ?? ".", path);
+                }
+
+                ResolveCodeSource(node, path, region.Value);
+            }
+        }
+
+        private void ResolveCodeSource(XElement element, string source, string region)
+        {
+            if (!File.Exists(source))
+            {
+                Logger.LogWarning($"Source file '{source}' not found.");
+                return;
+            }
+
+            var builder = new StringBuilder();
+            var regionCount = 0;
+            foreach (var line in File.ReadLines(source))
+            {
+                var match = RegionRegex.Match(line);
+                if (match.Success)
+                {
+                    var name = match.Groups[1].Value.Trim();
+                    if (name == region)
+                    {
+                        ++regionCount;
+                        continue;
+                    }
+                    else if (regionCount > 0)
+                    {
+                        ++regionCount;
+                    }
+                }
+                else if (regionCount > 0 && EndRegionRegex.IsMatch(line))
+                {
+                    --regionCount;
+                    if (regionCount == 0)
+                    {
+                        break;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(region) || regionCount > 0)
+                {
+                    builder.AppendLine(line);
+                }
+            }
+
+            element.SetValue(builder.ToString());
         }
 
         private Dictionary<string, string> GetListContent(XPathNavigator navigator, string xpath, string contentType, ITripleSlashCommentParserContext context)
@@ -421,8 +499,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             var preIndex = 0;
             var leadingSpaces = from line in lines
-                where !string.IsNullOrWhiteSpace(line)
-                select line.TakeWhile(char.IsWhiteSpace).Count();
+                                where !string.IsNullOrWhiteSpace(line)
+                                select line.TakeWhile(char.IsWhiteSpace).Count();
 
             if (leadingSpaces.Any())
             {
