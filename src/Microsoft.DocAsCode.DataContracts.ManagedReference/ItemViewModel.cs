@@ -349,6 +349,8 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [EditorBrowsable(EditorBrowsableState.Never)]
         [YamlIgnore]
         [JsonExtensionData(WriteData = true, ReadData = false)]
+        [UniqueIdentityReferenceIgnore]
+        [MarkdownContentIgnore]
         public Dictionary<string, object> ExtensionData
         {
             get

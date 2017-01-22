@@ -74,6 +74,8 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [EditorBrowsable(EditorBrowsableState.Never)]
         [YamlIgnore]
         [JsonExtensionData(ReadData = false, WriteData = true)]
+        [UniqueIdentityReferenceIgnore]
+        [MarkdownContentIgnore]
         public Dictionary<string, object> AdditionalJson
         {
             get

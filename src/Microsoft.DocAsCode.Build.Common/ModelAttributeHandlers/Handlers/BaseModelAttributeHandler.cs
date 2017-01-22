@@ -106,14 +106,12 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 return null;
             }
-
-            dynamic value = currentObj;
-            foreach (var i in value)
+            Func<object, object> handler = s => Handler.Handle(s, context);
+            if (!HandleGenericItemsHelper.EnumerateIDictionary(currentObj, handler))
             {
-                Handler.Handle(i.Value, context);
+                HandleGenericItemsHelper.EnumerateIReadonlyDictionary(currentObj, handler);
             }
-
-            return value;
+            return currentObj;
         }
 
         /// <summary>
@@ -123,18 +121,13 @@ namespace Microsoft.DocAsCode.Build.Common
         /// <param name="context"></param>
         protected virtual object HandleIEnumerableType(object currentObj, HandleModelAttributesContext context)
         {
-            var value = (IEnumerable)currentObj;
-            if (value == null)
+            if (currentObj == null)
             {
                 return null;
             }
-
-            foreach (var i in value)
-            {
-                Handler.Handle(i, context);
-            }
-
-            return value;
+            Func<object, object> handler = s => Handler.Handle(s, context);
+            HandleGenericItemsHelper.EnumerateIEnumerable(currentObj, s => Handler.Handle(s, context));
+            return currentObj;
         }
 
         /// <summary>
@@ -171,6 +164,23 @@ namespace Microsoft.DocAsCode.Build.Common
                 }
             }
             return currentObj;
+        }
+
+        protected virtual IEnumerable<PropInfo> GetProps(Type type)
+        {
+            return from prop in ReflectionHelper.GetGettableProperties(type)
+                   let attr = prop.GetCustomAttribute<T>()
+                   select new PropInfo
+                   {
+                       Prop = prop,
+                       Attr = attr,
+                   };
+        }
+
+        protected sealed class PropInfo
+        {
+            public PropertyInfo Prop { get; set; }
+            public Attribute Attr { get; set; }
         }
 
         private TypeInfo GetTypeInfo(Type type)
@@ -225,23 +235,6 @@ namespace Microsoft.DocAsCode.Build.Common
             Primitive,
             String,
             NonPrimitive,
-        }
-
-        protected virtual IEnumerable<PropInfo> GetProps(Type type)
-        {
-            return from prop in ReflectionHelper.GetGettableProperties(type)
-                   let attr = prop.GetCustomAttribute<T>()
-                   select new PropInfo
-                   {
-                       Prop = prop,
-                       Attr = attr,
-                   };
-        }
-
-        protected sealed class PropInfo
-        {
-            public PropertyInfo Prop { get; set; }
-            public Attribute Attr { get; set; }
         }
     }
 }
