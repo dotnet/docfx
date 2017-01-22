@@ -28,5 +28,10 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty("description")]
         [MarkdownContent]
         public string Description { get; set; }
+
+        public ExceptionInfo Clone()
+        {
+            return (ExceptionInfo)MemberwiseClone();
+        }
     }
 }

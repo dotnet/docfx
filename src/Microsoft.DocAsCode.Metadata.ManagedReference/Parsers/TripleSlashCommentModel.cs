@@ -36,6 +36,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public List<string> Examples { get; private set; }
         public Dictionary<string, string> Parameters { get; private set; }
         public Dictionary<string, string> TypeParameters { get; private set; }
+        public bool IsInheritDoc { get; private set; }
 
         private TripleSlashCommentModel(string xml, SyntaxLanguage language, ITripleSlashCommentParserContext context)
         {
@@ -59,6 +60,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             Examples = GetExamples(nav, context);
             Parameters = GetParameters(nav, context);
             TypeParameters = GetTypeParameters(nav, context);
+            IsInheritDoc = GetIsInheritDoc(nav, context);
         }
 
         public static TripleSlashCommentModel CreateModel(string xml, SyntaxLanguage language, ITripleSlashCommentParserContext context)
@@ -80,6 +82,32 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return null;
             }
+        }
+
+        public void CopyInheritedData(TripleSlashCommentModel src)
+        {
+            if (src == null)
+                throw new ArgumentNullException(nameof(src));
+
+            if (Summary == null)
+                Summary = src.Summary;
+            if (Remarks == null)
+                Remarks = src.Remarks;
+            if (Returns == null)
+                Returns = src.Returns;
+
+            if (Exceptions == null && src.Exceptions != null)
+                Exceptions = src.Exceptions.Select(e => e.Clone()).ToList();
+            if (Sees == null && src.Sees != null)
+                Sees = src.Sees.Select(s => s.Clone()).ToList();
+            if (SeeAlsos == null && src.SeeAlsos != null)
+                SeeAlsos = src.SeeAlsos.Select(s => s.Clone()).ToList();
+            if (Examples == null && src.Examples != null)
+                Examples = new List<string>(src.Examples);
+            if (Parameters == null && src.Parameters != null)
+                Parameters = new Dictionary<string, string>(src.Parameters);
+            if (TypeParameters == null && src.TypeParameters != null)
+                TypeParameters = new Dictionary<string, string>(src.TypeParameters);
         }
 
         public string GetParameter(string name)
@@ -213,6 +241,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // Resolve <see cref> to @ syntax
             // Also support <seealso cref>
             return GetMultipleExampleNodes(nav, "/member/example").ToList();
+        }
+
+        private bool GetIsInheritDoc(XPathNavigator nav, ITripleSlashCommentParserContext context)
+        {
+            var node = nav.SelectSingleNode("/member/inheritdoc");
+            if (node == null)
+                return false;
+            if (node.HasAttributes)
+            {
+                //The Sandcastle implementation of <inheritdoc /> supports two attributes: 'cref' and 'select'.
+                //These attributes allow changing the source of the inherited doc and controlling what is inherited.
+                //Until these attributes are supported, ignoring inheritdoc elements with attributes, so as not to misinterpret them.
+                Logger.LogWarning("Attributes on <inheritdoc /> elements are not supported; inheritdoc element will be ignored.");
+                return false;
+            }
+            return true;
         }
 
         private Dictionary<string, string> GetListContent(XPathNavigator navigator, string xpath, string contentType, ITripleSlashCommentParserContext context)

@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
@@ -156,6 +157,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         [YamlIgnore]
         [JsonIgnore]
+        public bool IsInheritDoc { get; set; }
+
+        [YamlIgnore]
+        [JsonIgnore]
         public TripleSlashCommentModel CommentModel { get; set; }
 
         public override string ToString()
@@ -166,6 +171,31 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public object Clone()
         {
             return MemberwiseClone();
+        }
+
+        public void CopyInheritedData(MetadataItem src)
+        {
+            if (src == null)
+                throw new ArgumentNullException(nameof(src));
+
+            if (Summary == null)
+                Summary = src.Summary;
+            if (Remarks == null)
+                Remarks = src.Remarks;
+
+            if (Exceptions == null && src.Exceptions != null)
+                Exceptions = src.Exceptions.Select(e => e.Clone()).ToList();
+            if (Sees == null && src.Sees != null)
+                Sees = src.Sees.Select(s => s.Clone()).ToList();
+            if (SeeAlsos == null && src.SeeAlsos != null)
+                SeeAlsos = src.SeeAlsos.Select(s => s.Clone()).ToList();
+            if (Examples == null && src.Examples != null)
+                Examples = new List<string>(src.Examples);
+
+            if (CommentModel != null && src.CommentModel != null)
+                CommentModel.CopyInheritedData(src.CommentModel);
+            if (Syntax != null && src.Syntax != null)
+                Syntax.CopyInheritedData(src.Syntax);
         }
     }
 }

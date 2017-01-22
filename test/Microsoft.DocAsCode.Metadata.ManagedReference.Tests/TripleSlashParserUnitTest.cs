@@ -103,6 +103,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
 
             var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
+            Assert.False(commentModel.IsInheritDoc, nameof(commentModel.IsInheritDoc));
 
             var summary = commentModel.Summary;
             Assert.Equal(@"
@@ -182,6 +183,26 @@ Check empty code.
             Assert.Equal("Hello Bing", seeAlsos[1].AltText);
             Assert.Equal("http://www.bing.com", seeAlsos[2].AltText);
             Assert.Equal("http://www.bing.com", seeAlsos[2].LinkId);
+        }
+
+        [Trait("Related", "TripleSlashComments")]
+        [Fact]
+        public void InheritDoc()
+        {
+            const string input = @"
+<member name=""M:ClassLibrary1.MyClass.DoThing"">
+    <inheritdoc />
+</member>";
+            var context = new TripleSlashCommentParserContext
+            {
+                AddReferenceDelegate = null,
+                Normalize = true,
+                PreserveRawInlineComments = false,
+            };
+
+            var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
+            Assert.True(commentModel.IsInheritDoc);
+
         }
     }
 }
