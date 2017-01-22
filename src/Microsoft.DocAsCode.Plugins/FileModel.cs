@@ -32,12 +32,15 @@ namespace Microsoft.DocAsCode.Plugins
             }
 
             FileAndType = ft;
+            Serializer = serializer;
             ModelWithCache = new ModelWithCache(content, serializer);
         }
 
         public FileAndType FileAndType { get; private set; }
 
         public FileAndType OriginalFileAndType { get; private set; }
+
+        public IFormatter Serializer { get; private set; }
 
         public ModelWithCache ModelWithCache { get; }
 
