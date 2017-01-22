@@ -196,13 +196,11 @@ Check empty code.
             var context = new TripleSlashCommentParserContext
             {
                 AddReferenceDelegate = null,
-                Normalize = true,
                 PreserveRawInlineComments = false,
             };
 
             var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
             Assert.True(commentModel.IsInheritDoc);
-
         }
     }
 }
