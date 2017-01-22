@@ -27,39 +27,45 @@ namespace Microsoft.DocAsCode.Build.Engine
         public static HtmlPostProcessContext Load(IPostProcessorHost host)
         {
             var stream = host?.LoadContextInfo();
-            if (stream == null || host?.IsIncremental == false)
+            using (stream)
             {
-                var context = new HtmlPostProcessContext();
-                context.PostProcessorHost = host;
-                return context;
-            }
-            using (var sr = new StreamReader(stream))
-            {
-                var context = JsonUtility.Deserialize<HtmlPostProcessContext>(sr);
-                context.PostProcessorHost = host;
-                var totalSrcFileSet = new HashSet<string>(host.SourceFileInfos.Select(s => s.SourceRelativePath));
-                context.FileMapping = new OSPlatformSensitiveDictionary<string>(
-                    context.FileMapping
-                    .Where(p => totalSrcFileSet.Contains(p.Value))
-                    .ToDictionary(p => p.Key, p => p.Value));
-                context.Bookmarks = new OSPlatformSensitiveDictionary<HashSet<string>>(
-                    context.Bookmarks
-                    .Where(p => context.FileMapping.ContainsKey(p.Key))
-                    .ToDictionary(p => p.Key, p => p.Value));
-                return context;
+                if (stream == null || host?.IsIncremental == false)
+                {
+                    var context = new HtmlPostProcessContext();
+                    context.PostProcessorHost = host;
+                    return context;
+                }
+                using (var sr = new StreamReader(stream))
+                {
+                    var context = JsonUtility.Deserialize<HtmlPostProcessContext>(sr);
+                    context.PostProcessorHost = host;
+                    var totalSrcFileSet = new HashSet<string>(host.SourceFileInfos.Select(s => s.SourceRelativePath));
+                    context.FileMapping = new OSPlatformSensitiveDictionary<string>(
+                        context.FileMapping
+                        .Where(p => totalSrcFileSet.Contains(p.Value))
+                        .ToDictionary(p => p.Key, p => p.Value));
+                    context.Bookmarks = new OSPlatformSensitiveDictionary<HashSet<string>>(
+                        context.Bookmarks
+                        .Where(p => context.FileMapping.ContainsKey(p.Key))
+                        .ToDictionary(p => p.Key, p => p.Value));
+                    return context;
+                }
             }
         }
 
         public void Save()
         {
             var stream = PostProcessorHost?.SaveContextInfo();
-            if (stream == null || PostProcessorHost?.ShouldTraceIncrementalInfo == false)
+            using (stream)
             {
-                return;
-            }
-            using (var sw = new StreamWriter(stream))
-            {
-                JsonUtility.Serialize(sw, this);
+                if (stream == null || PostProcessorHost?.ShouldTraceIncrementalInfo == false)
+                {
+                    return;
+                }
+                using (var sw = new StreamWriter(stream))
+                {
+                    JsonUtility.Serialize(sw, this);
+                }
             }
         }
     }
