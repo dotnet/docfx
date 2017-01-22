@@ -26,8 +26,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public static HtmlPostProcessContext Load(IPostProcessorHost host)
         {
-            var stream = host?.LoadContextInfo();
-            using (stream)
+            using (var stream = host?.LoadContextInfo())
             {
                 if (stream == null || host?.IsIncremental == false)
                 {
@@ -55,8 +54,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void Save()
         {
-            var stream = PostProcessorHost?.SaveContextInfo();
-            using (stream)
+            using (var stream = PostProcessorHost?.SaveContextInfo())
             {
                 if (stream == null || PostProcessorHost?.ShouldTraceIncrementalInfo == false)
                 {

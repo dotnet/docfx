@@ -26,6 +26,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public override Manifest PreHandle(Manifest manifest)
         {
+            // to-do: if a.md -> a`.html, might always leave a.html in the _fileMapping.
             _registeredBookmarks = Context != null ? Context.Bookmarks : new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
             _linksWithBookmark = new Dictionary<string, List<LinkItem>>(FilePathComparer.OSPlatformSensitiveStringComparer);
             _fileMapping = Context != null ? Context.FileMapping : new Dictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
