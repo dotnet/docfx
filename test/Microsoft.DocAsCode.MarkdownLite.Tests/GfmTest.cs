@@ -524,6 +524,19 @@ aaa",
             @"***A*B*C*D**",
             @"<p><strong><em>A</em>B<em>C</em>D</strong></p>
 ")]
+        [InlineData(
+            @"* [a]: a
+
+* [b]: b
+
+  [c]: c",
+            @"<ul>
+<li><p>[a]: a</p>
+</li>
+<li><p>[b]: b</p>
+</li>
+</ul>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {

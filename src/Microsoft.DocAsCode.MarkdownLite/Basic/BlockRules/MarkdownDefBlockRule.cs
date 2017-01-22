@@ -13,6 +13,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
+            if (!parser.Context.Variables.ContainsKey(MarkdownBlockContext.IsTop) ||
+                false.Equals(parser.Context.Variables[MarkdownBlockContext.IsTop]))
+            {
+                return null;
+            }
             var match = Def.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
