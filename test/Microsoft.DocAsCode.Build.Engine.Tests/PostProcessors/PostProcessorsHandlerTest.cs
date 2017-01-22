@@ -261,6 +261,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             PrepareOutput(outputFolder, "a", "b", "c");
             increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
 
+            // Check incremental post processor host
+            var host = ((ISupportIncrementalPostProcessor)postProcessors.Single().Processor).PostProcessorHost;
+            Assert.NotNull(host);
+            Assert.True(host.ShouldTraceIncrementalInfo);
+            Assert.True(host.IsIncremental);
+            Assert.Equal(3, host.SourceFileInfos.Count);
+            Assert.Equal("Conceptual", host.SourceFileInfos.Select(f => f.DocumentType).Distinct().Single());
+            Assert.Equal("a.md", host.SourceFileInfos[0].SourceRelativePath);
+            Assert.Equal("b.md", host.SourceFileInfos[1].SourceRelativePath);
+            Assert.Equal("c.md", host.SourceFileInfos[2].SourceRelativePath);
+
             // Check incremental flag
             Assert.Equal(3, manifest.Files.Count);
             Assert.True(manifest.Files.Single(i => i.SourceRelativePath == "a.md").IsIncremental);
@@ -304,6 +315,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             outputFolder = GetRandomFolder();
             PrepareOutput(outputFolder, "a", "b", "c");
             increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
+
+            // Check incremental post processor host
+            host = ((ISupportIncrementalPostProcessor)postProcessors.Single().Processor).PostProcessorHost;
+            Assert.NotNull(host);
+            Assert.True(host.ShouldTraceIncrementalInfo);
+            Assert.False(host.IsIncremental);
+            Assert.Equal(3, host.SourceFileInfos.Count);
+            Assert.Equal("Conceptual", host.SourceFileInfos.Select(f => f.DocumentType).Distinct().Single());
+            Assert.Equal("a.md", host.SourceFileInfos[0].SourceRelativePath);
+            Assert.Equal("b.md", host.SourceFileInfos[1].SourceRelativePath);
+            Assert.Equal("c.md", host.SourceFileInfos[2].SourceRelativePath);
 
             // Check incremental flag
             Assert.True(manifest.Files.All(f => f.IsIncremental == false));

@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
@@ -57,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     throw new NotSupportedException($"Currently incremental post processing logic doesn't support type {ExcludeType}.");
                 }
 
-                PreHandle(manifest, outputFolder, increItems, nonIncreItems);
+                PreHandle(manifest, postProcessors, outputFolder, increItems, nonIncreItems);
                 {
                     CheckNoIncrementalItems(manifest, "Before processing");
                     _innerHandler.Handle(postProcessors, manifest, outputFolder);
@@ -70,10 +71,21 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Handle related
 
-        private void PreHandle(Manifest manifest, string outputFolder, List<ManifestItem> increItems, List<ManifestItem> nonIncreItems)
+        private void PreHandle(Manifest manifest, List<PostProcessor> postProcessors, string outputFolder, List<ManifestItem> increItems, List<ManifestItem> nonIncreItems)
         {
             using (new PerformanceScope("Pre-handle in incremental post processing"))
             {
+                if (_increContext.ShouldTraceIncrementalInfo)
+                {
+                    var originalFileInfos = manifest.Files.Select(SourceFileInfo.FromManifestItem).ToImmutableList();
+                    foreach (var postProcessor in postProcessors)
+                    {
+                        var host = new IncrementalPostProcessorHost(_increContext, postProcessor.ContractName, originalFileInfos);
+                        ((ISupportIncrementalPostProcessor)postProcessor.Processor).PostProcessorHost = host;
+                    }
+                    Logger.RegisterListener(_increContext.CurrentInfo.MessageInfo.GetListener());
+                }
+
                 if (_increContext.IsIncremental)
                 {
                     CopyToOutput(increItems, outputFolder);
@@ -93,11 +105,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     nonIncreItems.AddRange(increItems);
                     increItems.Clear();
                     Logger.LogVerbose("Set all incremental flags to false, since cannot support incremental post processing.");
-                }
-
-                if (_increContext.ShouldTraceIncrementalInfo)
-                {
-                    Logger.RegisterListener(_increContext.CurrentInfo.MessageInfo.GetListener());
                 }
             }
         }
