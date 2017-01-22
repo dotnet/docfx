@@ -32,7 +32,12 @@ namespace Microsoft.DocAsCode.Common
                 {
                     if (key.StartsWith(entry.Prefix))
                     {
-                        return entry.GetValue(key.Substring(entry.Prefix.Length));
+                        var pair = entry.TryGetValue(key.Substring(entry.Prefix.Length));
+                        if (pair.Key)
+                        {
+                            return pair.Value;
+                        }
+                        break;
                     }
                 }
                 throw new KeyNotFoundException();
@@ -51,6 +56,7 @@ namespace Microsoft.DocAsCode.Common
                         return;
                     }
                 }
+                throw new InvalidOperationException();
             }
         }
 
@@ -81,6 +87,7 @@ namespace Microsoft.DocAsCode.Common
                     return;
                 }
             }
+            throw new InvalidOperationException();
         }
 
         public void Clear()
@@ -190,7 +197,6 @@ namespace Microsoft.DocAsCode.Common
         {
             public string Prefix { get; set; }
             public Func<IEnumerable<KeyValuePair<string, object>>> Enumerate { get; set; }
-            public Func<string, object> GetValue { get; set; }
             public Action<string, object> AddValue { get; set; }
             public Action<string, object> SetValue { get; set; }
             public Func<string, KeyValuePair<bool, object>> TryGetValue { get; set; }
@@ -205,14 +211,25 @@ namespace Microsoft.DocAsCode.Common
 
             internal Builder() { }
 
-            public Builder Add<TValue>(string prefix, IDictionary<string, TValue> dict, Func<object, TValue> valueConverter)
+            public Builder Add<TValue>(string prefix, IDictionary<string, TValue> dict, Func<object, TValue> valueConverter = null)
             {
+                if (prefix == null)
+                {
+                    throw new ArgumentNullException(nameof(prefix));
+                }
+                if (dict == null)
+                {
+                    throw new ArgumentNullException(nameof(dict));
+                }
+                if (valueConverter == null)
+                {
+                    valueConverter = o => (TValue)o;
+                }
                 _entries.Add(new Entry
                 {
                     Prefix = prefix,
                     Enumerate = () => Enumerate(dict),
                     AddValue = (k, v) => dict.Add(k, valueConverter(v)),
-                    GetValue = key => dict[key],
                     SetValue = (k, v) => dict[k] = valueConverter(v),
                     TryGetValue =
                         key =>

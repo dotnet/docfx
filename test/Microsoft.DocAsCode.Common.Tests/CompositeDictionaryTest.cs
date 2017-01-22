@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Common.Tests
     public class CompositeDictionaryTest
     {
         [Fact]
-        public void Test()
+        public void TestAddRemoveGetSetForCompositeDictionary()
         {
             var c = new C
             {
@@ -79,6 +79,38 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.Equal(0, c.CD.Count);
         }
 
+        [Fact]
+        public void TestThrowCaseForCompositeDictionary()
+        {
+            var c = new C
+            {
+                D1 =
+                {
+                    ["a"] = 1.0,
+                },
+                D2 =
+                {
+                    ["b"] = 1,
+                },
+                D3 =
+                {
+                    ["c"] = "x",
+                },
+            };
+
+            Assert.Throws<InvalidOperationException>(() => c.CD["z"] = 1);
+            Assert.Throws<InvalidOperationException>(() => c.CD.Add("z", 1));
+
+            Assert.Throws<KeyNotFoundException>(() => c.CD["z"]);
+
+            Assert.Throws<ArgumentNullException>(() => c.CD[null]);
+            Assert.Throws<ArgumentNullException>(() => c.CD[null] = 1);
+            Assert.Throws<ArgumentNullException>(() => c.CD.Add(null, 1));
+            Assert.Throws<ArgumentNullException>(() => c.CD.Remove(null));
+
+            Assert.Throws<InvalidCastException>(() => c.CD["D2.z"] = "a");
+        }
+
         private class C
         {
             public Dictionary<string, object> D1 { get; } = new Dictionary<string, object>();
@@ -92,9 +124,9 @@ namespace Microsoft.DocAsCode.Common.Tests
                     return _cd ??
                         (_cd = CompositeDictionary
                             .CreateBuilder()
-                            .Add("D1.", D1, o => o)
-                            .Add("D2.", D2, o => (int)o)
-                            .Add("D3.", D3, o => (string)o)
+                            .Add("D1.", D1)
+                            .Add("D2.", D2)
+                            .Add("D3.", D3)
                             .Create());
                 }
             }
