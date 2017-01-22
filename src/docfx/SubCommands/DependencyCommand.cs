@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
     internal sealed class DependencyCommand : ISubCommand
@@ -32,14 +33,12 @@ namespace Microsoft.DocAsCode.SubCommands
             var buildInfo = BuildInfo.Load(intermediateFolder);
             if (buildInfo == null)
             {
-                Logger.LogWarning($"Cache files in the folder {intermediateFolder} are corrupted!");
-                return;
+                LogErrorAndThrow($"Cache files in the folder {intermediateFolder} are corrupted!", null);
             }
             var dg = buildInfo.Versions.FirstOrDefault(v => v.VersionName == versionName)?.Dependency;
             if (dg == null)
             {
-                Logger.LogWarning($"Cache files for version {versionName} is not found!");
-                return;
+                LogErrorAndThrow($"Cache files for version {versionName} is not found!", null);
             }
             Logger.LogInfo($"Exporting dependency file...");
             try
@@ -54,8 +53,14 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             catch (Exception ex)
             {
-                Logger.LogError($"Unable to export dependency file: {ex}");
+                LogErrorAndThrow($"Unable to export dependency file: {ex.Message}", ex);
             }
+        }
+
+        private void LogErrorAndThrow(string message, Exception e)
+        {
+            Logger.LogError(message);
+            throw new DocfxException(message, e);
         }
     }
 }
