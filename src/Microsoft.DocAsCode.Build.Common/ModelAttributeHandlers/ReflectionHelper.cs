@@ -30,19 +30,25 @@ namespace Microsoft.DocAsCode.Build.Common
         private static readonly ConcurrentDictionary<Tuple<Type, Type>, Type> _genericTypeCache = new ConcurrentDictionary<Tuple<Type, Type>, Type>();
         private static readonly ConcurrentDictionary<PropertyInfo, Func<object, object>> _propertyGetterCache = new ConcurrentDictionary<PropertyInfo, Func<object, object>>();
         private static readonly ConcurrentDictionary<PropertyInfo, Action<object, object>> _propertySetterCache = new ConcurrentDictionary<PropertyInfo, Action<object, object>>();
-        private static readonly ConcurrentDictionary<Tuple<Type, Type>, Type> _makeGenericTypeCache = new ConcurrentDictionary<Tuple<Type, Type>, Type>();
-        public static object CreateGenericObject(Type type, Type genericTypeDefinition, Type objectTypeToCreate, params object[] args)
+        private static readonly ConcurrentDictionary<Tuple<Type, Type[]>, Type> _makeGenericTypeCache = new ConcurrentDictionary<Tuple<Type, Type[]>, Type>(TupleWithArrayComparer.Default);
+
+        public static object CreateGenericObject(Type genericType, Type objectTypeToCreate, params object[] args)
         {
-            var genericType = GetGenericType(type, genericTypeDefinition);
-            if (genericType != null)
+            if (genericType == null)
             {
-                var implType = _makeGenericTypeCache.GetOrAdd(
-                    Tuple.Create(genericType, objectTypeToCreate),
-                    s=>
-                    s.Item2.MakeGenericType(s.Item1.GetGenericArguments()));
-                return Activator.CreateInstance(implType, args);
+                throw new ArgumentNullException(nameof(genericType));
             }
-            return null;
+
+            if (objectTypeToCreate == null)
+            {
+                throw new ArgumentNullException(nameof(objectTypeToCreate));
+            }
+            var genericArguments = genericType.GetGenericArguments();
+
+            var implType = _makeGenericTypeCache.GetOrAdd(
+                Tuple.Create(objectTypeToCreate, genericArguments),
+                s => s.Item1.MakeGenericType(s.Item2));
+            return Activator.CreateInstance(implType, args);
         }
 
         public static List<PropertyInfo> GetSettableProperties(Type type)
@@ -225,6 +231,21 @@ namespace Microsoft.DocAsCode.Build.Common
             }
             il.Emit(OpCodes.Ret);
             return (Action<object, object>)dm.CreateDelegate(typeof(Action<object, object>));
+        }
+
+        private sealed class TupleWithArrayComparer : IEqualityComparer<Tuple<Type, Type[]>>
+        {
+            public static TupleWithArrayComparer Default = new TupleWithArrayComparer();
+            private static readonly IEqualityComparer StructuralEqualityComparer = StructuralComparisons.StructuralEqualityComparer;
+            public bool Equals(Tuple<Type, Type[]> x, Tuple<Type, Type[]> y)
+            {
+                return StructuralEqualityComparer.Equals(x, y);
+            }
+
+            public int GetHashCode(Tuple<Type, Type[]> obj)
+            {
+                return StructuralEqualityComparer.GetHashCode(obj);
+            }
         }
     }
 }

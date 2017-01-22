@@ -91,11 +91,15 @@ namespace Microsoft.DocAsCode.Build.Common
                 throw new ArgumentNullException(nameof(currentObj));
             }
             var type = currentObj.GetType();
-            var instance = (IHandleItems)ReflectionHelper.CreateGenericObject(type, genericInterface, implHandlerType, currentObj);
-            if (instance != null)
+            var genericType = ReflectionHelper.GetGenericType(type, genericInterface);
+            if (genericType != null)
             {
-                instance.Handle(handler);
-                return true;
+                var instance = (IHandleItems)ReflectionHelper.CreateGenericObject(genericType, implHandlerType, currentObj);
+                if (instance != null)
+                {
+                    instance.Handle(handler);
+                    return true;
+                }
             }
             return false;
         }
