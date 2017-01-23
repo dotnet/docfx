@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.YamlSerialization;
+    using DocAsCode.Common;
 
     [Serializable]
     public class TocItemViewModel
@@ -115,23 +116,12 @@ namespace Microsoft.DocAsCode.DataContracts.Common
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [YamlIgnore]
-        [JsonExtensionData(ReadData = false, WriteData = true)]
-        public Dictionary<string, object> MetadataJson
-        {
-            get
-            {
-                var dict = new Dictionary<string, object>();
-                foreach (var item in NameInDevLangs)
-                {
-                    dict[Constants.ExtensionMemberPrefix.Name + item.Key] = item.Value;
-                }
-                foreach (var item in Metadata)
-                {
-                    dict[item.Key] = item.Value;
-                }
-                return dict;
-            }
-            set { }
-        }
+        [JsonExtensionData]
+        public CompositeDictionary MetadataJson =>
+            CompositeDictionary
+                .CreateBuilder()
+                .Add(Constants.ExtensionMemberPrefix.Name, NameInDevLangs, JTokenConverter.Convert<string>)
+                .Add(string.Empty, Metadata)
+                .Create();
     }
 }

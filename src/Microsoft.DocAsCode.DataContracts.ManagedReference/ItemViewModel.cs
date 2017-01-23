@@ -114,11 +114,11 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
             }
         }
 
-        [YamlMember(Alias = "nameWithType")]
-        [JsonProperty("nameWithType")]
+        [YamlMember(Alias = Constants.PropertyName.NameWithType)]
+        [JsonProperty(Constants.PropertyName.NameWithType)]
         public string NameWithType { get; set; }
 
-        [ExtensibleMember("nameWithType.")]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.NameWithType)]
         [JsonIgnore]
         public SortedList<string, string> NamesWithType { get; set; } = new SortedList<string, string>();
 
@@ -167,6 +167,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
                 }
             }
         }
+
         [YamlMember(Alias = Constants.PropertyName.FullName)]
         [JsonProperty(Constants.PropertyName.FullName)]
         public string FullName { get; set; }
@@ -324,7 +325,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [UniqueIdentityReference]
         public List<string> ExtensionMethods { get; set; }
 
-        [ExtensibleMember("modifiers.")]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Modifiers)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
         [JsonIgnore]
         public SortedList<string, List<string>> Modifiers { get; set; } = new SortedList<string, List<string>>();
@@ -356,25 +357,11 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         public CompositeDictionary ExtensionData =>
             CompositeDictionary
                 .CreateBuilder()
-                .Add(Constants.ExtensionMemberPrefix.Name, Names, Convert<string>)
-                .Add("nameWithType.", NamesWithType, Convert<string>)
-                .Add(Constants.ExtensionMemberPrefix.FullName, FullNames, Convert<string>)
-                .Add("modifier.", Modifiers, Convert<List<string>>)
+                .Add(Constants.ExtensionMemberPrefix.Name, Names, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.NameWithType, NamesWithType, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.FullName, FullNames, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.Modifiers, Modifiers, JTokenConverter.Convert<List<string>>)
                 .Add(string.Empty, Metadata)
                 .Create();
-
-        private static T Convert<T>(object obj)
-        {
-            if (obj is T)
-            {
-                return (T)obj;
-            }
-            var jtoken = obj as JToken;
-            if (jtoken != null)
-            {
-                return jtoken.ToObject<T>();
-            }
-            throw new InvalidCastException();
-        }
     }
 }

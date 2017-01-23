@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]
@@ -40,31 +41,31 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonProperty(Constants.PropertyName.Href)]
         public string Href { get; set; }
 
-        [YamlMember(Alias = "name")]
-        [JsonProperty("name")]
+        [YamlMember(Alias = Constants.PropertyName.Name)]
+        [JsonProperty(Constants.PropertyName.Name)]
         public string Name { get; set; }
 
-        [ExtensibleMember("name.")]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
         [JsonIgnore]
         public SortedList<string, string> NameInDevLangs { get; private set; } = new SortedList<string, string>();
 
-        [YamlMember(Alias = "nameWithType")]
-        [JsonProperty("nameWithType")]
+        [YamlMember(Alias = Constants.PropertyName.NameWithType)]
+        [JsonProperty(Constants.PropertyName.NameWithType)]
         public string NameWithType { get; set; }
 
-        [ExtensibleMember("nameWithType.")]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.NameWithType)]
         [JsonIgnore]
         public SortedList<string, string> NameWithTypeInDevLangs { get; private set; } = new SortedList<string, string>();
 
-        [YamlMember(Alias = "fullName")]
-        [JsonProperty("fullName")]
+        [YamlMember(Alias = Constants.PropertyName.FullName)]
+        [JsonProperty(Constants.PropertyName.FullName)]
         public string FullName { get; set; }
 
-        [ExtensibleMember("fullname.")]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.FullName)]
         [JsonIgnore]
         public SortedList<string, string> FullNameInDevLangs { get; private set; } = new SortedList<string, string>();
 
-        [ExtensibleMember("spec.")]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Spec)]
         [JsonIgnore]
         public SortedList<string, List<SpecViewModel>> Specs { get; private set; } = new SortedList<string, List<SpecViewModel>>();
 
@@ -77,35 +78,15 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonExtensionData(ReadData = false, WriteData = true)]
         [UniqueIdentityReferenceIgnore]
         [MarkdownContentIgnore]
-        public Dictionary<string, object> AdditionalJson
-        {
-            get
-            {
-                var dict = new Dictionary<string, object>();
-                foreach (var item in NameInDevLangs)
-                {
-                    dict["name." + item.Key] = item.Value;
-                }
-                foreach (var item in NameWithTypeInDevLangs)
-                {
-                    dict["nameWithType." + item.Key] = item.Value;
-                }
-                foreach (var item in FullNameInDevLangs)
-                {
-                    dict["fullname." + item.Key] = item.Value;
-                }
-                foreach (var item in Specs)
-                {
-                    dict["spec." + item.Key] = item.Value;
-                }
-                foreach (var item in Additional)
-                {
-                    dict[item.Key] = item.Value;
-                }
-                return dict;
-            }
-            set { }
-        }
+        public CompositeDictionary AdditionalJson =>
+            CompositeDictionary
+                .CreateBuilder()
+                .Add(Constants.ExtensionMemberPrefix.Name, NameInDevLangs, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.NameWithType, NameWithTypeInDevLangs, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.FullName, FullNameInDevLangs, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.Spec, Specs, JTokenConverter.Convert<List<SpecViewModel>>)
+                .Add(string.Empty, Additional)
+                .Create();
 
         public ReferenceViewModel Clone()
         {
