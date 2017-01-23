@@ -1,9 +1,15 @@
-﻿Version Notes (Current Version: v2.11)
+﻿Version Notes (Current Version: v2.12)
 =======================================
-v2.11(Pre-Release)
+v2.12(Pre-Release)
+-----------
+1. Bug fixes:
+   1. `default` template: Do not load `search-worker.js` when search is disabled in `docfx.js`
+
+v2.11
 -----------
 1.  Export custom href generator.
-2.  Bug fixes:
+2.  Introduce attribute driven data model to Managed Reference
+3.  Bug fixes:
     1. Generate overload name/fullname form generic method should not contain method parameter.
     2. Fix href for markdown link to non-exist files in include files.
 
