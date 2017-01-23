@@ -91,7 +91,7 @@ attributes              | [Attribute](#attribute)[]  | Ignore.
 children                | uid[]                      | Ignore.
 documentation           | [Source](#source)          | Merge.
 example                 | string[]                   | Replace.
-exceptions              | [LinkInfo](#linkinfo)[]    | Merge keyed list.
+exceptions              | [Exception](#exception)[]  | Merge keyed list.
 fullName                | string                     | Replace.
 fullName.<lang>         | string                     | Replace.
 id                      | string                     | Replace.
@@ -152,6 +152,13 @@ Property                | Type                       | Overwrite behavior
 name                    | string                     | Replace.
 email                   | string                     | Replace.
 date                    | datetime                   | Replace.
+
+#### Exception
+Property                | Type                       | Overwrite behavior
+----------------------- | -------------------------- | ------------------
+**type**                | uid                        | Merge key.
+*description*           | markdown                   | Replace.
+commentId               | string                     | Ignore.
 
 #### LinkInfo
 Property                | Type                       | Overwrite behavior
