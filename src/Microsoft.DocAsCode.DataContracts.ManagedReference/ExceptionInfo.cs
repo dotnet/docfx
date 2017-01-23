@@ -22,6 +22,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [YamlMember(Alias = Constants.PropertyName.CommentId)]
         [JsonProperty(Constants.PropertyName.CommentId)]
+        [MergeOption(MergeOption.Ignore)]
         public string CommentId { get; set; }
 
         [YamlMember(Alias = "description")]
