@@ -3,11 +3,13 @@
 
 namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 {
+    using System;
     using Microsoft.DocAsCode.DataContracts.Common;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
+    [Serializable]
     public class ArgumentInfo
     {
         [YamlMember(Alias = "type")]

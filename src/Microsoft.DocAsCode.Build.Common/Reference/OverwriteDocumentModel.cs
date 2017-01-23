@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Common
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
@@ -14,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.Common
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.YamlSerialization;
 
+    [Serializable]
     public class OverwriteDocumentModel
     {
         [ExtensibleMember]
@@ -46,14 +48,14 @@ namespace Microsoft.DocAsCode.Build.Common
         /// </summary>
         [YamlIgnore]
         [JsonIgnore]
-        public ImmutableHashSet<string> LinkToFiles { get; set; } = ImmutableHashSet<string>.Empty;
+        public HashSet<string> LinkToFiles { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// Links to other Uids
         /// </summary>
         [YamlIgnore]
         [JsonIgnore]
-        public ImmutableHashSet<string> LinkToUids { get; set; } = ImmutableHashSet<string>.Empty;
+        public HashSet<string> LinkToUids { get; set; } = new HashSet<string>();
 
         public T ConvertTo<T>() where T : class
         {
