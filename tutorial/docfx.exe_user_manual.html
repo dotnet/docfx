@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.10.2.0">
+    <meta name="generator" content="docfx 2.11.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -133,10 +133,9 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
 <pre><code>docfx build [-o:&lt;output_path&gt;] [-t:&lt;template folder&gt;]
 </code></pre><p><code>docfx build</code> generates documentation for current folder.</p>
 <p>If <code>toc.yml</code> or <code>toc.md</code> is found in current folder, it will be rendered as the top level TABLE-OF-CONTENT. As in website, it will be rendered as the top navigation bar.</p>
-<blockquote><p>![Note]
-Please note that <code>homepage</code> is not supported in <code>toc.md</code>.
+<div class="NOTE"><h5>Note</h5><p>Please note that <code>homepage</code> is not supported in <code>toc.md</code>.
 And if <code>href</code> is referencing to a <strong>folder</strong>, it must end with <code>/</code>.</p>
-</blockquote>
+</div>
 <p><strong>toc.yml syntax</strong>
 <code>toc.yml</code> is an array of items. Each item can have following properties:</p>
 <table>

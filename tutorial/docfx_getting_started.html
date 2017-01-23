@@ -8,7 +8,7 @@
     <title>Getting Started with DocFX | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Getting Started with DocFX | DocFX website ">
-    <meta name="generator" content="docfx 2.10.2.0">
+    <meta name="generator" content="docfx 2.11.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -91,9 +91,11 @@ If you are interested in creating your own website with your own styles, you can
 For detailed description about DFM, please refer to <a href="../spec/docfx_flavored_markdown.html">DFM</a>.</li>
 </ul>
 <h2 id="2-use-docfx-as-a-command-line-tool">2. Use <em>DocFX</em> as a command-line tool</h2>
-<p>[!Note]
-Please make sure <a href="https://www.visualstudio.com/vs/">Visual Studio 2015</a> or <a href="https://www.microsoft.com/en-us/download/details.aspx?id=48159">Microsoft Build Tools 2015</a> is installed before running DocFX.</p>
-<p><em>Step1.</em> DocFX ships as a <a href="https://chocolatey.org/packages/docfx">chocolatey package</a>. Alternatively, you can download and unzip <em>docfx.zip</em> from <a href="https://github.com/dotnet/docfx/releases">https://github.com/dotnet/docfx/releases</a>, extract it to a local folder, and add it to PATH so you can run it anywhere.</p>
+<div class="NOTE"><h5>Note</h5><p>Please make sure <a href="https://www.visualstudio.com/vs/">Visual Studio 2015</a> or <a href="https://www.microsoft.com/en-us/download/details.aspx?id=48159">Microsoft Build Tools 2015</a> is installed before running DocFX.</p>
+</div>
+<p><em>Step1.</em> DocFX ships as a <a href="https://chocolatey.org/packages/docfx">chocolatey package</a>.
+Install docfx through <a href="https://chocolatey.org/install">Chocolatey</a> by calling <code>cinst docfx -y</code>.</p>
+<p>Alternatively, you can download and unzip <em>docfx.zip</em> from <a href="https://github.com/dotnet/docfx/releases">https://github.com/dotnet/docfx/releases</a>, extract it to a local folder, and add it to PATH so you can run it anywhere.</p>
 <p><em>Step2.</em> Create a sample project</p>
 <pre><code>docfx init -q
 </code></pre><p>This command generates a default project named <code>docfx_project</code>.</p>
@@ -112,7 +114,23 @@ Please make sure <a href="https://www.visualstudio.com/vs/">Visual Studio 2015</
     }
 }
 </code></pre><p><em>Step4.</em> Right click on the website project, and click <em>View</em> -&gt; <em>View in Browser</em>, navigate to <code>/_site</code> sub URL to view your website!</p>
-<h2 id="4-build-from-source-code">4. Build from source code</h2>
+<h2 id="4-use-docfx-with-a-build-server">4. Use <em>DocFX</em> with a Build Server</h2>
+<p><em>DocFX</em> can be used in a Continuous Integration environment.</p>
+<p>Most build systems do not checkout the branch that is being built, but
+use a <code>detached head</code> for the specific commit.  DoxFX needs the the branch name to implement the <code>View Source</code> link in the API documentation.</p>
+<p>Setting the environment variable <code>DOCFX_SOURCE_BRANCH_NAME</code> tells DocFX which branch name to use.</p>
+<p>Many build systems set an environment variable with the branch name.  DocFX uses the following:</p>
+<ul>
+<li><code>APPVEYOR_REPO_BRANCH</code> - <a href="https://www.appveyor.com/">AppVeyor</a></li>
+<li><code>BUILD_SOURCEBRANCHNAME</code> - <a href="https://www.visualstudio.com/vso/">Visual Studio Online</a></li>
+<li><code>CI_BUILD_REF_NAME</code> - <a href="https://about.gitlab.com/gitlab-ci/">GitLab CI</a></li>
+<li><code>Git_Branch</code> - <a href="https://www.jetbrains.com/teamcity/">TeamCity</a></li>
+<li><code>GIT_BRANCH</code> - <a href="https://jenkins.io/">Jenkins</a></li>
+<li><code>GIT_LOCAL_BRANCH</code> - <a href="https://jenkins.io/">Jenkins</a></li>
+</ul>
+<div class="NOTE"><h5>Note</h5><p><em>Known issue in AppVeyor</em>: Currently <code>platform: Any CPU</code> in <em>appveyor.yml</em> causes <code>docfx metadata</code> failure. <a href="https://github.com/dotnet/docfx/issues/1078">https://github.com/dotnet/docfx/issues/1078</a></p>
+</div>
+<h2 id="5-build-from-source-code">5. Build from source code</h2>
 <p>As a prerequisite, you need:</p>
 <ul>
 <li><a href="https://www.microsoft.com/en-us/download/details.aspx?id=48159">Microsoft Build Tools 2015</a></li>
@@ -125,7 +143,7 @@ Please make sure <a href="https://www.visualstudio.com/vs/">Visual Studio 2015</
 <blockquote><p>Tools &gt; NuGet Package Manager &gt; Package Manager Settings &gt; Package Sources</p>
 </blockquote>
 <p><em>Step4.</em> Follow steps in #2, #3, #4 to use <em>DocFX</em> in command-line, IDE or .NET Core.</p>
-<h2 id="5-a-seed-project-to-play-with-docfx">5. A seed project to play with <em>DocFX</em></h2>
+<h2 id="6-a-seed-project-to-play-with-docfx">6. A seed project to play with <em>DocFX</em></h2>
 <p>Here is a seed project <a href="https://github.com/docascode/docfx-seed">https://github.com/docascode/docfx-seed</a>. It contains</p>
 <ol>
 <li>A basic C# project under <code>src</code>.</li>
@@ -136,7 +154,7 @@ Please make sure <a href="https://www.visualstudio.com/vs/">Visual Studio 2015</
 </ol>
 <div class="TIP"><h5>Tip</h5><p>It is a good practice to separate files with different type into different folders.</p>
 </div>
-<h2 id="6-qa">6. Q&amp;A</h2>
+<h2 id="7-qa">7. Q&amp;A</h2>
 <ol>
 <li>Q: How do I quickly reference APIs from other APIs or conceptual files?
 A: Use <code>@uid</code> syntax.</li>

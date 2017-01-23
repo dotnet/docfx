@@ -8,7 +8,7 @@
     <title>Links and Cross References | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Links and Cross References | DocFX website ">
-    <meta name="generator" content="docfx 2.10.2.0">
+    <meta name="generator" content="docfx 2.11.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -184,18 +184,23 @@ uid: fileA
 </li>
 </ol>
 <p>The render result of <code>@</code> form is same as auto link form. For example, <code>@System.String</code> is same as <code>&lt;xref:System.String&gt;</code>.</p>
+<div class="WARNING"><h5>Warning</h5><p>Since <code>@</code> is a common character in a document, DocFX doesn&#39;t show a warning if UID isn&#39;t found for a shorthand form xref link.
+Warnings for missing links are shown for auto links and Markdown links.</p>
+</div>
 <h4 id="using-hashtag-in-cross-reference">Using hashtag in cross reference</h4>
 <p>Sometimes you need to link to the middle of a file (an anchor) rather than jump to the beginning of a file. DocFX also allows you to do that.</p>
 <p>In Markdown link or auto link, you can add a hashtag (<code>#</code>) followed by the anchor name after UID. For example:</p>
 <pre><code class="lang-markdown">&lt;xref:uid_to_file#anchor_name&gt;
 
 [link_text](xref:uid_to_file#anchor_name]
-</code></pre><p>Both urls will resolve to <code>url_to_file#anchor_name</code> in output HTML.</p>
+
+@uid_to_file#anchor_name
+</code></pre><p>Will all resolve to <code>url_to_file#anchor_name</code> in output HTML.</p>
 <p>The link text still resolves to the title of the whole file. If it&#39;s not what you need, you can specify your own link text.</p>
 <div class="NOTE"><h5>Note</h5><p>Hashtag in <code>xref</code> is always treated as separator between file name and anchor name. That means if you have <code>#</code> in UID, it has
 to be <a href="https://en.wikipedia.org/wiki/Percent-encoding">encoded</a> to <code>%23</code>.</p>
+<p>Actually <code>xref</code> format follows URI standard so all <a href="https://tools.ietf.org/html/rfc3986#section-2.2">reserved characters</a> should be encoded.</p>
 </div>
-<p>Hashtag is not supported in <code>@</code> form.</p>
 <h3 id="link-to-overwrite-files">Link to overwrite files</h3>
 <p><a href="intro_overwrite_files.html">Overwrite file</a> itself doesn&#39;t build into individual output file. It&#39;s merged with the API reference item model to build into a single file. If you want to link to the content inside an overwrite file (for example, an anchor), you cannot use the path to the overwrite file. Instead, you should either cross reference its UID, or link to the YAML file that contains the API.</p>
 <p>For example, you have String class which is generated from <code>system.string.yml</code>, then you have a <code>string.md</code> that overwrites its conceptual part which contains a <code>compare-strings</code> section. You can use one of the following syntax to link to this section:</p>
@@ -229,16 +234,16 @@ In this case its url could be an anchor in a file.</p>
 </div>
 <h3 id="using-cross-reference-map">Using cross reference map</h3>
 <p>You can import a cross reference map file in your DocFX then all UIDs defined that file can be cross referenced.</p>
-<p>To use a cross reference map, add a <code>xrefMaps</code> config to <code>build</code> section of <code>docfx.json</code>:</p>
+<p>To use a cross reference map, add a <code>xref</code> config to <code>build</code> section of <code>docfx.json</code>:</p>
 <pre><code class="lang-json">{
   &quot;build&quot;: {
-    &quot;xrefMaps&quot;: [
+    &quot;xref&quot;: [
       &quot;&lt;path_to_xrefmap&gt;&quot;
     ],
     ...
   }
 }
-</code></pre><p>The value of <code>xrefMaps</code> could be a string or a list of strings that contain the path/url to cross reference maps.</p>
+</code></pre><p>The value of <code>xref</code> could be a string or a list of strings that contain the path/url to cross reference maps.</p>
 <div class="NOTE"><h5>Note</h5><p>DocFX supports reading cross reference map from a local file or a web location. It&#39;s recommended to deploy <code>xrefmap.yml</code> to
 the website together with topic files so that others can directly use its url in <code>docfx.json</code> instead of downloading it to
 local.</p>
