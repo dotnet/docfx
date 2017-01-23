@@ -17,7 +17,6 @@
   <files>
     <file src="build/**" target=""/>
     <file src="content/**" target=""/>
-    <file src="lib/**" target=""/>
-    <file src="tools/**" target=""/>
+    <file src="*" target="tools/" exclude="**/*.pdb"/>
   </files>
 </package>
