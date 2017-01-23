@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             var toc = MarkdownTocReader.LoadToc(@"
 # [Article1](article1.md)
 ## Container1 ##
-### [Article2](article2.md) ## 
+### [Article2](article2.md ""Article 2"") ## 
 ### [Article3](article3.md)     
 ## Container2
 ### [Article4](article4.md)
@@ -44,6 +44,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                     var toc0_0 = toc0[0].Items;
                     Assert.Equal(2, toc0_0.Count);
                     Assert.Equal("Article2", toc0_0[0].Name);
+                    Assert.Equal("Article 2", toc0_0[0].DisplayName);
                     Assert.Equal("article2.md", toc0_0[0].Href);
                     Assert.Equal("Article3", toc0_0[1].Name);
                     Assert.Equal("article3.md", toc0_0[1].Href);
