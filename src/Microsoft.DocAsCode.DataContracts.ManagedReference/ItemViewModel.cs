@@ -8,11 +8,13 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using System.ComponentModel;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.YamlSerialization;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using YamlDotNet.Serialization;
 
     [Serializable]
@@ -58,11 +60,11 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty("langs")]
         public string[] SupportedLanguages { get; set; } = new string[] { "csharp", "vb" };
 
-        [YamlMember(Alias = "name")]
-        [JsonProperty("name")]
+        [YamlMember(Alias = Constants.PropertyName.Name)]
+        [JsonProperty(Constants.PropertyName.Name)]
         public string Name { get; set; }
 
-        [ExtensibleMember("name.")]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Name)]
         [JsonIgnore]
         public SortedList<string, string> Names { get; set; } = new SortedList<string, string>();
 
@@ -165,11 +167,11 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
                 }
             }
         }
-        [YamlMember(Alias = "fullName")]
-        [JsonProperty("fullName")]
+        [YamlMember(Alias = Constants.PropertyName.FullName)]
+        [JsonProperty(Constants.PropertyName.FullName)]
         public string FullName { get; set; }
 
-        [ExtensibleMember("fullName.")]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.FullName)]
         [JsonIgnore]
         public SortedList<string, string> FullNames { get; set; } = new SortedList<string, string>();
 
@@ -348,36 +350,31 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [YamlIgnore]
-        [JsonExtensionData(WriteData = true, ReadData = false)]
+        [JsonExtensionData]
         [UniqueIdentityReferenceIgnore]
         [MarkdownContentIgnore]
-        public Dictionary<string, object> ExtensionData
+        public CompositeDictionary ExtensionData =>
+            CompositeDictionary
+                .CreateBuilder()
+                .Add(Constants.ExtensionMemberPrefix.Name, Names, Convert<string>)
+                .Add("nameWithType.", NamesWithType, Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.FullName, FullNames, Convert<string>)
+                .Add("modifier.", Modifiers, Convert<List<string>>)
+                .Add(string.Empty, Metadata)
+                .Create();
+
+        private static T Convert<T>(object obj)
         {
-            get
+            if (obj is T)
             {
-                var result = new Dictionary<string, object>();
-                foreach (var item in Names)
-                {
-                    result["name." + item.Key] = item.Value;
-                }
-                foreach (var item in NamesWithType)
-                {
-                    result["nameWithType." + item.Key] = item.Value;
-                }
-                foreach (var item in FullNames)
-                {
-                    result["fullName." + item.Key] = item.Value;
-                }
-                foreach (var item in Modifiers)
-                {
-                    result["modifier." + item.Key] = item.Value;
-                }
-                foreach (var item in Metadata)
-                {
-                    result[item.Key] = item.Value;
-                }
-                return result;
+                return (T)obj;
             }
+            var jtoken = obj as JToken;
+            if (jtoken != null)
+            {
+                return jtoken.ToObject<T>();
+            }
+            throw new InvalidCastException();
         }
     }
 }
