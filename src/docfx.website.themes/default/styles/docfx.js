@@ -98,11 +98,14 @@ $(function () {
   // Support full-text-search
   (function () {
     var query;
-    var relHref = $("meta[property='docfx\\:rel']").attr("content") || "";
-    var search = searchFactory();
-    search();
-    highlightKeywords();
-    addSearchEvent();
+    var relHref = $("meta[property='docfx\\:rel']").attr("content");
+
+    if (typeof relHref != 'undefined') {
+      var search = searchFactory();
+      search();
+      highlightKeywords();
+      addSearchEvent();
+    }
 
     // Search factory
     function searchFactory() {
