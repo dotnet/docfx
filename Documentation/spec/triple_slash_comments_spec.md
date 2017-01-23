@@ -3,7 +3,7 @@ Triple-slash (///) Code Comments Support
 DocFX extracts [triple-slash (///) code comments](https://docs.microsoft.com/en-us/dotnet/articles/csharp/programming-guide/xmldoc/xml-documentation-comments) from .NET source code when running `docfx metadata`. [Tags](https://docs.microsoft.com/en-us/dotnet/articles/csharp/programming-guide/xmldoc/recommended-tags-for-documentation-comments) in triple-slash (///) code comments are converted to corresponding metadata in .NET data model.
 
 > [!NOTE]
-> `docfx` supports [DocFX Flavored Markdown syntax](docfx_flavored_markdown.md) inside triple-slash (///) code comments.
+> `docfx` supports [DocFX Flavored Markdown syntax](docfx_flavored_markdown.md) inside triple-slash (///) code comments. You can disable this feature by set `shouldSkipMarkup` when generating metadata: `docfx metadata --shouldSkipMarkup`.
 
 Supported tags
 --------
