@@ -16,6 +16,14 @@ $ErrorActionPreference = 'Stop'
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptHome = Split-Path $scriptPath
 
+# Get version
+$version = "1.0.0"
+if (Test-Path "TEMP\version.txt")
+{
+    $version = Get-Content "TEMP\version.txt"
+    $version = $version.Substring(1)
+}
+
 function DotnetBuild {
     param($folder)
     if (Test-Path (Join-Path $folder.FullName "project.json"))
@@ -44,19 +52,11 @@ function DotnetPack {
 }
 
 function NugetPack {
-    param($folder, $version)
-    $nuspec = Join-Path $folder.FullName ($folder.Name + ".nuspec")
+    param($basepath, $nuspec)
     if (Test-Path $nuspec)
     {
-        $basepath = Join-Path target (Join-Path $configuration $folder.Name)
-        if ((Test-Path $basepath) -and (Test-Path (Join-Path $folder.FullName "project.json")))
-        {
-            & $nuget pack $nuspec -Version $version -OutputDirectory artifacts\$configuration -BasePath $basepath
-        }
-    }
-    Else
-    {
-        DotnetPack($folder)
+        & $nuget pack $nuspec -Version $version -OutputDirectory artifacts\$configuration -BasePath $basepath
+        ProcessLastExitCode $lastexitcode "nuget pack $nuspec error"
     }
 }
 
@@ -137,29 +137,29 @@ if ($prod -eq $true)
 Write-Host "Start to restore package"
 foreach ($folder in @("src", "test", "tools", "plugins"))
 {
-    CD $folder
+    Set-Location $folder
     & dotnet restore
     ProcessLastExitCode $lastexitcode "dotnet restore $folder error"
-    CD ..
+    Set-Location ..
 }
 
 # Build project
 Write-Host "Start to build project"
-foreach ($folder in (dir @("src", "plugins")))
+foreach ($folder in (Get-ChildItem @("src", "plugins")))
 {
     DotnetBuild($folder)
 }
 
 # Publish project
 Write-Host "Start to publish project"
-foreach ($folder in (dir @("src", "plugins")))
+foreach ($folder in (Get-ChildItem @("src", "plugins")))
 {
     DotnetPublish($folder)
 }
 
 # Run unit test cases
 Write-Host "Start to run unit test"
-foreach ($folder in (dir "test"))
+foreach ($folder in (Get-ChildItem "test"))
 {
     if ((Test-Path (Join-Path $folder.FullName "project.json")) -and ($folder.Name -ne "Shared") -and ($folder.Name -ne "docfx.E2E.Tests"))
     {
@@ -170,47 +170,52 @@ foreach ($folder in (dir "test"))
 
 # Build tools
 Write-Host "Build tools"
-foreach ($folder in (dir "tools"))
+foreach ($folder in (Get-ChildItem "tools"))
 {
     DotnetBuild($folder)
 }
 
 # Publish tools
 Write-Host "Publish tools"
-foreach ($folder in (dir "tools"))
+foreach ($folder in (Get-ChildItem "tools"))
 {
     DotnetPublish($folder)
 }
 
 # Pack artifacts
 Write-Host "Publish artifacts"
-foreach ($folder in (dir "src"))
+foreach ($folder in (Get-ChildItem "src"))
 {
     DotnetPack($folder)
 }
 
-# Get version
-$version = "1.0.0"
-if (Test-Path "TEMP/version.txt")
-{
-    $version = cat "TEMP/version.txt"
-    $version = $version.Substring(1)
-}
-
 # Pack plugins
-foreach ($folder in (dir "plugins"))
+foreach ($folder in (Get-ChildItem "plugins"))
 {
-    NugetPack $folder $version
+    $nuspecs = Join-Path $folder.FullName "*.nuspec" -Resolve
+    if ($nuspecs)
+    {
+       foreach ($nuspec in $nuspecs)
+       {
+           NugetPack "target\$configuration\$($folder.Name)" $nuspec
+       }
+    }
+    else
+    {
+        DotnetPack($folder)
+    }
 }
 
 # Pack docfx.console
-PackNuspecProject "target\$configuration\docfx" "src\nuspec\docfx.console\docfx.console.nuspec"
+Copy-Item -Path "src\nuspec\docfx.console\build" -Destination "target\$configuration\docfx" -Force -Recurse
+Copy-Item -Path "src\nuspec\docfx.console\content" -Destination "target\$configuration\docfx" -Force -Recurse
+NugetPack "target\$configuration\docfx" "src\nuspec\docfx.console\docfx.console.nuspec"
 
 # Pack azure tools
-PackNuspecProject "target\$configuration\AzureMarkdownRewriterTool" "src\nuspec\AzureMarkdownRewriterTool\AzureMarkdownRewriterTool.nuspec"
+NugetPack "target\$configuration\AzureMarkdownRewriterTool" "src\nuspec\AzureMarkdownRewriterTool\AzureMarkdownRewriterTool.nuspec"
 
 # Pack DfmHttpService
-PackNuspecProject "target\$configuration\DfmHttpService" "src\nuspec\DfmHttpService\DfmHttpService.nuspec"
+NugetPack "target\$configuration\DfmHttpService" "src\nuspec\DfmHttpService\DfmHttpService.nuspec"
 
 # Build VscPreviewExe
 src\VscPreviewExtension\buildVscPreviewExe.cmd -c $configuration

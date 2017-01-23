@@ -14,6 +14,6 @@
     <tags>DFM markdown docascode docfx</tags>
   </metadata>
   <files>
-    <file src="tools/**" target=""/>
+    <file src="**" target="tools/" exclude="**/*.pdb"/>
   </files>
 </package>
