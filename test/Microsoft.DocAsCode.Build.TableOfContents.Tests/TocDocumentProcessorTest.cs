@@ -642,6 +642,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                 YamlUtility.Serialize(swForExpected, expected);
                 using (var swForActual = new StringWriter())
                 {
+                    actual.Metadata.Clear();
                     YamlUtility.Serialize(swForActual, actual);
                     Assert.Equal(swForExpected.ToString(), swForActual.ToString());
                 }
