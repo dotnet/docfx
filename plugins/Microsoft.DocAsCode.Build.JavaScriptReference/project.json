@@ -40,7 +40,8 @@
   },
   "publishOptions": {
     "include": [
-      "docfx.plugins.config"
+      "docfx.plugins.config",
+      "resources"
     ]
   }
 }
