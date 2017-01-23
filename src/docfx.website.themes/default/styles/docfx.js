@@ -349,6 +349,9 @@ $(function () {
       var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
       if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
       $('#sidetoc').load(tocPath + " #sidetoggle > div", function () {
+        if ($('footer').is(':visible')) {
+          $(".sidetoc").css("bottom", "70px");
+        }
         registerTocEvents();
 
         var index = tocPath.lastIndexOf('/');
