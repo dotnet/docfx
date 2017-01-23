@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var primaryItem = page.Items[0];
             var itemsToSplit = page.Items.Skip(1);
 
-            var children = new SortedList<string, TreeItem>();
+            var children = new List<TreeItem>();
             var splittedModels = new List<FileModel>();
 
             var group = (from item in itemsToSplit group item by item.Overload into o select o).ToList();
@@ -93,14 +93,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                         splittedModels.Add(m.FileModel);
 
                         // Order toc by display name
-                        children.Add(GetDisplayName(m.TreeItem), m.TreeItem);
+                        children.Add(m.TreeItem);
                     }
                 }
                 else
                 {
                     var m = GenerateOverloadPage(page, model, overload);
                     splittedModels.Add(m.FileModel);
-                    children.Add(GetDisplayName(m.TreeItem), m.TreeItem);
+                    children.Add(m.TreeItem);
                 }
             }
 
@@ -112,8 +112,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             // Regenerate uids
             model.Uids = CalculateUids(page, model.LocalPathFromRoot);
             model.Content = page;
-
-            return new SplittedResult(primaryItem.Uid, children.Values, splittedModels);
+            return new SplittedResult(primaryItem.Uid, children.OrderBy(s => GetDisplayName(s)), splittedModels);
         }
         
         private ModelWrapper GenerateNonOverloadPage(PageViewModel page, FileModel model, ItemViewModel item)
@@ -194,7 +193,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 ?? GetPropertyValue<string>(metadata, Constants.PropertyName.FullName)
                 ?? GetPropertyValue<string>(metadata, Constants.PropertyName.TopicUid);
         }
-
 
         /// <summary>
         /// TODO: can save minimum info when ApiBuildOutput depends on global references instead of current page only
