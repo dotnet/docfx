@@ -1,9 +1,10 @@
 ﻿Version Notes (Current Version: v2.11)
 =======================================
-v2.11(Pre-Release)
+v2.11
 -----------
 1.  Export custom href generator.
-2.  Bug fixes:
+2.  Use attribute driven data model for ManagedReference
+3.  Bug fixes:
     1. Generate overload name/fullname form generic method should not contain method parameter.
     2. Fix href for markdown link to non-exist files in include files.
 
