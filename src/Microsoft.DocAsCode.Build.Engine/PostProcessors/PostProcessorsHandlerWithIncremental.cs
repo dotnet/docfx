@@ -173,7 +173,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var currentCachedFileName = IncrementalUtility.GetRandomEntry(_increContext.CurrentBaseDir);
 
                     // Copy last cached file to current cached file
-                    File.Copy(lastCachedFile, Path.Combine(_increContext.CurrentBaseDir, currentCachedFileName));
+                    EnvironmentContext.FileAbstractLayer.Copy(lastCachedFile, Path.Combine(_increContext.CurrentBaseDir, currentCachedFileName));
                     _increContext.CurrentInfo.PostProcessOutputs.Add(outputRelPath, currentCachedFileName);
                 });
             }
@@ -189,7 +189,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var currentCachedFileName = IncrementalUtility.GetRandomEntry(_increContext.CurrentBaseDir);
 
                     // Copy output to current cached file
-                    File.Copy(outputPath, Path.Combine(_increContext.CurrentBaseDir, currentCachedFileName));
+                    EnvironmentContext.FileAbstractLayer.Copy(outputPath, Path.Combine(_increContext.CurrentBaseDir, currentCachedFileName));
                     _increContext.CurrentInfo.PostProcessOutputs.Add(outputRelPath, currentCachedFileName);
                 });
             }
@@ -214,12 +214,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // Copy last cached file to output
                     var outputPath = Path.Combine(outputFolder, outputRelPath);
                     var lastCachedFile = Path.Combine(_increContext.LastBaseDir, lastCachedRelPath);
-                    var outputDir = Path.GetDirectoryName(outputPath);
-                    if (!string.IsNullOrEmpty(outputDir))
-                    {
-                        Directory.CreateDirectory(outputDir);
-                    }
-                    File.Copy(lastCachedFile, outputPath, true);
+                    EnvironmentContext.FileAbstractLayer.Copy(lastCachedFile, outputPath);
                 });
             }
         }
