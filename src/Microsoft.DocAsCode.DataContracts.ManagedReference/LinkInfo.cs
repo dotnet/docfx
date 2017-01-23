@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     {
         [YamlMember(Alias = "linkType")]
         [JsonProperty("linkType")]
+        [MergeOption(MergeOption.Ignore)]
         public LinkType LinkType { get; set; }
 
         [YamlMember(Alias = "linkId")]
@@ -24,6 +25,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [YamlMember(Alias = Constants.PropertyName.CommentId)]
         [JsonProperty(Constants.PropertyName.CommentId)]
+        [MergeOption(MergeOption.Ignore)]
         public string CommentId { get; set; }
 
         [YamlMember(Alias = "altText")]

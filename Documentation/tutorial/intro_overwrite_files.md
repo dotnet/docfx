@@ -91,7 +91,7 @@ attributes              | [Attribute](#attribute)[]  | Ignore.
 children                | uid[]                      | Ignore.
 documentation           | [Source](#source)          | Merge.
 example                 | string[]                   | Replace.
-exceptions              | [Cref](#cref)[]            | Merge keyed list.
+exceptions              | [LinkInfo](#linkinfo)[]    | Merge keyed list.
 fullName                | string                     | Replace.
 fullName.<lang>         | string                     | Replace.
 id                      | string                     | Replace.
@@ -109,8 +109,8 @@ overridden              | uid                        | Replace.
 parent                  | uid                        | Replace.
 platform                | string[]                   | Replace.
 *remarks*               | markdown                   | Replace.
-see                     | [Cref](#cref)[]            | Merge keyed list.
-seealso                 | [Cref](#cref)[]            | Merge keyed list.
+see                     | [LinkInfo](#linkinfo)[]    | Merge keyed list.
+seealso                 | [LinkInfo](#linkinfo)[]    | Merge keyed list.
 source                  | [Source](#source)          | Merge.
 *syntax*                | [Syntax](#syntax)          | Merge.
 *summary*               | markdown                   | Replace.
@@ -153,12 +153,13 @@ name                    | string                     | Replace.
 email                   | string                     | Replace.
 date                    | datetime                   | Replace.
 
-#### Cref
+#### LinkInfo
 Property                | Type                       | Overwrite behavior
 ----------------------- | -------------------------- | ------------------
-**type**                | uid                        | Merge key.
-*description*           | markdown                   | Replace.
-commentId               | string                     | Replace.
+**linkId**              | uid or href                | Merge key.
+*altText*               | markdown                   | Replace.
+commentId               | string                     | Ignore.
+linkType                | enum(`CRef` or `HRef`)     | Ignore.
 
 #### Syntax
 Property                | Type                       | Overwrite behavior
