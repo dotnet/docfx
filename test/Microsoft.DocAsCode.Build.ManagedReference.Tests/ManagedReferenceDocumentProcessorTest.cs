@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
@@ -12,6 +13,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
     using Microsoft.DocAsCode.Build.ManagedReference;
     using Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
@@ -239,6 +241,47 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.Equal("<p sourcefile=\"TestData/overwrite/mref.overwrite.multi.uid.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">Overwrite &quot;content2&quot;</p>\n", model.Summary);
                 Assert.Equal("<p sourcefile=\"TestData/overwrite/mref.overwrite.multi.uid.md\" sourcestartlinenumber=\"20\" sourceendlinenumber=\"20\">Overwrite &#39;content3&#39;</p>\n", model.Metadata["not_defined_property"]);
             }
+        }
+
+        [Fact]
+        public void ProcessMrefModelIsSupportIncremental()
+        {
+            var ft = _defaultFiles.EnumerateFiles().First();
+            var p = new ManagedReferenceDocumentProcessor();
+            var expected = p.Load(ft, ImmutableDictionary<string, object>.Empty);
+            var expectedVM = (PageViewModel)expected.Content;
+            expectedVM.Metadata["a"] = new List<string> { "b" };
+            expectedVM.Items[0].Metadata["a"] = new List<int> { 1 };
+            var actual = new Func<FileModel>(
+                () =>
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        p.SaveIntermediateModel(expected, ms);
+                        ms.Position = 0;
+                        return p.LoadIntermediateModel(ms);
+                    }
+                })();
+            var actualVM = (PageViewModel)actual.Content;
+
+            Assert.NotSame(expected, actual);
+            Assert.NotSame(expectedVM, actualVM);
+
+            Assert.Equal(from uid in expected.Uids select uid.Name, from uid in actual.Uids select uid.Name);
+            Assert.Equal(expected.FileAndType, actual.FileAndType);
+            Assert.Equal(expected.DocumentType, actual.DocumentType);
+            Assert.Equal(expected.Key, actual.Key);
+            Assert.Equal(expected.LocalPathFromRoot, actual.LocalPathFromRoot);
+            Assert.Equal(expected.OriginalFileAndType, actual.OriginalFileAndType);
+
+            Assert.Equal(expectedVM.Metadata["a"].GetType(), actualVM.Metadata["a"].GetType());
+            Assert.Equal((List<string>)expectedVM.Metadata["a"], (List<string>)actualVM.Metadata["a"]);
+            Assert.Equal(expectedVM.Items[0].Metadata["a"].GetType(), actualVM.Items[0].Metadata["a"].GetType());
+            Assert.Equal((List<int>)expectedVM.Items[0].Metadata["a"], (List<int>)actualVM.Items[0].Metadata["a"]);
+            Assert.Equal(expectedVM.Items[0].Names, actualVM.Items[0].Names);
+            Assert.Equal(expectedVM.Items[0].NamesWithType, actualVM.Items[0].NamesWithType);
+            Assert.Equal(expectedVM.Items[0].FullNames, actualVM.Items[0].FullNames);
+            Assert.Equal(expectedVM.Items[0].Modifiers, actualVM.Items[0].Modifiers);
         }
 
         private void BuildDocument(FileCollection files)
