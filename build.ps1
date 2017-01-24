@@ -16,14 +16,6 @@ $ErrorActionPreference = 'Stop'
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptHome = Split-Path $scriptPath
 
-# Get version
-$version = "1.0.0"
-if (Test-Path "TEMP\version.txt")
-{
-    $version = Get-Content "TEMP\version.txt"
-    $version = $version.Substring(1)
-}
-
 function DotnetBuild {
     param($folder)
     if (Test-Path (Join-Path $folder.FullName "project.json"))
@@ -131,6 +123,14 @@ if ($prod -eq $true)
 {
     & ".\UpdateVersion.cmd"
     ProcessLastExitCode $lastexitcode "Update version error"
+}
+
+# Get version
+$version = "1.0.0"
+if (Test-Path "TEMP\version.txt")
+{
+    $version = Get-Content "TEMP\version.txt"
+    $version = $version.Substring(1)
 }
 
 # Restore package
