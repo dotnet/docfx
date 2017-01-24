@@ -342,14 +342,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             var originalHref = link.GetAttributeValue(attribute, null);
             var anchor = link.GetAttributeValue("anchor", null);
             link.Attributes.Remove("anchor");
-            var path = RelativePath.TryParse(originalHref);
+            var originalPath = UriUtility.GetPath(originalHref);
+            var path = RelativePath.TryParse(originalPath);
 
             if (path == null)
             {
                 return;
             }
 
-            var hi = new FileLinkInfo
+            var fli = new FileLinkInfo
             {
                 FromFileInSource = sourceFilePath,
                 FromFileInDest = destFilePath,
@@ -358,29 +359,29 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (path.IsFromWorkingFolder())
             {
                 var targetInSource = path.UrlDecode();
-                hi.ToFileInSource = targetInSource.RemoveWorkingFolder();
-                hi.ToFileInDest = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(targetInSource));
-                hi.FileLinkInSource = targetInSource - (RelativePath)sourceFilePath;
-                if (hi.ToFileInDest != null)
+                fli.ToFileInSource = targetInSource.RemoveWorkingFolder();
+                fli.ToFileInDest = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(targetInSource));
+                fli.FileLinkInSource = targetInSource - (RelativePath)sourceFilePath;
+                if (fli.ToFileInDest != null)
                 {
-                    var resolved = (RelativePath)hi.ToFileInDest - (RelativePath)destFilePath;
-                    hi.FileLinkInDest = resolved;
-                    hi.Href = resolved.UrlEncode();
+                    var resolved = (RelativePath)fli.ToFileInDest - (RelativePath)destFilePath;
+                    fli.FileLinkInDest = resolved;
+                    fli.Href = resolved.UrlEncode();
                 }
                 else
                 {
-                    hi.Href = (targetInSource.RemoveWorkingFolder() - ((RelativePath)sourceFilePath).RemoveWorkingFolder()).UrlEncode();
+                    fli.Href = (targetInSource.RemoveWorkingFolder() - ((RelativePath)sourceFilePath).RemoveWorkingFolder()).UrlEncode();
                 }
             }
             else
             {
-                hi.FileLinkInSource = path.UrlDecode();
-                hi.ToFileInSource = ((RelativePath)sourceFilePath + path).RemoveWorkingFolder();
-                hi.FileLinkInDest = hi.FileLinkInSource;
-                hi.Href = originalHref;
+                fli.FileLinkInSource = path.UrlDecode();
+                fli.ToFileInSource = ((RelativePath)sourceFilePath + path).RemoveWorkingFolder();
+                fli.FileLinkInDest = fli.FileLinkInSource;
+                fli.Href = originalPath;
             }
-            var href = _settings.HrefGenerator?.GenerateHref(hi) ?? hi.Href;
-            link.SetAttributeValue(attribute, href + anchor);
+            var href = _settings.HrefGenerator?.GenerateHref(fli) ?? fli.Href;
+            link.SetAttributeValue(attribute, href + UriUtility.GetQueryString(originalHref) + (anchor ?? UriUtility.GetFragment(originalHref)));
         }
 
         private struct FileLinkInfo : IFileLinkInfo
