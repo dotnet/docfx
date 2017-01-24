@@ -342,7 +342,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var originalHref = link.GetAttributeValue(attribute, null);
             var anchor = link.GetAttributeValue("anchor", null);
             link.Attributes.Remove("anchor");
-            var path = RelativePath.TryParse(originalHref);
+            var path = RelativePath.TryParse(UriUtility.GetPath(originalHref));
 
             if (path == null)
             {
@@ -377,10 +377,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                 hi.FileLinkInSource = path.UrlDecode();
                 hi.ToFileInSource = ((RelativePath)sourceFilePath + path).RemoveWorkingFolder();
                 hi.FileLinkInDest = hi.FileLinkInSource;
-                hi.Href = originalHref;
+                hi.Href = UriUtility.GetPath(originalHref);
             }
             var href = _settings.HrefGenerator?.GenerateHref(hi) ?? hi.Href;
-            link.SetAttributeValue(attribute, href + anchor);
+            link.SetAttributeValue(attribute, href + UriUtility.GetQueryString(originalHref) + (anchor ?? UriUtility.GetFragment(originalHref)));
         }
 
         private struct FileLinkInfo : IFileLinkInfo

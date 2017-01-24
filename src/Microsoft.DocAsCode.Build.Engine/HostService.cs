@@ -221,15 +221,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (RelativePath.IsRelativePath(linkFile))
                 {
                     var path = (RelativePath)ft.File + (RelativePath)linkFile;
-                    string file = path.GetPathFromWorkingFolder().UrlDecode();
+                    var file = path.GetPathFromWorkingFolder().UrlDecode();
                     if (SourceFiles.ContainsKey(file))
                     {
-                        link.Value = file;
+                        string anchorInHref;
                         if (!string.IsNullOrEmpty(anchor) &&
                             string.Equals(link.Name, "href", StringComparison.OrdinalIgnoreCase))
                         {
-                            pair.Node.SetAttributeValue("anchor", anchor);
+                            anchorInHref = anchor;
                         }
+                        else
+                        {
+                            anchorInHref = null;
+                        }
+
+                        link.Value = file.UrlEncode().ToString() + anchorInHref;
                     }
 
                     List<LinkSourceInfo> sources;
