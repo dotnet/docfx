@@ -30,6 +30,11 @@
       }
     }
   },
+  "publishOptions": {
+    "include": [
+      "resources/**"
+    ]
+  },
   "frameworks": {
     "net452": {}
   }
