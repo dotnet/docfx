@@ -635,14 +635,17 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             yield return typeof(TocDocumentProcessor).Assembly;
         }
 
-        private static void AssertTocEqual(TocItemViewModel expected, TocItemViewModel actual)
+        private static void AssertTocEqual(TocItemViewModel expected, TocItemViewModel actual, bool noMetadata = true)
         {
             using (var swForExpected = new StringWriter())
             {
                 YamlUtility.Serialize(swForExpected, expected);
                 using (var swForActual = new StringWriter())
                 {
-                    actual.Metadata.Clear();
+                    if (noMetadata)
+                    {
+                        actual.Metadata.Clear();
+                    }
                     YamlUtility.Serialize(swForActual, actual);
                     Assert.Equal(swForExpected.ToString(), swForActual.ToString());
                 }
