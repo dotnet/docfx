@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
   <metadata>
-    <id>Microsoft.DocAsCode.Build.MemberLevelManagedReference</id>
+    <id>memberpage.plugins</id>
     <version>1.0.0</version>
-    <title>Microsoft.DocAsCode.Build.MemberLevelManagedReference</title>
+    <title>memberpage.plugins</title>
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
