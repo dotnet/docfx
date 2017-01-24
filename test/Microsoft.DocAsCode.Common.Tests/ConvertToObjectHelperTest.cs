@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     using Microsoft.DocAsCode.Common;
 
+    using Newtonsoft.Json;
     using Xunit;
 
     [Trait("Owner", "lianwei")]
@@ -65,11 +66,11 @@ namespace Microsoft.DocAsCode.Common.Tests
 
         private sealed class ComplexTypeWithJson
         {
-            [Newtonsoft.Json.JsonProperty("str")]
+            [JsonProperty("str")]
             public string String { get; set; }
-            [Newtonsoft.Json.JsonProperty("list")]
+            [JsonProperty("list")]
             public List<string> List { get; set; }
-            [Newtonsoft.Json.JsonProperty("dict")]
+            [JsonProperty("dict")]
             public Dictionary<int, string> IntDictionary { get; set; }
         }
     }
