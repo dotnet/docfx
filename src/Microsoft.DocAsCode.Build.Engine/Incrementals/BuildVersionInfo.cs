@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// deserialized manifestitems
         /// </summary>
         [JsonIgnore]
-        public IEnumerable<ManifestItem> Manifest { get; set; }
+        public IEnumerable<ManifestItem> Manifest { get; private set; }
         /// <summary>
         /// deserialized outputs
         /// </summary>
@@ -93,6 +93,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         [JsonIgnore]
         public BuildMessage BuildMessage { get; private set; } = new BuildMessage();
         #endregion
+
+        public void SetManifest(string baseDir, IEnumerable<ManifestItem> manifest)
+        {
+            Manifest = manifest;
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestFile), Manifest);
+        }
 
         internal void Load(string baseDir)
         {
