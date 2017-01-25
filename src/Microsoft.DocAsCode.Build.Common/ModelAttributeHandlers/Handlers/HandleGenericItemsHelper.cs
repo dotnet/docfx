@@ -94,7 +94,8 @@ namespace Microsoft.DocAsCode.Build.Common
             var genericType = ReflectionHelper.GetGenericType(type, genericInterface);
             if (genericType != null)
             {
-                var instance = (IHandleItems)ReflectionHelper.CreateGenericObject(genericType, implHandlerType, currentObj);
+                //var instance = (IHandleItems)ReflectionHelper.CreateGenericObject(genericType, implHandlerType, currentObj);
+                var instance = (IHandleItems)ReflectionHelper.CreateInstance(implHandlerType, genericType.GenericTypeArguments, new[] { genericType }, new object[] { currentObj });
                 if (instance != null)
                 {
                     instance.Handle(handler);
@@ -109,9 +110,10 @@ namespace Microsoft.DocAsCode.Build.Common
             void Handle(Func<object, object> handler);
         }
 
-        private class EnumerateIEnumerableItems<TValue> : IHandleItems
+        public sealed class EnumerateIEnumerableItems<TValue> : IHandleItems
         {
             private readonly IList<TValue> _list;
+
             public EnumerateIEnumerableItems(IEnumerable<TValue> list)
             {
                 _list = list.ToList();
@@ -131,9 +133,10 @@ namespace Microsoft.DocAsCode.Build.Common
             }
         }
 
-        private class EnumerateIDictionaryItems<TKey, TValue> : IHandleItems
+        public sealed class EnumerateIDictionaryItems<TKey, TValue> : IHandleItems
         {
             private readonly EnumerateIEnumerableItems<TValue> _enumerateItems;
+
             public EnumerateIDictionaryItems(IDictionary<TKey, TValue> dict)
             {
                 _enumerateItems = new EnumerateIEnumerableItems<TValue>(dict.Values);
@@ -145,9 +148,10 @@ namespace Microsoft.DocAsCode.Build.Common
             }
         }
 
-        private class EnumerateIReadonlyDictionaryItems<TKey, TValue> : IHandleItems
+        public sealed class EnumerateIReadonlyDictionaryItems<TKey, TValue> : IHandleItems
         {
             private readonly EnumerateIEnumerableItems<TValue> _enumerateItems;
+
             public EnumerateIReadonlyDictionaryItems(IReadOnlyDictionary<TKey, TValue> dict)
             {
                 _enumerateItems = new EnumerateIEnumerableItems<TValue>(dict.Values);
@@ -159,13 +163,15 @@ namespace Microsoft.DocAsCode.Build.Common
             }
         }
 
-        private class HandleIListItems<T> : IHandleItems
+        public sealed class HandleIListItems<T> : IHandleItems
         {
             private readonly IList<T> _list;
+
             public HandleIListItems(IList<T> list)
             {
                 _list = list;
             }
+
             public void Handle(Func<object, object> handler)
             {
                 Handle(s => (T)handler((T)s));
@@ -180,13 +186,15 @@ namespace Microsoft.DocAsCode.Build.Common
             }
         }
 
-        private class HandleIDictionaryItems<TKey, TValue> : IHandleItems
+        public sealed class HandleIDictionaryItems<TKey, TValue> : IHandleItems
         {
             private readonly IDictionary<TKey, TValue> _dict;
+
             public HandleIDictionaryItems(IDictionary<TKey, TValue> dict)
             {
                 _dict = dict;
             }
+
             public void Handle(Func<object, object> handler)
             {
                 Handle(s => (TValue)handler(s));

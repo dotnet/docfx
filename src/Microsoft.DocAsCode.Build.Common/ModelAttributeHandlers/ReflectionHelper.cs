@@ -30,25 +30,117 @@ namespace Microsoft.DocAsCode.Build.Common
         private static readonly ConcurrentDictionary<Tuple<Type, Type>, Type> _genericTypeCache = new ConcurrentDictionary<Tuple<Type, Type>, Type>();
         private static readonly ConcurrentDictionary<PropertyInfo, Func<object, object>> _propertyGetterCache = new ConcurrentDictionary<PropertyInfo, Func<object, object>>();
         private static readonly ConcurrentDictionary<PropertyInfo, Action<object, object>> _propertySetterCache = new ConcurrentDictionary<PropertyInfo, Action<object, object>>();
-        private static readonly ConcurrentDictionary<Tuple<Type, Type[]>, Type> _makeGenericTypeCache = new ConcurrentDictionary<Tuple<Type, Type[]>, Type>(TupleWithArrayComparer.Default);
+        private static readonly ConcurrentDictionary<Tuple<Type, Type[], Type[]>, Func<object[], object>> _createInstanceCache = new ConcurrentDictionary<Tuple<Type, Type[], Type[]>, Func<object[], object>>(StructuralEqualityComparer<Tuple<Type, Type[], Type[]>>.Default);
 
-        public static object CreateGenericObject(Type genericType, Type objectTypeToCreate, params object[] args)
+        public static object CreateInstance(Type type, Type[] typeArguments, Type[] argumentTypes, object[] arguments)
         {
-            if (genericType == null)
+            if (type == null)
             {
-                throw new ArgumentNullException(nameof(genericType));
+                throw new ArgumentNullException(nameof(type));
             }
-
-            if (objectTypeToCreate == null)
+            if (argumentTypes == null)
             {
-                throw new ArgumentNullException(nameof(objectTypeToCreate));
+                throw new ArgumentNullException(nameof(argumentTypes));
             }
-            var genericArguments = genericType.GetGenericArguments();
+            if (arguments == null)
+            {
+                throw new ArgumentNullException(nameof(arguments));
+            }
+            var func = _createInstanceCache.GetOrAdd(
+                Tuple.Create(type, typeArguments ?? Type.EmptyTypes, argumentTypes),
+                GetCreateInstanceFunc);
+            return func(arguments);
+        }
 
-            var implType = _makeGenericTypeCache.GetOrAdd(
-                Tuple.Create(objectTypeToCreate, genericArguments),
-                s => s.Item1.MakeGenericType(s.Item2));
-            return Activator.CreateInstance(implType, args);
+        private static Func<object[], object> GetCreateInstanceFunc(Tuple<Type, Type[], Type[]> tuple)
+        {
+            var type = tuple.Item1;
+            var typeArguments = tuple.Item2;
+            var argumentTypes = tuple.Item3;
+            if (type == typeof(void))
+            {
+                return _ => { throw new ArgumentException("Void is not allowed.", nameof(type)); };
+            }
+            if (type.IsValueType)
+            {
+                var message = $"Value type ({type.FullName}) is not supported.";
+                return _ => { throw new NotSupportedException(message); };
+            }
+            if (!type.IsVisible)
+            {
+                var message = $"{nameof(type)}({type.FullName}) is invisible.";
+                return _ => { throw new NotSupportedException(message); };
+            }
+            if (Array.IndexOf(typeArguments, typeof(void)) != -1)
+            {
+                return _ => { throw new ArgumentException("Void is not allowed.", nameof(typeArguments)); };
+            }
+            var typeArgument = Array.Find(typeArguments, t => !t.IsVisible);
+            if (typeArgument != null)
+            {
+                var message = $"{nameof(typeArguments)}({typeArgument}) is invisible.";
+                return _ => { throw new NotSupportedException(message); };
+            }
+            typeArgument = Array.Find(typeArguments, t => t.IsByRef || t.IsPointer);
+            if (typeArgument != null)
+            {
+                var message = $"{nameof(typeArguments)}({typeArgument}) is not supported.";
+                return _ => { throw new NotSupportedException(message); };
+            }
+            var argumentType = Array.Find(argumentTypes, t => !t.IsVisible);
+            if (argumentType != null)
+            {
+                var message = $"{nameof(argumentTypes)}({argumentType}) is invisible.";
+                return _ => { throw new NotSupportedException(message); };
+            }
+            argumentType = Array.Find(argumentTypes, t => t.IsByRef || t.IsPointer);
+            if (argumentType != null)
+            {
+                var message = $"{nameof(argumentTypes)}({argumentType}) is not supported.";
+                return _ => { throw new NotSupportedException(message); };
+            }
+            Type finalType;
+            if (type.IsGenericTypeDefinition)
+            {
+                try
+                {
+                    finalType = type.MakeGenericType(typeArguments);
+                }
+                catch (Exception ex)
+                {
+                    return _ => { throw ex; };
+                }
+            }
+            else
+            {
+                if (typeArguments.Length > 0)
+                {
+                    return _ => { throw new ArgumentException(nameof(typeArguments)); };
+                }
+                finalType = type;
+            }
+            var ctor = finalType.GetConstructor(argumentTypes);
+            if (ctor == null)
+            {
+                return _ => { throw new ArgumentException(nameof(argumentTypes)); };
+            }
+            return GetCreateInstanceFuncCore(ctor, argumentTypes);
+        }
+
+        private static Func<object[], object> GetCreateInstanceFuncCore(ConstructorInfo ctor, Type[] argumentTypes)
+        {
+            var dm = new DynamicMethod(string.Empty, typeof(object), new[] { typeof(object[]) });
+            var il = dm.GetILGenerator();
+            for (int i = 0; i < argumentTypes.Length; i++)
+            {
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldc_I4, i);
+                il.Emit(OpCodes.Ldelem_Ref);
+                il.Emit(OpCodes.Unbox_Any, argumentTypes[i]);
+            }
+            il.Emit(OpCodes.Newobj, ctor);
+            il.Emit(OpCodes.Ret);
+            return (Func<object[], object>)dm.CreateDelegate(typeof(Func<object[], object>));
         }
 
         public static List<PropertyInfo> GetSettableProperties(Type type)
@@ -233,18 +325,18 @@ namespace Microsoft.DocAsCode.Build.Common
             return (Action<object, object>)dm.CreateDelegate(typeof(Action<object, object>));
         }
 
-        private sealed class TupleWithArrayComparer : IEqualityComparer<Tuple<Type, Type[]>>
+        private sealed class StructuralEqualityComparer<T> : IEqualityComparer<T>
         {
-            public static TupleWithArrayComparer Default = new TupleWithArrayComparer();
-            private static readonly IEqualityComparer StructuralEqualityComparer = StructuralComparisons.StructuralEqualityComparer;
-            public bool Equals(Tuple<Type, Type[]> x, Tuple<Type, Type[]> y)
+            public static readonly StructuralEqualityComparer<T> Default = new StructuralEqualityComparer<T>();
+
+            public bool Equals(T x, T y)
             {
-                return StructuralEqualityComparer.Equals(x, y);
+                return StructuralComparisons.StructuralEqualityComparer.Equals(x, y);
             }
 
-            public int GetHashCode(Tuple<Type, Type[]> obj)
+            public int GetHashCode(T obj)
             {
-                return StructuralEqualityComparer.GetHashCode(obj);
+                return StructuralComparisons.StructuralEqualityComparer.GetHashCode(obj);
             }
         }
     }
