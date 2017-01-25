@@ -160,7 +160,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void UpdateManifest()
         {
-            CurrentBuildVersionInfo.Manifest = Context.ManifestItems;
+            CurrentBuildVersionInfo.SetManifest(IncrementalContext.BaseDir, Context.ManifestItems);
         }
 
         private void UpdateFileMap(IEnumerable<HostService> hostServices)
