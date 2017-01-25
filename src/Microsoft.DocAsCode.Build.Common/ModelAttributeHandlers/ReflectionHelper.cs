@@ -179,6 +179,10 @@ namespace Microsoft.DocAsCode.Build.Common
 
         private static bool IsDictionaryTypeCore(Type type)
         {
+            if (!IsIEnumerableType(type))
+            {
+                return false;
+            }
             if (typeof(IDictionary).IsAssignableFrom(type))
             {
                 return true;
@@ -261,11 +265,11 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 throw new ArgumentNullException(nameof(prop));
             }
-            var func = _propertyGetterCache.GetOrAdd(prop, p => GetGetPropertyFunc(p));
+            var func = _propertyGetterCache.GetOrAdd(prop, CreateGetPropertyFunc);
             return func(instance);
         }
 
-        private static Func<object, object> GetGetPropertyFunc(PropertyInfo prop)
+        private static Func<object, object> CreateGetPropertyFunc(PropertyInfo prop)
         {
             var dm = new DynamicMethod(string.Empty, typeof(object), new[] { typeof(object) });
             var il = dm.GetILGenerator();
@@ -298,11 +302,11 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 throw new ArgumentNullException(nameof(prop));
             }
-            var action = _propertySetterCache.GetOrAdd(prop, p => GetSetPropertyFunc(p));
+            var action = _propertySetterCache.GetOrAdd(prop, CreateSetPropertyFunc);
             action(instance, value);
         }
 
-        private static Action<object, object> GetSetPropertyFunc(PropertyInfo prop)
+        private static Action<object, object> CreateSetPropertyFunc(PropertyInfo prop)
         {
             var dm = new DynamicMethod(string.Empty, typeof(void), new[] { typeof(object), typeof(object) });
             var il = dm.GetILGenerator();
