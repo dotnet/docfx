@@ -94,7 +94,6 @@ namespace Microsoft.DocAsCode.Build.Common
             var genericType = ReflectionHelper.GetGenericType(type, genericInterface);
             if (genericType != null)
             {
-                //var instance = (IHandleItems)ReflectionHelper.CreateGenericObject(genericType, implHandlerType, currentObj);
                 var instance = (IHandleItems)ReflectionHelper.CreateInstance(implHandlerType, genericType.GenericTypeArguments, new[] { genericType }, new object[] { currentObj });
                 if (instance != null)
                 {
