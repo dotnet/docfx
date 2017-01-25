@@ -247,6 +247,65 @@ test2
         }
 
         [Trait("Related", "TemplateProcessor")]
+        [Fact]
+        public void TestMustacheTemplateProcessSingleTemplateWithRequireScriptShouldWork()
+        {
+            var templateName = "WithRequireScript.html";
+
+            string template = @"
+{{#model}}
+{{#result1}}result1 = true{{/result1}}
+{{#result2}}result2 = true{{/result2}}
+{{#result3}}result3 = true{{/result3}}
+{{/model}}
+";
+            string mainScript = @"
+var util = require('./util.js');
+
+exports.transform = function (model){
+    var url = 'https://www.microsoft.com';
+    model.model.result1 = util.isAbsolutePath(url);
+    model.model.result2 = util.isAbsolutePath(url);
+    model.model.result3 = util.isAbsolutePath(url);
+    return model;
+}";
+            string utilScript = @"
+exports.isAbsolutePath = isAbsolutePath;
+
+function isAbsolutePath(path) {
+    return /^(\w+:)?\/\//g.test(path);
+}
+";
+
+            var model = new
+            {
+                model = new Dictionary<string, object>()
+            };
+
+            var modelFileName = Path.Combine(_inputFolder, "TestTemplateProcessor_WithRequireScript.yml");
+            string inputFolder = null;
+            var item = new InternalManifestItem
+            {
+                FileWithoutExtension = Path.ChangeExtension(modelFileName, null),
+                DocumentType = string.Empty,
+                Key = modelFileName,
+                LocalPathFromRoot = modelFileName,
+            };
+            ProcessTemplate(templateName, inputFolder, new[] { item }, model, _outputFolder,
+                Tuple.Create("default.html.tmpl", template),
+                Tuple.Create("default.html.js", mainScript),
+                Tuple.Create("util.js", utilScript)
+                );
+            var outputFilePath = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, "html"));
+            Assert.True(File.Exists(outputFilePath));
+            Assert.Equal(@"
+result1 = true
+result2 = true
+result3 = true
+", File.ReadAllText(outputFilePath));
+        }
+
+        [Trait("Related", "TemplateProcessor")]
         [Trait("Related", "Mustache")]
         [Fact]
         public void TestMustacheTemplateProcessTemplateFolderWithDifferentTypeShouldWork()
