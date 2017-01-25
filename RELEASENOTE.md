@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.11.1)
+﻿Version Notes (Current Version: v2.11.2)
 =======================================
+v2.11.2
+-----------
+1. Fix bug in functions exported by embedded common template.
+
 v2.11.1
 -----------
 
