@@ -51,8 +51,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             });
 
             // Exclude c, which is not incremental
-            PrepareCachedOutput(Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName), lastBuildInfo.PostProcessInfo.PostProcessOutputs,
-                AppendStringPostProcessor.AppendString, "a", "b");
+            var preparedManifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+            PrepareCachedOutput(intermediateFolder, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "a", "b");
 
             var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
             var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
@@ -72,6 +72,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.True(manifest.Files.Single(i => i.SourceRelativePath == "a.md").IsIncremental);
             Assert.True(manifest.Files.Single(i => i.SourceRelativePath == "b.md").IsIncremental);
             Assert.False(manifest.Files.Single(i => i.SourceRelativePath == "c.md").IsIncremental);
+            foreach (var file in manifest.Files)
+            {
+                Assert.True(file.OutputFiles.ContainsKey(AppendStringPostProcessor.AdditionalExtensionString));
+            }
 
             // Check output content
             VerifyOutput(outputFolder, AppendStringPostProcessor.AppendString, "a", "b", "c");
@@ -85,8 +89,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.Null(postProcessorInfos[0].IncrementalContextHash);
 
             var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
-            Assert.Equal(6, postProcessOutputs.Count);
-            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, "a", "b", "c");
+            Assert.Equal(9, postProcessOutputs.Count);
+            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, AppendStringPostProcessor.AdditionalExtensionString, "a", "b", "c");
 
             // Check incremental info
             Assert.Equal(1, manifest.IncrementalInfo.Count);
@@ -99,9 +103,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         public void TestIncrementalWithFirstCannotIncrementalButSecondCanIncremental()
         {
             //        | Should trace incremental info | Can incremental |
-            // -----------------------------------------------
-            // First  |               yes             |       no       |
-            // Second |               yes             |       yes        |
+            // ---------------------------------------------------------
+            // First  |               yes             |       no        |
+            // Second |               yes             |       yes       |
 
             var intermediateFolder = GetRandomFolder();
             const string phaseName = PrependIncrementalPhaseName + "FirstCannotIncrementalButSecondCanIncremental";
@@ -150,9 +154,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                         Assert.Equal(new List<string> { "a.html", "b.html", "c.html" },
                             JsonUtility.Deserialize<List<string>>(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName, postProcessorInfos[1].ContextInfoFile)));
 
+                        Assert.Equal(3, currentBuildInfo.PostProcessInfo.ManifestItems.Count);
+                        Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
+
                         var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
-                        Assert.Equal(6, postProcessOutputs.Count);
-                        VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, appendString, "a", "b", "c");
+                        Assert.Equal(9, postProcessOutputs.Count);
+                        VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, appendString, AppendStringPostProcessor.AdditionalExtensionString, "a", "b", "c");
 
                         // Check log messages
                         var logs = Listener.Items.Where(i => i.Phase.StartsWith(phaseName)).ToList();
@@ -190,6 +197,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                         Assert.True(manifest.Files.Single(i => i.SourceRelativePath == "a.md").IsIncremental);
                         Assert.True(manifest.Files.Single(i => i.SourceRelativePath == "b.md").IsIncremental);
                         Assert.False(manifest.Files.Single(i => i.SourceRelativePath == "c.md").IsIncremental);
+                        foreach (var file in manifest.Files)
+                        {
+                            Assert.True(file.OutputFiles.ContainsKey(AppendStringPostProcessor.AdditionalExtensionString));
+                        }
 
                         // Check output content
                         VerifyOutput(outputFolder, appendString, "a", "b", "c");
@@ -207,9 +218,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                         Assert.Equal(new List<string> { "a.html", "b.html", "c.html" },
                             JsonUtility.Deserialize<List<string>>(Path.Combine(intermediateFolder, secondBuildInfo.DirectoryName, postProcessorInfos[1].ContextInfoFile)));
 
+                        Assert.Equal(3, secondBuildInfo.PostProcessInfo.ManifestItems.Count);
+                        Assert.Equal(manifest.Files, secondBuildInfo.PostProcessInfo.ManifestItems);
+
                         var postProcessOutputs = secondBuildInfo.PostProcessInfo.PostProcessOutputs;
-                        Assert.Equal(6, postProcessOutputs.Count);
-                        VerifyCachedOutput(Path.Combine(intermediateFolder, secondBuildInfo.DirectoryName), postProcessOutputs, appendString, "a", "b", "c");
+                        Assert.Equal(9, postProcessOutputs.Count);
+                        VerifyCachedOutput(Path.Combine(intermediateFolder, secondBuildInfo.DirectoryName), postProcessOutputs, appendString, AppendStringPostProcessor.AdditionalExtensionString, "a", "b", "c");
 
                         // Check log messages
                         var logs = Listener.Items.Where(i => i.Phase.StartsWith(phaseName)).ToList();
@@ -223,7 +237,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         public void TestIncrementalWithFirstCanIncrementalButSecondCannotIncremental()
         {
             //        | Should trace incremental info | Can incremental |
-            // -----------------------------------------------
+            // ---------------------------------------------------------
             // First  |               yes             |       yes       |
             // Second |               yes             |       no        |
 
@@ -244,8 +258,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             });
 
             // Exclude c, which is not incremental
-            PrepareCachedOutput(Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName), lastBuildInfo.PostProcessInfo.PostProcessOutputs,
-                AppendStringPostProcessor.AppendString, "a", "b");
+            var preparedManifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+            PrepareCachedOutput(intermediateFolder, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "a", "b");
 
             var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
             var appendString = $"{AppendStringPostProcessor.AppendString}";
@@ -268,15 +282,19 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.True(host.IsIncremental);
             Assert.Equal(3, host.SourceFileInfos.Count);
             Assert.Equal("Conceptual", host.SourceFileInfos.Select(f => f.DocumentType).Distinct().Single());
-            Assert.Equal("a.md", host.SourceFileInfos[0].SourceRelativePath);
-            Assert.Equal("b.md", host.SourceFileInfos[1].SourceRelativePath);
-            Assert.Equal("c.md", host.SourceFileInfos[2].SourceRelativePath);
+            Assert.NotNull(host.SourceFileInfos.Single(i => i.SourceRelativePath == "a.md"));
+            Assert.NotNull(host.SourceFileInfos.Single(i => i.SourceRelativePath == "b.md"));
+            Assert.NotNull(host.SourceFileInfos.Single(i => i.SourceRelativePath == "c.md"));
 
             // Check incremental flag
             Assert.Equal(3, manifest.Files.Count);
             Assert.True(manifest.Files.Single(i => i.SourceRelativePath == "a.md").IsIncremental);
             Assert.True(manifest.Files.Single(i => i.SourceRelativePath == "b.md").IsIncremental);
             Assert.False(manifest.Files.Single(i => i.SourceRelativePath == "c.md").IsIncremental);
+            foreach (var file in manifest.Files)
+            {
+                Assert.True(file.OutputFiles.ContainsKey(AppendStringPostProcessor.AdditionalExtensionString));
+            }
 
             // Check output content
             VerifyOutput(outputFolder, appendString, "a", "b", "c");
@@ -288,10 +306,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.Equal(1, currentBuildInfo.PostProcessInfo.PostProcessorInfos.Count);
             Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
             Assert.Null(postProcessorInfos[0].IncrementalContextHash);
+            
+            Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
 
             var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
-            Assert.Equal(6, postProcessOutputs.Count);
-            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, appendString, "a", "b", "c");
+            Assert.Equal(9, postProcessOutputs.Count);
+            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, appendString, AppendStringPostProcessor.AdditionalExtensionString, "a", "b", "c");
 
             // Step 2: disable incremental post process
             const bool enableIncremental = false;
@@ -323,9 +343,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.False(host.IsIncremental);
             Assert.Equal(3, host.SourceFileInfos.Count);
             Assert.Equal("Conceptual", host.SourceFileInfos.Select(f => f.DocumentType).Distinct().Single());
-            Assert.Equal("a.md", host.SourceFileInfos[0].SourceRelativePath);
-            Assert.Equal("b.md", host.SourceFileInfos[1].SourceRelativePath);
-            Assert.Equal("c.md", host.SourceFileInfos[2].SourceRelativePath);
+            Assert.NotNull(host.SourceFileInfos.Single(i => i.SourceRelativePath == "a.md"));
+            Assert.NotNull(host.SourceFileInfos.Single(i => i.SourceRelativePath == "b.md"));
+            Assert.NotNull(host.SourceFileInfos.Single(i => i.SourceRelativePath == "c.md"));
 
             // Check incremental flag
             Assert.True(manifest.Files.All(f => f.IsIncremental == false));
@@ -341,16 +361,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
             Assert.Null(postProcessorInfos[0].IncrementalContextHash);
 
+            Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
+
             postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
-            Assert.Equal(6, postProcessOutputs.Count);
-            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, appendString, "a", "b", "c");
+            Assert.Equal(9, postProcessOutputs.Count);
+            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, appendString, AppendStringPostProcessor.AdditionalExtensionString, "a", "b", "c");
         }
 
         [Fact]
         public void TestIncrementalWithFirstCanIncrementalButSecondShouldnotTraceIncrementalInfo()
         {
             //        | Should trace incremental info | Can incremental |
-            // -----------------------------------------------
+            // ---------------------------------------------------------
             // First  |               yes             |       yes       |
             // Second |               no              |       no        |
 
@@ -371,8 +393,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             });
 
             // Exclude c, which is not incremental
-            PrepareCachedOutput(Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName), lastBuildInfo.PostProcessInfo.PostProcessOutputs,
-                AppendStringPostProcessor.AppendString, "a", "b");
+            var preparedManifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+            PrepareCachedOutput(intermediateFolder, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "a", "b");
 
             var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
             var appendString = $"{AppendStringPostProcessor.AppendString}";
@@ -393,6 +415,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.True(manifest.Files.Single(i => i.SourceRelativePath == "a.md").IsIncremental);
             Assert.True(manifest.Files.Single(i => i.SourceRelativePath == "b.md").IsIncremental);
             Assert.False(manifest.Files.Single(i => i.SourceRelativePath == "c.md").IsIncremental);
+            foreach (var file in manifest.Files)
+            {
+                Assert.True(file.OutputFiles.ContainsKey(AppendStringPostProcessor.AdditionalExtensionString));
+            }
 
             // Check output content
             VerifyOutput(outputFolder, appendString, "a", "b", "c");
@@ -405,9 +431,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
             Assert.Null(postProcessorInfos[0].IncrementalContextHash);
 
+            Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
+
             var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
-            Assert.Equal(6, postProcessOutputs.Count);
-            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, appendString, "a", "b", "c");
+            Assert.Equal(9, postProcessOutputs.Count);
+            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, appendString, AppendStringPostProcessor.AdditionalExtensionString, "a", "b", "c");
 
             // Step 2: should not trace inter incremental post process
             currentBuildInfo = new BuildInfo
@@ -463,8 +491,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             });
 
             // Exclude c, which is not incremental
-            PrepareCachedOutput(Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName), lastBuildInfo.PostProcessInfo.PostProcessOutputs,
-                AppendStringPostProcessor.AppendString, "a/b");
+            var preparedManifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental_with_directory.json");
+            PrepareCachedOutput(intermediateFolder, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "a/b");
 
             var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
             var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
@@ -488,7 +516,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Check output content
             VerifyOutput(outputFolder, AppendStringPostProcessor.AppendString, "a/b", "c");
-            Assert.Equal("breadcrumb", File.ReadAllText(Path.Combine(outputFolder, "breadcrumb.json")));
+            Assert.Equal("breadcrumb", EnvironmentContext.FileAbstractLayer.ReadAllText(Path.Combine(outputFolder, "breadcrumb.json")));
 
             // Check cached PostProcessInfo
             Assert.NotNull(currentBuildInfo.PostProcessInfo);
@@ -498,9 +526,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
             Assert.Null(postProcessorInfos[0].IncrementalContextHash);
 
+            Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
+
             var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
-            Assert.Equal(4, postProcessOutputs.Count);
-            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, "a/b", "c");
+            Assert.Equal(6, postProcessOutputs.Count);
+            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, AppendStringPostProcessor.AdditionalExtensionString, "a/b", "c");
         }
 
         [Fact]
@@ -551,7 +581,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
             Assert.Equal(6, postProcessOutputs.Count);
-            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendIntegerPostProcessor.AppendInteger, "a", "b", "c");
+            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendIntegerPostProcessor.AppendInteger, null, "a", "b", "c");
+
+            Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
 
             // Check incremental info
             Assert.Equal(1, manifest.IncrementalInfo.Count);
@@ -609,8 +641,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.Null(postProcessorInfos[0].IncrementalContextHash);
 
             var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
-            Assert.Equal(6, postProcessOutputs.Count);
-            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, "a", "b", "c");
+            Assert.Equal(9, postProcessOutputs.Count);
+            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, AppendStringPostProcessor.AdditionalExtensionString, "a", "b", "c");
+
+            Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
 
             // Check incremental info
             Assert.Equal(1, manifest.IncrementalInfo.Count);
@@ -657,8 +691,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.Null(postProcessorInfos[0].IncrementalContextHash);
 
             var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
-            Assert.Equal(6, postProcessOutputs.Count);
-            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, "a", "b", "c");
+            Assert.Equal(9, postProcessOutputs.Count);
+            VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, AppendStringPostProcessor.AdditionalExtensionString, "a", "b", "c");
+
+            Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
 
             // Check incremental info
             Assert.Equal(1, manifest.IncrementalInfo.Count);
@@ -730,31 +766,60 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         {
             foreach (var fileName in fileNames)
             {
-                Assert.Equal($"{fileName}{appendContent}", File.ReadAllText(Path.Combine(outputFolder, $"{fileName}.html")));
-                Assert.Equal($"{fileName}{MetaAppendContent}", File.ReadAllText(Path.Combine(outputFolder, $"{fileName}.mta.json")));
+                Assert.Equal($"{fileName}{appendContent}", EnvironmentContext.FileAbstractLayer.ReadAllText(Path.Combine(outputFolder, $"{fileName}.html")));
+                Assert.Equal($"{fileName}{MetaAppendContent}", EnvironmentContext.FileAbstractLayer.ReadAllText(Path.Combine(outputFolder, $"{fileName}.mta.json")));
             }
         }
 
-        private static void PrepareCachedOutput(string baseFolder, PostProcessOutputs postProcessOutputs, string appendContent, params string[] fileNames)
+        private static void PrepareCachedOutput(
+            string intermediateFolder,
+            BuildInfo lastBuildInfo,
+            string appendContent,
+            List<ManifestItem> manifestItems,
+            string additionalFileExtension,
+            params string[] fileNames)
         {
+            var baseFolder = Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName);
+            var postProcessOutputs = lastBuildInfo.PostProcessInfo.PostProcessOutputs;
             foreach (var fileName in fileNames)
             {
                 var cachedHtmlName = IncrementalUtility.CreateRandomFileName(baseFolder);
-                CreateFile($"{cachedHtmlName}", $"{fileName}{appendContent}", baseFolder);
+                var htmlContent = $"{fileName}{appendContent}";
+                CreateFile($"{cachedHtmlName}", htmlContent, baseFolder);
                 postProcessOutputs.Add($"{fileName}.html", cachedHtmlName);
 
                 var cachedMetaName = IncrementalUtility.CreateRandomFileName(baseFolder);
                 CreateFile($"{cachedMetaName}", $"{fileName}{MetaAppendContent}", baseFolder);
                 postProcessOutputs.Add($"{fileName}.mta.json", cachedMetaName);
+
+                if (!string.IsNullOrEmpty(additionalFileExtension))
+                {
+                    var relativePath = $"{fileName}{additionalFileExtension}";
+                    var cachedManifestItemsFileName = IncrementalUtility.CreateRandomFileName(baseFolder);
+                    CreateFile($"{cachedManifestItemsFileName}", htmlContent, baseFolder);
+                    postProcessOutputs.Add(relativePath, cachedManifestItemsFileName);
+
+                    var item = manifestItems.FirstOrDefault(i => Path.ChangeExtension(i.SourceRelativePath, null) == fileName);
+                    if (item != null)
+                    {
+                        item.OutputFiles.Add($"{additionalFileExtension}", new OutputFileInfo { RelativePath = relativePath });
+                        lastBuildInfo.PostProcessInfo.ManifestItems.Add(item);
+                    }
+                }
             }
         }
 
-        private static void VerifyCachedOutput(string baseDirectory, PostProcessOutputs postProcessOutputs, string appendContent, params string[] fileNames)
+        private static void VerifyCachedOutput(string baseDirectory, PostProcessOutputs postProcessOutputs, string appendContent, string additionalFileExtension, params string[] fileNames)
         {
             foreach (var fileName in fileNames)
             {
-                Assert.Equal($"{fileName}{appendContent}", File.ReadAllText(Path.Combine(baseDirectory, postProcessOutputs.Single(o => o.Key == $"{fileName}.html").Value)));
-                Assert.Equal($"{fileName}{MetaAppendContent}", File.ReadAllText(Path.Combine(baseDirectory, postProcessOutputs.Single(o => o.Key == $"{fileName}.mta.json").Value)));
+                var htmlContent = $"{fileName}{appendContent}";
+                Assert.Equal(htmlContent, EnvironmentContext.FileAbstractLayer.ReadAllText(Path.Combine(baseDirectory, postProcessOutputs.Single(o => o.Key == $"{fileName}.html").Value)));
+                Assert.Equal($"{fileName}{MetaAppendContent}", EnvironmentContext.FileAbstractLayer.ReadAllText(Path.Combine(baseDirectory, postProcessOutputs.Single(o => o.Key == $"{fileName}.mta.json").Value)));
+                if (!string.IsNullOrEmpty(additionalFileExtension))
+                {
+                    Assert.True(EnvironmentContext.FileAbstractLayer.Exists(Path.Combine(baseDirectory, postProcessOutputs.Single(o => o.Key == $"{fileName}{additionalFileExtension}").Value)));
+                }
             }
         }
 

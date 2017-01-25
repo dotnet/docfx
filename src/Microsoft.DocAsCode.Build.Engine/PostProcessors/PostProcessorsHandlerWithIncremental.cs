@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             using (new LoggerPhaseScope("HandlePostProcessorsWithIncremental", LogLevel.Verbose))
             {
-                var increItems = manifest.Files.Where(i => i.IsIncremental).ToList();
+                var increItems = RestoreIncrementalManifestItems(manifest);
                 var nonIncreItems = manifest.Files.Where(i => !i.IsIncremental).ToList();
                 if (increItems.Any(i => i.DocumentType.Equals(ExcludeType, StringComparison.OrdinalIgnoreCase)))
                 {
@@ -127,6 +127,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (_increContext.ShouldTraceIncrementalInfo)
                 {
                     Logger.UnregisterListener(_increContext.CurrentInfo.MessageInfo.GetListener());
+
+                    // Update manifest items in current post processing info
+                    _increContext.CurrentInfo.ManifestItems.AddRange(manifest.Files);
                 }
 
                 if (manifest.IncrementalInfo == null)
@@ -233,6 +236,36 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new DocfxException($"{prependString} in inner post processor handler, manifest items should not have any incremental items.");
             }
+        }
+
+        private List<ManifestItem> RestoreIncrementalManifestItems(Manifest manifest)
+        {
+            var increItems = manifest.Files.Where(i => i.IsIncremental).ToList();
+
+            if (_increContext.IsIncremental)
+            {
+                var restoredIncreItems = new List<ManifestItem>();
+                foreach (var increItem in increItems)
+                {
+                    var cachedItem = _increContext.LastInfo.ManifestItems.FirstOrDefault(i => i.SourceRelativePath == increItem.SourceRelativePath);
+                    if (cachedItem == null)
+                    {
+                        throw new BuildCacheException($"Last manifest items doesn't contain the item with source relative path '{increItem.SourceRelativePath}'.");
+                    }
+
+                    // Update IsIncremental flag
+                    cachedItem.IsIncremental = true;
+
+                    restoredIncreItems.Add(cachedItem);
+                }
+
+                // Update incremental items in manifest
+                manifest.Files = manifest.Files.Except(increItems).ToList();
+                manifest.Files.AddRange(restoredIncreItems);
+                return restoredIncreItems;
+            }
+
+            return increItems;
         }
 
         #endregion
