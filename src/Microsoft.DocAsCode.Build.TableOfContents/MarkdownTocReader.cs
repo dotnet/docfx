@@ -113,7 +113,7 @@
 
             public abstract ParseState Apply(ParseState state, Match match);
 
-            protected ParseState ApplyCore(ParseState state, int level, string text, string href, string uid = null)
+            protected ParseState ApplyCore(ParseState state, int level, string text, string href, string uid = null, string displayText = null)
             {
                 if (level > state.Level + 1)
                 {
@@ -129,6 +129,7 @@
                 var item = new TocItemViewModel
                 {
                     Name = text,
+                    DisplayName = displayText,
                     Href = href,
                     Uid = uid
                 };
@@ -164,7 +165,7 @@
         {
             private static readonly Regex UidRegex = new Regex(@"^\s*(?:xref:|@)(\s*?\S+?[\s\S]*?)\s*$", RegexOptions.Compiled);
             public static readonly Regex TocRegex =
-                new Regex(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+)\]\((?<tocLink>(?!http[s]?://).*?)\)( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
+                new Regex(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+)\]\((?<tocLink>(?!http[s]?://).*?)(\)| ""(?<displayText>.*)""\))( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
 
             public override Match Match(string text) => TocRegex.Match(text);
 
@@ -174,12 +175,21 @@
                 var tocTitle = match.Groups["tocTitle"].Value;
                 var headerLevel = match.Groups["headerLevel"].Value.Length;
                 var uidMatch = UidRegex.Match(tocLink);
-                if (uidMatch.Length > 0)
+                string tocDisplayTitle = null;
+
+                var displayGrp = match.Groups["displayText"];
+
+                if (displayGrp.Success)
                 {
-                    return ApplyCore(state, headerLevel, tocTitle, null, uidMatch.Groups[1].Value);
+                    tocDisplayTitle = displayGrp.Value;
                 }
 
-                return ApplyCore(state, headerLevel, tocTitle, tocLink);
+                if (uidMatch.Length > 0)
+                {
+                    return ApplyCore(state, headerLevel, tocTitle, null, uidMatch.Groups[1].Value, tocDisplayTitle);
+                }
+
+                return ApplyCore(state, headerLevel, tocTitle, tocLink, null, tocDisplayTitle);
             }
         }
 

@@ -27,6 +27,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Documentation = "documentation";
 
             public const string Name = "name";
+            public const string DisplayName = "displayName";
             public const string NameWithType = "nameWithType";
             public const string FullName = "fullName";
             public const string TocHref = "tocHref";
