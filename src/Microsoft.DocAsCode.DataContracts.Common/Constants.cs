@@ -24,6 +24,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Title = "title";
             public const string Conceptual = "conceptual";
             public const string Documentation = "documentation";
+            public const string DisplayName = "displayName";
         }
 
         public static class DevLang
