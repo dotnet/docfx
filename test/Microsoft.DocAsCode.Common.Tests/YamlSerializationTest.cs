@@ -20,6 +20,15 @@ namespace Microsoft.DocAsCode.Common.Tests
         [InlineData(" Add --globalMetadata, --globalMetadataFile and --fileMetadataFile\n")]
         [InlineData("\r\n Hello\n")]
         [InlineData("  \r\n Hello\n")]
+        [InlineData("True")]
+        [InlineData("true")]
+        [InlineData("TRUE")]
+        [InlineData("False")]
+        [InlineData("false")]
+        [InlineData("FALSE")]
+        [InlineData("Null")]
+        [InlineData("null")]
+        [InlineData("NULL")]
         public void TestObjectWithStringProperty(string input)
         {
             var sw = new StringWriter();
@@ -28,6 +37,18 @@ namespace Microsoft.DocAsCode.Common.Tests
             var value = YamlUtility.Deserialize<BasicClass>(new StringReader(yaml));
             Assert.NotNull(value);
             Assert.Equal(input, value.C);
+        }
+
+        [Fact(Skip = "Not work in YamlDotNet 3.9")]
+        public void TestNotWorkInYamlDotNet39()
+        {
+            const string Text = "😄";
+            var sw = new StringWriter();
+            YamlUtility.Serialize(sw, new BasicClass { C = Text });
+            var yaml = sw.ToString();
+            var value = YamlUtility.Deserialize<BasicClass>(new StringReader(yaml));
+            Assert.NotNull(value);
+            Assert.Equal(Text, value.C);
         }
 
         [Fact]
