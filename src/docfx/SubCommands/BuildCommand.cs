@@ -65,7 +65,14 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 Config.Templates = new ListWithStringFallback { DocAsCode.Constants.DefaultTemplateName };
             }
-            if (config.GlobalMetadata != null || !config.GlobalMetadata.ContainsKey("_docfxVersion"))
+            if (config.GlobalMetadata == null)
+            {
+                config.GlobalMetadata = new Dictionary<string, object>
+                {
+                    ["_docfxVersion"] = _version
+                };
+            }
+            else if (!config.GlobalMetadata.ContainsKey("_docfxVersion"))
             {
                 config.GlobalMetadata["_docfxVersion"] = _version;
             }
