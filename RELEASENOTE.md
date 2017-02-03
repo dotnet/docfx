@@ -2,8 +2,11 @@
 =======================================
 v2.12(Pre-Release)
 -----------
-1. Bug fixes:
-   1. `default` template: Do not load `search-worker.js` when search is disabled in `docfx.js`
+1.  Bug fixes:
+    1. `default` template: Do not load `search-worker.js` when search is disabled in `docfx.js`
+    2. markdown list continue with def.
+    3. markdown link rule is not allowed in link text.
+    4. markdown list restore wrong context.
 
 v2.11
 -----------
