@@ -3,6 +3,10 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System.Collections.Generic;
+
+    using Microsoft.DocAsCode.YamlSerialization;
+
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
@@ -19,5 +23,9 @@ namespace Microsoft.DocAsCode.Plugins
         [YamlMember(Alias = "hash")]
         [JsonProperty("hash")]
         public string Hash { get; set; }
+
+        [ExtensibleMember]
+        [JsonExtensionData]
+        public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }
 }
