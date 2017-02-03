@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            if ((bool)parser.Context.Variables[MarkdownInlineContext.IsInLink])
+            if (MarkdownInlineContext.GetIsInLink(parser.Context))
             {
                 return null;
             }

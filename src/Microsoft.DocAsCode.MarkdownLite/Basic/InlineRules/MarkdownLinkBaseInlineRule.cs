@@ -5,6 +5,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public abstract class MarkdownLinkBaseInlineRule : IMarkdownRule
     {
+        private static object BoxedTrue = true;
+
         public abstract string Name { get; }
 
         public abstract IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context);
@@ -12,14 +14,18 @@ namespace Microsoft.DocAsCode.MarkdownLite
         protected virtual IMarkdownToken GenerateToken(IMarkdownParser parser, string href, string title, string text, bool isImage, SourceInfo sourceInfo, MarkdownLinkType linkType, string refId)
         {
             var escapedHref = Regexes.Helper.MarkdownEscape.Replace(href, m => m.Groups[1].Value);
+            var c = parser.SwitchContext(MarkdownInlineContext.IsInLink, BoxedTrue);
+            IMarkdownToken result;
             if (isImage)
             {
-                return new MarkdownImageInlineToken(this, parser.Context, escapedHref, title, text, sourceInfo, linkType, refId);
+                result = new MarkdownImageInlineToken(this, parser.Context, escapedHref, title, text, sourceInfo, linkType, refId);
             }
             else
             {
-                return new MarkdownLinkInlineToken(this, parser.Context, escapedHref, title, parser.Tokenize(sourceInfo.Copy(text)), sourceInfo, linkType, refId);
+                result = new MarkdownLinkInlineToken(this, parser.Context, escapedHref, title, parser.Tokenize(sourceInfo.Copy(text)), sourceInfo, linkType, refId);
             }
+            parser.SwitchContext(c);
+            return result;
         }
     }
 }
