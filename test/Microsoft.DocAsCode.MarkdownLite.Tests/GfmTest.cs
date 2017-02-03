@@ -538,6 +538,14 @@ aaa",
 </ul>
 ")]
         [InlineData(
+            @"* [a][a] (b)
+
+[a]: http://a.b/c",
+            @"<ul>
+<li><a href=""http://a.b/c"" data-raw-source=""[a][a]"">a</a> (b)</li>
+</ul>
+")]
+        [InlineData(
             @"[https://github.com/dotnet/docfx/](https://github.com/dotnet/docfx/)",
             @"<p><a href=""https://github.com/dotnet/docfx/"" data-raw-source=""[https://github.com/dotnet/docfx/](https://github.com/dotnet/docfx/)"">https://github.com/dotnet/docfx/</a></p>
 ")]
