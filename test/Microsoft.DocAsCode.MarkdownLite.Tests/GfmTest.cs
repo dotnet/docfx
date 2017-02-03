@@ -537,6 +537,10 @@ aaa",
 </li>
 </ul>
 ")]
+        [InlineData(
+            @"[https://github.com/dotnet/docfx/](https://github.com/dotnet/docfx/)",
+            @"<p><a href=""https://github.com/dotnet/docfx/"" data-raw-source=""[https://github.com/dotnet/docfx/](https://github.com/dotnet/docfx/)"">https://github.com/dotnet/docfx/</a></p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {

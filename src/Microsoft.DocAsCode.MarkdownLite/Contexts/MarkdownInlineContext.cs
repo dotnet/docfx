@@ -8,9 +8,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
     public class MarkdownInlineContext : IMarkdownContext
     {
         public const string IsInLink = "IsInLink";
+        private static readonly object BoxedFalse = false;
 
         public MarkdownInlineContext(ImmutableList<IMarkdownRule> rules)
-            : this(rules, ImmutableDictionary<string, object>.Empty.Add(IsInLink, false))
+            : this(rules, ImmutableDictionary<string, object>.Empty.Add(IsInLink, BoxedFalse))
         {
         }
 
@@ -29,6 +30,16 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var clone = (MarkdownInlineContext)MemberwiseClone();
             clone.Variables = variables;
             return clone;
+        }
+
+        public static bool GetIsInLink(IMarkdownContext context)
+        {
+            object value;
+            if (!context.Variables.TryGetValue(IsInLink, out value))
+            {
+                return false;
+            }
+            return value as bool? ?? false;
         }
     }
 }
