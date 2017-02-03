@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public abstract class MarkdownLinkBaseInlineRule : IMarkdownRule
     {
-        private static object BoxedTrue = true;
+        private static readonly object BoxedTrue = true;
 
         public abstract string Name { get; }
 
