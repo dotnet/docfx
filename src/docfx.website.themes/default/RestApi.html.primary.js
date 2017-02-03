@@ -4,12 +4,18 @@ var restApiCommon = require('./RestApi.common.js');
 var extension = require('./RestApi.extension.js')
 
 exports.transform = function (model) {
-  model = extension.preTransform(model);
+  if (extension && extension.preTransform) {
+    model = extension.preTransform(model);
+  }
 
-  model = restApiCommon.transform(model);
+  if (restApiCommon && restApiCommon.transform) {
+    model = restApiCommon.transform(model);
+  }
   model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
 
-  model = extension.postTransform(model);
+  if (extension && extension.postTransform) {
+    model = extension.postTransform(model);
+  }
 
   return model;
 }
