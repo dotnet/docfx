@@ -24,11 +24,12 @@ namespace Microsoft.DocAsCode.Common.Tests
             var mre3 = new ManualResetEventSlim();
             var mre4 = new ManualResetEventSlim();
             var mre5 = new ManualResetEventSlim();
+            var mre6 = new ManualResetEventSlim();
             var list = new List<int>();
-            Assert.Equal(ComputerResource.DefaultDiskIOThreshold, ComputerResource.GetAvailableDiskIOResource());
+            Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold, ComputerResource.GetAvailableDiskIOResource());
             using (ComputerResource.Require(ComputerResourceType.DiskIO))
             {
-                Assert.Equal(ComputerResource.DefaultDiskIOThreshold - 1, ComputerResource.GetAvailableDiskIOResource());
+                Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold - 1, ComputerResource.GetAvailableDiskIOResource());
                 lock (list)
                 {
                     list.Add(1);
@@ -40,15 +41,16 @@ namespace Microsoft.DocAsCode.Common.Tests
                         mre0.Wait();
                         using (ComputerResource.Require(ComputerResourceType.DiskIO))
                         {
-                            Assert.Equal(ComputerResource.DefaultDiskIOThreshold - 2, ComputerResource.GetAvailableDiskIOResource());
+                            Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold - 2, ComputerResource.GetAvailableDiskIOResource());
                             mre1.Set();
                             mre2.Wait();
                             lock (list)
                             {
                                 list.Add(2);
                             }
-                            Assert.Equal(ComputerResource.DefaultDiskIOThreshold - 2, ComputerResource.GetAvailableDiskIOResource());
-                            mre4.Set();
+                            mre4.Wait();
+                            Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold - 2, ComputerResource.GetAvailableDiskIOResource());
+                            mre5.Set();
                         }
                     });
                     ThreadPool.QueueUserWorkItem(_ =>
@@ -63,65 +65,67 @@ namespace Microsoft.DocAsCode.Common.Tests
                             }
                             mre3.Wait();
                         }
-                        mre5.Set();
+                        mre6.Set();
                     });
                 }
                 mre0.Set();
-                mre2.Wait();
-                Assert.Equal(ComputerResource.DefaultDiskIOThreshold - 2, ComputerResource.GetAvailableDiskIOResource());
+                mre1.Wait();
+                Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold - 2, ComputerResource.GetAvailableDiskIOResource());
                 mre3.Set();
-                mre4.Wait();
+                Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold - 2, ComputerResource.GetAvailableDiskIOResource());
+                mre4.Set();
+                mre5.Wait();
             }
-            mre5.Wait();
+            mre6.Wait();
             Assert.Equal(new[] { 1, 2, 3 }, list);
-            Assert.Equal(ComputerResource.DefaultDiskIOThreshold, ComputerResource.GetAvailableDiskIOResource());
+            Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold, ComputerResource.GetAvailableDiskIOResource());
         }
 
         [Fact]
         public void TestComputerResourceWithNestedScope()
         {
             Assert.Equal(Environment.ProcessorCount, ComputerResource.GetAvailableCpuResource());
-            Assert.Equal(ComputerResource.DefaultDiskIOThreshold, ComputerResource.GetAvailableDiskIOResource());
-            Assert.Equal(ComputerResource.DefaultNetworkIOThreshold, ComputerResource.GetAvailableNetworkIOResource());
+            Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold, ComputerResource.GetAvailableDiskIOResource());
+            Assert.Equal(ComputerResourceCollection.DefaultNetworkIOThreshold, ComputerResource.GetAvailableNetworkIOResource());
 
             using (ComputerResource.Require(ComputerResourceType.Cpu))
             {
                 Assert.Equal(Environment.ProcessorCount - 1, ComputerResource.GetAvailableCpuResource());
-                Assert.Equal(ComputerResource.DefaultDiskIOThreshold, ComputerResource.GetAvailableDiskIOResource());
-                Assert.Equal(ComputerResource.DefaultNetworkIOThreshold, ComputerResource.GetAvailableNetworkIOResource());
+                Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold, ComputerResource.GetAvailableDiskIOResource());
+                Assert.Equal(ComputerResourceCollection.DefaultNetworkIOThreshold, ComputerResource.GetAvailableNetworkIOResource());
 
                 using (ComputerResource.Require(ComputerResourceType.DiskIO))
                 {
                     Assert.Equal(Environment.ProcessorCount, ComputerResource.GetAvailableCpuResource());
-                    Assert.Equal(ComputerResource.DefaultDiskIOThreshold - 1, ComputerResource.GetAvailableDiskIOResource());
-                    Assert.Equal(ComputerResource.DefaultNetworkIOThreshold, ComputerResource.GetAvailableNetworkIOResource());
+                    Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold - 1, ComputerResource.GetAvailableDiskIOResource());
+                    Assert.Equal(ComputerResourceCollection.DefaultNetworkIOThreshold, ComputerResource.GetAvailableNetworkIOResource());
 
                     using (ComputerResource.Require(ComputerResourceType.Cpu | ComputerResourceType.DiskIO))
                     {
                         Assert.Equal(Environment.ProcessorCount - 1, ComputerResource.GetAvailableCpuResource());
-                        Assert.Equal(ComputerResource.DefaultDiskIOThreshold - 1, ComputerResource.GetAvailableDiskIOResource());
-                        Assert.Equal(ComputerResource.DefaultNetworkIOThreshold, ComputerResource.GetAvailableNetworkIOResource());
+                        Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold - 1, ComputerResource.GetAvailableDiskIOResource());
+                        Assert.Equal(ComputerResourceCollection.DefaultNetworkIOThreshold, ComputerResource.GetAvailableNetworkIOResource());
 
                         using (ComputerResource.Require(ComputerResourceType.Cpu | ComputerResourceType.NetworkIO))
                         {
                             Assert.Equal(Environment.ProcessorCount - 1, ComputerResource.GetAvailableCpuResource());
-                            Assert.Equal(ComputerResource.DefaultDiskIOThreshold, ComputerResource.GetAvailableDiskIOResource());
-                            Assert.Equal(ComputerResource.DefaultNetworkIOThreshold - 1, ComputerResource.GetAvailableNetworkIOResource());
+                            Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold, ComputerResource.GetAvailableDiskIOResource());
+                            Assert.Equal(ComputerResourceCollection.DefaultNetworkIOThreshold - 1, ComputerResource.GetAvailableNetworkIOResource());
                         }
 
                         Assert.Equal(Environment.ProcessorCount - 1, ComputerResource.GetAvailableCpuResource());
-                        Assert.Equal(ComputerResource.DefaultDiskIOThreshold - 1, ComputerResource.GetAvailableDiskIOResource());
-                        Assert.Equal(ComputerResource.DefaultNetworkIOThreshold, ComputerResource.GetAvailableNetworkIOResource());
+                        Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold - 1, ComputerResource.GetAvailableDiskIOResource());
+                        Assert.Equal(ComputerResourceCollection.DefaultNetworkIOThreshold, ComputerResource.GetAvailableNetworkIOResource());
                     }
 
                     Assert.Equal(Environment.ProcessorCount, ComputerResource.GetAvailableCpuResource());
-                    Assert.Equal(ComputerResource.DefaultDiskIOThreshold - 1, ComputerResource.GetAvailableDiskIOResource());
-                    Assert.Equal(ComputerResource.DefaultNetworkIOThreshold, ComputerResource.GetAvailableNetworkIOResource());
+                    Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold - 1, ComputerResource.GetAvailableDiskIOResource());
+                    Assert.Equal(ComputerResourceCollection.DefaultNetworkIOThreshold, ComputerResource.GetAvailableNetworkIOResource());
                 }
 
                 Assert.Equal(Environment.ProcessorCount - 1, ComputerResource.GetAvailableCpuResource());
-                Assert.Equal(ComputerResource.DefaultDiskIOThreshold, ComputerResource.GetAvailableDiskIOResource());
-                Assert.Equal(ComputerResource.DefaultNetworkIOThreshold, ComputerResource.GetAvailableNetworkIOResource());
+                Assert.Equal(ComputerResourceCollection.DefaultDiskIOThreshold, ComputerResource.GetAvailableDiskIOResource());
+                Assert.Equal(ComputerResourceCollection.DefaultNetworkIOThreshold, ComputerResource.GetAvailableNetworkIOResource());
             }
         }
     }
