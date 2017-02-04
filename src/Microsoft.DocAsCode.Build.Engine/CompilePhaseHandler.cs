@@ -77,10 +77,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 hostService.SourceFiles = Context.AllSourceFiles;
                 foreach (var m in hostService.Models)
                 {
-                    if (m.LocalPathFromRepoRoot == null)
-                    {
-                        m.LocalPathFromRepoRoot = StringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
-                    }
                     if (m.LocalPathFromRoot == null)
                     {
                         m.LocalPathFromRoot = StringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
