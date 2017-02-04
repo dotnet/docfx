@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private DocumentBuildContext _context;
         private TemplateProcessor _templateProcessor;
 
-        public ManifestProcessor(IEnumerable<HostService> hostServices, DocumentBuildContext context, TemplateProcessor templateProcessor)
+        public ManifestProcessor(List<HostService> hostServices, DocumentBuildContext context, TemplateProcessor templateProcessor)
         {
             if (hostServices == null)
             {
@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Private
 
-        private void Init(IEnumerable<HostService> hostServices)
+        private void Init(List<HostService> hostServices)
         {
             _manifestWithContext = new List<ManifestItemWithContext>();
             foreach (var hostService in hostServices)
