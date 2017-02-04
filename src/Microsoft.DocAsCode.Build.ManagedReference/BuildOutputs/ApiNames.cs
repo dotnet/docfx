@@ -47,7 +47,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             return new ApiNames
             {
                 Uid = uid,
-                Id = Utility.GetHtmlId(uid),
             };
         }
     }

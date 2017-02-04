@@ -276,9 +276,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
                 {
                     Logger.LogDiagnostic($"Feed xref map from template for {m.Item.DocumentType}...");
-                    // TODO: use m.Options.Bookmarks directly after all templates report bookmarks
-                    var bookmarks = m.Options.Bookmarks ?? m.FileModel.Bookmarks;
-                    foreach (var pair in bookmarks)
+                    if (m.Options.Bookmarks == null) return;
+                    foreach (var pair in m.Options.Bookmarks)
                     {
                         _context.RegisterInternalXrefSpecBookmark(pair.Key, pair.Value);
                     }

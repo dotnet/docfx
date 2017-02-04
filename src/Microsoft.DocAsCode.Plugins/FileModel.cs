@@ -11,11 +11,6 @@ namespace Microsoft.DocAsCode.Plugins
 
     public sealed class FileModel : IDisposable
     {
-        // If template's preprocessor doesn't report bookmarks,
-        // bookmarks with default pattern will be generated as DocFX 2.7 and before does.
-        // TODO: remove this
-        public Dictionary<string, string> Bookmarks { get; set; } = new Dictionary<string, string>();
-
         private ImmutableArray<UidDefinition> _uids = ImmutableArray<UidDefinition>.Empty;
 
         public FileModel(FileAndType ft, object content, FileAndType original = null, IFormatter serializer = null)

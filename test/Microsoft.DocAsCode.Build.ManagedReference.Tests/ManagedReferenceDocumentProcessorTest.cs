@@ -61,26 +61,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             Assert.NotNull(model);
 
             Assert.Equal("Hello world!", model.Metadata["meta"]);
-            Assert.Equal("CatLibrary_Cat_2", model.Id);
             Assert.Equal(1, model.Attributes.Count);
             Assert.Equal("System.SerializableAttribute.#ctor", model.Attributes[0].Constructor);
             Assert.Equal(0, model.Attributes[0].Arguments.Count);
             Assert.Equal("System.SerializableAttribute", model.Attributes[0].Type);
 
             Assert.Equal(2, model.Implements.Count);
-            Assert.Equal("CatLibrary_ICat", model.Implements[0].Id);
-            Assert.Equal("CatLibrary_IAnimal", model.Implements[1].Id);
 
             Assert.Equal(1, model.Inheritance.Count);
-            Assert.Equal("System_Object", model.Inheritance[0].Id);
 
             Assert.Equal(6, model.InheritedMembers.Count);
-            Assert.Equal("System_Object_ToString", model.InheritedMembers[0].Id);
-            Assert.Equal("System_Object_Equals_System_Object_System_Object_", model.InheritedMembers[1].Id);
-            Assert.Equal("System_Object_ReferenceEquals_System_Object_System_Object_", model.InheritedMembers[2].Id);
-            Assert.Equal("System_Object_GetHashCode", model.InheritedMembers[3].Id);
-            Assert.Equal("System_Object_GetType", model.InheritedMembers[4].Id);
-            Assert.Equal("System_Object_MemberwiseClone", model.InheritedMembers[5].Id);
 
             Assert.Equal(2, model.Syntax.Content.Count);
             Assert.Equal("csharp", model.Syntax.Content[0].Language);
