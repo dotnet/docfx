@@ -94,7 +94,6 @@ namespace Microsoft.DocAsCode.Build.RestApi
                         Uids = new[] { new UidDefinition(vm.Uid, displayLocalPath) }
                             .Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath))
                             .Concat(from tag in vm.Tags select new UidDefinition(tag.Uid, displayLocalPath)).ToImmutableArray(),
-                        LocalPathFromRepoRoot = repoInfo?.RelativePath ?? StringExtension.ToDisplayPath(filePath),
                         LocalPathFromRoot = displayLocalPath
                     };
                 case DocumentType.Overwrite:
