@@ -14,10 +14,6 @@ namespace Microsoft.DocAsCode.Common
         public LoggerPhaseScope(string phaseName)
             : this(phaseName, null) { }
 
-        [Obsolete]
-        public LoggerPhaseScope(string phaseName, bool enablePerformanceScope)
-            : this(phaseName, enablePerformanceScope ? (LogLevel?)LogLevel.Diagnostic : null) { }
-
         public LoggerPhaseScope(string phaseName, LogLevel perfLogLevel)
             : this(phaseName, (LogLevel?)perfLogLevel) { }
 
@@ -46,6 +42,22 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
+        public static T WithScope<T>(string phaseName, Func<T> func)
+        {
+            using (new LoggerPhaseScope(phaseName))
+            {
+                return func();
+            }
+        }
+
+        public static T WithScope<T>(string phaseName, LogLevel perfLogLevel, Func<T> func)
+        {
+            using (new LoggerPhaseScope(phaseName, perfLogLevel))
+            {
+                return func();
+            }
+        }
+
         public void Dispose()
         {
             _performanceScope?.Dispose();
@@ -69,10 +81,6 @@ namespace Microsoft.DocAsCode.Common
 
         public static LoggerPhaseScope Restore(object captured) =>
             Restore(captured, null);
-
-        [Obsolete]
-        public static LoggerPhaseScope Restore(object captured, bool enablePerformanceScope) =>
-            Restore(captured, enablePerformanceScope ? (LogLevel?)LogLevel.Diagnostic : null);
 
         public static LoggerPhaseScope Restore(object captured, LogLevel perfLogLevel) =>
             Restore(captured, (LogLevel?)perfLogLevel);

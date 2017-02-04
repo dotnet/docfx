@@ -40,13 +40,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             IEnumerable<FileAndType> files)
         {
             var hostService = new HostService(
-                       parameters.Files.DefaultBaseDir,
-                       files == null
-                            ? new FileModel[0]
-                            : from file in files
-                              select Load(processor, parameters.Metadata, parameters.FileMetadata, file) into model
-                              where model != null
-                              select model)
+                parameters.Files.DefaultBaseDir,
+                files == null
+                    ? Enumerable.Empty<FileModel>()
+                    : from file in files
+                      select Load(processor, parameters.Metadata, parameters.FileMetadata, file) into model
+                      where model != null
+                      select model)
             {
                 MarkdownService = markdownService,
                 Processor = processor,
