@@ -135,11 +135,12 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
         private static void BuildItem(IHostService host, FileModel model)
         {
-            var file = model.FileAndType;
             var overwrites = MarkdownReader.ReadMarkdownAsOverwrite(host, model.FileAndType).ToList();
             model.Content = overwrites;
             model.LinkToFiles = overwrites.SelectMany(o => o.LinkToFiles).ToImmutableHashSet();
             model.LinkToUids = overwrites.SelectMany(o => o.LinkToUids).ToImmutableHashSet();
+            model.FileLinkSources = overwrites.SelectMany(o => o.FileLinkSources).ToImmutableDictionary();
+            model.UidLinkSources = overwrites.SelectMany(o => o.UidLinkSources).ToImmutableDictionary();
             model.Uids = (from item in overwrites
                           select new UidDefinition(
                               item.Uid,

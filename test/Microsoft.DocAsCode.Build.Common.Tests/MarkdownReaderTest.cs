@@ -70,7 +70,7 @@ uid: Test2
             Assert.Equal(string.Empty, results[1].Conceptual);
             File.Delete(fileName);
 
-            //invalid yamlheader is not supported
+            // Invalid yamlheader is not supported
             content = @"---
 uid: Test1
 remarks: Hello
@@ -152,6 +152,22 @@ This is unit test!";
             Assert.Equal("~/link.md", results[0].LinkToFiles.ElementAt(0));
             Assert.Equal(1, results[0].LinkToUids.Count);
             Assert.Equal("NotExistUid", results[0].LinkToUids.ElementAt(0));
+            Assert.Equal(1, results[0].FileLinkSources.Count);
+            var fileLinkSource = results[0].FileLinkSources["~/link.md"];
+            Assert.NotNull(fileLinkSource);
+            Assert.Equal(1, fileLinkSource.Count);
+            Assert.Equal(null, fileLinkSource[0].Anchor);
+            Assert.Equal(7, fileLinkSource[0].LineNumber);
+            Assert.Equal(fileName, fileLinkSource[0].SourceFile);
+            Assert.Equal("~/link.md", fileLinkSource[0].Target);
+            Assert.Equal(1, results[0].UidLinkSources.Count);
+            var uidLinkSource = results[0].UidLinkSources["NotExistUid"];
+            Assert.NotNull(uidLinkSource);
+            Assert.Equal(1, uidLinkSource.Count);
+            Assert.Equal(null, uidLinkSource[0].Anchor);
+            Assert.Equal(5, uidLinkSource[0].LineNumber);
+            Assert.Equal(fileName, uidLinkSource[0].SourceFile);
+            Assert.Equal("NotExistUid", uidLinkSource[0].Target);
             Assert.Equal(@"<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""5"" sourceendlinenumber=""5""><xref href=""NotExistUid"" data-throw-if-not-resolved=""False"" data-raw-source=""@NotExistUid"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""5"" sourceendlinenumber=""5""></xref></p>
 <p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""7"" sourceendlinenumber=""7""><a href=""link.md"" data-raw-source=""[Not exist link](link.md)"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""7"" sourceendlinenumber=""7"">Not exist link</a></p>
 <p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""9"" sourceendlinenumber=""9"">This is unit test!</p>

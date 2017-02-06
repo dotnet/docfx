@@ -39,6 +39,8 @@ namespace Microsoft.DocAsCode.Build.Common
             model.Content = overwrites;
             model.LinkToFiles = overwrites.SelectMany(o => o.LinkToFiles).ToImmutableHashSet();
             model.LinkToUids = overwrites.SelectMany(o => o.LinkToUids).ToImmutableHashSet();
+            model.FileLinkSources = overwrites.SelectMany(o => o.FileLinkSources).ToImmutableDictionary();
+            model.UidLinkSources = overwrites.SelectMany(o => o.UidLinkSources).ToImmutableDictionary();
             model.Uids = (from item in overwrites
                           select new UidDefinition(
                               item.Uid,

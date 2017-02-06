@@ -92,6 +92,8 @@ namespace Microsoft.DocAsCode.Build.Common
                 Merge(vm, ovm, ovms[0].fileModel);
                 pair.model.LinkToUids = pair.model.LinkToUids.Union(od[0].LinkToUids);
                 pair.model.LinkToFiles = pair.model.LinkToFiles.Union(od[0].LinkToFiles);
+                pair.model.FileLinkSources = pair.model.FileLinkSources.Union(od[0].FileLinkSources).ToImmutableDictionary();
+                pair.model.UidLinkSources = pair.model.UidLinkSources.Union(od[0].UidLinkSources).ToImmutableDictionary();
             }
         }
 
