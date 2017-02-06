@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode.SubCommands
         public const string PhaseName = "Merge Metadata";
 
         private readonly Dictionary<string, Dictionary<string, object>> _metaTable = new Dictionary<string, Dictionary<string, object>>();
+        private readonly Dictionary<string, Dictionary<string, object>> _propTable = new Dictionary<string, Dictionary<string, object>>();
 
         public void Merge(MetadataMergeParameters parameters)
         {
@@ -83,7 +84,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
             foreach (var m in models)
             {
-                InitMetaTable(m, parameters.TocMetadata);
+                InitTable(m, parameters.TocMetadata);
                 YamlUtility.Serialize(m.File, m.Content, YamlMime.ManagedReference);
             }
         }
@@ -104,25 +105,53 @@ namespace Microsoft.DocAsCode.SubCommands
                 YamlMime.TableOfContent);
         }
 
-        private void InitMetaTable(FileModel model, ImmutableList<string> metaNames)
+        private void InitTable(FileModel model, ImmutableList<string> metaNames)
         {
             var content = model.Content as PageViewModel;
-            if (content?.Metadata != null && model.Uids.Length > 0)
+            if (content?.Items != null)
             {
-                var metadata = new Dictionary<string, object>();
-                foreach (var metaName in metaNames)
+                var items = from item in content.Items
+                            select YamlUtility.ConvertTo<Dictionary<string, object>>(item);
+
+                foreach (var item in items)
                 {
-                    object metaValue;
-                    if (content.Metadata.TryGetValue(metaName, out metaValue))
+                    var property = GetTableItem(item, metaNames);
+
+                    object uid;
+                    if (property.Count > 0 && item.TryGetValue(Constants.PropertyName.Uid, out uid))
                     {
-                        metadata.Add(metaName, metaValue);
+                        _propTable.Add((string)uid, property);
                     }
                 }
+            }
+
+            if (content?.Metadata != null && model.Uids.Length > 0)
+            {
+                var metadata = GetTableItem(content.Metadata, metaNames);
+
                 if (metadata.Count > 0)
                 {
-                    _metaTable.Add(model.Uids.First().Name, metadata);
+                    // share metadata for all uid in model
+                    foreach (var uid in model.Uids)
+                    {
+                        _metaTable.Add(uid.Name, metadata);
+                    }
                 }
             }
+        }
+
+        private Dictionary<string, object> GetTableItem(IReadOnlyDictionary<string, object> metadata, ImmutableList<string> metaNames)
+        {
+            var tableItem = new Dictionary<string, object>();
+            foreach (var metaName in metaNames)
+            {
+                object metaValue;
+                if (metadata.TryGetValue(metaName, out metaValue))
+                {
+                    tableItem.Add(metaName, metaValue);
+                }
+            }
+            return tableItem;
         }
 
         private void CopyMetadataToToc(TocViewModel vm)
@@ -139,8 +168,14 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private void CopyMetadataToTocItem(TocItemViewModel item)
         {
+            ApplyTocMetadata(item, _propTable);
+            ApplyTocMetadata(item, _metaTable);
+        }
+
+        private void ApplyTocMetadata(TocItemViewModel item, Dictionary<string, Dictionary<string, object>> table)
+        {
             Dictionary<string, object> metadata;
-            if (_metaTable.TryGetValue(item.Uid, out metadata))
+            if (table.TryGetValue(item.Uid, out metadata))
             {
                 foreach (var metaPair in metadata)
                 {
