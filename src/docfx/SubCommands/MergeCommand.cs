@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             var config = Config;
             var baseDirectory = config.BaseDirectory ?? Directory.GetCurrentDirectory();
-            var intermediateOutputFolder = Path.Combine(baseDirectory, "obj");
+            var intermediateOutputFolder = config.Destination ?? Path.Combine(baseDirectory, "obj");
             EnvironmentContext.SetBaseDirectory(baseDirectory);
             EnvironmentContext.SetOutputDirectory(intermediateOutputFolder);
             MergeDocument(baseDirectory, intermediateOutputFolder);
