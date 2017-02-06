@@ -63,14 +63,14 @@ namespace Microsoft.DocAsCode.Build.Common
         /// </summary>
         [YamlIgnore]
         [JsonIgnore]
-        public ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> FileLinkSources { get; set; } = ImmutableDictionary<string, ImmutableList<LinkSourceInfo>>.Empty;
+        public Dictionary<string, List<LinkSourceInfo>> FileLinkSources { get; set; } = new Dictionary<string, List<LinkSourceInfo>>();
 
         /// <summary>
         /// Link sources information for Uid
         /// </summary>
         [YamlIgnore]
         [JsonIgnore]
-        public ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> UidLinkSources { get; set; } = ImmutableDictionary<string, ImmutableList<LinkSourceInfo>>.Empty;
+        public Dictionary<string, List<LinkSourceInfo>> UidLinkSources { get; set; } = new Dictionary<string, List<LinkSourceInfo>>();
 
         public T ConvertTo<T>() where T : class
         {
