@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
 
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder)
             {
-                RawModelExportSettings = {Export = true},
+                RawModelExportSettings = { Export = true },
                 TransformDocument = true
             };
             EnvironmentContext.SetBaseDirectory(_inputFolder);
@@ -77,6 +77,46 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.True(File.Exists(outputHtml));
                 var content = File.ReadAllText(outputHtml);
                 Assert.Equal("<p><a href=\"A%23ctor.html\">Constructor</a></p>\n",
+content);
+            }
+        }
+
+        [Fact]
+        public void ProcessMarkdownFileWithBreakLinkShouldSucceed()
+        {
+            var fileName = "normal.md";
+            var file = _fileCreator.CreateFile("[Main](a#b)", fileName);
+            var files = new FileCollection(_defaultFiles);
+            files.Add(DocumentType.Article, new[] { file });
+            BuildDocument(files);
+            {
+                var outputRawModelPath = GetRawModelFilePath(file);
+                Assert.True(File.Exists(outputRawModelPath));
+                var outputHtml = GetOutputFilePath(file);
+                Assert.True(File.Exists(outputHtml));
+                var content = File.ReadAllText(outputHtml);
+                Assert.Equal("<p><a href=\"a#b\">Main</a></p>\n", content);
+            }
+        }
+
+        [Fact]
+        public void ProcessMarkdownFileWithBreakLinkInTokenShouldSucceed()
+        {
+            var fileName = "normal.md";
+            var tokenFileName = "token.md";
+            var file = _fileCreator.CreateFile($"[!include[]({tokenFileName})]", fileName);
+            _fileCreator.CreateFile("[Main](a#b)", tokenFileName);
+            var files = new FileCollection(_defaultFiles);
+            files.Add(DocumentType.Article, new[] { file });
+            BuildDocument(files);
+            {
+                var outputRawModelPath = GetRawModelFilePath(file);
+                Assert.True(File.Exists(outputRawModelPath));
+                var outputHtml = GetOutputFilePath(file);
+                Assert.True(File.Exists(outputHtml));
+                var content = File.ReadAllText(outputHtml);
+                Assert.Equal($@"<!-- BEGIN INCLUDE: Include content from &quot;{tokenFileName}&quot; --><p><a href=""a#b"">Main</a></p>
+<!--END INCLUDE -->".Replace("\r\n", "\n"),
 content);
             }
         }

@@ -26,6 +26,10 @@ namespace Microsoft.DocAsCode.Dfm
 
         public IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
+            if (MarkdownInlineContext.GetIsInLink(parser.Context))
+            {
+                return null;
+            }
             var match = XrefAutoLinkRegexWithQuote.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {

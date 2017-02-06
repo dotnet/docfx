@@ -6,7 +6,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using System.Collections.Generic;
     using System.IO;
 
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json;
@@ -94,6 +93,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         public BuildMessage BuildMessage { get; private set; } = new BuildMessage();
         #endregion
 
+        public void SaveManifest(string baseDir)
+        {
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestFile), Manifest);
+        }
+
         internal void Load(string baseDir)
         {
             Dependency = IncrementalUtility.LoadDependency(Path.Combine(baseDir, DependencyFile));
@@ -114,7 +118,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             IncrementalUtility.SaveDependency(Path.Combine(baseDir, DependencyFile), Dependency);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, AttributesFile), Attributes);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, OutputFile), BuildOutputs);
-            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestFile), Manifest);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, XRefSpecMapFile), XRefSpecMap);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, FileMapFile), FileMap);
             IncrementalUtility.SaveBuildMessage(Path.Combine(baseDir, BuildMessageFile), BuildMessage);

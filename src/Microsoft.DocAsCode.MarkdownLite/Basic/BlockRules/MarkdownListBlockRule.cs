@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 if (!loose)
                 {
                     var bc = (MarkdownBlockContext)parser.Context;
-                    c = parser.SwitchContext(
+                    parser.SwitchContext(
                         bc.SetRules(
                             ImmutableList.Create<IMarkdownRule>(
                                 this,

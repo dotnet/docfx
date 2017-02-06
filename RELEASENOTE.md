@@ -2,8 +2,12 @@
 =======================================
 v2.12(Pre-Release)
 -----------
-1. Bug fixes:
-   1. `default` template: Do not load `search-worker.js` when search is disabled in `docfx.js`
+1.  Bug fixes:
+    1. `default` template: Do not load `search-worker.js` when search is disabled in `docfx.js`
+    2. c# region support for code snippets broken by #endregion with extra text. #1200
+    3. markdown list continue with def.
+    4. markdown link rule is not allowed in link text.
+    5. markdown list restore wrong context.
 
 v2.11
 -----------

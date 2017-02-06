@@ -14,6 +14,11 @@ namespace Microsoft.DocAsCode.Common
     {
         private readonly ImmutableArray<Entry> _entries;
 
+        public CompositeDictionary()
+        {
+            _entries = ImmutableArray<Entry>.Empty;
+        }
+
         private CompositeDictionary(ImmutableArray<Entry> entries)
         {
             _entries = entries;

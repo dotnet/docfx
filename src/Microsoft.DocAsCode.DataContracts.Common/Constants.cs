@@ -41,6 +41,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string FullName = PropertyName.FullName + PrefixSeparator;
             public const string Name = PropertyName.Name + PrefixSeparator;
             public const string Modifiers = "modifiers" + PrefixSeparator;
+            public const string Spec = "spec" + PrefixSeparator;
         }
 
         public static class DevLang

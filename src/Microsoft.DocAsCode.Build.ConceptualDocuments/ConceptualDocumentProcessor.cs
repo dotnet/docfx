@@ -77,7 +77,6 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                 content,
                 serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
             {
-                LocalPathFromRepoRoot = (content["source"] as SourceDetail)?.Remote?.RelativePath,
                 LocalPathFromRoot = localPathFromRoot,
             };
         }

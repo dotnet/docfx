@@ -23,10 +23,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("uid")]
         public string Uid { get; set; }
 
-        [YamlMember(Alias = "id")]
-        [JsonProperty("id")]
-        public string Id { get; set; }
-
         [YamlMember(Alias = "isEii")]
         [JsonProperty("isEii")]
         public bool IsExplicitInterfaceImplementation { get; set; }
@@ -213,7 +209,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             var output = new ApiBuildOutput
             {
                 Uid = model.Uid,
-                Id = Utility.GetHtmlId(model.Uid),
                 IsExplicitInterfaceImplementation = model.IsExplicitInterfaceImplementation,
                 IsExtensionMethod = model.IsExtensionMethod,
                 Parent = ApiBuildOutputUtility.GetReferenceViewModel(model.Parent, references, model.SupportedLanguages),

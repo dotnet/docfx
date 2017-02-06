@@ -349,6 +349,9 @@ $(function () {
       var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
       if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
       $('#sidetoc').load(tocPath + " #sidetoggle > div", function () {
+        if ($('footer').is(':visible')) {
+          $('.sidetoc').addClass('shiftup');
+        }
         registerTocEvents();
 
         var index = tocPath.lastIndexOf('/');
@@ -394,7 +397,7 @@ $(function () {
             // 50 is the size of the filter box
             $('.sidetoc').scrollTop(top - 50);
             if ($('footer').is(':visible')) {
-              $(".sidetoc").css("bottom", "70px");
+              $('.sidetoc').addClass('shiftup');
             }
           } else {
             $(e).parent().removeClass(active);
@@ -672,13 +675,13 @@ $(function () {
     }
 
     function resetBottomCss() {
-      $(".sidetoc").css("bottom", "0");
-      $(".sideaffix").css("bottom", "10px");
+      $(".sidetoc").removeClass("shiftup");
+      $(".sideaffix").removeClass("shiftup");
     }
 
     function shiftUpBottomCss() {
-      $(".sidetoc").css("bottom", "70px");
-      $(".sideaffix").css("bottom", "70px");
+      $(".sidetoc").addClass("shiftup");
+      $(".sideaffix").addClass("shiftup");
     }
   })();
 

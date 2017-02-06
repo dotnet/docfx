@@ -713,7 +713,7 @@ exports.getOptions = function (){
                             $"Test link: <a href=\"\\a.md\" data-raw-source=\"[link 5](\\a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">link 5</a>",
                             $"Test link: <a href=\"urn:a.md\" data-raw-source=\"[link 6](urn:a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"7\" sourceendlinenumber=\"7\">link 6</a>",
                             $"Test link: <a href=\"bad urn:a.md\" data-raw-source=\"[link 7](bad urn:a.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"8\" sourceendlinenumber=\"8\">link 7</a>",
-                            $"Test link: <a href=\"~/{_inputFolder}/test/test.md\" data-raw-source=\"[link 8](test/test.md#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"9\" sourceendlinenumber=\"9\" anchor=\"#top\">link 8</a>",
+                            $"Test link: <a href=\"~/{_inputFolder}/test/test.md#top\" data-raw-source=\"[link 8](test/test.md#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"9\" sourceendlinenumber=\"9\">link 8</a>",
                             $"Test link: <a href=\"a.md#top\" data-raw-source=\"[link 9](a.md#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"10\" sourceendlinenumber=\"10\">link 9</a>",
                             $"Test link: <a href=\"#top\" data-raw-source=\"[link 10](#top)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\">link 10</a></p>",
                             ""),

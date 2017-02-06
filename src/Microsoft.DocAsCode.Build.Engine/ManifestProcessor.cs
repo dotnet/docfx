@@ -10,6 +10,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
 
+    using Newtonsoft.Json.Linq;
+
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
@@ -19,7 +21,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private DocumentBuildContext _context;
         private TemplateProcessor _templateProcessor;
 
-        public ManifestProcessor(IEnumerable<HostService> hostServices, DocumentBuildContext context, TemplateProcessor templateProcessor)
+        public ManifestProcessor(List<HostService> hostServices, DocumentBuildContext context, TemplateProcessor templateProcessor)
         {
             if (hostServices == null)
             {
@@ -76,7 +78,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Private
 
-        private void Init(IEnumerable<HostService> hostServices)
+        private void Init(List<HostService> hostServices)
         {
             _manifestWithContext = new List<ManifestItemWithContext>();
             foreach (var hostService in hostServices)
@@ -274,9 +276,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
                 {
                     Logger.LogDiagnostic($"Feed xref map from template for {m.Item.DocumentType}...");
-                    // TODO: use m.Options.Bookmarks directly after all templates report bookmarks
-                    var bookmarks = m.Options.Bookmarks ?? m.FileModel.Bookmarks;
-                    foreach (var pair in bookmarks)
+                    if (m.Options.Bookmarks == null) return;
+                    foreach (var pair in m.Options.Bookmarks)
                     {
                         _context.RegisterInternalXrefSpecBookmark(pair.Key, pair.Value);
                     }
@@ -317,22 +318,22 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                     // TODO: use weak type for system attributes from the beginning
                     var systemAttrs = systemMetadataGenerator.Generate(m.Item);
-                    var metadata = (IDictionary<string, object>)ConvertToObjectHelper.ConvertStrongTypeToObject(systemAttrs);
+                    var metadata = (JObject)ConvertToObjectHelper.ConvertStrongTypeToJObject(systemAttrs);
                     // Change file model to weak type
                     var model = m.Item.Model.Content;
-                    var modelAsObject = ConvertToObjectHelper.ConvertStrongTypeToObject(model) as IDictionary<string, object>;
-                    if (modelAsObject != null)
+                    var modelAsObject = (JToken)ConvertToObjectHelper.ConvertStrongTypeToJObject(model);
+                    if (modelAsObject is JObject)
                     {
-                        foreach (var token in modelAsObject)
+                        foreach (var pair in (JObject)modelAsObject)
                         {
                             // Overwrites the existing system metadata if the same key is defined in document model
-                            metadata[token.Key] = token.Value;
+                            metadata[pair.Key] = pair.Value;
                         }
                     }
                     else
                     {
                         Logger.LogWarning("Input model is not an Object model, it will be wrapped into an Object model. Please use --exportRawModel to view the wrapped model");
-                        metadata["model"] = model;
+                        metadata["model"] = modelAsObject;
                     }
 
                     // Append system metadata to model

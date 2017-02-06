@@ -140,7 +140,6 @@ namespace Microsoft.DocAsCode.Build.RestApi
             model.Content = overwrites;
             model.LinkToFiles = overwrites.SelectMany(o => o.LinkToFiles).ToImmutableHashSet();
             model.LinkToUids = overwrites.SelectMany(o => o.LinkToUids).ToImmutableHashSet();
-            model.LocalPathFromRepoRoot = overwrites.FirstOrDefault()?.Documentation?.Remote?.RelativePath ?? Path.Combine(file.BaseDir, file.File).ToDisplayPath();
             model.Uids = (from item in overwrites
                           select new UidDefinition(
                               item.Uid,

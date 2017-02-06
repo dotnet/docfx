@@ -161,6 +161,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private void UpdateManifest()
         {
             CurrentBuildVersionInfo.Manifest = Context.ManifestItems;
+            CurrentBuildVersionInfo.SaveManifest(IncrementalContext.BaseDir);
         }
 
         private void UpdateFileMap(IEnumerable<HostService> hostServices)

@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
@@ -23,10 +22,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [YamlMember(Alias = "uid")]
         [JsonProperty("uid")]
         public string Uid { get; set; }
-
-        [YamlMember(Alias = "id")]
-        [JsonProperty("id")]
-        public string Id { get; set; }
 
         [YamlMember(Alias = "isEii")]
         [JsonProperty("isEii")]
@@ -136,7 +131,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("extensionMethods")]
         public List<string> ExtensionMethods { get; set; }
 
-        [ExtensibleMember(ModifiersPrefix)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Modifiers)]
         [JsonIgnore]
         public SortedList<string, List<string>> Modifiers { get; set; } = new SortedList<string, List<string>>();
 
@@ -159,16 +154,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [EditorBrowsable(EditorBrowsableState.Never)]
         [YamlIgnore]
         [JsonExtensionData]
-        public JsonExtensionDictionary MetadataJson
-        {
-            get
-            {
-                return Create(Modifiers, Metadata);
-            }
-            set
-            {
-            }
-        }
+        public CompositeDictionary MetadataJson =>
+            CompositeDictionary
+                .CreateBuilder()
+                .Add(Constants.ExtensionMemberPrefix.Modifiers, Modifiers, JTokenConverter.Convert<List<string>>)
+                .Add(string.Empty, Metadata)
+                .Create();
 
         private bool _needExpand = true;
 
@@ -191,7 +182,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             var result = new ApiReferenceBuildOutput
             {
                 Uid = vm.Uid,
-                Id = Utility.GetHtmlId(vm.Uid),
                 Parent = vm.Parent,
                 Definition = vm.Definition,
                 IsExternal = vm.IsExternal,
@@ -218,7 +208,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             var output = new ApiReferenceBuildOutput
             {
                 Uid = vm.Uid,
-                Id = Utility.GetHtmlId(vm.Uid),
                 IsExplicitInterfaceImplementation = vm.IsExplicitInterfaceImplementation,
                 IsExtensionMethod = vm.IsExtensionMethod,
                 Parent = vm.Parent,
@@ -297,15 +286,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
             // If href exists, return name with href
             return ApiBuildOutputUtility.GetXref(svm.Uid, svm.Name, svm.FullName);
-        }
-
-        private const string ModifiersPrefix = "modifiers.";
-
-        private static JsonExtensionDictionary Create(SortedList<string, List<string>> modifiers, Dictionary<string, object> mta)
-        {
-            var modifiersHandler = JsonExtensionDataHandlersCreator.CreatePrefixHandler(modifiers, ModifiersPrefix);
-            var defaultHandler = JsonExtensionDataHandlersCreator.CreateDefaultHandler(mta);
-            return new JsonExtensionDictionary(modifiersHandler, defaultHandler);
         }
     }
 }

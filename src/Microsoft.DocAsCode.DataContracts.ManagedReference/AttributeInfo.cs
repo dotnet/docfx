@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 {
+    using System;
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.DataContracts.Common;
@@ -10,6 +11,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
+    [Serializable]
     public class AttributeInfo
     {
         [YamlMember(Alias = "type")]

@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     internal class AppendStringPostProcessor : IPostProcessor, ISupportIncrementalPostProcessor
     {
         public const string AppendString = " is processed";
+        public const string AdditionalExtensionString = ".html.additional";
 
         public IPostProcessorHost PostProcessorHost { get; set; }
 
@@ -29,23 +30,32 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
         public Manifest Process(Manifest manifest, string outputFolder)
         {
-            foreach (var item in from file in manifest.Files ?? Enumerable.Empty<ManifestItem>()
-                                    from output in file.OutputFiles
-                                    select new
-                                    {
-                                        IsHtml = output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase),
-                                        output.Value.RelativePath,
-                                        file.SourceRelativePath
-                                    })
+            foreach (var file in manifest.Files ?? Enumerable.Empty<ManifestItem>())
             {
-                if (item.IsHtml)
+                string htmlRelativePath = null;
+                foreach (var outputFile in file.OutputFiles)
                 {
-                    var outputFile = Path.Combine(outputFolder, item.RelativePath);
-                    File.AppendAllText(outputFile, AppendString);
+                    if (outputFile.Key.Equals(".html", StringComparison.OrdinalIgnoreCase))
+                    {
+                        htmlRelativePath = outputFile.Value.RelativePath;
+                        File.AppendAllText(Path.Combine(outputFolder, htmlRelativePath), AppendString);
+                    }
+                    else
+                    {
+                        Logger.LogWarning($"The output file {outputFile.Value.RelativePath} is not in html format.", file: file.SourceRelativePath);
+                    }
                 }
-                else
+
+                // Add additional html output file
+                if (htmlRelativePath != null)
                 {
-                    Logger.LogWarning($"The output file {item.RelativePath} is not in html format.", file: item.SourceRelativePath);
+                    var targetRelativePath = Path.ChangeExtension(htmlRelativePath, AdditionalExtensionString);
+                    EnvironmentContext.FileAbstractLayer.Copy(Path.Combine(outputFolder, htmlRelativePath), Path.Combine(outputFolder, targetRelativePath));
+                    file.OutputFiles.Add(AdditionalExtensionString,
+                        new OutputFileInfo
+                        {
+                            RelativePath = targetRelativePath
+                        });
                 }
             }
 

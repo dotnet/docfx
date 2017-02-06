@@ -6,6 +6,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using System.Collections.Generic;
     using System.IO;
 
+    using Microsoft.DocAsCode.Plugins;
+
     using Newtonsoft.Json;
 
     public class PostProcessInfo
@@ -15,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         #region Properties
 
         /// <summary>
-        /// The post processor information
+        /// The post processor information.
         /// </summary>
         public List<PostProcessorInfo> PostProcessorInfos { get; set; } = new List<PostProcessorInfo>();
         /// <summary>
@@ -27,15 +29,24 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// </summary>
         public string MessageInfoFile { get; set; }
         /// <summary>
-        /// Deserialized post process outputs
+        /// The file link for the manifest items file.
+        /// </summary>
+        public string ManifestItemsFile { get; set; }
+        /// <summary>
+        /// Deserialized post process outputs.
         /// </summary>
         [JsonIgnore]
         public PostProcessOutputs PostProcessOutputs { get; private set; } = new PostProcessOutputs();
         /// <summary>
-        /// Deserialized log message information
+        /// Deserialized log message information.
         /// </summary>
         [JsonIgnore]
         public BuildMessageInfo MessageInfo { get; private set; } = new BuildMessageInfo();
+        /// <summary>
+        /// Deserialized manifest items.
+        /// </summary>
+        [JsonIgnore]
+        public List<ManifestItem> ManifestItems { get; set; } = new List<ManifestItem>();
 
         #endregion
 
@@ -52,6 +63,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     MessageInfo = BuildMessageInfo.Load(sr);
                 }
             }
+            if (ManifestItemsFile != null)
+            {
+                ManifestItems = IncrementalUtility.LoadIntermediateFile<List<ManifestItem>>(Path.Combine(baseDir, ManifestItemsFile));
+            }
         }
 
         internal void Save(string baseDir)
@@ -64,7 +79,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 MessageInfoFile = IncrementalUtility.CreateRandomFileName(baseDir);
             }
+            if (ManifestItemsFile == null)
+            {
+                ManifestItemsFile = IncrementalUtility.CreateRandomFileName(baseDir);
+            }
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, PostProcessOutputsFile), PostProcessOutputs);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestItemsFile), ManifestItems);
             using (var sw = new StreamWriter(Path.Combine(baseDir, MessageInfoFile)))
             {
                 MessageInfo.Save(sw);

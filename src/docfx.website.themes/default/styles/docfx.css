@@ -421,6 +421,10 @@ article section {
   z-index: 1;
 }
 
+.sidetoc.shiftup {
+  bottom: 70px;
+}
+
 body .toc{
   background-color: #f1f1f1;
   overflow-x: hidden;
@@ -582,6 +586,9 @@ body .toc{
   top: 100px;
   bottom: 10px;
   position: fixed;
+}
+.sideaffix.shiftup {
+  bottom: 70px;
 }
 .affix {
   position: relative;

@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Common.Tests
 {
     using System;
+
     using Xunit;
 
     using Microsoft.DocAsCode.Common;

@@ -94,7 +94,6 @@ namespace Microsoft.DocAsCode.Build.RestApi
                         Uids = new[] { new UidDefinition(vm.Uid, displayLocalPath) }
                             .Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath))
                             .Concat(from tag in vm.Tags select new UidDefinition(tag.Uid, displayLocalPath)).ToImmutableArray(),
-                        LocalPathFromRepoRoot = repoInfo?.RelativePath ?? StringExtension.ToDisplayPath(filePath),
                         LocalPathFromRoot = displayLocalPath
                     };
                 case DocumentType.Overwrite:
@@ -120,10 +119,6 @@ namespace Microsoft.DocAsCode.Build.RestApi
             }
 
             model.File = ChangeFileExtension(model.File);
-
-            // Fill in bookmarks if template doesn't generate them.
-            // TODO: remove these
-            FillInBookmarks(model, vm);
 
             return new SaveResult
             {
@@ -173,13 +168,6 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     };
                 }
             }
-        }
-
-        private static void FillInBookmarks(FileModel model, RestApiRootItemViewModel restModel)
-        {
-            model.Bookmarks[restModel.Uid] = string.Empty;
-            restModel.Children?.ForEach(c => model.Bookmarks[c.Uid] = c.HtmlId);
-            restModel.Tags?.ForEach(t => model.Bookmarks[t.Uid] = t.HtmlId);
         }
 
         private static bool IsSupportedFile(string filePath)

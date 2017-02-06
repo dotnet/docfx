@@ -16,14 +16,6 @@ $ErrorActionPreference = 'Stop'
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptHome = Split-Path $scriptPath
 
-# Get version
-$version = "1.0.0"
-if (Test-Path "TEMP\version.txt")
-{
-    $version = Get-Content "TEMP\version.txt"
-    $version = $version.Substring(1)
-}
-
 function DotnetBuild {
     param($folder)
     if (Test-Path (Join-Path $folder.FullName "project.json"))
@@ -58,31 +50,6 @@ function NugetPack {
         & $nuget pack $nuspec -Version $version -OutputDirectory artifacts\$configuration -BasePath $basepath
         ProcessLastExitCode $lastexitcode "nuget pack $nuspec error"
     }
-}
-
-function PackNuspecProject {
-    param($assemblyFolder, $nuspecPath)
-
-    $nuspecFile = Get-Item $nuspecPath
-    $nuspecName = $nuspecFile.Name
-    $nuspecFolder = $nuspecFile.Directory.FullName
-    $nuspecFolderName = $nuspecFile.Directory.Name
-    $targetFolder = "TEMP\$nuspecFolderName"
-
-    if (Test-Path $targetFolder)
-    {
-        $null = Remove-Item $targetFolder -Force -Recurse
-    }
-    $null = New-Item -ItemType Directory -Force -Path $targetFolder
-    $null = New-Item -ItemType Directory -Force -Path "$targetFolder\tools\"
-
-    Copy-Item -Path "$nuspecFolder\**" -Destination "$targetFolder" -Force -Recurse
-    Copy-Item -Path "$assemblyFolder\*.dll" -Destination "$targetFolder\tools\" -Force
-    Copy-Item -Path "$assemblyFolder\*.exe" -Destination "$targetFolder\tools\" -Force
-    Copy-Item -Path "$assemblyFolder\*.exe.config" -Destination "$targetFolder\tools\" -Force
-
-    & $nuget pack "$targetFolder\$nuspecName" -Version $version -OutputDirectory artifacts\$configuration
-    ProcessLastExitCode $lastexitcode "nuget pack error while packing $nuspecPath"
 }
 
 function ProcessLastExitCode {
@@ -131,6 +98,14 @@ if ($prod -eq $true)
 {
     & ".\UpdateVersion.cmd"
     ProcessLastExitCode $lastexitcode "Update version error"
+}
+
+# Get version
+$version = "1.0.0"
+if (Test-Path "TEMP\version.txt")
+{
+    $version = Get-Content "TEMP\version.txt"
+    $version = $version.Substring(1)
 }
 
 # Restore package

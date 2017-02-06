@@ -4,16 +4,13 @@
 namespace Microsoft.DocAsCode.Common.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
 
     using Xunit;
-    using YamlDotNet.Core;
 
     using Microsoft.DocAsCode.Common.Git;
-    using Microsoft.DocAsCode.YamlSerialization;
 
+    [Collection("docfx STA")]
     [Trait("Owner", "makaretu")]
     public class GitUtilityTest
     {
@@ -33,6 +30,5 @@ namespace Microsoft.DocAsCode.Common.Tests
                 Environment.SetEnvironmentVariable(envName, original);
             }
         }
-
     }
 }

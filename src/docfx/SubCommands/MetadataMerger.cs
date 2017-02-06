@@ -45,13 +45,13 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 Directory.CreateDirectory(parameters.OutputBaseDir);
                 Logger.LogInfo("Start merge metadata...");
-                MergePageViewModel(parameters, Directory.GetCurrentDirectory());
-                MergeToc(parameters, Directory.GetCurrentDirectory());
+                MergePageViewModel(parameters);
+                MergeToc(parameters);
                 Logger.LogInfo("Merge metadata completed.");
             }
         }
 
-        private void MergePageViewModel(MetadataMergeParameters parameters, string outputBase)
+        private void MergePageViewModel(MetadataMergeParameters parameters)
         {
             var p = new ManagedReferenceDocumentProcessor();
             p.BuildSteps = new List<IDocumentBuildStep>
@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private void MergeToc(MetadataMergeParameters parameters, string outputBase)
+        private void MergeToc(MetadataMergeParameters parameters)
         {
             var tocFiles =
                 (from f in parameters.Files.EnumerateFiles()

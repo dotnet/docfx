@@ -172,25 +172,23 @@ namespace Microsoft.DocAsCode.Build.Engine
             hostService.Models.RunAll(m => m.Dispose());
         }
 
-        private IEnumerable<HostService> GetInnerContexts(
+        private List<HostService> GetInnerContexts(
             DocumentBuildParameters parameters,
             IEnumerable<IDocumentProcessor> processors,
             TemplateProcessor templateProcessor,
             IHostServiceCreator creator)
         {
-            var k = from fileItem in (
-                    from file in parameters.Files.EnumerateFiles()
-                    from p in (from processor in processors
-                               let priority = processor.GetProcessingPriority(file)
-                               where priority != ProcessingPriority.NotSupported
-                               group processor by priority into ps
-                               orderby ps.Key descending
-                               select ps.ToList()).FirstOrDefault() ?? new List<IDocumentProcessor> { null }
-                    select new { file, p })
-                    group fileItem by fileItem.p;
+            var files = (from file in parameters.Files.EnumerateFiles().AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+                         from p in (from processor in processors
+                                    let priority = processor.GetProcessingPriority(file)
+                                    where priority != ProcessingPriority.NotSupported
+                                    group processor by priority into ps
+                                    orderby ps.Key descending
+                                    select ps.ToList()).FirstOrDefault() ?? new List<IDocumentProcessor> { null }
+                         group file by p).ToList();
 
-            var toHandleItems = k.Where(s => s.Key != null);
-            var notToHandleItems = k.Where(s => s.Key == null);
+            var toHandleItems = files.Where(s => s.Key != null);
+            var notToHandleItems = files.Where(s => s.Key == null);
             foreach (var item in notToHandleItems)
             {
                 var sb = new StringBuilder();
@@ -198,31 +196,31 @@ namespace Microsoft.DocAsCode.Build.Engine
                 foreach (var f in item)
                 {
                     sb.Append("\t");
-                    sb.AppendLine(f.file.File);
+                    sb.AppendLine(f.File);
                 }
                 Logger.LogWarning(sb.ToString());
             }
 
-            foreach (var pair in (from processor in processors
-                                  join item in toHandleItems on processor equals item.Key into g
-                                  from item in g.DefaultIfEmpty()
-                                  select new
-                                  {
-                                      processor,
-                                      item,
-                                  }).AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism))
+            try
             {
-                using (new LoggerPhaseScope(pair.processor.Name, LogLevel.Verbose))
-                {
-                    var hostService = creator.CreateHostService(
-                        parameters,
-                        templateProcessor,
-                        MarkdownService,
-                        MetadataValidators,
-                        pair.processor,
-                        pair.item?.Select(f => f.file));
-                    yield return hostService;
-                }
+                return (from processor in processors.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+                        join item in toHandleItems.AsParallel() on processor equals item.Key into g
+                        from item in g.DefaultIfEmpty()
+                        select LoggerPhaseScope.WithScope(
+                            processor.Name,
+                            LogLevel.Verbose,
+                            () => creator.CreateHostService(
+                                parameters,
+                                templateProcessor,
+                                MarkdownService,
+                                MetadataValidators,
+                                processor,
+                                item)
+                                )).ToList();
+            }
+            catch (AggregateException ex)
+            {
+                throw new DocfxException(ex.InnerException?.Message, ex);
             }
         }
 
@@ -244,10 +242,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                 phaseProcessor = new PhaseProcessor
                 {
                     Handlers =
-                                    {
-                                        new CompilePhaseHandler(context).WithIncremental(),
-                                        new LinkPhaseHandler(context, templateProcessor).WithIncremental(),
-                                    }
+                    {
+                        new CompilePhaseHandler(context).WithIncremental(),
+                        new LinkPhaseHandler(context, templateProcessor).WithIncremental(),
+                    }
                 };
             }
             else
@@ -256,23 +254,23 @@ namespace Microsoft.DocAsCode.Build.Engine
                 phaseProcessor = new PhaseProcessor
                 {
                     Handlers =
-                                    {
-                                        new CompilePhaseHandler(context),
-                                        new LinkPhaseHandler(context, templateProcessor),
-                                    }
+                    {
+                        new CompilePhaseHandler(context),
+                        new LinkPhaseHandler(context, templateProcessor),
+                    }
                 };
             }
         }
 
         private static List<HomepageInfo> GetHomepages(DocumentBuildContext context)
         {
-            return context.GetTocInfo()
-                .Where(s => !string.IsNullOrEmpty(s.Homepage))
-                .Select(s => new HomepageInfo
-                {
-                    Homepage = RelativePath.GetPathWithoutWorkingFolderChar(s.Homepage),
-                    TocPath = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(s.TocFileKey))
-                }).ToList();
+            return (from s in context.GetTocInfo()
+                    where !string.IsNullOrEmpty(s.Homepage)
+                    select new HomepageInfo
+                    {
+                        Homepage = RelativePath.GetPathWithoutWorkingFolderChar(s.Homepage),
+                        TocPath = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(s.TocFileKey))
+                    }).ToList();
         }
 
         /// <summary>
