@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Plugins
 
     public class IncrementalInfo
     {
+        private readonly object _syncRoot = new object();
         private readonly Dictionary<string, IncrementalStatus> _processors = new Dictionary<string, IncrementalStatus>();
 
         [YamlMember(Alias = "status")]
@@ -22,20 +23,26 @@ namespace Microsoft.DocAsCode.Plugins
 
         public void ReportStatus(bool canIncremental, IncrementalPhase incrementalPhase, string details = null)
         {
-            Status.CanIncremental = canIncremental;
-            Status.Details = details;
-            Status.IncrementalPhase = incrementalPhase;
+            lock (_syncRoot)
+            {
+                Status.CanIncremental = canIncremental;
+                Status.Details = details;
+                Status.IncrementalPhase = incrementalPhase;
+            }
         }
 
         public void ReportProcessorStatus(string processor, bool canIncremental, string details = null)
         {
-            IncrementalStatus status;
-            if (!_processors.TryGetValue(processor, out status))
+            lock (_syncRoot)
             {
-                _processors[processor] = status = new IncrementalStatus();
+                IncrementalStatus status;
+                if (!_processors.TryGetValue(processor, out status))
+                {
+                    _processors[processor] = status = new IncrementalStatus();
+                }
+                status.CanIncremental = canIncremental;
+                status.Details = details;
             }
-            status.CanIncremental = canIncremental;
-            status.Details = details;
         }
     }
 
