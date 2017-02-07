@@ -106,11 +106,11 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
                 value.Type == typeof(DateTime) ||
                 value.Type == typeof(TimeSpan))
             {
-                visitor.VisitScalar(value);
+                visitor.VisitScalar(value, context);
             }
             else if (value.Value == null)
             {
-                visitor.VisitScalar(new BetterObjectDescriptor(null, typeof(object), typeof(object)));
+                visitor.VisitScalar(new BetterObjectDescriptor(null, typeof(object), typeof(object)), context);
             }
             else
             {
@@ -119,11 +119,11 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
                 {
                     // This is a nullable type, recursively handle it with its underlying type.
                     // Note that if it contains null, the condition above already took care of it
-                    Traverse(new BetterObjectDescriptor(value.Value, underlyingType, value.Type, value.ScalarStyle), visitor, currentDepth);
+                    Traverse(new BetterObjectDescriptor(value.Value, underlyingType, value.Type, value.ScalarStyle), visitor, currentDepth, context);
                 }
                 else
                 {
-                    TraverseObject(value, visitor, currentDepth);
+                    TraverseObject(value, visitor, currentDepth, context);
                 }
             }
 #else
