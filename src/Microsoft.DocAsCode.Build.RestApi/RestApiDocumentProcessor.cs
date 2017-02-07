@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using Newtonsoft.Json.Linq;
 
     [Export(typeof(IDocumentProcessor))]
-    public class RestApiDocumentProcessor : DisposableDocumentProcessor
+    public class RestApiDocumentProcessor : ReferenceDocumentProcessorBase
     {
         private const string RestApiDocumentType = "RestApi";
         private const string DocumentTypeKey = "documentType";
@@ -68,42 +68,6 @@ namespace Microsoft.DocAsCode.Build.RestApi
             return ProcessingPriority.NotSupported;
         }
 
-        public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
-        {
-            switch (file.Type)
-            {
-                case DocumentType.Article:
-                    var filePath = Path.Combine(file.BaseDir, file.File);
-                    var swagger = SwaggerJsonParser.Parse(filePath);
-                    swagger.Metadata[DocumentTypeKey] = RestApiDocumentType;
-                    swagger.Raw = EnvironmentContext.FileAbstractLayer.ReadAllText(filePath);
-                    CheckOperationId(swagger, file.File);
-
-                    var repoInfo = GitUtility.TryGetFileDetail(filePath);
-                    if (repoInfo != null)
-                    {
-                        swagger.Metadata["source"] = new SourceDetail() { Remote = repoInfo };
-                    }
-
-                    swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);
-                    var vm = SwaggerModelConverter.FromSwaggerModel(swagger);
-                    var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
-
-                    return new FileModel(file, vm, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
-                    {
-                        Uids = new[] { new UidDefinition(vm.Uid, displayLocalPath) }
-                            .Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath))
-                            .Concat(from tag in vm.Tags select new UidDefinition(tag.Uid, displayLocalPath)).ToImmutableArray(),
-                        LocalPathFromRoot = displayLocalPath
-                    };
-                case DocumentType.Overwrite:
-                    // TODO: Refactor current behavior that overwrite file is read multiple times by multiple processors
-                    return OverwriteDocumentReader.Read(file);
-                default:
-                    throw new NotSupportedException();
-            }
-        }
-
         public override SaveResult Save(FileModel model)
         {
             if (model.Type != DocumentType.Article)
@@ -111,26 +75,55 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 throw new NotSupportedException();
             }
             var vm = (RestApiRootItemViewModel)model.Content;
-            string documentType = null;
+
             object documentTypeObject;
             if (vm.Metadata.TryGetValue(DocumentTypeKey, out documentTypeObject))
             {
-                documentType = documentTypeObject as string;
+                var documentType = documentTypeObject as string;
+                if (documentType != null)
+                {
+                    model.DocumentType = documentType;
+                }
             }
-
             model.File = ChangeFileExtension(model.File);
 
-            return new SaveResult
+            var result = base.Save(model);
+            result.XRefSpecs = GetXRefInfo(vm, model.Key).ToImmutableArray();
+            return result;
+        }
+
+        #region ReferenceDocumentProcessorBase Members
+
+        protected override string ProcessedDocumentType { get; } = RestApiDocumentType;
+
+        protected override FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata)
+        {
+            var filePath = Path.Combine(file.BaseDir, file.File);
+            var swagger = SwaggerJsonParser.Parse(filePath);
+            swagger.Metadata[DocumentTypeKey] = RestApiDocumentType;
+            swagger.Raw = EnvironmentContext.FileAbstractLayer.ReadAllText(filePath);
+            CheckOperationId(swagger, file.File);
+
+            var repoInfo = GitUtility.TryGetFileDetail(filePath);
+            if (repoInfo != null)
             {
-                DocumentType = documentType ?? RestApiDocumentType,
-                FileWithoutExtension = Path.ChangeExtension(model.File, null),
-                LinkToFiles = model.LinkToFiles.ToImmutableArray(),
-                LinkToUids = model.LinkToUids,
-                FileLinkSources = model.FileLinkSources,
-                UidLinkSources = model.UidLinkSources,
-                XRefSpecs = GetXRefInfo(vm, model.Key).ToImmutableArray()
+                swagger.Metadata["source"] = new SourceDetail() { Remote = repoInfo };
+            }
+
+            swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);
+            var vm = SwaggerModelConverter.FromSwaggerModel(swagger);
+            var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
+
+            return new FileModel(file, vm, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
+            {
+                Uids = new[] { new UidDefinition(vm.Uid, displayLocalPath) }
+                    .Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath))
+                    .Concat(from tag in vm.Tags select new UidDefinition(tag.Uid, displayLocalPath)).ToImmutableArray(),
+                LocalPathFromRoot = displayLocalPath
             };
         }
+
+        #endregion
 
         #region Private methods
 
