@@ -322,18 +322,24 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     var match = CommentIdRegex.Match(cref);
                     if (match.Success)
                     {
-                        var value = match.Groups["id"].Value;
+                        var id = match.Groups["id"].Value;
+                        var type = match.Groups["type"].Value;
+
+                        if (string.Equals(type, "Overload"))
+                        {
+                            id += '*';
+                        }
 
                         // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
                         if (item.Parent?.Parent != null)
                         {
-                            var replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(value)}\" data-throw-if-not-resolved=\"false\"></xref>");
+                            var replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}\" data-throw-if-not-resolved=\"false\"></xref>");
                             item.ReplaceWith(replacement);
                         }
 
                         if (addReference != null)
                         {
-                            addReference(value, cref);
+                            addReference(id, cref);
                         }
                     }
                     else
@@ -390,9 +396,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     var match = CommentIdRegex.Match(commentId);
                     if (match.Success)
                     {
-                        var type = match.Groups["id"].Value;
-                        if (string.IsNullOrEmpty(description)) description = null;
-                        yield return new ExceptionInfo { Description = description, Type = type, CommentId = commentId };
+                        var id = match.Groups["id"].Value;
+                        var type = match.Groups["type"].Value;
+                        if (string.Equals(type, "T"))
+                        {
+                            if (string.IsNullOrEmpty(description)) description = null;
+                            yield return new ExceptionInfo { Description = description, Type = id, CommentId = commentId };
+                        }
                     }
                 }
             }
@@ -415,8 +425,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     var match = CommentIdRegex.Match(commentId);
                     if (match.Success)
                     {
-                        var type = match.Groups["id"].Value;
-                        yield return new LinkInfo { AltText = altText, LinkId = type, CommentId = commentId, LinkType = LinkType.CRef };
+                        var id = match.Groups["id"].Value;
+                        var type = match.Groups["type"].Value;
+                        if (string.Equals(type, "Overload"))
+                        {
+                            id += '*';
+                        }
+
+                        yield return new LinkInfo { AltText = altText, LinkId = id, CommentId = commentId, LinkType = LinkType.CRef };
                     }
                 }
                 else if (!string.IsNullOrEmpty(url))

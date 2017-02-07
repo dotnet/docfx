@@ -171,7 +171,7 @@ Check empty code.
             Assert.Equal(5, sees.Count);
             Assert.Equal("Microsoft.DocAsCode.EntityModel.SpecIdHelper", sees[0].LinkId);
             Assert.Null(sees[0].AltText);
-            Assert.Equal("System.String.Compare", sees[2].LinkId);
+            Assert.Equal("System.String.Compare*", sees[2].LinkId);
             Assert.Null(sees[1].AltText);
             Assert.Equal("http://exception.com", sees[3].LinkId);
             Assert.Equal("Global See section", sees[3].AltText);
