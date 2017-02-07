@@ -52,11 +52,11 @@ namespace Microsoft.DocAsCode.Build.Common
             }
         }
 
-        protected abstract void ApplyOverwrite(IHostService host, List<FileModel> od, string uid, List<FileModel> articles);
+        protected abstract void ApplyOverwrite(IHostService host, List<FileModel> overwrites, string uid, List<FileModel> articles);
 
         protected void ApplyOverwrite<T>(
             IHostService host,
-            List<FileModel> od,
+            List<FileModel> overwrites,
             string uid,
             List<FileModel> articles,
             Func<FileModel, string, IHostService, IEnumerable<T>> getItemsFromOverwriteDocument,
@@ -65,7 +65,7 @@ namespace Microsoft.DocAsCode.Build.Common
         {
             // Multiple UID in overwrite documents is allowed now
             var ovms =
-                (from fm in od.Distinct()
+                (from fm in overwrites
                  from content in getItemsFromOverwriteDocument(fm, uid, host)
                  select new
                  {
@@ -90,8 +90,12 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 var vm = pair.item;
                 Merge(vm, ovm, ovms[0].fileModel);
-                pair.model.LinkToUids = pair.model.LinkToUids.Union(od[0].LinkToUids);
-                pair.model.LinkToFiles = pair.model.LinkToFiles.Union(od[0].LinkToFiles);
+
+                // TODO: union from overwrites with same UID
+                pair.model.LinkToUids = pair.model.LinkToUids.Union(overwrites[0].LinkToUids);
+                pair.model.LinkToFiles = pair.model.LinkToFiles.Union(overwrites[0].LinkToFiles);
+                pair.model.FileLinkSources = pair.model.FileLinkSources.Union(overwrites[0].FileLinkSources).ToImmutableDictionary();
+                pair.model.UidLinkSources = pair.model.UidLinkSources.Union(overwrites[0].UidLinkSources).ToImmutableDictionary();
             }
         }
 

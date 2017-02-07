@@ -67,19 +67,19 @@ namespace Microsoft.DocAsCode.Build.RestApi
             return ((RestApiRootItemViewModel)articleModel.Content).Tags.Where(c => c.Uid == uid);
         }
 
-        protected override void ApplyOverwrite(IHostService host, List<FileModel> od, string uid, List<FileModel> articles)
+        protected override void ApplyOverwrite(IHostService host, List<FileModel> overwrites, string uid, List<FileModel> articles)
         {
             if (articles.Any(a => uid == ((RestApiRootItemViewModel)a.Content).Uid))
             {
-                ApplyOverwrite(host, od, uid, articles, GetRootItemsFromOverwriteDocument, GetRootItemsToOverwrite);
+                ApplyOverwrite(host, overwrites, uid, articles, GetRootItemsFromOverwriteDocument, GetRootItemsToOverwrite);
             }
             else if (articles.Any(a => ((RestApiRootItemViewModel)a.Content).Children.Any(c => uid == c.Uid)))
             {
-                ApplyOverwrite(host, od, uid, articles, GetChildItemsFromOverwriteDocument, GetChildItemsToOverwrite);
+                ApplyOverwrite(host, overwrites, uid, articles, GetChildItemsFromOverwriteDocument, GetChildItemsToOverwrite);
             }
             else if (articles.Any(a => ((RestApiRootItemViewModel)a.Content).Tags.Any(t => uid == t.Uid)))
             {
-                ApplyOverwrite(host, od, uid, articles, GetTagsFromOverwriteDocument, GetTagItemsToOverwrite);
+                ApplyOverwrite(host, overwrites, uid, articles, GetTagsFromOverwriteDocument, GetTagItemsToOverwrite);
             }
         }
     }

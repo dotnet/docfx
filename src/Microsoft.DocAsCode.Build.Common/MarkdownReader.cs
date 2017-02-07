@@ -61,6 +61,8 @@ namespace Microsoft.DocAsCode.Build.Common
                 Uid = properties[Constants.PropertyName.Uid].ToString(),
                 LinkToFiles = new HashSet<string>(part.LinkToFiles),
                 LinkToUids = new HashSet<string>(part.LinkToUids),
+                FileLinkSources = part.FileLinkSources.ToDictionary(p => p.Key, p => p.Value.ToList()),
+                UidLinkSources = part.UidLinkSources.ToDictionary(p => p.Key, p => p.Value.ToList()),
                 Metadata = overriden,
                 Conceptual = part.Conceptual,
                 Documentation = new SourceDetail
