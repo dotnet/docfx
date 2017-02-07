@@ -168,8 +168,8 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private void CopyMetadataToTocItem(TocItemViewModel item)
         {
-            ApplyTocMetadata(item, _propTable);
             ApplyTocMetadata(item, _metaTable);
+            ApplyTocMetadata(item, _propTable);
         }
 
         private void ApplyTocMetadata(TocItemViewModel item, Dictionary<string, Dictionary<string, object>> table)
