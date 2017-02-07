@@ -17,6 +17,5 @@
   <files>
     <file src="*" target="content\plugins\" exclude="**\*.pdb"/>
     <file src="resources\**" target="content\"/>
-    <file src="Microsoft.DocAsCode.Build.JavaScriptReference.dll" target="lib\net452\"/>
   </files>
 </package>
