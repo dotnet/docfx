@@ -90,13 +90,12 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 var vm = pair.item;
                 Merge(vm, ovm, ovms[0].fileModel);
-                foreach (var overwrite in overwrites)
-                {
-                    pair.model.LinkToUids = pair.model.LinkToUids.Union(overwrite.LinkToUids);
-                    pair.model.LinkToFiles = pair.model.LinkToFiles.Union(overwrite.LinkToFiles);
-                    pair.model.FileLinkSources = pair.model.FileLinkSources.Union(overwrite.FileLinkSources).ToImmutableDictionary();
-                    pair.model.UidLinkSources = pair.model.UidLinkSources.Union(overwrite.UidLinkSources).ToImmutableDictionary();
-                }
+
+                // TODO: union from overwrites with same UID
+                pair.model.LinkToUids = pair.model.LinkToUids.Union(overwrites[0].LinkToUids);
+                pair.model.LinkToFiles = pair.model.LinkToFiles.Union(overwrites[0].LinkToFiles);
+                pair.model.FileLinkSources = pair.model.FileLinkSources.Union(overwrites[0].FileLinkSources).ToImmutableDictionary();
+                pair.model.UidLinkSources = pair.model.UidLinkSources.Union(overwrites[0].UidLinkSources).ToImmutableDictionary();
             }
         }
 

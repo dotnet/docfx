@@ -138,6 +138,7 @@ remarks: Hello
 @NotExistUid
 
 [Not exist link](link.md)
+[Not exist link2](link2.md)
 
 This is unit test!";
             content = Regex.Replace(content, "\r?\n", "\r\n");
@@ -148,18 +149,26 @@ This is unit test!";
             Assert.Equal(1, results.Count);
             Assert.Equal("Test", results[0].Uid);
             Assert.Equal("Hello", results[0].Metadata["remarks"]);
-            Assert.Equal(1, results[0].LinkToFiles.Count);
+            Assert.Equal(2, results[0].LinkToFiles.Count);
             Assert.Equal("~/link.md", results[0].LinkToFiles.ElementAt(0));
             Assert.Equal(1, results[0].LinkToUids.Count);
             Assert.Equal("NotExistUid", results[0].LinkToUids.ElementAt(0));
-            Assert.Equal(1, results[0].FileLinkSources.Count);
-            var fileLinkSource = results[0].FileLinkSources["~/link.md"];
-            Assert.NotNull(fileLinkSource);
-            Assert.Equal(1, fileLinkSource.Count);
-            Assert.Equal(null, fileLinkSource[0].Anchor);
-            Assert.Equal(7, fileLinkSource[0].LineNumber);
-            Assert.Equal(fileName, fileLinkSource[0].SourceFile);
-            Assert.Equal("~/link.md", fileLinkSource[0].Target);
+            Assert.Equal(2, results[0].FileLinkSources.Count);
+            var fileLinkSource0 = results[0].FileLinkSources["~/link.md"];
+            Assert.NotNull(fileLinkSource0);
+            Assert.Equal(1, fileLinkSource0.Count);
+            Assert.Equal(null, fileLinkSource0[0].Anchor);
+            Assert.Equal(7, fileLinkSource0[0].LineNumber);
+            Assert.Equal(fileName, fileLinkSource0[0].SourceFile);
+            Assert.Equal("~/link.md", fileLinkSource0[0].Target);
+            Assert.Equal(1, results[0].UidLinkSources.Count);
+            var fileLinkSource1 = results[0].FileLinkSources["~/link2.md"];
+            Assert.NotNull(fileLinkSource1);
+            Assert.Equal(1, fileLinkSource1.Count);
+            Assert.Equal(null, fileLinkSource1[0].Anchor);
+            Assert.Equal(8, fileLinkSource1[0].LineNumber);
+            Assert.Equal(fileName, fileLinkSource1[0].SourceFile);
+            Assert.Equal("~/link2.md", fileLinkSource1[0].Target);
             Assert.Equal(1, results[0].UidLinkSources.Count);
             var uidLinkSource = results[0].UidLinkSources["NotExistUid"];
             Assert.NotNull(uidLinkSource);
@@ -169,8 +178,9 @@ This is unit test!";
             Assert.Equal(fileName, uidLinkSource[0].SourceFile);
             Assert.Equal("NotExistUid", uidLinkSource[0].Target);
             Assert.Equal(@"<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""5"" sourceendlinenumber=""5""><xref href=""NotExistUid"" data-throw-if-not-resolved=""False"" data-raw-source=""@NotExistUid"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""5"" sourceendlinenumber=""5""></xref></p>
-<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""7"" sourceendlinenumber=""7""><a href=""link.md"" data-raw-source=""[Not exist link](link.md)"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""7"" sourceendlinenumber=""7"">Not exist link</a></p>
-<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""9"" sourceendlinenumber=""9"">This is unit test!</p>
+<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""7"" sourceendlinenumber=""8""><a href=""link.md"" data-raw-source=""[Not exist link](link.md)"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""7"" sourceendlinenumber=""7"">Not exist link</a>
+<a href=""link2.md"" data-raw-source=""[Not exist link2](link2.md)"" sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""8"" sourceendlinenumber=""8"">Not exist link2</a></p>
+<p sourcefile=""ut_ReadMarkdownAsOverwrite.md"" sourcestartlinenumber=""10"" sourceendlinenumber=""10"">This is unit test!</p>
 ".Replace("\r\n", "\n"),
                 results[0].Conceptual);
             File.Delete(fileName);
