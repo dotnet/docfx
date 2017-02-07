@@ -1,8 +1,12 @@
-﻿Version Notes (Current Version: v2.11.2)
+﻿Version Notes (Current Version: v2.11.3)
 =======================================
+v2.11.3
+-----------
+1.  Add support for title attribute specification in TOC.md files
+
 v2.11.2
 -----------
-1. Fix bug in functions exported by embedded common template.
+1.  Fix bug in functions exported by embedded common template.
 
 v2.11.1
 -----------
