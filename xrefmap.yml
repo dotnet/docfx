@@ -18866,6 +18866,12 @@ references:
   commentId: F:Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Conceptual
   fullName: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Conceptual
   nameWithType: Constants.PropertyName.Conceptual
+- uid: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.DisplayName
+  name: DisplayName
+  href: api/Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.html#Microsoft_DocAsCode_DataContracts_Common_Constants_PropertyName_DisplayName
+  commentId: F:Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.DisplayName
+  fullName: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.DisplayName
+  nameWithType: Constants.PropertyName.DisplayName
 - uid: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Documentation
   name: Documentation
   href: api/Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.html#Microsoft_DocAsCode_DataContracts_Common_Constants_PropertyName_Documentation
@@ -19598,6 +19604,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.AggregatedUid
   fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.AggregatedUid
   nameWithType: TocItemViewModel.AggregatedUid
+- uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.DisplayName
+  name: DisplayName
+  href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_DisplayName
+  commentId: P:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.DisplayName
+  fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.DisplayName
+  nameWithType: TocItemViewModel.DisplayName
+- uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.DisplayName*
+  name: DisplayName
+  href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_DisplayName_
+  commentId: Overload:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.DisplayName
+  fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.DisplayName
+  nameWithType: TocItemViewModel.DisplayName
 - uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.Homepage
   name: Homepage
   href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_Homepage
