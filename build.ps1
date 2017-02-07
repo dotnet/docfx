@@ -175,10 +175,7 @@ foreach ($folder in (Get-ChildItem "plugins"))
            NugetPack "target\$configuration\$($folder.Name)" $nuspec
        }
     }
-    else
-    {
-        DotnetPack($folder)
-    }
+    DotnetPack($folder)
 }
 
 # Pack docfx.console
