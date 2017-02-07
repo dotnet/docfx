@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     public class TripleSlashCommentModel
     {
         private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
-        private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
+        private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
         private static Regex LineBreakRegex = new Regex(@"\r?\n", RegexOptions.Compiled);
         private static Regex CodeElementRegex = new Regex(@"<code[^>]*>([\s\S]*?)</code>", RegexOptions.Compiled);
 
@@ -319,9 +319,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     var cref = item.Attribute("cref").Value;
                     // Strict check is needed as value could be an invalid href,
                     // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
-                    if (CommentIdRegex.IsMatch(cref))
+                    var match = CommentIdRegex.Match(cref);
+                    if (match.Success)
                     {
-                        var value = cref.Substring(2);
+                        var value = match.Groups["id"].Value;
 
                         // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
                         if (item.Parent?.Parent != null)
@@ -386,9 +387,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (!string.IsNullOrEmpty(commentId))
                 {
                     // Check if exception type is valid and trim prefix
-                    if (CommentIdRegex.IsMatch(commentId))
+                    var match = CommentIdRegex.Match(commentId);
+                    if (match.Success)
                     {
-                        string type = commentId.Substring(2);
+                        var type = match.Groups["id"].Value;
                         if (string.IsNullOrEmpty(description)) description = null;
                         yield return new ExceptionInfo { Description = description, Type = type, CommentId = commentId };
                     }
@@ -410,9 +412,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (!string.IsNullOrEmpty(commentId))
                 {
                     // Check if cref type is valid and trim prefix
-                    if (CommentIdRegex.IsMatch(commentId))
+                    var match = CommentIdRegex.Match(commentId);
+                    if (match.Success)
                     {
-                        string type = commentId.Substring(2);
+                        var type = match.Groups["id"].Value;
                         yield return new LinkInfo { AltText = altText, LinkId = type, CommentId = commentId, LinkType = LinkType.CRef };
                     }
                 }
