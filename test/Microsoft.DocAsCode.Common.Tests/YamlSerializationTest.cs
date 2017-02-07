@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.Equal(input, value.C);
         }
 
-        [Fact(Skip = "Not work in YamlDotNet 3.9")]
+        [Fact]
         public void TestNotWorkInYamlDotNet39()
         {
             const string Text = "😄";
