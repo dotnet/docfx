@@ -325,7 +325,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         var id = match.Groups["id"].Value;
                         var type = match.Groups["type"].Value;
 
-                        if (string.Equals(type, "Overload"))
+                        if (type == "Overload")
                         {
                             id += '*';
                         }
@@ -398,7 +398,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         var id = match.Groups["id"].Value;
                         var type = match.Groups["type"].Value;
-                        if (string.Equals(type, "T"))
+                        if (type == "T")
                         {
                             if (string.IsNullOrEmpty(description)) description = null;
                             yield return new ExceptionInfo { Description = description, Type = id, CommentId = commentId };
@@ -427,7 +427,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         var id = match.Groups["id"].Value;
                         var type = match.Groups["type"].Value;
-                        if (string.Equals(type, "Overload"))
+                        if (type == "Overload")
                         {
                             id += '*';
                         }
@@ -484,8 +484,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             var preIndex = 0;
             var leadingSpaces = from line in lines
-                where !string.IsNullOrWhiteSpace(line)
-                select line.TakeWhile(char.IsWhiteSpace).Count();
+                                where !string.IsNullOrWhiteSpace(line)
+                                select line.TakeWhile(char.IsWhiteSpace).Count();
 
             if (leadingSpaces.Any())
             {
