@@ -115,9 +115,9 @@ namespace Microsoft.DocAsCode.Build.Common
             /// <param name="state"></param>
             /// <param name="nestedObjectDeserializer"></param>
             /// <returns></returns>
-            public object DeserializeValue(EventReader reader, Type expectedType, SerializerState state, IValueDeserializer nestedObjectDeserializer)
+            public object DeserializeValue(IParser parser, Type expectedType, SerializerState state, IValueDeserializer nestedObjectDeserializer)
             {
-                object value = _innerDeserializer.DeserializeValue(reader, expectedType, state, nestedObjectDeserializer);
+                object value = _innerDeserializer.DeserializeValue(parser, expectedType, state, nestedObjectDeserializer);
 
                 var str = value as string;
                 if (str != null && str.Trim() == Constants.ContentPlaceholder)
