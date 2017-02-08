@@ -189,6 +189,12 @@ NugetPack "target\$configuration\AzureMarkdownRewriterTool" "src\nuspec\AzureMar
 # Pack DfmHttpService
 NugetPack "target\$configuration\DfmHttpService" "src\nuspec\DfmHttpService\DfmHttpService.nuspec"
 
+# Pack MergeDeveloperComments
+NugetPack "target\$configuration\MergeDeveloperComments" "src\nuspec\MergeDeveloperComments\MergeDeveloperComments.nuspec"
+
+# Pack MergeSourceInfo
+NugetPack "target\$configuration\MergeSourceInfo" "src\nuspec\MergeSourceInfo\MergeSourceInfo.nuspec"
+
 # Build VscPreviewExe
 src\VscPreviewExtension\buildVscPreviewExe.cmd -c $configuration
 ProcessLastExitCode $lastexitcode "build VscPreviewExe error"
