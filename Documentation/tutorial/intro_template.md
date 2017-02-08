@@ -27,7 +27,7 @@ The naming rule for a *Renderer* file is:
 `<document_type>.<output_extension>[.primary].<template_extension>`.
 
 * `<document_type>` is the *document type* current *Renderer* responsible to.
-* `<output_extension>` defines the extension of the output files going through current *Renderer*. For example, `conceputal.html.tmpl` transforms `file1.md` into output file `file1.html`, and `toc.json.tmpl` transforms `toc.md` into output file `toc.json`.
+* `<output_extension>` defines the extension of the output files going through current *Renderer*. For example, `conceptual.html.tmpl` transforms `file1.md` into output file `file1.html`, and `toc.json.tmpl` transforms `toc.md` into output file `toc.json`.
 * `[.primary]` is optional. It is used when there are multiple *Renderer*s with different extension for one particular document type. The output file transformed by the `.primary` *Renderer* is used as the file to be linked. The below example describes the behavior in detail.
 * `<template_extension>` is the extension of the *Renderer* file based on the templating language it uses. For Mustache *Renderer*, it is `.tmpl`, while for Liquid *Renderer*, it is `.liquid`.
 
@@ -38,7 +38,7 @@ The following template contains two Mustache *Renderer* files for `conceptual` d
 ```
 /- some_template/
     |- conceptual.html.primary.tmpl
-    \- concetpual.mta.json.tmpl
+    \- conceptual.mta.json.tmpl
 ```
 There are two Markdown files `A.md` and `B.md`, the content for `A.md` is:
 
