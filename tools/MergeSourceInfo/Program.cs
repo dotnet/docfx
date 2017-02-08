@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.Tools
             }
 
             Console.WriteLine($"Patching source for {target}");
-            YamlUtility.Serialize(target, tgtVM, YamlMime.TableOfContent);
+            YamlUtility.Serialize(target, tgtVM, YamlMime.ManagedReference);
         }
 
         static int Main(string[] args)
