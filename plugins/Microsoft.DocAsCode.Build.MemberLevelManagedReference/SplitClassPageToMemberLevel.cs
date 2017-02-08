@@ -48,14 +48,15 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 }
             }
 
-            host.TableOfContentRestructions = (from item in treeMapping
-                                               select new TreeItemRestructure
-                                               {
-                                                   ActionType = TreeItemActionType.AppendChild,
-                                                   Key = item.Key,
-                                                   TypeOfKey = TreeItemKeyType.TopicUid,
-                                                   RestructuredItems = item.Value.ToImmutableList(),
-                                               }).ToImmutableList();
+            host.TableOfContentRestructions =
+                (from item in treeMapping
+                 select new TreeItemRestructure
+                 {
+                     ActionType = TreeItemActionType.AppendChild,
+                     Key = item.Key,
+                     TypeOfKey = TreeItemKeyType.TopicUid,
+                     RestructuredItems = item.Value.ToImmutableList(),
+                 }).ToImmutableList();
 
             return collection;
         }
@@ -80,7 +81,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var children = new List<TreeItem>();
             var splittedModels = new List<FileModel>();
 
-            var group = (from item in itemsToSplit group item by item.Overload into o select o).ToList();
+            var group = (from item in itemsToSplit group item by item.Overload).ToList();
 
             // Per Overload per page
             foreach (var overload in group)
@@ -105,7 +106,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
 
             // Convert children to references
-            page.References = itemsToSplit.Select(s => ConvertToReference(s)).Concat(page.References).ToList();
+            page.References = itemsToSplit.Select(ConvertToReference).Concat(page.References).ToList();
 
             page.Items = new List<ItemViewModel> { primaryItem };
 
@@ -114,7 +115,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             model.Content = page;
             return new SplittedResult(primaryItem.Uid, children.OrderBy(s => GetDisplayName(s)), splittedModels);
         }
-        
+
         private ModelWrapper GenerateNonOverloadPage(PageViewModel page, FileModel model, ItemViewModel item)
         {
             var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { item });
@@ -271,7 +272,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             if (overwriteMetadata != null)
             {
-                foreach(var pair in overwriteMetadata)
+                foreach (var pair in overwriteMetadata)
                 {
                     result.Metadata[pair.Key] = pair.Value;
                 }
@@ -285,7 +286,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 Items = items,
                 Metadata = new Dictionary<string, object>(page.Metadata),
-                References = new List<ReferenceViewModel>(page.References.Select(s=>s.Clone())),
+                References = new List<ReferenceViewModel>(page.References.Select(s => s.Clone())),
                 ShouldSkipMarkup = page.ShouldSkipMarkup
             };
             return newPage;
@@ -296,7 +297,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var initialFile = model.FileAndType.File;
             var extension = Path.GetExtension(initialFile);
             var directory = Path.GetDirectoryName(initialFile);
-            var newFileName = PathUtility.ToValidFilePath(key, '-') + extension;
+            var newFileName = PathUtility.ToValidFilePath(key, '-').Replace('`', '-') + extension;
             var filePath = Path.Combine(directory, newFileName).ToNormalizedPath();
             var newFileAndType = new FileAndType(model.FileAndType.BaseDir, filePath, model.FileAndType.Type, model.FileAndType.SourceDir, model.FileAndType.DestinationDir);
             var newModel = new FileModel(newFileAndType, newPage, null, model.Serializer);
