@@ -5,15 +5,14 @@ namespace Microsoft.DocAsCode.Plugins
 {
     using System.Collections.Generic;
 
-    using YamlDotNet.Serialization;
-    using YamlSerialization;
+    using Newtonsoft.Json;
 
     public class TreeItem
     {
-        [YamlMember(Alias = "items")]
+        [JsonProperty("items")]
         public List<TreeItem> Items { get; set; }
 
-        [ExtensibleMember]
+        [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }
 }
