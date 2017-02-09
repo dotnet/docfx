@@ -14,9 +14,6 @@ IF NOT '%ERRORLEVEL%'=='0' (
 SET TemplateHome=%~dp0src\docfx.website.themes\
 SET DefaultTemplate=%TemplateHome%default
 
-CALL npm install -g gulp
-CALL npm install -g bower
-
 :: Check if gulp exists globally
 WHERE gulp >NUL
 IF NOT '%ERRORLEVEL%'=='0' (
