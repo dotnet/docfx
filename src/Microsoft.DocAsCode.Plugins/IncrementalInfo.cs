@@ -6,18 +6,15 @@ namespace Microsoft.DocAsCode.Plugins
     using System.Collections.Generic;
 
     using Newtonsoft.Json;
-    using YamlDotNet.Serialization;
 
     public class IncrementalInfo
     {
         private readonly object _syncRoot = new object();
         private readonly Dictionary<string, IncrementalStatus> _processors = new Dictionary<string, IncrementalStatus>();
 
-        [YamlMember(Alias = "status")]
         [JsonProperty("status")]
         public IncrementalStatus Status { get; } = new IncrementalStatus();
 
-        [YamlMember(Alias = "processors")]
         [JsonProperty("processors")]
         public IReadOnlyDictionary<string, IncrementalStatus> Processors => _processors;
 
@@ -48,15 +45,12 @@ namespace Microsoft.DocAsCode.Plugins
 
     public class IncrementalStatus
     {
-        [YamlMember(Alias = "canIncremental")]
         [JsonProperty("can_incremental")]
         public bool CanIncremental { get; set; }
 
-        [YamlMember(Alias = "details")]
         [JsonProperty("details")]
         public string Details { get; set; }
 
-        [YamlMember(Alias = "incrementalPhase")]
         [JsonProperty("incrementalPhase")]
         public IncrementalPhase IncrementalPhase { get; set; }
     }
