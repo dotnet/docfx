@@ -5,26 +5,19 @@ namespace Microsoft.DocAsCode.Plugins
 {
     using System.Collections.Generic;
 
-    using Microsoft.DocAsCode.YamlSerialization;
-
     using Newtonsoft.Json;
-    using YamlDotNet.Serialization;
 
     public class OutputFileInfo
     {
-        [YamlMember(Alias = "relative_path")]
         [JsonProperty("relative_path")]
         public string RelativePath { get; set; }
 
-        [YamlMember(Alias = "link_to_path")]
         [JsonProperty("link_to_path")]
         public string LinkToPath { get; set; }
 
-        [YamlMember(Alias = "hash")]
         [JsonProperty("hash")]
         public string Hash { get; set; }
 
-        [ExtensibleMember]
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }

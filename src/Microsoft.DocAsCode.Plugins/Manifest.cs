@@ -6,31 +6,24 @@ namespace Microsoft.DocAsCode.Plugins
     using System.Collections.Generic;
 
     using Newtonsoft.Json;
-    using YamlDotNet.Serialization;
 
     public class Manifest
     {
-        [YamlMember(Alias = "templates")]
         [JsonProperty("templates")]
         public List<string> Templates { get; set; }
 
-        [YamlMember(Alias = "homepages")]
         [JsonProperty("homepages")]
         public List<HomepageInfo> Homepages { get; set; }
 
-        [YamlMember(Alias = "sourceBasePath")]
         [JsonProperty("source_base_path")]
         public string SourceBasePath { get; set; }
 
-        [YamlMember(Alias = "xrefmap")]
         [JsonProperty("xrefmap")]
         public object XRefMap { get; set; }
 
-        [YamlMember(Alias = "files")]
         [JsonProperty("files")]
         public List<ManifestItem> Files { get; set; }
 
-        [YamlMember(Alias = "incrementalInfo")]
         [JsonProperty("incremental_info")]
         public List<IncrementalInfo> IncrementalInfo { get; set; }
     }
