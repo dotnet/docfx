@@ -234,7 +234,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private static List<TocItemViewModel> GetRoots(IEnumerable<TreeItem> treeItems)
         {
-            return YamlUtility.ConvertTo<List<TocItemViewModel>>(treeItems);
+            return JsonUtility.FromJsonString<List<TocItemViewModel>>(JsonUtility.ToJsonString(treeItems));
         }
 
         private static string ParseFile(string link)
