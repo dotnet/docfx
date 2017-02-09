@@ -31,9 +31,11 @@ $(function () {
 
   // Open links to different host in a new window.
   (function () {
-    $(document.links).filter(function() {
-      return this.hostname !== window.location.hostname;
-    }).attr('target', '_blank');
+    if ($("meta[property='docfx:newtab']").attr("content") === "true") {
+      $(document.links).filter(function() {
+        return this.hostname !== window.location.hostname;
+      }).attr('target', '_blank');
+    }
   })();
 
   // Enable highlight.js
