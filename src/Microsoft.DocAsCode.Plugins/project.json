@@ -12,8 +12,7 @@
   },
   "dependencies": {
     "System.Collections.Immutable": "1.2.0",
-    "Newtonsoft.Json": "9.0.1",
-    "Microsoft.DocAsCode.YamlSerialization": "1.0.0"
+    "Newtonsoft.Json": "9.0.1"
   },
   "configurations": {
     "Debug": {
