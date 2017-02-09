@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
+    using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
@@ -43,6 +44,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 tocModelCache[key] = tocResolver.Resolve(key);
             }
+
+            ReportDependency(models, host, tocModelCache.ToImmutableDictionary(), 8);
 
             foreach (var model in models)
             {
@@ -219,6 +222,96 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
+        private void ReportDependency(ImmutableList<FileModel> models, IHostService host, ImmutableDictionary<string, TocItemInfo> tocModelCache, int parallelism)
+        {
+            var nearest = new Dictionary<string, Toc>();
+            models.RunAll(model =>
+            {
+                var wrapper = tocModelCache[model.OriginalFileAndType.FullPath];
+
+                // If the TOC file is referenced by other TOC, not report dependency
+                if (wrapper.IsReferenceToc)
+                {
+                    return;
+                }
+                var outputFile = GetOutputPath(model.FileAndType);
+                var item = wrapper.Content;
+                UpdateNearestToc(host, item, model, nearest);
+            },
+            parallelism);
+            foreach (var item in nearest)
+            {
+                host.ReportDependencyFrom(item.Value.Model, item.Key, DependencyTypeName.Metadata);
+            }
+        }
+
+        private void UpdateNearestToc(IHostService host, TocItemViewModel item, FileModel toc, Dictionary<string, Toc> nearest)
+        {
+            var tocHref = item.TocHref;
+            var type = Utility.GetHrefType(tocHref);
+            if (type == HrefType.MarkdownTocFile || type == HrefType.YamlTocFile)
+            {
+                UpdateNearestTocCore(host, tocHref, toc, nearest);
+            }
+            else
+            {
+                if (Utility.IsSupportedRelativeHref(item.Href))
+                {
+                    UpdateNearestTocCore(host, item.Href, toc, nearest);
+                }
+            }
+
+            if (item.Items != null && item.Items.Count > 0)
+            {
+                foreach (var i in item.Items)
+                {
+                    UpdateNearestToc(host, i, toc, nearest);
+                }
+            }
+        }
+
+        private void UpdateNearestTocCore(IHostService host, string item, FileModel toc, Dictionary<string, Toc> nearest)
+        {
+            var allSourceFiles = host.SourceFiles;
+            var tocOutputFile = GetOutputPath(toc.FileAndType);
+            FileAndType itemSource;
+            if (allSourceFiles.TryGetValue(item, out itemSource))
+            {
+                var itemOutputFile = GetOutputPath(itemSource);
+                var relative = tocOutputFile.RemoveWorkingFolder() - itemOutputFile;
+                Toc cur;
+                lock (nearest)
+                {
+                    if (!nearest.TryGetValue(item, out cur) || CompareRelativePath(relative, cur.OutputPath) < 0)
+                    {
+                        nearest[item] = new Toc { Model = toc, OutputPath = relative };
+                    }
+                }
+            }
+        }
+
+        private static RelativePath GetOutputPath(FileAndType file)
+        {
+            if (file.SourceDir != file.DestinationDir)
+            {
+                return (RelativePath)file.DestinationDir + (((RelativePath)file.File) - (RelativePath)file.SourceDir);
+            }
+            else
+            {
+                return (RelativePath)file.File;
+            }
+        }
+
+        private static int CompareRelativePath(RelativePath a, RelativePath b)
+        {
+            int res = a.SubdirectoryCount - b.SubdirectoryCount;
+            if (res != 0)
+            {
+                return res;
+            }
+            return a.ParentDirectoryCount - b.ParentDirectoryCount;
+        }
+
         private bool Matches(TocItemViewModel item, TreeItemRestructure restruction)
         {
             switch (restruction.TypeOfKey)
@@ -241,6 +334,13 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         {
             var queryIndex = link.IndexOfAny(new[] { '?', '#' });
             return queryIndex == -1 ? link : link.Remove(queryIndex);
+        }
+
+        private class Toc
+        {
+            public FileModel Model { get; set; }
+
+            public RelativePath OutputPath { get; set; }
         }
 
         #region ISupportIncrementalBuildStep Members

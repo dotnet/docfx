@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void PreHandle(List<HostService> hostServices)
         {
-            foreach (var hostService in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
+            foreach (var hostService in hostServices)
             {
                 hostService.DependencyGraph = CurrentBuildVersionInfo.Dependency;
                 using (new LoggerPhaseScope("RegisterDependencyTypeFromProcessor", LogLevel.Verbose))
