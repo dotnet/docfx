@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 {
-    using Microsoft.DocAsCode.Build.Common;
-
     internal abstract class SwaggerObjectBase
     {
         public abstract SwaggerObjectType ObjectType { get; }
