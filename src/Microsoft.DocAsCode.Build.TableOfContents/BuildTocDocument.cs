@@ -144,7 +144,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 Logger.LogWarning($"Unable to find {restruction.Key}, it is probably removed or replaced by other restructions.");
                 return;
             }
-            
+
             switch (restruction.ActionType)
             {
                 case TreeItemActionType.ReplaceSelf:
@@ -234,11 +234,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 {
                     return;
                 }
-                var outputFile = GetOutputPath(model.FileAndType);
                 var item = wrapper.Content;
                 UpdateNearestToc(host, item, model, nearest);
             },
             parallelism);
+
+            // handle not-in-toc items
+            UpdateNearestTocForNotInTocItem(models, host, nearest);
+
             foreach (var item in nearest)
             {
                 host.ReportDependencyFrom(item.Value.Model, item.Key, DependencyTypeName.Metadata);
@@ -253,12 +256,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 UpdateNearestTocCore(host, tocHref, toc, nearest);
             }
-            else
+            else if (Utility.IsSupportedRelativeHref(item.Href))
             {
-                if (Utility.IsSupportedRelativeHref(item.Href))
-                {
-                    UpdateNearestTocCore(host, item.Href, toc, nearest);
-                }
+                UpdateNearestTocCore(host, item.Href, toc, nearest);
             }
 
             if (item.Items != null && item.Items.Count > 0)
@@ -266,6 +266,29 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 foreach (var i in item.Items)
                 {
                     UpdateNearestToc(host, i, toc, nearest);
+                }
+            }
+        }
+
+        private void UpdateNearestTocForNotInTocItem(ImmutableList<FileModel> models, IHostService host, Dictionary<string, Toc> nearest)
+        {
+            var allSourceFiles = host.SourceFiles;
+            foreach (var item in allSourceFiles.Keys.Except(nearest.Keys).ToList())
+            {
+                var itemOutputFile = GetOutputPath(allSourceFiles[item]);
+                var near = (from m in models
+                            let outputFile = GetOutputPath(m.FileAndType)
+                            let rel = outputFile.MakeRelativeTo(itemOutputFile)
+                            where rel.SubdirectoryCount == 0
+                            orderby rel.ParentDirectoryCount
+                            select new Toc
+                            {
+                                Model = m,
+                                OutputPath = rel,
+                            }).FirstOrDefault();
+                if (near != null)
+                {
+                    nearest[item] = near;
                 }
             }
         }

@@ -1896,6 +1896,137 @@ tagRules : [
             }
         }
 
+        [Fact]
+        public void TestTocAddForNotInTocArticle()
+        {
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("partials/head.tmpl.partial",
+                new[]
+                {
+                    "<meta property=\"docfx:navrel\" content=\"{{_navRel}}\">",
+                    "<meta property=\"docfx:tocrel\" content=\"{{_tocRel}}\">"
+                },
+                templateFolder);
+            CreateFile("conceptual.html.primary.tmpl", "{{>partials/head}}{{{conceptual}}}", templateFolder);
+            CreateFile("toc.html.tmpl", "{{>partials/head}} toc", templateFolder);
+
+            var tocFile = CreateFile("toc.md",
+                new[]
+                {
+                    "# [A](a.md)",
+                },
+                inputFolder);
+            var conceptualFile = CreateFile("a.md",
+                new[]
+                {
+                    "<p>",
+                    "a",
+                },
+                inputFolder);
+            var conceptualFile2 = CreateFile("subfolder/b.md",
+                new[]
+                {
+                    "<p>",
+                    "b",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(inputFolder);
+            files.Add(DocumentType.Article, new[] { PathUtility.MakeRelativePath(inputFolder, tocFile), PathUtility.MakeRelativePath(inputFolder, conceptualFile), PathUtility.MakeRelativePath(inputFolder, conceptualFile2) });
+
+            #endregion
+
+            Init("IncrementalBuild.TestTocAddForNotInTocArticle");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestTocAddForNotInTocArticle");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestTocAddForNotInTocArticle.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestTocAddForNotInTocArticle.Second.ForceBuild");
+            try
+            {
+                EnvironmentContext.SetBaseDirectory(Path.Combine(Directory.GetCurrentDirectory(), inputFolder));
+                using (new LoggerPhaseScope("IncrementalBuild.TestTocAddForNotInTocArticle-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // add a new toc file but not include b.md
+                var tocFile2 = CreateFile("subfolder/toc.md",
+                    new[]
+                    {
+                        "",
+                    },
+                    inputFolder);
+                FileCollection newfiles = new FileCollection(inputFolder);
+                newfiles.Add(DocumentType.Article, new[] { PathUtility.MakeRelativePath(inputFolder, tocFile), PathUtility.MakeRelativePath(inputFolder, tocFile2), PathUtility.MakeRelativePath(inputFolder, conceptualFile), PathUtility.MakeRelativePath(inputFolder, conceptualFile2) });
+                using (new LoggerPhaseScope("IncrementalBuild.TestTocAddForNotInTocArticle-second"))
+                {
+                    BuildDocument(
+                        newfiles,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestTocAddForNotInTocArticle-forcebuild-second"))
+                {
+                    BuildDocument(
+                        newfiles,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(4, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestTocAddForNotInTocArticle-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestTocAddForNotInTocArticle-second", "IncrementalBuild.TestTocAddForNotInTocArticle-first" }));
+                }
+            }
+            finally
+            {
+                EnvironmentContext.SetBaseDirectory(Directory.GetCurrentDirectory());
+                CleanUp();
+            }
+        }
+
         private static bool CompareDir(string path1, string path2)
         {
             var files1 = new DirectoryInfo(path1).GetFiles("*.*", SearchOption.AllDirectories).Where(f => f.Name != "xrefmap.yml" && f.Name != "manifest.json").OrderBy(f => f.FullName).ToList();
