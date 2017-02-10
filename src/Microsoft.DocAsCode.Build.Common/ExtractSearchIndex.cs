@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.Build.Common
             var indexDataFilePath = Path.Combine(outputFolder, IndexFileName);
             var htmlFiles = (from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
                              from output in item.OutputFiles
-                             where output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
+                             where item.DocumentType != "Toc" && output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
                              select output.Value.RelativePath).ToList();
             if (htmlFiles.Count == 0)
             {
