@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.Dfm
             if(parents != null)
             {
                 var parent = parents.Peek();
-                filePathToDocset = (RelativePath)parent + (RelativePath)filePathToDocset;
+                filePathToDocset = ((RelativePath)parent + (RelativePath)filePathToDocset).RemoveWorkingFolder();
                 parentFileDirectoryToDocset = Path.GetDirectoryName(Path.Combine(context.GetBaseFolder(), parent));
             }
 
