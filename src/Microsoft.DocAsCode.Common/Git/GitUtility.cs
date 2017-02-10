@@ -127,7 +127,7 @@ namespace Microsoft.DocAsCode.Common.Git
             var repoRootPath = RunGitCommandAndGetFirstLine(directory, GetRepoRootCommand);
 
             // the path of repo root got from git config file should be the same with path got from git command
-            Debug.Assert(PathUtility.NormalizePath(repoRootPath) == PathUtility.NormalizePath(directory));
+            Debug.Assert(FilePathComparer.OSPlatformSensitiveComparer.Equals(repoRootPath, directory));
 
             var branchNames = GetBranchNames(repoRootPath);
 
