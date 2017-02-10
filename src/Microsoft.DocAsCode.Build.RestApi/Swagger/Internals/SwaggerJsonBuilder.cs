@@ -7,7 +7,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
@@ -46,7 +45,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
         private SwaggerObjectBase Build(JToken token, string swaggerDir)
         {
             // Fetch from cache first
-            var location = GetLocation(token);
+            var location = JsonLocationHelper.GetLocation(token);
             SwaggerObjectBase existingObject;
             if (_documentObjectCache.TryGetValue(location, out existingObject))
             {
@@ -255,81 +254,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             }
 
             throw new ArgumentException($"When resolving reference for {nameof(SwaggerReferenceObject)}, only support {nameof(SwaggerObject)} and {nameof(SwaggerReferenceObject)} as parameter.");
-        }
-
-        private static string GetLocation(JToken token)
-        {
-            if (token.Parent == null)
-            {
-                return "#";
-            }
-
-            IList<JToken> ancestors = token.AncestorsAndSelf().Reverse().ToList();
-
-            var locations = new List<IJsonLocation>();
-            for (int i = 0; i < ancestors.Count; i++)
-            {
-                JToken current = ancestors[i];
-                switch (current.Type)
-                {
-                    case JTokenType.Property:
-                        JProperty property = (JProperty)current;
-                        locations.Add(new JsonObjectLocation(property.Name));
-                        break;
-                    case JTokenType.Array:
-                    case JTokenType.Constructor:
-                        if (i < ancestors.Count - 1)
-                        {
-                            var next = ancestors[i + 1];
-                            int index = ((IList<JToken>)current).IndexOf(next);
-                            locations.Add(new JsonIndexLocation(index));
-                        }
-                        break;
-                }
-            }
-
-            StringBuilder sb = new StringBuilder();
-            foreach (var state in locations)
-            {
-                state.WriteTo(sb);
-            }
-
-            return sb.ToString();
-        }
-
-        private class JsonIndexLocation : IJsonLocation
-        {
-            private readonly int _position;
-            public JsonIndexLocation(int position)
-            {
-                _position = position;
-            }
-
-            public void WriteTo(StringBuilder sb)
-            {
-                sb.Append('/');
-                sb.Append(_position);
-            }
-        }
-
-        private class JsonObjectLocation : IJsonLocation
-        {
-            private readonly string _propertyName;
-            public JsonObjectLocation(string propertyName)
-            {
-                _propertyName = propertyName;
-            }
-
-            public void WriteTo(StringBuilder sb)
-            {
-                sb.Append('/');
-                sb.Append(RestApiHelper.FormatDefinitionSinglePath(_propertyName));
-            }
-        }
-
-        private interface IJsonLocation
-        {
-            void WriteTo(StringBuilder sb);
         }
     }
 }
