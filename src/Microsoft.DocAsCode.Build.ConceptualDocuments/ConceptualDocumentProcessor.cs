@@ -23,7 +23,19 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
         : DisposableDocumentProcessor, ISupportIncrementalDocumentProcessor
     {
         #region Fields
+
         private readonly ResourcePoolManager<JsonSerializer> _serializerPool;
+        private readonly string[] SystemKeys = {
+            "conceptual",
+            "type",
+            "source",
+            "path",
+            "documentation",
+            "title",
+            "rawTitle",
+            "wordCount"
+        };
+
         #endregion
 
         #region Constructors
@@ -69,6 +81,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                     content[item.Key] = item.Value;
                 }
             }
+            content[Constants.PropertyName.SystemKeys] = SystemKeys;
 
             var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 

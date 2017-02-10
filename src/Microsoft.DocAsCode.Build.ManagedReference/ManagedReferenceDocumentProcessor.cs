@@ -27,6 +27,41 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     {
         #region Fields
         private readonly ResourcePoolManager<JsonSerializer> _serializerPool;
+        private static readonly string[] SystemKeys = {
+            "uid",
+            "isEii",
+            "isExtensionMethod",
+            "parent",
+            "children",
+            "href",
+            "langs",
+            "name",
+            "nameWithType",
+            "fullName",
+            "type",
+            "source",
+            "documentation",
+            "assemblies",
+            "namespace",
+            "summary",
+            "remarks",
+            "example",
+            "syntax",
+            "overridden",
+            "overload",
+            "exceptions",
+            "seealso",
+            "see",
+            "inheritance",
+            "derivedClasses",
+            "level",
+            "implements",
+            "inheritedMembers",
+            "extensionMethods",
+            "conceptual",
+            "platform",
+            "attributes"
+        };
         #endregion
 
         #region Constructors
@@ -63,6 +98,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     }
                 }
             }
+            page.Metadata[Constants.PropertyName.SystemKeys] = SystemKeys;
 
             var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
