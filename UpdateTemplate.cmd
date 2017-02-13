@@ -12,16 +12,17 @@ IF NOT '%ERRORLEVEL%'=='0' (
 )
 
 SET TemplateHome=%~dp0src\docfx.website.themes\
-SET DefaultTemplate=%TemplateHome%default
+SET DefaultTemplate=%TemplateHome%default\
+SET GulpCommand=%DefaultTemplate%node_modules\gulp\bin\gulp
 
 CD %DefaultTemplate%
 CALL npm install
 CALL node .\node_modules\bower\bin\bower install
-CALL node .\node_modules\gulp\bin\gulp
+CALL node %GulpCommand%
 
 CD %TemplateHome%
 CALL npm install
-CALL node .\node_modules\gulp\bin\gulp
+CALL node %GulpCommand%
 
 :Exit
 POPD
