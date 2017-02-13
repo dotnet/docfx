@@ -242,6 +242,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             yield return new DependencyItem(sourceFile, f, sourceFile, DependencyTypeName.Uid);
                         }
 
+                        //TO-DO: remove the code when we can report the dependency between file and uid
                         var name = Path.GetFileName(sourceFile);
                         if (name.Equals("toc.md", StringComparison.OrdinalIgnoreCase) || name.Equals("toc.yml", StringComparison.OrdinalIgnoreCase))
                         {
