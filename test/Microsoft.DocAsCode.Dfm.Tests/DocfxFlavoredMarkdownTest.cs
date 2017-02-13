@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
     {
         [Theory]
         [Trait("Related", "DfmMarkdown")]
+        #region Inline Data
         [InlineData("", "")]
         [InlineData("<address@example.com>", "<p><a href=\"mailto:address@example.com\" data-raw-source=\"&lt;address@example.com&gt;\">address@example.com</a></p>\n")]
         [InlineData(" https://github.com/dotnet/docfx/releases ", "<p> <a href=\"https://github.com/dotnet/docfx/releases\" data-raw-source=\"https://github.com/dotnet/docfx/releases\">https://github.com/dotnet/docfx/releases</a> </p>\n")]
@@ -55,6 +56,7 @@ b:
         [InlineData(
             @"[*a*](xref:uid)",
             "<p><a href=\"xref:uid\" data-raw-source=\"[*a*](xref:uid)\"><em>a</em></a></p>\n")]
+        #endregion
         public void TestDfmInGeneral(string source, string expected)
         {
             Assert.Equal(expected.Replace("\r\n", "\n"), DocfxFlavoredMarked.Markup(source));
@@ -124,6 +126,23 @@ Paragraph1
                     "root.md",
                 },
                 dependency.OrderBy(x => x));
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestBlockLevelInclusionWithWorkingFolder()
+        {
+            // -r
+            //  |- root.md
+            //  |- b
+            //  |  |- linkAndRefRoot.md
+            var root = @"[!include[linkAndRefRoot](~/r/b/linkAndRefRoot.md)]";
+            var linkAndRefRoot = @"Paragraph1";
+            WriteToFile("r/root.md", root);
+            WriteToFile("r/b/linkAndRefRoot.md", linkAndRefRoot);
+            var marked = DocfxFlavoredMarked.Markup(root, "r/root.md");
+            Assert.Equal(@"<!-- BEGIN INCLUDE: Include content from &quot;~/r/b/linkAndRefRoot.md&quot; --><p>Paragraph1</p>
+<!--END INCLUDE -->".Replace("\r\n", "\n"), marked);
         }
 
         [Fact]
@@ -450,6 +469,7 @@ world</p>
 
         [Theory]
         [Trait("Related", "DfmMarkdown")]
+        #region Inline Data
         [InlineData(@"the following is note type
   > [!NOTE]
   > note text 1-1
@@ -501,6 +521,7 @@ This is also note<br/>This is also note with br</p>
 &gt; code text 1-2  
 &gt; code text 2-1
 </code></pre>")]
+        #endregion
         public void TestSectionNoteInBlockQuote(string source, string expected)
         {
             var markedContent = DocfxFlavoredMarked.Markup(source);
@@ -947,9 +968,42 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
                 dependency.OrderBy(x => x));
         }
 
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfmFencesBlockLevelWithWorkingFolder()
+        {
+            var root = @"[!code-REST[REST](~/api.json)]";
+            var apiJsonContent = @"
+{
+   ""method"": ""GET"",
+   ""resourceFormat"": ""https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End"",
+   ""requestUrl"": ""https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End"",
+   ""requestHeaders"": {
+                ""Accept"": ""application/json""
+   }
+}";
+            File.WriteAllText("api.json", apiJsonContent.Replace("\r\n", "\n"));
+            var dependency = new HashSet<string>();
+            var marked = DocfxFlavoredMarked.Markup(root, "api.json", dependency: dependency);
+            Assert.Equal(@"<pre><code class=""lang-REST"" name=""REST"">
+{
+   &quot;method&quot;: &quot;GET&quot;,
+   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,
+   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,
+   &quot;requestHeaders&quot;: {
+                &quot;Accept&quot;: &quot;application/json&quot;
+   }
+}
+</code></pre>".Replace("\r\n", "\n"), marked);
+            Assert.Equal(
+                new[] { "~/api.json" },
+                dependency.OrderBy(x => x));
+        }
+
         [Theory]
         [Trait("Owner", "humao")]
         [Trait("Related", "DfmMarkdown")]
+        #region Inline Data
         [InlineData(@"[!code-csharp[Main](Program.cs)]", @"<pre><code class=""lang-csharp"" name=""Main"">namespace ConsoleApplication1
 {
     // &lt;namespace&gt;
@@ -1193,6 +1247,7 @@ public static void Foo()
     #endregion
 }
 </code></pre>")]
+        #endregion
         public void TestDfmFencesBlockLevelWithQueryString(string fencesPath, string expectedContent)
         {
             // arrange
