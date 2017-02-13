@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ReflectionHelper
    | DocFX website ">
-    <meta name="generator" content="docfx 2.11.3.0">
+    <meta name="generator" content="docfx 2.12.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -120,18 +120,18 @@
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_ReflectionHelper_CreateGenericObject_System_Type_System_Type_System_Object___.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.ReflectionHelper.CreateGenericObject(System.Type%2CSystem.Type%2CSystem.Object%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_ReflectionHelper_CreateInstance_System_Type_System_Type___System_Type___System_Object___.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.ReflectionHelper.CreateInstance(System.Type%2CSystem.Type%5B%5D%2CSystem.Type%5B%5D%2CSystem.Object%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
                 <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L35">View Source</a>
               </span>
-              <a id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_CreateGenericObject_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.CreateGenericObject*"></a>
-              <h4 id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_CreateGenericObject_System_Type_System_Type_System_Object___" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.CreateGenericObject(System.Type,System.Type,System.Object[])">CreateGenericObject(Type, Type, Object[])</h4>
+              <a id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_CreateInstance_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.CreateInstance*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_CreateInstance_System_Type_System_Type___System_Type___System_Object___" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.CreateInstance(System.Type,System.Type[],System.Type[],System.Object[])">CreateInstance(Type, Type[], Type[], Object[])</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public static object CreateGenericObject(Type genericType, Type objectTypeToCreate, params object[] args)</code></pre>
+                <pre><code class="lang-csharp hljs">public static object CreateInstance(Type type, Type[] typeArguments, Type[] argumentTypes, object[] arguments)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -145,17 +145,22 @@
                 <tbody>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a></td>
-                    <td><span class="parametername">genericType</span></td>
+                    <td><span class="parametername">type</span></td>
                     <td></td>
                   </tr>
                   <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a></td>
-                    <td><span class="parametername">objectTypeToCreate</span></td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a>[]</td>
+                    <td><span class="parametername">typeArguments</span></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a>[]</td>
+                    <td><span class="parametername">argumentTypes</span></td>
                     <td></td>
                   </tr>
                   <tr>
                     <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a>[]</td>
-                    <td><span class="parametername">args</span></td>
+                    <td><span class="parametername">arguments</span></td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -180,7 +185,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetGenericType_System_Type_System_Type_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetGenericType(System.Type%2CSystem.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L104">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L200">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetGenericType_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetGenericType*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetGenericType_System_Type_System_Type_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetGenericType(System.Type,System.Type)">GetGenericType(Type, Type)</h4>
@@ -232,7 +237,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetGettableProperties_System_Type_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetGettableProperties(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L64">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L156">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetGettableProperties_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetGettableProperties*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetGettableProperties_System_Type_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetGettableProperties(System.Type)">GetGettableProperties(Type)</h4>
@@ -279,7 +284,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetPropertyValue_System_Object_System_Reflection_PropertyInfo_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetPropertyValue(System.Object%2CSystem.Reflection.PropertyInfo)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L162">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L258">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetPropertyValue_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetPropertyValue*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetPropertyValue_System_Object_System_Reflection_PropertyInfo_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetPropertyValue(System.Object,System.Reflection.PropertyInfo)">GetPropertyValue(Object, PropertyInfo)</h4>
@@ -331,7 +336,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetPublicProperties_System_Type_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetPublicProperties(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L74">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L166">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetPublicProperties_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetPublicProperties*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetPublicProperties_System_Type_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetPublicProperties(System.Type)">GetPublicProperties(Type)</h4>
@@ -378,7 +383,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetSettableProperties_System_Type_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetSettableProperties(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L54">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L146">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetSettableProperties_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetSettableProperties*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_GetSettableProperties_System_Type_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.GetSettableProperties(System.Type)">GetSettableProperties(Type)</h4>
@@ -425,7 +430,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_ReflectionHelper_ImplementsGenericDefintion_System_Type_System_Type_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.ReflectionHelper.ImplementsGenericDefintion(System.Type%2CSystem.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L135">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L231">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_ImplementsGenericDefintion_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.ImplementsGenericDefintion*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_ImplementsGenericDefintion_System_Type_System_Type_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.ImplementsGenericDefintion(System.Type,System.Type)">ImplementsGenericDefintion(Type, Type)</h4>
@@ -477,7 +482,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_ReflectionHelper_IsDictionaryType_System_Type_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.ReflectionHelper.IsDictionaryType(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L83">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L175">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_IsDictionaryType_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.IsDictionaryType*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_IsDictionaryType_System_Type_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.IsDictionaryType(System.Type)">IsDictionaryType(Type)</h4>
@@ -524,7 +529,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_ReflectionHelper_IsGenericType_System_Type_System_Type_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.ReflectionHelper.IsGenericType(System.Type%2CSystem.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L140">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L236">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_IsGenericType_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.IsGenericType*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_IsGenericType_System_Type_System_Type_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.IsGenericType(System.Type,System.Type)">IsGenericType(Type, Type)</h4>
@@ -576,7 +581,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_ReflectionHelper_IsIEnumerableType_System_Type_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.ReflectionHelper.IsIEnumerableType(System.Type)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L99">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L195">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_IsIEnumerableType_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.IsIEnumerableType*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_IsIEnumerableType_System_Type_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.IsIEnumerableType(System.Type)">IsIEnumerableType(Type)</h4>
@@ -623,7 +628,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_ReflectionHelper_SetPropertyValue_System_Object_System_Reflection_PropertyInfo_System_Object_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.ReflectionHelper.SetPropertyValue(System.Object%2CSystem.Reflection.PropertyInfo%2CSystem.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L199">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L295">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_SetPropertyValue_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.SetPropertyValue*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_SetPropertyValue_System_Object_System_Reflection_PropertyInfo_System_Object_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.SetPropertyValue(System.Object,System.Reflection.PropertyInfo,System.Object)">SetPropertyValue(Object, PropertyInfo, Object)</h4>
@@ -665,7 +670,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_ReflectionHelper_TryGetGenericType_System_Type_System_Type_System_Type__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.ReflectionHelper.TryGetGenericType(System.Type%2CSystem.Type%2CSystem.Type%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L129">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/ModelAttributeHandlers/ReflectionHelper.cs/#L225">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_TryGetGenericType_" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.TryGetGenericType*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_ReflectionHelper_TryGetGenericType_System_Type_System_Type_System_Type__" data-uid="Microsoft.DocAsCode.Build.Common.ReflectionHelper.TryGetGenericType(System.Type,System.Type,System.Type@)">TryGetGenericType(Type, Type, out Type)</h4>

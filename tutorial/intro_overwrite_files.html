@@ -8,7 +8,7 @@
     <title>Overwrite Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Overwrite Files | DocFX website ">
-    <meta name="generator" content="docfx 2.11.3.0">
+    <meta name="generator" content="docfx 2.12.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -165,7 +165,7 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 <tr>
 <td>exceptions</td>
-<td><a href="#cref">Cref</a>[]</td>
+<td><a href="#exception">Exception</a>[]</td>
 <td>Merge keyed list.</td>
 </tr>
 <tr>
@@ -255,12 +255,12 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 <tr>
 <td>see</td>
-<td><a href="#cref">Cref</a>[]</td>
+<td><a href="#linkinfo">LinkInfo</a>[]</td>
 <td>Merge keyed list.</td>
 </tr>
 <tr>
 <td>seealso</td>
-<td><a href="#cref">Cref</a>[]</td>
+<td><a href="#linkinfo">LinkInfo</a>[]</td>
 <td>Merge keyed list.</td>
 </tr>
 <tr>
@@ -438,7 +438,7 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 </tr>
 </tbody>
 </table>
-<h4 id="cref">Cref</h4>
+<h4 id="exception">Exception</h4>
 <table>
 <thead>
 <tr>
@@ -461,7 +461,39 @@ footer: &lt;p&gt;Footer for &lt;code&gt;microsoft.com/docfx/Contacts&lt;/code&gt
 <tr>
 <td>commentId</td>
 <td>string</td>
+<td>Ignore.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="linkinfo">LinkInfo</h4>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Overwrite behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>linkId</strong></td>
+<td>uid or href</td>
+<td>Merge key.</td>
+</tr>
+<tr>
+<td><em>altText</em></td>
+<td>markdown</td>
 <td>Replace.</td>
+</tr>
+<tr>
+<td>commentId</td>
+<td>string</td>
+<td>Ignore.</td>
+</tr>
+<tr>
+<td>linkType</td>
+<td>enum(<code>CRef</code> or <code>HRef</code>)</td>
+<td>Ignore.</td>
 </tr>
 </tbody>
 </table>

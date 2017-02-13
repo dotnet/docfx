@@ -5,12 +5,12 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Interface IHtmlDocumentHandler
+    <title>Class RemoveDebugInfo
    | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Interface IHtmlDocumentHandler
+    <meta name="title" content="Class RemoveDebugInfo
    | DocFX website ">
-    <meta name="generator" content="docfx 2.11.3.0">
+    <meta name="generator" content="docfx 2.12.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -77,32 +77,77 @@
             <article class="content wrap" id="_content">
               
               
-              <h1 id="Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler" data-uid="Microsoft.DocAsCode.Build.Common.IHtmlDocumentHandler">Interface IHtmlDocumentHandler
+              <h1 id="Microsoft_DocAsCode_Build_Engine_RemoveDebugInfo" data-uid="Microsoft.DocAsCode.Build.Engine.RemoveDebugInfo">Class RemoveDebugInfo
               </h1>
               <div class="markdown level0 summary"></div>
               <div class="markdown level0 conceptual"></div>
-              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.Build.Common</h6>
-              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Build.Common.dll</h6>
-              <h5 id="Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler_syntax">Syntax</h5>
+              <div class="inheritance">
+                <h5>Inheritance</h5>
+                  <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
+                  <div class="level1"><a class="xref" href="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.html">HtmlDocumentHandler</a></div>
+                  <div class="level2"><span class="xref">RemoveDebugInfo</span></div>
+              </div>
+              <div class="inheritedMembers">
+                <h5>Inherited Members</h5>
+                <div>
+                  <a class="xref" href="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.html#Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_Context">HtmlDocumentHandler.Context</a>
+                </div>
+                <div>
+                  <a class="xref" href="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.html#Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_SetContext_Microsoft_DocAsCode_Build_Engine_HtmlPostProcessContext_">HtmlDocumentHandler.SetContext(HtmlPostProcessContext)</a>
+                </div>
+                <div>
+                  <a class="xref" href="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.html#Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_HandleWithScopeWrapper_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_">HtmlDocumentHandler.HandleWithScopeWrapper(HtmlDocument, ManifestItem, String, String)</a>
+                </div>
+                <div>
+                  <a class="xref" href="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.html#Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PostHandleWithScopeWrapper_Microsoft_DocAsCode_Plugins_Manifest_">HtmlDocumentHandler.PostHandleWithScopeWrapper(Manifest)</a>
+                </div>
+                <div>
+                  <a class="xref" href="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.html#Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PreHandleWithScopeWrapper_Microsoft_DocAsCode_Plugins_Manifest_">HtmlDocumentHandler.PreHandleWithScopeWrapper(Manifest)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">Object.ToString()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Object.Equals(Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Object.Equals(Object, Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">Object.ReferenceEquals(Object, Object)</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">Object.GetHashCode()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">Object.GetType()</a>
+                </div>
+                <div>
+                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">Object.MemberwiseClone()</a>
+                </div>
+              </div>
+              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.Build.Engine</h6>
+              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Build.Engine.dll</h6>
+              <h5 id="Microsoft_DocAsCode_Build_Engine_RemoveDebugInfo_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public interface IHtmlDocumentHandler</code></pre>
+                <pre><code class="lang-csharp hljs">public class RemoveDebugInfo : HtmlDocumentHandler, IHtmlDocumentHandler</code></pre>
               </div>
               <h3 id="methods">Methods
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler_Handle_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.IHtmlDocumentHandler.Handle(HtmlAgilityPack.HtmlDocument%2CMicrosoft.DocAsCode.Plugins.ManifestItem%2CSystem.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_RemoveDebugInfo_Handle_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.RemoveDebugInfo.Handle(HtmlAgilityPack.HtmlDocument%2CMicrosoft.DocAsCode.Plugins.ManifestItem%2CSystem.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/IHtmlDocumentHandler.cs/#L13">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/PostProcessors/RemoveDebugInfo.cs/#L17">View Source</a>
               </span>
-              <a id="Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler_Handle_" data-uid="Microsoft.DocAsCode.Build.Common.IHtmlDocumentHandler.Handle*"></a>
-              <h4 id="Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler_Handle_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_" data-uid="Microsoft.DocAsCode.Build.Common.IHtmlDocumentHandler.Handle(HtmlAgilityPack.HtmlDocument,Microsoft.DocAsCode.Plugins.ManifestItem,System.String,System.String)">Handle(HtmlDocument, ManifestItem, String, String)</h4>
+              <a id="Microsoft_DocAsCode_Build_Engine_RemoveDebugInfo_Handle_" data-uid="Microsoft.DocAsCode.Build.Engine.RemoveDebugInfo.Handle*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_RemoveDebugInfo_Handle_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.RemoveDebugInfo.Handle(HtmlAgilityPack.HtmlDocument,Microsoft.DocAsCode.Plugins.ManifestItem,System.String,System.String)">Handle(HtmlDocument, ManifestItem, String, String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">void Handle(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)</code></pre>
+                <pre><code class="lang-csharp hljs">public override void Handle(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -136,20 +181,22 @@
                   </tr>
                 </tbody>
               </table>
+              <h5 class="overrides">Overrides</h5>
+              <div><a class="xref" href="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.html#Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_Handle_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_">HtmlDocumentHandler.Handle(HtmlDocument, ManifestItem, String, String)</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler_PostHandle_Microsoft_DocAsCode_Plugins_Manifest_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.IHtmlDocumentHandler.PostHandle(Microsoft.DocAsCode.Plugins.Manifest)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_RemoveDebugInfo_PostHandle_Microsoft_DocAsCode_Plugins_Manifest_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.RemoveDebugInfo.PostHandle(Microsoft.DocAsCode.Plugins.Manifest)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/IHtmlDocumentHandler.cs/#L14">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/PostProcessors/RemoveDebugInfo.cs/#L44">View Source</a>
               </span>
-              <a id="Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler_PostHandle_" data-uid="Microsoft.DocAsCode.Build.Common.IHtmlDocumentHandler.PostHandle*"></a>
-              <h4 id="Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler_PostHandle_Microsoft_DocAsCode_Plugins_Manifest_" data-uid="Microsoft.DocAsCode.Build.Common.IHtmlDocumentHandler.PostHandle(Microsoft.DocAsCode.Plugins.Manifest)">PostHandle(Manifest)</h4>
+              <a id="Microsoft_DocAsCode_Build_Engine_RemoveDebugInfo_PostHandle_" data-uid="Microsoft.DocAsCode.Build.Engine.RemoveDebugInfo.PostHandle*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_RemoveDebugInfo_PostHandle_Microsoft_DocAsCode_Plugins_Manifest_" data-uid="Microsoft.DocAsCode.Build.Engine.RemoveDebugInfo.PostHandle(Microsoft.DocAsCode.Plugins.Manifest)">PostHandle(Manifest)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">Manifest PostHandle(Manifest manifest)</code></pre>
+                <pre><code class="lang-csharp hljs">public override Manifest PostHandle(Manifest manifest)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -183,20 +230,22 @@
                   </tr>
                 </tbody>
               </table>
+              <h5 class="overrides">Overrides</h5>
+              <div><a class="xref" href="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.html#Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PostHandle_Microsoft_DocAsCode_Plugins_Manifest_">HtmlDocumentHandler.PostHandle(Manifest)</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler_PreHandle_Microsoft_DocAsCode_Plugins_Manifest_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.IHtmlDocumentHandler.PreHandle(Microsoft.DocAsCode.Plugins.Manifest)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_RemoveDebugInfo_PreHandle_Microsoft_DocAsCode_Plugins_Manifest_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.RemoveDebugInfo.PreHandle(Microsoft.DocAsCode.Plugins.Manifest)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/IHtmlDocumentHandler.cs/#L12">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/PostProcessors/RemoveDebugInfo.cs/#L12">View Source</a>
               </span>
-              <a id="Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler_PreHandle_" data-uid="Microsoft.DocAsCode.Build.Common.IHtmlDocumentHandler.PreHandle*"></a>
-              <h4 id="Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler_PreHandle_Microsoft_DocAsCode_Plugins_Manifest_" data-uid="Microsoft.DocAsCode.Build.Common.IHtmlDocumentHandler.PreHandle(Microsoft.DocAsCode.Plugins.Manifest)">PreHandle(Manifest)</h4>
+              <a id="Microsoft_DocAsCode_Build_Engine_RemoveDebugInfo_PreHandle_" data-uid="Microsoft.DocAsCode.Build.Engine.RemoveDebugInfo.PreHandle*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_RemoveDebugInfo_PreHandle_Microsoft_DocAsCode_Plugins_Manifest_" data-uid="Microsoft.DocAsCode.Build.Engine.RemoveDebugInfo.PreHandle(Microsoft.DocAsCode.Plugins.Manifest)">PreHandle(Manifest)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">Manifest PreHandle(Manifest manifest)</code></pre>
+                <pre><code class="lang-csharp hljs">public override Manifest PreHandle(Manifest manifest)</code></pre>
               </div>
               <h5 class="parameters">Parameters</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -230,6 +279,8 @@
                   </tr>
                 </tbody>
               </table>
+              <h5 class="overrides">Overrides</h5>
+              <div><a class="xref" href="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.html#Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PreHandle_Microsoft_DocAsCode_Plugins_Manifest_">HtmlDocumentHandler.PreHandle(Manifest)</a></div>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
                   <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
@@ -242,10 +293,10 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.IHtmlDocumentHandler%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_RemoveDebugInfo.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.RemoveDebugInfo%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/IHtmlDocumentHandler.cs/#L10" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/PostProcessors/RemoveDebugInfo.cs/#L10" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

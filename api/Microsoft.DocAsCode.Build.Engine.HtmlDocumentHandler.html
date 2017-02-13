@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class HtmlDocumentHandler
    | DocFX website ">
-    <meta name="generator" content="docfx 2.11.3.0">
+    <meta name="generator" content="docfx 2.12.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -77,7 +77,7 @@
             <article class="content wrap" id="_content">
               
               
-              <h1 id="Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler" data-uid="Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler">Class HtmlDocumentHandler
+              <h1 id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler">Class HtmlDocumentHandler
               </h1>
               <div class="markdown level0 summary"></div>
               <div class="markdown level0 conceptual"></div>
@@ -85,8 +85,8 @@
                 <h5>Inheritance</h5>
                   <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
                   <div class="level1"><span class="xref">HtmlDocumentHandler</span></div>
-                  <div class="level2"><a class="xref" href="Microsoft.DocAsCode.Build.Common.RemoveDebugInfo.html">RemoveDebugInfo</a></div>
-                  <div class="level2"><a class="xref" href="Microsoft.DocAsCode.Build.Common.ValidateBookmark.html">ValidateBookmark</a></div>
+                  <div class="level2"><a class="xref" href="Microsoft.DocAsCode.Build.Engine.RemoveDebugInfo.html">RemoveDebugInfo</a></div>
+                  <div class="level2"><a class="xref" href="Microsoft.DocAsCode.Build.Engine.ValidateBookmark.html">ValidateBookmark</a></div>
               </div>
               <div class="inheritedMembers">
                 <h5>Inherited Members</h5>
@@ -112,23 +112,55 @@
                   <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">Object.MemberwiseClone()</a>
                 </div>
               </div>
-              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.Build.Common</h6>
-              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Build.Common.dll</h6>
-              <h5 id="Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_syntax">Syntax</h5>
+              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.Build.Engine</h6>
+              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Build.Engine.dll</h6>
+              <h5 id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_syntax">Syntax</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">public abstract class HtmlDocumentHandler : IHtmlDocumentHandler</code></pre>
               </div>
+              <h3 id="properties">Properties
+              </h3>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_Context.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.Context%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/PostProcessors/HtmlDocumentHandler.cs/#L13">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_Context_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.Context*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_Context" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.Context">Context</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public HtmlPostProcessContext Context { get; }</code></pre>
+              </div>
+              <h5 class="propertyValue">Property Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.HtmlPostProcessContext.html">HtmlPostProcessContext</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
               <h3 id="methods">Methods
               </h3>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_Handle_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.Handle(HtmlAgilityPack.HtmlDocument%2CMicrosoft.DocAsCode.Plugins.ManifestItem%2CSystem.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_Handle_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.Handle(HtmlAgilityPack.HtmlDocument%2CMicrosoft.DocAsCode.Plugins.ManifestItem%2CSystem.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/HtmlDocumentHandler.cs/#L13">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/PostProcessors/HtmlDocumentHandler.cs/#L14">View Source</a>
               </span>
-              <a id="Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_Handle_" data-uid="Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.Handle*"></a>
-              <h4 id="Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_Handle_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_" data-uid="Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.Handle(HtmlAgilityPack.HtmlDocument,Microsoft.DocAsCode.Plugins.ManifestItem,System.String,System.String)">Handle(HtmlDocument, ManifestItem, String, String)</h4>
+              <a id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_Handle_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.Handle*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_Handle_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.Handle(HtmlAgilityPack.HtmlDocument,Microsoft.DocAsCode.Plugins.ManifestItem,System.String,System.String)">Handle(HtmlDocument, ManifestItem, String, String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -168,16 +200,16 @@
                 </tbody>
               </table>
               <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.IHtmlDocumentHandler.html#Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler_Handle_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_">IHtmlDocumentHandler.Handle(HtmlDocument, ManifestItem, String, String)</a></div>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Build.Engine.IHtmlDocumentHandler.html#Microsoft_DocAsCode_Build_Engine_IHtmlDocumentHandler_Handle_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_">IHtmlDocumentHandler.Handle(HtmlDocument, ManifestItem, String, String)</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_HandleWithScopeWrapper_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.HandleWithScopeWrapper(HtmlAgilityPack.HtmlDocument%2CMicrosoft.DocAsCode.Plugins.ManifestItem%2CSystem.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_HandleWithScopeWrapper_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.HandleWithScopeWrapper(HtmlAgilityPack.HtmlDocument%2CMicrosoft.DocAsCode.Plugins.ManifestItem%2CSystem.String%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/HtmlDocumentHandler.cs/#L17">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/PostProcessors/HtmlDocumentHandler.cs/#L23">View Source</a>
               </span>
-              <a id="Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_HandleWithScopeWrapper_" data-uid="Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.HandleWithScopeWrapper*"></a>
-              <h4 id="Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_HandleWithScopeWrapper_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_" data-uid="Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.HandleWithScopeWrapper(HtmlAgilityPack.HtmlDocument,Microsoft.DocAsCode.Plugins.ManifestItem,System.String,System.String)">HandleWithScopeWrapper(HtmlDocument, ManifestItem, String, String)</h4>
+              <a id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_HandleWithScopeWrapper_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.HandleWithScopeWrapper*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_HandleWithScopeWrapper_HtmlAgilityPack_HtmlDocument_Microsoft_DocAsCode_Plugins_ManifestItem_System_String_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.HandleWithScopeWrapper(HtmlAgilityPack.HtmlDocument,Microsoft.DocAsCode.Plugins.ManifestItem,System.String,System.String)">HandleWithScopeWrapper(HtmlDocument, ManifestItem, String, String)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -218,13 +250,13 @@
               </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_PostHandle_Microsoft_DocAsCode_Plugins_Manifest_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.PostHandle(Microsoft.DocAsCode.Plugins.Manifest)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PostHandle_Microsoft_DocAsCode_Plugins_Manifest_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.PostHandle(Microsoft.DocAsCode.Plugins.Manifest)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/HtmlDocumentHandler.cs/#L14">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/PostProcessors/HtmlDocumentHandler.cs/#L15">View Source</a>
               </span>
-              <a id="Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_PostHandle_" data-uid="Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.PostHandle*"></a>
-              <h4 id="Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_PostHandle_Microsoft_DocAsCode_Plugins_Manifest_" data-uid="Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.PostHandle(Microsoft.DocAsCode.Plugins.Manifest)">PostHandle(Manifest)</h4>
+              <a id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PostHandle_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.PostHandle*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PostHandle_Microsoft_DocAsCode_Plugins_Manifest_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.PostHandle(Microsoft.DocAsCode.Plugins.Manifest)">PostHandle(Manifest)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -264,16 +296,16 @@
                 </tbody>
               </table>
               <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.IHtmlDocumentHandler.html#Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler_PostHandle_Microsoft_DocAsCode_Plugins_Manifest_">IHtmlDocumentHandler.PostHandle(Manifest)</a></div>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Build.Engine.IHtmlDocumentHandler.html#Microsoft_DocAsCode_Build_Engine_IHtmlDocumentHandler_PostHandle_Microsoft_DocAsCode_Plugins_Manifest_">IHtmlDocumentHandler.PostHandle(Manifest)</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_PostHandleWithScopeWrapper_Microsoft_DocAsCode_Plugins_Manifest_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.PostHandleWithScopeWrapper(Microsoft.DocAsCode.Plugins.Manifest)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PostHandleWithScopeWrapper_Microsoft_DocAsCode_Plugins_Manifest_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.PostHandleWithScopeWrapper(Microsoft.DocAsCode.Plugins.Manifest)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/HtmlDocumentHandler.cs/#L26">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/PostProcessors/HtmlDocumentHandler.cs/#L32">View Source</a>
               </span>
-              <a id="Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_PostHandleWithScopeWrapper_" data-uid="Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.PostHandleWithScopeWrapper*"></a>
-              <h4 id="Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_PostHandleWithScopeWrapper_Microsoft_DocAsCode_Plugins_Manifest_" data-uid="Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.PostHandleWithScopeWrapper(Microsoft.DocAsCode.Plugins.Manifest)">PostHandleWithScopeWrapper(Manifest)</h4>
+              <a id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PostHandleWithScopeWrapper_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.PostHandleWithScopeWrapper*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PostHandleWithScopeWrapper_Microsoft_DocAsCode_Plugins_Manifest_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.PostHandleWithScopeWrapper(Microsoft.DocAsCode.Plugins.Manifest)">PostHandleWithScopeWrapper(Manifest)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -314,13 +346,13 @@
               </table>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_PreHandle_Microsoft_DocAsCode_Plugins_Manifest_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.PreHandle(Microsoft.DocAsCode.Plugins.Manifest)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PreHandle_Microsoft_DocAsCode_Plugins_Manifest_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.PreHandle(Microsoft.DocAsCode.Plugins.Manifest)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/HtmlDocumentHandler.cs/#L15">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/PostProcessors/HtmlDocumentHandler.cs/#L16">View Source</a>
               </span>
-              <a id="Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_PreHandle_" data-uid="Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.PreHandle*"></a>
-              <h4 id="Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_PreHandle_Microsoft_DocAsCode_Plugins_Manifest_" data-uid="Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.PreHandle(Microsoft.DocAsCode.Plugins.Manifest)">PreHandle(Manifest)</h4>
+              <a id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PreHandle_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.PreHandle*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PreHandle_Microsoft_DocAsCode_Plugins_Manifest_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.PreHandle(Microsoft.DocAsCode.Plugins.Manifest)">PreHandle(Manifest)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -360,16 +392,16 @@
                 </tbody>
               </table>
               <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.IHtmlDocumentHandler.html#Microsoft_DocAsCode_Build_Common_IHtmlDocumentHandler_PreHandle_Microsoft_DocAsCode_Plugins_Manifest_">IHtmlDocumentHandler.PreHandle(Manifest)</a></div>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Build.Engine.IHtmlDocumentHandler.html#Microsoft_DocAsCode_Build_Engine_IHtmlDocumentHandler_PreHandle_Microsoft_DocAsCode_Plugins_Manifest_">IHtmlDocumentHandler.PreHandle(Manifest)</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_PreHandleWithScopeWrapper_Microsoft_DocAsCode_Plugins_Manifest_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.PreHandleWithScopeWrapper(Microsoft.DocAsCode.Plugins.Manifest)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PreHandleWithScopeWrapper_Microsoft_DocAsCode_Plugins_Manifest_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.PreHandleWithScopeWrapper(Microsoft.DocAsCode.Plugins.Manifest)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/HtmlDocumentHandler.cs/#L35">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/PostProcessors/HtmlDocumentHandler.cs/#L41">View Source</a>
               </span>
-              <a id="Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_PreHandleWithScopeWrapper_" data-uid="Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.PreHandleWithScopeWrapper*"></a>
-              <h4 id="Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler_PreHandleWithScopeWrapper_Microsoft_DocAsCode_Plugins_Manifest_" data-uid="Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler.PreHandleWithScopeWrapper(Microsoft.DocAsCode.Plugins.Manifest)">PreHandleWithScopeWrapper(Manifest)</h4>
+              <a id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PreHandleWithScopeWrapper_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.PreHandleWithScopeWrapper*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_PreHandleWithScopeWrapper_Microsoft_DocAsCode_Plugins_Manifest_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.PreHandleWithScopeWrapper(Microsoft.DocAsCode.Plugins.Manifest)">PreHandleWithScopeWrapper(Manifest)</h4>
               <div class="markdown level1 summary"></div>
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
@@ -408,6 +440,38 @@
                   </tr>
                 </tbody>
               </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_SetContext_Microsoft_DocAsCode_Build_Engine_HtmlPostProcessContext_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.SetContext(Microsoft.DocAsCode.Build.Engine.HtmlPostProcessContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/PostProcessors/HtmlDocumentHandler.cs/#L18">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_SetContext_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.SetContext*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler_SetContext_Microsoft_DocAsCode_Build_Engine_HtmlPostProcessContext_" data-uid="Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler.SetContext(Microsoft.DocAsCode.Build.Engine.HtmlPostProcessContext)">SetContext(HtmlPostProcessContext)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public void SetContext(HtmlPostProcessContext context)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.HtmlPostProcessContext.html">HtmlPostProcessContext</a></td>
+                    <td><span class="parametername">context</span></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
                   <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
@@ -420,10 +484,10 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_HtmlDocumentHandler.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.HtmlDocumentHandler%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_HtmlDocumentHandler.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.HtmlDocumentHandler%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/HtmlDocumentHandler.cs/#L11" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/PostProcessors/HtmlDocumentHandler.cs/#L11" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

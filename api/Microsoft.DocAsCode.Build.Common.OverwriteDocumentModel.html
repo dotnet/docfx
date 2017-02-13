@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class OverwriteDocumentModel
    | DocFX website ">
-    <meta name="generator" content="docfx 2.11.3.0">
+    <meta name="generator" content="docfx 2.12.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -114,7 +114,8 @@
               <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Build.Common.dll</h6>
               <h5 id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public class OverwriteDocumentModel</code></pre>
+                <pre><code class="lang-csharp hljs">[Serializable]
+public class OverwriteDocumentModel</code></pre>
               </div>
               <h3 id="properties">Properties
               </h3>
@@ -123,7 +124,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_Conceptual.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.Conceptual%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L33">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L35">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_Conceptual_" data-uid="Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.Conceptual*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_Conceptual" data-uid="Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.Conceptual">Conceptual</h4>
@@ -156,7 +157,7 @@ public string Conceptual { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_Documentation.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.Documentation%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L40">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L42">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_Documentation_" data-uid="Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.Documentation*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_Documentation" data-uid="Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.Documentation">Documentation</h4>
@@ -189,7 +190,7 @@ public SourceDetail Documentation { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_LinkToFiles.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.LinkToFiles%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L47">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L49">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_LinkToFiles_" data-uid="Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.LinkToFiles*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_LinkToFiles" data-uid="Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.LinkToFiles">LinkToFiles</h4>
@@ -200,7 +201,7 @@ public SourceDetail Documentation { get; set; }</code></pre>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlIgnore]
 [JsonIgnore]
-public ImmutableHashSet&lt;string&gt; LinkToFiles { get; set; }</code></pre>
+public HashSet&lt;string&gt; LinkToFiles { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -212,7 +213,7 @@ public ImmutableHashSet&lt;string&gt; LinkToFiles { get; set; }</code></pre>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">System.Collections.Immutable.ImmutableHashSet</span>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/bb359438(v=vs.110).aspx">HashSet</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -222,7 +223,7 @@ public ImmutableHashSet&lt;string&gt; LinkToFiles { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_LinkToUids.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.LinkToUids%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L54">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L56">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_LinkToUids_" data-uid="Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.LinkToUids*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_LinkToUids" data-uid="Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.LinkToUids">LinkToUids</h4>
@@ -233,7 +234,7 @@ public ImmutableHashSet&lt;string&gt; LinkToFiles { get; set; }</code></pre>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[YamlIgnore]
 [JsonIgnore]
-public ImmutableHashSet&lt;string&gt; LinkToUids { get; set; }</code></pre>
+public HashSet&lt;string&gt; LinkToUids { get; set; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -245,7 +246,7 @@ public ImmutableHashSet&lt;string&gt; LinkToUids { get; set; }</code></pre>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="xref">System.Collections.Immutable.ImmutableHashSet</span>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</td>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/bb359438(v=vs.110).aspx">HashSet</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</td>
                     <td></td>
                   </tr>
                 </tbody>
@@ -255,7 +256,7 @@ public ImmutableHashSet&lt;string&gt; LinkToUids { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_Metadata.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.Metadata%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L19">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L21">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_Metadata_" data-uid="Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.Metadata*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_Metadata" data-uid="Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.Metadata">Metadata</h4>
@@ -287,7 +288,7 @@ public Dictionary&lt;string, object&gt; Metadata { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_Uid.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.Uid%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L26">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L28">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_Uid_" data-uid="Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.Uid*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_Uid" data-uid="Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.Uid">Uid</h4>
@@ -322,7 +323,7 @@ public string Uid { get; set; }</code></pre>
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_ConvertTo__1.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.ConvertTo%60%601%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L58">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L60">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_ConvertTo_" data-uid="Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.ConvertTo*"></a>
               <h4 id="Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel_ConvertTo__1" data-uid="Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel.ConvertTo``1">ConvertTo&lt;T&gt;()</h4>
@@ -377,7 +378,7 @@ public string Uid { get; set; }</code></pre>
                     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Common_OverwriteDocumentModel.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Common.OverwriteDocumentModel%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L17" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Common/Reference/OverwriteDocumentModel.cs/#L18" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
