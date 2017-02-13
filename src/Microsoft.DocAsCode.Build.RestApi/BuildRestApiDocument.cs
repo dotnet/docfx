@@ -7,52 +7,38 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
-    using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.RestApi;
     using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json.Linq;
 
     [Export(nameof(RestApiDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildRestApiDocument : BaseDocumentBuildStep
+    public class BuildRestApiDocument : BuildReferenceDocumentBase
     {
         private static readonly HashSet<string> MarkupKeys = new HashSet<string> { "description" };
 
         public override string Name => nameof(BuildRestApiDocument);
 
-        public override int BuildOrder => 0;
-
-        public override void Build(FileModel model, IHostService host)
+        protected override void BuildArticle(IHostService host, FileModel model)
         {
-            switch (model.Type)
+            var restApi = (RestApiRootItemViewModel)model.Content;
+            BuildItem(host, restApi, model);
+            if (restApi.Children != null)
             {
-                case DocumentType.Article:
-                    var restApi = (RestApiRootItemViewModel)model.Content;
-                    BuildItem(host, restApi, model);
-                    if (restApi.Children != null)
-                    {
-                        foreach (var item in restApi.Children)
-                        {
-                            BuildItem(host, item, model);
-                        }
-                    }
-                    if (restApi.Tags != null)
-                    {
-                        foreach (var tag in restApi.Tags)
-                        {
-                            BuildTag(host, tag, model);
-                        }
-                    }
-                    break;
-                case DocumentType.Overwrite:
-                    BuildItem(host, model);
-                    break;
-                default:
-                    throw new NotSupportedException();
+                foreach (var item in restApi.Children)
+                {
+                    BuildItem(host, item, model);
+                }
+            }
+            if (restApi.Tags != null)
+            {
+                foreach (var tag in restApi.Tags)
+                {
+                    BuildTag(host, tag, model);
+                }
             }
         }
 
@@ -131,20 +117,6 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     MarkupRecursive(jObject[pair.Key], host, model, filter);
                 }
             }
-        }
-
-        private static void BuildItem(IHostService host, FileModel model)
-        {
-            var file = model.FileAndType;
-            var overwrites = MarkdownReader.ReadMarkdownAsOverwrite(host, model.FileAndType).ToList();
-            model.Content = overwrites;
-            model.LinkToFiles = overwrites.SelectMany(o => o.LinkToFiles).ToImmutableHashSet();
-            model.LinkToUids = overwrites.SelectMany(o => o.LinkToUids).ToImmutableHashSet();
-            model.Uids = (from item in overwrites
-                          select new UidDefinition(
-                              item.Uid,
-                              model.LocalPathFromRoot,
-                              item.Documentation.StartLine + 1)).ToImmutableArray();
         }
 
         public static RestApiTagViewModel BuildTag(IHostService host, RestApiTagViewModel tag, FileModel model, Func<string, bool> filter = null)

@@ -154,15 +154,15 @@ namespace Microsoft.DocAsCode.YamlSerialization
 
         public object Deserialize(TextReader input, Type type, IValueDeserializer deserializer = null)
         {
-            return Deserialize(new EventReader(new Parser(input)), type, deserializer);
+            return Deserialize(new Parser(input), type, deserializer);
         }
 
-        public T Deserialize<T>(EventReader reader, IValueDeserializer deserializer = null)
+        public T Deserialize<T>(IParser reader, IValueDeserializer deserializer = null)
         {
             return (T)Deserialize(reader, typeof(T), deserializer);
         }
 
-        public object Deserialize(EventReader reader, IValueDeserializer deserializer = null)
+        public object Deserialize(IParser reader, IValueDeserializer deserializer = null)
         {
             return Deserialize(reader, typeof(object), deserializer);
         }
@@ -173,7 +173,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
         /// <param name="reader">The <see cref="EventReader" /> where to deserialize the object.</param>
         /// <param name="type">The static type of the object to deserialize.</param>
         /// <returns>Returns the deserialized object.</returns>
-        public object Deserialize(EventReader reader, Type type, IValueDeserializer deserializer = null)
+        public object Deserialize(IParser reader, Type type, IValueDeserializer deserializer = null)
         {
             if (reader == null)
             {
@@ -289,7 +289,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 }
             }
 
-            public object DeserializeValue(EventReader reader, Type expectedType, SerializerState state, IValueDeserializer nestedObjectDeserializer)
+            public object DeserializeValue(IParser reader, Type expectedType, SerializerState state, IValueDeserializer nestedObjectDeserializer)
             {
                 object value;
                 var alias = reader.Allow<AnchorAlias>();
@@ -331,10 +331,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
                     }
                     else
                     {
-                        throw new DuplicateAnchorException(nodeEvent.Start, nodeEvent.End, string.Format(
-                            "Anchor '{0}' already defined",
-                            anchor
-                        ));
+                        aliasState[anchor] = new ValuePromise(value);
                     }
                 }
 

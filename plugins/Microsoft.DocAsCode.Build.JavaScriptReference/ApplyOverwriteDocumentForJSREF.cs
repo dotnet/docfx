@@ -31,9 +31,9 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
             return ((PageViewModel)fileModel.Content).Items.Where(s => s.Uid == uid);
         }
 
-        protected override void ApplyOverwrite(IHostService host, List<FileModel> od, string uid, List<FileModel> articles)
+        protected override void ApplyOverwrite(IHostService host, List<FileModel> overwrites, string uid, List<FileModel> articles)
         {
-            ApplyOverwrite(host, od, uid, articles, GetItemsFromOverwriteDocument, GetItemsToOverwrite);
+            ApplyOverwrite(host, overwrites, uid, articles, GetItemsFromOverwriteDocument, GetItemsToOverwrite);
         }
     }
 }

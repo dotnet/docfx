@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
             _ignoreUnmatched = ignoreUnmatched;
         }
 
-        bool INodeDeserializer.Deserialize(EventReader reader, Type expectedType, Func<EventReader, Type, object> nestedObjectDeserializer, out object value)
+        bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
         {
             var mapping = reader.Allow<MappingStart>();
             if (mapping == null)

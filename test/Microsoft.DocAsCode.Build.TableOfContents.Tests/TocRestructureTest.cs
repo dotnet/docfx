@@ -230,15 +230,7 @@ root
 
         private static void AssertTocEqual(TocItemViewModel expected, TocItemViewModel actual)
         {
-            using (var swForExpected = new StringWriter())
-            {
-                YamlUtility.Serialize(swForExpected, expected);
-                using (var swForActual = new StringWriter())
-                {
-                    YamlUtility.Serialize(swForActual, actual);
-                    Assert.Equal(swForExpected.ToString(), swForActual.ToString());
-                }
-            }
+            Assert.Equal(expected.ToJsonString(), actual.ToJsonString());
         }
 
         private TreeItemRestructure GetRestructure(TreeItemActionType actionType, string uid, string[] childrenUids)
@@ -301,7 +293,7 @@ root
             }
             return root;
         }
-        
+
         private IEnumerable<LineInfo> GetLines(string layout)
         {
             return layout.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)

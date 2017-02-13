@@ -312,6 +312,7 @@ _appFooter            | string  | The footer text. Will show DocFX's Copyright t
 _appLogoPath          | string  | Logo file's path from output root. Will show DocFX's logo if not specified. Remember to add file to resource.
 _appFaviconPath       | string  | Favicon file's path from output root. Will show DocFX's favicon if not specified. Remember to add file to resource.
 _enableSearch         | bool    | Indicate whether to show the search box on the top of page.
+_enableNewTab         | bool    | Indicate whether to open a new tab when clicking an external link. (internal link always shows within the current tab)
 _disableNavbar        | bool    | Indicate whether to show the navigation bar on the top of page.
 _disableBreadcrumb    | bool    | Indicate whether to show breadcrumb on the top of page.
 _disableToc           | bool    | Indicate whether to show table of contents on the left of page.

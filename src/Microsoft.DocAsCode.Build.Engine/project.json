@@ -26,7 +26,7 @@
     "Newtonsoft.Json": "9.0.1",
     "Nustache": "1.15.3.5",
     "System.Collections.Immutable": "1.2.0",
-    "YamlDotNet.Signed": "3.9.0"
+    "YamlDotNet.Signed": "4.1.0"
   },
   "configurations": {
     "Debug": {

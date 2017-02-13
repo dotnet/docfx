@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]
@@ -56,6 +57,20 @@ namespace Microsoft.DocAsCode.Build.Common
         [YamlIgnore]
         [JsonIgnore]
         public HashSet<string> LinkToUids { get; set; } = new HashSet<string>();
+
+        /// <summary>
+        /// Link sources information for file
+        /// </summary>
+        [YamlIgnore]
+        [JsonIgnore]
+        public Dictionary<string, List<LinkSourceInfo>> FileLinkSources { get; set; } = new Dictionary<string, List<LinkSourceInfo>>();
+
+        /// <summary>
+        /// Link sources information for Uid
+        /// </summary>
+        [YamlIgnore]
+        [JsonIgnore]
+        public Dictionary<string, List<LinkSourceInfo>> UidLinkSources { get; set; } = new Dictionary<string, List<LinkSourceInfo>>();
 
         public T ConvertTo<T>() where T : class
         {

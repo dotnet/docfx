@@ -18,3 +18,4 @@
     <file src="*" target="content\plugins\" exclude="**\*.pdb"/>
   </files>
 </package>
+<!-- TODO: remove this package and publish it in OP -->

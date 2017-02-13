@@ -88,6 +88,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     </example>
     <see cref=""T:Microsoft.DocAsCode.EntityModel.SpecIdHelper""/>
     <see cref=""T:System.Diagnostics.SourceSwitch""/>
+    <see cref=""Overload:System.String.Compare""/>
     <see href=""http://exception.com"">Global See section</see>
     <see href=""http://exception.com""/>
     <seealso cref=""T:System.IO.WaitForChangedResult""/>
@@ -167,13 +168,15 @@ Check empty code.
             commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
 
             var sees = commentModel.Sees;
-            Assert.Equal(4, sees.Count);
+            Assert.Equal(5, sees.Count);
             Assert.Equal("Microsoft.DocAsCode.EntityModel.SpecIdHelper", sees[0].LinkId);
             Assert.Null(sees[0].AltText);
-            Assert.Equal("http://exception.com", sees[2].LinkId);
-            Assert.Equal("Global See section", sees[2].AltText);
-            Assert.Equal("http://exception.com", sees[3].AltText);
+            Assert.Equal("System.String.Compare*", sees[2].LinkId);
+            Assert.Null(sees[1].AltText);
             Assert.Equal("http://exception.com", sees[3].LinkId);
+            Assert.Equal("Global See section", sees[3].AltText);
+            Assert.Equal("http://exception.com", sees[4].AltText);
+            Assert.Equal("http://exception.com", sees[4].LinkId);
 
             var seeAlsos = commentModel.SeeAlsos;
             Assert.Equal(3, seeAlsos.Count);

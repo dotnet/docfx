@@ -29,6 +29,15 @@ $(function () {
     anchors.add('article h2, article h3, article h4, article h5, article h6');
   })();
 
+  // Open links to different host in a new window.
+  (function () {
+    if ($("meta[property='docfx:newtab']").attr("content") === "true") {
+      $(document.links).filter(function() {
+        return this.hostname !== window.location.hostname;
+      }).attr('target', '_blank');
+    }
+  })();
+
   // Enable highlight.js
   (function () {
     $('pre code').each(function(i, block) {

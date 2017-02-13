@@ -18,7 +18,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
     using Newtonsoft.Json.Linq;
     using Xunit;
 
-
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "RestApiDocumentProcessor")]
     [Collection("docfx STA")]
@@ -42,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             _defaultFiles.Add(DocumentType.Article, new[] { "TestData/swagger/contacts.json" }, "TestData/");
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder)
             {
-                RawModelExportSettings = {Export = true}
+                RawModelExportSettings = { Export = true }
             };
         }
 
@@ -268,6 +267,59 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
             Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.simple.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Overwrite content</p>\n", model.Summary);
             Assert.Null(model.Conceptual);
+        }
+        
+        [Fact]
+        public void ProcessSwaggerWithInvalidLinksOverwriteShouldSucceedWithWarning()
+        {
+            const string phaseName = "ProcessSwaggerWithInvalidLinksOverwriteShouldSucceedWithWarning";
+            var listener = new RestLoggerListener(phaseName);
+            Logger.RegisterListener(listener);
+            
+            using (new LoggerPhaseScope(phaseName))
+            {
+                var files = new FileCollection(_defaultFiles);
+                files.Add(DocumentType.Article, new[] { "TestData/swagger/tag_swagger2.json" }, "TestData/");
+                files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.invalid.links.first.md" });
+                files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.invalid.links.second.md" });
+                BuildDocument(files);
+
+                Assert.Equal(5, listener.Items.Count); // Additional warning for "There is no template processing document type(s): RestApi"
+
+                var outputRawModelPath = GetRawModelFilePath("contacts.json");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
+
+                Assert.Equal(
+                    "<p sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.first.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">Remarks content <a href=\"b.md\" data-raw-source=\"[remarks](b.md)\" sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.first.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">remarks</a></p>\n",
+                    model.Remarks);
+                var remarkLink = listener.Items.Single(i => i.Message == "Invalid file link:(~/TestData/overwrite/a.md).");
+                Assert.Equal("TestData/overwrite/rest.overwrite.invalid.links.first.md", remarkLink.File);
+
+                Assert.Equal(
+                    "<p sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.first.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Summary content <a href=\"a.md\" data-raw-source=\"[summary](a.md)\" sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.first.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">summary</a></p>\n",
+                    model.Summary);
+                var summaryLink = listener.Items.Single(i => i.Message == "Invalid file link:(~/TestData/overwrite/b.md).");
+                Assert.Equal("TestData/overwrite/rest.overwrite.invalid.links.first.md", summaryLink.File);
+
+                Assert.Equal(
+                    "<p sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.second.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">Conceptual content <a href=\"c.md\" data-raw-source=\"[Conceptual](c.md)\" sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.second.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">Conceptual</a></p>\n",
+                    model.Conceptual);
+                var conceptualLink = listener.Items.Single(i => i.Message == "Invalid file link:(~/TestData/overwrite/c.md).");
+                Assert.Equal("TestData/overwrite/rest.overwrite.invalid.links.second.md", conceptualLink.File);
+
+                var outputTagRawModelPath = GetRawModelFilePath("tag.json");
+                Assert.True(File.Exists(outputTagRawModelPath));
+                var tagModel = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputTagRawModelPath);
+
+                Assert.Equal(
+                    "<p sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.second.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\">Another uid content <a href=\"d.md\" data-raw-source=\"[Another](d.md)\" sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.second.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\">Another</a></p>\n",
+                    tagModel.Conceptual);
+                var tagConceptualLink = listener.Items.Single(i => i.Message == "Invalid file link:(~/TestData/overwrite/d.md).");
+                Assert.Equal("TestData/overwrite/rest.overwrite.invalid.links.second.md", tagConceptualLink.File);
+            }
+
+            Logger.UnregisterListener(listener);
         }
 
         [Fact]

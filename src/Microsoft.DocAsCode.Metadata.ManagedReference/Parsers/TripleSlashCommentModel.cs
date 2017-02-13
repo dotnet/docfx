@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     public class TripleSlashCommentModel
     {
         private const string idSelector = @"((?![0-9])[\w_])+[\w\(\)\.\{\}\[\]\|\*\^~#@!`,_<>:]*";
-        private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
+        private static Regex CommentIdRegex = new Regex(@"^(?<type>N|T|M|P|F|E|Overload):(?<id>" + idSelector + ")$", RegexOptions.Compiled);
         private static Regex LineBreakRegex = new Regex(@"\r?\n", RegexOptions.Compiled);
         private static Regex CodeElementRegex = new Regex(@"<code[^>]*>([\s\S]*?)</code>", RegexOptions.Compiled);
 
@@ -319,20 +319,27 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     var cref = item.Attribute("cref").Value;
                     // Strict check is needed as value could be an invalid href,
                     // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
-                    if (CommentIdRegex.IsMatch(cref))
+                    var match = CommentIdRegex.Match(cref);
+                    if (match.Success)
                     {
-                        var value = cref.Substring(2);
+                        var id = match.Groups["id"].Value;
+                        var type = match.Groups["type"].Value;
+
+                        if (type == "Overload")
+                        {
+                            id += '*';
+                        }
 
                         // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
                         if (item.Parent?.Parent != null)
                         {
-                            var replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(value)}\" data-throw-if-not-resolved=\"false\"></xref>");
+                            var replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}\" data-throw-if-not-resolved=\"false\"></xref>");
                             item.ReplaceWith(replacement);
                         }
 
                         if (addReference != null)
                         {
-                            addReference(value, cref);
+                            addReference(id, cref);
                         }
                     }
                     else
@@ -386,11 +393,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (!string.IsNullOrEmpty(commentId))
                 {
                     // Check if exception type is valid and trim prefix
-                    if (CommentIdRegex.IsMatch(commentId))
+                    var match = CommentIdRegex.Match(commentId);
+                    if (match.Success)
                     {
-                        string type = commentId.Substring(2);
-                        if (string.IsNullOrEmpty(description)) description = null;
-                        yield return new ExceptionInfo { Description = description, Type = type, CommentId = commentId };
+                        var id = match.Groups["id"].Value;
+                        var type = match.Groups["type"].Value;
+                        if (type == "T")
+                        {
+                            if (string.IsNullOrEmpty(description)) description = null;
+                            yield return new ExceptionInfo { Description = description, Type = id, CommentId = commentId };
+                        }
                     }
                 }
             }
@@ -410,10 +422,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (!string.IsNullOrEmpty(commentId))
                 {
                     // Check if cref type is valid and trim prefix
-                    if (CommentIdRegex.IsMatch(commentId))
+                    var match = CommentIdRegex.Match(commentId);
+                    if (match.Success)
                     {
-                        string type = commentId.Substring(2);
-                        yield return new LinkInfo { AltText = altText, LinkId = type, CommentId = commentId, LinkType = LinkType.CRef };
+                        var id = match.Groups["id"].Value;
+                        var type = match.Groups["type"].Value;
+                        if (type == "Overload")
+                        {
+                            id += '*';
+                        }
+
+                        yield return new LinkInfo { AltText = altText, LinkId = id, CommentId = commentId, LinkType = LinkType.CRef };
                     }
                 }
                 else if (!string.IsNullOrEmpty(url))
@@ -465,8 +484,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             var preIndex = 0;
             var leadingSpaces = from line in lines
-                where !string.IsNullOrWhiteSpace(line)
-                select line.TakeWhile(char.IsWhiteSpace).Count();
+                                where !string.IsNullOrWhiteSpace(line)
+                                select line.TakeWhile(char.IsWhiteSpace).Count();
 
             if (leadingSpaces.Any())
             {

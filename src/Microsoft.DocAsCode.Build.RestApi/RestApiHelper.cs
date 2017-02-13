@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
     using System.IO;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Build.RestApi.Swagger.Internals;
     using Microsoft.DocAsCode.Common;
 
     using Newtonsoft.Json.Linq;

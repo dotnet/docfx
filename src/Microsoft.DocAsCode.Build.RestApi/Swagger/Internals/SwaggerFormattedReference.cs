@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.RestApi
+namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 {
-    public class SwaggerFormattedReference
+    internal class SwaggerFormattedReference
     {
         public SwaggerFormattedReferenceType Type { get; set; }
 
@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
         public string Name { get; set; }
     }
 
-    public enum SwaggerFormattedReferenceType
+    internal enum SwaggerFormattedReferenceType
     {
         InternalReference,
         ExternalReference

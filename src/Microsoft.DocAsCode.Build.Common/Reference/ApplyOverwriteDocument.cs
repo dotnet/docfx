@@ -52,11 +52,11 @@ namespace Microsoft.DocAsCode.Build.Common
             }
         }
 
-        protected abstract void ApplyOverwrite(IHostService host, List<FileModel> od, string uid, List<FileModel> articles);
+        protected abstract void ApplyOverwrite(IHostService host, List<FileModel> overwrites, string uid, List<FileModel> articles);
 
         protected void ApplyOverwrite<T>(
             IHostService host,
-            List<FileModel> od,
+            List<FileModel> overwrites,
             string uid,
             List<FileModel> articles,
             Func<FileModel, string, IHostService, IEnumerable<T>> getItemsFromOverwriteDocument,
@@ -64,14 +64,13 @@ namespace Microsoft.DocAsCode.Build.Common
             where T : class, IOverwriteDocumentViewModel
         {
             // Multiple UID in overwrite documents is allowed now
-            var ovms =
-                (from fm in od.Distinct()
-                 from content in getItemsFromOverwriteDocument(fm, uid, host)
-                 select new
-                 {
-                     model = content,
-                     fileModel = fm
-                 }).ToList();
+            var ovms = (from fm in overwrites
+                from content in getItemsFromOverwriteDocument(fm, uid, host)
+                select new
+                {
+                    model = content,
+                    fileModel = fm
+                }).ToList();
 
             if (ovms.Count == 0)
             {
@@ -90,9 +89,20 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 var vm = pair.item;
                 Merge(vm, ovm, ovms[0].fileModel);
-                pair.model.LinkToUids = pair.model.LinkToUids.Union(od[0].LinkToUids);
-                pair.model.LinkToFiles = pair.model.LinkToFiles.Union(od[0].LinkToFiles);
+
+                foreach (var overwriteDocumentModel in overwrites.Select(overwrite => GetOverwriteDocumentModelsByUid(overwrite, uid)).SelectMany(o => o))
+                {
+                    pair.model.LinkToUids = pair.model.LinkToUids.Union(overwriteDocumentModel.LinkToUids);
+                    pair.model.LinkToFiles = pair.model.LinkToFiles.Union(overwriteDocumentModel.LinkToFiles);
+                    pair.model.FileLinkSources = pair.model.FileLinkSources.Union(overwriteDocumentModel.FileLinkSources.ToImmutableDictionary(k => k.Key, k => k.Value.ToImmutableList())).ToImmutableDictionary();
+                    pair.model.UidLinkSources = pair.model.UidLinkSources.Union(overwriteDocumentModel.UidLinkSources.ToImmutableDictionary(k => k.Key, k => k.Value.ToImmutableList())).ToImmutableDictionary();
+                }
             }
+        }
+
+        private static List<OverwriteDocumentModel> GetOverwriteDocumentModelsByUid(FileModel overwriteFileModel, string uid)
+        {
+            return ((IEnumerable<OverwriteDocumentModel>)overwriteFileModel.Content).Where(o => o.Uid == uid).ToList();
         }
 
         private T Merge<T>(T baseModel, T overrideModel, FileModel model) where T : class, IOverwriteDocumentViewModel
