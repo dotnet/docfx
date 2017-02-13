@@ -45,8 +45,15 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 var result = SplitModelToOverloadLevel(model);
                 if (result != null)
                 {
-                    treeMapping.Add(result.Uid, result.TreeItems);
-                    collection.AddRange(result.Models);
+                    if (treeMapping.ContainsKey(result.Uid))
+                    {
+                        Logger.LogWarning($"Model with the UID {result.Uid} already exists. '{model.OriginalFileAndType?.FullPath ?? model.FileAndType.FullPath}' is ignored.");
+                    }
+                    else
+                    {
+                        treeMapping.Add(result.Uid, result.TreeItems);
+                        collection.AddRange(result.Models);
+                    }
                 }
             }
 
