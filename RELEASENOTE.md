@@ -2,6 +2,7 @@
 =======================================
 v2.13(Pre-Release)
 -----------
+1.  Support working folder for dfm include and code.
 
 v2.12
 -----------
