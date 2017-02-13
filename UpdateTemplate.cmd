@@ -14,28 +14,14 @@ IF NOT '%ERRORLEVEL%'=='0' (
 SET TemplateHome=%~dp0src\docfx.website.themes\
 SET DefaultTemplate=%TemplateHome%default
 
-:: Check if gulp exists globally
-WHERE gulp >NUL
-IF NOT '%ERRORLEVEL%'=='0' (
-    ECHO ERROR: UpdateTemplate.cmd requires gulp installed globally.
-    GOTO :Exit
-)
-
-:: Check if bower exists globally
-WHERE bower >NUL
-IF NOT '%ERRORLEVEL%'=='0' (
-    ECHO ERROR: UpdateTemplate.cmd requires bower installed globally.
-    GOTO :Exit
-)
-
 CD %DefaultTemplate%
 CALL npm install
-CALL bower install
-CALL gulp
+CALL node .\node_modules\bower\bin\bower install
+CALL node .\node_modules\gulp\bin\gulp
 
 CD %TemplateHome%
 CALL npm install
-CALL gulp
+CALL node .\node_modules\gulp\bin\gulp
 
 :Exit
 POPD
