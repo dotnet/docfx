@@ -4,13 +4,13 @@ v2.12(Pre-Release)
 -----------
 1.  Bug fixes:
     1. `default` template: Do not load `search-worker.js` when search is disabled in `docfx.js`
-    2. C# region support for code snippets broken by #endregion with extra text. #1200
+    2. C# region support for code snippets broken by #endregion with extra text. https://github.com/dotnet/docfx/issues/1200
     3. Markdown list continue with def.
     4. Markdown link rule is not allowed in link text.
     5. Markdown list restore wrong context.
-    6. Metadata `_docfxVersion` can't be overwritten. #1251
-    7. `statictoc` template out of sync with `default` template. #1256
-    8. Fix footer covering sidetoc. #1222
+    6. Metadata `_docfxVersion` can't be overwritten. https://github.com/dotnet/docfx/issues/1251
+    7. `statictoc` template out of sync with `default` template. https://github.com/dotnet/docfx/issues/1256
+    8. Fix footer covering sidetoc. https://github.com/dotnet/docfx/issues/1222
     
 
 v2.11
