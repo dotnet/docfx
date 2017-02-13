@@ -13,10 +13,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
     using Microsoft.DocAsCode.Build.ManagedReference;
     using Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
+    using Newtonsoft.Json.Linq;
     using Xunit;
 
     [Trait("Owner", "lianwei")]
@@ -272,6 +274,22 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             Assert.Equal(expectedVM.Items[0].NamesWithType, actualVM.Items[0].NamesWithType);
             Assert.Equal(expectedVM.Items[0].FullNames, actualVM.Items[0].FullNames);
             Assert.Equal(expectedVM.Items[0].Modifiers, actualVM.Items[0].Modifiers);
+        }
+
+        [Fact]
+        public void SystemKeysListShouldBeComplete()
+        {
+            var files = new FileCollection(_defaultFiles);
+            BuildDocument(files);
+            var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.yml");
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
+            var systemKeys = (JArray)model[Constants.PropertyName.SystemKeys];
+            Assert.NotEmpty(systemKeys);
+            foreach (var key in model.Keys.Where(key => key[0] != '_' && key != "meta"))
+            {
+                Assert.Contains(key, systemKeys);
+            }
         }
 
         private void BuildDocument(FileCollection files)
