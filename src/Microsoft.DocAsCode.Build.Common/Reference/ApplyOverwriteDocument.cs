@@ -94,8 +94,12 @@ namespace Microsoft.DocAsCode.Build.Common
                 {
                     pair.model.LinkToUids = pair.model.LinkToUids.Union(overwriteDocumentModel.LinkToUids);
                     pair.model.LinkToFiles = pair.model.LinkToFiles.Union(overwriteDocumentModel.LinkToFiles);
-                    pair.model.FileLinkSources = pair.model.FileLinkSources.Union(overwriteDocumentModel.FileLinkSources.ToImmutableDictionary(k => k.Key, k => k.Value.ToImmutableList())).ToImmutableDictionary();
-                    pair.model.UidLinkSources = pair.model.UidLinkSources.Union(overwriteDocumentModel.UidLinkSources.ToImmutableDictionary(k => k.Key, k => k.Value.ToImmutableList())).ToImmutableDictionary();
+                    pair.model.FileLinkSources = pair.model.FileLinkSources.Union(
+                        overwriteDocumentModel.FileLinkSources.ToImmutableDictionary(p => p.Key, p => p.Value.ToImmutableList()))
+                        .GroupBy(p => p.Key, p => p.Value).ToImmutableDictionary(p => p.Key, p => p.SelectMany(s => s).ToImmutableList());
+                    pair.model.UidLinkSources = pair.model.UidLinkSources.Union(
+                        overwriteDocumentModel.UidLinkSources.ToImmutableDictionary(p => p.Key, p => p.Value.ToImmutableList()))
+                        .GroupBy(p => p.Key, p => p.Value).ToImmutableDictionary(p => p.Key, p => p.SelectMany(s => s).ToImmutableList());
                 }
             }
         }
