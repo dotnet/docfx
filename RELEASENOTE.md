@@ -1,6 +1,9 @@
-﻿Version Notes (Current Version: v2.12)
+﻿Version Notes (Current Version: v2.13)
 =======================================
-v2.12(Pre-Release)
+v2.13(Pre-Release)
+-----------
+
+v2.12
 -----------
 1.  Bug fixes:
     1. `default` template: Do not load `search-worker.js` when search is disabled in `docfx.js`
@@ -11,7 +14,7 @@ v2.12(Pre-Release)
     6. Metadata `_docfxVersion` can't be overwritten. https://github.com/dotnet/docfx/issues/1251
     7. `statictoc` template out of sync with `default` template. https://github.com/dotnet/docfx/issues/1256
     8. Fix footer covering sidetoc. https://github.com/dotnet/docfx/issues/1222
-    
+
 
 v2.11
 -----------
