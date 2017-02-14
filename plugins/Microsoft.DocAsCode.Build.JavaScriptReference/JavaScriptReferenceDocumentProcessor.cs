@@ -13,13 +13,44 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
+    using DataContracts = Microsoft.DocAsCode.DataContracts.Common ;
     using Microsoft.DocAsCode.Plugins;
-
-    using Newtonsoft.Json;
 
     [Export(typeof(IDocumentProcessor))]
     public class JavaScriptReferenceDocumentProcessor : ReferenceDocumentProcessorBase
     {
+        private static readonly string[] SystemKeys = {
+            "uid",
+            "parent",
+            "children",
+            "href",
+            "langs",
+            "name",
+            "nameWithType",
+            "fullName",
+            "type",
+            "source",
+            "documentation",
+            "packages",
+            "namespace",
+            "summary",
+            "remarks",
+            "exmaple",
+            "syntax",
+            "overridden",
+            "exceptions",
+            "seealso",
+            "see",
+            "inheritance",
+            "derivedClasses",
+            "level",
+            "implements",
+            "inheritedMembers",
+            "extensionMethods",
+            "conceptual",
+            "platform",
+        };
+
         #region ReferenceDocumentProcessorBase Members
 
         protected override string ProcessedDocumentType => Constants.JavaScriptReferenceName;
@@ -42,6 +73,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
                     page.Metadata[item.Key] = item.Value;
                 }
             }
+            page.Metadata[DataContracts.Constants.PropertyName.SystemKeys] = SystemKeys;
 
             var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
@@ -139,7 +171,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
         }
 
         private static IEnumerable<XRefSpec> GetXRefInfo(ItemViewModel item, string key,
-            List<DataContracts.Common.ReferenceViewModel> references)
+            List<DataContracts.ReferenceViewModel> references)
         {
             var result = new XRefSpec
             {

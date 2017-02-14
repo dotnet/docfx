@@ -6,13 +6,17 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
+    using System.Linq;
     using System.Web;
 
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Build.ConceptualDocuments;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
+    using Newtonsoft.Json.Linq;
     using Xunit;
 
     [Trait("Owner", "lianwei")]
@@ -118,6 +122,27 @@ content);
                 Assert.Equal($@"<!-- BEGIN INCLUDE: Include content from &quot;{tokenFileName}&quot; --><p><a href=""a#b"">Main</a></p>
 <!--END INCLUDE -->".Replace("\r\n", "\n"),
 content);
+            }
+        }
+
+        [Fact]
+        public void SystemKeysListShouldBeComplete()
+        {
+            var fileName = "test.md";
+            var file = _fileCreator.CreateFile("# test", fileName);
+            var files = new FileCollection(_defaultFiles);
+            files.Add(DocumentType.Article, new[] { file });
+            BuildDocument(files);
+            {
+                var outputRawModelPath = GetRawModelFilePath(file);
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
+                var systemKeys = (JArray)model[Constants.PropertyName.SystemKeys];
+                Assert.NotEmpty(systemKeys);
+                foreach (var key in model.Keys.Where(key => key[0] != '_' && key != "meta"))
+                {
+                    Assert.Contains(key, systemKeys);
+                }
             }
         }
 

@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
 
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.RestApi;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
@@ -127,7 +128,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             // Verify markup result of parameters
             Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">The request body <em>contains</em> a single property that specifies the URL of the user or contact to add as manager.</p>\n",
                 item5.Parameters[2].Description);
-            Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><strong>uri</strong> description.</p>\n", 
+            Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><strong>uri</strong> description.</p>\n",
                 ((string)parameter2["description"]));
             Assert.Equal("<p sourcefile=\"TestData/swagger/contacts.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">No Content. Indicates <strong>success</strong>. No response body is returned.</p>\n",
                 item5.Responses[0].Description);
@@ -268,14 +269,14 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.simple.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Overwrite content</p>\n", model.Summary);
             Assert.Null(model.Conceptual);
         }
-        
+
         [Fact]
         public void ProcessSwaggerWithInvalidLinksOverwriteShouldSucceedWithWarning()
         {
             const string phaseName = "ProcessSwaggerWithInvalidLinksOverwriteShouldSucceedWithWarning";
             var listener = new RestLoggerListener(phaseName);
             Logger.RegisterListener(listener);
-            
+
             using (new LoggerPhaseScope(phaseName))
             {
                 var files = new FileCollection(_defaultFiles);
@@ -430,6 +431,24 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.multi.uid.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Overwrite content1</p>\n", model.Conceptual);
                 Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.multi.uid.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">Overwrite &quot;content2&quot;</p>\n", model.Summary);
                 Assert.Equal("<p sourcefile=\"TestData/overwrite/rest.overwrite.multi.uid.md\" sourcestartlinenumber=\"20\" sourceendlinenumber=\"20\">Overwrite &#39;content3&#39;</p>\n", model.Metadata["not_defined_property"]);
+            }
+        }
+
+        [Fact]
+        public void SystemKeysListShouldBeComplete()
+        {
+            var userKeys = new[] { "meta", "swagger", "securityDefinitions", "schemes"};
+            FileCollection files = new FileCollection(_defaultFiles);
+            BuildDocument(files);
+
+            var outputRawModelPath = GetRawModelFilePath("contacts.json");
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath); ;
+            var systemKeys = (JArray)model[Constants.PropertyName.SystemKeys];
+            Assert.NotEmpty(systemKeys);
+            foreach (var key in model.Keys.Where(key => key[0] != '_' && !userKeys.Contains(key)))
+            {
+                Assert.Contains(key, systemKeys);
             }
         }
 

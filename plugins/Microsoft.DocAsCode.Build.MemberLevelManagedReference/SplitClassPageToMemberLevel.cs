@@ -21,6 +21,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     {
         private const char OverloadLastChar = '*';
         private const char Separator = '.';
+        private const string SplitReferencePropertyName = "_splitReference";
+        private const string IsOverloadPropertyName = "_isOverload";
 
         public override string Name => nameof(SplitClassPageToMemberLevel);
 
@@ -43,8 +45,15 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 var result = SplitModelToOverloadLevel(model);
                 if (result != null)
                 {
-                    treeMapping.Add(result.Uid, result.TreeItems);
-                    collection.AddRange(result.Models);
+                    if (treeMapping.ContainsKey(result.Uid))
+                    {
+                        Logger.LogWarning($"Model with the UID {result.Uid} already exists. '{model.OriginalFileAndType?.FullPath ?? model.FileAndType.FullPath}' is ignored.");
+                    }
+                    else
+                    {
+                        treeMapping.Add(result.Uid, result.TreeItems);
+                        collection.AddRange(result.Models);
+                    }
                 }
             }
 
@@ -118,6 +127,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private ModelWrapper GenerateNonOverloadPage(PageViewModel page, FileModel model, ItemViewModel item)
         {
+            item.Metadata[SplitReferencePropertyName] = true;
             var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { item });
             var newModel = GenerateNewFileModel(model, newPage, item.Uid);
             var tree = ConvertToTreeItem(item);
@@ -141,7 +151,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 NamespaceName = firstMember.NamespaceName,
                 Metadata = new Dictionary<string, object>
                 {
-                    ["isOverload"] = true
+                    [IsOverloadPropertyName] = true,
+                    [SplitReferencePropertyName] = true
                 }
             };
             var referenceItem = page.References.FirstOrDefault(s => s.Uid == key);

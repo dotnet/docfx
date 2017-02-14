@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
@@ -58,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void PreHandle(List<HostService> hostServices)
         {
-            foreach (var hostService in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
+            foreach (var hostService in hostServices)
             {
                 hostService.DependencyGraph = CurrentBuildVersionInfo.Dependency;
                 using (new LoggerPhaseScope("RegisterDependencyTypeFromProcessor", LogLevel.Verbose))
@@ -239,6 +240,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                         else
                         {
                             yield return new DependencyItem(sourceFile, f, sourceFile, DependencyTypeName.Uid);
+                        }
+
+                        //TO-DO: remove the code when we can report the dependency between file and uid
+                        var name = Path.GetFileName(sourceFile);
+                        if (name.Equals("toc.md", StringComparison.OrdinalIgnoreCase) || name.Equals("toc.yml", StringComparison.OrdinalIgnoreCase))
+                        {
+                            yield return new DependencyItem(f, sourceFile, sourceFile, DependencyTypeName.Metadata);
                         }
                     }
                 }

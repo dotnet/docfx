@@ -41,6 +41,21 @@ namespace Microsoft.DocAsCode.Build.RestApi
            ".json",
         };
 
+        protected static readonly string[] SystemKeys = {
+            "uid",
+            "htmlId",
+            "name",
+            "conceptual",
+            "description",
+            "remarks",
+            "summary",
+            "documentation",
+            "tags",
+            "children",
+            "documentType",
+            "source"
+        };
+
         [ImportMany(nameof(RestApiDocumentProcessor))]
         public override IEnumerable<IDocumentBuildStep> BuildSteps { get; set; }
 
@@ -112,6 +127,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
             swagger.Metadata = MergeMetadata(swagger.Metadata, metadata);
             var vm = SwaggerModelConverter.FromSwaggerModel(swagger);
+            vm.Metadata[Constants.PropertyName.SystemKeys] = SystemKeys;
             var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
             return new FileModel(file, vm, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
