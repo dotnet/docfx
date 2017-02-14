@@ -10,7 +10,8 @@ let gulp = require("gulp");
 let nconf = require('nconf');
 let spawn = require("child-process-promise").spawn;
 
-nconf.add('configuration', { type: 'file', file: path.join(__dirname, 'config.json') });
+nconf.add('configuration', { type: 'file', file: path.join(__dirname, 'config_new.json') });
+
 let config = {};
 config.docfx = nconf.get('docfx');
 config.msbuild = nconf.get('msbuild');

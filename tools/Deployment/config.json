@@ -1,13 +1,13 @@
 {
   "docfx": {
     "releaseFolder": "docfx/artifacts/Release",
-    "home": "../../../docfx/",
-    "docfxSeedHome": "../../../docfx-seed/",
-    "e2eTestsHome": "../../test/docfx.E2E.Tests/",
+    "home": "docfx",
+    "docfxSeedHome": "docfx-seed",
+    "e2eTestsHome": "docfx/test/docfx.E2E.Tests",
     "docFolder": "docfx/Documentation",
     "repoUrl": "git@github.com-ci:dotnet/docfx.git",
     "siteFolder": "docfx/Documentation/_site",
-    "exe": "../../../docfx/target/Release/docfx/docfx.exe",
+    "exe": "docfx/target/Release/docfx/docfx.exe",
     "zipSrcFolder": "docfx/target/Release/docfx",
     "zipDestFolder": "docfx/Documentation/_site/tutorial/artifacts/docfx.zip",
     "releaseUrl": "https://api.github.com/repos/dotnet/docfx/releases",
@@ -30,9 +30,6 @@
     "homeDir": "docfx/src/nuspec/chocolatey/docfx/",
     "nuspec": "docfx/src/nuspec/chocolatey/docfx/docfx.nuspec",
     "chocoScript": "docfx/src/nuspec/chocolatey/docfx/tools/chocolateyinstall.ps1"
-  },
-  "firefox": {
-    "version": "46.0.1"
   },
   "sync": {
     "fromBranch": "dev",
