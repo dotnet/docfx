@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.12)
+﻿Version Notes (Current Version: v2.12.1)
 =======================================
+v2.12.1
+-----------
+1.  Bug fixes: clickable images links in markdown topics are no longer being rendered correctly.
+
 v2.12
 -----------
 1.  Bug fixes:
