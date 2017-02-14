@@ -13,16 +13,16 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public override IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            if (MarkdownInlineContext.GetIsInLink(parser.Context))
-            {
-                return null;
-            }
             var match = NoLink.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {
                 return null;
             }
-            
+            if (MarkdownInlineContext.GetIsInLink(parser.Context) && match.Value[0] != '!')
+            {
+                return null;
+            }
+
             var linkStr = match.NotEmpty(2, 1).ReplaceRegex(Regexes.Lexers.WhiteSpaces, " ");
 
             LinkObj link;

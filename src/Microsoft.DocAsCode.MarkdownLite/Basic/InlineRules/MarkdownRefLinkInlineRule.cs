@@ -13,12 +13,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public override IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            if (MarkdownInlineContext.GetIsInLink(parser.Context))
+            var match = RefLink.Match(context.CurrentMarkdown);
+            if (match.Length == 0)
             {
                 return null;
             }
-            var match = RefLink.Match(context.CurrentMarkdown);
-            if (match.Length == 0)
+            if (MarkdownInlineContext.GetIsInLink(parser.Context) && match.Value[0] != '!')
             {
                 return null;
             }
