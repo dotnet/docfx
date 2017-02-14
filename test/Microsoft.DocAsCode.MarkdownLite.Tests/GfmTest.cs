@@ -549,6 +549,30 @@ aaa",
             @"[https://github.com/dotnet/docfx/](https://github.com/dotnet/docfx/)",
             @"<p><a href=""https://github.com/dotnet/docfx/"" data-raw-source=""[https://github.com/dotnet/docfx/](https://github.com/dotnet/docfx/)"">https://github.com/dotnet/docfx/</a></p>
 ")]
+        [InlineData(
+            @"[![](myimage.png)Some description](targetfile.md)",
+            @"<p><a href=""targetfile.md"" data-raw-source=""[![](myimage.png)Some description](targetfile.md)""><img src=""myimage.png"" alt="""">Some description</a></p>
+")]
+        [InlineData(
+            @"[![](myimage.png)Some description][a]
+
+[a]: targetfile.md",
+            @"<p><a href=""targetfile.md"" data-raw-source=""[![](myimage.png)Some description][a]""><img src=""myimage.png"" alt="""">Some description</a></p>
+")]
+        [InlineData(
+            @"[![b]Some description][a]
+
+[a]: targetfile.md
+[b]: myimage.png",
+            @"<p><a href=""targetfile.md"" data-raw-source=""[![b]Some description][a]""><img src=""myimage.png"" alt=""b"">Some description</a></p>
+")]
+        [InlineData(
+            @"[![image][b]Some description][a]
+
+[a]: targetfile.md
+[b]: myimage.png",
+            @"<p><a href=""targetfile.md"" data-raw-source=""[![image][b]Some description][a]""><img src=""myimage.png"" alt=""image"">Some description</a></p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
