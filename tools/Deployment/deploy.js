@@ -423,16 +423,15 @@ if (!branchValue) {
 
 switch (branchValue.toLowerCase()) {
   case "dev":
-    util.runSteps([
-      // step 1: clear the possible release exists
-      clearReleaseStep,
-      // step2: run build.ps1
-      docfxBuildStep,
-      // step3: run e2e test
-      e2eTestStep,
-      // step4: run docfx.exe to generate documentation
-      genereateDocsStep
-    ]);
+    let promise = util.execPromiseFn("node", [path.join(__dirname, "node_modules/gulp/bin/gulp"), "dev"], __dirname)();
+    promise
+      .then(() => {
+        console.log("Finished successully.")
+      })
+      .catch((err) => {
+        console.error("Failed, " + err);
+        process.exit(1);
+      });
     break;
   case "nightly-build":
     util.runSteps([
