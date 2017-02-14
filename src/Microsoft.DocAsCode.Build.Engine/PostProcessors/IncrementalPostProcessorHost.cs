@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return null;
             }
 
-            return EnvironmentContext.FileAbstractLayer.OpenRead(Path.Combine(_increContext.LastBaseDir, lastPostProcessorInfo.ContextInfoFile));
+            return File.OpenRead(Path.Combine(_increContext.LastBaseDir, lastPostProcessorInfo.ContextInfoFile));
         }
 
         public Stream SaveContextInfo()
@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var currentPostProcessorInfo = FindPostProcessorInfo(_increContext.CurrentInfo, _postProcessorName);
             currentPostProcessorInfo.ContextInfoFile = IncrementalUtility.CreateRandomFileName(_increContext.CurrentBaseDir);
 
-            return EnvironmentContext.FileAbstractLayer.Create(Path.Combine(_increContext.CurrentBaseDir, currentPostProcessorInfo.ContextInfoFile));
+            return File.Create(Path.Combine(_increContext.CurrentBaseDir, currentPostProcessorInfo.ContextInfoFile));
         }
 
         #endregion

@@ -146,17 +146,25 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 manifests.Add(BuildCore(parameter, markdownServiceProvider));
             }
+            var generatedManifest = ManifestUtility.MergeManifest(manifests);
+            ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
+
+            EnvironmentContext.FileAbstractLayerImpl =
+                FileAbstractLayerBuilder.Default
+                .ReadFromManifest(generatedManifest, parameters[0].OutputBaseDir)
+                .WriteToManifest(generatedManifest, parameters[0].OutputBaseDir)
+                .Create();
+
+            _postProcessorsManager.Process(generatedManifest, outputDirectory);
+
+            generatedManifest.Dereference(parameters[0].OutputBaseDir);
+
+            // Save to manifest.json
             EnvironmentContext.FileAbstractLayerImpl =
                 FileAbstractLayerBuilder.Default
                 .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
                 .WriteToRealFileSystem(parameters[0].OutputBaseDir)
                 .Create();
-            var generatedManifest = ManifestUtility.MergeManifest(manifests);
-
-            ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
-            _postProcessorsManager.Process(generatedManifest, outputDirectory);
-
-            // Save to manifest.json
             SaveManifest(generatedManifest);
 
             EnvironmentContext.FileAbstractLayerImpl = null;
