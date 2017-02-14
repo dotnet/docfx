@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.Common
     using System.Collections.Immutable;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Common.EntityMergers;
@@ -65,12 +66,12 @@ namespace Microsoft.DocAsCode.Build.Common
         {
             // Multiple UID in overwrite documents is allowed now
             var ovms = (from fm in overwrites
-                from content in getItemsFromOverwriteDocument(fm, uid, host)
-                select new
-                {
-                    model = content,
-                    fileModel = fm
-                }).ToList();
+                        from content in getItemsFromOverwriteDocument(fm, uid, host)
+                        select new
+                        {
+                            model = content,
+                            fileModel = fm
+                        }).ToList();
 
             if (ovms.Count == 0)
             {
@@ -94,12 +95,8 @@ namespace Microsoft.DocAsCode.Build.Common
                 {
                     pair.model.LinkToUids = pair.model.LinkToUids.Union(overwriteDocumentModel.LinkToUids);
                     pair.model.LinkToFiles = pair.model.LinkToFiles.Union(overwriteDocumentModel.LinkToFiles);
-                    pair.model.FileLinkSources = pair.model.FileLinkSources.Union(
-                        overwriteDocumentModel.FileLinkSources.ToImmutableDictionary(p => p.Key, p => p.Value.ToImmutableList()))
-                        .GroupBy(p => p.Key, p => p.Value).ToImmutableDictionary(p => p.Key, p => p.SelectMany(s => s).ToImmutableList());
-                    pair.model.UidLinkSources = pair.model.UidLinkSources.Union(
-                        overwriteDocumentModel.UidLinkSources.ToImmutableDictionary(p => p.Key, p => p.Value.ToImmutableList()))
-                        .GroupBy(p => p.Key, p => p.Value).ToImmutableDictionary(p => p.Key, p => p.SelectMany(s => s).ToImmutableList());
+                    pair.model.FileLinkSources = pair.model.FileLinkSources.Merge(overwriteDocumentModel.FileLinkSources);
+                    pair.model.UidLinkSources = pair.model.UidLinkSources.Merge(overwriteDocumentModel.UidLinkSources);
                 }
             }
         }
