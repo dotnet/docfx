@@ -7,7 +7,15 @@ let path = require('path');
 let fs = require('fs');
 
 let gulp = require("gulp");
+let nconf = require('nconf');
 let spawn = require("child-process-promise").spawn;
+
+nconf.add('configuration', { type: 'file', file: path.join(__dirname, 'config.json') });
+let config = {};
+config.docfx = nconf.get('docfx');
+config.msbuild = nconf.get('msbuild');
+config.choco = nconf.get('choco');
+config.firefox = nconf.get('firefox');
 
 function exec(command, args, workDir) {
     let cwd = process.cwd();
@@ -29,23 +37,23 @@ function exec(command, args, workDir) {
 }
 
 gulp.task("build", () => {
-    return exec("powershell", ["./build.ps1", "-prod"], "../../../docfx/");
+    return exec("powershell", ["./build.ps1", "-prod"], config.docfx["home"]);
 });
 
 gulp.task("e2eTest:choco", () => {
-    return exec("choco", ["install", "firefox", "--version=46.0.1", "-y"]);
+    return exec("choco", ["install", "firefox", "--version=" + config.firefox["version"], "-y"]);
 });
 
 gulp.task("e2eTest:buildSeed", ["build", "e2eTest:choco"], () => {
-    return exec("../docfx/target/Release/docfx/docfx.exe", ["docfx.json"], "../../../docfx-seed/");
+    return exec(path.join(__dirname, config.docfx["exe"]), ["docfx.json"], config.docfx["docfxSeedHome"]);
 });
 
 gulp.task("e2eTest:restore", ["e2eTest:buildSeed"], () => {
-    return exec("dotnet", ["restore"], "../../test/docfx.E2E.Tests/");
+    return exec("dotnet", ["restore"], config.docfx["e2eTestsHome"]);
 });
 
 gulp.task("e2eTest:test", ["e2eTest:restore"], () => {
-    return exec("dotnet", ["test"], "../../test/docfx.E2E.Tests/");
+    return exec("dotnet", ["test"], config.docfx["e2eTestsHome"]);
 });
 
 gulp.task("e2eTest", ["e2eTest:test"]);
