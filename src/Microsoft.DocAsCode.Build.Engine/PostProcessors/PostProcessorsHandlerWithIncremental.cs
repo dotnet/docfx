@@ -90,14 +90,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     Logger.RegisterListener(_increContext.CurrentInfo.MessageInfo.GetListener());
                 }
-                else
-                {
-                    EnvironmentContext.FileAbstractLayerImpl =
-                        FileAbstractLayerBuilder.Default
-                        .ReadFromManifest(manifest, outputFolder)
-                        .WriteToManifest(manifest, outputFolder)
-                        .Create();
-                }
 
                 if (_increContext.IsIncremental)
                 {

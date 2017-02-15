@@ -27,14 +27,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         {
             try
             {
-                var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_basic.json");
+                var manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_basic.json"));
                 var outputFolder = GetRandomFolder();
                 PrepareOutput(outputFolder, "index");
-                EnvironmentContext.FileAbstractLayerImpl =
-                    FileAbstractLayerBuilder.Default
-                    .ReadFromManifest(manifest, outputFolder)
-                    .WriteToManifest(manifest, outputFolder)
-                    .Create();
+                SetDefaultFAL(manifest, outputFolder);
                 PostProcessorsHandler.Handle(GetPostProcessors(typeof(AppendStringPostProcessor)), manifest, outputFolder);
                 VerifyOutput(outputFolder, AppendStringPostProcessor.AppendString, "index");
             }
@@ -65,7 +61,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 });
 
                 // Exclude c, which is not incremental
-                var preparedManifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+                var preparedManifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
                 PrepareCachedOutput(intermediateFolder, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "a", "b");
 
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
@@ -76,9 +72,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.True(increContext.IsIncremental);
 
                 var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
-                var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+                var manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
                 var outputFolder = GetRandomFolder();
                 PrepareOutput(outputFolder, "a", "b", "c");
+                SetDefaultFAL(manifest, outputFolder);
                 increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
 
                 // Check incremental flag
@@ -151,9 +148,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                             Assert.False(increContext.IsIncremental);
 
                             var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
-                            var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+                            var manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
                             var outputFolder = GetRandomFolder();
                             PrepareOutput(outputFolder, "a", "b", "c");
+                            SetDefaultFAL(manifest, outputFolder);
                             increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
 
                             // Check incremental flag
@@ -211,6 +209,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                             var manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
                             var outputFolder = GetRandomFolder();
                             PrepareOutput(outputFolder, "a", "b", "c");
+                            SetDefaultFAL(manifest, outputFolder);
                             increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
 
                             // Check incremental flag
@@ -286,7 +285,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 });
 
                 // Exclude c, which is not incremental
-                var preparedManifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+                var preparedManifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
                 PrepareCachedOutput(intermediateFolder, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "a", "b");
 
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
@@ -298,9 +297,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.True(increContext.IsIncremental);
 
                 var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
-                var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+                var manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
                 var outputFolder = GetRandomFolder();
                 PrepareOutput(outputFolder, "a", "b", "c");
+                SetDefaultFAL(manifest, outputFolder);
                 increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
 
                 // Check incremental post processor host
@@ -362,6 +362,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
                 outputFolder = GetRandomFolder();
                 PrepareOutput(outputFolder, "a", "b", "c");
+                SetDefaultFAL(manifest, outputFolder);
                 increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
 
                 // Check incremental post processor host
@@ -428,7 +429,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 });
 
                 // Exclude c, which is not incremental
-                var preparedManifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+                var preparedManifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
                 PrepareCachedOutput(intermediateFolder, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "a", "b");
 
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
@@ -440,9 +441,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.True(increContext.IsIncremental);
 
                 var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
-                var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+                var manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
                 var outputFolder = GetRandomFolder();
                 PrepareOutput(outputFolder, "a", "b", "c");
+                SetDefaultFAL(manifest, outputFolder);
                 increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
 
                 // Check incremental flag
@@ -495,6 +497,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
                 outputFolder = GetRandomFolder();
                 PrepareOutput(outputFolder, "a", "b", "c");
+                SetDefaultFAL(manifest, outputFolder);
                 increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
 
                 // Check incremental flag
@@ -533,7 +536,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 });
 
                 // Exclude c, which is not incremental
-                var preparedManifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental_with_directory.json");
+                var preparedManifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental_with_directory.json"));
                 PrepareCachedOutput(intermediateFolder, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "a/b");
 
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
@@ -544,10 +547,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.True(increContext.IsIncremental);
 
                 var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
-                var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental_with_directory.json");
+                var manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental_with_directory.json"));
                 var outputFolder = GetRandomFolder();
                 PrepareOutput(outputFolder, "a/b", "c");
                 CreateFile("breadcrumb.json", "breadcrumb", outputFolder);
+                SetDefaultFAL(manifest, outputFolder);
                 increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
 
                 // Check incremental flag
@@ -609,9 +613,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.False(increContext.IsIncremental);
 
                 var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
-                var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+                var manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
                 var outputFolder = GetRandomFolder();
                 PrepareOutput(outputFolder, "a", "b", "c");
+                SetDefaultFAL(manifest, outputFolder);
                 increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
 
                 // Check incremental flag
@@ -677,9 +682,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.False(increContext.EnableIncremental);
 
                 var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
-                var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+                var manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
                 var outputFolder = GetRandomFolder();
                 PrepareOutput(outputFolder, "a", "b", "c");
+                SetDefaultFAL(manifest, outputFolder);
                 increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
 
                 // Check incremental flag
@@ -734,9 +740,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.False(increContext.IsIncremental);
 
                 var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
-                var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+                var manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
                 var outputFolder = GetRandomFolder();
                 PrepareOutput(outputFolder, "a", "b", "c");
+                SetDefaultFAL(manifest, outputFolder);
                 increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
 
                 // Check incremental flag
@@ -800,9 +807,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.False(increContext.IsIncremental);
 
                 var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
-                var manifest = JsonUtility.Deserialize<Manifest>("PostProcessors/Data/manifest_incremental.json");
+                var manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
                 var outputFolder = GetRandomFolder();
                 PrepareOutput(outputFolder, "a", "b", "c");
+                SetDefaultFAL(manifest, outputFolder);
                 increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
 
                 // Check incremental flag
@@ -920,6 +928,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             return result;
         }
 
+        private static void SetDefaultFAL(Manifest manifest, string outputFolder)
+        {
+            EnvironmentContext.FileAbstractLayerImpl =
+                FileAbstractLayerBuilder.Default
+                .ReadFromManifest(manifest, outputFolder)
+                .WriteToManifest(manifest, outputFolder)
+                .Create();
+        }
         #endregion
     }
 }

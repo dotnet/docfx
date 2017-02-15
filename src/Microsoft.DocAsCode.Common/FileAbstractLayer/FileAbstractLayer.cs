@@ -115,6 +115,36 @@ namespace Microsoft.DocAsCode.Common
             return pp.PhysicalPath;
         }
 
+        public string CreateRandomFileName()
+        {
+            EnsureNotDisposed();
+            if (!CanWrite)
+            {
+                throw new InvalidOperationException();
+            }
+            var srfw = Writer as ISupportRandomFileWriter;
+            if (srfw == null)
+            {
+                throw new NotSupportedException();
+            }
+            return srfw.CreateRandomFileName();
+        }
+
+        public Tuple<string, Stream> CreateRandomFile()
+        {
+            EnsureNotDisposed();
+            if (!CanWrite)
+            {
+                throw new InvalidOperationException();
+            }
+            var srfw = Writer as ISupportRandomFileWriter;
+            if (srfw == null)
+            {
+                throw new NotSupportedException();
+            }
+            return srfw.CreateRandomFile();
+        }
+
         #endregion
 
         #region IFileAbstractLayer Members
