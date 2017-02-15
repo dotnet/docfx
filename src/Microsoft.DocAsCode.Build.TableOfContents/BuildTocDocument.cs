@@ -224,7 +224,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private void ReportDependency(ImmutableList<FileModel> models, IHostService host, ImmutableDictionary<string, TocItemInfo> tocModelCache, int parallelism)
         {
-            var nearest = new Dictionary<string, Toc>();
+            var nearest = new Dictionary<string, Toc>(FilePathComparer.OSPlatformSensitiveStringComparer);
             models.RunAll(model =>
             {
                 var wrapper = tocModelCache[model.OriginalFileAndType.FullPath];
