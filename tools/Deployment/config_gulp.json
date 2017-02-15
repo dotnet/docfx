@@ -3,7 +3,14 @@
     "home": "../../../docfx/",
     "docfxSeedHome": "../../../docfx-seed/",
     "e2eTestsHome": "../../test/docfx.E2E.Tests/",
-    "exe": "../../../docfx/target/Release/docfx/docfx.exe"
+    "targetFolder": "../../target/",
+    "artifactsFolder": "../../artifacts/",
+    "exe": "../../target/Release/docfx/docfx.exe"
+  },
+  "myget": {
+    "exe": "C:/nuget.exe",
+    "urlDev": "https://www.myget.org/F/docfx-dev/api/v2/package",
+    "urlMaster": "https://www.myget.org/F/docfx/api/v2/package"
   },
   "firefox": {
     "version": "46.0.1"

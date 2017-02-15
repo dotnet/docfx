@@ -3,9 +3,10 @@
 
 "use strict";
 
-let path = require("path");
 let fs = require("fs");
+let path = require("path");
 
+let del = require("del");
 let gulp = require("gulp");
 let nconf = require("nconf");
 let spawn = require("child-process-promise").spawn;
@@ -17,11 +18,25 @@ if (!fs.existsSync(configFile)) {
 
 nconf.add("configuration", { type: "file", file: configFile });
 
-let config = {};
-config.docfx = nconf.get("docfx");
-config.msbuild = nconf.get("msbuild");
-config.choco = nconf.get("choco");
-config.firefox = nconf.get("firefox");
+let config = {
+    "docfx": nconf.get("docfx"),
+    "firefox": nconf.get("firefox"),
+    "myget": nconf.get("myget")
+};
+
+if (!config.docfx) {
+    throw new Error("Can't find docfx configuration.");
+}
+
+if (!config.firefox) {
+    throw new Error("Can't find firefox configuration.");
+}
+
+if (!config.myget) {
+    throw new Error("Can't find myget configuration.");
+}
+
+config.myget["apiKey"] = process.env.MGAPIKEY;
 
 function exec(command, args, workDir) {
     let cwd = process.cwd();
@@ -42,7 +57,7 @@ function exec(command, args, workDir) {
     });
 }
 
-gulp.task("build", () => {
+gulp.task("build", ["clean"], () => {
     if (!config.docfx || !config.docfx["home"]) {
         throw new Error("Can't find docfx home directory.");
     }
@@ -50,8 +65,30 @@ gulp.task("build", () => {
     return exec("powershell", ["./build.ps1", "-prod"], config.docfx["home"]);
 });
 
+gulp.task("clean", () => {
+    if (!config.docfx["artifactsFolder"]) {
+        throw new Error("Can't find docfx artifacts folder.");
+    }
+
+    let artifactsFolder = path.join(__dirname, config.docfx["artifactsFolder"]);
+
+    if (!config.docfx["targetFolder"]) {
+        throw new Error("Can't find docfx target folder.");
+    }
+
+    let targetFolder = path.join(__dirname, config.docfx["targetFolder"]);
+
+    return del([artifactsFolder, targetFolder], { force: true }).then((paths) => {
+        if (!paths || paths.length === 0) {
+            console.log("Folders not exist, no need to clean.");
+        } else {
+            console.log("Deleted: \n", paths.join("\n"));
+        }
+    });
+});
+
 gulp.task("e2eTest:choco", () => {
-    if (!config.firefox || !config.firefox["version"]) {
+    if (!config.firefox["version"]) {
         throw new Error("Can't find firefox version.");
     }
 
@@ -59,10 +96,6 @@ gulp.task("e2eTest:choco", () => {
 });
 
 gulp.task("e2eTest:buildSeed", ["build", "e2eTest:choco"], () => {
-    if (!config.docfx) {
-        throw new Error("Can't find docfx configuration.");
-    }
-
     if (!config.docfx["exe"]) {
         throw new Error("Can't find docfx.exe.");
     }
@@ -75,7 +108,7 @@ gulp.task("e2eTest:buildSeed", ["build", "e2eTest:choco"], () => {
 });
 
 gulp.task("e2eTest:restore", ["e2eTest:buildSeed"], () => {
-    if (!config.docfx || !config.docfx["e2eTestsHome"]) {
+    if (!config.docfx["e2eTestsHome"]) {
         throw new Error("Can't find E2ETest directory.");
     }
 
@@ -83,7 +116,7 @@ gulp.task("e2eTest:restore", ["e2eTest:buildSeed"], () => {
 });
 
 gulp.task("e2eTest:test", ["e2eTest:restore"], () => {
-    if (!config.docfx || !config.docfx["e2eTestsHome"]) {
+    if (!config.docfx["e2eTestsHome"]) {
         throw new Error("Can't find E2ETest directory.");
     }
 
@@ -92,5 +125,49 @@ gulp.task("e2eTest:test", ["e2eTest:restore"], () => {
 
 gulp.task("e2eTest", ["e2eTest:test"]);
 
+gulp.task("publish:myget-dev", ["e2eTest"], () => {
+    if (!config.docfx["artifactsFolder"]) {
+        throw new Error("Can't find artifacts folder.");
+    }
+
+    if (!config.myget["exe"]) {
+        throw new Error("Can't find nuget command.");
+    }
+
+    if (!config.myget["apiKey"]) {
+        throw new Error("Can't find myget api key.");
+    }
+
+    if (!config.myget["devUrl"]) {
+        throw new Error("Can't find myget url for docfx dev feed.");
+    }
+
+    let artifactsFolder = path.join(__dirname, config.docfx["artifactsFolder"]);
+    return exec(config.myget["exe"], [artifactsFolder, config.myget["apiKey"], config.myget["devUrl"]]);
+});
+
+gulp.task("publish:myget-master", ["e2eTest"], () => {
+    if (!config.docfx["artifactsFolder"]) {
+        throw new Error("Can't find artifacts folder.");
+    }
+
+    if (!config.myget["exe"]) {
+        throw new Error("Can't find nuget command.");
+    }
+
+    if (!config.myget["apiKey"]) {
+        throw new Error("Can't find myget api key.");
+    }
+
+    if (!config.myget["masterUrl"]) {
+        throw new Error("Can't find myget url for docfx master feed.");
+    }
+
+    let artifactsFolder = path.join(__dirname, config.docfx["artifactsFolder"]);
+    return exec(config.myget["exe"], [artifactsFolder, config.myget["apiKey"], config.myget["masterUrl"]]);
+});
+
 gulp.task("dev", ["build", "e2eTest"]);
+gulp.task("stable", ["build", "e2eTest", "publish:myget-dev"]);
+
 gulp.task("default", ["dev"]);

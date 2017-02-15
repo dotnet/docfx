@@ -421,9 +421,10 @@ if (!branchValue) {
   process.exit(1);
 }
 
+let promise;
 switch (branchValue.toLowerCase()) {
   case "dev":
-    let promise = util.execPromiseFn("node", [path.join(__dirname, "node_modules/gulp/bin/gulp"), "dev"], __dirname)();
+    promise = util.execPromiseFn("node", [path.join(__dirname, "node_modules/gulp/bin/gulp"), "dev"], __dirname)();
     promise
       .then(() => {
         console.log("Finished successully.")
@@ -434,18 +435,15 @@ switch (branchValue.toLowerCase()) {
       });
     break;
   case "nightly-build":
-    util.runSteps([
-      // step 1: clear the possible release exists
-      clearReleaseStep,
-      // step2: run build.ps1
-      docfxBuildStep,
-      // step3: run e2e test
-      e2eTestStep,
-      // step4: run docfx.exe to generate documentation
-      genereateDocsStep,
-      // step5: upload release to myget.org
-      uploadDevMygetStep
-    ]);
+    promise = util.execPromiseFn("node", [path.join(__dirname, "node_modules/gulp/bin/gulp"), "stable"], __dirname)();
+    promise
+      .then(() => {
+        console.log("Finished successully.")
+      })
+      .catch((err) => {
+        console.error("Failed, " + err);
+        process.exit(1);
+      });
     break;
   case "master":
     util.runSteps([
