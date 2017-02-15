@@ -124,7 +124,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
                         using (new LoggerPhaseScope("Load", LogLevel.Verbose))
                         {
-                            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator).ToList();
+                            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator);
                         }
 
                         BuildCore(phaseProcessor, hostServices, context);
