@@ -1,0 +1,48 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "Contacts",
+    "version": "1.0.0"
+  },
+  "securityDefinitions": {
+    "auth": {
+      "type": "oauth2",
+      "authorizationUrl": "https://sample.com",
+      "flow": "implicit",
+      "description": "securityDefinitions *description*.",
+      "scopes": {
+        "user_impersonation": "impersonate your user account"
+      }
+    }
+  },
+  "parameters": {
+    "ApiVersionParameter": {
+      "in": "query",
+      "description": "api version description",
+      "name": "api-version",
+      "required": false,
+      "type": "string",
+      "default": "1.6"
+    }
+  },
+  "paths": {
+  },
+  "host": "graph.windows.net",
+  "basePath": "/myorganization",
+  "schemes": [ "https" ],
+  "definitions": {
+    "refUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "**uri** description."
+    },
+    "refContainerUrl": {
+      "$ref": "#/definitions/refUrl",
+      "description": "container uri description."
+    },
+    "anotherUrl": {
+      "$ref": "./contactsForExternalRef.json#/definitions/copiedUrl",
+      "description": "reference uri description."
+    }
+  }
+}

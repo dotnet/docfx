@@ -148,5 +148,43 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
   }
 }".Replace("\r\n", "\n"), schemaObj.Replace("\r\n", "\n"));
         }
+
+        [Fact]
+        public void ParseSwaggerJsonWithExternalLoopReferenceShouldSucceed()
+        {
+            const string swaggerFile = @"TestData\swagger\externalLoopRef_A.json";
+            var swagger = SwaggerJsonParser.Parse(swaggerFile);
+
+            Assert.Equal(1, swagger.Paths.Values.Count);
+            var actionJObject = swagger.Paths["/contacts"].Metadata["patch"] as JObject;
+            Assert.NotNull(actionJObject);
+            var action = actionJObject.ToObject<OperationObject>();
+            var schemaJObject = (JObject)action.Parameters[0].Metadata["schema"];
+            var schemaObj = schemaJObject.ToString(Formatting.Indented);
+            Assert.Equal(@"{
+  ""properties"": {
+    ""provisioningErrors"": {
+      ""type"": ""array"",
+      ""items"": {
+        ""properties"": {
+          ""errorDetail"": {
+            ""type"": ""array"",
+            ""items"": {
+              ""x-internal-loop-ref-name"": ""contact""
+            }
+          }
+        },
+        ""x-internal-ref-name"": ""Provision%ing|Error""
+      },
+      ""readOnly"": true
+    }
+  },
+  ""x-internal-ref-name"": ""contact"",
+  ""example"": {
+    ""department"": ""Sales"",
+    ""jobTitle"": ""Sales Rep""
+  }
+}".Replace("\r\n", "\n"), schemaObj.Replace("\r\n", "\n"));
+        }
     }
 }

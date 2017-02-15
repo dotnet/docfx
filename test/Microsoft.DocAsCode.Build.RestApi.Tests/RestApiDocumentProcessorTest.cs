@@ -164,6 +164,25 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         }
 
         [Fact]
+        public void ProcessSwaggerWithExternalEmbeddedReferenceShouldSucceed()
+        {
+            var files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { "TestData/swagger/contactsForExternalRef.json" }, "TestData/");
+            BuildDocument(files);
+
+            var outputRawModelPath = GetRawModelFilePath("contactsForExternalRef.json");
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
+
+            var operation = model.Children.Single(c => c.OperationId == "update_contact_manager");
+            var externalSchema = (JObject)operation.Parameters[2].Metadata["schema"];
+            Assert.Equal("<p sourcefile=\"TestData/swagger/contactsForExternalRef.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><strong>uri</strong> description.</p>\n", externalSchema["description"]);
+            Assert.Equal("string", externalSchema["type"]);
+            Assert.Equal("uri", externalSchema["format"]);
+            Assert.Equal("refUrl", externalSchema["x-internal-ref-name"]);
+        }
+
+        [Fact]
         public void ProcessSwaggerWithNotExistedExternalReferenceShouldFail()
         {
             var files = new FileCollection(Directory.GetCurrentDirectory());

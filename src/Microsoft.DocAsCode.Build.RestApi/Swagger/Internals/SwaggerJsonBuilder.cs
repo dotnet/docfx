@@ -17,37 +17,45 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
     internal class SwaggerJsonBuilder
     {
-        private IDictionary<string, SwaggerObjectBase> _documentObjectCache;
+        private readonly IDictionary<JsonLocationInfo, SwaggerObjectBase> _documentObjectCache;
         private const string DefinitionsKey = "definitions";
         private const string ReferenceKey = "$ref";
         private const string ParametersKey = "parameters";
         private const string InternalRefNameKey = "x-internal-ref-name";
         private const string InternalLoopRefNameKey = "x-internal-loop-ref-name";
 
-        public SwaggerObjectBase Read(string swaggerPath)
+        public SwaggerJsonBuilder()
+        {
+            _documentObjectCache = new Dictionary<JsonLocationInfo, SwaggerObjectBase>();
+        }
+
+        public SwaggerObjectBase Read(string swaggerPath, bool isExternal = false)
+        {
+            var swagger = Load(swaggerPath);
+            if (!isExternal)
+            {
+                RemoveReferenceDefinitions((SwaggerObject)swagger);
+            }
+            return ResolveReferences(swagger, swaggerPath, new Stack<JsonLocationInfo>());
+        }
+
+        private SwaggerObjectBase Load(string swaggerPath)
         {
             using (JsonReader reader = new JsonTextReader(EnvironmentContext.FileAbstractLayer.OpenReadText(swaggerPath)))
             {
-                _documentObjectCache = new Dictionary<string, SwaggerObjectBase>();
                 var token = JToken.ReadFrom(reader);
-
-                var swaggerDir = Path.GetDirectoryName(swaggerPath);
-                if (string.IsNullOrEmpty(swaggerDir))
-                {
-                    throw new DocfxException($"Directory of swagger file path {swaggerPath} should not be null or empty.");
-                }
-                var swagger = Build(token, swaggerDir);
-                RemoveReferenceDefinitions((SwaggerObject)swagger);
-                return ResolveReferences(swagger, new Stack<string>());
+                return LoadCore(token, swaggerPath);
             }
         }
 
-        private SwaggerObjectBase Build(JToken token, string swaggerDir)
+        private SwaggerObjectBase LoadCore(JToken token, string swaggerPath)
         {
             // Fetch from cache first
             var location = JsonLocationHelper.GetLocation(token);
+            var jsonLocationInfo = new JsonLocationInfo(swaggerPath, location);
+
             SwaggerObjectBase existingObject;
-            if (_documentObjectCache.TryGetValue(location, out existingObject))
+            if (_documentObjectCache.TryGetValue(jsonLocationInfo, out existingObject))
             {
                 return existingObject;
             }
@@ -84,31 +92,48 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                             // These properties cannot be referenced
                             jObject.Remove("$ref");
                             deferredObject.Token = jObject;
-                            _documentObjectCache.Add(location, deferredObject);
+                            _documentObjectCache.Add(jsonLocationInfo, deferredObject);
                             return deferredObject;
                         case SwaggerFormattedReferenceType.ExternalReference:
                             jObject.Remove("$ref");
 
-                            var externalJObject = LoadExternalReference(Path.Combine(swaggerDir, swaggerReference.Path));
+                            var externalRef = (SwaggeraExternalFormattedReference)swaggerReference;
+                            var externalJObject = LoadExternalReference(Path.Combine(GetDirectory(swaggerPath), externalRef.ExternalFilePath));
                             RestApiHelper.CheckSpecificKey(externalJObject, ReferenceKey, () =>
                             {
-                                throw new DocfxException($"{ReferenceKey} in {swaggerReference.Path} is not supported in external reference currently.");
+                                throw new DocfxException($"{ReferenceKey} in {externalRef.ExternalFilePath} is not supported in external reference currently.");
                             });
                             foreach (var item in externalJObject)
                             {
                                 JToken value;
                                 if (jObject.TryGetValue(item.Key, out value))
                                 {
-                                    Logger.LogWarning($"{item.Key} inside {jObject.Path} would be overwritten by the value of same key inside {swaggerReference.Path} with path {externalJObject.Path}.");
+                                    Logger.LogWarning($"{item.Key} inside {jObject.Path} would be overwritten by the value of same key inside {externalRef.ExternalFilePath} with path {externalJObject.Path}.");
                                 }
                                 jObject[item.Key] = item.Value;
                             }
 
-                            return new SwaggerValue
+                            var resolved = new SwaggerValue
                             {
                                 Location = location,
                                 Token = jObject
                             };
+                            _documentObjectCache.Add(jsonLocationInfo, resolved);
+                            return resolved;
+                        case SwaggerFormattedReferenceType.ExternalEmbeddedReference:
+                            // Defer resolving external reference to resolve step, to prevent loop reference.
+                            var externalEmbeddedRef = (SwaggeraExternalFormattedReference)swaggerReference;
+                            var externalDeferredObject = new SwaggerReferenceObject
+                            {
+                                ExternalFilePath = Path.Combine(GetDirectory(swaggerPath), externalEmbeddedRef.ExternalFilePath),
+                                DeferredReference = externalEmbeddedRef.Path,
+                                ReferenceName = externalEmbeddedRef.Name,
+                                Location = location
+                            };
+                            jObject.Remove("$ref");
+                            externalDeferredObject.Token = jObject;
+                            _documentObjectCache.Add(jsonLocationInfo, externalDeferredObject);
+                            return externalDeferredObject;
                         default:
                             throw new DocfxException($"{referenceToken} does not support type {swaggerReference.Type}.");
                     }
@@ -117,10 +142,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 var swaggerObject = new SwaggerObject { Location = location };
                 foreach (KeyValuePair<string, JToken> property in jObject)
                 {
-                    swaggerObject.Dictionary.Add(property.Key, Build(property.Value, swaggerDir));
+                    swaggerObject.Dictionary.Add(property.Key, LoadCore(property.Value, swaggerPath));
                 }
 
-                _documentObjectCache.Add(location, swaggerObject);
+                _documentObjectCache.Add(jsonLocationInfo, swaggerObject);
                 return swaggerObject;
             }
 
@@ -130,7 +155,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 var swaggerArray = new SwaggerArray { Location = location };
                 foreach (var property in jArray)
                 {
-                    swaggerArray.Array.Add(Build(property, swaggerDir));
+                    swaggerArray.Array.Add(LoadCore(property, swaggerPath));
                 }
 
                 return swaggerArray;
@@ -168,7 +193,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             }
         }
 
-        private SwaggerObjectBase ResolveReferences(SwaggerObjectBase swaggerBase, Stack<string> refStack)
+        private SwaggerObjectBase ResolveReferences(SwaggerObjectBase swaggerBase, string swaggerPath, Stack<JsonLocationInfo> refStack)
         {
             if (swaggerBase.ReferencesResolved)
             {
@@ -189,12 +214,23 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                             }
 
                             SwaggerObjectBase referencedObjectBase;
-                            if (!_documentObjectCache.TryGetValue(swagger.DeferredReference, out referencedObjectBase))
+                            var jsonLocationInfo = new JsonLocationInfo(swagger.ExternalFilePath ?? swaggerPath, swagger.DeferredReference);
+                            if (!_documentObjectCache.TryGetValue(jsonLocationInfo, out referencedObjectBase))
                             {
-                                throw new JsonException($"Could not resolve reference '{swagger.DeferredReference}' in the document.");
+                                if (swagger.ExternalFilePath == null)
+                                {
+                                    throw new JsonException($"Could not resolve reference '{swagger.DeferredReference}' in the document.");
+                                }
+
+                                // Load external swagger, to fill in the document cache.
+                                Load(swagger.ExternalFilePath);
+                                if (!_documentObjectCache.TryGetValue(jsonLocationInfo, out referencedObjectBase))
+                                {
+                                    throw new JsonException($"Could not resolve reference '{swagger.DeferredReference}' in the document.");
+                                }
                             }
 
-                            if (refStack.Contains(referencedObjectBase.Location))
+                            if (refStack.Contains(jsonLocationInfo))
                             {
                                 var loopRef = new SwaggerLoopReferenceObject();
                                 loopRef.Dictionary.Add(InternalLoopRefNameKey, new SwaggerValue { Token = swagger.ReferenceName });
@@ -202,8 +238,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                             }
 
                             // Clone to avoid change the reference object in _documentObjectCache
-                            refStack.Push(referencedObjectBase.Location);
-                            var resolved = ResolveReferences(referencedObjectBase.Clone(), refStack);
+                            refStack.Push(jsonLocationInfo);
+                            var resolved = ResolveReferences(referencedObjectBase.Clone(), jsonLocationInfo.FilePath, refStack); // TODO
                             var swaggerObject = ResolveSwaggerObject(resolved);
                             if (!swaggerObject.Dictionary.ContainsKey(InternalRefNameKey))
                             {
@@ -219,7 +255,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                         var swagger = (SwaggerObject)swaggerBase;
                         foreach (var key in swagger.Dictionary.Keys.ToList())
                         {
-                            swagger.Dictionary[key] = ResolveReferences(swagger.Dictionary[key], refStack);
+                            swagger.Dictionary[key] = ResolveReferences(swagger.Dictionary[key], swaggerPath, refStack);
                         }
                         return swagger;
                     }
@@ -228,7 +264,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                         var swagger = (SwaggerArray)swaggerBase;
                         for (int i = 0; i < swagger.Array.Count; i++)
                         {
-                            swagger.Array[i] = ResolveReferences(swagger.Array[i], refStack);
+                            swagger.Array[i] = ResolveReferences(swagger.Array[i], swaggerPath, refStack);
                         }
                         return swagger;
                     }
@@ -254,6 +290,17 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             }
 
             throw new ArgumentException($"When resolving reference for {nameof(SwaggerReferenceObject)}, only support {nameof(SwaggerObject)} and {nameof(SwaggerReferenceObject)} as parameter.");
+        }
+
+        private static string GetDirectory(string path)
+        {
+            var directory = Path.GetDirectoryName(path);
+            if (string.IsNullOrEmpty(directory))
+            {
+                throw new DocfxException($"Directory of swagger file path {path} should not be null or empty.");
+            }
+
+            return directory;
         }
     }
 }
