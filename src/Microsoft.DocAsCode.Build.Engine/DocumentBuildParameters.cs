@@ -24,6 +24,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public FileMetadata FileMetadata { get; set; }
 
+        [IncrementalIgnore]
         public ImmutableArray<string> PostProcessors { get; set; } = ImmutableArray<string>.Empty;
 
         [IncrementalIgnore]
