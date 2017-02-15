@@ -23,6 +23,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
+    using System.Threading;
 
     [Serializable]
     internal sealed class DocumentBuilderWrapper
@@ -248,6 +249,12 @@ namespace Microsoft.DocAsCode.SubCommands
             else
             {
                 parameters.MaxParallelism = config.MaxParallelism.Value;
+                int wt, cpt;
+                ThreadPool.GetMinThreads(out wt, out cpt);
+                if (wt < parameters.MaxParallelism)
+                {
+                    ThreadPool.SetMinThreads(Math.Max(parameters.MaxParallelism, wt), cpt);
+                }
             }
             if (config.MarkdownEngineName != null)
             {
