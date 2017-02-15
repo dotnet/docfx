@@ -1,0 +1,11 @@
+{
+  "docfx": {
+    "home": "../../../docfx/",
+    "docfxSeedHome": "../../../docfx-seed/",
+    "e2eTestsHome": "../../test/docfx.E2E.Tests/",
+    "exe": "../../../docfx/target/Release/docfx/docfx.exe"
+  },
+  "firefox": {
+    "version": "46.0.1"
+  }
+}
