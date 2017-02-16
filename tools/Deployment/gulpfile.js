@@ -7,6 +7,7 @@ let fs = require("fs");
 let path = require("path");
 
 let del = require("del");
+let glob = require("glob");
 let gulp = require("gulp");
 let nconf = require("nconf");
 let spawn = require("child-process-promise").spawn;
@@ -55,6 +56,14 @@ function exec(command, args, workDir) {
     return promise.then(() => {
         process.chdir(cwd);
     });
+}
+
+function publish(artifactsFolder, mygetCommand, mygetKey, mygetUrl) {
+    let packages = glob.sync(artifactsFolder + "/**/!(*.symbols).nupkg");
+    let promises = packages.map(p => {
+        return exec(mygetCommand, [p, mygetKey, mygetUrl]);
+    });
+    return Promise.all(promises);
 }
 
 gulp.task("build", ["clean"], () => {
@@ -143,7 +152,7 @@ gulp.task("publish:myget-dev", ["e2eTest"], () => {
     }
 
     let artifactsFolder = path.join(__dirname, config.docfx["artifactsFolder"]);
-    return exec(config.myget["exe"], [artifactsFolder, config.myget["apiKey"], config.myget["devUrl"]]);
+    return publish(artifactsFolder, config.myget["exe"], config.myget["apiKey"], config.myget["devUrl"]);
 });
 
 gulp.task("publish:myget-master", ["e2eTest"], () => {
@@ -164,7 +173,7 @@ gulp.task("publish:myget-master", ["e2eTest"], () => {
     }
 
     let artifactsFolder = path.join(__dirname, config.docfx["artifactsFolder"]);
-    return exec(config.myget["exe"], [artifactsFolder, config.myget["apiKey"], config.myget["masterUrl"]]);
+    return publish(artifactsFolder, config.myget["exe"], config.myget["apiKey"], config.myget["masterUrl"]);
 });
 
 gulp.task("dev", ["build", "e2eTest"]);
