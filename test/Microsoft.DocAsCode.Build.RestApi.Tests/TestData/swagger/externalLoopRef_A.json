@@ -44,7 +44,7 @@
         "provisioningErrors": {
           "type": "array",
           "items": {
-            "$ref": "externalLoopRef_B.json#/definitions/Provision%25ing%7CError"
+            "$ref": "externalLoopRef_B.JSON#/definitions/Provision%25ing%7CError"
           },
           "readOnly": true
         }
