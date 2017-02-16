@@ -18,7 +18,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private readonly IPostProcessorsHandler _innerHandler;
         private readonly IncrementalPostProcessorsContext _increContext;
-        private const string ExcludeType = "Resource"; // TODO: use FAL to copy the resources
 
         public PostProcessorsHandlerWithIncremental(IPostProcessorsHandler innerPostProcessorsHandler, IncrementalPostProcessorsContext increContext)
         {
@@ -53,19 +52,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 var increItems = RestoreIncrementalManifestItems(manifest);
                 var nonIncreItems = manifest.Files.Where(i => !i.IsIncremental).ToList();
-                if (increItems.Any(i => i.DocumentType.Equals(ExcludeType, StringComparison.OrdinalIgnoreCase)))
-                {
-                    throw new NotSupportedException($"Currently incremental post processing logic doesn't support type {ExcludeType}.");
-                }
-
                 PreHandle(manifest, postProcessors, outputFolder, increItems, nonIncreItems);
                 {
                     CheckNoIncrementalItems(manifest, "Before processing");
                     _innerHandler.Handle(postProcessors, manifest, outputFolder);
                     CheckNoIncrementalItems(manifest, "After processing");
                 }
-                TraceIntermediateInfo(outputFolder, increItems, nonIncreItems);
-                PostHandle(manifest, increItems);
+                PostHandle(manifest, increItems, outputFolder);
             }
         }
 
@@ -77,6 +70,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (_increContext.ShouldTraceIncrementalInfo)
                 {
+                    EnvironmentContext.FileAbstractLayerImpl =
+                        FileAbstractLayerBuilder.Default
+                        .ReadFromManifest(manifest, outputFolder)
+                        .WriteToManifest(manifest, outputFolder, _increContext.CurrentBaseDir)
+                        .Create();
+
                     var originalFileInfos = manifest.Files.Select(SourceFileInfo.FromManifestItem).ToImmutableList();
                     foreach (var postProcessor in postProcessors)
                     {
@@ -88,7 +87,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 if (_increContext.IsIncremental)
                 {
-                    CopyToOutput(increItems, outputFolder);
+                    CopyToCurrentCache(increItems);
 
                     // Copy none incremental items to post processors
                     manifest.Files = nonIncreItems.ToList();
@@ -109,7 +108,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void PostHandle(Manifest manifest, List<ManifestItem> increItems)
+        private void PostHandle(Manifest manifest, List<ManifestItem> increItems, string outputFolder)
         {
             using (new PerformanceScope("Post-handle in incremental post processing"))
             {
@@ -128,6 +127,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     Logger.UnregisterListener(_increContext.CurrentInfo.MessageInfo.GetListener());
 
+                    TraceIntermediateInfo(outputFolder, manifest);
+
                     // Update manifest items in current post processing info
                     _increContext.CurrentInfo.ManifestItems.AddRange(manifest.Files);
                 }
@@ -144,57 +145,24 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Trace intermediate info
 
-        private void TraceIntermediateInfo(string outputFolder, List<ManifestItem> increItems, List<ManifestItem> nonIncreItems)
+        private void TraceIntermediateInfo(string outputFolder, Manifest manifest)
         {
             if (_increContext.ShouldTraceIncrementalInfo)
             {
                 using (new PerformanceScope("Trace intermediate info in incremental post processing"))
                 {
-                    TraceIncremental(increItems);
-                    TraceNoneIncremental(outputFolder, nonIncreItems);
+                    foreach (var oi in from mi in manifest.Files
+                                       from oi in mi.OutputFiles.Values
+                                       select oi)
+                    {
+                        if (oi.LinkToPath != null &&
+                            oi.LinkToPath.StartsWith(_increContext.CurrentBaseDir))
+                        {
+                            var cachedFileName = oi.LinkToPath.Substring(_increContext.CurrentBaseDir.Length).TrimStart('\\', '/');
+                            _increContext.CurrentInfo.PostProcessOutputs[oi.RelativePath] = cachedFileName;
+                        }
+                    }
                 }
-            }
-        }
-
-        private void TraceIncremental(List<ManifestItem> increItems)
-        {
-            foreach (var outputRelPath in GetOutputRelativePaths(increItems))
-            {
-                string lastCachedRelPath;
-                if (_increContext.LastInfo == null)
-                {
-                    throw new BuildCacheException("Last incremental post processor info should not be null.");
-                }
-                if (!_increContext.LastInfo.PostProcessOutputs.TryGetValue(outputRelPath, out lastCachedRelPath))
-                {
-                    throw new BuildCacheException($"Last incremental post processor outputs should contain {outputRelPath}.");
-                }
-
-                IncrementalUtility.RetryIO(() =>
-                {
-                    var lastCachedFile = Path.Combine(_increContext.LastBaseDir, lastCachedRelPath);
-                    var currentCachedFileName = IncrementalUtility.GetRandomEntry(_increContext.CurrentBaseDir);
-
-                    // Copy last cached file to current cached file
-                    EnvironmentContext.FileAbstractLayer.Copy(lastCachedFile, Path.Combine(_increContext.CurrentBaseDir, currentCachedFileName));
-                    _increContext.CurrentInfo.PostProcessOutputs.Add(outputRelPath, currentCachedFileName);
-                });
-            }
-        }
-
-        private void TraceNoneIncremental(string outputFolder, List<ManifestItem> nonIncreItems)
-        {
-            foreach (var outputRelPath in GetOutputRelativePaths(nonIncreItems, ExcludeType))
-            {
-                IncrementalUtility.RetryIO(() =>
-                {
-                    var outputPath = Path.Combine(outputFolder, outputRelPath);
-                    var currentCachedFileName = IncrementalUtility.GetRandomEntry(_increContext.CurrentBaseDir);
-
-                    // Copy output to current cached file
-                    EnvironmentContext.FileAbstractLayer.Copy(outputPath, Path.Combine(_increContext.CurrentBaseDir, currentCachedFileName));
-                    _increContext.CurrentInfo.PostProcessOutputs.Add(outputRelPath, currentCachedFileName);
-                });
             }
         }
 
@@ -202,32 +170,28 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Private methods
 
-        private void CopyToOutput(List<ManifestItem> increItems, string outputFolder)
+        private void CopyToCurrentCache(List<ManifestItem> increItems)
         {
-            foreach (var outputRelPath in GetOutputRelativePaths(increItems))
+            foreach (var item in from mi in increItems
+                                 from oi in mi.OutputFiles.Values
+                                 where oi.LinkToPath != null
+                                 select oi)
             {
-                string lastCachedRelPath;
-                if (!_increContext.LastInfo.PostProcessOutputs.TryGetValue(outputRelPath, out lastCachedRelPath))
+                string cachedFileName;
+                if (!_increContext.LastInfo.PostProcessOutputs.TryGetValue(item.RelativePath, out cachedFileName))
                 {
-                    throw new BuildCacheException($"Last incremental post processor outputs should contain {outputRelPath}.");
+                    throw new BuildCacheException($"Last incremental post processor outputs should contain {item.RelativePath}.");
                 }
 
                 IncrementalUtility.RetryIO(() =>
                 {
                     // Copy last cached file to output
-                    var outputPath = Path.Combine(outputFolder, outputRelPath);
-                    var lastCachedFile = Path.Combine(_increContext.LastBaseDir, lastCachedRelPath);
-                    EnvironmentContext.FileAbstractLayer.Copy(lastCachedFile, outputPath);
+                    var currentCachedFile = Path.Combine(_increContext.CurrentBaseDir, cachedFileName);
+                    var lastCachedFile = Path.Combine(_increContext.LastBaseDir, cachedFileName);
+                    File.Copy(lastCachedFile, currentCachedFile, true);
+                    item.LinkToPath = currentCachedFile;
                 });
             }
-        }
-
-        private static IEnumerable<string> GetOutputRelativePaths(List<ManifestItem> items, string excludeType = null)
-        {
-            return from item in items
-                   where !item.DocumentType.Equals(excludeType, StringComparison.OrdinalIgnoreCase)
-                   from output in item.OutputFiles.Values
-                   select output.RelativePath;
         }
 
         private static void CheckNoIncrementalItems(Manifest manifest, string prependString)

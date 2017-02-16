@@ -59,14 +59,22 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentNullException(nameof(manifest));
             }
+            if (manifestFolder == null)
+            {
+                throw new ArgumentNullException(nameof(manifestFolder));
+            }
             return new FileAbstractLayerBuilder(new ManifestFileReader(manifest, manifestFolder), _writer);
         }
 
-        public FileAbstractLayerBuilder WriteToManifest(Manifest manifest, string manifestFolder, string outputFolder)
+        public FileAbstractLayerBuilder WriteToManifest(Manifest manifest, string manifestFolder, string outputFolder = null)
         {
             if (manifest == null)
             {
                 throw new ArgumentNullException(nameof(manifest));
+            }
+            if (manifestFolder == null)
+            {
+                throw new ArgumentNullException(nameof(manifestFolder));
             }
             return new FileAbstractLayerBuilder(_reader, new ManifestFileWriter(manifest, manifestFolder, outputFolder));
         }

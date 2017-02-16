@@ -38,7 +38,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     if (outputFile.Key.Equals(".html", StringComparison.OrdinalIgnoreCase))
                     {
                         htmlRelativePath = outputFile.Value.RelativePath;
-                        File.AppendAllText(Path.Combine(outputFolder, htmlRelativePath), AppendString);
+                        EnvironmentContext.FileAbstractLayer.WriteAllText(
+                            htmlRelativePath,
+                            EnvironmentContext.FileAbstractLayer.ReadAllText(htmlRelativePath) + AppendString);
                     }
                     else
                     {
@@ -50,12 +52,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 if (htmlRelativePath != null)
                 {
                     var targetRelativePath = Path.ChangeExtension(htmlRelativePath, AdditionalExtensionString);
-                    EnvironmentContext.FileAbstractLayer.Copy(Path.Combine(outputFolder, htmlRelativePath), Path.Combine(outputFolder, targetRelativePath));
                     file.OutputFiles.Add(AdditionalExtensionString,
                         new OutputFileInfo
                         {
                             RelativePath = targetRelativePath
                         });
+                    EnvironmentContext.FileAbstractLayer.Copy(htmlRelativePath, targetRelativePath);
                 }
             }
 

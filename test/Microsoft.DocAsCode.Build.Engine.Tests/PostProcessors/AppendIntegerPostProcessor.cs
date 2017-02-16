@@ -47,8 +47,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                                     where output.Key.Equals(".html", StringComparison.OrdinalIgnoreCase)
                                     select output.Value.RelativePath)
             {
-                var outputFile = Path.Combine(outputFolder, relPath);
-                File.AppendAllText(outputFile, AppendInteger);
+                EnvironmentContext.FileAbstractLayer.WriteAllText(
+                    relPath,
+                    EnvironmentContext.FileAbstractLayer.ReadAllText(relPath) + AppendInteger);
                 if (!htmlList.Contains(relPath))
                 {
                     htmlList.Add(relPath);
