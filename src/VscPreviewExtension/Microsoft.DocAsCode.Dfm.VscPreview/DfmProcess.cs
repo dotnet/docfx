@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Dfm.VscPreview
 {
     using System;
+    using System.Text;
 
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
@@ -13,7 +14,8 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
         static void Main(string[] args)
         {
             DfmJsonTokenTreeServiceProvider dfmJsonTokenTreeServiceProvider = new DfmJsonTokenTreeServiceProvider();
-            IMarkdownService dfmMarkdownService = dfmJsonTokenTreeServiceProvider.CreateMarkdownService(new MarkdownServiceParameters());
+            IMarkdownService dfmMarkdownService =
+                dfmJsonTokenTreeServiceProvider.CreateMarkdownService(new MarkdownServiceParameters());
             while (true)
             {
                 try
@@ -25,11 +27,13 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                         case "exit":
                             return;
                         case "docfxpreview":
-                            result = DocfxProcessor.DocfxProcess();
+                            string baseDir = Console.ReadLine();
+                            string relativePath = Console.ReadLine();
+                            result = DocfxProcessor.DocfxProcess(baseDir, relativePath, GetMarkdownContent());
                             SendWithEndCode(result);
                             break;
                         case "tokentreepreview":
-                            result = TokenTreeProcessor.TokenTreePreview(dfmMarkdownService);
+                            result = TokenTreeProcessor.TokenTreePreview(dfmMarkdownService, GetMarkdownContent());
                             SendWithEndCode(result);
                             break;
                         default:
@@ -49,6 +53,19 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             // Append with customized endCode
             Console.Write(result);
             Console.Write('\a');
+        }
+
+        private static string GetMarkdownContent()
+        {
+            // A simple protocol(get String According to the numOfRow and connect them)
+            string numStr = Console.ReadLine();
+            int numOfRow = Convert.ToInt32(numStr);
+            StringBuilder markdownContent = new StringBuilder();
+            for (int i = 0; i < numOfRow; i++)
+            {
+                markdownContent.AppendLine(Console.ReadLine());
+            }
+            return markdownContent.ToString();
         }
     }
 }

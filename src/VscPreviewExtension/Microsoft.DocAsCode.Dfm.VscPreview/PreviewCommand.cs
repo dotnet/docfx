@@ -10,9 +10,9 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
 
     public class PreviewCommand
     {
-        public static PreviewJsonConfig ParsePreviewCommand(string basedir)
+        public static PreviewJsonConfig ParsePreviewCommand(string baseDir)
         {
-            string configFilePath = Path.Combine(basedir, PreviewConstants.ConfigFile);
+            string configFilePath = Path.Combine(baseDir, PreviewConstants.ConfigFile);
             PreviewJsonConfig config = new PreviewJsonConfig();
             if (!string.IsNullOrEmpty(PreviewConstants.ConfigFile) && File.Exists(configFilePath))
             {

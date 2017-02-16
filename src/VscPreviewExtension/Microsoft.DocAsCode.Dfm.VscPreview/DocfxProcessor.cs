@@ -10,35 +10,15 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
 
-    public class DocfxProcessor : PreviewProcessor
+    public class DocfxProcessor
     {
-        public static string DocfxProcess()
+        public static string DocfxProcess(string baseDir, string relativePath, string markdownContent)
         {
-            string baseDir = Console.ReadLine();
-            string relativePath = Console.ReadLine();
-            string markdownContent = GetMarkdownContent();
-            var result = DocfxProcessCore(baseDir, relativePath, markdownContent.ToString());
+            PreviewJsonConfig config = PreviewCommand.ParsePreviewCommand(baseDir);
 
-            return result;
-        }
+            var markUpResult = DfmMarkup(baseDir, relativePath, markdownContent.ToString());
 
-        private static string DfmMarkup(string basedir, string filename, string markdownContent)
-        {
-            // TODO: different editor use different child process so there is no need to create dfm service each time
-            DfmServiceProvider dfmServiceProvider = new DfmServiceProvider();
-            IMarkdownService dfmService =
-                dfmServiceProvider.CreateMarkdownService(new MarkdownServiceParameters {BasePath = basedir});
-            return dfmService.Markup(markdownContent, filename).Html;
-        }
-
-        private static string DocfxProcessCore(string basedir, string relativePath, string markdownContent)
-        {
-            PreviewJsonConfig config = new PreviewJsonConfig();
-            config = PreviewCommand.ParsePreviewCommand(basedir);
-
-            var markUpResult = DfmMarkup(basedir, relativePath, markdownContent.ToString());
-
-            string originHtmlPath = FindOriginHtml(basedir, relativePath, config.OutputFolder);
+            string originHtmlPath = FindOriginHtml(baseDir, relativePath, config.OutputFolder);
 
             if (string.IsNullOrEmpty(originHtmlPath))
             {
@@ -58,7 +38,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                 dom.Select(item.Key).Each((i, e) =>
                 {
                     var path = e.GetAttribute(item.Value);
-                    e.SetAttribute(item.Value, GetAbusolutePath(originHtmlPath, path, config.Port));
+                    e.SetAttribute(item.Value, GetAbsolutePath(originHtmlPath, path));
                 });
             }
 
@@ -67,9 +47,18 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             return html;
         }
 
-        private static string FindOriginHtml(string basedir, string relativePath, string outPutFolder)
+        private static string DfmMarkup(string baseDir, string filename, string markdownContent)
         {
-            string originHtmlPath = Path.Combine(basedir, outPutFolder,
+            // TODO: different editor use different child process so there is no need to create dfm service each time
+            DfmServiceProvider dfmServiceProvider = new DfmServiceProvider();
+            IMarkdownService dfmService =
+                dfmServiceProvider.CreateMarkdownService(new MarkdownServiceParameters { BasePath = baseDir });
+            return dfmService.Markup(markdownContent, filename).Html;
+        }
+
+        private static string FindOriginHtml(string baseDir, string relativePath, string outPutFolder)
+        {
+            string originHtmlPath = Path.Combine(baseDir, outPutFolder,
                 Path.GetDirectoryName(relativePath), Path.GetFileNameWithoutExtension(relativePath) + ".html");
             if (!File.Exists(originHtmlPath))
             {
@@ -85,10 +74,10 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             // TODO: Docfx rebuild
         }
 
-        private static string GetAbusolutePath(string originHtmlPath, string elementRelativePath, string port)
+        private static string GetAbsolutePath(string originHtmlPath, string elementRelativePath)
         {
-            string rawAbusolutePath = new Uri(new Uri(PreviewConstants.PathPrefix + originHtmlPath), elementRelativePath).AbsoluteUri;
-            return rawAbusolutePath.Substring(PreviewConstants.PathPrefix.Length).Replace("/", "\\");
+            string rawAbsolutePath = new Uri(new Uri(PreviewConstants.PathPrefix + originHtmlPath), elementRelativePath).AbsoluteUri;
+            return rawAbsolutePath.Substring(PreviewConstants.PathPrefix.Length).Replace("/", "\\");
         }
     }
 }

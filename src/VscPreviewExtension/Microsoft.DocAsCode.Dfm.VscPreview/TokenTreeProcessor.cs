@@ -5,18 +5,11 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
 {
     using Microsoft.DocAsCode.Plugins;
 
-    public class TokenTreeProcessor : PreviewProcessor
+    public class TokenTreeProcessor
     {
-        public static string TokenTreePreview(IMarkdownService dfmMarkdownService)
+        public static string TokenTreePreview(IMarkdownService dfmMarkdownService, string rawMarkdownContent)
         {
-            string markdownContent = GetMarkdownContent();
-            var result = JsonMarkup(dfmMarkdownService, markdownContent.ToString());
-            return result;
-        }
-
-        private static string JsonMarkup(IMarkdownService dfmMarkdownService, string markdownContent)
-        {
-            return dfmMarkdownService.Markup(markdownContent, null).Html;
+            return dfmMarkdownService.Markup(rawMarkdownContent, null).Html;
         }
     }
 }
