@@ -61,7 +61,7 @@ function exec(command, args, workDir) {
 function publish(artifactsFolder, mygetCommand, mygetKey, mygetUrl) {
     let packages = glob.sync(artifactsFolder + "/**/!(*.symbols).nupkg");
     let promises = packages.map(p => {
-        return exec(mygetCommand, [p, mygetKey, mygetUrl]);
+        return exec(mygetCommand, ["push", p, mygetKey, "-Source", mygetUrl]);
     });
     return Promise.all(promises);
 }
