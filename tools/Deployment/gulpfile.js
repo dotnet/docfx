@@ -59,7 +59,7 @@ function exec(command, args, workDir) {
 
 gulp.task("build", ["clean"], () => {
     if (!config.docfx || !config.docfx["home"]) {
-        throw new Error("Can't find docfx home directory.");
+        throw new Error("Can't find docfx home directory in configuration.");
     }
 
     return exec("powershell", ["./build.ps1", "-prod"], config.docfx["home"]);
@@ -67,13 +67,13 @@ gulp.task("build", ["clean"], () => {
 
 gulp.task("clean", () => {
     if (!config.docfx["artifactsFolder"]) {
-        throw new Error("Can't find docfx artifacts folder.");
+        throw new Error("Can't find docfx artifacts folder in configuration.");
     }
 
     let artifactsFolder = path.join(__dirname, config.docfx["artifactsFolder"]);
 
     if (!config.docfx["targetFolder"]) {
-        throw new Error("Can't find docfx target folder.");
+        throw new Error("Can't find docfx target folder in configuration.");
     }
 
     let targetFolder = path.join(__dirname, config.docfx["targetFolder"]);
@@ -89,7 +89,7 @@ gulp.task("clean", () => {
 
 gulp.task("e2eTest:choco", () => {
     if (!config.firefox["version"]) {
-        throw new Error("Can't find firefox version.");
+        throw new Error("Can't find firefox version in configuration.");
     }
 
     return exec("choco", ["install", "firefox", "--version=" + config.firefox["version"], "-y"]);
@@ -97,11 +97,11 @@ gulp.task("e2eTest:choco", () => {
 
 gulp.task("e2eTest:buildSeed", ["build", "e2eTest:choco"], () => {
     if (!config.docfx["exe"]) {
-        throw new Error("Can't find docfx.exe.");
+        throw new Error("Can't find docfx.exe in configuration.");
     }
 
     if (!config.docfx["docfxSeedHome"]) {
-        throw new Error("Can't find docfx-seed.");
+        throw new Error("Can't find docfx-seed in configuration.");
     }
 
     return exec(path.join(__dirname, config.docfx["exe"]), ["docfx.json"], config.docfx["docfxSeedHome"]);
@@ -109,7 +109,7 @@ gulp.task("e2eTest:buildSeed", ["build", "e2eTest:choco"], () => {
 
 gulp.task("e2eTest:restore", ["e2eTest:buildSeed"], () => {
     if (!config.docfx["e2eTestsHome"]) {
-        throw new Error("Can't find E2ETest directory.");
+        throw new Error("Can't find E2ETest directory in configuration.");
     }
 
     return exec("dotnet", ["restore"], config.docfx["e2eTestsHome"]);
@@ -117,7 +117,7 @@ gulp.task("e2eTest:restore", ["e2eTest:buildSeed"], () => {
 
 gulp.task("e2eTest:test", ["e2eTest:restore"], () => {
     if (!config.docfx["e2eTestsHome"]) {
-        throw new Error("Can't find E2ETest directory.");
+        throw new Error("Can't find E2ETest directory in configuration.");
     }
 
     return exec("dotnet", ["test"], config.docfx["e2eTestsHome"]);
@@ -127,19 +127,19 @@ gulp.task("e2eTest", ["e2eTest:test"]);
 
 gulp.task("publish:myget-dev", ["e2eTest"], () => {
     if (!config.docfx["artifactsFolder"]) {
-        throw new Error("Can't find artifacts folder.");
+        throw new Error("Can't find artifacts folder in configuration.");
     }
 
     if (!config.myget["exe"]) {
-        throw new Error("Can't find nuget command.");
+        throw new Error("Can't find nuget command in configuration.");
     }
 
     if (!config.myget["apiKey"]) {
-        throw new Error("Can't find myget api key.");
+        throw new Error("Can't find myget api key in configuration.");
     }
 
     if (!config.myget["devUrl"]) {
-        throw new Error("Can't find myget url for docfx dev feed.");
+        throw new Error("Can't find myget url for docfx dev feed in configuration.");
     }
 
     let artifactsFolder = path.join(__dirname, config.docfx["artifactsFolder"]);
@@ -148,19 +148,19 @@ gulp.task("publish:myget-dev", ["e2eTest"], () => {
 
 gulp.task("publish:myget-master", ["e2eTest"], () => {
     if (!config.docfx["artifactsFolder"]) {
-        throw new Error("Can't find artifacts folder.");
+        throw new Error("Can't find artifacts folder in configuration.");
     }
 
     if (!config.myget["exe"]) {
-        throw new Error("Can't find nuget command.");
+        throw new Error("Can't find nuget command in configuration.");
     }
 
     if (!config.myget["apiKey"]) {
-        throw new Error("Can't find myget api key.");
+        throw new Error("Can't find myget api key in configuration.");
     }
 
     if (!config.myget["masterUrl"]) {
-        throw new Error("Can't find myget url for docfx master feed.");
+        throw new Error("Can't find myget url for docfx master feed in configuration.");
     }
 
     let artifactsFolder = path.join(__dirname, config.docfx["artifactsFolder"]);

@@ -9,8 +9,8 @@
   },
   "myget": {
     "exe": "C:/nuget.exe",
-    "urlDev": "https://www.myget.org/F/docfx-dev/api/v2/package",
-    "urlMaster": "https://www.myget.org/F/docfx/api/v2/package"
+    "devUrl": "https://www.myget.org/F/docfx-dev/api/v2/package",
+    "masterUrl": "https://www.myget.org/F/docfx/api/v2/package"
   },
   "firefox": {
     "version": "46.0.1"

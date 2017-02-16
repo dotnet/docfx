@@ -427,7 +427,7 @@ switch (branchValue.toLowerCase()) {
     promise = util.execPromiseFn("node", [path.join(__dirname, "node_modules/gulp/bin/gulp"), "dev"], __dirname)();
     promise
       .then(() => {
-        console.log("Finished successully.")
+        console.log("Finished successfully.")
       })
       .catch((err) => {
         console.error("Failed, " + err);
@@ -459,10 +459,10 @@ switch (branchValue.toLowerCase()) {
       updateGhPageStep,
       // step6: zip and upload release
       updateGithubReleaseStep,
-      // step7: upload to chocolatey.org
-      updateChocoReleaseStep,
       // step8: upload release to myget.org
-      uploadMasterMygetStep
+      uploadMasterMygetStep,
+      // step7: upload to chocolatey.org
+      updateChocoReleaseStep
     ]);
     break;
   default:
