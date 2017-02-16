@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             if (PathUtility.IsRelativePath(reference) && reference.Contains(JsonExtension))
             {
                 // For example "file.json"
-                if (reference.EndsWith(JsonExtension))
+                if (reference.EndsWith(JsonExtension, StringComparison.OrdinalIgnoreCase))
                 {
                     return new SwaggeraExternalFormattedReference
                     {

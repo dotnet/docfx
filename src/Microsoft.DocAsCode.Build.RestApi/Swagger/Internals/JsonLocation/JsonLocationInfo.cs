@@ -25,12 +25,13 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                 return false;
             }
 
-            return string.Equals(FilePath, other.FilePath) && string.Equals(JsonLocation, other.JsonLocation);
+            return FilePathComparer.OSPlatformSensitiveStringComparer.Equals(FilePath, other.FilePath)
+                && FilePathComparer.OSPlatformSensitiveStringComparer.Equals(JsonLocation, other.JsonLocation);
         }
 
         public override int GetHashCode()
         {
-            return new { SwaggerPath = FilePath, Location = JsonLocation }.GetHashCode();
+            return new { FilePath, JsonLocation }.GetHashCode();
         }
     }
 }
