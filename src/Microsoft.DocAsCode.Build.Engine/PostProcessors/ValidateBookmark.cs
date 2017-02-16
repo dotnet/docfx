@@ -4,35 +4,41 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Net;
     using System.Web;
 
     using HtmlAgilityPack;
 
+    using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    public class ValidateBookmark : HtmlDocumentHandler
+    public sealed class ValidateBookmark : HtmlDocumentHandler
     {
         private static readonly string XPathTemplate = "//*/@{0}";
         private static readonly HashSet<string> WhiteList = new HashSet<string> { "top" };
-        private Dictionary<string, HashSet<string>> _registeredBookmarks;
-        private Dictionary<string, List<LinkItem>> _linksWithBookmark;
-        private Dictionary<string, string> _fileMapping;
+        private OSPlatformSensitiveDictionary<HashSet<string>> _registeredBookmarks;
+        private OSPlatformSensitiveDictionary<string> _fileMapping;
+        private OSPlatformSensitiveDictionary<List<LinkItem>> _linksWithBookmark =
+            new OSPlatformSensitiveDictionary<List<LinkItem>>();
 
         #region IHtmlDocumentHandler members
 
-        public override Manifest PreHandle(Manifest manifest)
+        public override void LoadContext(HtmlPostProcessContext context)
         {
-            // to-do: if a.md -> a`.html, might always leave a.html in the _fileMapping.
-            _registeredBookmarks = Context != null ? Context.Bookmarks : new Dictionary<string, HashSet<string>>(FilePathComparer.OSPlatformSensitiveStringComparer);
-            _linksWithBookmark = new Dictionary<string, List<LinkItem>>(FilePathComparer.OSPlatformSensitiveStringComparer);
-            _fileMapping = Context != null ? Context.FileMapping : new Dictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
-            return manifest;
+            _registeredBookmarks =
+                Deserialize<OSPlatformSensitiveDictionary<HashSet<string>>>(
+                    context,
+                    nameof(_registeredBookmarks));
+            _fileMapping =
+                Deserialize<OSPlatformSensitiveDictionary<string>>(
+                    context,
+                    nameof(_fileMapping));
         }
 
-        public override void Handle(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
+        protected override void HandleCore(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
         {
             _fileMapping[outputFile] = inputFile;
 
@@ -58,7 +64,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             _registeredBookmarks[outputFile] = new HashSet<string>(anchors);
         }
 
-        public override Manifest PostHandle(Manifest manifest)
+        protected override Manifest PostHandleCore(Manifest manifest)
         {
             foreach (var pair in _linksWithBookmark)
             {
@@ -89,6 +95,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             return manifest;
         }
 
+        public override void SaveContext(HtmlPostProcessContext context)
+        {
+            context.Save(nameof(_registeredBookmarks), stream => Serialize(stream, _registeredBookmarks));
+            context.Save(nameof(_fileMapping), stream => Serialize(stream, _fileMapping));
+        }
+
         #endregion
 
         private static IEnumerable<string> GetNodeAttribute(HtmlDocument html, string attribute)
@@ -106,6 +118,28 @@ namespace Microsoft.DocAsCode.Build.Engine
         private static string TransformPath(string basePathFromRoot, RelativePath relativePath)
         {
             return ((RelativePath)basePathFromRoot + relativePath).RemoveWorkingFolder();
+        }
+
+        private static T Deserialize<T>(HtmlPostProcessContext context, string name)
+            where T : class, new()
+        {
+            return context.Load(
+                name,
+                stream =>
+                {
+                    using (var sr = new StreamReader(stream))
+                    {
+                        return JsonUtility.Deserialize<T>(sr);
+                    }
+                }) ?? new T();
+        }
+
+        private static void Serialize(Stream stream, object obj)
+        {
+            using (var sw = new StreamWriter(stream))
+            {
+                JsonUtility.Serialize(sw, obj);
+            }
         }
 
         private class LinkItem

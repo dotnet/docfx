@@ -9,8 +9,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public interface IHtmlDocumentHandler
     {
+        void LoadContext(HtmlPostProcessContext context);
         Manifest PreHandle(Manifest manifest);
         void Handle(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile);
         Manifest PostHandle(Manifest manifest);
+        void SaveContext(HtmlPostProcessContext context);
     }
 }

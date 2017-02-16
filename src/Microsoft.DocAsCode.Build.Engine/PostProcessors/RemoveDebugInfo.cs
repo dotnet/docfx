@@ -7,14 +7,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Plugins;
 
-    public class RemoveDebugInfo : HtmlDocumentHandler
+    public sealed class RemoveDebugInfo : HtmlDocumentHandler
     {
-        public override Manifest PreHandle(Manifest manifest)
-        {
-            return manifest;
-        }
-
-        public override void Handle(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
+        protected override void HandleCore(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
         {
             foreach (var node in document.DocumentNode.Descendants())
             {
@@ -39,11 +34,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     attr.Remove();
                 }
             }
-        }
-
-        public override Manifest PostHandle(Manifest manifest)
-        {
-            return manifest;
         }
     }
 }

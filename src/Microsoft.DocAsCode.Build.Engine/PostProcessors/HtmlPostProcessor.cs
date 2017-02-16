@@ -11,7 +11,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using HtmlAgilityPack;
 
-    using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
@@ -21,10 +20,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string GetIncrementalContextHash()
         {
-            return null;
+            return "v2";
         }
 
-        public List<HtmlDocumentHandler> Handlers { get; } = new List<HtmlDocumentHandler>();
+        public List<IHtmlDocumentHandler> Handlers { get; } = new List<IHtmlDocumentHandler>();
 
         public ImmutableDictionary<string, object> PrepareMetadata(ImmutableDictionary<string, object> metadata)
         {
@@ -41,11 +40,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(outputFolder));
             }
-            var context = HtmlPostProcessContext.Load(PostProcessorHost);
+            var context = new HtmlPostProcessContext(PostProcessorHost);
             foreach (var handler in Handlers)
             {
-                handler.SetContext(context);
-                manifest = handler.PreHandleWithScopeWrapper(manifest);
+                handler.LoadContext(context);
+                manifest = handler.PreHandle(manifest);
             }
             foreach (var tuple in from item in manifest.Files ?? Enumerable.Empty<ManifestItem>()
                                   from output in item.OutputFiles
@@ -76,7 +75,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 foreach (var handler in Handlers)
                 {
-                    handler.HandleWithScopeWrapper(document, tuple.Item, tuple.InputFile, tuple.OutputFile);
+                    handler.Handle(document, tuple.Item, tuple.InputFile, tuple.OutputFile);
                 }
                 using (var stream = EnvironmentContext.FileAbstractLayer.Create(tuple.OutputFile))
                 {
@@ -85,7 +84,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             foreach (var handler in Handlers)
             {
-                manifest = handler.PostHandleWithScopeWrapper(manifest);
+                manifest = handler.PostHandle(manifest);
+                handler.SaveContext(context);
             }
             context.Save();
             return manifest;
