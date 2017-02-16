@@ -31,6 +31,7 @@ export class MarkdownDocumentContentProvider extends ContentProvider {
                 "</html>"
             ].join("\n");
 
+            // TODO: return different value which depends on the result of DfmProcess
             // return head + body + tail;
             return body;
         });

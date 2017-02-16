@@ -10,14 +10,14 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
 
-    public class DocfxProcess : DocFxPreviewProcess
+    public class DocfxProcessor : PreviewProcessor
     {
-        public static string DocFxProcess()
+        public static string DocfxProcess()
         {
-            string basedir = Console.ReadLine();
+            string baseDir = Console.ReadLine();
             string relativePath = Console.ReadLine();
             string markdownContent = GetMarkdownContent();
-            var result = DocFxProcessCore(basedir, relativePath, markdownContent.ToString());
+            var result = DocfxProcessCore(baseDir, relativePath, markdownContent.ToString());
 
             return result;
         }
@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             return dfmService.Markup(markdownContent, filename).Html;
         }
 
-        private static string DocFxProcessCore(string basedir, string relativePath, string markdownContent)
+        private static string DocfxProcessCore(string basedir, string relativePath, string markdownContent)
         {
             PreviewJsonConfig config = new PreviewJsonConfig();
             config = PreviewCommand.ParsePreviewCommand(basedir);
@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             // Update markUp result
             dom.Select(config.MarkupResultLocation).Html(markUpResult);
 
-            foreach (var item in config.Reference)
+            foreach (var item in config.References)
             {
                 dom.Select(item.Key).Each((i, e) =>
                 {
@@ -73,22 +73,22 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                 Path.GetDirectoryName(relativePath), Path.GetFileNameWithoutExtension(relativePath) + ".html");
             if (!File.Exists(originHtmlPath))
             {
-                // Rerun DocFx
-                RunrunDocFx();
+                // Rerun Docfx
+                DocfxRebuild();
                 return string.Empty;
             }
             return originHtmlPath;
         }
 
-        private static void RunrunDocFx()
+        private static void DocfxRebuild()
         {
-            // TODO: Rerun DocFX
+            // TODO: Docfx rebuild
         }
 
-        private static string GetAbusolutePath(string originHtmlPath, string elementrelativePath, string port)
+        private static string GetAbusolutePath(string originHtmlPath, string elementRelativePath, string port)
         {
-            string rawAbusolutePath = new Uri(new Uri(@"file:///" + originHtmlPath), elementrelativePath).AbsoluteUri;
-            return rawAbusolutePath.Substring(8).Replace("/", "\\");
+            string rawAbusolutePath = new Uri(new Uri(PreviewConstants.PathPrefix + originHtmlPath), elementRelativePath).AbsoluteUri;
+            return rawAbusolutePath.Substring(PreviewConstants.PathPrefix.Length).Replace("/", "\\");
         }
     }
 }

@@ -7,7 +7,8 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
     {
         public const string ConfigFile = "preview.json";
         public const string OutPutFolder = "_site";
-        public const string MarkUpResultLocation = "article";
+        public const string MarkupResultLocation = "article";
         public const string Port = "8080";
+        public const string PathPrefix = @"file:///";
     }
 }

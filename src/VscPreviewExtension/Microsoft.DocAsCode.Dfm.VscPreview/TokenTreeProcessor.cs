@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
 {
     using Microsoft.DocAsCode.Plugins;
 
-    public class TokenTreeProcess : DocFxPreviewProcess
+    public class TokenTreeProcessor : PreviewProcessor
     {
         public static string TokenTreePreview(IMarkdownService dfmMarkdownService)
         {

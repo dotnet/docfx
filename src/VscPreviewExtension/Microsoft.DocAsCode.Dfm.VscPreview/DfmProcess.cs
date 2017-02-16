@@ -25,11 +25,11 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                         case "exit":
                             return;
                         case "docfxpreview":
-                            result = DocfxProcess.DocFxProcess();
+                            result = DocfxProcessor.DocfxProcess();
                             SendWithEndCode(result);
                             break;
                         case "tokentreepreview":
-                            result = TokenTreeProcess.TokenTreePreview(dfmMarkdownService);
+                            result = TokenTreeProcessor.TokenTreePreview(dfmMarkdownService);
                             SendWithEndCode(result);
                             break;
                         default:

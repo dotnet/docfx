@@ -15,36 +15,52 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             string configFilePath = Path.Combine(basedir, PreviewConstants.ConfigFile);
             PreviewJsonConfig config = new PreviewJsonConfig();
             if (!string.IsNullOrEmpty(PreviewConstants.ConfigFile) && File.Exists(configFilePath))
+            {
                 config = JsonUtility.Deserialize<PreviewJsonConfig>(configFilePath);
+            }
             return MergeDefaultConfig(config);
         }
 
         private static PreviewJsonConfig MergeDefaultConfig(PreviewJsonConfig config)
         {
             if (string.IsNullOrEmpty(config.MarkupResultLocation))
-                config.MarkupResultLocation = PreviewConstants.MarkUpResultLocation;
+            {
+                config.MarkupResultLocation = PreviewConstants.MarkupResultLocation;
+            }
 
             if (string.IsNullOrEmpty(config.Port))
+            {
                 config.Port = PreviewConstants.Port;
+            }
 
             if (string.IsNullOrEmpty(config.OutputFolder))
+            {
                 config.OutputFolder = PreviewConstants.OutPutFolder;
+            }
 
-            if (config.Reference == null)
-                config.Reference = new Dictionary<string, string>()
+            if (config.References == null)
+            {
+                config.References = new Dictionary<string, string>()
                 {
                     {"link", "href"},
                     {"script", "src"},
                     {"img", "src"}
                 };
+            }
             else
             {
-                if (!config.Reference.ContainsKey("link"))
-                    config.Reference["link"] = "href";
-                if (!config.Reference.ContainsKey("script"))
-                    config.Reference["script"] = "src";
-                if (!config.Reference.ContainsKey("img"))
-                    config.Reference["img"] = "src";
+                if (!config.References.ContainsKey("link"))
+                {
+                    config.References["link"] = "href";
+                }
+                if (!config.References.ContainsKey("script"))
+                {
+                    config.References["script"] = "src";
+                }
+                if (!config.References.ContainsKey("img"))
+                {
+                    config.References["img"] = "src";
+                }
             }
             return config;
         }

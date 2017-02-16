@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
     using System;
     using System.Text;
 
-    public class DocFxPreviewProcess
+    public class PreviewProcessor
     {
         protected static string GetMarkdownContent()
         {

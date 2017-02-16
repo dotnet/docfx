@@ -21,6 +21,6 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
         public string Port { get; set; }
 
         [JsonProperty("reference")]
-        public Dictionary<string, string> Reference { get; set; }
+        public Dictionary<string, string> References { get; set; }
     }
 }
