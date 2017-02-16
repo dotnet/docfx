@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
         /// </summary>
         /// <param name="reference"></param>
         /// <returns></returns>
-        public static SwaggerFormattedReferenceBase FormatReferenceFullPath(string reference)
+        public static SwaggerFormattedReference FormatReferenceFullPath(string reference)
         {
             if (reference == null)
             {
@@ -48,8 +48,9 @@ namespace Microsoft.DocAsCode.Build.RestApi
             if (reference.StartsWith("#/"))
             {
                 var result = ParseReferencePath(reference.Substring(2));
-                return new SwaggeraInternalFormattedReference
+                return new SwaggerFormattedReference
                 {
+                    Type = SwaggerFormattedReferenceType.InternalReference,
                     Path = "/" + result.Item1,
                     Name = result.Item2
                 };
@@ -58,8 +59,9 @@ namespace Microsoft.DocAsCode.Build.RestApi
             // Not decode for JSON String Representation
             if (reference.StartsWith("/"))
             {
-                return new SwaggeraInternalFormattedReference
+                return new SwaggerFormattedReference
                 {
+                    Type = SwaggerFormattedReferenceType.InternalReference,
                     Path = reference,
                     Name = reference.Split('/').Last()
                 };
@@ -69,10 +71,11 @@ namespace Microsoft.DocAsCode.Build.RestApi
             if (PathUtility.IsRelativePath(reference) && reference.Contains(JsonExtension))
             {
                 // For example "file.json"
-                if (reference.EndsWith(JsonExtension, StringComparison.OrdinalIgnoreCase))
+                if (reference.EndsWith(JsonExtension))
                 {
-                    return new SwaggeraExternalFormattedReference
+                    return new SwaggerFormattedReference
                     {
+                        Type = SwaggerFormattedReferenceType.ExternalReference,
                         ExternalFilePath = reference,
                         Name = Path.GetFileNameWithoutExtension(reference)
                     };
@@ -88,8 +91,9 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     }
                     var externalFilePath = ParseReferencePath(values[0]).Item1;
                     var parsedReferencePath = ParseReferencePath(values[1].Substring(1));
-                    return new SwaggeraExternalEmbeddedFormattedReference
+                    return new SwaggerFormattedReference
                     {
+                        Type = SwaggerFormattedReferenceType.ExternalEmbeddedReference,
                         ExternalFilePath = externalFilePath,
                         Path = "/" + parsedReferencePath.Item1,
                         Name = parsedReferencePath.Item2

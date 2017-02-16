@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 {
+    using System;
+
     using Microsoft.DocAsCode.Common;
 
     internal class JsonLocationInfo
@@ -26,12 +28,15 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             }
 
             return FilePathComparer.OSPlatformSensitiveStringComparer.Equals(FilePath, other.FilePath)
-                && FilePathComparer.OSPlatformSensitiveStringComparer.Equals(JsonLocation, other.JsonLocation);
+                && string.Equals(JsonLocation, other.JsonLocation);
         }
 
         public override int GetHashCode()
         {
-            return new { FilePath, JsonLocation }.GetHashCode();
+            var result = 17;
+            result = result * 23 + FilePathComparer.OSPlatformSensitiveStringComparer.GetHashCode(FilePath);
+            result = result * 23 + JsonLocation.GetHashCode();
+            return result;
         }
     }
 }

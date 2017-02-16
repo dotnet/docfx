@@ -97,18 +97,17 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                         case SwaggerFormattedReferenceType.ExternalReference:
                             jObject.Remove("$ref");
 
-                            var externalRef = (SwaggeraExternalFormattedReference)swaggerReference;
-                            var externalJObject = LoadExternalReference(Path.Combine(GetDirectory(swaggerPath), externalRef.ExternalFilePath));
+                            var externalJObject = LoadExternalReference(Path.Combine(GetDirectory(swaggerPath), swaggerReference.ExternalFilePath));
                             RestApiHelper.CheckSpecificKey(externalJObject, ReferenceKey, () =>
                             {
-                                throw new DocfxException($"{ReferenceKey} in {externalRef.ExternalFilePath} is not supported in external reference currently.");
+                                throw new DocfxException($"{ReferenceKey} in {swaggerReference.ExternalFilePath} is not supported in external reference currently.");
                             });
                             foreach (var item in externalJObject)
                             {
                                 JToken value;
                                 if (jObject.TryGetValue(item.Key, out value))
                                 {
-                                    Logger.LogWarning($"{item.Key} inside {jObject.Path} would be overwritten by the value of same key inside {externalRef.ExternalFilePath} with path {externalJObject.Path}.");
+                                    Logger.LogWarning($"{item.Key} inside {jObject.Path} would be overwritten by the value of same key inside {swaggerReference.ExternalFilePath} with path {externalJObject.Path}.");
                                 }
                                 jObject[item.Key] = item.Value;
                             }
@@ -122,12 +121,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                             return resolved;
                         case SwaggerFormattedReferenceType.ExternalEmbeddedReference:
                             // Defer resolving external reference to resolve step, to prevent loop reference.
-                            var externalEmbeddedRef = (SwaggeraExternalFormattedReference)swaggerReference;
                             var externalDeferredObject = new SwaggerReferenceObject
                             {
-                                ExternalFilePath = Path.Combine(GetDirectory(swaggerPath), externalEmbeddedRef.ExternalFilePath),
-                                DeferredReference = externalEmbeddedRef.Path,
-                                ReferenceName = externalEmbeddedRef.Name,
+                                ExternalFilePath = Path.Combine(GetDirectory(swaggerPath), swaggerReference.ExternalFilePath),
+                                DeferredReference = swaggerReference.Path,
+                                ReferenceName = swaggerReference.Name,
                                 Location = location
                             };
                             jObject.Remove("$ref");

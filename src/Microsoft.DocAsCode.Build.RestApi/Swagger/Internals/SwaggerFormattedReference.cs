@@ -3,12 +3,21 @@
 
 namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 {
-    internal abstract class SwaggerFormattedReferenceBase
+    internal class SwaggerFormattedReference
     {
-        public abstract SwaggerFormattedReferenceType Type { get; }
+        public SwaggerFormattedReferenceType Type { get; set; }
+
+        public string ExternalFilePath { get; set; }
 
         public string Path { get; set; }
 
         public string Name { get; set; }
+    }
+
+    internal enum SwaggerFormattedReferenceType
+    {
+        InternalReference,
+        ExternalEmbeddedReference,
+        ExternalReference
     }
 }
