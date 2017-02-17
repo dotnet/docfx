@@ -29,13 +29,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             _documentObjectCache = new Dictionary<JsonLocationInfo, SwaggerObjectBase>();
         }
 
-        public SwaggerObjectBase Read(string swaggerPath, bool isExternal = false)
+        public SwaggerObjectBase Read(string swaggerPath)
         {
             var swagger = Load(swaggerPath);
-            if (!isExternal)
-            {
-                RemoveReferenceDefinitions((SwaggerObject)swagger);
-            }
+            RemoveReferenceDefinitions((SwaggerObject) swagger);
             return ResolveReferences(swagger, swaggerPath, new Stack<JsonLocationInfo>());
         }
 
@@ -237,7 +234,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
                             // Clone to avoid change the reference object in _documentObjectCache
                             refStack.Push(jsonLocationInfo);
-                            var resolved = ResolveReferences(referencedObjectBase.Clone(), jsonLocationInfo.FilePath, refStack); // TODO
+                            var resolved = ResolveReferences(referencedObjectBase.Clone(), jsonLocationInfo.FilePath, refStack);
                             var swaggerObject = ResolveSwaggerObject(resolved);
                             if (!swaggerObject.Dictionary.ContainsKey(InternalRefNameKey))
                             {

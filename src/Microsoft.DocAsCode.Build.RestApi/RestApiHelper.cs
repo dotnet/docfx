@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             }
 
             // External reference
-            if (PathUtility.IsRelativePath(reference) && reference.IndexOf(JsonExtension, StringComparison.OrdinalIgnoreCase) >= 0)
+            if (PathUtility.IsRelativePath(reference))
             {
                 // For example "file.json"
                 if (reference.EndsWith(JsonExtension, StringComparison.OrdinalIgnoreCase))
@@ -89,12 +89,17 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     {
                         throw new InvalidOperationException($"Reference path '{reference}' should contain only one '#' character.");
                     }
-                    var externalFilePath = ParseReferencePath(values[0]).Item1;
+                    var filePath = values[0];
+                    if (!filePath.EndsWith(JsonExtension, StringComparison.OrdinalIgnoreCase))
+                    {
+                        throw new InvalidOperationException($"External file path '{filePath}' should end with {JsonExtension}");
+                    }
+                    var parsedFilePath = ParseReferencePath(filePath).Item1;
                     var parsedReferencePath = ParseReferencePath(values[1].Substring(1));
                     return new SwaggerFormattedReference
                     {
                         Type = SwaggerFormattedReferenceType.ExternalEmbeddedReference,
-                        ExternalFilePath = externalFilePath,
+                        ExternalFilePath = parsedFilePath,
                         Path = "/" + parsedReferencePath.Item1,
                         Name = parsedReferencePath.Item2
                     };
