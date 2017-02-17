@@ -19,8 +19,10 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private static readonly string XPathTemplate = "//*/@{0}";
         private static readonly HashSet<string> WhiteList = new HashSet<string> { "top" };
-        private OSPlatformSensitiveDictionary<HashSet<string>> _registeredBookmarks;
-        private OSPlatformSensitiveDictionary<string> _fileMapping;
+        private OSPlatformSensitiveDictionary<HashSet<string>> _registeredBookmarks =
+            new OSPlatformSensitiveDictionary<HashSet<string>>();
+        private OSPlatformSensitiveDictionary<string> _fileMapping =
+            new OSPlatformSensitiveDictionary<string>();
         private OSPlatformSensitiveDictionary<List<LinkItem>> _linksWithBookmark =
             new OSPlatformSensitiveDictionary<List<LinkItem>>();
 
@@ -28,14 +30,37 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public override void LoadContext(HtmlPostProcessContext context)
         {
-            _registeredBookmarks =
-                Deserialize<OSPlatformSensitiveDictionary<HashSet<string>>>(
-                    context,
-                    nameof(_registeredBookmarks));
-            _fileMapping =
-                Deserialize<OSPlatformSensitiveDictionary<string>>(
-                    context,
-                    nameof(_fileMapping));
+            if (context.PostProcessorHost?.IsIncremental != true)
+            {
+                return;
+            }
+            var fileMapping = Deserialize<string>(context, nameof(_fileMapping));
+            if (fileMapping == null)
+            {
+                throw new BuildCacheException("File mappings are not found in html post processor.");
+            }
+            var registeredBookmarks = Deserialize<HashSet<string>>(context, nameof(_registeredBookmarks));
+            if (registeredBookmarks == null)
+            {
+                throw new BuildCacheException("Registered bookmarks are not found in html post processor.");
+            }
+            var set = new HashSet<string>(
+                from sfi in context.PostProcessorHost.SourceFileInfos
+                where sfi.IsIncremental
+                select sfi.SourceRelativePath,
+                FilePathComparer.OSPlatformSensitiveStringComparer);
+            foreach (var pair in from f in fileMapping
+                                 where set.Contains(f.Key)
+                                 select f)
+            {
+                _fileMapping[pair.Key] = pair.Value;
+            }
+            foreach (var pair in from b in registeredBookmarks
+                                 join f in _fileMapping on b.Key equals f.Value
+                                 select b)
+            {
+                _registeredBookmarks[pair.Key] = pair.Value;
+            }
         }
 
         protected override void HandleCore(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
@@ -120,8 +145,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             return ((RelativePath)basePathFromRoot + relativePath).RemoveWorkingFolder();
         }
 
-        private static T Deserialize<T>(HtmlPostProcessContext context, string name)
-            where T : class, new()
+        private static OSPlatformSensitiveDictionary<T> Deserialize<T>(HtmlPostProcessContext context, string name)
+            where T : class
         {
             return context.Load(
                 name,
@@ -129,9 +154,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     using (var sr = new StreamReader(stream))
                     {
-                        return JsonUtility.Deserialize<T>(sr);
+                        return JsonUtility.Deserialize<OSPlatformSensitiveDictionary<T>>(sr);
                     }
-                }) ?? new T();
+                });
         }
 
         private static void Serialize(Stream stream, object obj)
