@@ -49,17 +49,19 @@ namespace Microsoft.DocAsCode.Build.Engine
                 where sfi.IsIncremental
                 select sfi.SourceRelativePath,
                 FilePathComparer.OSPlatformSensitiveStringComparer);
-            foreach (var pair in from f in fileMapping
-                                 where set.Contains(f.Key)
-                                 select f)
+            foreach (var pair in fileMapping)
             {
-                _fileMapping[pair.Key] = pair.Value;
+                if (set.Contains(pair.Value))
+                {
+                    _fileMapping[pair.Key] = pair.Value;
+                }
             }
-            foreach (var pair in from b in registeredBookmarks
-                                 join f in _fileMapping on b.Key equals f.Value
-                                 select b)
+            foreach (var pair in registeredBookmarks)
             {
-                _registeredBookmarks[pair.Key] = pair.Value;
+                if (set.Contains(fileMapping[pair.Key]))
+                {
+                    _registeredBookmarks[pair.Key] = pair.Value;
+                }
             }
         }
 
