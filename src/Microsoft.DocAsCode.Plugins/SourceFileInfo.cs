@@ -5,16 +5,19 @@ namespace Microsoft.DocAsCode.Plugins
 {
     public class SourceFileInfo
     {
-        public string DocumentType { get; set; }
+        public string DocumentType { get; private set; }
 
-        public string SourceRelativePath { get; set; }
+        public string SourceRelativePath { get; private set; }
+
+        public bool IsIncremental { get; private set; }
 
         public static SourceFileInfo FromManifestItem(ManifestItem manifestItem)
         {
             return new SourceFileInfo
             {
                 DocumentType = manifestItem.DocumentType,
-                SourceRelativePath = manifestItem.SourceRelativePath
+                SourceRelativePath = manifestItem.SourceRelativePath,
+                IsIncremental = manifestItem.IsIncremental,
             };
         }
     }

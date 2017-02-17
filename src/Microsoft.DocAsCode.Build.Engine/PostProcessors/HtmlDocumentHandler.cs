@@ -11,39 +11,41 @@ namespace Microsoft.DocAsCode.Build.Engine
     public abstract class HtmlDocumentHandler : IHtmlDocumentHandler
     {
         public HtmlPostProcessContext Context { get; private set; }
-        public abstract void Handle(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile);
-        public abstract Manifest PostHandle(Manifest manifest);
-        public abstract Manifest PreHandle(Manifest manifest);
+        public virtual void LoadContext(HtmlPostProcessContext context) { }
+        protected abstract void HandleCore(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile);
+        protected virtual Manifest PostHandleCore(Manifest manifest) => manifest;
+        protected virtual Manifest PreHandleCore(Manifest manifest) => manifest;
+        public virtual void SaveContext(HtmlPostProcessContext context) { }
 
         public void SetContext(HtmlPostProcessContext context)
         {
             Context = context;
         }
 
-        public void HandleWithScopeWrapper(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
+        public void Handle(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
         {
-            string phase = this.GetType().Name;
+            string phase = GetType().Name;
             using (new LoggerPhaseScope(phase))
             {
-                Handle(document, manifestItem, inputFile, outputFile);
+                HandleCore(document, manifestItem, inputFile, outputFile);
             }
         }
 
-        public Manifest PostHandleWithScopeWrapper(Manifest manifest)
+        public Manifest PostHandle(Manifest manifest)
         {
-            string phase = this.GetType().Name;
+            string phase = GetType().Name;
             using (new LoggerPhaseScope(phase))
             {
-                return PostHandle(manifest);
+                return PostHandleCore(manifest);
             }
         }
 
-        public Manifest PreHandleWithScopeWrapper(Manifest manifest)
+        public Manifest PreHandle(Manifest manifest)
         {
-            string phase = this.GetType().Name;
+            string phase = GetType().Name;
             using (new LoggerPhaseScope(phase))
             {
-                return PreHandle(manifest);
+                return PreHandleCore(manifest);
             }
         }
     }

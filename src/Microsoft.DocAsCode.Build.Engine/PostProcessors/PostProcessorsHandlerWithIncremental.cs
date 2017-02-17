@@ -83,6 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         var host = new IncrementalPostProcessorHost(_increContext, postProcessor.ContractName, originalFileInfos);
                         ((ISupportIncrementalPostProcessor)postProcessor.Processor).PostProcessorHost = host;
                     }
+
                     Logger.RegisterListener(_increContext.CurrentInfo.MessageInfo.GetListener());
                 }
 
@@ -105,6 +106,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                     nonIncreItems.AddRange(increItems);
                     increItems.Clear();
                     Logger.LogVerbose("Set all incremental flags to false, since cannot support incremental post processing.");
+                }
+
+                if (_increContext.ShouldTraceIncrementalInfo)
+                {
+                    var originalFileInfos = nonIncreItems.Concat(increItems).Select(SourceFileInfo.FromManifestItem).ToImmutableList();
+                    foreach (var postProcessor in postProcessors)
+                    {
+                        var host = new IncrementalPostProcessorHost(_increContext, postProcessor.ContractName, originalFileInfos);
+                        ((ISupportIncrementalPostProcessor)postProcessor.Processor).PostProcessorHost = host;
+                    }
                 }
             }
         }
