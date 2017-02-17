@@ -19,8 +19,14 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private static readonly string XPathTemplate = "//*/@{0}";
         private static readonly HashSet<string> WhiteList = new HashSet<string> { "top" };
+        /// <summary>
+        /// bookmarks mapping from output file -> bookmarks
+        /// </summary>
         private OSPlatformSensitiveDictionary<HashSet<string>> _registeredBookmarks =
             new OSPlatformSensitiveDictionary<HashSet<string>>();
+        /// <summary>
+        /// file mapping from output file -> src file
+        /// </summary>
         private OSPlatformSensitiveDictionary<string> _fileMapping =
             new OSPlatformSensitiveDictionary<string>();
         private OSPlatformSensitiveDictionary<List<LinkItem>> _linksWithBookmark =
