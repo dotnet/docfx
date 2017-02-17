@@ -94,7 +94,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                         case SwaggerFormattedReferenceType.ExternalReference:
                             jObject.Remove("$ref");
 
-                            var externalJObject = LoadExternalReference(Path.Combine(GetDirectory(swaggerPath), swaggerReference.ExternalFilePath));
+                            var externalJObject = LoadExternalReference(Path.Combine(Path.GetDirectoryName(swaggerPath), swaggerReference.ExternalFilePath));
                             RestApiHelper.CheckSpecificKey(externalJObject, ReferenceKey, () =>
                             {
                                 throw new DocfxException($"{ReferenceKey} in {swaggerReference.ExternalFilePath} is not supported in external reference currently.");
@@ -120,7 +120,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
                             // Defer resolving external reference to resolve step, to prevent loop reference.
                             var externalDeferredObject = new SwaggerReferenceObject
                             {
-                                ExternalFilePath = Path.Combine(GetDirectory(swaggerPath), swaggerReference.ExternalFilePath),
+                                ExternalFilePath = Path.Combine(Path.GetDirectoryName(swaggerPath), swaggerReference.ExternalFilePath),
                                 DeferredReference = swaggerReference.Path,
                                 ReferenceName = swaggerReference.Name,
                                 Location = location
@@ -285,17 +285,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             }
 
             throw new ArgumentException($"When resolving reference for {nameof(SwaggerReferenceObject)}, only support {nameof(SwaggerObject)} and {nameof(SwaggerReferenceObject)} as parameter.");
-        }
-
-        private static string GetDirectory(string path)
-        {
-            var directory = Path.GetDirectoryName(path);
-            if (string.IsNullOrEmpty(directory))
-            {
-                throw new DocfxException($"Directory of swagger file path {path} should not be null or empty.");
-            }
-
-            return directory;
         }
     }
 }
