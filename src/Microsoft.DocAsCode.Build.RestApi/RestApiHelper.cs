@@ -14,6 +14,8 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
     internal static class RestApiHelper
     {
+        private const string JsonExtension = ".json";
+
         /// <summary>
         /// Reverse to reference unescape described in http://tools.ietf.org/html/rfc6901#section-4
         /// </summary>
@@ -45,41 +47,66 @@ namespace Microsoft.DocAsCode.Build.RestApi
             // Decode for URI Fragment Identifier Representation
             if (reference.StartsWith("#/"))
             {
-                // Reuse relative path, to decode the values inside '/'.
-                var path = reference.Substring(2);
-                var decodedPath = ((RelativePath)path).UrlDecode();
+                var result = ParseReferencePath(reference.Substring(2));
                 return new SwaggerFormattedReference
                 {
                     Type = SwaggerFormattedReferenceType.InternalReference,
-                    Path = "/" + decodedPath,
-                    Name = decodedPath.FileName
-                };
-            }
-
-            // External reference json
-            if (reference.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
-            {
-                return new SwaggerFormattedReference
-                {
-                    Type = SwaggerFormattedReferenceType.ExternalReference,
-                    Path = reference,
-                    Name = Path.GetFileNameWithoutExtension(reference)
+                    Path = "/" + result.Item1,
+                    Name = result.Item2
                 };
             }
 
             // Not decode for JSON String Representation
             if (reference.StartsWith("/"))
             {
-                var fileName = reference.Split('/').Last();
                 return new SwaggerFormattedReference
                 {
                     Type = SwaggerFormattedReferenceType.InternalReference,
                     Path = reference,
-                    Name = fileName
+                    Name = reference.Split('/').Last()
                 };
             }
 
-            throw new InvalidOperationException($"Reference path \"{reference}\" is not supported now");
+            // External reference
+            if (PathUtility.IsRelativePath(reference))
+            {
+                // For example "file.json"
+                if (reference.EndsWith(JsonExtension, StringComparison.OrdinalIgnoreCase))
+                {
+                    return new SwaggerFormattedReference
+                    {
+                        Type = SwaggerFormattedReferenceType.ExternalReference,
+                        ExternalFilePath = reference,
+                        Name = Path.GetFileNameWithoutExtension(reference)
+                    };
+                }
+
+                // For example "file.json#/definitions/reference"
+                if (reference.Contains("#"))
+                {
+                    var values = reference.Split('#');
+                    if (values.Length != 2)
+                    {
+                        throw new InvalidOperationException($"Reference path '{reference}' should contain only one '#' character.");
+                    }
+                    var filePath = values[0];
+                    if (!filePath.EndsWith(JsonExtension, StringComparison.OrdinalIgnoreCase))
+                    {
+                        throw new InvalidOperationException($"External file path '{filePath}' should end with {JsonExtension}");
+                    }
+                    var parsedFilePath = ParseReferencePath(filePath).Item1;
+                    var parsedReferencePath = ParseReferencePath(values[1].Substring(1));
+                    return new SwaggerFormattedReference
+                    {
+                        Type = SwaggerFormattedReferenceType.ExternalEmbeddedReference,
+                        ExternalFilePath = parsedFilePath,
+                        Path = "/" + parsedReferencePath.Item1,
+                        Name = parsedReferencePath.Item2
+                    };
+                }
+            }
+
+            throw new InvalidOperationException($"Reference path \"{reference}\" is not supported now.");
         }
 
         public static void CheckSpecificKey(JToken jToken, string key, Action action)
@@ -105,6 +132,19 @@ namespace Microsoft.DocAsCode.Build.RestApi
                     CheckSpecificKey(pair.Value, key, action);
                 }
             }
+        }
+
+        private static Tuple<string, string> ParseReferencePath(string path)
+        {
+            if (!RelativePath.IsRelativePath(path))
+            {
+                throw new InvalidOperationException($"{path} should be relative path.");
+            }
+
+            // Reuse relative path, to decode the values inside '/'.
+            var decodedPath = ((RelativePath)path).UrlDecode();
+
+            return Tuple.Create(decodedPath.ToString(), decodedPath.FileName);
         }
     }
 }

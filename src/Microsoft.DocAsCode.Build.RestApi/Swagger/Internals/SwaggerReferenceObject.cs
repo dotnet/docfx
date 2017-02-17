@@ -13,6 +13,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
 
         public string ReferenceName { get; set; }
 
+        public string ExternalFilePath { get; set; }
+
         public JObject Token { get; set; }
 
         public SwaggerObject Reference { get; set; }

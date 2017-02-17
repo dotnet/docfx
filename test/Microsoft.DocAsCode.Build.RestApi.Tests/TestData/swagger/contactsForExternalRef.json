@@ -1,0 +1,81 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "ContactsForExternalRef",
+    "version": "1.0"
+  },
+  "host": "test.docfx.net",
+  "basePath": "/myorganization",
+  "schemes": [ "https" ],
+  "securityDefinitions": {
+    "auth": {
+      "type": "oauth2",
+      "authorizationUrl": "https://sample.com",
+      "flow": "implicit",
+      "description": "securityDefinitions *description*.",
+      "scopes": {
+        "user_impersonation": "impersonate your user account"
+      }
+    }
+  },
+  "paths": {
+    "/contacts/{object_id}/$links/manager": {
+      "put": {
+        "operationId": "update_contact_manager",
+        "description": "<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>",
+        "summary": "Update the contact's manager",
+        "parameters": [
+          {
+            "in": "path",
+            "description": "The object ID (GUID) of the target contact.",
+            "name": "object_id",
+            "required": true,
+            "type": "string",
+            "default": "31944231-fd52-4a7f-b32e-7902a01fddf9"
+          },
+          {
+            "in": "query",
+            "description": "The API version.",
+            "name": "api-version",
+            "required": true,
+            "type": "string",
+            "default": "1.6"
+          },
+          {
+            "in": "body",
+            "description": "The request body *contains* a single property that specifies the URL of the user or contact to add as manager.",
+            "name": "bodyparam",
+            "required": true,
+            "schema": {
+              "$ref": "./externalRefWithDefinition.json#/definitions/refContainerUrl"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content. Indicates **success**. No response body is returned.",
+            "examples": {
+              "application/json": "none"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "original **uri** description."
+    },
+    "containerUrl": {
+      "$ref": "#/definitions/url",
+      "description": "original fake description."
+    },
+    "copiedUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "copied **uri** description."
+    }
+  }
+}

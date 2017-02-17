@@ -7,6 +7,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
     {
         public SwaggerFormattedReferenceType Type { get; set; }
 
+        public string ExternalFilePath { get; set; }
+
         public string Path { get; set; }
 
         public string Name { get; set; }
@@ -15,6 +17,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
     internal enum SwaggerFormattedReferenceType
     {
         InternalReference,
+        ExternalEmbeddedReference,
         ExternalReference
     }
 }
