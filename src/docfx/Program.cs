@@ -69,7 +69,6 @@ namespace Microsoft.DocAsCode
             var context = new SubCommandRunningContext();
             try
             {
-                ThreadPool.SetMinThreads(4, 4);
                 using (new PerformanceScope("executing", LogLevel.Info))
                 {
                     command.Exec(context);
