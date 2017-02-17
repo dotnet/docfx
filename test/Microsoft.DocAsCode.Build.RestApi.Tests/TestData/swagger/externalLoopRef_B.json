@@ -1,0 +1,22 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "Contacts",
+    "version": "2.0.0"
+  },
+  "paths": {},
+  "host": "graph.windows.net",
+  "basePath": "/myorganization",
+  "definitions": {
+    "Provision%ing|Error": {
+      "properties": {
+        "errorDetail": {
+          "type": "array",
+          "items": {
+            "$ref": "externalLoopRef_A.json#/definitions/contact"
+          }
+        }
+      }
+    }
+  }
+}

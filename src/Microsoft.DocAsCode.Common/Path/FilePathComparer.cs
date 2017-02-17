@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Common
         {
             string path = obj.ToNormalizedFullPath();
 
-            return _stringComparer.GetHashCode(obj);
+            return _stringComparer.GetHashCode(path);
         }
 
         private static StringComparer GetStringComparer()
@@ -32,10 +32,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 return StringComparer.OrdinalIgnoreCase;
             }
-            else
-            {
-                return StringComparer.Ordinal;
-            }
+            return StringComparer.Ordinal;
         }
     }
 }

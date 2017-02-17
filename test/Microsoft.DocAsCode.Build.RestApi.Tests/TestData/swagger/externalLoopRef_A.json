@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Contacts",
-    "version": "1.0"
+    "version": "1.0.0"
   },
   "paths": {
     "/contacts": {
@@ -44,19 +44,9 @@
         "provisioningErrors": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/ProvisioningError"
+            "$ref": "externalLoopRef_B.JSON#/definitions/Provision%25ing%7CError"
           },
           "readOnly": true
-        }
-      }
-    },
-    "ProvisioningError": {
-      "properties": {
-        "errorDetail": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/contact"
-          }
         }
       }
     }
