@@ -253,7 +253,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 ThreadPool.GetMinThreads(out wt, out cpt);
                 if (wt < parameters.MaxParallelism)
                 {
-                    ThreadPool.SetMinThreads(Math.Max(parameters.MaxParallelism, wt), cpt);
+                    ThreadPool.SetMinThreads(parameters.MaxParallelism, cpt);
                 }
             }
             if (config.MarkdownEngineName != null)
