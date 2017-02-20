@@ -7,22 +7,45 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
     using System.IO;
 
     using Microsoft.DocAsCode.Common;
+    using Newtonsoft.Json;
 
     public class PreviewCommand
     {
         public static PreviewJsonConfig ParsePreviewCommand(string baseDir)
         {
             string configFilePath = Path.Combine(baseDir, PreviewConstants.ConfigFile);
-            PreviewJsonConfig config = new PreviewJsonConfig();
-            if (!string.IsNullOrEmpty(PreviewConstants.ConfigFile) && File.Exists(configFilePath))
+            PreviewJsonConfig config;
+            try
             {
-                config = JsonUtility.Deserialize<PreviewJsonConfig>(configFilePath);
+                if (File.Exists(configFilePath))
+                {
+                    config = JsonUtility.Deserialize<PreviewJsonConfig>(configFilePath);
+                }
+                else
+                {
+                    config = null;
+                }
+            }
+            catch (JsonException e)
+            {
+                // TODO: reply to extension with an error message
+                throw e;
             }
             return MergeDefaultConfig(config);
         }
 
         private static PreviewJsonConfig MergeDefaultConfig(PreviewJsonConfig config)
         {
+            if (config == null)
+            {
+                config = new PreviewJsonConfig();
+                config.MarkupResultLocation = PreviewConstants.MarkupResultLocation;
+                config.Port = PreviewConstants.Port;
+                config.OutputFolder = PreviewConstants.OutPutFolder;
+                config.References = new Dictionary<string, string>(PreviewConstants.References);
+                return config;
+            }
+
             if (string.IsNullOrEmpty(config.MarkupResultLocation))
             {
                 config.MarkupResultLocation = PreviewConstants.MarkupResultLocation;
@@ -40,26 +63,16 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
 
             if (config.References == null)
             {
-                config.References = new Dictionary<string, string>()
-                {
-                    {"link", "href"},
-                    {"script", "src"},
-                    {"img", "src"}
-                };
+                config.References = new Dictionary<string, string>(PreviewConstants.References);
             }
             else
             {
-                if (!config.References.ContainsKey("link"))
+                foreach (var reference in PreviewConstants.References)
                 {
-                    config.References["link"] = "href";
-                }
-                if (!config.References.ContainsKey("script"))
-                {
-                    config.References["script"] = "src";
-                }
-                if (!config.References.ContainsKey("img"))
-                {
-                    config.References["img"] = "src";
+                    if (!config.References.ContainsKey(reference.Key))
+                    {
+                        config.References[reference.Key] = reference.Value;
+                    }
                 }
             }
             return config;

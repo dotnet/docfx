@@ -35,6 +35,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                         case "tokentreepreview":
                             result = TokenTreeProcessor.TokenTreePreview(dfmMarkdownService, GetMarkdownContent());
                             SendWithEndCode(result);
+
                             break;
                         default:
                             SendWithEndCode("Undefined Command");

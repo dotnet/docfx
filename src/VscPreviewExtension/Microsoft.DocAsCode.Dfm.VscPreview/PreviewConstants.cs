@@ -3,12 +3,21 @@
 
 namespace Microsoft.DocAsCode.Dfm.VscPreview
 {
-    public class PreviewConstants
+    using System.Collections.Generic;
+
+    public static class PreviewConstants
     {
         public const string ConfigFile = "preview.json";
         public const string OutPutFolder = "_site";
         public const string MarkupResultLocation = "article";
         public const string Port = "8080";
         public const string PathPrefix = @"file:///";
+
+        public static readonly Dictionary<string, string> References = new Dictionary<string, string>()
+        {
+            {"link", "href"},
+            {"script", "src"},
+            {"img", "src"}
+        };
     }
 }

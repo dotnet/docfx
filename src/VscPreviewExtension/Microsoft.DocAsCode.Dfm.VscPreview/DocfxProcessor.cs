@@ -5,10 +5,11 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
 {
     using System;
     using System.IO;
-    using CsQuery;
 
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
+
+    using CsQuery;
 
     public class DocfxProcessor
     {
@@ -77,7 +78,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
         private static string GetAbsolutePath(string originHtmlPath, string elementRelativePath)
         {
             string rawAbsolutePath = new Uri(new Uri(PreviewConstants.PathPrefix + originHtmlPath), elementRelativePath).AbsoluteUri;
-            return rawAbsolutePath.Substring(PreviewConstants.PathPrefix.Length).Replace("/", "\\");
+            return rawAbsolutePath.Substring(PreviewConstants.PathPrefix.Length);
         }
     }
 }
