@@ -63,10 +63,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private readonly HashSet<DependencyItem> _dependencyItems;
         private readonly object _typeSync = new object();
+        private readonly object _referenceSync = new object();
         private readonly ReaderWriterLockSlim _itemsSync = new ReaderWriterLockSlim();
         private readonly OSPlatformSensitiveDictionary<HashSet<DependencyItem>> _indexOnFrom = new OSPlatformSensitiveDictionary<HashSet<DependencyItem>>();
         private readonly OSPlatformSensitiveDictionary<HashSet<DependencyItem>> _indexOnReportedBy = new OSPlatformSensitiveDictionary<HashSet<DependencyItem>>();
         private ImmutableDictionary<string, DependencyType> _types;
+        private readonly Dictionary<DependencyItemSourceInfo, string> _referenceItems;
+        private bool _isResolved = false;
 
         #endregion
 
@@ -145,6 +148,30 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
+        public void ReportReference(string file, IEnumerable<DependencyItemSourceInfo> references)
+        {
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+            if (references == null)
+            {
+                throw new ArgumentNullException(nameof(references));
+            }
+            lock (_referenceSync)
+            {
+                foreach (var r in references)
+                {
+                    _referenceItems[r] = file;
+                }
+            }
+        }
+
+        public void ResolveReference()
+        {
+            Write(() => ResolveReferenceNoLock());
+        }
+
         public bool HasDependencyReportedBy(string reportedBy)
         {
             return Read(() => HasDependencyReportedByNoLock(reportedBy));
@@ -155,9 +182,23 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return Read(() => HasDependencyFromNoLock(from));
         }
 
-        public IEnumerable<string> FromNodes => Read(() => _indexOnFrom.Keys);
+        public IEnumerable<string> FromNodes => Read(() =>
+        {
+            if (!_isResolved)
+            {
+                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+            }
+            return _indexOnFrom.Keys;
+        });
 
-        public IEnumerable<string> ReportedBys => Read(() => _indexOnReportedBy.Keys);
+        public IEnumerable<string> ReportedBys => Read(() =>
+        {
+            if (!_isResolved)
+            {
+                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+            }
+            return _indexOnReportedBy.Keys;
+        });
 
         public HashSet<DependencyItem> GetDependencyReportedBy(string reportedBy)
         {
@@ -230,14 +271,59 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (_dependencyItems.Add(dependency))
             {
-                CreateOrUpdate(_indexOnFrom, dependency.From, dependency);
-                CreateOrUpdate(_indexOnReportedBy, dependency.ReportedBy, dependency);
+                if (CanReadDependency(dependency))
+                {
+                    CreateOrUpdate(_indexOnFrom, dependency.From.Value, dependency);
+                    CreateOrUpdate(_indexOnReportedBy, dependency.ReportedBy.Value, dependency);
+                }
+                else
+                {
+                    _isResolved = false;
+                }
+
                 Logger.LogDiagnostic($"Dependency item is successfully reported: {JsonUtility.Serialize(dependency)}.");
             }
         }
 
+        private void ResolveReferenceNoLock()
+        {
+            lock (_referenceSync)
+            {
+                foreach (var item in _dependencyItems.Where(i => !CanReadDependency(i)))
+                {
+                    item.UpdateFrom(ResolveReferenceCoreNoLock(item.From));
+                    item.UpdateTo(ResolveReferenceCoreNoLock(item.To));
+                    item.UpdateReportedBy(ResolveReferenceCoreNoLock(item.ReportedBy));
+
+                    // update index
+                    CreateOrUpdate(_indexOnFrom, item.From.Value, item);
+                    CreateOrUpdate(_indexOnReportedBy, item.ReportedBy.Value, item);
+                }
+            }
+
+            _isResolved = true;
+        }
+
+        private DependencyItemSourceInfo ResolveReferenceCoreNoLock(DependencyItemSourceInfo source)
+        {
+            if (source.SourceType != DependencyItemSourceType.Reference)
+            {
+                return source;
+            }
+            string file;
+            if (!_referenceItems.TryGetValue(source, out file))
+            {
+                throw new InvalidDataException($"Failed to resolve reference: {JsonUtility.Serialize(source)}.");
+            }
+            return source.ChangeSourceType(DependencyItemSourceType.File).ChangeValue(file);
+        }
+
         private HashSet<DependencyItem> GetDependencyReportedByNoLock(string reportedBy)
         {
+            if (!_isResolved)
+            {
+                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+            }
             HashSet<DependencyItem> indice;
             if (!_indexOnReportedBy.TryGetValue(reportedBy, out indice))
             {
@@ -248,6 +334,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private HashSet<DependencyItem> GetDependencyFromNoLock(string from)
         {
+            if (!_isResolved)
+            {
+                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+            }
             HashSet<DependencyItem> indice;
             if (!_indexOnFrom.TryGetValue(from, out indice))
             {
@@ -265,7 +355,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             while (queue.Count > 0)
             {
                 var current = queue.Dequeue();
-                foreach (var item in GetDependencyFromNoLock(current.To))
+                foreach (var item in GetDependencyFromNoLock(current.To.Value))
                 {
                     if (_types[current.Type].CouldTransit(_types[item.Type]) && result.Add(item))
                     {
@@ -278,32 +368,57 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private HashSet<string> GetAllDependentNodesNoLock()
         {
+            if (!_isResolved)
+            {
+                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+            }
             return new HashSet<string>(from item in _dependencyItems
-                                       select item.To);
+                                       select item.To.Value);
         }
 
         private bool HasDependencyReportedByNoLock(string reportedBy)
         {
+            if (!_isResolved)
+            {
+                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+            }
             return _indexOnReportedBy.ContainsKey(reportedBy);
         }
 
         private bool HasDependencyFromNoLock(string from)
         {
+            if (!_isResolved)
+            {
+                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+            }
             return _indexOnFrom.ContainsKey(from);
         }
 
         private void SaveNoLock(TextWriter writer)
         {
+            if (!_isResolved)
+            {
+                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+            }
             JsonUtility.Serialize(writer, Tuple.Create(_dependencyItems, _types));
         }
 
         private void RebuildIndex()
         {
+            bool flag = true;
             foreach (var item in _dependencyItems)
             {
-                CreateOrUpdate(_indexOnFrom, item.From, item);
-                CreateOrUpdate(_indexOnReportedBy, item.ReportedBy, item);
+                if (CanReadDependency(item))
+                {
+                    CreateOrUpdate(_indexOnFrom, item.From.Value, item);
+                    CreateOrUpdate(_indexOnReportedBy, item.ReportedBy.Value, item);
+                }
+                else
+                {
+                    flag = false;
+                }
             }
+            _isResolved = flag;
         }
 
         private static void CreateOrUpdate(Dictionary<string, HashSet<DependencyItem>> index, string key, DependencyItem value)
@@ -315,6 +430,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 index[key] = items;
             }
             items.Add(value);
+        }
+
+        private bool CanReadDependency(DependencyItem dependency)
+        {
+            return dependency.From.SourceType == DependencyItemSourceType.File &&
+                dependency.To.SourceType == DependencyItemSourceType.File &&
+                dependency.ReportedBy.SourceType == DependencyItemSourceType.File;
         }
 
         private bool IsValidDependency(DependencyItem dependency)

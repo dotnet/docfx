@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs
 
         public static ExpandedDependencyItem ConvertFrom(DependencyItem item)
         {
-            return new ExpandedDependencyItem(item.From, item.To, item.Type);
+            return new ExpandedDependencyItem(item.From.Value, item.To.Value, item.Type);
         }
 
         public ExpandedDependencyItem ChangeFrom(string from)

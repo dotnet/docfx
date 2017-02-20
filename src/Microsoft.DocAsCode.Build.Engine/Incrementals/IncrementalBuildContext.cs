@@ -255,7 +255,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 foreach (var from in dg.FromNodes)
                 {
-                    if (dg.GetAllDependencyFrom(from).Any(d => isValid(d) && _changeDict.ContainsKey(d.To) && _changeDict[d.To] != ChangeKindWithDependency.None))
+                    if (dg.GetAllDependencyFrom(from).Any(d => isValid(d) && _changeDict.ContainsKey(d.To.Value) && _changeDict[d.To.Value] != ChangeKindWithDependency.None))
                     {
                         if (!_changeDict.ContainsKey(from))
                         {

@@ -5,33 +5,44 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System;
 
-    using Microsoft.DocAsCode.Common;
-
     using Newtonsoft.Json;
 
     public sealed class DependencyItem : IEquatable<DependencyItem>
     {
-        private static readonly StringComparer Comparer = FilePathComparer.OSPlatformSensitiveStringComparer;
-
         [JsonProperty("from")]
-        public string From { get; }
+        public DependencyItemSourceInfo From { get; private set; }
 
         [JsonProperty("to")]
-        public string To { get; }
+        public DependencyItemSourceInfo To { get; private set; }
 
         [JsonProperty("reportedBy")]
-        public string ReportedBy { get; }
+        public DependencyItemSourceInfo ReportedBy { get; private set; }
 
         [JsonProperty("type")]
         public string Type { get; }
 
         [JsonConstructor]
-        public DependencyItem(string from, string to, string reportedBy, string type)
+        public DependencyItem(DependencyItemSourceInfo from, DependencyItemSourceInfo to, DependencyItemSourceInfo reportedBy, string type)
         {
             From = from;
             To = to;
             ReportedBy = reportedBy;
             Type = type;
+        }
+
+        public void UpdateFrom(DependencyItemSourceInfo f)
+        {
+            From = f;
+        }
+
+        public void UpdateTo(DependencyItemSourceInfo t)
+        {
+            To = t;
+        }
+
+        public void UpdateReportedBy(DependencyItemSourceInfo r)
+        {
+            ReportedBy = r;
         }
 
         public bool Equals(DependencyItem dp)
@@ -44,9 +55,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return true;
             }
-            return Comparer.Equals(From, dp.From) &&
-                Comparer.Equals(To, dp.To) &&
-                Comparer.Equals(ReportedBy, dp.ReportedBy) &&
+            return From == dp.From &&
+                To == dp.To &&
+                ReportedBy == dp.ReportedBy &&
                 Type == dp.Type;
         }
 
@@ -62,7 +73,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public override int GetHashCode()
         {
-            return Comparer.GetHashCode(From) ^ (Comparer.GetHashCode(To) >> 1) ^ (Comparer.GetHashCode(ReportedBy) << 1) ^ (Type.GetHashCode() >> 2);
+            return From.GetHashCode() ^ (To.GetHashCode() >> 1) ^ (ReportedBy.GetHashCode() << 1) ^ (Type.GetHashCode() >> 2);
         }
     }
 }
