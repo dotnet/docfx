@@ -73,7 +73,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             UpdateManifest();
             UpdateFileMap(hostServices);
             UpdateXrefMap(hostServices);
-            SaveOutputs(hostServices);
             RelayBuildMessage(hostServices);
             Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
         }
@@ -186,63 +185,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                                                            let s = Context.GetXrefSpec(uid.Name)
                                                            where s != null
                                                            select s).ToList();
-                    }
-                }
-            }
-        }
-
-        private void SaveOutputs(IEnumerable<HostService> hostServices)
-        {
-            var outputDir = Context.BuildOutputFolder;
-            var lo = LastBuildVersionInfo?.BuildOutputs;
-            var outputItems = (from m in Context.ManifestItems
-                               from output in m.OutputFiles.Values
-                               select new
-                               {
-                                   Path = output.RelativePath,
-                                   SourcePath = m.SourceRelativePath,
-                               } into items
-                               group items by items.SourcePath).ToDictionary(g => g.Key, g => g.Select(p => p.Path).ToList(), FilePathComparer.OSPlatformSensitiveStringComparer);
-
-            foreach (var h in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
-            {
-                foreach (var pair in IncrementalContext.GetModelLoadInfo(h))
-                {
-                    List<string> items;
-                    if (!outputItems.TryGetValue(pair.Key, out items))
-                    {
-                        continue;
-                    }
-                    foreach (var path in items)
-                    {
-                        // path might be duplicate. for example, files with same name in different input folders are mapped to same output folder.
-                        if (CurrentBuildVersionInfo.BuildOutputs.ContainsKey(path))
-                        {
-                            continue;
-                        }
-                        string fileName = IncrementalUtility.GetRandomEntry(IncrementalContext.BaseDir);
-                        string fullPath = Path.Combine(outputDir, path);
-                        IncrementalUtility.RetryIO(() =>
-                        {
-                            if (pair.Value == null)
-                            {
-                                if (lo == null)
-                                {
-                                    throw new BuildCacheException($"Full build hasn't loaded build outputs.");
-                                }
-                                string lfn;
-                                if (!lo.TryGetValue(path, out lfn))
-                                {
-                                    throw new BuildCacheException($"Last build hasn't loaded output: {path}.");
-                                }
-
-                                Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-                                File.Copy(Path.Combine(IncrementalContext.LastBaseDir, lfn), fullPath, true);
-                            }
-
-                            File.Copy(fullPath, Path.Combine(IncrementalContext.BaseDir, fileName));
-                            CurrentBuildVersionInfo.BuildOutputs[path] = fileName;
-                        });
                     }
                 }
             }

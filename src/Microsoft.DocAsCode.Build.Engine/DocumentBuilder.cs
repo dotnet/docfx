@@ -122,11 +122,22 @@ namespace Microsoft.DocAsCode.Build.Engine
                         Logger.LogWarning($"Custom href generator({parameter.CustomLinkResolver}) is not found.");
                     }
                 }
-                EnvironmentContext.FileAbstractLayerImpl =
-                    FileAbstractLayerBuilder.Default
-                    .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                    .WriteToRealFileSystem(parameter.OutputBaseDir)
-                    .Create();
+                if (_intermediateFolder == null)
+                {
+                    EnvironmentContext.FileAbstractLayerImpl =
+                        FileAbstractLayerBuilder.Default
+                        .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
+                        .WriteToRealFileSystem(parameter.OutputBaseDir)
+                        .Create();
+                }
+                else
+                {
+                    EnvironmentContext.FileAbstractLayerImpl =
+                        FileAbstractLayerBuilder.Default
+                        .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
+                        .WriteToLink(_intermediateFolder)
+                        .Create();
+                }
                 if (parameter.Files.Count == 0)
                 {
                     Logger.LogWarning(string.IsNullOrEmpty(parameter.VersionName)

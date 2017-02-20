@@ -134,7 +134,8 @@ tagRules : [
 
             Init("IncrementalBuild.TestBasic");
             string outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestBasic");
-            string outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestBasic.Second");
+            string outputFolderSecond = Path.Combine(outputFolder, "IncrementalBuild.TestBasic.Second");
+            string outputFolderThird = Path.Combine(outputFolder, "IncrementalBuild.TestBasic.Third");
             try
             {
                 using (new LoggerPhaseScope("IncrementalBuild.TestBasic-first"))
@@ -160,7 +161,7 @@ tagRules : [
                     BuildDocument(
                         files,
                         inputFolder,
-                        outputFolderForIncremental,
+                        outputFolderSecond,
                         new Dictionary<string, object>
                         {
                             ["meta"] = "Hello world!",
@@ -171,7 +172,7 @@ tagRules : [
                 }
                 {
                     // check manifest
-                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    var manifestOutputPath = Path.Combine(outputFolderSecond, "manifest.json");
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(6, manifest.Files.Count);
@@ -189,14 +190,14 @@ tagRules : [
                 }
                 {
                     // check xrefmap
-                    var xrefMapOutputPath = Path.Combine(outputFolderForIncremental, "xrefmap.yml");
+                    var xrefMapOutputPath = Path.Combine(outputFolderSecond, "xrefmap.yml");
                     Assert.True(File.Exists(xrefMapOutputPath));
                     var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
                     Assert.Equal(70, xrefMap.References.Count);
                 }
                 {
                     // check conceptual.
-                    var conceptualOutputPath = Path.Combine(outputFolderForIncremental, Path.ChangeExtension(conceptualFile, ".html"));
+                    var conceptualOutputPath = Path.Combine(outputFolderSecond, Path.ChangeExtension(conceptualFile, ".html"));
                     Assert.True(File.Exists(conceptualOutputPath));
                     Assert.Equal(
                         string.Join(
@@ -227,17 +228,110 @@ tagRules : [
                 }
                 {
                     // check toc.
-                    Assert.True(File.Exists(Path.Combine(outputFolderForIncremental, Path.ChangeExtension(tocFile, ".html"))));
+                    Assert.True(File.Exists(Path.Combine(outputFolderSecond, Path.ChangeExtension(tocFile, ".html"))));
                 }
                 {
                     // check mref.
-                    Assert.True(File.Exists(Path.Combine(outputFolderForIncremental, Path.ChangeExtension("System.Console.csyml", ".html"))));
-                    Assert.True(File.Exists(Path.Combine(outputFolderForIncremental, Path.ChangeExtension("System.ConsoleColor.csyml", ".html"))));
+                    Assert.True(File.Exists(Path.Combine(outputFolderSecond, Path.ChangeExtension("System.Console.csyml", ".html"))));
+                    Assert.True(File.Exists(Path.Combine(outputFolderSecond, Path.ChangeExtension("System.ConsoleColor.csyml", ".html"))));
                 }
 
                 {
                     // check resource.
-                    Assert.True(File.Exists(Path.Combine(outputFolderForIncremental, resourceFile)));
+                    Assert.True(File.Exists(Path.Combine(outputFolderSecond, resourceFile)));
+                }
+                {
+                    // check logs.
+                    var logs = Listener.Items.Where(i => i.Phase.StartsWith("IncrementalBuild.TestBasic")).ToList();
+                    Assert.Equal(7, logs.Count);
+                }
+
+                ClearListener();
+
+                // no changes
+                using (new LoggerPhaseScope("IncrementalBuild.TestBasic-third"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderThird,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderThird, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(6, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    Assert.Equal(
+                        processorsStatus[nameof(ManagedReferenceDocumentProcessor)].Details,
+                        "Processor ManagedReferenceDocumentProcessor cannot suppport incremental build because the following steps don't implement ISupportIncrementalBuildStep interface: ApplyOverwriteDocumentForMref,BuildManagedReferenceDocument,FillReferenceInformation,ValidateManagedReferenceDocumentMetadata.");
+                }
+                {
+                    // check xrefmap
+                    var xrefMapOutputPath = Path.Combine(outputFolderThird, "xrefmap.yml");
+                    Assert.True(File.Exists(xrefMapOutputPath));
+                    var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
+                    Assert.Equal(70, xrefMap.References.Count);
+                }
+                {
+                    // check conceptual.
+                    var conceptualOutputPath = Path.Combine(outputFolderThird, Path.ChangeExtension(conceptualFile, ".html"));
+                    Assert.True(File.Exists(conceptualOutputPath));
+                    Assert.Equal(
+                        string.Join(
+                            "\n",
+                            "",
+                            "<p>Test XRef: <a class=\"xref\" href=\"test.html\">Hello World</a>",
+                            "Test link: <a href=\"test/test.html\">link text</a>",
+                            "Test link: <a href=\"../Microsoft.DocAsCode.Build.Engine.Tests.dll\">link text 2</a>",
+                            "Test link style xref: <a class=\"xref\" href=\"test/test.html\" title=\"title\">link text 3</a>",
+                            "Test link style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\" title=\"title\">link text 4</a>",
+                            "Test encoded link style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\" title=\"title\">link text 5</a>",
+                            "Test invalid link style xref with anchor: <a href=\"xref:invalid#anchor\" title=\"title\">link text 6</a>",
+                            "Test autolink style xref: <a class=\"xref\" href=\"test/test.html\">Hello World</a>",
+                            "Test autolink style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\">Hello World</a>",
+                            "Test encoded autolink style xref with anchor: <a class=\"xref\" href=\"test/test.html#anchor\">Hello World</a>",
+                            "Test invalid autolink style xref with anchor: &lt;xref:invalid#anchor&gt;",
+                            "Test short xref: <a class=\"xref\" href=\"test/test.html\">Hello World</a>",
+                            "Test xref with query string: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
+                            "Test invalid xref with query string: <span class=\"xref\">Foo&lt;T&gt;</span>",
+                            "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
+                            "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
+                            "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
+                            "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
+                            "<p>",
+                            "test</p>",
+                            ""),
+                        File.ReadAllText(conceptualOutputPath));
+                }
+                {
+                    // check toc.
+                    Assert.True(File.Exists(Path.Combine(outputFolderThird, Path.ChangeExtension(tocFile, ".html"))));
+                }
+                {
+                    // check mref.
+                    Assert.True(File.Exists(Path.Combine(outputFolderThird, Path.ChangeExtension("System.Console.csyml", ".html"))));
+                    Assert.True(File.Exists(Path.Combine(outputFolderThird, Path.ChangeExtension("System.ConsoleColor.csyml", ".html"))));
+                }
+
+                {
+                    // check resource.
+                    Assert.True(File.Exists(Path.Combine(outputFolderThird, resourceFile)));
                 }
                 {
                     // check logs.

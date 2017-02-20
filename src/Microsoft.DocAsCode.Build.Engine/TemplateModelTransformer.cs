@@ -64,12 +64,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (item.ResourceFile != null)
             {
                 // Resource file has already been processed in its plugin
-                manifestItem.OutputFiles.Add("resource", new OutputFileInfo
+                var ofi = new OutputFileInfo
                 {
                     RelativePath = item.ResourceFile,
-                    LinkToPath = null,
-                    Hash = null
-                });
+                    LinkToPath = GetLinkToPath(item.ResourceFile),
+                };
+                manifestItem.OutputFiles.Add("resource", ofi);
             }
 
             // 2. process model
@@ -157,6 +157,27 @@ namespace Microsoft.DocAsCode.Build.Engine
             return manifestItem;
         }
 
+        private string GetLinkToPath(string fileName)
+        {
+            if (EnvironmentContext.FileAbstractLayerImpl == null)
+            {
+                return null;
+            }
+            var pp = ((FileAbstractLayer)EnvironmentContext.FileAbstractLayerImpl).GetOutputPhysicalPath(fileName);
+            var expandPP = Path.GetFullPath(Environment.ExpandEnvironmentVariables(pp));
+            var outputPath = Path.GetFullPath(_context.BuildOutputFolder);
+            if (expandPP.Length > outputPath.Length &&
+                FilePathComparer.OSPlatformSensitiveStringComparer.Equals(outputPath, expandPP.Remove(outputPath.Length)) &&
+                (expandPP[outputPath.Length] == '\\' || expandPP[outputPath.Length] == '/'))
+            {
+                return null;
+            }
+            else
+            {
+                return pp;
+            }
+        }
+
         private IDictionary<string, object> AppendGlobalMetadata(IDictionary<string, object> model)
         {
             if (_globalVariables == null)
@@ -240,12 +261,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     sw.Write(result);
                 }
             }
-            manifestItem.OutputFiles.Add(extension, new OutputFileInfo
+            var ofi = new OutputFileInfo
             {
                 RelativePath = destFilePath,
-                LinkToPath = null,
+                LinkToPath = GetLinkToPath(destFilePath),
                 Hash = Convert.ToBase64String(hashTask.Result)
-            });
+            };
+            manifestItem.OutputFiles.Add(extension, ofi);
         }
 
         private void TransformHtml(IDocumentBuildContext context, string html, string sourceFilePath, string destFilePath, StreamWriter outputWriter)
