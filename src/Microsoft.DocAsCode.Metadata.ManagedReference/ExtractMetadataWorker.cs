@@ -18,6 +18,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DotNet.ProjectModel.Workspaces;
 
     public sealed class ExtractMetadataWorker : IDisposable
@@ -55,7 +56,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _rebuild = rebuild;
             _shouldSkipMarkup = input.ShouldSkipMarkup;
             _preserveRawInlineComments = input.PreserveRawInlineComments;
-            _filterConfigFile = StringExtension.ToNormalizedFullPath(input.FilterConfigFile);
+            if (input.FilterConfigFile != null)
+            {
+                _filterConfigFile = Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, input.FilterConfigFile)).Normalize();
+            }
             _useCompatibilityFileName = useCompatibilityFileName;
         }
 
