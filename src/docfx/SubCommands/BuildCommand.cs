@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 {
                     if (options.Content == null && options.Resource == null)
                     {
-                        throw new ArgumentException("Either provide config file or specify content files to start building documentation.");
+                        throw new OptionParserException("Either provide config file or specify content files to start building documentation.");
                     }
                     else
                     {
