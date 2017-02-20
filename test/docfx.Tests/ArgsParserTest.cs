@@ -119,7 +119,7 @@ namespace Microsoft.DocAsCode.Tests
 
             args = new string[] { "build" };
             controller = ArgsParser.Instance.Parse(args);
-            Assert.Throws<ArgumentException>(() => controller.Create());
+            Assert.Throws<OptionParserException>(() => controller.Create());
 
             args = new string[] { "build", "Assets/docfx.json_metadata_build/docfx.json", "-f", "-o", "output" };
             controller = ArgsParser.Instance.Parse(args);
