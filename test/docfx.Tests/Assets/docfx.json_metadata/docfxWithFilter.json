@@ -5,7 +5,7 @@
         {
           "files": [ "**/*.csproj" ],
           "exclude": [ "**/bin/**", "**/obj/**" ], // `exclude` is also relative to `cwd`
-          "cwd": "../src"
+          "src": "../src"
         }
       ],
       "dest": ".",
