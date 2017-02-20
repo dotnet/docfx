@@ -96,9 +96,9 @@ namespace Microsoft.DocAsCode.Common
 
         public void Dispose()
         {
+            _logQueue.CompleteAdding();
             _signal.WaitOne(TimeoutMilliseconds);
             _inner.Dispose();
-            _logQueue.CompleteAdding();
         }
 
         private void LoggingTask()
