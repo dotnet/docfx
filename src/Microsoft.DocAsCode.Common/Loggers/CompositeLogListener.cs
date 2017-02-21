@@ -69,7 +69,8 @@ namespace Microsoft.DocAsCode.Common
             lock (_sync)
             {
                 listener.Dispose();
-                _listeners.Remove(listener);
+                // prevent marshal listener.
+                _listeners.RemoveAll(l => listener.Equals(l));
             }
         }
 
