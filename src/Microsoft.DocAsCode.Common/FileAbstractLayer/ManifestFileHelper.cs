@@ -156,6 +156,40 @@ namespace Microsoft.DocAsCode.Common
             return item.OutputFiles.Remove(extension);
         }
 
+        public static void Modify(this Manifest manifest, Action<Manifest> action)
+        {
+            if (manifest == null)
+            {
+                throw new ArgumentNullException(nameof(manifest));
+            }
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            lock (manifest)
+            {
+                action(manifest);
+            }
+        }
+
+        public static T Modify<T>(this Manifest manifest, Func<Manifest, T> func)
+        {
+            if (manifest == null)
+            {
+                throw new ArgumentNullException(nameof(manifest));
+            }
+            if (func == null)
+            {
+                throw new ArgumentNullException(nameof(func));
+            }
+
+            lock (manifest)
+            {
+                return func(manifest);
+            }
+        }
+
         public static void Dereference(this Manifest manifest, string manifestFolder)
         {
             if (manifest == null)
