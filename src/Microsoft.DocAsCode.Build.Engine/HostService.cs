@@ -287,7 +287,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void ReportDependencyTo(FileModel currentFileModel, string to, string type)
         {
-            ReportDependencyTo(currentFileModel, to, "File", type);
+            ReportDependencyTo(currentFileModel, to, DependencyItemSourceType.File, type);
         }
 
         public void ReportDependencyTo(FileModel currentFileModel, string to, string toType, string type)
@@ -300,10 +300,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(to));
             }
-            DependencyItemSourceType toT;
-            if (toType == null || !Enum.TryParse<DependencyItemSourceType>(toType, out toT))
+            if (toType == null)
             {
-                throw new ArgumentException(nameof(toType));
+                throw new ArgumentNullException(nameof(toType));
             }
             if (type == null)
             {
@@ -316,16 +315,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             lock (DependencyGraph)
             {
                 string fromKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
-                string toKey = toT == DependencyItemSourceType.File ?
+                string toKey = toType == DependencyItemSourceType.File ?
                     IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)to)) :
                     to;
-                ReportDependencyCore(fromKey, new DependencyItemSourceInfo { SourceType = toT, Value = toKey }, fromKey, type);
+                ReportDependencyCore(fromKey, new DependencyItemSourceInfo { SourceType = toType, Value = toKey }, fromKey, type);
             }
         }
 
         public void ReportDependencyFrom(FileModel currentFileModel, string from, string type)
         {
-            ReportDependencyFrom(currentFileModel, from, "File", type);
+            ReportDependencyFrom(currentFileModel, from, DependencyItemSourceType.File, type);
         }
 
         public void ReportDependencyFrom(FileModel currentFileModel, string from, string fromType, string type)
@@ -338,10 +337,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(from));
             }
-            DependencyItemSourceType fromT;
-            if (fromType == null || !Enum.TryParse<DependencyItemSourceType>(fromType, out fromT))
+            if (fromType == null)
             {
-                throw new ArgumentException(nameof(fromType));
+                throw new ArgumentNullException(nameof(fromType));
             }
             if (type == null)
             {
@@ -353,11 +351,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             lock (DependencyGraph)
             {
-                string fromKey = fromT == DependencyItemSourceType.File ?
+                string fromKey = fromType == DependencyItemSourceType.File ?
                     IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)from)) :
                     from;
                 string toKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
-                ReportDependencyCore(new DependencyItemSourceInfo { SourceType = fromT, Value = fromKey }, toKey, toKey, type);
+                ReportDependencyCore(new DependencyItemSourceInfo { SourceType = fromType, Value = fromKey }, toKey, toKey, type);
             }
         }
 
@@ -371,10 +369,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(reference));
             }
-            DependencyItemSourceType rt;
-            if (referenceType == null || !Enum.TryParse<DependencyItemSourceType>(referenceType, out rt))
+            if (referenceType == null)
             {
-                throw new ArgumentException(nameof(referenceType));
+                throw new ArgumentNullException(nameof(referenceType));
             }
             if (DependencyGraph == null)
             {
@@ -383,7 +380,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             lock (DependencyGraph)
             {
                 string file = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
-                DependencyGraph.ReportReference(file, new[] { new DependencyItemSourceInfo { Value = reference, SourceType = rt } });
+                DependencyGraph.ReportReference(file, new[] { new DependencyItemSourceInfo { Value = reference, SourceType = referenceType } });
             }
         }
 

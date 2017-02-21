@@ -306,7 +306,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private DependencyItemSourceInfo ResolveReferenceCoreNoLock(DependencyItemSourceInfo source)
         {
-            if (source.SourceType != DependencyItemSourceType.Reference)
+            if (source.SourceType == DependencyItemSourceType.File)
             {
                 return source;
             }

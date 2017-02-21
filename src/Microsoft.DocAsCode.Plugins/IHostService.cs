@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Plugins
         /// </summary>
         /// <param name="currentFileModel">filemodel of 'from' node</param>
         /// <param name="to">'to' node's value</param>
-        /// <param name="toType">'to' node's type, it could be `File` or `Reference`</param>
+        /// <param name="toType">'to' node's type, it could be `file` or reference type</param>
         /// <param name="type">dependency type</param>
         void ReportDependencyTo(FileModel currentFileModel, string to, string toType, string type);
 
@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.Plugins
         /// </summary>
         /// <param name="currentFileModel">filemodel of 'to' node</param>
         /// <param name="from">'from' node's value</param>
-        /// <param name="fromType">'from' node's type, it could be `File` or `Reference`</param>
+        /// <param name="fromType">'from' node's type, it could be `file` or reference type</param>
         /// <param name="type">dependency type</param>
         void ReportDependencyFrom(FileModel currentFileModel, string from, string fromType, string type);
 
