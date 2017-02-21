@@ -4,9 +4,9 @@
 namespace Microsoft.DocAsCode.Build.Common
 {
     using System;
+    using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.Linq;
     using System.Reflection;
 
@@ -87,22 +87,33 @@ namespace Microsoft.DocAsCode.Build.Common
                     }
                     return marked;
                 }
-                else
+
+                var list = currentObj as IList;
+                if (list != null)
                 {
-                    throw new NotSupportedException($"Type {currentObj.GetType()} is NOT a supported type for {nameof(MarkdownContentAttribute)}");
+                    for (var i = 0; i < list.Count; i++)
+                    {
+                        var item = list[i] as string;
+                        if (item == null)
+                        {
+                            throw new NotSupportedException($"Type {list[i].GetType()} is NOT a supported type for {nameof(MarkdownContentAttribute)}");
+                        }
+                        list[i] = Markup(item, context);
+                    }
+                    return list;
                 }
+
+                throw new NotSupportedException($"Type {currentObj.GetType()} is NOT a supported type for {nameof(MarkdownContentAttribute)}");
             }
 
             protected override object HandleDictionaryType(object currentObj, HandleModelAttributesContext context)
             {
-                Func<object, object> handler = s => Handler.Handle(s, context);
                 HandleGenericItemsHelper.HandleIDictionary(currentObj, s => Handler.Handle(s, context));
                 return currentObj;
             }
 
             protected override object HandleIEnumerableType(object currentObj, HandleModelAttributesContext context)
             {
-                Func<object, object> handler = s => Handler.Handle(s, context);
                 HandleGenericItemsHelper.HandleIList(currentObj, s => Handler.Handle(s, context));
                 return currentObj;
             }
@@ -144,12 +155,12 @@ namespace Microsoft.DocAsCode.Build.Common
                 return false;
             }
 
-            private bool IsPlaceholderContent(string content)
+            private static bool IsPlaceholderContent(string content)
             {
                 return content != null && content.Trim() == ContentPlaceholder;
             }
 
-            private string MarkupCore(string content, HandleModelAttributesContext context)
+            private static string MarkupCore(string content, HandleModelAttributesContext context)
             {
                 var host = context.Host;
                 var mr = host.Markup(content, context.FileAndType);
