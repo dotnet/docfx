@@ -142,7 +142,6 @@ namespace Microsoft.DocAsCode.SubCommands
             yield return typeof(ResourceDocumentProcessor).Assembly;
             yield return typeof(RestApiDocumentProcessor).Assembly;
             yield return typeof(TocDocumentProcessor).Assembly;
-            yield return typeof(ExtractSearchIndex).Assembly;
 
             if (pluginDirectory == null || !Directory.Exists(pluginDirectory))
             {
