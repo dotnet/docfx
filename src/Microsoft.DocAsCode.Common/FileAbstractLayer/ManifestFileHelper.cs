@@ -38,10 +38,6 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentException("Value cannot be empty.", nameof(extension));
             }
-            if (!targetRelativePath.EndsWith(extension))
-            {
-                throw new ArgumentException("targetRelativePath has incorrect extension.", nameof(targetRelativePath));
-            }
 
             lock (manifest)
             {
@@ -78,10 +74,6 @@ namespace Microsoft.DocAsCode.Common
             if (targetRelativePath.Length == 0)
             {
                 throw new ArgumentException("Value cannot be empty.", nameof(extension));
-            }
-            if (!targetRelativePath.EndsWith(extension))
-            {
-                throw new ArgumentException("targetRelativePath has incorrect extension.", nameof(targetRelativePath));
             }
 
             lock (manifest)
