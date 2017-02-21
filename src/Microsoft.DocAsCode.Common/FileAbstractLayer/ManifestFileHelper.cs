@@ -60,6 +60,38 @@ namespace Microsoft.DocAsCode.Common
             return false;
         }
 
+        public static bool RemoveFile(this Manifest manifest, string sourceFilePath, string extension)
+        {
+            if (manifest == null)
+            {
+                throw new ArgumentNullException(nameof(manifest));
+            }
+            if (sourceFilePath == null)
+            {
+                throw new ArgumentNullException(nameof(sourceFilePath));
+            }
+            if (extension == null)
+            {
+                throw new ArgumentNullException(nameof(extension));
+            }
+            if (sourceFilePath.Length == 0)
+            {
+                throw new ArgumentException("Value cannot be empty.", nameof(sourceFilePath));
+            }
+
+            lock (manifest)
+            {
+                foreach (var f in manifest.Files)
+                {
+                    if (f.SourceRelativePath == sourceFilePath)
+                    {
+                        return f.OutputFiles.Remove(extension);
+                    }
+                }
+            }
+            return false;
+        }
+
         public static void Dereference(this Manifest manifest, string manifestFolder)
         {
             if (manifest == null)
