@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Build.Common
 {
     using System;
-    using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
@@ -88,17 +87,16 @@ namespace Microsoft.DocAsCode.Build.Common
                     return marked;
                 }
 
-                var list = currentObj as IList;
+                var list = currentObj as IList<string>;
                 if (list != null)
                 {
                     for (var i = 0; i < list.Count; i++)
                     {
-                        var item = list[i] as string;
-                        if (item == null)
+                        var item = list[i];
+                        if (item != null)
                         {
-                            throw new NotSupportedException($"Type {list[i].GetType()} is NOT a supported type for {nameof(MarkdownContentAttribute)}");
+                            list[i] = Markup(item, context);
                         }
-                        list[i] = Markup(item, context);
                     }
                     return list;
                 }
