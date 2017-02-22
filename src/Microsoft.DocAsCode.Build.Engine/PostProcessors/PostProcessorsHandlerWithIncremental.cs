@@ -135,6 +135,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                     // Update manifest items in current post processing info
                     _increContext.CurrentInfo.ManifestItems.AddRange(manifest.Files);
+                    _increContext.CurrentInfo.SaveManifest(_increContext.CurrentBaseDir);
                 }
 
                 if (manifest.IncrementalInfo == null)
