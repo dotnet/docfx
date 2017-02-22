@@ -583,15 +583,14 @@ $(function () {
             items: []
           };
           if (nextLevelSelector) {
-            var selector = '#' + id + "~" + nextLevelSelector;
+            var selector = '#' + cssEscape(id) + "~" + nextLevelSelector;
             var currentSelector = selector;
             if (prevSelector) currentSelector += ":not(" + prevSelector + ")";
             $(header[j]).siblings(currentSelector).each(function (index, e) {
               if (e.id) {
                 item.items.push({
                   name: htmlEncode($(e).text()), // innerText decodes text while innerHTML not
-                  href: "#" + e.id
-
+                  href: "#" + cssEscape(e.id)
                 })
               }
             })
@@ -621,6 +620,12 @@ $(function () {
         .replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>')
         .replace(/&amp;/g, '&');
+    }
+
+    function cssEscape(str) {
+      // see: http://stackoverflow.com/questions/2786538/need-to-escape-a-special-character-in-a-jquery-selector-string#answer-2837646
+      return String(str)
+        .replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "\\$&");
     }
   })();
 
