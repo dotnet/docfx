@@ -590,7 +590,7 @@ $(function () {
               if (e.id) {
                 item.items.push({
                   name: htmlEncode($(e).text()), // innerText decodes text while innerHTML not
-                  href: "#" + cssEscape(e.id)
+                  href: "#" + e.id
                 })
               }
             })
