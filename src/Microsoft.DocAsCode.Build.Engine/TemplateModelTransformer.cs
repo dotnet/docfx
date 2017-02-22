@@ -167,8 +167,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             var expandPP = Path.GetFullPath(Environment.ExpandEnvironmentVariables(pp));
             var outputPath = Path.GetFullPath(_context.BuildOutputFolder);
             if (expandPP.Length > outputPath.Length &&
-                FilePathComparer.OSPlatformSensitiveStringComparer.Equals(outputPath, expandPP.Remove(outputPath.Length)) &&
-                (expandPP[outputPath.Length] == '\\' || expandPP[outputPath.Length] == '/'))
+                (expandPP[outputPath.Length] == '\\' || expandPP[outputPath.Length] == '/') &&
+                FilePathComparer.OSPlatformSensitiveStringComparer.Equals(outputPath, expandPP.Remove(outputPath.Length)))
             {
                 return null;
             }
