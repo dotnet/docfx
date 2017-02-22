@@ -20,6 +20,8 @@ namespace Microsoft.DocAsCode.Common
             _listeners.AddRange(listeners);
         }
 
+        public int Count => _listeners.Count;
+
         public void AddListener(ILoggerListener listener)
         {
             if (listener == null)
