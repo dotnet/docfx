@@ -318,7 +318,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 string toKey = toType == DependencyItemSourceType.File ?
                     IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)to)) :
                     to;
-                ReportDependencyCore(fromKey, new DependencyItemSourceInfo { SourceType = toType, Value = toKey }, fromKey, type);
+                ReportDependencyCore(fromKey, new DependencyItemSourceInfo(toType, toKey), fromKey, type);
             }
         }
 
@@ -355,7 +355,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)from)) :
                     from;
                 string toKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
-                ReportDependencyCore(new DependencyItemSourceInfo { SourceType = fromType, Value = fromKey }, toKey, toKey, type);
+                ReportDependencyCore(new DependencyItemSourceInfo(fromType, fromKey), toKey, toKey, type);
             }
         }
 
@@ -380,7 +380,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             lock (DependencyGraph)
             {
                 string file = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
-                DependencyGraph.ReportReference(file, new[] { new DependencyItemSourceInfo { Value = reference, SourceType = referenceType } });
+                DependencyGraph.ReportReference(file, new[] { new DependencyItemSourceInfo(referenceType, reference) });
             }
         }
 

@@ -15,19 +15,26 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         private StringComparer ValueComparer => SourceType == DependencyItemSourceType.File ? FilePathComparer.OSPlatformSensitiveStringComparer : StringComparer.Ordinal;
 
         [JsonProperty("sourceType")]
-        public string SourceType { get; set; }
+        public string SourceType { get; }
 
         [JsonProperty("value")]
-        public string Value { get; set; }
+        public string Value { get; }
+
+        [JsonConstructor]
+        public DependencyItemSourceInfo(string sourceType, string value)
+        {
+            SourceType = sourceType;
+            Value = value;
+        }
 
         public DependencyItemSourceInfo ChangeSourceType(string type)
         {
-            return new DependencyItemSourceInfo { SourceType = type, Value = this.Value };
+            return new DependencyItemSourceInfo(type, this.Value);
         }
 
         public DependencyItemSourceInfo ChangeValue(string value)
         {
-            return new DependencyItemSourceInfo { SourceType = this.SourceType, Value = value };
+            return new DependencyItemSourceInfo(this.SourceType, value);
         }
 
         public bool Equals(DependencyItemSourceInfo other)
@@ -61,7 +68,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public static implicit operator DependencyItemSourceInfo(string info)
         {
-            return info == null ? null : new DependencyItemSourceInfo { Value = info, SourceType = DependencyItemSourceType.File };
+            return info == null ? null : new DependencyItemSourceInfo(DependencyItemSourceType.File, info);
         }
     }
 }

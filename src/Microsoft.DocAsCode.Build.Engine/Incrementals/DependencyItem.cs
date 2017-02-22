@@ -30,19 +30,19 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             Type = type;
         }
 
-        public void UpdateFrom(DependencyItemSourceInfo f)
+        public DependencyItem ChangeFrom(DependencyItemSourceInfo f)
         {
-            From = f;
+            return new DependencyItem(f, this.To, this.ReportedBy, this.Type);
         }
 
-        public void UpdateTo(DependencyItemSourceInfo t)
+        public DependencyItem ChangeTo(DependencyItemSourceInfo t)
         {
-            To = t;
+            return new DependencyItem(this.From, t, this.ReportedBy, this.Type);
         }
 
-        public void UpdateReportedBy(DependencyItemSourceInfo r)
+        public DependencyItem ChangeReportedBy(DependencyItemSourceInfo r)
         {
-            ReportedBy = r;
+            return new DependencyItem(this.From, this.To, r, this.Type);
         }
 
         public bool Equals(DependencyItem dp)

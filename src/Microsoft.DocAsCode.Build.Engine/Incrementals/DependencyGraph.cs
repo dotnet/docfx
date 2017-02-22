@@ -289,15 +289,17 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             lock (_referenceSync)
             {
-                foreach (var item in _dependencyItems.Where(i => !CanReadDependency(i)))
+                foreach (var item in _dependencyItems.Where(i => !CanReadDependency(i)).ToList())
                 {
-                    item.UpdateFrom(ResolveReferenceCoreNoLock(item.From));
-                    item.UpdateTo(ResolveReferenceCoreNoLock(item.To));
-                    item.UpdateReportedBy(ResolveReferenceCoreNoLock(item.ReportedBy));
+                    var updated = item.ChangeFrom(ResolveReferenceCoreNoLock(item.From))
+                        .ChangeTo(ResolveReferenceCoreNoLock(item.To))
+                        .ChangeReportedBy(ResolveReferenceCoreNoLock(item.ReportedBy));
+                    _dependencyItems.Remove(item);
+                    _dependencyItems.Add(updated);
 
                     // update index
-                    CreateOrUpdate(_indexOnFrom, item.From.Value, item);
-                    CreateOrUpdate(_indexOnReportedBy, item.ReportedBy.Value, item);
+                    CreateOrUpdate(_indexOnFrom, updated.From.Value, updated);
+                    CreateOrUpdate(_indexOnReportedBy, updated.ReportedBy.Value, updated);
                 }
             }
 
