@@ -257,6 +257,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [YamlMember(Alias = "example")]
         [JsonProperty("example")]
         [MergeOption(MergeOption.Replace)]
+        [MarkdownContent]
         public List<string> Examples { get; set; }
 
         [YamlMember(Alias = "syntax")]
