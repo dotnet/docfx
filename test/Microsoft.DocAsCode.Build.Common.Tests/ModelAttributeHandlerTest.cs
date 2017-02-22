@@ -239,15 +239,26 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
         }
 
         [Fact]
-        public void TestModelWithInvalidMarkdownContentAttributeShouldThrow()
+        public void TesteModelWithIListMarkdownContentAttributeShouldSucceed()
         {
-            var model = new InvalidMarkdownModel1
+            var model = new MarkdownModelWithIList
             {
-                Content = new List<string> { "Content" }
+                ListContent = new List<string> { "*list*" },
+                ArrayContent = new [] { "@xref", "*content" }
             };
-            Assert.Throws<NotSupportedException>(
-                () => Handle(model)
-                );
+
+            var context = GetDefaultContext();
+            context.EnableContentPlaceholder = true;
+            context.PlaceholderContent = "placeholder";
+            context = Handle(model, context);
+
+            Assert.Equal(1, context.LinkToUids.Count);
+            Assert.Equal(0, context.LinkToFiles.Count);
+            Assert.Equal(0, context.FileLinkSources.Count);
+            Assert.Equal(1, context.UidLinkSources.Count);
+            Assert.Equal("<p sourcefile=\"test\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><em>list</em></p>\n", model.ListContent[0]);
+            Assert.Equal("<p sourcefile=\"test\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><xref href=\"xref\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@xref\" sourcefile=\"test\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"></xref></p>\n", model.ArrayContent[0]);
+            Assert.Equal("placeholder", model.ArrayContent[1]);
         }
 
         #endregion
@@ -338,10 +349,13 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             public SortedList<string, object> Content5 { get; set; }
         }
 
-        public class InvalidMarkdownModel1
+        public class MarkdownModelWithIList
         {
             [MarkdownContent]
-            public List<string> Content { get; set; }
+            public List<string> ListContent { get; set; }
+
+            [MarkdownContent]
+            public string[] ArrayContent { get; set; }
         }
 
         public class SimpleModel
