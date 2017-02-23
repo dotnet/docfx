@@ -214,7 +214,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     if (item.Type == DependencyTypeName.Include)
                     {
-                        files.Add(((RelativePath)item.To).RemoveWorkingFolder());
+                        files.Add(((RelativePath)item.To.Value).RemoveWorkingFolder());
                     }
                 }
             }
