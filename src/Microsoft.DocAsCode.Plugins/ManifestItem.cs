@@ -18,6 +18,9 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("output")]
         public Dictionary<string, OutputFileInfo> OutputFiles { get; set; }
 
+        [JsonProperty("version")]
+        public string VersionName { get; set; }
+
         [JsonProperty("is_incremental")]
         public bool IsIncremental { get; set; }
 

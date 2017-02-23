@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode
 
     internal class GlobUtility
     {
-        public static FileMapping ExpandFileMapping(string baseDirectory, FileMapping fileMapping)
+        public static FileMapping ExpandFileMapping(string baseDirectory, FileMapping fileMapping, string outputBaseDirectory = null)
         {
             if (fileMapping == null)
             {
@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode
                 if (files.Length == 0)
                 {
                     var currentSrcFullPath = string.IsNullOrEmpty(src) ? Directory.GetCurrentDirectory() : Path.GetFullPath(src);
-                    Logger.LogInfo($"No files are found with glob pattern {StringExtension.ToDelimitedString(item.Files) ?? "<none>"}, excluding {StringExtension.ToDelimitedString(item.Exclude) ?? "<none>"}, under directory \"{currentSrcFullPath}\"");
+                    Logger.LogInfo($"No files are found with glob pattern {item.Files.ToDelimitedString() ?? "<none>"}, excluding {item.Exclude.ToDelimitedString() ?? "<none>"}, under directory \"{currentSrcFullPath}\"");
                     CheckPatterns(item.Files);
                 }
                 expandedFileMapping.Add(
@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode
                     {
                         SourceFolder = src,
                         Files = new FileItems(files),
-                        DestinationFolder = item.DestinationFolder
+                        DestinationFolder = Path.Combine(outputBaseDirectory ?? string.Empty, item.DestinationFolder ?? string.Empty)
                     });
             }
 
