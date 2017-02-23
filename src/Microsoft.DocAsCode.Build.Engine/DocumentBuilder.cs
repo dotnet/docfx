@@ -149,36 +149,51 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 manifests.Add(BuildCore(parameter, markdownServiceProvider));
             }
-            var generatedManifest = ManifestUtility.MergeManifest(manifests);
-            ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
 
-            EnvironmentContext.FileAbstractLayerImpl =
-                FileAbstractLayerBuilder.Default
-                .ReadFromManifest(generatedManifest, parameters[0].OutputBaseDir)
-                .WriteToManifest(generatedManifest, parameters[0].OutputBaseDir)
-                .Create();
-
-            _postProcessorsManager.Process(generatedManifest, outputDirectory);
-
-            generatedManifest.Dereference(parameters[0].OutputBaseDir);
-
-            // Save to manifest.json
-            EnvironmentContext.FileAbstractLayerImpl =
-                FileAbstractLayerBuilder.Default
-                .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
-                .WriteToRealFileSystem(parameters[0].OutputBaseDir)
-                .Create();
-            SaveManifest(generatedManifest);
-
-            EnvironmentContext.FileAbstractLayerImpl = null;
-
-            // overwrite intermediate cache files
-            if (_intermediateFolder != null && transformDocument)
+            using (new PerformanceScope("Postprocess"))
             {
-                _currentBuildInfo.Save(_intermediateFolder);
-                if (_lastBuildInfo != null)
+                var generatedManifest = ManifestUtility.MergeManifest(manifests);
+                ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
+
+                EnvironmentContext.FileAbstractLayerImpl =
+                    FileAbstractLayerBuilder.Default
+                    .ReadFromManifest(generatedManifest, parameters[0].OutputBaseDir)
+                    .WriteToManifest(generatedManifest, parameters[0].OutputBaseDir)
+                    .Create();
+                using (new PerformanceScope("Process"))
                 {
-                    Directory.Delete(Path.Combine(Environment.ExpandEnvironmentVariables(_intermediateFolder), _lastBuildInfo.DirectoryName), true);
+                    _postProcessorsManager.Process(generatedManifest, outputDirectory);
+                }
+                
+                using (new PerformanceScope("Dereference"))
+                {
+                    generatedManifest.Dereference(parameters[0].OutputBaseDir);
+                }
+
+                using (new PerformanceScope("SaveManifest"))
+                {
+                    // Save to manifest.json
+                    EnvironmentContext.FileAbstractLayerImpl =
+                        FileAbstractLayerBuilder.Default
+                        .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
+                        .WriteToRealFileSystem(parameters[0].OutputBaseDir)
+                        .Create();
+                    SaveManifest(generatedManifest);
+                }
+
+                using (new PerformanceScope("Cleanup"))
+                {
+                    EnvironmentContext.FileAbstractLayerImpl = null;
+
+                    // overwrite intermediate cache files
+                    if (_intermediateFolder != null && transformDocument)
+                    {
+                        _currentBuildInfo.Save(_intermediateFolder);
+                        if (_lastBuildInfo != null)
+                        {
+                            Directory.Delete(Path.Combine(Environment.ExpandEnvironmentVariables(_intermediateFolder), _lastBuildInfo.DirectoryName), true);
+                        }
+                    }
                 }
             }
         }
