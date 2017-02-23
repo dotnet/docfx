@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         private readonly OSPlatformSensitiveDictionary<HashSet<DependencyItem>> _indexOnFrom = new OSPlatformSensitiveDictionary<HashSet<DependencyItem>>();
         private readonly OSPlatformSensitiveDictionary<HashSet<DependencyItem>> _indexOnReportedBy = new OSPlatformSensitiveDictionary<HashSet<DependencyItem>>();
         private ImmutableDictionary<string, DependencyType> _types;
-        private readonly Dictionary<DependencyItemSourceInfo, string> _referenceItems;
+        private readonly Dictionary<DependencyItemSourceInfo, string> _referenceItems = new Dictionary<DependencyItemSourceInfo, string>();
         private bool _isResolved = false;
 
         #endregion
@@ -169,7 +169,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public void ResolveReference()
         {
-            Write(() => ResolveReferenceNoLock());
+            Write(() => ResolveReferenceCore());
         }
 
         public bool HasDependencyReportedBy(string reportedBy)
@@ -285,28 +285,47 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
-        private void ResolveReferenceNoLock()
+        private void ResolveReferenceCore()
         {
             lock (_referenceSync)
             {
                 foreach (var item in _dependencyItems.Where(i => !CanReadDependency(i)).ToList())
                 {
-                    var updated = item.ChangeFrom(ResolveReferenceCoreNoLock(item.From))
-                        .ChangeTo(ResolveReferenceCoreNoLock(item.To))
-                        .ChangeReportedBy(ResolveReferenceCoreNoLock(item.ReportedBy));
-                    _dependencyItems.Remove(item);
-                    _dependencyItems.Add(updated);
+                    var updated = item;
+                    var from = TryResolveReference(item.From);
+                    var to = TryResolveReference(item.To);
+                    var reportedBy = TryResolveReference(item.ReportedBy);
+                    if (from != null)
+                    {
+                        updated = updated.ChangeFrom(from);
+                    }
+                    if (to != null)
+                    {
+                        updated = updated.ChangeTo(to);
+                    }
+                    if (reportedBy != null)
+                    {
+                        updated = updated.ChangeReportedBy(reportedBy);
+                    }
+                    if (updated != item)
+                    {
+                        _dependencyItems.Remove(item);
+                        _dependencyItems.Add(updated);
+                    }
 
                     // update index
-                    CreateOrUpdate(_indexOnFrom, updated.From.Value, updated);
-                    CreateOrUpdate(_indexOnReportedBy, updated.ReportedBy.Value, updated);
+                    if (from != null && to != null && reportedBy != null)
+                    {
+                        CreateOrUpdate(_indexOnFrom, updated.From.Value, updated);
+                        CreateOrUpdate(_indexOnReportedBy, updated.ReportedBy.Value, updated);
+                    }
                 }
             }
 
             _isResolved = true;
         }
 
-        private DependencyItemSourceInfo ResolveReferenceCoreNoLock(DependencyItemSourceInfo source)
+        private DependencyItemSourceInfo TryResolveReference(DependencyItemSourceInfo source)
         {
             if (source.SourceType == DependencyItemSourceType.File)
             {
@@ -315,7 +334,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             string file;
             if (!_referenceItems.TryGetValue(source, out file))
             {
-                throw new InvalidDataException($"Failed to resolve reference: {JsonUtility.Serialize(source)}.");
+                Logger.LogInfo($"Dependency graph Failed to resolve reference: {JsonUtility.Serialize(source)}.");
+                return null;
             }
             return source.ChangeSourceType(DependencyItemSourceType.File).ChangeValue(file);
         }
@@ -407,7 +427,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private void RebuildIndex()
         {
-            bool flag = true;
             foreach (var item in _dependencyItems)
             {
                 if (CanReadDependency(item))
@@ -415,12 +434,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     CreateOrUpdate(_indexOnFrom, item.From.Value, item);
                     CreateOrUpdate(_indexOnReportedBy, item.ReportedBy.Value, item);
                 }
-                else
-                {
-                    flag = false;
-                }
             }
-            _isResolved = flag;
+            _isResolved = true;
         }
 
         private static void CreateOrUpdate(Dictionary<string, HashSet<DependencyItem>> index, string key, DependencyItem value)

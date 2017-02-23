@@ -6,5 +6,6 @@ namespace Microsoft.DocAsCode.Plugins
     public static class DependencyItemSourceType
     {
         public const string File = "file";
+        public const string Uid = "uid";
     }
 }
