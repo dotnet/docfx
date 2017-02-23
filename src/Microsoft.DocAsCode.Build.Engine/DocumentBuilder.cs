@@ -146,6 +146,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 manifests.Add(BuildCore(parameter, markdownServiceProvider));
             }
+
             EnvironmentContext.FileAbstractLayerImpl =
                 FileAbstractLayerBuilder.Default
                 .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
@@ -154,20 +155,34 @@ namespace Microsoft.DocAsCode.Build.Engine
             var generatedManifest = ManifestUtility.MergeManifest(manifests);
 
             ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
-            _postProcessorsManager.Process(generatedManifest, outputDirectory);
-
-            // Save to manifest.json
-            SaveManifest(generatedManifest);
-
-            EnvironmentContext.FileAbstractLayerImpl = null;
-
-            // overwrite intermediate cache files
-            if (_intermediateFolder != null && transformDocument)
+            using (new PerformanceScope("Process"))
             {
-                _currentBuildInfo.Save(_intermediateFolder);
-                if (_lastBuildInfo != null)
+                _postProcessorsManager.Process(generatedManifest, outputDirectory);
+            }
+
+            using (new PerformanceScope("SaveManifest"))
+            {
+                // Save to manifest.json
+                EnvironmentContext.FileAbstractLayerImpl =
+                    FileAbstractLayerBuilder.Default
+                    .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
+                    .WriteToRealFileSystem(parameters[0].OutputBaseDir)
+                    .Create();
+                SaveManifest(generatedManifest);
+            }
+
+            using (new PerformanceScope("Cleanup"))
+            {
+                EnvironmentContext.FileAbstractLayerImpl = null;
+
+                // overwrite intermediate cache files
+                if (_intermediateFolder != null && transformDocument)
                 {
-                    Directory.Delete(Path.Combine(_intermediateFolder, _lastBuildInfo.DirectoryName), true);
+                    _currentBuildInfo.Save(_intermediateFolder);
+                    if (_lastBuildInfo != null)
+                    {
+                        Directory.Delete(Path.Combine(Environment.ExpandEnvironmentVariables(_intermediateFolder), _lastBuildInfo.DirectoryName), true);
+                    }
                 }
             }
         }
