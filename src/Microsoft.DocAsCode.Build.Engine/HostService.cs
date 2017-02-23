@@ -524,13 +524,18 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
 
                         // use copy rather than move because if the build failed, the intermediate files of last successful build shouldn't be corrupted.
-                        File.Copy(Path.Combine(incrementalContext.LastBaseDir, lfn), Path.Combine(incrementalContext.BaseDir, fileName));
+                        File.Copy(
+                            Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.LastBaseDir), lfn),
+                            Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), fileName));
                     }
                     else
                     {
                         var key = RelativePath.NormalizedWorkingFolder + pair.Key;
                         var model = Models.Find(m => m.Key == key);
-                        using (var stream = File.Create(Path.Combine(incrementalContext.BaseDir, fileName)))
+                        using (var stream = File.Create(
+                            Path.Combine(
+                                Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir),
+                                fileName)))
                         {
                             processor.SaveIntermediateModel(model, stream);
                         }
@@ -553,7 +558,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new BuildCacheException($"Last build hasn't loaded model {fileName}");
             }
-            using (var stream = File.OpenRead(Path.Combine(incrementalContext.BaseDir, cfn)))
+            using (var stream = File.OpenRead(
+                Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), cfn)))
             {
                 return processor.LoadIntermediateModel(stream);
             }

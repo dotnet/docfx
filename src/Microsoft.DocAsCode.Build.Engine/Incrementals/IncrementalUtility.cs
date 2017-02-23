@@ -119,11 +119,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public static string GetRandomEntry(string baseDir)
         {
+            var dir = Environment.ExpandEnvironmentVariables(baseDir);
             string name;
             do
             {
                 name = Path.GetRandomFileName();
-            } while (Directory.Exists(Path.Combine(baseDir, name)) || File.Exists(Path.Combine(baseDir, name)));
+            } while (Directory.Exists(Path.Combine(dir, name)) || File.Exists(Path.Combine(dir, name)));
             return name;
         }
 
@@ -131,7 +132,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             RetryIO(() =>
             {
                 string fileName = GetRandomEntry(baseDir);
-                using (new FileStream(Path.Combine(baseDir, fileName), FileMode.CreateNew))
+                using (new FileStream(Path.Combine(Environment.ExpandEnvironmentVariables(baseDir), fileName), FileMode.CreateNew))
                 {
                     // create new zero length file.
                 }
@@ -139,7 +140,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             });
 
         public static FileStream CreateRandomFileStream(string baseDir) =>
-            RetryIO(() => new FileStream(Path.Combine(baseDir, GetRandomEntry(baseDir)), FileMode.CreateNew));
+            RetryIO(() => new FileStream(Path.Combine(Environment.ExpandEnvironmentVariables(baseDir), GetRandomEntry(baseDir)), FileMode.CreateNew));
 
         public static string CreateRandomDirectory(string baseDir) =>
             RetryIO(() =>

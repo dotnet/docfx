@@ -52,7 +52,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public static BuildInfo Load(string baseDir)
         {
-            if (baseDir == null || !File.Exists(Path.Combine(baseDir, FileName)))
+            if (baseDir == null)
+            {
+                return null;
+            }
+
+            var expanded = Environment.ExpandEnvironmentVariables(baseDir);
+            if (expanded.Length == 0)
+            {
+                expanded = ".";
+            }
+            baseDir = Path.GetFullPath(expanded);
+            if (!File.Exists(Path.Combine(baseDir, FileName)))
             {
                 return null;
             }
@@ -78,13 +89,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public void Save(string baseDir)
         {
-            var targetDirectory = Path.Combine(baseDir, DirectoryName);
+            var expanded = Path.GetFullPath(Environment.ExpandEnvironmentVariables(baseDir));
+            var targetDirectory = Path.Combine(expanded, DirectoryName);
             foreach (var version in Versions)
             {
                 version.Save(targetDirectory);
             }
             PostProcessInfo?.Save(targetDirectory);
-            JsonUtility.Serialize(Path.Combine(baseDir, FileName), this);
+            JsonUtility.Serialize(Path.Combine(expanded, FileName), this);
         }
     }
 }

@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
 
@@ -95,7 +96,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public void SaveManifest(string baseDir)
         {
-            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestFile), Manifest);
+            var expanded = Path.GetFullPath(Environment.ExpandEnvironmentVariables(baseDir));
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(expanded, ManifestFile), Manifest);
         }
 
         internal void Load(string baseDir)

@@ -42,12 +42,16 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         public void TestBasic()
         {
             #region Prepare test data
+            const string intermediateFolderVariable = "%cache%";
             var resourceFile = Path.GetFileName(typeof(IncrementalBuildTest).Assembly.Location);
 
             var inputFolder = GetRandomFolder();
             var outputFolder = GetRandomFolder();
             var templateFolder = GetRandomFolder();
             var intermediateFolder = GetRandomFolder();
+            var intermediateFolder2 = GetRandomFolder();
+            Environment.SetEnvironmentVariable("cache", Path.GetFullPath(intermediateFolder));
+
             CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
             CreateFile("ManagedReference.html.primary.tmpl", "managed content", templateFolder);
             CreateFile("toc.html.tmpl", "toc", templateFolder);
@@ -149,7 +153,7 @@ tagRules : [
                             ["meta"] = "Hello world!",
                         },
                         templateFolder: templateFolder,
-                        intermediateFolder: intermediateFolder);
+                        intermediateFolder: intermediateFolderVariable);
 
                 }
 
@@ -167,7 +171,7 @@ tagRules : [
                             ["meta"] = "Hello world!",
                         },
                         templateFolder: templateFolder,
-                        intermediateFolder: intermediateFolder);
+                        intermediateFolder: intermediateFolderVariable);
 
                 }
                 {
@@ -248,6 +252,10 @@ tagRules : [
 
                 ClearListener();
 
+                Directory.Delete(intermediateFolder2);
+                Directory.Move(intermediateFolder, intermediateFolder2);
+                Environment.SetEnvironmentVariable("cache", Path.GetFullPath(intermediateFolder2));
+
                 // no changes
                 using (new LoggerPhaseScope("IncrementalBuild.TestBasic-third"))
                 {
@@ -260,7 +268,7 @@ tagRules : [
                             ["meta"] = "Hello world!",
                         },
                         templateFolder: templateFolder,
-                        intermediateFolder: intermediateFolder);
+                        intermediateFolder: intermediateFolderVariable);
 
                 }
                 {
@@ -341,6 +349,7 @@ tagRules : [
             }
             finally
             {
+                Environment.SetEnvironmentVariable("cache", null);
                 CleanUp();
             }
         }
