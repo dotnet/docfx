@@ -72,6 +72,12 @@ namespace Microsoft.DocAsCode
         [JsonProperty("force")]
         public bool? Force { get; set; }
 
+        [JsonProperty("debug")]
+        public bool? EnableDebugMode { get; set; }
+
+        [JsonProperty("debugOutput")]
+        public string OutputFolderForDebugFiles { get; set; }
+
         [JsonProperty("forcePostProcess")]
         public bool? ForcePostProcess { get; set; }
 
