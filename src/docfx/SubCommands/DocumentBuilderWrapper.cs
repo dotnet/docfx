@@ -282,8 +282,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 var p = parameters.Clone();
                 VersionInfo vi;
-                string versionOutputBaseDir = null;
-                if (config.Versions.TryGetValue(pair.Key, out vi))
+                if (config.Versions != null && config.Versions.TryGetValue(pair.Key, out vi))
                 {
                     if (!string.IsNullOrEmpty(vi.Destination))
                     {
