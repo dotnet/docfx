@@ -190,11 +190,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 IncrementalUtility.RetryIO(() =>
                 {
-                    // Copy last cached file to output
-                    var currentCachedFile = Path.Combine(_increContext.CurrentBaseDir, cachedFileName);
-                    var lastCachedFile = Path.Combine(_increContext.LastBaseDir, cachedFileName);
-                    File.Copy(lastCachedFile, currentCachedFile, true);
-                    item.LinkToPath = currentCachedFile;
+                    // Copy last cached file to current cache.
+                    var newFileName = IncrementalUtility.GetRandomEntry(_increContext.CurrentBaseDir);
+                    var currentCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.CurrentBaseDir), newFileName);
+                    var lastCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.LastBaseDir), cachedFileName);
+                    File.Copy(lastCachedFile, currentCachedFile);
+                    item.LinkToPath = Path.Combine(_increContext.CurrentBaseDir, newFileName);
                 });
             }
         }

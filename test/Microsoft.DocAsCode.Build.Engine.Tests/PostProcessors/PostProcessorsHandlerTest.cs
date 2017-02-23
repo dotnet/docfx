@@ -45,14 +45,16 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         {
             try
             {
+                const string intermediateFolderVariable = "%cache%";
                 var intermediateFolder = GetRandomFolder();
+                Environment.SetEnvironmentVariable("cache", intermediateFolder);
                 var currentBuildInfo = new BuildInfo
                 {
-                    DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder)
+                    DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolderVariable)
                 };
                 var lastBuildInfo = new BuildInfo
                 {
-                    DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder),
+                    DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolderVariable),
                     PostProcessInfo = new PostProcessInfo()
                 };
                 lastBuildInfo.PostProcessInfo.PostProcessorInfos.Add(new PostProcessorInfo
@@ -62,10 +64,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 // Exclude c, which is not incremental
                 var preparedManifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
-                PrepareCachedOutput(intermediateFolder, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "a", "b");
+                PrepareCachedOutput(intermediateFolderVariable, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "a", "b");
 
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolderVariable, currentBuildInfo, lastBuildInfo, postProcessors, true);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -111,6 +113,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             }
             finally
             {
+                Environment.SetEnvironmentVariable("cache", null);
                 EnvironmentContext.Clean();
             }
         }
@@ -862,7 +865,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             string additionalFileExtension,
             params string[] fileNames)
         {
-            var baseFolder = Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName);
+            var baseFolder = Path.Combine(Environment.ExpandEnvironmentVariables(intermediateFolder), lastBuildInfo.DirectoryName);
             var postProcessOutputs = lastBuildInfo.PostProcessInfo.PostProcessOutputs;
             foreach (var fileName in fileNames)
             {

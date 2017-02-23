@@ -146,7 +146,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             RetryIO(() =>
             {
                 var folderName = GetRandomEntry(baseDir);
-                Directory.CreateDirectory(Path.Combine(baseDir, folderName));
+                Directory.CreateDirectory(Path.Combine(Environment.ExpandEnvironmentVariables(baseDir), folderName));
                 return folderName;
             });
 
