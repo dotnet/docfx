@@ -222,7 +222,13 @@ namespace Microsoft.DocAsCode.SubCommands
                 parameters.XRefMaps = parameters.XRefMaps.Add("embedded:docfx/langwordMapping.yml");
             }
 
-            var applyTemplateSettings = new ApplyTemplateSettings(baseDirectory, outputDirectory)
+            string outputFolderForDebugFiles = null;
+            if (!string.IsNullOrEmpty(config.OutputFolderForDebugFiles))
+            {
+                outputFolderForDebugFiles = Path.Combine(baseDirectory, config.OutputFolderForDebugFiles);
+            }
+
+            var applyTemplateSettings = new ApplyTemplateSettings(baseDirectory, outputDirectory, outputFolderForDebugFiles, config.EnableDebugMode ?? false)
             {
                 TransformDocument = config.DryRun != true,
             };
