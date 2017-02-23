@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
 
@@ -88,11 +89,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public void SaveManifest(string baseDir)
         {
+            var expanded = Path.GetFullPath(Environment.ExpandEnvironmentVariables(baseDir));
             if (ManifestItemsFile == null)
             {
-                ManifestItemsFile = IncrementalUtility.CreateRandomFileName(baseDir);
+                ManifestItemsFile = IncrementalUtility.CreateRandomFileName(expanded);
             }
-            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestItemsFile), ManifestItems);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(expanded, ManifestItemsFile), ManifestItems);
         }
     }
 }

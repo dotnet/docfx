@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     _currentBuildInfo.PluginHash = ComputePluginHash(assemblyList);
                     _currentBuildInfo.TemplateHash = templateHash;
-                    _currentBuildInfo.DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder);
+                    _currentBuildInfo.DirectoryName = IncrementalUtility.CreateRandomDirectory(Environment.ExpandEnvironmentVariables(intermediateFolder));
                 }
             }
             Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
@@ -67,15 +67,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Logger.LogVerbose($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");
             }
-            if (intermediateFolder != null)
-            {
-                var expanded = Environment.ExpandEnvironmentVariables(intermediateFolder);
-                if (expanded.Length == 0)
-                {
-                    expanded = ".";
-                }
-                _intermediateFolder = Path.GetFullPath(expanded);
-            }
+            _intermediateFolder = intermediateFolder;
+            //if (intermediateFolder != null)
+            //{
+            //    var expanded = Environment.ExpandEnvironmentVariables(intermediateFolder);
+            //    if (expanded.Length == 0)
+            //    {
+            //        expanded = ".";
+            //    }
+            //    _intermediateFolder = Path.GetFullPath(expanded);
+            //}
             _lastBuildInfo = BuildInfo.Load(_intermediateFolder);
             _postProcessorsManager = new PostProcessorsManager(_container, postProcessorNames);
         }
@@ -186,7 +187,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 _currentBuildInfo.Save(_intermediateFolder);
                 if (_lastBuildInfo != null)
                 {
-                    Directory.Delete(Path.Combine(_intermediateFolder, _lastBuildInfo.DirectoryName), true);
+                    Directory.Delete(Path.Combine(Environment.ExpandEnvironmentVariables(_intermediateFolder), _lastBuildInfo.DirectoryName), true);
                 }
             }
         }
