@@ -73,6 +73,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void PostHandle(List<HostService> hostServices)
         {
+            CurrentBuildVersionInfo.Dependency.ResolveReference();
             foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
             {
                 foreach (var file in GetFilesToRelayMessages(h))
@@ -118,7 +119,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     if (item.Type == DependencyTypeName.Include)
                     {
-                        files.Add(((RelativePath)item.To).RemoveWorkingFolder());
+                        files.Add(((RelativePath)item.To.Value).RemoveWorkingFolder());
                     }
                 }
             }

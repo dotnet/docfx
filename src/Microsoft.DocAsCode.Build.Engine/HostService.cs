@@ -287,6 +287,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void ReportDependencyTo(FileModel currentFileModel, string to, string type)
         {
+            ReportDependencyTo(currentFileModel, to, DependencyItemSourceType.File, type);
+        }
+
+        public void ReportDependencyTo(FileModel currentFileModel, string to, string toType, string type)
+        {
             if (currentFileModel == null)
             {
                 throw new ArgumentNullException(nameof(currentFileModel));
@@ -294,6 +299,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (string.IsNullOrEmpty(to))
             {
                 throw new ArgumentNullException(nameof(to));
+            }
+            if (toType == null)
+            {
+                throw new ArgumentNullException(nameof(toType));
             }
             if (type == null)
             {
@@ -306,12 +315,19 @@ namespace Microsoft.DocAsCode.Build.Engine
             lock (DependencyGraph)
             {
                 string fromKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
-                string toKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)to));
-                ReportDependencyCore(fromKey, toKey, fromKey, type);
+                string toKey = toType == DependencyItemSourceType.File ?
+                    IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)to)) :
+                    to;
+                ReportDependencyCore(fromKey, new DependencyItemSourceInfo(toType, toKey), fromKey, type);
             }
         }
 
         public void ReportDependencyFrom(FileModel currentFileModel, string from, string type)
+        {
+            ReportDependencyFrom(currentFileModel, from, DependencyItemSourceType.File, type);
+        }
+
+        public void ReportDependencyFrom(FileModel currentFileModel, string from, string fromType, string type)
         {
             if (currentFileModel == null)
             {
@@ -320,6 +336,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (string.IsNullOrEmpty(from))
             {
                 throw new ArgumentNullException(nameof(from));
+            }
+            if (fromType == null)
+            {
+                throw new ArgumentNullException(nameof(fromType));
             }
             if (type == null)
             {
@@ -331,9 +351,36 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             lock (DependencyGraph)
             {
-                string fromKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)from));
+                string fromKey = fromType == DependencyItemSourceType.File ?
+                    IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType.ChangeFile((RelativePath)currentFileModel.OriginalFileAndType.File + (RelativePath)from)) :
+                    from;
                 string toKey = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
-                ReportDependencyCore(fromKey, toKey, toKey, type);
+                ReportDependencyCore(new DependencyItemSourceInfo(fromType, fromKey), toKey, toKey, type);
+            }
+        }
+
+        public void ReportReference(FileModel currentFileModel, string reference, string referenceType)
+        {
+            if (currentFileModel == null)
+            {
+                throw new ArgumentNullException(nameof(currentFileModel));
+            }
+            if (string.IsNullOrEmpty(reference))
+            {
+                throw new ArgumentNullException(nameof(reference));
+            }
+            if (referenceType == null)
+            {
+                throw new ArgumentNullException(nameof(referenceType));
+            }
+            if (DependencyGraph == null)
+            {
+                return;
+            }
+            lock (DependencyGraph)
+            {
+                string file = IncrementalUtility.GetDependencyKey(currentFileModel.OriginalFileAndType);
+                DependencyGraph.ReportReference(file, new[] { new DependencyItemSourceInfo(referenceType, reference) });
             }
         }
 
@@ -654,7 +701,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void ReportDependencyCore(string from, string to, string reportedBy, string type)
+        private void ReportDependencyCore(DependencyItemSourceInfo from, DependencyItemSourceInfo to, DependencyItemSourceInfo reportedBy, string type)
         {
             DependencyGraph.ReportDependency(new DependencyItem(from, to, reportedBy, type));
         }
