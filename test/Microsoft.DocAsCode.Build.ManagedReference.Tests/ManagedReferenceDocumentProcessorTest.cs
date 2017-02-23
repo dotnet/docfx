@@ -86,6 +86,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             Assert.Equal("K", model.Syntax.TypeParameters[1].Name);
             Assert.Equal("<p sourcefile=\"TestData/mref/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">This type is a struct type, class type can&#39;t be used for this parameter.</p>\n", model.Syntax.TypeParameters[1].Description);
 
+            Assert.Equal(1, model.Examples.Count);
+            Assert.Equal("<p>Here&#39;s example of how to create an instance of <strong>Cat</strong> class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>\n<pre><code class=\"c#\">    var a = new Cat(object, int)();\n    int catNumber = new int();\n    unsafe\n    {\n        a.GetFeetLength(catNumber);\n    }</code></pre>\n<p>As you see, here we bring in <strong>pointer</strong> so we need to add <span class=\"languagekeyword\">unsafe</span> keyword.</p>\n", model.Examples[0]);
+
             Assert.Equal(20, model.Children.Count);
         }
 
