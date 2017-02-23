@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Common
         private BlockingCollection<ILogItem> _logQueue = new BlockingCollection<ILogItem>();
         private readonly ManualResetEvent _signal = new ManualResetEvent(true);
         private readonly CompositeLogListener _inner;
-
+        private readonly Lazy<Task> _loggingTask;
         private readonly int TimeoutMilliseconds = 300000; // 5 minutes
 
         public AsyncLogListener() : this(new CompositeLogListener())
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(compositeLogListener));
             }
             _inner = compositeLogListener;
-            Task.Factory.StartNew(LoggingTask, TaskCreationOptions.LongRunning);
+            _loggingTask = new Lazy<Task>(CreateLoggingTask);
         }
 
         public void AddListener(ILoggerListener listener)
@@ -72,47 +72,67 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(listener));
             }
 
-            _signal.WaitOne(TimeoutMilliseconds);
+            WaitForLoggingComplete();
             _inner.RemoveListener(listener);
         }
 
         public void RemoveAllListeners()
         {
-            _signal.WaitOne(TimeoutMilliseconds);
+            WaitForLoggingComplete();
             _inner.RemoveAllListeners();
         }
 
         public void WriteLine(ILogItem item)
         {
-            _signal.Reset();
-            _logQueue.Add(item);
+            if (_inner.Count == 0)
+            {
+                return;
+            }
+            AddLogToQueue(item);
         }
 
         public void Flush()
         {
-            _signal.WaitOne(TimeoutMilliseconds);
+            WaitForLoggingComplete();
             _inner.Flush();
         }
 
         public void Dispose()
         {
             _logQueue.CompleteAdding();
-            _signal.WaitOne(TimeoutMilliseconds);
+            WaitForLoggingComplete();
             _inner.Dispose();
+        }
+
+        private void WaitForLoggingComplete()
+        {
+            _signal.WaitOne(TimeoutMilliseconds);
+        }
+
+        private void AddLogToQueue(ILogItem item)
+        {
+            InitTask();
+            _signal.Reset();
+            _logQueue.Add(item);
+        }
+
+        private Task InitTask()
+        {
+            return _loggingTask.Value;
+        }
+
+        private Task CreateLoggingTask()
+        {
+            return Task.Factory.StartNew(LoggingTask, TaskCreationOptions.LongRunning);
         }
 
         private void LoggingTask()
         {
-            while (true)
+            while (!_logQueue.IsCompleted)
             {
                 if (_logQueue.Count == 0)
                 {
                     _signal.Set();
-                }
-
-                if (_logQueue.IsCompleted)
-                {
-                    break;
                 }
 
                 ILogItem item = _logQueue.Take();
@@ -126,6 +146,7 @@ namespace Microsoft.DocAsCode.Common
                 }
             }
 
+            _signal.Set();
             _logQueue.Dispose();
         }
 

@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Common
     {
         private static readonly object _sync = new object();
         private static CompositeLogListener _syncListener = new CompositeLogListener();
-        private static Lazy<AsyncLogListener> _asyncListener = new Lazy<AsyncLogListener>();
+        private static AsyncLogListener _asyncListener = new AsyncLogListener();
         public volatile static LogLevel LogLevelThreshold = LogLevel.Info;
 
         public static void RegisterListener(ILoggerListener listener)
@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(listener));
             }
 
-            _asyncListener.Value.AddListener(listener);
+            _asyncListener.AddListener(listener);
         }
 
         public static ILoggerListener FindAsyncListener(Predicate<ILoggerListener> predicate)
@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(predicate));
             }
 
-            return _asyncListener.Value.FindListener(predicate);
+            return _asyncListener.FindListener(predicate);
         }
 
         public static void UnregisterAsyncListener(ILoggerListener listener)
@@ -69,13 +69,13 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(listener));
             }
 
-            _asyncListener.Value.RemoveListener(listener);
+            _asyncListener.RemoveListener(listener);
         }
 
         public static void UnregisterAllListeners()
         {
             _syncListener.RemoveAllListeners();
-            _asyncListener.Value.RemoveAllListeners();
+            _asyncListener.RemoveAllListeners();
         }
 
         public static void Log(ILogItem item)
@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.Common
             }
 
             _syncListener.WriteLine(item);
-            _asyncListener.Value.WriteLine(item);
+            _asyncListener.WriteLine(item);
         }
 
         public static void Log(LogLevel level, string message, string phase = null, string file = null, string line = null)
@@ -146,7 +146,7 @@ namespace Microsoft.DocAsCode.Common
         public static void Flush()
         {
             _syncListener.Flush();
-            _asyncListener.Value.Flush();
+            _asyncListener.Flush();
         }
 
 #if !NetCore
