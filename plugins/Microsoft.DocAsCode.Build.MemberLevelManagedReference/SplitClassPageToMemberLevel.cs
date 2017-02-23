@@ -3,12 +3,12 @@
 
 namespace Microsoft.DocAsCode.Build.ManagedReference
 {
-    using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Composition;
     using System.Linq;
     using System.IO;
-    using System.Collections.Immutable;
+    using System.Web;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
@@ -130,7 +130,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             item.Metadata[SplitReferencePropertyName] = true;
             var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { item });
             var newModel = GenerateNewFileModel(model, newPage, item.Uid);
-            var tree = ConvertToTreeItem(item);
+            var tree = ConvertToTreeItem(item,
+                new Dictionary<string, object>
+                {
+                    [Constants.PropertyName.Platform] = item.Platform,
+                });
             return new ModelWrapper(newPage, newModel, tree);
         }
 
@@ -153,7 +157,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 {
                     [IsOverloadPropertyName] = true,
                     [SplitReferencePropertyName] = true
-                }
+                },
+                Platform = MergePlatform(overload)
             };
             var referenceItem = page.References.FirstOrDefault(s => s.Uid == key);
             if (referenceItem != null)
@@ -172,9 +177,22 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 newPrimaryItem,
                 new Dictionary<string, object>
                 {
-                    [Constants.PropertyName.Type] = firstMember.Type
+                    [Constants.PropertyName.Type] = newPrimaryItem.Type,
+                    [Constants.PropertyName.Platform] = newPrimaryItem.Platform,
                 });
             return new ModelWrapper(newPage, newModel, tree);
+        }
+
+        private List<string> MergePlatform(IEnumerable<ItemViewModel> children)
+        {
+            var platforms = children.Where(s => s.Platform != null).SelectMany(s => s.Platform);
+            var set = new SortedSet<string>(platforms);
+            if (set.Count == 0)
+            {
+                return null;
+            }
+
+            return set.ToList();
         }
 
         private string GetOverloadItemName(string overload, string parent, bool isCtor)
@@ -206,15 +224,41 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 ?? GetPropertyValue<string>(metadata, Constants.PropertyName.TopicUid);
         }
 
-        /// <summary>
-        /// TODO: can save minimum info when ApiBuildOutput depends on global references instead of current page only
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
         private ReferenceViewModel ConvertToReference(ItemViewModel item)
         {
-            // Use serializer to keep most info from item, e.g. reference's summary is possibly required by class template
-            return YamlUtility.ConvertTo<ReferenceViewModel>(item);
+            // Save minimal info, as FillReferenceInformation will fill info from ItemViewModel if the property is needed
+            var reference = new ReferenceViewModel
+            {
+                 Uid = item.Uid,
+                 Parent = item.Parent,
+                 Name = item.Name,
+                 NameWithType = item.NameWithType,
+                 FullName = item.FullName,
+            };
+
+            if (item.Names.Count > 0)
+            {
+                foreach (var pair in item.Names)
+                {
+                    reference.NameInDevLangs[Constants.ExtensionMemberPrefix.Name + pair.Key] = pair.Value;
+                }
+            }
+            if (item.FullNames.Count > 0)
+            {
+                foreach (var pair in item.FullNames)
+                {
+                    reference.FullNameInDevLangs[Constants.ExtensionMemberPrefix.FullName + pair.Key] = pair.Value;
+                }
+            }
+            if (item.NamesWithType.Count > 0)
+            {
+                foreach (var pair in item.NamesWithType)
+                {
+                    reference.NameWithTypeInDevLangs[Constants.ExtensionMemberPrefix.NameWithType + pair.Key] = pair.Value;
+                }
+            }
+
+            return reference;
         }
 
         private void MergeWithReference(ItemViewModel item, ReferenceViewModel reference)
@@ -308,8 +352,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var initialFile = model.FileAndType.File;
             var extension = Path.GetExtension(initialFile);
             var directory = Path.GetDirectoryName(initialFile);
-            var newFileName = PathUtility.ToValidFilePath(key, '-').Replace('`', '-') + extension;
+            var newFileName = PathUtility.ToValidFilePath(key, '-') + extension;
             var filePath = Path.Combine(directory, newFileName).ToNormalizedPath();
+            var originalFilePath = model.OriginalFileAndType.File + "#" + HttpUtility.UrlEncode(key);
+            var originalFileAndType = new FileAndType(model.OriginalFileAndType.BaseDir, originalFilePath, model.OriginalFileAndType.Type, model.OriginalFileAndType.SourceDir, model.OriginalFileAndType.DestinationDir);
             var newFileAndType = new FileAndType(model.FileAndType.BaseDir, filePath, model.FileAndType.Type, model.FileAndType.SourceDir, model.FileAndType.DestinationDir);
             var newModel = new FileModel(newFileAndType, newPage, null, model.Serializer);
             newModel.LocalPathFromRoot = model.LocalPathFromRoot;

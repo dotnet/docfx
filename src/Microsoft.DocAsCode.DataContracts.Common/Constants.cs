@@ -33,6 +33,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string TocHref = "tocHref";
             public const string TopicHref = "topicHref";
             public const string TopicUid = "topicUid";
+            public const string Platform = "platform";
 
             public const string SystemKeys = "_systemKeys";
         }

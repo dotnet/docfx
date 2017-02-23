@@ -336,8 +336,8 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [MarkdownContent]
         public string Conceptual { get; set; }
 
-        [YamlMember(Alias = "platform")]
-        [JsonProperty("platform")]
+        [YamlMember(Alias = Constants.PropertyName.Platform)]
+        [JsonProperty(Constants.PropertyName.Platform)]
         [MergeOption(MergeOption.Replace)]
         public List<string> Platform { get; set; }
 

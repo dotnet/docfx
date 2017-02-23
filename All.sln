@@ -158,6 +158,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.M
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.MergeOverwrite.Tests", "test\Microsoft.DocAsCode.Build.MergeOverwrite.Tests\Microsoft.DocAsCode.Build.MergeOverwrite.Tests.xproj", "{BC834D62-F7F1-4227-9D5F-3DF45197B335}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests", "test\Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests\Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests.xproj", "{958DF90F-0528-4C53-9AC2-E86C60971B7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -526,6 +528,14 @@ Global
 		{BC834D62-F7F1-4227-9D5F-3DF45197B335}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BC834D62-F7F1-4227-9D5F-3DF45197B335}.Release|x86.ActiveCfg = Release|Any CPU
 		{BC834D62-F7F1-4227-9D5F-3DF45197B335}.Release|x86.Build.0 = Release|Any CPU
+		{958DF90F-0528-4C53-9AC2-E86C60971B7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{958DF90F-0528-4C53-9AC2-E86C60971B7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{958DF90F-0528-4C53-9AC2-E86C60971B7D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{958DF90F-0528-4C53-9AC2-E86C60971B7D}.Debug|x86.Build.0 = Debug|Any CPU
+		{958DF90F-0528-4C53-9AC2-E86C60971B7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{958DF90F-0528-4C53-9AC2-E86C60971B7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{958DF90F-0528-4C53-9AC2-E86C60971B7D}.Release|x86.ActiveCfg = Release|Any CPU
+		{958DF90F-0528-4C53-9AC2-E86C60971B7D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -600,5 +610,6 @@ Global
 		{1C46FAD9-9D99-4102-8E57-82AF959A4B40} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
 		{8C50AA79-A360-43A3-BCC2-658633B099EC} = {1C46FAD9-9D99-4102-8E57-82AF959A4B40}
 		{BC834D62-F7F1-4227-9D5F-3DF45197B335} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
+		{958DF90F-0528-4C53-9AC2-E86C60971B7D} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 	EndGlobalSection
 EndGlobal

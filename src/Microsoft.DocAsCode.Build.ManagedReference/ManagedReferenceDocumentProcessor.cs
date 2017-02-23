@@ -209,6 +209,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         protected virtual void UpdateModelContent(FileModel model)
         {
             var apiModel = ApiBuildOutput.FromModel((PageViewModel)model.Content); // Fill in details
+            var serialzied = JsonUtility.Serialize(apiModel, Formatting.Indented);
             model.Content = apiModel;
         }
 
