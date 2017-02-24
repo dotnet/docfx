@@ -2027,6 +2027,135 @@ tagRules : [
             }
         }
 
+        [Fact]
+        public void TestDependencyFileDelete()
+        {
+            // conceptual1--->conceptual2(phase 2)
+            // conceptual3--->conceptual4(phase 1)
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
+
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "# Hello World",
+                    "Test link: [link text](test/test.md)",
+                },
+                inputFolder);
+            var conceptualFile2 = CreateFile("test/test.md",
+                new[]
+                {
+                    "# Hello World",
+                    "test",
+                },
+                inputFolder);
+            var conceptualFile3 = CreateFile("test/test3.md",
+                new[]
+                {
+                    "# Hello World",
+                    "test3",
+                    "[!INCLUDE [Token](test4.md)]",
+                },
+                inputFolder);
+            var conceptualFile4 = CreateFile("test/test4.md",
+                new[]
+                {
+                    "# Hello World",
+                    "test4",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile2, conceptualFile3, conceptualFile4 });
+            #endregion
+
+            Init("IncrementalBuild.TestDependencyFileDelete");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestDependencyFileDelete");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestDependencyFileDelete.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestDependencyFileDelete.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestDependencyFileDelete-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // delete dependency file
+                File.Delete(Path.Combine(inputFolder, "test/test.md"));
+                File.Delete(Path.Combine(inputFolder, "test/test4.md"));
+                FileCollection newfiles = new FileCollection(Directory.GetCurrentDirectory());
+                newfiles.Add(DocumentType.Article, new[] { conceptualFile, conceptualFile3 });
+                using (new LoggerPhaseScope("IncrementalBuild.TestDependencyFileDelete-second"))
+                {
+                    BuildDocument(
+                        newfiles,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestDependencyFileDelete-forcebuild-second"))
+                {
+                    BuildDocument(
+                        newfiles,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(2, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestDependencyFileDelete-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestDependencyFileDelete-second", "IncrementalBuild.TestDependencyFileDelete-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
         private static bool CompareDir(string path1, string path2)
         {
             var files1 = new DirectoryInfo(path1).GetFiles("*.*", SearchOption.AllDirectories).Where(f => f.Name != "xrefmap.yml" && f.Name != "manifest.json").OrderBy(f => f.FullName).ToList();

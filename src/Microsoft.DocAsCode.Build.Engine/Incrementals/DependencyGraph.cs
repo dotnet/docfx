@@ -66,6 +66,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         private readonly object _referenceSync = new object();
         private readonly ReaderWriterLockSlim _itemsSync = new ReaderWriterLockSlim();
         private readonly OSPlatformSensitiveDictionary<HashSet<DependencyItem>> _indexOnFrom = new OSPlatformSensitiveDictionary<HashSet<DependencyItem>>();
+        private readonly OSPlatformSensitiveDictionary<HashSet<DependencyItem>> _indexOnTo = new OSPlatformSensitiveDictionary<HashSet<DependencyItem>>();
         private readonly OSPlatformSensitiveDictionary<HashSet<DependencyItem>> _indexOnReportedBy = new OSPlatformSensitiveDictionary<HashSet<DependencyItem>>();
         private ImmutableDictionary<string, DependencyType> _types;
         private readonly Dictionary<DependencyItemSourceInfo, string> _referenceItems = new Dictionary<DependencyItemSourceInfo, string>();
@@ -200,6 +201,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return _indexOnReportedBy.Keys;
         });
 
+        public IEnumerable<string> ToNodes => Read(() =>
+        {
+            if (!_isResolved)
+            {
+                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+            }
+            return _indexOnTo.Keys;
+        });
+
         public HashSet<DependencyItem> GetDependencyReportedBy(string reportedBy)
         {
             return Read(() => GetDependencyReportedByNoLock(reportedBy));
@@ -210,9 +220,19 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return Read(() => GetDependencyFromNoLock(from));
         }
 
+        public HashSet<DependencyItem> GetDependencyTo(string to)
+        {
+            return Read(() => GetDependencyToNoLock(to));
+        }
+
         public HashSet<DependencyItem> GetAllDependencyFrom(string from)
         {
             return Read(() => GetAllDependencyFromNoLock(from));
+        }
+
+        public HashSet<DependencyItem> GetAllDependencyTo(string to)
+        {
+            return Read(() => GetAllDependencyToNoLock(to));
         }
 
         public HashSet<string> GetAllDependentNodes()
@@ -275,6 +295,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     CreateOrUpdate(_indexOnFrom, dependency.From.Value, dependency);
                     CreateOrUpdate(_indexOnReportedBy, dependency.ReportedBy.Value, dependency);
+                    CreateOrUpdate(_indexOnTo, dependency.To.Value, dependency);
                 }
                 else
                 {
@@ -368,6 +389,20 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return indice;
         }
 
+        private HashSet<DependencyItem> GetDependencyToNoLock(string to)
+        {
+            if (!_isResolved)
+            {
+                throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
+            }
+            HashSet<DependencyItem> indice;
+            if (!_indexOnTo.TryGetValue(to, out indice))
+            {
+                return new HashSet<DependencyItem>();
+            }
+            return indice;
+        }
+
         private HashSet<DependencyItem> GetAllDependencyFromNoLock(string from)
         {
             var dp = GetDependencyFromNoLock(from);
@@ -380,6 +415,26 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 foreach (var item in GetDependencyFromNoLock(current.To.Value))
                 {
                     if (_types[current.Type].CouldTransit(_types[item.Type]) && result.Add(item))
+                    {
+                        queue.Enqueue(item);
+                    }
+                }
+            }
+            return result;
+        }
+
+        private HashSet<DependencyItem> GetAllDependencyToNoLock(string to)
+        {
+            var dp = GetDependencyToNoLock(to);
+            var result = new HashSet<DependencyItem>(dp);
+            var queue = new Queue<DependencyItem>(dp);
+
+            while (queue.Count > 0)
+            {
+                var current = queue.Dequeue();
+                foreach (var item in GetDependencyToNoLock(current.From.Value))
+                {
+                    if (_types[item.Type].CouldTransit(_types[current.Type]) && result.Add(item))
                     {
                         queue.Enqueue(item);
                     }
@@ -433,6 +488,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     CreateOrUpdate(_indexOnFrom, item.From.Value, item);
                     CreateOrUpdate(_indexOnReportedBy, item.ReportedBy.Value, item);
+                    CreateOrUpdate(_indexOnTo, item.To.Value, item);
                 }
             }
             _isResolved = true;
