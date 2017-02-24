@@ -281,13 +281,23 @@ namespace Microsoft.DocAsCode.SubCommands
             foreach (var pair in fileMappingParametersDictionary)
             {
                 var p = parameters.Clone();
+                VersionInfo vi;
+                string versionOutputBaseDir = null;
+                if (config.Versions.TryGetValue(pair.Key, out vi))
+                {
+                    if (!string.IsNullOrEmpty(vi.Destination))
+                    {
+                        versionOutputBaseDir = vi.Destination;
+                    }
+                }
                 p.Files = GetFileCollectionFromFileMapping(
                     baseDirectory,
-                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Content)),
-                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Overwrite)),
-                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
+                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Content), versionOutputBaseDir),
+                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Overwrite), versionOutputBaseDir),
+                    GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource), versionOutputBaseDir));
                 p.VersionName = pair.Key;
                 p.Changes = GetIntersectChanges(p.Files, changeList);
+                // TODO: move RootTocPath to VersionInfo
                 p.RootTocPath = pair.Value.RootTocPath;
                 yield return p;
             }

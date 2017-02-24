@@ -72,6 +72,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             foreach (var item in ProcessTemplate())
             {
+                if (!string.IsNullOrEmpty(_context.VersionName))
+                {
+                    item.VersionName = _context.VersionName;
+                }
                 _context.ManifestItems.Add(item);
             }
         }
