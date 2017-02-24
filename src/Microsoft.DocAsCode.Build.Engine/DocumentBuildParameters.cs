@@ -44,6 +44,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         [IncrementalIgnore]
         public string VersionName { get; set; }
 
+        [IncrementalIgnore]
+        public string VersionDir { get; set; }
+
         public string RootTocPath { get; set; }
 
         [IncrementalIgnore]

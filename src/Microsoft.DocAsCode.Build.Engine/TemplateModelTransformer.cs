@@ -271,12 +271,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                     sw.Write(result);
                 }
             }
-            manifestItem.OutputFiles.Add(extension, new OutputFileInfo
+            var ofi = new OutputFileInfo
             {
                 RelativePath = destFilePath,
-                LinkToPath = null,
                 Hash = Convert.ToBase64String(hashTask.Result)
-            });
+            };
+            manifestItem.OutputFiles.Add(extension, ofi);
         }
 
         private void TransformHtml(IDocumentBuildContext context, string html, string sourceFilePath, string destFilePath, StreamWriter outputWriter)
