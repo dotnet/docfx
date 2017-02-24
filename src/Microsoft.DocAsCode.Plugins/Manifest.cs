@@ -9,6 +9,13 @@ namespace Microsoft.DocAsCode.Plugins
 
     public class Manifest
     {
+        public Manifest() { }
+
+        public Manifest(IEnumerable<ManifestItem> files)
+        {
+            Files.AddRange(files);
+        }
+
         [JsonProperty("templates")]
         public List<string> Templates { get; set; }
 
@@ -22,7 +29,7 @@ namespace Microsoft.DocAsCode.Plugins
         public object XRefMap { get; set; }
 
         [JsonProperty("files")]
-        public List<ManifestItem> Files { get; set; }
+        public ManifestItemCollection Files { get; } = new ManifestItemCollection();
 
         [JsonProperty("incremental_info")]
         public List<IncrementalInfo> IncrementalInfo { get; set; }

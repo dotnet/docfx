@@ -41,13 +41,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Manifest manifest = new Manifest
             {
                 SourceBasePath = _outputFolder,
-                Files = new List<ManifestItem>
+                Files =
                 {
-                    new ManifestItem { SourceRelativePath = "a.md", OutputFiles = new Dictionary<string, OutputFileInfo> { { ".html", new OutputFileInfo { RelativePath = "a.html" } } } },
-                    new ManifestItem { SourceRelativePath = "b.md", OutputFiles = new Dictionary<string, OutputFileInfo> { { ".html", new OutputFileInfo { RelativePath = "b.html" } } } },
-                    new ManifestItem { SourceRelativePath = "c.md", OutputFiles = new Dictionary<string, OutputFileInfo> { { ".html", new OutputFileInfo { RelativePath = "c.html" } } } },
-                    new ManifestItem { SourceRelativePath = "d.md", OutputFiles = new Dictionary<string, OutputFileInfo> { { ".html", new OutputFileInfo { RelativePath = "d.html" } } } },
-                    new ManifestItem { SourceRelativePath = "e.md", OutputFiles = new Dictionary<string, OutputFileInfo> { { ".html", new OutputFileInfo { RelativePath = "e.html" } } } },
+                    new ManifestItem { SourceRelativePath = "a.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "a.html" } } } },
+                    new ManifestItem { SourceRelativePath = "b.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "b.html" } } } },
+                    new ManifestItem { SourceRelativePath = "c.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "c.html" } } } },
+                    new ManifestItem { SourceRelativePath = "d.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "d.html" } } } },
+                    new ManifestItem { SourceRelativePath = "e.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "e.html" } } } },
                 }
             };
 

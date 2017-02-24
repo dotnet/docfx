@@ -37,9 +37,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Manifest manifest = new Manifest
             {
                 SourceBasePath = _outputFolder,
-                Files = new List<ManifestItem>
+                Files =
                 {
-                    new ManifestItem { SourceRelativePath = "a.md", OutputFiles = new Dictionary<string, OutputFileInfo> { { ".html", new OutputFileInfo { RelativePath = "a.html" } } } },
+                    new ManifestItem { SourceRelativePath = "a.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "a.html" } } } },
                 }
             };
 

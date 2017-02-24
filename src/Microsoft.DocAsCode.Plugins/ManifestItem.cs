@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Plugins
         public string SourceRelativePath { get; set; }
 
         [JsonProperty("output")]
-        public Dictionary<string, OutputFileInfo> OutputFiles { get; set; }
+        public OutputFileCollection OutputFiles { get; } = new OutputFileCollection();
 
         [JsonProperty("is_incremental")]
         public bool IsIncremental { get; set; }
