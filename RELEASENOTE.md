@@ -2,9 +2,10 @@
 =======================================
 v2.13(Pre-Release)
 -----------
-1.  Support working folder for dfm include and code.
-2.  Upgrade YamlDotNet to 4.1.
-3.  Bug fixes:
+1.  **Breaking Change**: Create new type for files in manifest.
+2.  Support working folder for dfm include and code.
+3.  Upgrade YamlDotNet to 4.1.
+4.  Bug fixes:
     1. fix bug: Filter config file is expected in working dir instead of project's dir/src dir.
 
 v2.12
