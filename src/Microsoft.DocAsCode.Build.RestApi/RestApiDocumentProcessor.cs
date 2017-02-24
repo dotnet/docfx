@@ -50,7 +50,6 @@ namespace Microsoft.DocAsCode.Build.RestApi
             "remarks",
             "summary",
             "documentation",
-            "tags",
             "children",
             "documentType",
             "source",
