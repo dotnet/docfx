@@ -8,11 +8,17 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
 
     public class TokenTreeProcessor
     {
-        public static string TokenTreePreview(string rawMarkdownContent)
+        private readonly IMarkdownService _dfmMarkdownService;
+
+        public TokenTreeProcessor()
         {
             DfmJsonTokenTreeServiceProvider dfmJsonTokenTreeServiceProvider = new DfmJsonTokenTreeServiceProvider();
-            IMarkdownService dfmMarkdownService = dfmJsonTokenTreeServiceProvider.CreateMarkdownService(new MarkdownServiceParameters());
-            return dfmMarkdownService.Markup(rawMarkdownContent, null).Html;
+            _dfmMarkdownService = dfmJsonTokenTreeServiceProvider.CreateMarkdownService(new MarkdownServiceParameters());
+        }
+
+        public string TokenTreePreview(string rawMarkdownContent)
+        {
+            return _dfmMarkdownService.Markup(rawMarkdownContent, null).Html;
         }
     }
 }

@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
         private static void DocfxRebuild()
         {
             // TODO: Docfx rebuild
-            throw new DocfxPreviewException("Docfx rebuild is not supported now");
+            throw new DocfxPreviewException("Docfx rebuild is not implemented now");
         }
 
         private static string GetAbsolutePath(string originHtmlPath, string elementRelativePath)

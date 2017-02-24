@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                 {
                     string command = Console.ReadLine();
                     string result;
+                    TokenTreeProcessor tokenTreeProcessor = new TokenTreeProcessor();
                     switch (command.ToLower().Trim())
                     {
                         case "exit":
@@ -27,7 +28,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                             SendWithEndCode(result);
                             break;
                         case "tokentreepreview":
-                            result = TokenTreeProcessor.TokenTreePreview(GetMarkdownContent());
+                            result = tokenTreeProcessor.TokenTreePreview(GetMarkdownContent());
                             SendWithEndCode(result);
                             break;
                         default:
