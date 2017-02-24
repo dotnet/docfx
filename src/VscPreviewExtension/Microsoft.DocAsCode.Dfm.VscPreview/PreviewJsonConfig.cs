@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
     [Serializable]
     public class PreviewJsonConfig
     {
-        [JsonProperty("markUpResultLocation")]
+        [JsonProperty("markupResultLocation")]
         public string MarkupResultLocation { get; set; }
 
         [JsonProperty("outputFolder")]

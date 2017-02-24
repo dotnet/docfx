@@ -3,12 +3,15 @@
 
 namespace Microsoft.DocAsCode.Dfm.VscPreview
 {
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
 
     public class TokenTreeProcessor
     {
-        public static string TokenTreePreview(IMarkdownService dfmMarkdownService, string rawMarkdownContent)
+        public static string TokenTreePreview(string rawMarkdownContent)
         {
+            DfmJsonTokenTreeServiceProvider dfmJsonTokenTreeServiceProvider = new DfmJsonTokenTreeServiceProvider();
+            IMarkdownService dfmMarkdownService = dfmJsonTokenTreeServiceProvider.CreateMarkdownService(new MarkdownServiceParameters());
             return dfmMarkdownService.Markup(rawMarkdownContent, null).Html;
         }
     }

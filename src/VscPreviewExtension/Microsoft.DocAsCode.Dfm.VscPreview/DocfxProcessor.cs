@@ -17,22 +17,22 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
         {
             PreviewJsonConfig config = PreviewCommand.ParsePreviewCommand(baseDir);
 
-            var markUpResult = DfmMarkup(baseDir, relativePath, markdownContent.ToString());
+            var markupResult = DfmMarkup(baseDir, relativePath, markdownContent.ToString());
 
             string originHtmlPath = FindOriginHtml(baseDir, relativePath, config.OutputFolder);
 
             if (string.IsNullOrEmpty(originHtmlPath))
             {
                 // TODO: If the return value is not a complete Html, it should be contacted with an Html header and tail
-                return markUpResult;
+                return markupResult;
             }
 
             string htmlString = File.ReadAllText(originHtmlPath);
 
             CQ dom = htmlString;
 
-            // Update markUp result
-            dom.Select(config.MarkupResultLocation).Html(markUpResult);
+            // Update markup result
+            dom.Select(config.MarkupResultLocation).Html(markupResult);
 
             foreach (var item in config.References)
             {
@@ -43,9 +43,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                 });
             }
 
-            string html = dom.Render();
-
-            return html;
+            return dom.Render();
         }
 
         private static string DfmMarkup(string baseDir, string filename, string markdownContent)
@@ -73,6 +71,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
         private static void DocfxRebuild()
         {
             // TODO: Docfx rebuild
+            throw new DocfxPreviewException("Docfx rebuild is not supported now");
         }
 
         private static string GetAbsolutePath(string originHtmlPath, string elementRelativePath)

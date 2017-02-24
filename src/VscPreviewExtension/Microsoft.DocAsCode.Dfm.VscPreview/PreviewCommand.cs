@@ -14,16 +14,12 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
         public static PreviewJsonConfig ParsePreviewCommand(string baseDir)
         {
             string configFilePath = Path.Combine(baseDir, PreviewConstants.ConfigFile);
-            PreviewJsonConfig config;
+            PreviewJsonConfig config = null;
             try
             {
                 if (File.Exists(configFilePath))
                 {
                     config = JsonUtility.Deserialize<PreviewJsonConfig>(configFilePath);
-                }
-                else
-                {
-                    config = null;
                 }
             }
             catch (JsonException e)

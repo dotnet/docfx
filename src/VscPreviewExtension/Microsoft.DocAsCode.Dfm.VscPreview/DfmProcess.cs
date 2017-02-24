@@ -6,16 +6,10 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
     using System;
     using System.Text;
 
-    using Microsoft.DocAsCode.Build.Engine;
-    using Microsoft.DocAsCode.Plugins;
-
     internal class DfmProcess
     {
         static void Main(string[] args)
         {
-            DfmJsonTokenTreeServiceProvider dfmJsonTokenTreeServiceProvider = new DfmJsonTokenTreeServiceProvider();
-            IMarkdownService dfmMarkdownService =
-                dfmJsonTokenTreeServiceProvider.CreateMarkdownService(new MarkdownServiceParameters());
             while (true)
             {
                 try
@@ -33,9 +27,8 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                             SendWithEndCode(result);
                             break;
                         case "tokentreepreview":
-                            result = TokenTreeProcessor.TokenTreePreview(dfmMarkdownService, GetMarkdownContent());
+                            result = TokenTreeProcessor.TokenTreePreview(GetMarkdownContent());
                             SendWithEndCode(result);
-
                             break;
                         default:
                             SendWithEndCode("Undefined Command");
