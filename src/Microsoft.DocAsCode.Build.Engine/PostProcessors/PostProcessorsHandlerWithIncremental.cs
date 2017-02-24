@@ -179,7 +179,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             foreach (var item in from mi in increItems
                                  from oi in mi.OutputFiles.Values
-                                 where oi.LinkToPath != null
+                                 where oi.LinkToPath != null && oi.LinkToPath.StartsWith(_increContext.LastBaseDir)
                                  select oi)
             {
                 string cachedFileName;
