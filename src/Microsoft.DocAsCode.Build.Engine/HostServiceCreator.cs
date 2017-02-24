@@ -46,7 +46,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                     : from file in files
                       select Load(processor, parameters.Metadata, parameters.FileMetadata, file) into model
                       where model != null
-                      select model)
+                      select model,
+                parameters.VersionName,
+                parameters.VersionDir)
             {
                 MarkdownService = markdownService,
                 Processor = processor,

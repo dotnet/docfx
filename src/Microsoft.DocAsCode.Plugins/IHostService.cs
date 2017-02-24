@@ -9,6 +9,16 @@ namespace Microsoft.DocAsCode.Plugins
     {
         ImmutableList<TreeItemRestructure> TableOfContentRestructions { get; set; }
 
+        /// <summary>
+        /// current version's name, String.Empty for default version
+        /// </summary>
+        string VersionName { get; }
+
+        /// <summary>
+        /// current version's output base folder
+        /// </summary>
+        string VersionOutputFolder { get; }
+
         MarkupResult Parse(MarkupResult markupResult, FileAndType ft);
         MarkupResult Markup(string markdown, FileAndType ft);
         MarkupResult Markup(string markdown, FileAndType ft, bool omitParse);
