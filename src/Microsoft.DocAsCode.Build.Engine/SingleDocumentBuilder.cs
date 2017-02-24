@@ -93,7 +93,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.Files.DefaultBaseDir,
                     parameters.VersionName,
                     parameters.ApplyTemplateSettings,
-                    parameters.RootTocPath);
+                    parameters.RootTocPath,
+                    parameters.VersionDir);
 
                 Logger.LogVerbose("Start building document...");
 

@@ -568,7 +568,7 @@ exports.getOptions = function (){
                     ["_path"] = $"{_inputFolder}/test.html",
                     ["_tocRel"] = "toc",
                     ["_tocKey"] = $"~/{_inputFolder}/toc.md",
-                    ["_systemKeys"] = new [] {
+                    ["_systemKeys"] = new[] {
                         "conceptual",
                         "type",
                         "source",
@@ -803,6 +803,35 @@ exports.getOptions = function (){
             }
         }
 
+        [Fact]
+        public void TestBuildWithMultipleVersion()
+        {
+            #region Prepare test data
+            var conceptualFile = CreateFile("a.md", "*test*", _inputFolder);
+            var conceptualFileWithFileMapping = CreateFile("b.md", "output to `sub` folder", _inputFolder);
+            var versionDir = "v0.1";
+            var subDir = "sub";
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { conceptualFile }, _inputFolder, ".");
+            files.Add(DocumentType.Article, new[] { conceptualFileWithFileMapping }, _inputFolder, subDir);
+            #endregion
+
+            using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
+            {
+                BuildDocument(
+                    files,
+                    new Dictionary<string, object>(),
+                    templateFolder: _templateFolder,
+                    versionDir: versionDir);
+            }
+
+            var conceptualOutputPath = Path.Combine(_outputFolder, versionDir, Path.ChangeExtension("a.md", RawModelFileExtension));
+            Assert.True(File.Exists(conceptualOutputPath));
+            var conceptualWithFileMappingOutputPath = Path.Combine(_outputFolder, versionDir, subDir, Path.ChangeExtension("b.md", RawModelFileExtension));
+            Assert.True(File.Exists(conceptualWithFileMappingOutputPath));
+        }
+
         private static void AssertMetadataEqual(object expected, object actual)
         {
             var expectedJObject = JObject.FromObject(expected);
@@ -811,7 +840,7 @@ exports.getOptions = function (){
             Assert.True(equal, $"Expected: {expectedJObject.ToJsonString()};{Environment.NewLine}Actual: {actualJObject.ToJsonString()}.");
         }
 
-        private void BuildDocument(FileCollection files, Dictionary<string, object> metadata = null, ApplyTemplateSettings applyTemplateSettings = null, string templateFolder = null)
+        private void BuildDocument(FileCollection files, Dictionary<string, object> metadata = null, ApplyTemplateSettings applyTemplateSettings = null, string templateFolder = null, string versionDir = null)
         {
             using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
             {
@@ -828,6 +857,7 @@ exports.getOptions = function (){
                     Metadata = metadata?.ToImmutableDictionary(),
                     TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null),
                     TemplateDir = templateFolder,
+                    VersionDir = versionDir,
                 };
                 builder.Build(parameters);
             }
