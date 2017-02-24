@@ -84,7 +84,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     CopyToCurrentCache(increItems);
 
                     // Copy none incremental items to post processors
-                    manifest.Files = nonIncreItems.ToList();
+                    manifest.Files.Clear();
+                    manifest.Files.AddRange(nonIncreItems);
 
                     Logger.LogVerbose($"Copied {increItems.Count} incremental items from cache, prepare to handle {nonIncreItems.Count} not incremental items.");
                 }
@@ -230,7 +231,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
 
                 // Update incremental items in manifest
-                manifest.Files = manifest.Files.Except(increItems).ToList();
+                manifest.Files.RemoveAll(m => increItems.Contains(m));
                 manifest.Files.AddRange(restoredIncreItems);
                 return restoredIncreItems;
             }

@@ -135,10 +135,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var outputFileInfo = new OutputFileInfo();
             outputFileInfo.RelativePath = "index.html";
 
-            var manifestItem = new ManifestItem() { OutputFiles = new Dictionary<string, OutputFileInfo>() };
+            var manifestItem = new ManifestItem();
             manifestItem.OutputFiles.Add(".html", outputFileInfo);
 
-            var manifest = new Manifest() { Files = new List<ManifestItem>() };
+            var manifest = new Manifest();
             manifest.Files.Add(manifestItem);
 
             // process the fake manifest, using tempTestFolder as the output folder
