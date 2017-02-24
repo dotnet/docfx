@@ -110,11 +110,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             // restore dependency graph from last dependency graph for unchanged files
             using (new LoggerPhaseScope("ReportDependencyFromLastBuild", LogLevel.Diagnostic))
             {
+                var fileSet = new HashSet<string>(from h in hostServices
+                                                  where !h.CanIncrementalBuild
+                                                  from f in h.Models
+                                                  select IncrementalUtility.GetDependencyKey(f.OriginalFileAndType),
+                                                  FilePathComparer.OSPlatformSensitiveStringComparer);
                 var ldg = LastBuildVersionInfo?.Dependency;
                 if (ldg != null)
                 {
                     CurrentBuildVersionInfo.Dependency.ReportDependency(from r in ldg.ReportedBys
                                                                         where !IncrementalContext.ChangeDict.ContainsKey(r) || IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
+                                                                        where !fileSet.Contains(r)
                                                                         from i in ldg.GetDependencyReportedBy(r)
                                                                         select i);
                 }
