@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Common
 
     public static class ManifestUtility
     {
-        public static void RemoveDuplicateOutputFiles(List<ManifestItem> manifestItems)
+        public static void RemoveDuplicateOutputFiles(ManifestItemCollection manifestItems)
         {
             if (manifestItems == null)
             {

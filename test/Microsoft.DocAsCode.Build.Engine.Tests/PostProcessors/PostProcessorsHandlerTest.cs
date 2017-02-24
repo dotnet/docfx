@@ -861,7 +861,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             string intermediateFolder,
             BuildInfo lastBuildInfo,
             string appendContent,
-            List<ManifestItem> manifestItems,
+            ManifestItemCollection manifestItems,
             string additionalFileExtension,
             params string[] fileNames)
         {
