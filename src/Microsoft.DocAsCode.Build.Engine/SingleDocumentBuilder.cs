@@ -129,9 +129,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                         BuildCore(phaseProcessor, hostServices, context);
 
-                        return new Manifest
+                        return new Manifest(context.ManifestItems)
                         {
-                            Files = context.ManifestItems.ToList(),
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context),
                             SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),

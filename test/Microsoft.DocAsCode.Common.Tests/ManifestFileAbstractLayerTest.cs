@@ -22,11 +22,11 @@ namespace Microsoft.DocAsCode.Common.Tests
             var input = GetRandomFolder();
             var manifest = new Manifest
             {
-                Files = new List<ManifestItem>
+                Files =
                 {
                     new ManifestItem
                     {
-                        OutputFiles = new Dictionary<string, OutputFileInfo>
+                        OutputFiles =
                         {
                             [".txt"] = new OutputFileInfo
                             {
@@ -56,12 +56,12 @@ namespace Microsoft.DocAsCode.Common.Tests
             var output = GetRandomFolder();
             var manifest = new Manifest
             {
-                Files = new List<ManifestItem>
+                Files =
                 {
                     new ManifestItem
                     {
                         SourceRelativePath = "temp.md",
-                        OutputFiles = new Dictionary<string, OutputFileInfo>
+                        OutputFiles =
                         {
                             [".txt"] = new OutputFileInfo
                             {

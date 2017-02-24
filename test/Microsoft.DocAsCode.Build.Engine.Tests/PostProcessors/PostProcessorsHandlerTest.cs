@@ -177,7 +177,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                                 JsonUtility.Deserialize<List<string>>(Path.Combine(Path.GetFullPath(intermediateFolder), currentBuildInfo.DirectoryName, postProcessorInfos[1].ContextInfoFile)));
 
                             Assert.Equal(3, currentBuildInfo.PostProcessInfo.ManifestItems.Count);
-                            Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
+                            Assert.Equal<ManifestItem>(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
 
                             var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
                             Assert.Equal(6, postProcessOutputs.Count);
@@ -242,7 +242,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                                 JsonUtility.Deserialize<List<string>>(Path.Combine(Path.GetFullPath(intermediateFolder), secondBuildInfo.DirectoryName, postProcessorInfos[1].ContextInfoFile)));
 
                             Assert.Equal(3, secondBuildInfo.PostProcessInfo.ManifestItems.Count);
-                            Assert.Equal(manifest.Files, secondBuildInfo.PostProcessInfo.ManifestItems);
+                            Assert.Equal<ManifestItem>(manifest.Files, secondBuildInfo.PostProcessInfo.ManifestItems);
 
                             var postProcessOutputs = secondBuildInfo.PostProcessInfo.PostProcessOutputs;
                             Assert.Equal(6, postProcessOutputs.Count);
@@ -338,7 +338,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
                 Assert.Null(postProcessorInfos[0].IncrementalContextHash);
 
-                Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
+                Assert.Equal<ManifestItem>(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
 
                 var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
                 Assert.Equal(6, postProcessOutputs.Count);
@@ -393,7 +393,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
                 Assert.Null(postProcessorInfos[0].IncrementalContextHash);
 
-                Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
+                Assert.Equal<ManifestItem>(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
 
                 postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
                 Assert.Equal(6, postProcessOutputs.Count);
@@ -471,7 +471,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
                 Assert.Null(postProcessorInfos[0].IncrementalContextHash);
 
-                Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
+                Assert.Equal<ManifestItem>(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
 
                 var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
                 Assert.Equal(6, postProcessOutputs.Count);
@@ -575,7 +575,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
                 Assert.Null(postProcessorInfos[0].IncrementalContextHash);
 
-                Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
+                Assert.Equal<ManifestItem>(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
 
                 var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
                 Assert.Equal(4, postProcessOutputs.Count);
@@ -640,7 +640,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.Equal(3, postProcessOutputs.Count);
                 VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendIntegerPostProcessor.AppendInteger, null, "a", "b", "c");
 
-                Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
+                Assert.Equal<ManifestItem>(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
 
                 // Check incremental info
                 Assert.Equal(1, manifest.IncrementalInfo.Count);
@@ -709,7 +709,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.Equal(6, postProcessOutputs.Count);
                 VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, AppendStringPostProcessor.AdditionalExtensionString, "a", "b", "c");
 
-                Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
+                Assert.Equal<ManifestItem>(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
 
                 // Check incremental info
                 Assert.Equal(1, manifest.IncrementalInfo.Count);
@@ -767,7 +767,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.Equal(6, postProcessOutputs.Count);
                 VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, AppendStringPostProcessor.AdditionalExtensionString, "a", "b", "c");
 
-                Assert.Equal(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
+                Assert.Equal<ManifestItem>(manifest.Files, currentBuildInfo.PostProcessInfo.ManifestItems);
 
                 // Check incremental info
                 Assert.Equal(1, manifest.IncrementalInfo.Count);
