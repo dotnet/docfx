@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.Dfm
 
                 if (parents.Contains(currentPath, FilePathComparer.OSPlatformSensitiveComparer))
                 {
-                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}: Circular dependency found in \"{parent}\"", raw, sourceInfo);
+                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Circular dependency found in \"{parent}\"", raw, sourceInfo);
                 }
 
                 // Add current file path to chain when entering recursion
@@ -83,14 +83,14 @@ namespace Microsoft.DocAsCode.Dfm
             }
             catch (Exception e)
             {
-                return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Unable to resolve {raw}:{e.Message}", raw, sourceInfo);
+                return GenerateErrorNodeWithCommentWrapper("INCLUDE", e.Message, raw, sourceInfo);
             }
         }
 
         private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, string html, SourceInfo sourceInfo)
         {
-            Logger.LogError(comment + $"at line {sourceInfo.LineNumber}.");
-            return GenerateNodeWithCommentWrapper("ERROR " + tag, comment, html);
+            Logger.LogError($"Unable to resolve \"{html}\" at line {sourceInfo.LineNumber}: " + comment);
+            return GenerateNodeWithCommentWrapper("ERROR " + tag, $"Unable to resolve {html}: {comment}", html);
         }
 
         private static string GenerateNodeWithCommentWrapper(string tag, string comment, string html)
