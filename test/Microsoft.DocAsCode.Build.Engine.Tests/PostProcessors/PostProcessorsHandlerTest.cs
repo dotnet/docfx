@@ -873,7 +873,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 var htmlContent = $"{fileName}{appendContent}";
                 CreateFile($"{cachedHtmlName}", htmlContent, baseFolder);
                 postProcessOutputs.Add($"{fileName}.html", cachedHtmlName);
-                manifestItems.First(i => Path.ChangeExtension(i.SourceRelativePath, null) == fileName).OutputFiles[".html"].LinkToPath = "test";
+                manifestItems.First(i => Path.ChangeExtension(i.SourceRelativePath, null) == fileName).OutputFiles[".html"].LinkToPath = $@"{intermediateFolder}\{lastBuildInfo.DirectoryName}\test";
 
                 var cachedMetaName = IncrementalUtility.CreateRandomFileName(baseFolder);
                 CreateFile($"{cachedMetaName}", $"{fileName}{MetaAppendContent}", baseFolder);
@@ -889,7 +889,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     var item = manifestItems.FirstOrDefault(i => Path.ChangeExtension(i.SourceRelativePath, null) == fileName);
                     if (item != null)
                     {
-                        item.OutputFiles.Add($"{additionalFileExtension}", new OutputFileInfo { RelativePath = relativePath, LinkToPath = "test" });
+                        item.OutputFiles.Add($"{additionalFileExtension}", new OutputFileInfo { RelativePath = relativePath, LinkToPath = $@"{intermediateFolder}\{lastBuildInfo.DirectoryName}\test" });
                         lastBuildInfo.PostProcessInfo.ManifestItems.Add(item);
                     }
                 }
