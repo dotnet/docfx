@@ -605,7 +605,8 @@ $(function () {
     }
 
     function htmlEncode(str) {
-      return String(str)
+      if (!str) return str;
+      return str
         .replace(/&/g, '&amp;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;')
@@ -614,7 +615,8 @@ $(function () {
     }
 
     function htmlDecode(value) {
-      return String(value)
+      if (!str) return str;
+      return value
         .replace(/&quot;/g, '"')
         .replace(/&#39;/g, "'")
         .replace(/&lt;/g, '<')
@@ -624,7 +626,8 @@ $(function () {
 
     function cssEscape(str) {
       // see: http://stackoverflow.com/questions/2786538/need-to-escape-a-special-character-in-a-jquery-selector-string#answer-2837646
-      return String(str)
+      if (!str) return str;
+      return str
         .replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "\\$&");
     }
   })();
