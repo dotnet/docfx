@@ -50,12 +50,21 @@ namespace Microsoft.DocAsCode.Build.Engine
         public bool CanIncrementalBuild { get; set; }
 
         public ImmutableList<TreeItemRestructure> TableOfContentRestructions { get; set; }
+
+        public string VersionName { get; }
+
+        public string VersionOutputFolder { get; }
         #endregion
 
         #region Constructors
 
         public HostService(string baseDir, IEnumerable<FileModel> models)
+            : this(baseDir, models, null, null) { }
+
+        public HostService(string baseDir, IEnumerable<FileModel> models, string versionName, string versionDir)
         {
+            VersionName = versionName;
+            VersionOutputFolder = versionDir;
             LoadCore(models);
         }
 
