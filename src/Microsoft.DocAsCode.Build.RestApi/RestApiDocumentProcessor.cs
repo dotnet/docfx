@@ -50,10 +50,25 @@ namespace Microsoft.DocAsCode.Build.RestApi
             "remarks",
             "summary",
             "documentation",
-            "tags",
             "children",
             "documentType",
-            "source"
+            "source",
+            // Swagger Object Fields (http://swagger.io/specification/#schema-13):
+            "swagger",
+            "info",
+            "host",
+            "basePath",
+            "schemes",
+            "consumes",
+            "produces",
+            "paths",
+            "definitions",
+            "parameters",
+            "responses",
+            "securityDefinitions",
+            "security",
+            "tags",
+            "externalDocs"
         };
 
         [ImportMany(nameof(RestApiDocumentProcessor))]
