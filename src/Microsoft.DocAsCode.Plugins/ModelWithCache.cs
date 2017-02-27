@@ -12,16 +12,20 @@ namespace Microsoft.DocAsCode.Plugins
         private object _content;
         private FileStream _tempFile;
         private readonly WeakReference<object> _weakRef = new WeakReference<object>(null);
-        private readonly IFormatter _serializer;
         private readonly object _locker = new object();
+
         public event EventHandler ContentAccessed;
+
+        public IFormatter Serializer { get; set; }
+
         public string File { get; set; }
+
         public object Content
         {
             get
             {
                 if (_content == null &&
-                    _serializer != null &&
+                    Serializer != null &&
                     !_weakRef.TryGetTarget(out _content) &&
                     _tempFile != null)
                 {
@@ -50,14 +54,14 @@ namespace Microsoft.DocAsCode.Plugins
         public ModelWithCache(object content, IFormatter serializer = null)
         {
             _content = content;
-            _serializer = serializer;
+            Serializer = serializer;
         }
 
         public bool Serialize()
         {
             lock (_locker)
             {
-                if (_content == null || _serializer == null)
+                if (_content == null || Serializer == null)
                 {
                     return false;
                 }
@@ -70,7 +74,7 @@ namespace Microsoft.DocAsCode.Plugins
                     _tempFile.Seek(0, SeekOrigin.Begin);
                     _tempFile.SetLength(0);
                 }
-                _serializer.Serialize(_tempFile, _content);
+                Serializer.Serialize(_tempFile, _content);
                 _weakRef.SetTarget(_content);
                 _content = null;
                 return true;
@@ -81,12 +85,12 @@ namespace Microsoft.DocAsCode.Plugins
         {
             lock (_locker)
             {
-                if (_tempFile == null || _serializer == null)
+                if (_tempFile == null || Serializer == null)
                 {
                     return false;
                 }
                 _tempFile.Seek(0, SeekOrigin.Begin);
-                _content = _serializer.Deserialize(_tempFile);
+                _content = Serializer.Deserialize(_tempFile);
                 _weakRef.SetTarget(null);
                 return true;
             }
