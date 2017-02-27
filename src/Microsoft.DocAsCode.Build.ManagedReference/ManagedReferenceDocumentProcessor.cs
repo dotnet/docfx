@@ -102,7 +102,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
-            return new FileModel(file, page, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
+            return new FileModel(file, page, serializer: new BinaryFormatter())
             {
                 Uids = (from item in page.Items select new UidDefinition(item.Uid, localPathFromRoot)).ToImmutableArray(),
                 LocalPathFromRoot = localPathFromRoot
@@ -196,7 +196,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         {
             return FileModelPropertySerialization.Deserialize(
                 stream,
-                Environment.Is64BitProcess ? null : new BinaryFormatter(),
+                new BinaryFormatter(),
                 DeserializeModel,
                 DeserializeProperties,
                 null);

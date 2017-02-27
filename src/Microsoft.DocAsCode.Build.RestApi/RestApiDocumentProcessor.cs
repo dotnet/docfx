@@ -145,7 +145,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             vm.Metadata[Constants.PropertyName.SystemKeys] = SystemKeys;
             var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
-            return new FileModel(file, vm, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
+            return new FileModel(file, vm, serializer: new BinaryFormatter())
             {
                 Uids = new[] { new UidDefinition(vm.Uid, displayLocalPath) }
                     .Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath))
