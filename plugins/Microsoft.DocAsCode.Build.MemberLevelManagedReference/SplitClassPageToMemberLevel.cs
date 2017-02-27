@@ -187,14 +187,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private List<string> MergePlatform(IEnumerable<ItemViewModel> children)
         {
-            var platforms = children.Where(s => s.Platform != null).SelectMany(s => s.Platform);
-            var set = new SortedSet<string>(platforms);
-            if (set.Count == 0)
+            var platforms = children.Where(s => s.Platform != null).SelectMany(s => s.Platform).ToList();
+            if (platforms.Count == 0)
             {
                 return null;
             }
 
-            return set.ToList();
+            platforms.Sort();
+            return platforms;
         }
 
         private string GetOverloadItemName(string overload, string parent, bool isCtor)
