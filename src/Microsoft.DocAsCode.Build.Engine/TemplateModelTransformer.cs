@@ -294,14 +294,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             var ofi = new OutputFileInfo
             {
                 RelativePath = destFilePath,
-                VersionFolder = _context.VersionOutputFolder,
                 LinkToPath = GetLinkToPath(destFilePath),
                 Hash = Convert.ToBase64String(hashTask.Result)
             };
             if (!string.IsNullOrEmpty(_context.VersionOutputFolder))
             {
-                ofi.RelativePathFromVersionFolder = (RelativePath) destFilePath -
-                                                    (RelativePath) _context.VersionOutputFolder;
+                ofi.VersionName = _context.VersionName;
             }
             manifestItem.OutputFiles.Add(extension, ofi);
         }

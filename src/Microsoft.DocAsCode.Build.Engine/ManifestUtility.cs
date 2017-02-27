@@ -56,6 +56,7 @@ namespace Microsoft.DocAsCode.Common
                 XRefMap = xrefMaps.Count <= 1 ? xrefMaps.FirstOrDefault() : xrefMaps,
                 SourceBasePath = manifests.FirstOrDefault()?.SourceBasePath,
                 IncrementalInfo = incrementalInfos.Count > 0 ? incrementalInfos : null,
+                VersionInfo = manifests.SelectMany(m => m.VersionInfo).ToDictionary(p => p.Key, p => p.Value)
             };
         }
     }

@@ -45,6 +45,9 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("incremental_info")]
         public List<IncrementalInfo> IncrementalInfo { get; set; }
 
+        [JsonProperty("version_info")]
+        public Dictionary<string, VersionInfo> VersionInfo { get; set; }
+
         #region Public Methods
 
         public OutputFileInfo FindOutputFileInfo(string relativePath)

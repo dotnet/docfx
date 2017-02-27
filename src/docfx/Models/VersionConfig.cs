@@ -3,9 +3,12 @@
 
 namespace Microsoft.DocAsCode
 {
+    using System;
+
     using Newtonsoft.Json;
 
-    public class VersionInfo
+    [Serializable]
+    public class VersionConfig
     {
         [JsonProperty("dest")]
         public string Destination { get; set; }
