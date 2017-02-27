@@ -26,6 +26,9 @@ namespace Microsoft.DocAsCode.Plugins
             }
         }
 
+        [JsonProperty("version_name")]
+        public string VersionName { get; set; }
+
         [JsonProperty("version_folder")]
         public string VersionFolder { get; set; }
 

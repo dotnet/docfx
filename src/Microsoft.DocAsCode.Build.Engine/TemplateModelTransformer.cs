@@ -300,6 +300,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             };
             if (!string.IsNullOrEmpty(_context.VersionOutputFolder))
             {
+                ofi.VersionName = _context.VersionName;
                 ofi.RelativePathFromVersionFolder = (RelativePath) destFilePath -
                                                     (RelativePath) _context.VersionOutputFolder;
             }
