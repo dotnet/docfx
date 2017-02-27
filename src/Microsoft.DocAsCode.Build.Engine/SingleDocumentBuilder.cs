@@ -136,6 +136,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                             XRefMap = ExportXRefMap(parameters, context),
                             SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
                             IncrementalInfo = context.IncrementalBuildContext != null ? new List<IncrementalInfo> { context.IncrementalBuildContext.IncrementalInfo } : null,
+                            VersionInfo = string.IsNullOrEmpty(context.VersionName) ?
+                            new Dictionary<string, VersionInfo>():
+                            new Dictionary<string, VersionInfo>
+                                {
+                                    {
+                                        context.VersionName,
+                                        new VersionInfo {VersionFolder = context.VersionOutputFolder}
+                                    }
+                                }
                         };
                     }
                 }

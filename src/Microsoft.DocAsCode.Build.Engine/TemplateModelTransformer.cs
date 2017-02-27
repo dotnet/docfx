@@ -275,6 +275,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                 RelativePath = destFilePath,
                 Hash = Convert.ToBase64String(hashTask.Result)
             };
+            if (!string.IsNullOrEmpty(_context.VersionOutputFolder))
+            {
+                ofi.VersionName = _context.VersionName;
+            }
             manifestItem.OutputFiles.Add(extension, ofi);
         }
 
