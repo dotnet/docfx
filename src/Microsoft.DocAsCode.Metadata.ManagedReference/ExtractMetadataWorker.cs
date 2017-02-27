@@ -23,7 +23,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     public sealed class ExtractMetadataWorker : IDisposable
     {
-        private readonly Lazy<MSBuildWorkspace> _workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create());
+        private readonly Lazy<MSBuildWorkspace> _workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create(new Dictionary<string, string>
+        {
+            { "Configuration", "Release" }
+        }));
         private static readonly string[] SupportedSolutionExtensions = { ".sln" };
         private static readonly string[] SupportedProjectName = { "project.json" };
         private static readonly string[] SupportedProjectExtensions = { ".csproj", ".vbproj" };
