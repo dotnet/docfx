@@ -30,7 +30,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         private string _outputFolder;
         private string _inputFolder;
         private string _templateFolder;
-        private FileCollection _defaultFiles;
         private ApplyTemplateSettings _applyTemplateSettings;
         private TemplateManager _templateManager;
 
@@ -55,19 +54,19 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         public void ProcessMrefShouldSucceed()
         {
             var files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, new[] { "TestData/mref/Namespace1.Class1`2.yml" }, "TestData/");
+            files.Add(DocumentType.Article, new[] { "TestData/mref/CatLibrary.Cat`2.yml" }, "TestData/");
             BuildDocument(files);
             {
-                var outputRawModelPath = GetRawModelFilePath("Namespace1.Class1`2.yml");
+                var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat`2.yml");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
                 Assert.NotNull(model);
 
                 Assert.Equal("Hello world!", model.Metadata["meta"]);
-                Assert.Equal(3, model.Children.Count);
+                Assert.Equal(20, model.Children.Count);
             }
             {
-                var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat`2.#ctor.yml");
+                var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.Cat.yml");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
                 Assert.NotNull(model);
@@ -82,20 +81,20 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         public void ProcessMrefWithTocShouldSucceed()
         {
             var files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, new[] { "TestData/mref/Namespace1.Class1`2.yml" }, "TestData/");
+            files.Add(DocumentType.Article, new[] { "TestData/mref/CatLibrary.Cat`2.yml" }, "TestData/");
             files.Add(DocumentType.Article, new[] { "TestData/mref/toc.yml" }, "TestData/");
             BuildDocument(files);
             {
-                var outputRawModelPath = GetRawModelFilePath("Namespace1.Class1`2.yml");
+                var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat`2.yml");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
                 Assert.NotNull(model);
 
                 Assert.Equal("Hello world!", model.Metadata["meta"]);
-                Assert.Equal(3, model.Children.Count);
+                Assert.Equal(20, model.Children.Count);
             }
             {
-                var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat`2.#ctor.yml");
+                var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.Cat.yml");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
                 Assert.NotNull(model);
@@ -111,11 +110,23 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
                 Assert.NotNull(model);
                 Assert.Equal(1, model.Items.Count);
-                Assert.Equal("Namespace1.Class1%602.html", model.Items[0].TopicHref);
-                Assert.Equal(1, model.Items[0].Items.Count);
-                Assert.Equal("CatLibrary.Cat%602.%23ctor.html", model.Items[0].Items[0].TopicHref);
-                Assert.Equal("Cat", model.Items[0].Items[0].Name);
-                Assert.Equal(new List<string> { "net2", "net46" }, JArray.FromObject(model.Items[0].Items[0].Metadata[Constants.PropertyName.Platform]).Select(s => s.ToString()).ToList());
+                Assert.Equal("CatLibrary.Cat%602.html", model.Items[0].TopicHref);
+                Assert.Equal(16, model.Items[0].Items.Count);
+                Assert.Equal("CatLibrary.Cat-2.op_Addition.html", model.Items[0].Items[0].TopicHref);
+                Assert.Equal("Addition", model.Items[0].Items[0].Name);
+                Assert.Equal("CatLibrary.Cat-2.op_Subtraction.html", model.Items[0].Items[15].TopicHref);
+                Assert.Equal("Subtraction", model.Items[0].Items[15].Name);
+
+                var ctor = model.Items[0].Items.FirstOrDefault(s => s.Name == "Cat");
+                Assert.NotNull(ctor);
+                Assert.Equal("CatLibrary.Cat`2.#ctor*", ctor.TopicUid);
+                Assert.Equal("Constructor", ctor.Metadata["type"].ToString());
+                Assert.Equal(new List<string> { "net2", "net46" }, JArray.FromObject(ctor.Metadata[Constants.PropertyName.Platform]).Select(s => s.ToString()).ToList());
+            }
+            {
+                var manifestFile = Path.GetFullPath(Path.Combine(_outputFolder, "manifest.json"));
+                var manifest = JsonUtility.Deserialize<Manifest>(manifestFile);
+                Assert.Equal(17, manifest.Files.Count);
             }
         }
 

@@ -8,7 +8,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using System.Composition;
     using System.Linq;
     using System.IO;
-    using System.Web;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
@@ -42,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var treeMapping = new Dictionary<string, IEnumerable<TreeItem>>();
             foreach (var model in models)
             {
-                var result = SplitModelToOverloadLevel(model);
+                var result = SplitModelToOverloadLevel(model, new Dictionary<string, int>());
                 if (result != null)
                 {
                     if (treeMapping.ContainsKey(result.Uid))
@@ -70,7 +69,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return collection;
         }
 
-        private SplittedResult SplitModelToOverloadLevel(FileModel model)
+        private SplittedResult SplitModelToOverloadLevel(FileModel model, Dictionary<string, int> existingFileNames)
         {
             if (model.Type != DocumentType.Article)
             {
@@ -99,7 +98,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 {
                     foreach (var i in overload)
                     {
-                        var m = GenerateNonOverloadPage(page, model, i);
+                        var m = GenerateNonOverloadPage(page, model, i, existingFileNames);
                         splittedModels.Add(m.FileModel);
 
                         // Order toc by display name
@@ -108,7 +107,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 }
                 else
                 {
-                    var m = GenerateOverloadPage(page, model, overload);
+                    var m = GenerateOverloadPage(page, model, overload, existingFileNames);
                     splittedModels.Add(m.FileModel);
                     children.Add(m.TreeItem);
                 }
@@ -125,20 +124,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return new SplittedResult(primaryItem.Uid, children.OrderBy(s => GetDisplayName(s)), splittedModels);
         }
 
-        private ModelWrapper GenerateNonOverloadPage(PageViewModel page, FileModel model, ItemViewModel item)
+        private ModelWrapper GenerateNonOverloadPage(PageViewModel page, FileModel model, ItemViewModel item, Dictionary<string, int> existingFileNames)
         {
             item.Metadata[SplitReferencePropertyName] = true;
             var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { item });
-            var newModel = GenerateNewFileModel(model, newPage, item.Uid);
-            var tree = ConvertToTreeItem(item,
-                new Dictionary<string, object>
-                {
-                    [Constants.PropertyName.Platform] = item.Platform,
-                });
+            var newModel = GenerateNewFileModel(model, newPage, item.Uid, existingFileNames);
+            var tree = ConvertToTreeItem(item);
             return new ModelWrapper(newPage, newModel, tree);
         }
 
-        private ModelWrapper GenerateOverloadPage(PageViewModel page, FileModel model, IGrouping<string, ItemViewModel> overload)
+        private ModelWrapper GenerateOverloadPage(PageViewModel page, FileModel model, IGrouping<string, ItemViewModel> overload, Dictionary<string, int> existingFileNames)
         {
             var primaryItem = page.Items[0];
 
@@ -172,15 +167,22 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
 
             var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { newPrimaryItem }.Concat(overload).ToList());
-            var newModel = GenerateNewFileModel(model, newPage, overload.Key.Trim(OverloadLastChar));
-            var tree = ConvertToTreeItem(
-                newPrimaryItem,
-                new Dictionary<string, object>
-                {
-                    [Constants.PropertyName.Type] = newPrimaryItem.Type,
-                    [Constants.PropertyName.Platform] = newPrimaryItem.Platform,
-                });
+            var newFileName = GetNewFileName(primaryItem.Uid, newPrimaryItem);
+            var newModel = GenerateNewFileModel(model, newPage, newFileName, existingFileNames);
+            var tree = ConvertToTreeItem(newPrimaryItem);
             return new ModelWrapper(newPage, newModel, tree);
+        }
+
+        private string GetNewFileName(string parentUid, ItemViewModel model)
+        {
+            if (model.Type == MemberType.Constructor)
+            {
+                return $"{parentUid}.{model.Name}";
+            }
+            else
+            {
+                return model.Uid.TrimEnd(OverloadLastChar);
+            }
         }
 
         private List<string> MergePlatform(IEnumerable<ItemViewModel> children)
@@ -300,8 +302,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 [Constants.PropertyName.FullName] = item.FullName,
                 [Constants.PropertyName.TopicUid] = item.Uid,
                 [Constants.PropertyName.NameWithType] = item.NameWithType,
-                [Constants.PropertyName.Type] = item.Type.ToString(),
+                [Constants.PropertyName.Type] = item.Type.ToString()
             };
+
+            if (item.Platform != null)
+            {
+                result.Metadata[Constants.PropertyName.Platform] = item.Platform;
+            }
 
             if (item.Names.Count > 0)
             {
@@ -347,18 +354,22 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return newPage;
         }
 
-        private FileModel GenerateNewFileModel(FileModel model, PageViewModel newPage, string key)
+        private FileModel GenerateNewFileModel(FileModel model, PageViewModel newPage, string fileNameWithoutExtension, Dictionary<string, int> existingFileNames)
         {
             var initialFile = model.FileAndType.File;
             var extension = Path.GetExtension(initialFile);
             var directory = Path.GetDirectoryName(initialFile);
-            var newFileName = PathUtility.ToValidFilePath(key, '-') + extension;
+
+            // encode file name to clean url so that without server hosting, href can work with file:/// navigation
+            var cleanUrlFileName = fileNameWithoutExtension.ToCleanUrlFileName();
+            var newFileName = cleanUrlFileName + extension;
             var filePath = Path.Combine(directory, newFileName).ToNormalizedPath();
-            var originalFilePath = model.OriginalFileAndType.File + "#" + HttpUtility.UrlEncode(key);
-            var originalFileAndType = new FileAndType(model.OriginalFileAndType.BaseDir, originalFilePath, model.OriginalFileAndType.Type, model.OriginalFileAndType.SourceDir, model.OriginalFileAndType.DestinationDir);
+
             var newFileAndType = new FileAndType(model.FileAndType.BaseDir, filePath, model.FileAndType.Type, model.FileAndType.SourceDir, model.FileAndType.DestinationDir);
-            var newModel = new FileModel(newFileAndType, newPage, null, model.Serializer);
-            newModel.LocalPathFromRoot = model.LocalPathFromRoot;
+            var keyForModel = "~/" + RelativePath.GetPathWithoutWorkingFolderChar(filePath);
+
+            var newModel = new FileModel(newFileAndType, newPage, model.OriginalFileAndType, model.Serializer, keyForModel);
+            newModel.LocalPathFromRoot = model.LocalPathFromRoot + $"?uid={newPage.Items[0].Uid}";
             newModel.Uids = CalculateUids(newPage, model.LocalPathFromRoot);
             return newModel;
         }
