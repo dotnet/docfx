@@ -127,6 +127,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 var manifestFile = Path.GetFullPath(Path.Combine(_outputFolder, "manifest.json"));
                 var manifest = JsonUtility.Deserialize<Manifest>(manifestFile);
                 Assert.Equal(17, manifest.Files.Count);
+
+                // NOTE: split output files have the same source file path
+                var groups = manifest.Files.GroupBy(s => s.SourceRelativePath).ToList().OrderByDescending(s => s.Count()).ToList();
+                Assert.Equal(1, groups.Count);
             }
         }
 

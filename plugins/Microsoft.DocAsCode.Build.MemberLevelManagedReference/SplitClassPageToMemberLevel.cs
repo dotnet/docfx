@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var treeMapping = new Dictionary<string, IEnumerable<TreeItem>>();
             foreach (var model in models)
             {
-                var result = SplitModelToOverloadLevel(model, new Dictionary<string, int>());
+                var result = SplitModelToOverloadLevel(model);
                 if (result != null)
                 {
                     if (treeMapping.ContainsKey(result.Uid))
@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return collection;
         }
 
-        private SplittedResult SplitModelToOverloadLevel(FileModel model, Dictionary<string, int> existingFileNames)
+        private SplittedResult SplitModelToOverloadLevel(FileModel model)
         {
             if (model.Type != DocumentType.Article)
             {
@@ -98,7 +98,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 {
                     foreach (var i in overload)
                     {
-                        var m = GenerateNonOverloadPage(page, model, i, existingFileNames);
+                        var m = GenerateNonOverloadPage(page, model, i);
                         splittedModels.Add(m.FileModel);
 
                         // Order toc by display name
@@ -107,7 +107,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 }
                 else
                 {
-                    var m = GenerateOverloadPage(page, model, overload, existingFileNames);
+                    var m = GenerateOverloadPage(page, model, overload);
                     splittedModels.Add(m.FileModel);
                     children.Add(m.TreeItem);
                 }
@@ -124,16 +124,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return new SplittedResult(primaryItem.Uid, children.OrderBy(s => GetDisplayName(s)), splittedModels);
         }
 
-        private ModelWrapper GenerateNonOverloadPage(PageViewModel page, FileModel model, ItemViewModel item, Dictionary<string, int> existingFileNames)
+        private ModelWrapper GenerateNonOverloadPage(PageViewModel page, FileModel model, ItemViewModel item)
         {
             item.Metadata[SplitReferencePropertyName] = true;
             var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { item });
-            var newModel = GenerateNewFileModel(model, newPage, item.Uid, existingFileNames);
+            var newModel = GenerateNewFileModel(model, newPage, item.Uid);
             var tree = ConvertToTreeItem(item);
             return new ModelWrapper(newPage, newModel, tree);
         }
 
-        private ModelWrapper GenerateOverloadPage(PageViewModel page, FileModel model, IGrouping<string, ItemViewModel> overload, Dictionary<string, int> existingFileNames)
+        private ModelWrapper GenerateOverloadPage(PageViewModel page, FileModel model, IGrouping<string, ItemViewModel> overload)
         {
             var primaryItem = page.Items[0];
 
@@ -168,7 +168,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { newPrimaryItem }.Concat(overload).ToList());
             var newFileName = GetNewFileName(primaryItem.Uid, newPrimaryItem);
-            var newModel = GenerateNewFileModel(model, newPage, newFileName, existingFileNames);
+            var newModel = GenerateNewFileModel(model, newPage, newFileName);
             var tree = ConvertToTreeItem(newPrimaryItem);
             return new ModelWrapper(newPage, newModel, tree);
         }
@@ -354,7 +354,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return newPage;
         }
 
-        private FileModel GenerateNewFileModel(FileModel model, PageViewModel newPage, string fileNameWithoutExtension, Dictionary<string, int> existingFileNames)
+        private FileModel GenerateNewFileModel(FileModel model, PageViewModel newPage, string fileNameWithoutExtension)
         {
             var initialFile = model.FileAndType.File;
             var extension = Path.GetExtension(initialFile);
@@ -369,7 +369,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var keyForModel = "~/" + RelativePath.GetPathWithoutWorkingFolderChar(filePath);
 
             var newModel = new FileModel(newFileAndType, newPage, model.OriginalFileAndType, model.Serializer, keyForModel);
-            newModel.LocalPathFromRoot = model.LocalPathFromRoot + $"?uid={newPage.Items[0].Uid}";
+            newModel.LocalPathFromRoot = model.LocalPathFromRoot;
             newModel.Uids = CalculateUids(newPage, model.LocalPathFromRoot);
             return newModel;
         }
