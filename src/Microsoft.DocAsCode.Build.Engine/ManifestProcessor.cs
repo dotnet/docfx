@@ -338,6 +338,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
 
                     // Append system metadata to model
+                    m.Item.Model.Serializer = null;
                     m.Item.Model.Content = metadata;
                 }
             },
