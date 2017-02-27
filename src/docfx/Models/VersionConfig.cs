@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode
     using Newtonsoft.Json;
 
     [Serializable]
-    public class VersionInfo
+    public class VersionConfig
     {
         [JsonProperty("dest")]
         public string Destination { get; set; }

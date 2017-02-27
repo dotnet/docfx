@@ -125,6 +125,6 @@ namespace Microsoft.DocAsCode
         public string CustomLinkResolver { get; set; }
 
         [JsonProperty("versions")]
-        public Dictionary<string, VersionInfo> Versions { get; set; }
+        public Dictionary<string, VersionConfig> Versions { get; set; }
     }
 }

@@ -281,7 +281,7 @@ namespace Microsoft.DocAsCode.SubCommands
             foreach (var pair in fileMappingParametersDictionary)
             {
                 var p = parameters.Clone();
-                VersionInfo vi;
+                VersionConfig vi;
                 if (config.Versions != null && config.Versions.TryGetValue(pair.Key, out vi))
                 {
                     if (!string.IsNullOrEmpty(vi.Destination))
