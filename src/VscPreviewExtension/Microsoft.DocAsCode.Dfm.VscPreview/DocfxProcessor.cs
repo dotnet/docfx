@@ -15,6 +15,11 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
     {
         public static string DocfxProcess(string baseDir, string relativePath, string markdownContent)
         {
+            if (String.IsNullOrEmpty(baseDir) || String.IsNullOrEmpty(relativePath))
+            {
+                throw new Exception("Path Error");
+            }
+
             PreviewJsonConfig config = PreviewCommand.ParsePreviewCommand(baseDir);
 
             var markupResult = DfmMarkup(baseDir, relativePath, markdownContent.ToString());
@@ -71,7 +76,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
         private static void DocfxRebuild()
         {
             // TODO: Docfx rebuild
-            throw new DocfxPreviewException("Docfx rebuild is not implemented now");
+            throw new NotImplementedException();
         }
 
         private static string GetAbsolutePath(string originHtmlPath, string elementRelativePath)

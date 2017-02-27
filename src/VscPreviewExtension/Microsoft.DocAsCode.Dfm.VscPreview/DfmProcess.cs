@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
 
     internal class DfmProcess
     {
-        static void Main(string[] args)
+        static void Main()
         {
             while (true)
             {
@@ -16,7 +16,6 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                 {
                     string command = Console.ReadLine();
                     string result;
-                    TokenTreeProcessor tokenTreeProcessor = new TokenTreeProcessor();
                     switch (command.ToLower().Trim())
                     {
                         case "exit":
@@ -28,7 +27,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                             SendWithEndCode(result);
                             break;
                         case "tokentreepreview":
-                            result = tokenTreeProcessor.TokenTreePreview(GetMarkdownContent());
+                            result = TokenTreeProcessor.TokenTreePreview(GetMarkdownContent());
                             SendWithEndCode(result);
                             break;
                         default:
