@@ -385,23 +385,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private string GetNewFileName(string parentUid, ItemViewModel model)
         {
-            if (model.Type == MemberType.Constructor)
-            {
-                return GetValidFileName(
-                    $"{parentUid}.{model.Name}",
-                    $"{parentUid}.{model.Name.Split(Separator).Last()}",
-                    $"{parentUid}.{Path.GetRandomFileName()}"
-                    );
-            }
-            else
-            {
-                return GetValidFileName(
-                    model.Uid.TrimEnd(OverloadLastChar),
-                    $"{parentUid}.{model.Name}",
-                    $"{parentUid}.{model.Name.Split(Separator).Last()}",
-                    $"{parentUid}.{Path.GetRandomFileName()}"
-                    );
-            }
+            // For constructor, if the class is generic class e.g. ExpandedWrapper`11, class name can be pretty long
+            // Use -ctor as file name
+            return GetValidFileName(
+                model.Uid.TrimEnd(OverloadLastChar),
+                $"{parentUid}.{model.Name}",
+                $"{parentUid}.{model.Name.Split(Separator).Last()}",
+                $"{parentUid}.{Path.GetRandomFileName()}"
+                );
         }
 
         private string GetValidFileName(params string[] fileNames)

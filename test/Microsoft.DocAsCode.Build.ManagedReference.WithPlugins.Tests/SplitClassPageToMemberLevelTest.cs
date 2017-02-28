@@ -66,7 +66,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.Equal(20, model.Children.Count);
             }
             {
-                var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.Cat.yml");
+                var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.-ctor.yml");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
                 Assert.NotNull(model);
@@ -94,7 +94,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.Equal(20, model.Children.Count);
             }
             {
-                var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.Cat.yml");
+                var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.-ctor.yml");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
                 Assert.NotNull(model);
