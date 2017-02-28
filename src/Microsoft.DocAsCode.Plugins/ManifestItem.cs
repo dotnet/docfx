@@ -21,6 +21,9 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("is_incremental")]
         public bool IsIncremental { get; set; }
 
+        [JsonProperty("version")]
+        public string Version { get; set; }
+
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 
