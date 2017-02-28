@@ -3,12 +3,11 @@
 
 namespace Microsoft.DocAsCode.Build.ManagedReference
 {
-    using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Composition;
     using System.Linq;
     using System.IO;
-    using System.Collections.Immutable;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
@@ -153,7 +152,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 {
                     [IsOverloadPropertyName] = true,
                     [SplitReferencePropertyName] = true
-                }
+                },
+                Platform = MergePlatform(overload)
             };
             var referenceItem = page.References.FirstOrDefault(s => s.Uid == key);
             if (referenceItem != null)
@@ -167,14 +167,34 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
 
             var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { newPrimaryItem }.Concat(overload).ToList());
-            var newModel = GenerateNewFileModel(model, newPage, overload.Key.Trim(OverloadLastChar));
-            var tree = ConvertToTreeItem(
-                newPrimaryItem,
-                new Dictionary<string, object>
-                {
-                    [Constants.PropertyName.Type] = firstMember.Type
-                });
+            var newFileName = GetNewFileName(primaryItem.Uid, newPrimaryItem);
+            var newModel = GenerateNewFileModel(model, newPage, newFileName);
+            var tree = ConvertToTreeItem(newPrimaryItem);
             return new ModelWrapper(newPage, newModel, tree);
+        }
+
+        private string GetNewFileName(string parentUid, ItemViewModel model)
+        {
+            if (model.Type == MemberType.Constructor)
+            {
+                return $"{parentUid}.{model.Name}";
+            }
+            else
+            {
+                return model.Uid.TrimEnd(OverloadLastChar);
+            }
+        }
+
+        private List<string> MergePlatform(IEnumerable<ItemViewModel> children)
+        {
+            var platforms = children.Where(s => s.Platform != null).SelectMany(s => s.Platform).ToList();
+            if (platforms.Count == 0)
+            {
+                return null;
+            }
+
+            platforms.Sort();
+            return platforms;
         }
 
         private string GetOverloadItemName(string overload, string parent, bool isCtor)
@@ -206,15 +226,41 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 ?? GetPropertyValue<string>(metadata, Constants.PropertyName.TopicUid);
         }
 
-        /// <summary>
-        /// TODO: can save minimum info when ApiBuildOutput depends on global references instead of current page only
-        /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
         private ReferenceViewModel ConvertToReference(ItemViewModel item)
         {
-            // Use serializer to keep most info from item, e.g. reference's summary is possibly required by class template
-            return YamlUtility.ConvertTo<ReferenceViewModel>(item);
+            // Save minimal info, as FillReferenceInformation will fill info from ItemViewModel if the property is needed
+            var reference = new ReferenceViewModel
+            {
+                 Uid = item.Uid,
+                 Parent = item.Parent,
+                 Name = item.Name,
+                 NameWithType = item.NameWithType,
+                 FullName = item.FullName,
+            };
+
+            if (item.Names.Count > 0)
+            {
+                foreach (var pair in item.Names)
+                {
+                    reference.NameInDevLangs[Constants.ExtensionMemberPrefix.Name + pair.Key] = pair.Value;
+                }
+            }
+            if (item.FullNames.Count > 0)
+            {
+                foreach (var pair in item.FullNames)
+                {
+                    reference.FullNameInDevLangs[Constants.ExtensionMemberPrefix.FullName + pair.Key] = pair.Value;
+                }
+            }
+            if (item.NamesWithType.Count > 0)
+            {
+                foreach (var pair in item.NamesWithType)
+                {
+                    reference.NameWithTypeInDevLangs[Constants.ExtensionMemberPrefix.NameWithType + pair.Key] = pair.Value;
+                }
+            }
+
+            return reference;
         }
 
         private void MergeWithReference(ItemViewModel item, ReferenceViewModel reference)
@@ -256,8 +302,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 [Constants.PropertyName.FullName] = item.FullName,
                 [Constants.PropertyName.TopicUid] = item.Uid,
                 [Constants.PropertyName.NameWithType] = item.NameWithType,
-                [Constants.PropertyName.Type] = item.Type.ToString(),
+                [Constants.PropertyName.Type] = item.Type.ToString()
             };
+
+            if (item.Platform != null)
+            {
+                result.Metadata[Constants.PropertyName.Platform] = item.Platform;
+            }
 
             if (item.Names.Count > 0)
             {
@@ -303,15 +354,21 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return newPage;
         }
 
-        private FileModel GenerateNewFileModel(FileModel model, PageViewModel newPage, string key)
+        private FileModel GenerateNewFileModel(FileModel model, PageViewModel newPage, string fileNameWithoutExtension)
         {
             var initialFile = model.FileAndType.File;
             var extension = Path.GetExtension(initialFile);
             var directory = Path.GetDirectoryName(initialFile);
-            var newFileName = PathUtility.ToValidFilePath(key, '-').Replace('`', '-') + extension;
+
+            // encode file name to clean url so that without server hosting, href can work with file:/// navigation
+            var cleanUrlFileName = fileNameWithoutExtension.ToCleanUrlFileName();
+            var newFileName = cleanUrlFileName + extension;
             var filePath = Path.Combine(directory, newFileName).ToNormalizedPath();
+
             var newFileAndType = new FileAndType(model.FileAndType.BaseDir, filePath, model.FileAndType.Type, model.FileAndType.SourceDir, model.FileAndType.DestinationDir);
-            var newModel = new FileModel(newFileAndType, newPage, null, model.Serializer);
+            var keyForModel = "~/" + RelativePath.GetPathWithoutWorkingFolderChar(filePath);
+
+            var newModel = new FileModel(newFileAndType, newPage, model.OriginalFileAndType, model.Serializer, keyForModel);
             newModel.LocalPathFromRoot = model.LocalPathFromRoot;
             newModel.Uids = CalculateUids(newPage, model.LocalPathFromRoot);
             return newModel;

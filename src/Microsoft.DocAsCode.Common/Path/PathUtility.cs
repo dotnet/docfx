@@ -15,8 +15,15 @@ namespace Microsoft.DocAsCode.Common
     public static class PathUtility
     {
         private static readonly Regex UriWithProtocol = new Regex(@"^\w{2,}\:", RegexOptions.Compiled);
-        private static readonly char[] InvalidFilePathChars = Path.GetInvalidFileNameChars();
+        private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
         private static readonly char[] InvalidPathChars = Path.GetInvalidPathChars();
+        private static readonly string InvalidFileNameCharsRegexString = $"[{Regex.Escape(new string(InvalidFileNameChars))}]";
+
+        // refers to http://index/?query=urlencode&rightProject=System&file=%5BRepoRoot%5D%5CNDP%5Cfx%5Csrc%5Cnet%5CSystem%5CNet%5Cwebclient.cs&rightSymbol=fptyy6owkva8
+        private static readonly string NeedUrlEncodeFileNameCharsRegexString = "[^0-9a-zA-Z-_.!*()]";
+
+        private static readonly string InvalidOrNeedUrlEncodeFileNameCharsRegexString = $"{InvalidFileNameCharsRegexString}|{NeedUrlEncodeFileNameCharsRegexString}";
+        private static readonly Regex InvalidOrNeedUrlEncodeFileNameCharsRegex = new Regex(InvalidOrNeedUrlEncodeFileNameCharsRegexString, RegexOptions.Compiled);
 
         public static string ToValidFilePath(this string input, char replacement = '_')
         {
@@ -25,9 +32,19 @@ namespace Microsoft.DocAsCode.Common
                 return Path.GetRandomFileName();
             }
 
-            string validPath = new string(input.Select(s => InvalidFilePathChars.Contains(s) ? replacement : s).ToArray());
+            string validPath = new string(input.Select(s => InvalidFileNameChars.Contains(s) ? replacement : s).ToArray());
 
             return validPath;
+        }
+
+        public static string ToCleanUrlFileName(this string input, string replacement = "-")
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return Path.GetRandomFileName();
+            }
+
+            return InvalidOrNeedUrlEncodeFileNameCharsRegex.Replace(input, replacement);
         }
 
         public static void SaveFileListToFile(List<string> fileList, string filePath)
