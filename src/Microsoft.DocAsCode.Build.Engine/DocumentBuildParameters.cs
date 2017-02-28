@@ -63,6 +63,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string CustomLinkResolver { get; set; }
 
+        [IncrementalIgnore]
+        public int LruSize { get; set; }
+
         public DocumentBuildParameters Clone() =>
             (DocumentBuildParameters)MemberwiseClone();
     }

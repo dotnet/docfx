@@ -159,7 +159,8 @@ namespace Microsoft.DocAsCode.Tests
             {
                 Content = new List<string> { conceptualFile1, conceptualFile2 },
                 OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-                Templates = new List<string> { Path.Combine(_templateFolder, "default") }
+                Templates = new List<string> { Path.Combine(_templateFolder, "default") },
+                LruSize = 1,
             }).Exec(null);
 
             var file = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile1, ".html"));

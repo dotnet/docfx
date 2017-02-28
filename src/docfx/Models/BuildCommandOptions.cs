@@ -119,5 +119,8 @@ namespace Microsoft.DocAsCode
 
         [OptionList("postProcessors", Separator = ',', HelpText = "Set the order of post processors in plugins")]
         public List<string> PostProcessors { get; set; }
+
+        [OptionList("lruSize", HelpText = "Set the lru cache for model count in memory.")]
+        public int? LruSize { get; set; }
     }
 }
