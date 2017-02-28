@@ -524,58 +524,70 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 IncrementalUtility.RetryIO(() =>
                 {
-                    string fileName = IncrementalUtility.GetRandomEntry(incrementalContext.BaseDir);
+                    var items = new List<ModelManifestItem>();
                     if (pair.Value == null)
                     {
                         if (lmm == null)
                         {
                             throw new BuildCacheException($"Full build hasn't loaded model {pair.Key}");
                         }
-                        string lfn;
+                        List<ModelManifestItem> lfn;
                         if (!lmm.Models.TryGetValue(pair.Key, out lfn))
                         {
                             throw new BuildCacheException($"Last build hasn't loaded model {pair.Key}");
                         }
 
-                        // use copy rather than move because if the build failed, the intermediate files of last successful build shouldn't be corrupted.
-                        File.Copy(
-                            Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.LastBaseDir), lfn),
-                            Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), fileName));
+                        foreach (var item in lfn)
+                        {
+                            // use copy rather than move because if the build failed, the intermediate files of last successful build shouldn't be corrupted.
+                            string fileName = IncrementalUtility.GetRandomEntry(incrementalContext.BaseDir);
+                            File.Copy(
+                                Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.LastBaseDir), item.FilePath),
+                                Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), fileName));
+                            items.Add(new ModelManifestItem() { SourceFilePath = item.SourceFilePath, FilePath = fileName });
+                        }
                     }
                     else
                     {
-                        var key = RelativePath.NormalizedWorkingFolder + pair.Key;
-                        var model = Models.Find(m => m.Key == key);
-                        using (var stream = File.Create(
+                        var models = Models.Where(m => m.OriginalFileAndType.File == pair.Key).ToList();
+                        foreach (var model in models)
+                        {
+                            string fileName = IncrementalUtility.GetRandomEntry(incrementalContext.BaseDir);
+                            using (var stream = File.Create(
                             Path.Combine(
                                 Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir),
                                 fileName)))
-                        {
-                            processor.SaveIntermediateModel(model, stream);
+                            {
+                                processor.SaveIntermediateModel(model, stream);
+                            }
+                            items.Add(new ModelManifestItem() { SourceFilePath = model.FileAndType.File, FilePath = fileName });
                         }
                     }
-                    cmm.Models.Add(pair.Key, fileName);
+                    cmm.Models.Add(pair.Key, items);
                 });
             }
         }
 
-        public FileModel LoadIntermediateModel(IncrementalBuildContext incrementalContext, string fileName)
+        public IEnumerable<FileModel> LoadIntermediateModel(IncrementalBuildContext incrementalContext, string fileName)
         {
             if (!CanIncrementalBuild)
             {
-                return null;
+                yield break;
             }
             var processor = (ISupportIncrementalDocumentProcessor)Processor;
             var cmm = incrementalContext.GetCurrentIntermediateModelManifest(this);
-            string cfn;
+            List<ModelManifestItem> cfn;
             if (!cmm.Models.TryGetValue(fileName, out cfn))
             {
                 throw new BuildCacheException($"Last build hasn't loaded model {fileName}");
             }
-            using (var stream = File.OpenRead(
-                Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), cfn)))
+            foreach (var item in cfn)
             {
-                return processor.LoadIntermediateModel(stream);
+                using (var stream = File.OpenRead(
+                Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), item.FilePath)))
+                {
+                    yield return processor.LoadIntermediateModel(stream);
+                }
             }
         }
 
@@ -585,9 +597,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return new List<string>();
             }
+            var cmm = incrementalContext.GetCurrentIntermediateModelManifest(this);
             return (from pair in incrementalContext.GetModelLoadInfo(this)
                     where pair.Value == null
-                    select pair.Key).ToList();
+                    from item in cmm.Models[pair.Key]
+                    select item.SourceFilePath).ToList();
         }
 
         #endregion
@@ -646,8 +660,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var mi = incrementalContext.GetModelLoadInfo(this);
             var toLoadList = (from f in mi.Keys
                               where condition(f)
-                              select LoadIntermediateModel(incrementalContext, f) into m
-                              where m != null
+                              from m in LoadIntermediateModel(incrementalContext, f)
                               select m).ToList();
             if (toLoadList.Count > 0)
             {

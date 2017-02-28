@@ -76,6 +76,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             ReportReference(hostServices);
             ReportDependency(hostServices);
             CurrentBuildVersionInfo.Dependency.ResolveReference();
+            foreach (var h in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
+            {
+                h.SaveIntermediateModel(IncrementalContext);
+            }
+            IncrementalContext.UpdateBuildVersionInfoPerDependencyGraph();
             foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
             {
                 foreach (var file in GetFilesToRelayMessages(h))
@@ -83,11 +88,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     LastBuildMessageInfo.Replay(file);
                 }
             }
-            foreach (var h in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
-            {
-                h.SaveIntermediateModel(IncrementalContext);
-            }
-            IncrementalContext.UpdateBuildVersionInfoPerDependencyGraph();
             Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
