@@ -233,8 +233,31 @@ namespace Microsoft.DocAsCode.Build.Engine
                     from f in h.GetUnloadedModelFiles(IncrementalContext)
                     from mani in LastBuildVersionInfo.Manifest
                     where FilePathComparer.OSPlatformSensitiveStringComparer.Equals(f, mani.SourceRelativePath)
-                    let copied = mani.Clone(isIncremental: true, sourceRelativePath: f)
+                    let copied = UpdateItem(mani, f)
                     select copied).ToList();
+        }
+
+        private ManifestItem UpdateItem(ManifestItem item, string sourceRelativePath)
+        {
+            var result = item.Clone();
+            result.IsIncremental = true;
+            result.SourceRelativePath = sourceRelativePath;
+            foreach (var ofi in result.OutputFiles.Values)
+            {
+                if (ofi.LinkToPath != null &&
+                    ofi.LinkToPath.Length > IncrementalContext.LastBaseDir.Length &&
+                    ofi.LinkToPath.StartsWith(IncrementalContext.LastBaseDir) &&
+                    (ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '\\' || ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '/'))
+                {
+                    IncrementalUtility.RetryIO(() =>
+                    {
+                        var path = Path.Combine(IncrementalContext.BaseDir, IncrementalUtility.GetRandomEntry(IncrementalContext.BaseDir));
+                        File.Copy(Environment.ExpandEnvironmentVariables(ofi.LinkToPath), Environment.ExpandEnvironmentVariables(path));
+                        ofi.LinkToPath = path;
+                    });
+                }
+            }
+            return result;
         }
 
         #endregion
