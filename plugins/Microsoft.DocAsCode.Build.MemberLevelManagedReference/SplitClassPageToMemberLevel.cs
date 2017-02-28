@@ -348,7 +348,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 Items = items,
                 Metadata = new Dictionary<string, object>(page.Metadata),
-                References = new List<ReferenceViewModel>(page.References.Select(s => s.Clone())),
+                References = page.References,
                 ShouldSkipMarkup = page.ShouldSkipMarkup
             };
             return newPage;
