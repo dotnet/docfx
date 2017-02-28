@@ -12,9 +12,6 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("relative_path")]
         public string RelativePath { get; set; }
 
-        [JsonProperty("version_name")]
-        public string VersionName { get; set; }
-
         [JsonProperty("link_to_path")]
         public string LinkToPath { get; set; }
 
