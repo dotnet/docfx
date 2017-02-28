@@ -134,6 +134,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                     TraceIntermediateInfo(outputFolder, manifest);
 
+                    manifest.Shrink(_increContext.CurrentBaseDir);
+
                     // Update manifest items in current post processing info
                     _increContext.CurrentInfo.ManifestItems.AddRange(manifest.Files);
                     _increContext.CurrentInfo.SaveManifest(_increContext.CurrentBaseDir);

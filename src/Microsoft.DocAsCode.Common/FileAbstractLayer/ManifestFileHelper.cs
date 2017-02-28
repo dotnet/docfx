@@ -217,5 +217,33 @@ namespace Microsoft.DocAsCode.Common
                 }
             }
         }
+
+        public static void Shrink(this Manifest manifest, string incrementalFolder)
+        {
+            lock (manifest)
+            {
+                Shrink(manifest.Files, incrementalFolder);
+            }
+        }
+
+        public static void Shrink(this IEnumerable<ManifestItem> items, string incrementalFolder)
+        {
+            foreach (var g in from m in items
+                              from ofi in m.OutputFiles.Values
+                              where ofi.Hash != null &&
+                                ofi.LinkToPath != null &&
+                                ofi.LinkToPath.Length > incrementalFolder.Length &&
+                                ofi.LinkToPath.StartsWith(incrementalFolder) &&
+                                (ofi.LinkToPath[incrementalFolder.Length + 1] == '\\' || ofi.LinkToPath[incrementalFolder.Length + 1] == '/')
+                              group ofi by ofi.Hash)
+            {
+                var first = g.First();
+                foreach (var item in g.Skip(1))
+                {
+                    File.Delete(Environment.ExpandEnvironmentVariables(item.LinkToPath));
+                    item.LinkToPath = first.LinkToPath;
+                }
+            }
+        }
     }
 }
