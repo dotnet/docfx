@@ -230,7 +230,11 @@ namespace Microsoft.DocAsCode.Common
         {
             foreach (var g in from m in items
                               from ofi in m.OutputFiles.Values
-                              where ofi.Hash != null && ofi.LinkToPath != null && ofi.LinkToPath.StartsWith(incrementalFolder)
+                              where ofi.Hash != null &&
+                                ofi.LinkToPath != null &&
+                                ofi.LinkToPath.Length > incrementalFolder.Length &&
+                                ofi.LinkToPath.StartsWith(incrementalFolder) &&
+                                (ofi.LinkToPath[incrementalFolder.Length + 1] == '\\' || ofi.LinkToPath[incrementalFolder.Length + 1] == '/')
                               group ofi by ofi.Hash)
             {
                 var first = g.First();
