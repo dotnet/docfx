@@ -8,21 +8,21 @@ namespace Microsoft.DocAsCode.Common
 
     internal sealed class IndexedLinkFileReader : IFileReader
     {
+        private readonly Dictionary<RelativePath, PathMapping> _mappings;
+
         public IndexedLinkFileReader(Dictionary<RelativePath, PathMapping> mappings)
         {
-            Mappings = mappings;
+            _mappings = mappings;
         }
-
-        public Dictionary<RelativePath, PathMapping> Mappings { get; }
 
         #region IFileReader Members
 
         public PathMapping? FindFile(RelativePath file)
         {
             PathMapping mp;
-            lock (Mappings)
+            lock (_mappings)
             {
-                if (Mappings.TryGetValue(file, out mp))
+                if (_mappings.TryGetValue(file, out mp))
                 {
                     return mp;
                 }
@@ -32,9 +32,9 @@ namespace Microsoft.DocAsCode.Common
 
         public IEnumerable<RelativePath> EnumerateFiles()
         {
-            lock (Mappings)
+            lock (_mappings)
             {
-                return Mappings.Keys.ToList();
+                return _mappings.Keys.ToList();
             }
         }
 
