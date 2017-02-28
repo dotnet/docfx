@@ -10,9 +10,9 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Linq;
     using System.Runtime.Remoting.Lifetime;
     using System.Reflection;
+    using System.Threading;
 
     using Microsoft.DocAsCode;
-    using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.ConceptualDocuments;
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Build.ManagedReference;
@@ -23,7 +23,6 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
-    using System.Threading;
 
     [Serializable]
     internal sealed class DocumentBuilderWrapper
@@ -277,6 +276,15 @@ namespace Microsoft.DocAsCode.SubCommands
             parameters.TemplateDir = templateDir;
 
             var fileMappingParametersDictionary = GroupFileMappings(config.Content, config.Overwrite, config.Resource);
+
+            if (config.LruSize == null)
+            {
+                parameters.LruSize = Environment.Is64BitProcess ? 0x2000 : 0xC00;
+            }
+            else
+            {
+                parameters.LruSize = Math.Max(0, config.LruSize.Value);
+            }
 
             foreach (var pair in fileMappingParametersDictionary)
             {

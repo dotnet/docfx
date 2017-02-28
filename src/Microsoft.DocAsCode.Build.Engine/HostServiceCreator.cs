@@ -48,7 +48,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                       where model != null
                       select model,
                 parameters.VersionName,
-                parameters.VersionDir)
+                parameters.VersionDir,
+                parameters.LruSize)
             {
                 MarkdownService = markdownService,
                 Processor = processor,

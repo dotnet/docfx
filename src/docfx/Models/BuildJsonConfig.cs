@@ -126,5 +126,8 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("versions")]
         public Dictionary<string, VersionConfig> Versions { get; set; }
+
+        [JsonProperty("lruSize")]
+        public int? LruSize { get; set; }
     }
 }

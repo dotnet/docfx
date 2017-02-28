@@ -280,6 +280,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 config.FileMetadataFilePaths.AddRange(options.FileMetadataFilePaths);
             }
 
+            config.LruSize = options.LruSize ?? config.LruSize;
+
             config.FileMetadataFilePaths =
                 new ListWithStringFallback(config.FileMetadataFilePaths.Select(
                     path => PathUtility.IsRelativePath(path) ? Path.Combine(config.BaseDirectory, path) : path).Reverse());

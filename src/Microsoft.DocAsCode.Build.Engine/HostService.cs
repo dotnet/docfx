@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly object _syncRoot = new object();
         private readonly object _tocSyncRoot = new object();
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
-        private readonly LruList<ModelWithCache> _lru = LruList<ModelWithCache>.CreateSynchronized(Environment.Is64BitProcess ? 0x2000 : 0xC00, OnLruRemoving);
+        private readonly LruList<ModelWithCache> _lru;
         #endregion
 
         #region Properties
@@ -54,17 +54,22 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string VersionName { get; }
 
         public string VersionOutputFolder { get; }
+
         #endregion
 
         #region Constructors
 
         public HostService(string baseDir, IEnumerable<FileModel> models)
-            : this(baseDir, models, null, null) { }
+            : this(baseDir, models, null, null, 0) { }
 
-        public HostService(string baseDir, IEnumerable<FileModel> models, string versionName, string versionDir)
+        public HostService(string baseDir, IEnumerable<FileModel> models, string versionName, string versionDir, int lruSize)
         {
             VersionName = versionName;
             VersionOutputFolder = versionDir;
+            if (lruSize > 0)
+            {
+                _lru = LruList<ModelWithCache>.CreateSynchronized(lruSize, OnLruRemoving);
+            }
             LoadCore(models);
         }
 
@@ -594,7 +599,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             EventHandler fileOrBaseDirChangedHandler = HandleFileOrBaseDirChanged;
             EventHandler<PropertyChangedEventArgs<ImmutableArray<UidDefinition>>> uidsChangedHandler = HandleUidsChanged;
             EventHandler contentAccessedHandler = null;
-            contentAccessedHandler = ContentAccessedHandler;
+            if (_lru != null)
+            {
+                contentAccessedHandler = ContentAccessedHandler;
+            }
             if (Models != null)
             {
                 foreach (var m in Models)
