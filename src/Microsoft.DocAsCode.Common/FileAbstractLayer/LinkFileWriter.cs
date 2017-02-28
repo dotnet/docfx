@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.Common
         {
             lock (_mapping)
             {
-                return new LinkFileReader(_mapping.Values);
+                return new IndexedLinkFileReader(_mapping);
             }
         }
 
