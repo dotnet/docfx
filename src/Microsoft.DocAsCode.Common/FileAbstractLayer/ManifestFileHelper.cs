@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Common
     using System.Linq;
 
     using Microsoft.DocAsCode.Plugins;
+    using System.Threading.Tasks;
 
     public static class ManifestFileHelper
     {
@@ -193,29 +194,27 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(manifestFolder));
             }
             FileWriterBase.EnsureFolder(manifestFolder);
-            lock (manifest)
-            {
-                var ofiList = (from f in manifest.Files
-                               from ofi in f.OutputFiles.Values
-                               where ofi.LinkToPath != null
-                               select ofi).ToList();
-                if (ofiList.Count == 0)
+            var fal = FileAbstractLayerBuilder.Default
+                .ReadFromManifest(manifest, manifestFolder)
+                .WriteToRealFileSystem(manifestFolder)
+                .Create();
+            Parallel.ForEach(
+                from f in manifest.Files
+                from ofi in f.OutputFiles.Values
+                where ofi.LinkToPath != null
+                select ofi,
+                ofi =>
                 {
-                    return;
-                }
-                var fal = FileAbstractLayerBuilder.Default
-                    .ReadFromManifest(manifest, manifestFolder)
-                    .WriteToRealFileSystem(manifestFolder)
-                    .Create();
-                foreach (var rp in ofiList)
-                {
-                    fal.Copy(rp.RelativePath, rp.RelativePath);
-                }
-                foreach (var ofi in ofiList)
-                {
-                    ofi.LinkToPath = null;
-                }
-            }
+                    try
+                    {
+                        fal.Copy(ofi.RelativePath, ofi.RelativePath);
+                        ofi.LinkToPath = null;
+                    }
+                    catch (PathTooLongException)
+                    {
+                        Logger.LogError($"Unable to dereference file: {ofi.RelativePath}.", file: ofi.RelativePath);
+                    }
+                });
         }
 
         public static void Shrink(this Manifest manifest, string incrementalFolder)
