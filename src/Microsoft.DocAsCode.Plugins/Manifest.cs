@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.Plugins
     public class Manifest
     {
         private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
-        private readonly Dictionary<string, OutputFileInfo> _index = new Dictionary<string, OutputFileInfo>();
+        private readonly Dictionary<string, List<OutputFileInfo>> _index = new Dictionary<string, List<OutputFileInfo>>();
 
         public Manifest()
         {
@@ -52,17 +52,21 @@ namespace Microsoft.DocAsCode.Plugins
 
         public OutputFileInfo FindOutputFileInfo(string relativePath)
         {
-            OutputFileInfo result;
+            List<OutputFileInfo> list;
             _lock.EnterReadLock();
             try
             {
-                _index.TryGetValue(relativePath, out result);
+                _index.TryGetValue(relativePath, out list);
             }
             finally
             {
                 _lock.ExitReadLock();
             }
-            return result;
+            if (list?.Count > 0)
+            {
+                return list[0];
+            }
+            return null;
         }
 
         #endregion
@@ -80,7 +84,7 @@ namespace Microsoft.DocAsCode.Plugins
                     {
                         foreach (var ofi in item.OutputFiles.Values)
                         {
-                            _index[ofi.RelativePath] = ofi;
+                            AddItem(ofi.RelativePath, ofi);
                             ofi.PropertyChanged += OutputFileInfoPropertyChanged;
                         }
                         ((INotifyCollectionChanged)item.OutputFiles).CollectionChanged += ManifestItemOutputChanged;
@@ -92,13 +96,8 @@ namespace Microsoft.DocAsCode.Plugins
                     {
                         foreach (var ofi in item.OutputFiles.Values)
                         {
-                            OutputFileInfo value;
-                            _index.TryGetValue(ofi.RelativePath, out value);
-                            if (value == ofi)
-                            {
-                                _index.Remove(ofi.RelativePath);
-                                ofi.PropertyChanged -= OutputFileInfoPropertyChanged;
-                            }
+                            RemoveItem(ofi.RelativePath, ofi);
+                            ofi.PropertyChanged -= OutputFileInfoPropertyChanged;
                         }
                        ((INotifyCollectionChanged)item.OutputFiles).CollectionChanged -= ManifestItemOutputChanged;
                     }
@@ -119,7 +118,7 @@ namespace Microsoft.DocAsCode.Plugins
                 {
                     foreach (KeyValuePair<string, OutputFileInfo> item in e.NewItems)
                     {
-                        _index[item.Value.RelativePath] = item.Value;
+                        AddItem(item.Value.RelativePath, item.Value);
                         item.Value.PropertyChanged += OutputFileInfoPropertyChanged;
                     }
                 }
@@ -127,13 +126,8 @@ namespace Microsoft.DocAsCode.Plugins
                 {
                     foreach (KeyValuePair<string, OutputFileInfo> item in e.OldItems)
                     {
-                        OutputFileInfo value;
-                        _index.TryGetValue(item.Value.RelativePath, out value);
-                        if (value == item.Value)
-                        {
-                            _index.Remove(item.Value.RelativePath);
-                            item.Value.PropertyChanged -= OutputFileInfoPropertyChanged;
-                        }
+                        RemoveItem(item.Value.RelativePath, item.Value);
+                        item.Value.PropertyChanged -= OutputFileInfoPropertyChanged;
                     }
                 }
             }
@@ -157,12 +151,38 @@ namespace Microsoft.DocAsCode.Plugins
             _lock.EnterWriteLock();
             try
             {
-                _index.Remove(args.Original);
-                _index.Add(args.Current, (OutputFileInfo)sender);
+                RemoveItem(args.Original, (OutputFileInfo)sender);
+                AddItem(args.Current, (OutputFileInfo)sender);
             }
             finally
             {
                 _lock.ExitWriteLock();
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void AddItem(string relativePath, OutputFileInfo item)
+        {
+            List<OutputFileInfo> list;
+            if (_index.TryGetValue(relativePath, out list))
+            {
+                list.Add(item);
+            }
+            else
+            {
+                _index[relativePath] = new List<OutputFileInfo> { item };
+            }
+        }
+
+        private void RemoveItem(string relativePath, OutputFileInfo item)
+        {
+            List<OutputFileInfo> list;
+            if (_index.TryGetValue(relativePath, out list))
+            {
+                list.Remove(item);
             }
         }
 
