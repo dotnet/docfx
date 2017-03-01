@@ -12,19 +12,26 @@ namespace Microsoft.DocAsCode.Common
 
     public class ManifestFileWriter : FileWriterBase
     {
+        private readonly bool _noRandomFile;
+
         public Manifest Manifest { get; }
 
         public string ManifestFolder { get; }
 
         public ManifestFileWriter(Manifest manifest, string manifestFolder, string outputFolder)
-            : base(outputFolder)
+            : base(outputFolder ?? manifestFolder)
         {
             if (manifest == null)
             {
                 throw new ArgumentNullException(nameof(manifest));
             }
+            if (manifestFolder == null)
+            {
+                throw new ArgumentNullException(nameof(manifestFolder));
+            }
             Manifest = manifest;
             ManifestFolder = manifestFolder;
+            _noRandomFile = outputFolder == null;
         }
 
         #region Overrides
@@ -52,9 +59,18 @@ namespace Microsoft.DocAsCode.Common
                 {
                     throw new InvalidOperationException("File entry not found.");
                 }
-                var pair = CreateRandomFileStream();
-                entry.LinkToPath = Path.Combine(OutputFolder, pair.Item1);
-                return pair.Item2;
+                if (_noRandomFile)
+                {
+                    Directory.CreateDirectory(
+                        Path.Combine(ManifestFolder, file.RemoveWorkingFolder().GetDirectoryPath()));
+                    return File.Create(Path.Combine(ManifestFolder, file.RemoveWorkingFolder()));
+                }
+                else
+                {
+                    var pair = CreateRandomFileStream();
+                    entry.LinkToPath = Path.Combine(OutputFolder, pair.Item1);
+                    return pair.Item2;
+                }
             }
         }
 
@@ -67,10 +83,7 @@ namespace Microsoft.DocAsCode.Common
 
         private OutputFileInfo FindEntryInManifest(string file)
         {
-            return (from f in Manifest.Files
-                    from ofi in f.OutputFiles.Values
-                    where  ofi.RelativePath == file
-                    select ofi).FirstOrDefault();
+            return Manifest.FindOutputFileInfo(file);
         }
     }
 }

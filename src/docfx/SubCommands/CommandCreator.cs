@@ -42,16 +42,9 @@ namespace Microsoft.DocAsCode.SubCommands
             var logOption = options as ILoggable;
             if (logOption != null)
             {
-                if (!string.IsNullOrWhiteSpace(logOption.LogFilePath) && Logger.FindListener(l => l is ReportLogListener) == null)
+                if (!string.IsNullOrWhiteSpace(logOption.LogFilePath) && Logger.FindAsyncListener(l => l is ReportLogListener) == null)
                 {
-                    if (string.IsNullOrWhiteSpace(logOption.RepoRoot))
-                    {
-                        Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath, string.Empty, root));
-                    }
-                    else
-                    {
-                        Logger.RegisterListener(new ReportLogListener(logOption.LogFilePath, logOption.RepoRoot, root));
-                    }
+                    Logger.RegisterAsyncListener(new ReportLogListener(logOption.LogFilePath, logOption.RepoRoot ?? string.Empty, root));
                 }
 
                 if (logOption.LogLevel.HasValue)

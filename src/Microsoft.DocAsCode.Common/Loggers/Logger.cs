@@ -4,13 +4,12 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Collections.Immutable;
 
     public static class Logger
     {
         private static readonly object _sync = new object();
-        private static ImmutableList<ILoggerListener> _listeners = ImmutableList<ILoggerListener>.Empty;
-
+        private static CompositeLogListener _syncListener = new CompositeLogListener();
+        private static AsyncLogListener _asyncListener = new AsyncLogListener();
         public volatile static LogLevel LogLevelThreshold = LogLevel.Info;
 
         public static void RegisterListener(ILoggerListener listener)
@@ -20,10 +19,7 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(listener));
             }
 
-            lock (_sync)
-            {
-                _listeners = _listeners.Add(listener);
-            }
+            _syncListener.AddListener(listener);
         }
 
         public static ILoggerListener FindListener(Predicate<ILoggerListener> predicate)
@@ -33,7 +29,7 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(predicate));
             }
 
-            return _listeners.Find(predicate);
+            return _syncListener.FindListener(predicate);
         }
 
         public static void UnregisterListener(ILoggerListener listener)
@@ -43,37 +39,54 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(listener));
             }
 
-            lock(_sync)
+            _syncListener.RemoveListener(listener);
+        }
+
+        public static void RegisterAsyncListener(ILoggerListener listener)
+        {
+            if (listener == null)
             {
-                listener.Dispose();
-                _listeners = _listeners.Remove(listener);
+                throw new ArgumentNullException(nameof(listener));
             }
+
+            _asyncListener.AddListener(listener);
+        }
+
+        public static ILoggerListener FindAsyncListener(Predicate<ILoggerListener> predicate)
+        {
+            if (predicate == null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            return _asyncListener.FindListener(predicate);
+        }
+
+        public static void UnregisterAsyncListener(ILoggerListener listener)
+        {
+            if (listener == null)
+            {
+                throw new ArgumentNullException(nameof(listener));
+            }
+
+            _asyncListener.RemoveListener(listener);
         }
 
         public static void UnregisterAllListeners()
         {
-            foreach (var i in _listeners)
-            {
-                i.Dispose();
-            }
-
-            _listeners = ImmutableList<ILoggerListener>.Empty;
+            _syncListener.RemoveAllListeners();
+            _asyncListener.RemoveAllListeners();
         }
 
-        public static void Log(ILogItem result)
+        public static void Log(ILogItem item)
         {
-            if (result.LogLevel < LogLevelThreshold)
+            if (item.LogLevel < LogLevelThreshold)
             {
                 return;
             }
 
-            lock (_sync)
-            {
-                foreach (var listener in _listeners)
-                {
-                    listener.WriteLine(result);
-                }
-            }
+            _syncListener.WriteLine(item);
+            _asyncListener.WriteLine(item);
         }
 
         public static void Log(LogLevel level, string message, string phase = null, string file = null, string line = null)
@@ -132,13 +145,8 @@ namespace Microsoft.DocAsCode.Common
 
         public static void Flush()
         {
-            lock (_sync)
-            {
-                foreach (var listener in _listeners)
-                {
-                    listener.Flush();
-                }
-            }
+            _syncListener.Flush();
+            _asyncListener.Flush();
         }
 
 #if !NetCore

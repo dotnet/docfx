@@ -56,10 +56,7 @@ namespace Microsoft.DocAsCode.Common
 
         private OutputFileInfo FindEntryInManifest(string file)
         {
-            return (from f in Manifest.Files
-                    from ofi in f.OutputFiles.Values
-                    where ofi.RelativePath == file
-                    select ofi).FirstOrDefault();
+            return Manifest.FindOutputFileInfo(file);
         }
     }
 }

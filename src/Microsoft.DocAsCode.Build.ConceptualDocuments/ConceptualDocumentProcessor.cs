@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             return new FileModel(
                 file,
                 content,
-                serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
+                serializer: new BinaryFormatter())
             {
                 LocalPathFromRoot = localPathFromRoot,
             };
@@ -141,7 +141,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
         {
             return FileModelPropertySerialization.Deserialize(
                 stream,
-                Environment.Is64BitProcess ? null : new BinaryFormatter(),
+                new BinaryFormatter(),
                 DeserializeModel,
                 DeserializeProperties,
                 null);

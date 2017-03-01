@@ -251,28 +251,39 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             var newChanges = new List<string>();
 
-            if (dg != null)
+            foreach (var change in (from c in _changeDict
+                                    where c.Value != ChangeKindWithDependency.None
+                                    select c).ToList())
             {
-                foreach (var from in dg.FromNodes)
+                var dgToLookUp = change.Value == ChangeKindWithDependency.Deleted ? LastBuildVersionInfo?.Dependency : dg;
+                if (dgToLookUp == null)
                 {
-                    if (dg.GetAllDependencyFrom(from).Any(d => isValid(d) && _changeDict.ContainsKey(d.To) && _changeDict[d.To] != ChangeKindWithDependency.None))
+                    continue;
+                }
+
+                foreach (var dt in dgToLookUp.GetAllDependencyTo(change.Key))
+                {
+                    if (!isValid(dt))
                     {
-                        if (!_changeDict.ContainsKey(from))
+                        continue;
+                    }
+                    string from = dt.From.Value;
+                    if (!_changeDict.ContainsKey(from))
+                    {
+                        _changeDict[from] = ChangeKindWithDependency.DependencyUpdated;
+                        newChanges.Add(from);
+                    }
+                    else
+                    {
+                        if (_changeDict[from] == ChangeKindWithDependency.None)
                         {
-                            _changeDict[from] = ChangeKindWithDependency.DependencyUpdated;
                             newChanges.Add(from);
                         }
-                        else
-                        {
-                            if (_changeDict[from] == ChangeKindWithDependency.None)
-                            {
-                                newChanges.Add(from);
-                            }
-                            _changeDict[from] |= ChangeKindWithDependency.DependencyUpdated;
-                        }
+                        _changeDict[from] |= ChangeKindWithDependency.DependencyUpdated;
                     }
                 }
             }
+
             return newChanges;
         }
 

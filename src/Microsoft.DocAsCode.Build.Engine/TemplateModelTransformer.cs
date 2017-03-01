@@ -55,8 +55,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 DocumentType = item.DocumentType,
                 SourceRelativePath = item.LocalPathFromRoot,
-                OutputFiles = new Dictionary<string, OutputFileInfo>(),
                 Metadata = item.Metadata,
+                Version = _context.VersionName,
             };
             var outputDirectory = _settings.OutputFolder ?? Directory.GetCurrentDirectory();
 
@@ -64,12 +64,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (item.ResourceFile != null)
             {
                 // Resource file has already been processed in its plugin
-                manifestItem.OutputFiles.Add("resource", new OutputFileInfo
+                var ofi = new OutputFileInfo
                 {
                     RelativePath = item.ResourceFile,
-                    LinkToPath = null,
-                    Hash = null
-                });
+                    LinkToPath = GetLinkToPath(item.ResourceFile),
+                };
+                manifestItem.OutputFiles.Add("resource", ofi);
             }
 
             // 2. process model
@@ -99,10 +99,18 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     catch (Exception e)
                     {
-                        // save raw model for further investigation:
-                        var exportSettings = ApplyTemplateSettings.RawModelExportSettingsForDebug;
-                        var rawModelPath = ExportModel(model, item.FileWithoutExtension, exportSettings);
-                        var message = $"Error transforming model \"{rawModelPath}\" generated from \"{item.LocalPathFromRoot}\" using \"{template.ScriptName}\": {e.Message}";
+                        string message;
+                        if (_settings.DebugMode)
+                        {
+                            // save raw model for further investigation:
+                            var rawModelPath = ExportModel(model, item.FileWithoutExtension, _settings.RawModelExportSettingsForDebug);
+                            message = $"Error transforming model \"{rawModelPath}\" generated from \"{item.LocalPathFromRoot}\" using \"{template.ScriptName}\". {e.Message}";
+                        }
+                        else
+                        {
+                            message = $"Error transforming model generated from \"{item.LocalPathFromRoot}\" using \"{template.ScriptName}\". To get the detailed raw model, please run docfx with debug mode --debug. {e.Message} ";
+                        }
+
                         Logger.LogError(message);
                         throw new DocumentException(message, e);
                     }
@@ -114,10 +122,18 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     catch (Exception e)
                     {
-                        // save view model for further investigation:
-                        var exportSettings = ApplyTemplateSettings.ViewModelExportSettingsForDebug;
-                        var viewModelPath = ExportModel(viewModel, outputFile, exportSettings);
-                        var message = $"Error applying template \"{template.Name}\" to view model \"{viewModelPath}\" generated from \"{item.LocalPathFromRoot}\": {e.Message}";
+                        string message;
+                        if (_settings.DebugMode)
+                        {
+                            // save view model for further investigation:
+                            var viewModelPath = ExportModel(viewModel, outputFile, _settings.ViewModelExportSettingsForDebug);
+                            message = $"Error applying template \"{template.Name}\" to view model \"{viewModelPath}\" generated from \"{item.LocalPathFromRoot}\". {e.Message}";
+                        }
+                        else
+                        {
+                            message = $"Error applying template \"{template.Name}\" generated from \"{item.LocalPathFromRoot}\". To get the detailed view model, please run docfx with debug mode --debug. {e.Message}";
+                        }
+
                         Logger.LogError(message);
                         throw new DocumentException(message, e);
                     }
@@ -131,11 +147,19 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         if (string.IsNullOrWhiteSpace(result))
                         {
-                            // TODO: WHAT to do if is transformed to empty string? STILL creat empty file?
-                            var exportSettings = ApplyTemplateSettings.ViewModelExportSettingsForDebug;
-                            var viewModelPath = ExportModel(viewModel, outputFile, exportSettings);
-                            Logger.LogWarning($"Model \"{viewModelPath}\" is transformed to empty string with template \"{template.Name}\"");
+                            string message;
+                            if (_settings.DebugMode)
+                            {
+                                var viewModelPath = ExportModel(viewModel, outputFile, _settings.ViewModelExportSettingsForDebug);
+                                message = $"Model \"{viewModelPath}\" is transformed to empty string with template \"{template.Name}\"";
+                            }
+                            else
+                            {
+                                message = $"Model is transformed to empty string with template \"{template.Name}\". To get the detailed view model, please run docfx with debug mode --debug";
+                            }
+                            Logger.LogWarning(message);
                         }
+
                         TransformDocument(result ?? string.Empty, extension, _context, outputFile, missingUids, manifestItem);
                         Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputFile}\".");
                     }
@@ -155,6 +179,27 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             return manifestItem;
+        }
+
+        private string GetLinkToPath(string fileName)
+        {
+            if (EnvironmentContext.FileAbstractLayerImpl == null)
+            {
+                return null;
+            }
+            var pp = ((FileAbstractLayer)EnvironmentContext.FileAbstractLayerImpl).GetOutputPhysicalPath(fileName);
+            var expandPP = Path.GetFullPath(Environment.ExpandEnvironmentVariables(pp));
+            var outputPath = Path.GetFullPath(_context.BuildOutputFolder);
+            if (expandPP.Length > outputPath.Length &&
+                (expandPP[outputPath.Length] == '\\' || expandPP[outputPath.Length] == '/') &&
+                FilePathComparer.OSPlatformSensitiveStringComparer.Equals(outputPath, expandPP.Remove(outputPath.Length)))
+            {
+                return null;
+            }
+            else
+            {
+                return pp;
+            }
         }
 
         private IDictionary<string, object> AppendGlobalMetadata(IDictionary<string, object> model)
@@ -199,8 +244,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return null;
             }
             var outputFolder = settings.OutputFolder ?? string.Empty;
-
-            string modelPath = Path.GetFullPath(Path.Combine(outputFolder, settings.PathRewriter(modelFileRelativePath)));
+            string modelPath;
+            try
+            {
+                modelPath = Path.GetFullPath(Path.Combine(outputFolder, settings.PathRewriter(modelFileRelativePath)));
+            }
+            catch (PathTooLongException)
+            {
+                modelPath = Path.GetFullPath(Path.Combine(outputFolder, Path.GetRandomFileName()));
+            }
 
             JsonUtility.Serialize(modelPath, model);
             return StringExtension.ToDisplayPath(modelPath);
@@ -240,12 +292,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     sw.Write(result);
                 }
             }
-            manifestItem.OutputFiles.Add(extension, new OutputFileInfo
+            var ofi = new OutputFileInfo
             {
                 RelativePath = destFilePath,
-                LinkToPath = null,
+                LinkToPath = GetLinkToPath(destFilePath),
                 Hash = Convert.ToBase64String(hashTask.Result)
-            });
+            };
+            manifestItem.OutputFiles.Add(extension, ofi);
         }
 
         private void TransformHtml(IDocumentBuildContext context, string html, string sourceFilePath, string destFilePath, StreamWriter outputWriter)

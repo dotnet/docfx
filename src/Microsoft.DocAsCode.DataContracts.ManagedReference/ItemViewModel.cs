@@ -257,6 +257,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [YamlMember(Alias = "example")]
         [JsonProperty("example")]
         [MergeOption(MergeOption.Replace)]
+        [MarkdownContent]
         public List<string> Examples { get; set; }
 
         [YamlMember(Alias = "syntax")]
@@ -335,8 +336,8 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [MarkdownContent]
         public string Conceptual { get; set; }
 
-        [YamlMember(Alias = "platform")]
-        [JsonProperty("platform")]
+        [YamlMember(Alias = Constants.PropertyName.Platform)]
+        [JsonProperty(Constants.PropertyName.Platform)]
         [MergeOption(MergeOption.Replace)]
         public List<string> Platform { get; set; }
 

@@ -1,0 +1,54 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "Contacts",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/contacts": {
+      "patch": {
+        "parameters": [
+          {
+            "in": "body",
+            "description": "this is request body, not real parameter",
+            "name": "bodyparam",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/contact",
+              "example": {
+                "department": "Sales",
+                "jobTitle": "Sales Rep"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content. Indicates success. No response body is returned.",
+            "examples": {
+              "application/json": "none"
+            }
+          }
+        },
+        "description": "<p><i>Required scope</i>: <b><i>Contacts.Write</i></b></p>",
+        "summary": "Change a contact's properties.",
+        "operationId": "update contact"
+      }
+    }
+  },
+  "host": "graph.windows.net",
+  "basePath": "/myorganization",
+  "definitions": {
+    "contact": {
+      "properties": {
+        "provisioningErrors": {
+          "type": "array",
+          "items": {
+            "$ref": "externalLoopRef_B.JSON#/definitions/Provision%25ing%7CError"
+          },
+          "readOnly": true
+        }
+      }
+    }
+  }
+}

@@ -50,10 +50,25 @@ namespace Microsoft.DocAsCode.Build.RestApi
             "remarks",
             "summary",
             "documentation",
-            "tags",
             "children",
             "documentType",
-            "source"
+            "source",
+            // Swagger Object Fields (http://swagger.io/specification/#schema-13):
+            "swagger",
+            "info",
+            "host",
+            "basePath",
+            "schemes",
+            "consumes",
+            "produces",
+            "paths",
+            "definitions",
+            "parameters",
+            "responses",
+            "securityDefinitions",
+            "security",
+            "tags",
+            "externalDocs"
         };
 
         [ImportMany(nameof(RestApiDocumentProcessor))]
@@ -130,7 +145,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             vm.Metadata[Constants.PropertyName.SystemKeys] = SystemKeys;
             var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
-            return new FileModel(file, vm, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
+            return new FileModel(file, vm, serializer: new BinaryFormatter())
             {
                 Uids = new[] { new UidDefinition(vm.Uid, displayLocalPath) }
                     .Concat(from item in vm.Children select new UidDefinition(item.Uid, displayLocalPath))

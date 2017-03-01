@@ -3,12 +3,11 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
 
-    using Microsoft.DocAsCode.Build.Engine.Incrementals;
-    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Common.StreamSegmentSerialization;
     using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json;
@@ -17,39 +16,39 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         [JsonIgnore]
         public IPostProcessorHost PostProcessorHost { get; private set; }
+        private Dictionary<string, object> _savingContext = new Dictionary<string, object>();
 
-        // bookmarks mapping from output file -> bookmarks
-        public OSPlatformSensitiveDictionary<HashSet<string>> Bookmarks { get; private set; } = new OSPlatformSensitiveDictionary<HashSet<string>>();
-
-        // file mapping from output file -> src file
-        public OSPlatformSensitiveDictionary<string> FileMapping { get; private set; } = new OSPlatformSensitiveDictionary<string>();
-
-        public static HtmlPostProcessContext Load(IPostProcessorHost host)
+        public HtmlPostProcessContext(IPostProcessorHost host)
         {
-            using (var stream = host?.LoadContextInfo())
+            PostProcessorHost = host;
+        }
+
+        public T Load<T>(string contextName, Func<Stream, T> loader)
+        {
+            using (var stream = PostProcessorHost?.LoadContextInfo())
             {
-                if (stream == null || host?.IsIncremental == false)
+                if (stream == null)
                 {
-                    var context = new HtmlPostProcessContext();
-                    context.PostProcessorHost = host;
-                    return context;
+                    return default(T);
                 }
-                using (var sr = new StreamReader(stream))
+                var deserializer = new StreamDeserializer(stream);
+                var seg = deserializer.ReadSegment();
+                var entries = deserializer.ReadDictionaryLazy(seg);
+                Lazy<object> lazy;
+                if (!entries.TryGetValue(contextName, out lazy))
                 {
-                    var context = JsonUtility.Deserialize<HtmlPostProcessContext>(sr);
-                    context.PostProcessorHost = host;
-                    var totalSrcFileSet = new HashSet<string>(host.SourceFileInfos.Select(s => s.SourceRelativePath));
-                    context.FileMapping = new OSPlatformSensitiveDictionary<string>(
-                        context.FileMapping
-                        .Where(p => totalSrcFileSet.Contains(p.Value))
-                        .ToDictionary(p => p.Key, p => p.Value));
-                    context.Bookmarks = new OSPlatformSensitiveDictionary<HashSet<string>>(
-                        context.Bookmarks
-                        .Where(p => context.FileMapping.ContainsKey(p.Key))
-                        .ToDictionary(p => p.Key, p => p.Value));
-                    return context;
+                    return default(T);
                 }
+                var bytes = (byte[])lazy.Value;
+                return loader(new MemoryStream(bytes));
             }
+        }
+
+        public void Save(string contextName, Action<Stream> saver)
+        {
+            var ms = new MemoryStream();
+            saver(ms);
+            _savingContext[contextName] = ms.ToArray();
         }
 
         public void Save()
@@ -60,10 +59,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     return;
                 }
-                using (var sw = new StreamWriter(stream))
-                {
-                    JsonUtility.Serialize(sw, this);
-                }
+                var serializer = new StreamSerializer(stream);
+                serializer.Write(_savingContext);
             }
         }
     }

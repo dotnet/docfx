@@ -421,32 +421,29 @@ if (!branchValue) {
   process.exit(1);
 }
 
+let promise;
 switch (branchValue.toLowerCase()) {
   case "dev":
-    util.runSteps([
-      // step 1: clear the possible release exists
-      clearReleaseStep,
-      // step2: run build.ps1
-      docfxBuildStep,
-      // step3: run e2e test
-      e2eTestStep,
-      // step4: run docfx.exe to generate documentation
-      genereateDocsStep
-    ]);
+    promise = util.execPromiseFn("node", [path.join(__dirname, "node_modules/gulp/bin/gulp"), "dev"], __dirname)();
+    promise
+      .then(() => {
+        console.log("Finished successfully.")
+      })
+      .catch((err) => {
+        console.error("Failed, " + err);
+        process.exit(1);
+      });
     break;
   case "nightly-build":
-    util.runSteps([
-      // step 1: clear the possible release exists
-      clearReleaseStep,
-      // step2: run build.ps1
-      docfxBuildStep,
-      // step3: run e2e test
-      e2eTestStep,
-      // step4: run docfx.exe to generate documentation
-      genereateDocsStep,
-      // step5: upload release to myget.org
-      uploadDevMygetStep
-    ]);
+    promise = util.execPromiseFn("node", [path.join(__dirname, "node_modules/gulp/bin/gulp"), "stable"], __dirname)();
+    promise
+      .then(() => {
+        console.log("Finished successully.")
+      })
+      .catch((err) => {
+        console.error("Failed, " + err);
+        process.exit(1);
+      });
     break;
   case "master":
     util.runSteps([
@@ -462,10 +459,10 @@ switch (branchValue.toLowerCase()) {
       updateGhPageStep,
       // step6: zip and upload release
       updateGithubReleaseStep,
-      // step7: upload to chocolatey.org
-      updateChocoReleaseStep,
       // step8: upload release to myget.org
-      uploadMasterMygetStep
+      uploadMasterMygetStep,
+      // step7: upload to chocolatey.org
+      updateChocoReleaseStep
     ]);
     break;
   default:

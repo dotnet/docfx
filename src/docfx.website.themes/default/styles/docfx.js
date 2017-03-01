@@ -20,14 +20,16 @@ $(function () {
     $('.IMPORTANT, .CAUTION').addClass('alert alert-danger');
   })();  
 
+  // Anchorjs 3.2.2 fails when title content contains '<' and '>'.
+  // TODO: enable this when anchorjs fixes this issue
   // Enable anchors for headings.
-  (function () {
-    anchors.options = {
-      placement: 'left',
-      visible: 'touch'
-    };
-    anchors.add('article h2, article h3, article h4, article h5, article h6');
-  })();
+  // (function () {
+  //   anchors.options = {
+  //     placement: 'left',
+  //     visible: 'touch'
+  //   };
+  //   anchors.add('article h2, article h3, article h4, article h5, article h6');
+  // })();
 
   // Open links to different host in a new window.
   (function () {
@@ -583,7 +585,7 @@ $(function () {
             items: []
           };
           if (nextLevelSelector) {
-            var selector = '#' + id + "~" + nextLevelSelector;
+            var selector = '#' + cssEscape(id) + "~" + nextLevelSelector;
             var currentSelector = selector;
             if (prevSelector) currentSelector += ":not(" + prevSelector + ")";
             $(header[j]).siblings(currentSelector).each(function (index, e) {
@@ -591,7 +593,6 @@ $(function () {
                 item.items.push({
                   name: htmlEncode($(e).text()), // innerText decodes text while innerHTML not
                   href: "#" + e.id
-
                 })
               }
             })
@@ -606,7 +607,8 @@ $(function () {
     }
 
     function htmlEncode(str) {
-      return String(str)
+      if (!str) return str;
+      return str
         .replace(/&/g, '&amp;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;')
@@ -615,12 +617,20 @@ $(function () {
     }
 
     function htmlDecode(value) {
-      return String(value)
+      if (!str) return str;
+      return value
         .replace(/&quot;/g, '"')
         .replace(/&#39;/g, "'")
         .replace(/&lt;/g, '<')
         .replace(/&gt;/g, '>')
         .replace(/&amp;/g, '&');
+    }
+
+    function cssEscape(str) {
+      // see: http://stackoverflow.com/questions/2786538/need-to-escape-a-special-character-in-a-jquery-selector-string#answer-2837646
+      if (!str) return str;
+      return str
+        .replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "\\$&");
     }
   })();
 

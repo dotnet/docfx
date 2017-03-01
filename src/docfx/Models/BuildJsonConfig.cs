@@ -72,6 +72,12 @@ namespace Microsoft.DocAsCode
         [JsonProperty("force")]
         public bool? Force { get; set; }
 
+        [JsonProperty("debug")]
+        public bool? EnableDebugMode { get; set; }
+
+        [JsonProperty("debugOutput")]
+        public string OutputFolderForDebugFiles { get; set; }
+
         [JsonProperty("forcePostProcess")]
         public bool? ForcePostProcess { get; set; }
 
@@ -117,5 +123,11 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("customLinkResolver")]
         public string CustomLinkResolver { get; set; }
+
+        [JsonProperty("versions")]
+        public Dictionary<string, VersionConfig> Versions { get; set; }
+
+        [JsonProperty("lruSize")]
+        public int? LruSize { get; set; }
     }
 }

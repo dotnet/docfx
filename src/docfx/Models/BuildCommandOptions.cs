@@ -60,6 +60,12 @@ namespace Microsoft.DocAsCode
         [Option('f', "force", HelpText = "Force re-build all the documentation")]
         public bool ForceRebuild { get; set; }
 
+        [Option("debug", HelpText = "Run in debug mode. With debug mode, raw model and view model will be exported automatically when it encounters error when applying templates. If not specified, it is false.")]
+        public bool EnableDebugMode { get; set; }
+
+        [Option("debugOutput", HelpText = "The output folder for files generated for debugging purpose when in debug mode. If not specified, it is ${TempPath}/docfx")]
+        public string OutputFolderForDebugFiles { get; set; }
+
         [Option("forcePostProcess", HelpText = "Force to re-process the documentation in post processors. It will be cascaded from force option.")]
         public bool ForcePostProcess { get; set; }
 
@@ -113,5 +119,8 @@ namespace Microsoft.DocAsCode
 
         [OptionList("postProcessors", Separator = ',', HelpText = "Set the order of post processors in plugins")]
         public List<string> PostProcessors { get; set; }
+
+        [OptionList("lruSize", HelpText = "Set the lru cache for model count in memory.")]
+        public int? LruSize { get; set; }
     }
 }

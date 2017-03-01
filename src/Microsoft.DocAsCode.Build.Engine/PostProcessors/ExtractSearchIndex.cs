@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.Common
+namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
@@ -64,7 +64,10 @@ namespace Microsoft.DocAsCode.Build.Common
                 {
                     try
                     {
-                        html.Load(filePath, Encoding.UTF8);
+                        using (var stream = EnvironmentContext.FileAbstractLayer.OpenRead(filePath))
+                        {
+                            html.Load(stream, Encoding.UTF8);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -84,8 +87,6 @@ namespace Microsoft.DocAsCode.Build.Common
             var manifestItem = new ManifestItem
             {
                 DocumentType = "Resource",
-                Metadata = new Dictionary<string, object>(),
-                OutputFiles = new Dictionary<string, OutputFileInfo>()
             };
             manifestItem.OutputFiles.Add("resource", new OutputFileInfo
             {

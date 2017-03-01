@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     item.Raw |= options.PreserveRawInlineComments;
                     item.Force |= options.ForceRebuild;
                     item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
-                    item.FilterConfigFile = options.FilterConfigFile ?? item.FilterConfigFile;
+                    item.FilterConfigFile = string.IsNullOrEmpty(options.FilterConfigFile) ? item.FilterConfigFile : Path.GetFullPath(options.FilterConfigFile);
                 }
                 return config;
             }
@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     Destination = options.OutputFolder,
                     Raw = options.PreserveRawInlineComments,
                     Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = true },
-                    FilterConfigFile = options.FilterConfigFile
+                    FilterConfigFile = string.IsNullOrEmpty(options.FilterConfigFile) ? null : Path.GetFullPath(options.FilterConfigFile)
                 });
                 return config;
             }

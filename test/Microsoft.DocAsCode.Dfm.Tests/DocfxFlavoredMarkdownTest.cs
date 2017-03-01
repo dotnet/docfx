@@ -114,7 +114,7 @@ Paragraph1
 <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include-[root](../root.md)]: Circular dependency found in &quot;r/b/linkAndRefRoot.md&quot; -->[!include-[root](../root.md)]<!--END ERROR INCLUDE --></p>
 <!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>
 <!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>
-<!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/empty.md&quot; --><!--END INCLUDE --><!-- BEGIN ERROR INCLUDE: Absolute path &quot;http://microsoft.com/a.md&quot; is not supported. -->[!include[external](http://microsoft.com/a.md)]<!--END ERROR INCLUDE -->".Replace("\r\n", "\n"), marked);
+<!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/empty.md&quot; --><!--END INCLUDE --><!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[external](http://microsoft.com/a.md)]: Absolute path &quot;http://microsoft.com/a.md&quot; is not supported. -->[!include[external](http://microsoft.com/a.md)]<!--END ERROR INCLUDE -->".Replace("\r\n", "\n"), marked);
             Assert.Equal(
                 new[]
                 {
@@ -1288,6 +1288,87 @@ public static void Foo()
 
             // assert
             Assert.Equal(expectedContent.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        public void CodeSnippetTagsShouldMatchCaseInsensitive()
+        {
+            //arange
+            var content = @"// <tag1>
+line1
+// <tag2>
+line2
+// </tag2>
+line3
+// </TAG1>
+// <unmatched>
+";
+            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
+
+            // act
+            var marked = DocfxFlavoredMarked.Markup("[!code[tag1](Program.cs#Tag1)]", "Program.cs");
+
+            // assert
+            var expected = "<pre><code name=\"tag1\">line1\nline2\nline3\n</code></pre>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        public void CodeSnippetTagsShouldSucceedWhenDuplicateWithoutWarning()
+        {
+            //arange
+            var content = @"// <tag1>
+line1
+// <tag1>
+line2
+// </tag1>
+line3
+// </TAG1>
+// <tag2>
+line4
+// </tag2>
+";
+            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
+
+            // act
+            var listener = new TestLoggerListener("Extract Dfm Code");
+            Logger.RegisterListener(listener);
+            var marked = DocfxFlavoredMarked.Markup("[!code[tag2](Program.cs#Tag2)]", "Program.cs");
+            Logger.UnregisterListener(listener);
+
+            // assert
+            Assert.Empty(listener.Items.Select(i => i.LogLevel == LogLevel.Warning));
+            var expected = "<pre><code name=\"tag2\">line4\n</code></pre>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        public void CodeSnippetTagsShouldSucceedWhenDuplicateWithWarningWhenReferenced()
+        {
+            //arange
+            var content = @"// <tag1>
+line1
+// <tag1>
+line2
+// </tag1>
+line3
+// </TAG1>
+// <tag2>
+line4
+// </tag2>
+";
+            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
+
+            // act
+            var listener = new TestLoggerListener("Extract Dfm Code");
+            Logger.RegisterListener(listener);
+            var marked = DocfxFlavoredMarked.Markup("[!code[tag1](Program.cs#Tag1)]", "Program.cs");
+            Logger.UnregisterListener(listener);
+
+            // assert
+            Assert.Equal(1, listener.Items.Count(i => i.LogLevel == LogLevel.Warning));
+            var expected = "<pre><code name=\"tag1\">line2\n</code></pre>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
         }
 
         private static void WriteToFile(string file, string content)

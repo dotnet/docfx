@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     _currentBuildInfo.PluginHash = ComputePluginHash(assemblyList);
                     _currentBuildInfo.TemplateHash = templateHash;
-                    _currentBuildInfo.DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder);
+                    _currentBuildInfo.DirectoryName = IncrementalUtility.CreateRandomDirectory(Environment.ExpandEnvironmentVariables(intermediateFolder));
                 }
             }
             Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
@@ -67,15 +67,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 Logger.LogVerbose($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");
             }
-            if (intermediateFolder != null)
-            {
-                var expanded = Environment.ExpandEnvironmentVariables(intermediateFolder);
-                if (expanded.Length == 0)
-                {
-                    expanded = ".";
-                }
-                _intermediateFolder = Path.GetFullPath(expanded);
-            }
+            _intermediateFolder = intermediateFolder;
             _lastBuildInfo = BuildInfo.Load(_intermediateFolder);
             _postProcessorsManager = new PostProcessorsManager(_container, postProcessorNames);
         }
@@ -122,11 +114,22 @@ namespace Microsoft.DocAsCode.Build.Engine
                         Logger.LogWarning($"Custom href generator({parameter.CustomLinkResolver}) is not found.");
                     }
                 }
-                EnvironmentContext.FileAbstractLayerImpl =
-                    FileAbstractLayerBuilder.Default
-                    .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                    .WriteToRealFileSystem(parameter.OutputBaseDir)
-                    .Create();
+                if (_intermediateFolder == null)
+                {
+                    EnvironmentContext.FileAbstractLayerImpl =
+                        FileAbstractLayerBuilder.Default
+                        .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
+                        .WriteToRealFileSystem(parameter.OutputBaseDir)
+                        .Create();
+                }
+                else
+                {
+                    EnvironmentContext.FileAbstractLayerImpl =
+                        FileAbstractLayerBuilder.Default
+                        .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
+                        .WriteToLink(Path.Combine(_intermediateFolder, _currentBuildInfo.DirectoryName))
+                        .Create();
+                }
                 if (parameter.Files.Count == 0)
                 {
                     Logger.LogWarning(string.IsNullOrEmpty(parameter.VersionName)
@@ -146,28 +149,51 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 manifests.Add(BuildCore(parameter, markdownServiceProvider));
             }
-            EnvironmentContext.FileAbstractLayerImpl =
-                FileAbstractLayerBuilder.Default
-                .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
-                .WriteToRealFileSystem(parameters[0].OutputBaseDir)
-                .Create();
-            var generatedManifest = ManifestUtility.MergeManifest(manifests);
 
-            ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
-            _postProcessorsManager.Process(generatedManifest, outputDirectory);
-
-            // Save to manifest.json
-            SaveManifest(generatedManifest);
-
-            EnvironmentContext.FileAbstractLayerImpl = null;
-
-            // overwrite intermediate cache files
-            if (_intermediateFolder != null && transformDocument)
+            using (new LoggerPhaseScope("Postprocess", LogLevel.Verbose))
             {
-                _currentBuildInfo.Save(_intermediateFolder);
-                if (_lastBuildInfo != null)
+                var generatedManifest = ManifestUtility.MergeManifest(manifests);
+                ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
+
+                EnvironmentContext.FileAbstractLayerImpl =
+                    FileAbstractLayerBuilder.Default
+                    .ReadFromManifest(generatedManifest, parameters[0].OutputBaseDir)
+                    .WriteToManifest(generatedManifest, parameters[0].OutputBaseDir)
+                    .Create();
+                using (new PerformanceScope("Process"))
                 {
-                    Directory.Delete(Path.Combine(_intermediateFolder, _lastBuildInfo.DirectoryName), true);
+                    _postProcessorsManager.Process(generatedManifest, outputDirectory);
+                }
+                
+                using (new PerformanceScope("Dereference"))
+                {
+                    generatedManifest.Dereference(parameters[0].OutputBaseDir);
+                }
+
+                using (new PerformanceScope("SaveManifest"))
+                {
+                    // Save to manifest.json
+                    EnvironmentContext.FileAbstractLayerImpl =
+                        FileAbstractLayerBuilder.Default
+                        .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
+                        .WriteToRealFileSystem(parameters[0].OutputBaseDir)
+                        .Create();
+                    SaveManifest(generatedManifest);
+                }
+
+                using (new PerformanceScope("Cleanup"))
+                {
+                    EnvironmentContext.FileAbstractLayerImpl = null;
+
+                    // overwrite intermediate cache files
+                    if (_intermediateFolder != null && transformDocument)
+                    {
+                        _currentBuildInfo.Save(_intermediateFolder);
+                        if (_lastBuildInfo != null)
+                        {
+                            Directory.Delete(Path.Combine(Environment.ExpandEnvironmentVariables(_intermediateFolder), _lastBuildInfo.DirectoryName), true);
+                        }
+                    }
                 }
             }
         }

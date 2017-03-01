@@ -170,12 +170,12 @@ namespace Microsoft.DocAsCode.YamlSerialization
         /// <summary>
         /// Deserializes an object of the specified type.
         /// </summary>
-        /// <param name="reader">The <see cref="EventReader" /> where to deserialize the object.</param>
+        /// <param name="parser">The <see cref="IParser" /> where to deserialize the object.</param>
         /// <param name="type">The static type of the object to deserialize.</param>
         /// <returns>Returns the deserialized object.</returns>
-        public object Deserialize(IParser reader, Type type, IValueDeserializer deserializer = null)
+        public object Deserialize(IParser parser, Type type, IValueDeserializer deserializer = null)
         {
-            if (reader == null)
+            if (parser == null)
             {
                 throw new ArgumentNullException("reader");
             }
@@ -185,28 +185,28 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 throw new ArgumentNullException("type");
             }
 
-            var hasStreamStart = reader.Allow<StreamStart>() != null;
+            var hasStreamStart = parser.Allow<StreamStart>() != null;
 
-            var hasDocumentStart = reader.Allow<DocumentStart>() != null;
+            var hasDocumentStart = parser.Allow<DocumentStart>() != null;
             deserializer = deserializer ?? _valueDeserializer;
             object result = null;
-            if (!reader.Accept<DocumentEnd>() && !reader.Accept<StreamEnd>())
+            if (!parser.Accept<DocumentEnd>() && !parser.Accept<StreamEnd>())
             {
                 using (var state = new SerializerState())
                 {
-                    result = deserializer.DeserializeValue(reader, type, state, deserializer);
+                    result = deserializer.DeserializeValue(parser, type, state, deserializer);
                     state.OnDeserialization();
                 }
             }
 
             if (hasDocumentStart)
             {
-                reader.Expect<DocumentEnd>();
+                parser.Expect<DocumentEnd>();
             }
 
             if (hasStreamStart)
             {
-                reader.Expect<StreamEnd>();
+                parser.Expect<StreamEnd>();
             }
 
             return result;

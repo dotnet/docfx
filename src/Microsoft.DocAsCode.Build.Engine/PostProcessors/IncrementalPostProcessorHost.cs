@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private readonly IncrementalPostProcessorsContext _increContext;
         private readonly string _postProcessorName;
+        private readonly FileAbstractLayer _fal;
 
         public IncrementalPostProcessorHost(IncrementalPostProcessorsContext increContext, string postProcessorName, IImmutableList<SourceFileInfo> sourceFileInfos)
         {
@@ -34,6 +35,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             SourceFileInfos = sourceFileInfos;
             ShouldTraceIncrementalInfo = _increContext.ShouldTraceIncrementalInfo;
             IsIncremental = _increContext.IsIncremental;
+            var b = FileAbstractLayerBuilder.Default;
+            if (increContext.LastBaseDir != null)
+            {
+                b = b.ReadFromRealFileSystem(increContext.LastBaseDir);
+            }
+            _fal = b.WriteToRealFileSystem(increContext.CurrentBaseDir).Create();
         }
 
         #region IPostProcessorHost
@@ -59,7 +66,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return null;
             }
 
-            return EnvironmentContext.FileAbstractLayer.OpenRead(Path.Combine(_increContext.LastBaseDir, lastPostProcessorInfo.ContextInfoFile));
+            return _fal.OpenRead(lastPostProcessorInfo.ContextInfoFile);
         }
 
         public Stream SaveContextInfo()
@@ -71,9 +78,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             var currentPostProcessorInfo = FindPostProcessorInfo(_increContext.CurrentInfo, _postProcessorName);
-            currentPostProcessorInfo.ContextInfoFile = IncrementalUtility.CreateRandomFileName(_increContext.CurrentBaseDir);
-
-            return EnvironmentContext.FileAbstractLayer.Create(Path.Combine(_increContext.CurrentBaseDir, currentPostProcessorInfo.ContextInfoFile));
+            var tuple = _fal.CreateRandomFile();
+            currentPostProcessorInfo.ContextInfoFile = tuple.Item1;
+            return tuple.Item2;
         }
 
         #endregion

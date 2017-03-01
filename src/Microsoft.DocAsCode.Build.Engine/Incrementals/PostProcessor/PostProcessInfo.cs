@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
 
@@ -79,16 +80,21 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 MessageInfoFile = IncrementalUtility.CreateRandomFileName(baseDir);
             }
-            if (ManifestItemsFile == null)
-            {
-                ManifestItemsFile = IncrementalUtility.CreateRandomFileName(baseDir);
-            }
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, PostProcessOutputsFile), PostProcessOutputs);
-            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestItemsFile), ManifestItems);
             using (var sw = new StreamWriter(Path.Combine(baseDir, MessageInfoFile)))
             {
                 MessageInfo.Save(sw);
             }
+        }
+
+        public void SaveManifest(string baseDir)
+        {
+            var expanded = Path.GetFullPath(Environment.ExpandEnvironmentVariables(baseDir));
+            if (ManifestItemsFile == null)
+            {
+                ManifestItemsFile = IncrementalUtility.CreateRandomFileName(expanded);
+            }
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(expanded, ManifestItemsFile), ManifestItems);
         }
     }
 }

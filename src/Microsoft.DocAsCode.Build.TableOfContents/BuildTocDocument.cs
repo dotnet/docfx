@@ -65,6 +65,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var toc = (TocItemViewModel)model.Content;
             Restructure(toc, host.TableOfContentRestructions);
             BuildCore(toc, model, host);
+            ReportUidDependency(host, toc, model);
             model.Content = toc;
             // todo : metadata.
         }
@@ -224,7 +225,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private void ReportDependency(ImmutableList<FileModel> models, IHostService host, ImmutableDictionary<string, TocItemInfo> tocModelCache, int parallelism)
         {
-            var nearest = new Dictionary<string, Toc>();
+            var nearest = new Dictionary<string, Toc>(FilePathComparer.OSPlatformSensitiveStringComparer);
             models.RunAll(model =>
             {
                 var wrapper = tocModelCache[model.OriginalFileAndType.FullPath];
@@ -248,6 +249,21 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
+        private void ReportUidDependency(IHostService host, TocItemViewModel item, FileModel toc)
+        {
+            if (item.TopicUid != null)
+            {
+                host.ReportDependencyFrom(toc, item.TopicUid, DependencyItemSourceType.Uid, DependencyTypeName.Metadata);
+            }
+            if (item.Items != null && item.Items.Count > 0)
+            {
+                foreach (var i in item.Items)
+                {
+                    ReportUidDependency(host, i, toc);
+                }
+            }
+        }
+
         private void UpdateNearestToc(IHostService host, TocItemViewModel item, FileModel toc, Dictionary<string, Toc> nearest)
         {
             var tocHref = item.TocHref;
@@ -256,7 +272,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 UpdateNearestTocCore(host, tocHref, toc, nearest);
             }
-            else if (Utility.IsSupportedRelativeHref(item.Href))
+            else if (item.TopicUid == null && Utility.IsSupportedRelativeHref(item.Href))
             {
                 UpdateNearestTocCore(host, item.Href, toc, nearest);
             }

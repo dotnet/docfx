@@ -21,6 +21,8 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 
         [YamlMember(Alias = "references")]
         [JsonProperty("references")]
+        [UniqueIdentityReferenceIgnore]
+        [MarkdownContentIgnore]
         public List<ReferenceViewModel> References { get; set; } = new List<ReferenceViewModel>();
 
         [YamlMember(Alias = "shouldSkipMarkup")]

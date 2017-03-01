@@ -93,7 +93,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.Files.DefaultBaseDir,
                     parameters.VersionName,
                     parameters.ApplyTemplateSettings,
-                    parameters.RootTocPath);
+                    parameters.RootTocPath,
+                    parameters.VersionDir);
 
                 Logger.LogVerbose("Start building document...");
 
@@ -124,18 +125,26 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
                         using (new LoggerPhaseScope("Load", LogLevel.Verbose))
                         {
-                            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator).ToList();
+                            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator);
                         }
 
                         BuildCore(phaseProcessor, hostServices, context);
 
-                        return new Manifest
+                        return new Manifest(context.ManifestItems)
                         {
-                            Files = context.ManifestItems.ToList(),
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context),
                             SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
                             IncrementalInfo = context.IncrementalBuildContext != null ? new List<IncrementalInfo> { context.IncrementalBuildContext.IncrementalInfo } : null,
+                            VersionInfo = string.IsNullOrEmpty(context.VersionName) ?
+                            new Dictionary<string, VersionInfo>():
+                            new Dictionary<string, VersionInfo>
+                                {
+                                    {
+                                        context.VersionName,
+                                        new VersionInfo {VersionFolder = context.VersionOutputFolder}
+                                    }
+                                }
                         };
                     }
                 }
@@ -291,7 +300,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 XRefMapFileName :
                 parameters.VersionName + "." + XRefMapFileName;
             YamlUtility.Serialize(
-                xrefMapFileNameWithVersion,
+                Path.GetFullPath(Environment.ExpandEnvironmentVariables(Path.Combine(parameters.OutputBaseDir, xrefMapFileNameWithVersion))),
                 xrefMap,
                 YamlMime.XRefMap);
             Logger.LogInfo("XRef map exported.");

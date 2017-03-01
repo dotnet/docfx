@@ -27,7 +27,6 @@
             "description": "No Content. Indicates success. No response body is returned.",
             "examples": {
               "application/json": "none"
-
             }
           }
         },

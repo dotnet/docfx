@@ -14,20 +14,27 @@ namespace Microsoft.DocAsCode.Plugins
         private ImmutableArray<UidDefinition> _uids = ImmutableArray<UidDefinition>.Empty;
 
         public FileModel(FileAndType ft, object content, FileAndType original = null, IFormatter serializer = null)
+            : this(ft, content, original, serializer, null)
+        {
+        }
+
+        public FileModel(FileAndType ft, object content, FileAndType original, IFormatter serializer, string key)
         {
             OriginalFileAndType = original ?? ft;
-
-            if (OriginalFileAndType.File.StartsWith("~/"))
+            Key = key;
+            if (Key == null)
             {
-                Key = OriginalFileAndType.File;
-            }
-            else
-            {
-                Key = "~/" + OriginalFileAndType.File;
+                if (OriginalFileAndType.File.StartsWith("~/"))
+                {
+                    Key = OriginalFileAndType.File;
+                }
+                else
+                {
+                    Key = "~/" + OriginalFileAndType.File;
+                }
             }
 
             FileAndType = ft;
-            Serializer = serializer;
             ModelWithCache = new ModelWithCache(content, serializer);
         }
 
@@ -35,7 +42,11 @@ namespace Microsoft.DocAsCode.Plugins
 
         public FileAndType OriginalFileAndType { get; private set; }
 
-        public IFormatter Serializer { get; private set; }
+        public IFormatter Serializer
+        {
+            get { return ModelWithCache.Serializer; }
+            set { ModelWithCache.Serializer = value; }
+        }
 
         public ModelWithCache ModelWithCache { get; }
 

@@ -38,26 +38,148 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentException("Value cannot be empty.", nameof(extension));
             }
-            if (!targetRelativePath.EndsWith(extension))
-            {
-                throw new ArgumentException("targetRelativePath has incorrect extension.", nameof(targetRelativePath));
-            }
 
             lock (manifest)
             {
-                foreach (var f in manifest.Files)
+                foreach (var item in manifest.Files)
                 {
-                    if (f.SourceRelativePath == sourceFilePath)
+                    if (item.SourceRelativePath == sourceFilePath)
                     {
-                        f.OutputFiles[extension] = new OutputFileInfo
-                        {
-                            RelativePath = targetRelativePath,
-                        };
+                        AddFileCore(item, extension, targetRelativePath);
                         return true;
                     }
                 }
             }
             return false;
+        }
+
+        public static void AddFile(this Manifest manifest, ManifestItem item, string extension, string targetRelativePath)
+        {
+            if (manifest == null)
+            {
+                throw new ArgumentNullException(nameof(manifest));
+            }
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+            if (extension == null)
+            {
+                throw new ArgumentNullException(nameof(extension));
+            }
+            if (targetRelativePath == null)
+            {
+                throw new ArgumentNullException(nameof(targetRelativePath));
+            }
+            if (targetRelativePath.Length == 0)
+            {
+                throw new ArgumentException("Value cannot be empty.", nameof(extension));
+            }
+
+            lock (manifest)
+            {
+                AddFileCore(item, extension, targetRelativePath);
+            }
+        }
+
+        private static void AddFileCore(ManifestItem item, string extension, string targetRelativePath)
+        {
+            item.OutputFiles[extension] = new OutputFileInfo
+            {
+                RelativePath = targetRelativePath,
+            };
+        }
+
+        public static bool RemoveFile(this Manifest manifest, string sourceFilePath, string extension)
+        {
+            if (manifest == null)
+            {
+                throw new ArgumentNullException(nameof(manifest));
+            }
+            if (sourceFilePath == null)
+            {
+                throw new ArgumentNullException(nameof(sourceFilePath));
+            }
+            if (extension == null)
+            {
+                throw new ArgumentNullException(nameof(extension));
+            }
+            if (sourceFilePath.Length == 0)
+            {
+                throw new ArgumentException("Value cannot be empty.", nameof(sourceFilePath));
+            }
+
+            lock (manifest)
+            {
+                foreach (var item in manifest.Files)
+                {
+                    if (item.SourceRelativePath == sourceFilePath)
+                    {
+                        return RemoveFileCore(item, extension);
+                    }
+                }
+            }
+            return false;
+        }
+
+        public static bool RemoveFile(this Manifest manifest, ManifestItem item, string extension)
+        {
+            if (manifest == null)
+            {
+                throw new ArgumentNullException(nameof(manifest));
+            }
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+            if (extension == null)
+            {
+                throw new ArgumentNullException(nameof(extension));
+            }
+
+            lock (manifest)
+            {
+                return RemoveFileCore(item, extension);
+            }
+        }
+
+        private static bool RemoveFileCore(ManifestItem item, string extension)
+        {
+            return item.OutputFiles.Remove(extension);
+        }
+
+        public static void Modify(this Manifest manifest, Action<Manifest> action)
+        {
+            if (manifest == null)
+            {
+                throw new ArgumentNullException(nameof(manifest));
+            }
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            lock (manifest)
+            {
+                action(manifest);
+            }
+        }
+
+        public static T Modify<T>(this Manifest manifest, Func<Manifest, T> func)
+        {
+            if (manifest == null)
+            {
+                throw new ArgumentNullException(nameof(manifest));
+            }
+            if (func == null)
+            {
+                throw new ArgumentNullException(nameof(func));
+            }
+
+            lock (manifest)
+            {
+                return func(manifest);
+            }
         }
 
         public static void Dereference(this Manifest manifest, string manifestFolder)
@@ -92,6 +214,34 @@ namespace Microsoft.DocAsCode.Common
                 foreach (var ofi in ofiList)
                 {
                     ofi.LinkToPath = null;
+                }
+            }
+        }
+
+        public static void Shrink(this Manifest manifest, string incrementalFolder)
+        {
+            lock (manifest)
+            {
+                Shrink(manifest.Files, incrementalFolder);
+            }
+        }
+
+        public static void Shrink(this IEnumerable<ManifestItem> items, string incrementalFolder)
+        {
+            foreach (var g in from m in items
+                              from ofi in m.OutputFiles.Values
+                              where ofi.Hash != null &&
+                                ofi.LinkToPath != null &&
+                                ofi.LinkToPath.Length > incrementalFolder.Length &&
+                                ofi.LinkToPath.StartsWith(incrementalFolder) &&
+                                (ofi.LinkToPath[incrementalFolder.Length + 1] == '\\' || ofi.LinkToPath[incrementalFolder.Length + 1] == '/')
+                              group ofi by ofi.Hash)
+            {
+                var first = g.First();
+                foreach (var item in g.Skip(1))
+                {
+                    File.Delete(Environment.ExpandEnvironmentVariables(item.LinkToPath));
+                    item.LinkToPath = first.LinkToPath;
                 }
             }
         }

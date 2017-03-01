@@ -24,6 +24,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public FileMetadata FileMetadata { get; set; }
 
+        [IncrementalIgnore]
         public ImmutableArray<string> PostProcessors { get; set; } = ImmutableArray<string>.Empty;
 
         [IncrementalIgnore]
@@ -43,6 +44,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         [IncrementalIgnore]
         public string VersionName { get; set; }
 
+        [IncrementalIgnore]
+        public string VersionDir { get; set; }
+
         public string RootTocPath { get; set; }
 
         [IncrementalIgnore]
@@ -58,6 +62,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         public bool ForcePostProcess { get; set; }
 
         public string CustomLinkResolver { get; set; }
+
+        [IncrementalIgnore]
+        public int LruSize { get; set; }
 
         public DocumentBuildParameters Clone() =>
             (DocumentBuildParameters)MemberwiseClone();

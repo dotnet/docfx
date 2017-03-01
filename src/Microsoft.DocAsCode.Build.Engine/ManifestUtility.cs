@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Common
 
     public static class ManifestUtility
     {
-        public static void RemoveDuplicateOutputFiles(List<ManifestItem> manifestItems)
+        public static void RemoveDuplicateOutputFiles(ManifestItemCollection manifestItems)
         {
             if (manifestItems == null)
             {
@@ -45,17 +45,18 @@ namespace Microsoft.DocAsCode.Common
             var incrementalInfos = (from manifest in manifests
                                     from i in manifest.IncrementalInfo ?? Enumerable.Empty<IncrementalInfo>()
                                     select i).ToList();
-            return new Manifest
+            return new Manifest(
+                (from manifest in manifests
+                 from file in manifest.Files ?? Enumerable.Empty<ManifestItem>()
+                 select file).Distinct())
             {
                 Homepages = (from manifest in manifests
                              from homepage in manifest.Homepages ?? Enumerable.Empty<HomepageInfo>()
                              select homepage).Distinct().ToList(),
-                Files = (from manifest in manifests
-                         from file in manifest.Files ?? Enumerable.Empty<ManifestItem>()
-                         select file).Distinct().ToList(),
                 XRefMap = xrefMaps.Count <= 1 ? xrefMaps.FirstOrDefault() : xrefMaps,
                 SourceBasePath = manifests.FirstOrDefault()?.SourceBasePath,
                 IncrementalInfo = incrementalInfos.Count > 0 ? incrementalInfos : null,
+                VersionInfo = manifests.SelectMany(m => m.VersionInfo).ToDictionary(p => p.Key, p => p.Value)
             };
         }
     }

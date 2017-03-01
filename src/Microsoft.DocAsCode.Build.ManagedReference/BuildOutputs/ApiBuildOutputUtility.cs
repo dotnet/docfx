@@ -87,7 +87,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static string GetXref(string uid, string text = null, string alt = null)
         {
-            var result = $"<xref href=\"{HttpUtility.HtmlEncode(uid)}\"";
+            var result = $"<xref uid=\"{HttpUtility.HtmlEncode(uid)}\"";
             if (!string.IsNullOrEmpty(text))
             {
                 result += $" text=\"{text}\"";

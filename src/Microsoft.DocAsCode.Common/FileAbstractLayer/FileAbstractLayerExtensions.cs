@@ -69,5 +69,14 @@ namespace Microsoft.DocAsCode.Common
         public static IEnumerable<KeyValuePair<RelativePath, string>> GetAllPhysicalPaths(this FileAbstractLayer fal) =>
             from r in fal.GetAllInputFiles()
             select new KeyValuePair<RelativePath, string>(r, fal.GetPhysicalPath(r));
+
+        public static string GetOutputPhysicalPath(this FileAbstractLayer fal, string file) =>
+            GetOutputPhysicalPath(fal, (RelativePath)file);
+
+        public static string GetOutputPhysicalPath(this FileAbstractLayer fal, RelativePath file) =>
+            FileAbstractLayerBuilder.Default
+                .ReadFromOutput(fal)
+                .Create()
+                .GetPhysicalPath(file);
     }
 }

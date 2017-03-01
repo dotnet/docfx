@@ -42,6 +42,10 @@ namespace Microsoft.DocAsCode.Dfm
                     Logger.LogError(token.PathQueryOption.ErrorMessage, line: token.SourceInfo.LineNumber.ToString());
                     return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = token.PathQueryOption.ErrorMessage, FencesCodeLines = fencesCode };
                 }
+                if (!string.IsNullOrEmpty(token.PathQueryOption.ErrorMessage))
+                {
+                    Logger.LogWarning(token.PathQueryOption.ErrorMessage, line: token.SourceInfo.LineNumber.ToString());
+                }
 
                 var includedLines = new List<string>();
                 foreach (var line in token.PathQueryOption.GetQueryLines(fencesCode))

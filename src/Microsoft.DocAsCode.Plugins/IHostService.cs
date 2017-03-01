@@ -9,6 +9,16 @@ namespace Microsoft.DocAsCode.Plugins
     {
         ImmutableList<TreeItemRestructure> TableOfContentRestructions { get; set; }
 
+        /// <summary>
+        /// current version's name, String.Empty for default version
+        /// </summary>
+        string VersionName { get; }
+
+        /// <summary>
+        /// current version's output base folder
+        /// </summary>
+        string VersionOutputFolder { get; }
+
         MarkupResult Parse(MarkupResult markupResult, FileAndType ft);
         MarkupResult Markup(string markdown, FileAndType ft);
         MarkupResult Markup(string markdown, FileAndType ft, bool omitParse);
@@ -26,12 +36,38 @@ namespace Microsoft.DocAsCode.Plugins
         void ReportDependencyTo(FileModel currentFileModel, string to, string type);
 
         /// <summary>
+        /// report dependency to
+        /// </summary>
+        /// <param name="currentFileModel">filemodel of 'from' node</param>
+        /// <param name="to">'to' node's value</param>
+        /// <param name="toType">'to' node's type, it could be `file` or reference type</param>
+        /// <param name="type">dependency type</param>
+        void ReportDependencyTo(FileModel currentFileModel, string to, string toType, string type);
+
+        /// <summary>
         /// report dependency from
         /// </summary>
         /// <param name="currentFileModel">filemodel of 'to' node</param>
         /// <param name="from">'from' node's file path from working directory or file path relative to 'to' filemodel</param>
         /// <param name="type">dependency type</param>
         void ReportDependencyFrom(FileModel currentFileModel, string from, string type);
+
+        /// <summary>
+        /// report dependency from
+        /// </summary>
+        /// <param name="currentFileModel">filemodel of 'to' node</param>
+        /// <param name="from">'from' node's value</param>
+        /// <param name="fromType">'from' node's type, it could be `file` or reference type</param>
+        /// <param name="type">dependency type</param>
+        void ReportDependencyFrom(FileModel currentFileModel, string from, string fromType, string type);
+
+        /// <summary>
+        /// report reference
+        /// </summary>
+        /// <param name="currentFileModel">filemodel</param>
+        /// <param name="reference">the reference that the 'filemodel' could provide</param>
+        /// <param name="referenceType">the type of the reference</param>
+        void ReportReference(FileModel currentFileModel, string reference, string referenceType);
 
         /// <summary>
         /// Get current <see cref="IDocumentProcessor"/>.

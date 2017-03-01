@@ -17,8 +17,7 @@ namespace Microsoft.DocAsCode.Dfm
             }
 
             var snippetTags = ResolveCodeSnippetTags(lines);
-            var snippetTagGroups = from tag in snippetTags
-                                   group tag by tag.Name;
+            var snippetTagGroups = snippetTags.GroupBy(t => t.Name, StringComparer.OrdinalIgnoreCase);
 
             var excludedLines = new HashSet<int>(from tagGroup in snippetTagGroups
                                                  from tag in tagGroup
@@ -27,7 +26,7 @@ namespace Microsoft.DocAsCode.Dfm
             var result = new Dictionary<string, DfmTagNameResolveResult>();
             foreach (var snippetTagGroup in snippetTagGroups)
             {
-                var tagResolveResult = new DfmTagNameResolveResult();
+                var tagResolveResult = new DfmTagNameResolveResult {IsSuccessful = true};
                 string tagName = snippetTagGroup.Key;
 
                 var startTags = (from tag in snippetTagGroup
@@ -38,13 +37,22 @@ namespace Microsoft.DocAsCode.Dfm
                                where tag.Type == CodeSnippetTagType.End
                                select tag.Line).ToList();
 
-                if (startTags.Count == 1 && endTags.Count == 1)
+                if (startTags.Count != 1 || endTags.Count != 1)
                 {
-                    int startLine = startTags[0];
+                    tagResolveResult.ErrorMessage =
+                        $"Tag {tagName} is not paired or occurred just more than once, details: ({startTags.Count} start lines, {endTags.Count} end lines)";
+                }
+
+                if (startTags.Count == 0 || endTags.Count == 0)
+                {
+                    tagResolveResult.IsSuccessful = false;
+                }
+                else
+                {
+                    int startLine = startTags[startTags.Count - 1];
                     int endLine = endTags[0];
                     if (startLine < endLine)
                     {
-                        tagResolveResult.IsSuccessful = true;
                         tagResolveResult.StartLine = startLine + 1;
                         tagResolveResult.EndLine = endLine - 1;
                         tagResolveResult.ExcludesLines = excludedLines;
@@ -54,12 +62,6 @@ namespace Microsoft.DocAsCode.Dfm
                         tagResolveResult.IsSuccessful = false;
                         tagResolveResult.ErrorMessage = $"Tag {tagName}'s start line '{startLine}' should be less than end line '{endLine}'";
                     }
-                }
-                else
-                {
-                    tagResolveResult.IsSuccessful = false;
-                    tagResolveResult.ErrorMessage =
-                        $"Tag {tagName} is not paired or occurred just more than once, details: ({startTags.Count} start lines, {endTags.Count} end lines)";
                 }
 
                 result.Add(tagName, tagResolveResult);

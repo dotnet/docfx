@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
 
@@ -80,12 +81,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// deserialized xrefspecmap. Key is original file path from root. Value is XrefSpecs reported by the file.
         /// </summary>
         [JsonIgnore]
-        public IDictionary<string, IEnumerable<XRefSpec>> XRefSpecMap { get; private set; } = new OSPlatformSensitiveDictionary<IEnumerable<XRefSpec>>();
+        public IDictionary<string, List<XRefSpec>> XRefSpecMap { get; private set; } = new OSPlatformSensitiveDictionary<List<XRefSpec>>();
         /// <summary>
         /// deserialized filemap.
         /// </summary>
         [JsonIgnore]
-        public IDictionary<string, string> FileMap { get; set; }
+        public IDictionary<string, FileMapItem> FileMap { get; private set; } = new OSPlatformSensitiveDictionary<FileMapItem>();
         /// <summary>
         /// deserialized build messages.
         /// </summary>
@@ -95,7 +96,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public void SaveManifest(string baseDir)
         {
-            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, ManifestFile), Manifest);
+            var expanded = Path.GetFullPath(Environment.ExpandEnvironmentVariables(baseDir));
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(expanded, ManifestFile), Manifest);
         }
 
         internal void Load(string baseDir)
@@ -104,8 +106,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             Attributes = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<FileAttributeItem>>(Path.Combine(baseDir, AttributesFile));
             BuildOutputs = IncrementalUtility.LoadIntermediateFile<BuildOutputs>(Path.Combine(baseDir, OutputFile));
             Manifest = IncrementalUtility.LoadIntermediateFile<IEnumerable<ManifestItem>>(Path.Combine(baseDir, ManifestFile));
-            XRefSpecMap = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<IEnumerable<XRefSpec>>>(Path.Combine(baseDir, XRefSpecMapFile));
-            FileMap = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<string>>(Path.Combine(baseDir, FileMapFile));
+            XRefSpecMap = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<List<XRefSpec>>>(Path.Combine(baseDir, XRefSpecMapFile));
+            FileMap = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<FileMapItem>>(Path.Combine(baseDir, FileMapFile));
             BuildMessage = IncrementalUtility.LoadBuildMessage(Path.Combine(baseDir, BuildMessageFile));
             foreach (var processor in Processors)
             {

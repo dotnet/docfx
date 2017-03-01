@@ -164,6 +164,25 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         }
 
         [Fact]
+        public void ProcessSwaggerWithExternalEmbeddedReferenceShouldSucceed()
+        {
+            var files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { "TestData/swagger/contactsForExternalRef.json" }, "TestData/");
+            BuildDocument(files);
+
+            var outputRawModelPath = GetRawModelFilePath("contactsForExternalRef.json");
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
+
+            var operation = model.Children.Single(c => c.OperationId == "update_contact_manager");
+            var externalSchema = (JObject)operation.Parameters[2].Metadata["schema"];
+            Assert.Equal("<p sourcefile=\"TestData/swagger/contactsForExternalRef.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><strong>uri</strong> description.</p>\n", externalSchema["description"]);
+            Assert.Equal("string", externalSchema["type"]);
+            Assert.Equal("uri", externalSchema["format"]);
+            Assert.Equal("refUrl", externalSchema["x-internal-ref-name"]);
+        }
+
+        [Fact]
         public void ProcessSwaggerWithNotExistedExternalReferenceShouldFail()
         {
             var files = new FileCollection(Directory.GetCurrentDirectory());
@@ -285,17 +304,17 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/rest.overwrite.invalid.links.second.md" });
                 BuildDocument(files);
 
-                Assert.Equal(5, listener.Items.Count); // Additional warning for "There is no template processing document type(s): RestApi"
+                Assert.Equal(6, listener.Items.Count); // Additional warning for "There is no template processing document type(s): RestApi"
 
                 var outputRawModelPath = GetRawModelFilePath("contacts.json");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
 
+                var warningsForLinkA = listener.Items.Where(i => i.Message == "Invalid file link:(~/TestData/overwrite/a.md).").ToList();
                 Assert.Equal(
                     "<p sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.first.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">Remarks content <a href=\"b.md\" data-raw-source=\"[remarks](b.md)\" sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.first.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">remarks</a></p>\n",
                     model.Remarks);
-                var remarkLink = listener.Items.Single(i => i.Message == "Invalid file link:(~/TestData/overwrite/a.md).");
-                Assert.Equal("TestData/overwrite/rest.overwrite.invalid.links.first.md", remarkLink.File);
+                Assert.Equal("6", warningsForLinkA.Single(i => i.File == "TestData/overwrite/rest.overwrite.invalid.links.first.md").Line);
 
                 Assert.Equal(
                     "<p sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.first.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">Summary content <a href=\"a.md\" data-raw-source=\"[summary](a.md)\" sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.first.md\" sourcestartlinenumber=\"6\" sourceendlinenumber=\"6\">summary</a></p>\n",
@@ -303,21 +322,21 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 var summaryLink = listener.Items.Single(i => i.Message == "Invalid file link:(~/TestData/overwrite/b.md).");
                 Assert.Equal("TestData/overwrite/rest.overwrite.invalid.links.first.md", summaryLink.File);
 
+                var warningsForLinkAForSecond = warningsForLinkA.Where(i => i.File == "TestData/overwrite/rest.overwrite.invalid.links.second.md").ToList();
                 Assert.Equal(
-                    "<p sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.second.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">Conceptual content <a href=\"c.md\" data-raw-source=\"[Conceptual](c.md)\" sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.second.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">Conceptual</a></p>\n",
+                    "<p sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.second.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">Conceptual content <a href=\"a.md\" data-raw-source=\"[Conceptual](a.md)\" sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.second.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">Conceptual</a></p>\n<p sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.second.md\" sourcestartlinenumber=\"7\" sourceendlinenumber=\"7\"><a href=\"a.md\" data-raw-source=\"[Conceptual](a.md)\" sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.second.md\" sourcestartlinenumber=\"7\" sourceendlinenumber=\"7\">Conceptual</a></p>\n",
                     model.Conceptual);
-                var conceptualLink = listener.Items.Single(i => i.Message == "Invalid file link:(~/TestData/overwrite/c.md).");
-                Assert.Equal("TestData/overwrite/rest.overwrite.invalid.links.second.md", conceptualLink.File);
+                Assert.Equal(1, warningsForLinkAForSecond.Count(i => i.Line == "5"));
+                Assert.Equal(1, warningsForLinkAForSecond.Count(i => i.Line == "7"));
 
                 var outputTagRawModelPath = GetRawModelFilePath("tag.json");
                 Assert.True(File.Exists(outputTagRawModelPath));
                 var tagModel = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputTagRawModelPath);
 
                 Assert.Equal(
-                    "<p sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.second.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\">Another uid content <a href=\"d.md\" data-raw-source=\"[Another](d.md)\" sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.second.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\">Another</a></p>\n",
+                    "<p sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.second.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">Another uid content <a href=\"a.md\" data-raw-source=\"[Another](a.md)\" sourcefile=\"TestData/overwrite/rest.overwrite.invalid.links.second.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">Another</a></p>\n",
                     tagModel.Conceptual);
-                var tagConceptualLink = listener.Items.Single(i => i.Message == "Invalid file link:(~/TestData/overwrite/d.md).");
-                Assert.Equal("TestData/overwrite/rest.overwrite.invalid.links.second.md", tagConceptualLink.File);
+                Assert.Equal(1, warningsForLinkAForSecond.Count(i => i.Line == "13"));
             }
 
             Logger.UnregisterListener(listener);

@@ -17,13 +17,18 @@
   "author": "Microsoft",
   "license": "MIT",
   "dependencies": {
+    "child-process-promise": "^2.2.0",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
+    "del": "^2.2.2",
     "fs-extra": "^0.26.7",
     "jszip": "^2.5.0",
     "moment-timezone": "^0.5.10",
     "nconf": "^0.8.4",
     "request": "^2.69.0",
     "sha1": "^1.1.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1"
   }
 }

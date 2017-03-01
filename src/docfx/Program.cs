@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode
             var consoleLogListener = new ConsoleLogListener();
             var replayListener = new ReplayLogListener();
             replayListener.AddListener(consoleLogListener);
-            Logger.RegisterListener(replayListener);
+            Logger.RegisterAsyncListener(replayListener);
 
             CommandController controller = null;
             ISubCommand command;
@@ -69,7 +69,6 @@ namespace Microsoft.DocAsCode
             var context = new SubCommandRunningContext();
             try
             {
-                ThreadPool.SetMinThreads(4, 4);
                 using (new PerformanceScope("executing", LogLevel.Info))
                 {
                     command.Exec(context);

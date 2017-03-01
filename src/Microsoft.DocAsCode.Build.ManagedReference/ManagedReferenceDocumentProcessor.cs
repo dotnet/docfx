@@ -102,7 +102,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
-            return new FileModel(file, page, serializer: Environment.Is64BitProcess ? null : new BinaryFormatter())
+            return new FileModel(file, page, serializer: new BinaryFormatter())
             {
                 Uids = (from item in page.Items select new UidDefinition(item.Uid, localPathFromRoot)).ToImmutableArray(),
                 LocalPathFromRoot = localPathFromRoot
@@ -168,12 +168,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                                 into g
                                 select g.First()).ToImmutableArray();
             result.ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray();
-
             UpdateModelContent(model);
 
             return result;
         }
-
 
         #endregion
 
@@ -198,7 +196,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         {
             return FileModelPropertySerialization.Deserialize(
                 stream,
-                Environment.Is64BitProcess ? null : new BinaryFormatter(),
+                new BinaryFormatter(),
                 DeserializeModel,
                 DeserializeProperties,
                 null);
@@ -224,20 +222,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 if (reference != null && reference.IsExternal != false)
                 {
-                    var dict = YamlUtility.ConvertTo<Dictionary<string, object>>(reference);
-                    if (dict != null)
-                    {
-                        var spec = new XRefSpec();
-                        foreach (var pair in dict)
-                        {
-                            var s = pair.Value as string;
-                            if (s != null)
-                            {
-                                spec[pair.Key] = s;
-                            }
-                        }
-                        yield return spec;
-                    }
+                    yield return GetXRefSpecFromReference(reference);
                 }
             }
         }
@@ -295,11 +280,18 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private static XRefSpec GetXRefInfo(ReferenceViewModel item, string key)
         {
+            var result = GetXRefSpecFromReference(item);
+            result.Href = ((RelativePath)key).UrlEncode().ToString();
+            return result;
+        }
+
+        private static XRefSpec GetXRefSpecFromReference(ReferenceViewModel item)
+        {
             var result = new XRefSpec
             {
                 Uid = item.Uid,
                 Name = item.Name,
-                Href = ((RelativePath)key).UrlEncode().ToString(),
+                Href = item.Href,
                 CommentId = item.CommentId,
             };
             if (item.NameInDevLangs.Count > 0)
@@ -329,6 +321,17 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 foreach (var pair in item.NameWithTypeInDevLangs)
                 {
                     result["nameWithType." + pair.Key] = pair.Value;
+                }
+            }
+            if (item.Additional != null)
+            {
+                foreach (var pair in item.Additional)
+                {
+                    var s = pair.Value as string;
+                    if (s != null)
+                    {
+                        result[pair.Key] = s;
+                    }
                 }
             }
             return result;

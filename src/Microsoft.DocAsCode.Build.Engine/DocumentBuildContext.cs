@@ -30,6 +30,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder)
             : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, string.Empty, null, null) { }
 
+        public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting,string rootTocPath)
+            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null) { }
+
         public DocumentBuildContext(
             string buildOutputFolder,
             IEnumerable<FileAndType> allSourceFiles,
@@ -39,7 +42,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             string baseFolder,
             string versionName,
             ApplyTemplateSettings applyTemplateSetting,
-            string rootTocPath)
+            string rootTocPath,
+            string versionFolder)
         {
             BuildOutputFolder = buildOutputFolder;
             VersionName = versionName;
@@ -55,11 +59,26 @@ namespace Microsoft.DocAsCode.Build.Engine
                     select new Uri(u, UriKind.RelativeOrAbsolute)).GetReaderAsync(baseFolder);
             }
             RootTocPath = rootTocPath;
+            if (!string.IsNullOrEmpty(versionFolder) && Path.IsPathRooted(versionFolder))
+            {
+                throw new ArgumentException("Path cannot be rooted.", nameof(versionFolder));
+            }
+            if (!string.IsNullOrEmpty(versionFolder))
+            {
+                versionFolder = versionFolder.Replace('\\', '/') ;
+                if (!versionFolder.EndsWith("/"))
+                {
+                    versionFolder += "/";
+                }
+            }
+            VersionOutputFolder = versionFolder;
         }
 
         public string BuildOutputFolder { get; }
 
         public string VersionName { get; }
+
+        public string VersionOutputFolder { get; }
 
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 

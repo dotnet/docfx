@@ -107,7 +107,7 @@ namespace Microsoft.DocAsCode.Tests
             new MetadataCommand(new MetadataCommandOptions
             {
                 OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-                Projects = new List<String> { projectFile },
+                Projects = new List<string> { projectFile },
             }).Exec(null);
             Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
 
@@ -153,6 +153,108 @@ namespace Microsoft.DocAsCode.Tests
             Assert.NotNull(memberViewModel.References.Find(
                 s => s.Uid.Equals("System.Collections.Generic.List{{TArg}[]}")
                 ));
+        }
+
+        [Fact]
+        [Trait("Related", "docfx")]
+        [Trait("Language", "CSharp")]
+        public void TestMetadataCommandFromCSProjectWithFilterInConfig()
+        {
+            // Create default project
+            Directory.CreateDirectory(Path.Combine(_projectFolder, "src"));
+            Directory.CreateDirectory(Path.Combine(_projectFolder, "doc"));
+            var projectFile = Path.Combine(_projectFolder, "src", "test.csproj");
+            var sourceFile = Path.Combine(_projectFolder, "src", "test.cs");
+            var docfxFile = Path.Combine(_projectFolder, "doc", "docfx.json");
+            var filterFile = Path.Combine(_projectFolder, "doc", "filter.yaml");
+            File.Copy("Assets/test.csproj.sample.1", projectFile);
+            File.Copy("Assets/test.cs.sample.1", sourceFile);
+            File.Copy("Assets/docfx.json_metadata/docfxWithFilter.json", docfxFile);
+            File.Copy("Assets/filter.yaml.sample", filterFile);
+
+            new MetadataCommand(
+                new MetadataCommandOptions
+                {
+                    Projects = new List<string> { docfxFile },
+                    OutputFolder = Path.GetFullPath(_outputFolder),
+                }).Exec(null);
+
+            Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
+
+            var file = Path.Combine(_outputFolder, "toc.yml");
+            Assert.True(File.Exists(file));
+            var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
+            Assert.Equal("Foo", tocViewModel[0].Uid);
+            Assert.Equal("Foo", tocViewModel[0].Name);
+            Assert.Equal("Foo.Bar", tocViewModel[0].Items[0].Uid);
+            Assert.Equal("Bar", tocViewModel[0].Items[0].Name);
+
+            file = Path.Combine(_outputFolder, "Foo.yml");
+            Assert.True(File.Exists(file));
+            var memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
+            Assert.Equal("Foo", memberViewModel.Items[0].Uid);
+            Assert.Equal("Foo", memberViewModel.Items[0].Id);
+            Assert.Equal("Foo", memberViewModel.Items[0].Name);
+            Assert.Equal("Foo", memberViewModel.Items[0].FullName);
+
+            file = Path.Combine(_outputFolder, "Foo.Bar.yml");
+            Assert.True(File.Exists(file));
+            memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
+            Assert.Equal("Foo.Bar", memberViewModel.Items[0].Uid);
+            Assert.Equal("Bar", memberViewModel.Items[0].Id);
+            Assert.Equal("Bar", memberViewModel.Items[0].Name);
+            Assert.Equal("Foo.Bar", memberViewModel.Items[0].FullName);
+            Assert.Equal(1, memberViewModel.Items.Count);
+            Assert.NotNull(memberViewModel.References.Find(s => s.Uid.Equals("Foo")));
+        }
+
+        [Fact]
+        [Trait("Related", "docfx")]
+        [Trait("Language", "CSharp")]
+        public void TestMetadataCommandFromCSProjectWithFilterInOption()
+        {
+            // Create default project
+            var projectFile = Path.Combine(_projectFolder, "test.csproj");
+            var sourceFile = Path.Combine(_projectFolder, "test.cs");
+            var filterFile = Path.Combine(_projectFolder, "filter.yaml");
+            File.Copy("Assets/test.csproj.sample.1", projectFile);
+            File.Copy("Assets/test.cs.sample.1", sourceFile);
+            File.Copy("Assets/filter.yaml.sample", filterFile);
+
+            new MetadataCommand(new MetadataCommandOptions
+            {
+                OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
+                Projects = new List<string> { projectFile },
+                FilterConfigFile = filterFile,
+            }).Exec(null);
+
+            Assert.True(File.Exists(Path.Combine(_outputFolder, ".manifest")));
+
+            var file = Path.Combine(_outputFolder, "toc.yml");
+            Assert.True(File.Exists(file));
+            var tocViewModel = YamlUtility.Deserialize<TocViewModel>(file);
+            Assert.Equal("Foo", tocViewModel[0].Uid);
+            Assert.Equal("Foo", tocViewModel[0].Name);
+            Assert.Equal("Foo.Bar", tocViewModel[0].Items[0].Uid);
+            Assert.Equal("Bar", tocViewModel[0].Items[0].Name);
+
+            file = Path.Combine(_outputFolder, "Foo.yml");
+            Assert.True(File.Exists(file));
+            var memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
+            Assert.Equal("Foo", memberViewModel.Items[0].Uid);
+            Assert.Equal("Foo", memberViewModel.Items[0].Id);
+            Assert.Equal("Foo", memberViewModel.Items[0].Name);
+            Assert.Equal("Foo", memberViewModel.Items[0].FullName);
+
+            file = Path.Combine(_outputFolder, "Foo.Bar.yml");
+            Assert.True(File.Exists(file));
+            memberViewModel = YamlUtility.Deserialize<PageViewModel>(file);
+            Assert.Equal("Foo.Bar", memberViewModel.Items[0].Uid);
+            Assert.Equal("Bar", memberViewModel.Items[0].Id);
+            Assert.Equal("Bar", memberViewModel.Items[0].Name);
+            Assert.Equal("Foo.Bar", memberViewModel.Items[0].FullName);
+            Assert.Equal(1, memberViewModel.Items.Count);
+            Assert.NotNull(memberViewModel.References.Find(s => s.Uid.Equals("Foo")));
         }
     }
 }
