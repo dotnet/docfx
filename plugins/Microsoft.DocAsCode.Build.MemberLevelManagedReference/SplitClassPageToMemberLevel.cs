@@ -22,6 +22,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         private const char Separator = '.';
         private const string SplitReferencePropertyName = "_splitReference";
         private const string IsOverloadPropertyName = "_isOverload";
+        private const int MaximumFileNameLength = 180;
 
         public override string Name => nameof(SplitClassPageToMemberLevel);
 
@@ -83,6 +84,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 return null;
             }
 
+            // Make sure new file names generated from current page is unique
+            var newFileNames = new Dictionary<string, int>();
+
             var primaryItem = page.Items[0];
             var itemsToSplit = page.Items.Skip(1);
 
@@ -98,7 +102,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 {
                     foreach (var i in overload)
                     {
-                        var m = GenerateNonOverloadPage(page, model, i);
+                        var m = GenerateNonOverloadPage(page, model, i, newFileNames);
                         splittedModels.Add(m.FileModel);
 
                         // Order toc by display name
@@ -107,7 +111,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 }
                 else
                 {
-                    var m = GenerateOverloadPage(page, model, overload);
+                    var m = GenerateOverloadPage(page, model, overload, newFileNames);
                     splittedModels.Add(m.FileModel);
                     children.Add(m.TreeItem);
                 }
@@ -124,16 +128,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return new SplittedResult(primaryItem.Uid, children.OrderBy(s => GetDisplayName(s)), splittedModels);
         }
 
-        private ModelWrapper GenerateNonOverloadPage(PageViewModel page, FileModel model, ItemViewModel item)
+        private ModelWrapper GenerateNonOverloadPage(PageViewModel page, FileModel model, ItemViewModel item, Dictionary<string, int> existingFileNames)
         {
             item.Metadata[SplitReferencePropertyName] = true;
             var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { item });
-            var newModel = GenerateNewFileModel(model, newPage, item.Uid);
+            var newModel = GenerateNewFileModel(model, newPage, item.Uid, existingFileNames);
             var tree = ConvertToTreeItem(item);
             return new ModelWrapper(newPage, newModel, tree);
         }
 
-        private ModelWrapper GenerateOverloadPage(PageViewModel page, FileModel model, IGrouping<string, ItemViewModel> overload)
+        private ModelWrapper GenerateOverloadPage(PageViewModel page, FileModel model, IGrouping<string, ItemViewModel> overload, Dictionary<string, int> existingFileNames)
         {
             var primaryItem = page.Items[0];
 
@@ -153,7 +157,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     [IsOverloadPropertyName] = true,
                     [SplitReferencePropertyName] = true
                 },
-                Platform = MergePlatform(overload)
+                Platform = MergePlatform(overload),
+                IsExplicitInterfaceImplementation = firstMember.IsExplicitInterfaceImplementation,
             };
             var referenceItem = page.References.FirstOrDefault(s => s.Uid == key);
             if (referenceItem != null)
@@ -168,26 +173,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { newPrimaryItem }.Concat(overload).ToList());
             var newFileName = GetNewFileName(primaryItem.Uid, newPrimaryItem);
-            var newModel = GenerateNewFileModel(model, newPage, newFileName);
+            var newModel = GenerateNewFileModel(model, newPage, newFileName, existingFileNames);
             var tree = ConvertToTreeItem(newPrimaryItem);
             return new ModelWrapper(newPage, newModel, tree);
         }
 
-        private string GetNewFileName(string parentUid, ItemViewModel model)
-        {
-            if (model.Type == MemberType.Constructor)
-            {
-                return $"{parentUid}.{model.Name}";
-            }
-            else
-            {
-                return model.Uid.TrimEnd(OverloadLastChar);
-            }
-        }
-
         private List<string> MergePlatform(IEnumerable<ItemViewModel> children)
         {
-            var platforms = children.Where(s => s.Platform != null).SelectMany(s => s.Platform).ToList();
+            var platforms = children.Where(s => s.Platform != null).SelectMany(s => s.Platform).Distinct().ToList();
             if (platforms.Count == 0)
             {
                 return null;
@@ -354,7 +347,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return newPage;
         }
 
-        private FileModel GenerateNewFileModel(FileModel model, PageViewModel newPage, string fileNameWithoutExtension)
+        private FileModel GenerateNewFileModel(FileModel model, PageViewModel newPage, string fileNameWithoutExtension, Dictionary<string, int> existingFileNames)
         {
             var initialFile = model.FileAndType.File;
             var extension = Path.GetExtension(initialFile);
@@ -362,7 +355,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             // encode file name to clean url so that without server hosting, href can work with file:/// navigation
             var cleanUrlFileName = fileNameWithoutExtension.ToCleanUrlFileName();
-            var newFileName = cleanUrlFileName + extension;
+            var actualFileName = GetUniqueFileNameWithSuffix(cleanUrlFileName, existingFileNames);
+            var newFileName = actualFileName + extension;
             var filePath = Path.Combine(directory, newFileName).ToNormalizedPath();
 
             var newFileAndType = new FileAndType(model.FileAndType.BaseDir, filePath, model.FileAndType.Type, model.FileAndType.SourceDir, model.FileAndType.DestinationDir);
@@ -372,6 +366,46 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             newModel.LocalPathFromRoot = model.LocalPathFromRoot;
             newModel.Uids = CalculateUids(newPage, model.LocalPathFromRoot);
             return newModel;
+        }
+
+        private string GetUniqueFileNameWithSuffix(string fileName, Dictionary<string, int> existingFileNames)
+        {
+            int suffix;
+            if (existingFileNames.TryGetValue(fileName, out suffix))
+            {
+                existingFileNames[fileName] = suffix + 1;
+                return GetUniqueFileNameWithSuffix($"{fileName}_{suffix}", existingFileNames);
+            }
+            else
+            {
+                existingFileNames[fileName] = 1;
+                return fileName;
+            }
+        }
+
+        private string GetNewFileName(string parentUid, ItemViewModel model)
+        {
+            // For constructor, if the class is generic class e.g. ExpandedWrapper`11, class name can be pretty long
+            // Use -ctor as file name
+            return GetValidFileName(
+                model.Uid.TrimEnd(OverloadLastChar),
+                $"{parentUid}.{model.Name}",
+                $"{parentUid}.{model.Name.Split(Separator).Last()}",
+                $"{parentUid}.{Path.GetRandomFileName()}"
+                );
+        }
+
+        private string GetValidFileName(params string[] fileNames)
+        {
+            foreach (var fileName in fileNames)
+            {
+                if (!string.IsNullOrEmpty(fileName) && fileName.Length <= MaximumFileNameLength)
+                {
+                    return fileName;
+                }
+            }
+
+            throw new DocumentException($"All the file name candidates {fileNames.ToDelimitedString()} exceed the maximum allowed file name length {MaximumFileNameLength}");
         }
 
         private ImmutableArray<UidDefinition> CalculateUids(PageViewModel page, string file)

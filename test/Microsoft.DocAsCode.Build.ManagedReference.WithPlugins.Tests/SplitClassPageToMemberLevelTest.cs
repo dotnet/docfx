@@ -66,7 +66,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.Equal(20, model.Children.Count);
             }
             {
-                var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.Cat.yml");
+                var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.-ctor.yml");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
                 Assert.NotNull(model);
@@ -94,7 +94,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.Equal(20, model.Children.Count);
             }
             {
-                var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.Cat.yml");
+                var outputRawModelPath = GetRawModelFilePath("CatLibrary.Cat-2.-ctor.yml");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
                 Assert.NotNull(model);
@@ -131,6 +131,70 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 // NOTE: split output files have the same source file path
                 var groups = manifest.Files.GroupBy(s => s.SourceRelativePath).ToList().OrderByDescending(s => s.Count()).ToList();
                 Assert.Equal(1, groups.Count);
+            }
+        }
+
+        [Fact]
+        public void ProcessMrefWithLongPathShouldSucceed()
+        {
+            var files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { "TestData/mref/System.Activities.Presentation.Model.ModelItemDictionary.yml" }, "TestData/");
+            files.Add(DocumentType.Article, new[] { "TestData/mref/ModelItemDictionary/toc.yml" }, "TestData/");
+            BuildDocument(files);
+            {
+                var outputRawModelPath = GetRawModelFilePath("System.Activities.Presentation.Model.ModelItemDictionary.yml");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+                Assert.NotNull(model);
+
+                Assert.Equal("Hello world!", model.Metadata["meta"]);
+                Assert.Equal(43, model.Children.Count);
+            }
+            {
+                var outputRawModelPath = GetRawModelFilePath("System.Activities.Presentation.Model.ModelItemDictionary.Add.yml");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+                Assert.NotNull(model);
+
+                Assert.Equal("Hello world!", model.Metadata["meta"]);
+                Assert.Equal(MemberType.Method, model.Type);
+                Assert.Equal(2, model.Children.Count);
+                Assert.Equal(new List<string> { "net-11", "net-20", "netcore-10" }, model.Platform);
+            }
+            {
+                var outputRawModelPath = GetRawModelFilePath("System.Activities.Presentation.Model.ModelItemDictionary.Add_1.yml");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+                Assert.NotNull(model);
+
+                Assert.Equal("Hello world!", model.Metadata["meta"]);
+                Assert.Equal(MemberType.Method, model.Type);
+                Assert.Equal(1, model.Children.Count);
+                Assert.Equal(new List<string> { "net-11", "net-20", "netcore-10" }, model.Platform);
+                Assert.True(model.IsExplicitInterfaceImplementation);
+            }
+            {
+                var outputRawModelPath = GetRawModelFilePath("ModelItemDictionary\\toc.yml");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
+                Assert.NotNull(model);
+                Assert.Equal(1, model.Items.Count);
+                Assert.Equal("../System.Activities.Presentation.Model.ModelItemDictionary.html", model.Items[0].TopicHref);
+                Assert.Equal(38, model.Items[0].Items.Count);
+
+                Assert.Equal("../System.Activities.Presentation.Model.ModelItemDictionary.Add.html", model.Items[0].Items[0].TopicHref);
+                Assert.Equal("Add", model.Items[0].Items[0].Name);
+
+                var eiiAddWithLongName = model.Items[0].Items[17];
+                Assert.Equal("../System.Activities.Presentation.Model.ModelItemDictionary.Add_1.html", eiiAddWithLongName.TopicHref);
+                Assert.Equal("System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>.Add", eiiAddWithLongName.Name);
+                Assert.Equal("System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection<System#Collections#Generic#KeyValuePair<System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem>>#Add*", eiiAddWithLongName.TopicUid);
+
+                var eiiAdd = model.Items[0].Items[25];
+
+                Assert.Equal("../System.Activities.Presentation.Model.ModelItemDictionary.System-Collections-IDictionary-Add.html", eiiAdd.TopicHref);
+                Assert.Equal("System.Collections.IDictionary.Add", eiiAdd.Name);
+                Assert.Equal("System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Add*", eiiAdd.TopicUid);
             }
         }
 
