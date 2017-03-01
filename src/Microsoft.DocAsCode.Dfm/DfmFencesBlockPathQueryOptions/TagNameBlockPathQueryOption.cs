@@ -193,10 +193,10 @@ namespace Microsoft.DocAsCode.Dfm
                 }
             };
 
-        private DfmTagNameResolveResult resolveResult;
+        private DfmTagNameResolveResult _resolveResult;
 
-        private readonly ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, DfmTagNameResolveResult>>> _dfmTagNameLineRangeCache
-            = new ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, DfmTagNameResolveResult>>>(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>> _dfmTagNameLineRangeCache
+            = new ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>>(StringComparer.OrdinalIgnoreCase);
 
         public override bool ValidateAndPrepare(string[] lines, DfmFencesToken token)
         {
@@ -209,21 +209,16 @@ namespace Microsoft.DocAsCode.Dfm
                 return false;
             }
 
-            resolveResult = ResolveTagNamesFromPath(token.Path, lines, TagName, extractors);
-            if (!resolveResult.IsSuccessful)
-            {
-                ErrorMessage = resolveResult.ErrorMessage;
-                return false;
-            }
-
-            return true;
+            _resolveResult = ResolveTagNamesFromPath(token.Path, lines, TagName, extractors);
+            ErrorMessage = _resolveResult.ErrorMessage;
+            return _resolveResult.IsSuccessful;
         }
 
         public override IEnumerable<string> GetQueryLines(string[] lines)
         {
-            for (int i = resolveResult.StartLine; i <= Math.Min(resolveResult.EndLine, lines.Length); i++)
+            for (int i = _resolveResult.StartLine; i <= Math.Min(_resolveResult.EndLine, lines.Length); i++)
             {
-                if (resolveResult.ExcludesLines == null || !resolveResult.ExcludesLines.Contains(i))
+                if (_resolveResult.ExcludesLines == null || !_resolveResult.ExcludesLines.Contains(i))
                 {
                     yield return lines[i - 1];
                 }
@@ -234,22 +229,30 @@ namespace Microsoft.DocAsCode.Dfm
         {
             var lazyResolveResults =
                 _dfmTagNameLineRangeCache.GetOrAdd(fencesPath,
-                    path => new Lazy<ConcurrentDictionary<string, DfmTagNameResolveResult>>(
+                    path => new Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>(
                             () =>
                             {
                                 // TODO: consider different code snippet representation with same name
-                                return new ConcurrentDictionary<string, DfmTagNameResolveResult>(
+                                return new ConcurrentDictionary<string, List<DfmTagNameResolveResult>>(
                                     (from codeSnippetExtractor in codeSnippetExtractors
-                                     let result = codeSnippetExtractor.GetAll(fencesCodeLines)
-                                     from codeSnippet in result
-                                     group codeSnippet by codeSnippet.Key).ToDictionary(d => d.Key, d => d.First().Value), StringComparer.OrdinalIgnoreCase);
+                                     let resolveResults = codeSnippetExtractor.GetAll(fencesCodeLines)
+                                     from codeSnippet in resolveResults
+                                     group codeSnippet by codeSnippet.Key)
+                                     .ToDictionary(g => g.Key, g => g.Select(p => p.Value).ToList()), StringComparer.OrdinalIgnoreCase);
                             }));
 
-            DfmTagNameResolveResult resolveResult;
+            List<DfmTagNameResolveResult> results;
             var tagNamesDictionary = lazyResolveResults.Value;
-            return (tagNamesDictionary.TryGetValue(tagName, out resolveResult) || tagNamesDictionary.TryGetValue($"snippet{tagName}", out resolveResult))
-                    ? resolveResult
-                    : new DfmTagNameResolveResult { IsSuccessful = false, ErrorMessage = $"Tag name {tagName} is not found" };
+            if (!tagNamesDictionary.TryGetValue(tagName, out results) && !tagNamesDictionary.TryGetValue($"snippet{tagName}", out results))
+            {
+                return new DfmTagNameResolveResult { IsSuccessful = false, ErrorMessage = $"Tag name {tagName} is not found" };
+            }
+            var result = results[0];
+            if (results.Count > 1)
+            {
+                result.ErrorMessage = $"Tag name duplicates at line {string.Join(", ", results.Select(r => r.StartLine))}, the first is chosen. {result.ErrorMessage}";
+            }
+            return result;
         }
 
 
