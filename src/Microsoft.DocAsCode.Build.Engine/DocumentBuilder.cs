@@ -127,7 +127,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     EnvironmentContext.FileAbstractLayerImpl =
                         FileAbstractLayerBuilder.Default
                         .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                        .WriteToLink(_intermediateFolder)
+                        .WriteToLink(Path.Combine(_intermediateFolder, _currentBuildInfo.DirectoryName))
                         .Create();
                 }
                 if (parameter.Files.Count == 0)
