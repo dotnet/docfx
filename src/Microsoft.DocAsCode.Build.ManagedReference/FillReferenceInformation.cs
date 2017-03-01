@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.ManagedReference
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
 
@@ -11,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class FillReferenceInformation : BaseDocumentBuildStep
+    public class FillReferenceInformation : BaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         public override string Name => nameof(FillReferenceInformation);
 
@@ -31,6 +32,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 }
             }
         }
+
+        #region ISupportIncrementalBuildStep Members
+
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
+
+        public string GetIncrementalContextHash() => null;
+
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
+
+        #endregion
 
         #region Private methods
 

@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
     internal class IncrementalBuildContext
     {
+        private readonly object _sync = new object();
         private DocumentBuildParameters _parameters;
         private Dictionary<string, OSPlatformSensitiveDictionary<BuildPhase?>> _modelLoadInfo = new Dictionary<string, OSPlatformSensitiveDictionary<BuildPhase?>>();
         private OSPlatformSensitiveDictionary<ChangeKindWithDependency> _changeDict = new OSPlatformSensitiveDictionary<ChangeKindWithDependency>();
@@ -124,9 +125,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             OSPlatformSensitiveDictionary<BuildPhase?> mi = null;
             string name = hostService.Processor.Name;
-            if (!_modelLoadInfo.TryGetValue(name, out mi))
+            lock (_sync)
             {
-                _modelLoadInfo[name] = mi = new OSPlatformSensitiveDictionary<BuildPhase?>();
+                if (!_modelLoadInfo.TryGetValue(name, out mi))
+                {
+                    _modelLoadInfo[name] = mi = new OSPlatformSensitiveDictionary<BuildPhase?>();
+                }
             }
             mi[file] = phase;
         }
@@ -371,7 +375,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     IncrementalContextHash = ((ISupportIncrementalBuildStep)step).GetIncrementalContextHash(),
                 });
             }
-            CurrentBuildVersionInfo.Processors.Add(cpi);
+            lock (_sync)
+            {
+                CurrentBuildVersionInfo.Processors.Add(cpi);
+            }
             return cpi;
         }
 
