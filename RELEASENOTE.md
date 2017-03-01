@@ -1,6 +1,6 @@
-﻿Version Notes (Current Version: v2.13)
+﻿Version Notes (Current Version: v2.13.1)
 =======================================
-v2.13(Pre-Release)
+v2.13.1(Pre-Release)
 -----------
 1.  **Breaking Change**: Create new type for files in manifest.
 2.  Support working folder for dfm include and code.
