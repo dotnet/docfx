@@ -105,7 +105,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         throw new BuildCacheException($"Full build hasn't loaded XRefMap.");
                     }
-                    IEnumerable<XRefSpec> specs;
+                    List<XRefSpec> specs;
                     if (!lastXrefMap.TryGetValue(file, out specs))
                     {
                         throw new BuildCacheException($"Last build hasn't loaded xrefspec for file: ({file}).");
@@ -131,12 +131,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         throw new BuildCacheException($"Full build hasn't loaded File Map.");
                     }
-                    string path;
+                    FileMapItem item;
 
                     // for overwrite files, it don't exist in filemap
-                    if (lastFileMap.TryGetValue(fileFromWorkingFolder, out path))
+                    if (lastFileMap.TryGetValue(file, out item))
                     {
-                        Context.SetFilePath(fileFromWorkingFolder, path);
+                        foreach (var pair in item)
+                        {
+                            Context.SetFilePath(pair.Key, pair.Value);
+                        }
+                        CurrentBuildVersionInfo.FileMap[file] = item;
                     }
                 }
             }
@@ -166,7 +170,23 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void UpdateFileMap(IEnumerable<HostService> hostServices)
         {
-            CurrentBuildVersionInfo.FileMap = Context.FileMap;
+            var map = CurrentBuildVersionInfo.FileMap;
+            foreach (var h in hostServices)
+            {
+                foreach (var f in h.Models)
+                {
+                    var path = Context.GetFilePath(f.Key);
+                    if (path != null)
+                    {
+                        FileMapItem item;
+                        if (!map.TryGetValue(f.OriginalFileAndType.File, out item))
+                        {
+                            map[f.OriginalFileAndType.File] = item = new FileMapItem();
+                        }
+                        item[f.Key] = path;
+                    }
+                }
+            }
         }
 
         private void UpdateXrefMap(IEnumerable<HostService> hostServices)
@@ -178,14 +198,19 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     if (f.Type == DocumentType.Overwrite)
                     {
-                        map[f.OriginalFileAndType.File] = Enumerable.Empty<XRefSpec>();
+                        map[f.OriginalFileAndType.File] = new List<XRefSpec>();
                     }
                     else
                     {
-                        map[f.OriginalFileAndType.File] = (from uid in f.Uids
-                                                           let s = Context.GetXrefSpec(uid.Name)
-                                                           where s != null
-                                                           select s).ToList();
+                        List<XRefSpec> specs;
+                        if (!map.TryGetValue(f.OriginalFileAndType.File, out specs))
+                        {
+                            map[f.OriginalFileAndType.File] = specs = new List<XRefSpec>();
+                        }
+                        specs.AddRange(from uid in f.Uids
+                                       let s = Context.GetXrefSpec(uid.Name)
+                                       where s != null
+                                       select s);
                     }
                 }
             }

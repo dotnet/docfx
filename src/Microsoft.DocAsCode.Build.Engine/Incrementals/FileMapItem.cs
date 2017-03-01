@@ -3,10 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
-    using System.Collections.Generic;
-
-    public class ModelManifest
+    public class FileMapItem : OSPlatformSensitiveDictionary<string>
     {
-        public OSPlatformSensitiveDictionary<List<ModelManifestItem>> Models { get; } = new OSPlatformSensitiveDictionary<List<ModelManifestItem>>();
     }
 }
