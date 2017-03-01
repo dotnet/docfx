@@ -150,7 +150,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 manifests.Add(BuildCore(parameter, markdownServiceProvider));
             }
 
-            using (new PerformanceScope("Postprocess"))
+            using (new LoggerPhaseScope("Postprocess", LogLevel.Verbose))
             {
                 var generatedManifest = ManifestUtility.MergeManifest(manifests);
                 ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
