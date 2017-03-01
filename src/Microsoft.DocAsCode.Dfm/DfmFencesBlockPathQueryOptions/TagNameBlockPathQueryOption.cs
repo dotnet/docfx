@@ -250,7 +250,7 @@ namespace Microsoft.DocAsCode.Dfm
             var result = results[0];
             if (results.Count > 1)
             {
-                result.ErrorMessage = $"Tag name duplicates at line {string.Join(", ", results.Select(r => r.StartLine))}, the first is chosen. {result.ErrorMessage ?? string.Empty}";
+                result.ErrorMessage = $"Tag name duplicates at line {string.Join(", ", results.Select(r => r.StartLine))}, the first is chosen. {result.ErrorMessage}";
             }
             return result;
         }
