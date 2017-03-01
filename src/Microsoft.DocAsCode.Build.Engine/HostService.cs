@@ -597,11 +597,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return new List<string>();
             }
-            var cmm = incrementalContext.GetCurrentIntermediateModelManifest(this);
             return (from pair in incrementalContext.GetModelLoadInfo(this)
                     where pair.Value == null
-                    from item in cmm.Models[pair.Key]
-                    select item.SourceFilePath).ToList();
+                    select pair.Key).ToList();
         }
 
         #endregion
