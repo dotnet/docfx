@@ -85,7 +85,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
 
             // Make sure new file names generated from current page is unique
-            var newFileNames = new Dictionary<string, int>();
+            var newFileNames = new Dictionary<string, int>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
             var primaryItem = page.Items[0];
             var itemsToSplit = page.Items.Skip(1);
