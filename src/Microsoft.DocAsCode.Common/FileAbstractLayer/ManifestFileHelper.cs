@@ -183,7 +183,7 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
-        public static void Dereference(this Manifest manifest, string manifestFolder, int parallism)
+        public static void Dereference(this Manifest manifest, string manifestFolder, int parallelism)
         {
             if (manifest == null)
             {
@@ -203,7 +203,7 @@ namespace Microsoft.DocAsCode.Common
                 from ofi in f.OutputFiles.Values
                 where ofi.LinkToPath != null
                 select ofi,
-                new ParallelOptions { MaxDegreeOfParallelism = parallism },
+                new ParallelOptions { MaxDegreeOfParallelism = parallelism },
                 ofi =>
                 {
                     try
@@ -241,10 +241,15 @@ namespace Microsoft.DocAsCode.Common
                 new ParallelOptions { MaxDegreeOfParallelism = parallism > 0 ? parallism : Environment.ProcessorCount },
                 list =>
                 {
-                    foreach (var item in list.Skip(1))
+                    var groups = from item in list group item by item.LinkToPath;
+                    var file = groups.First().First().LinkToPath;
+                    foreach (var g in groups.Skip(1))
                     {
-                        File.Delete(Environment.ExpandEnvironmentVariables(item.LinkToPath));
-                        item.LinkToPath = list[0].LinkToPath;
+                        File.Delete(Environment.ExpandEnvironmentVariables(g.First().LinkToPath));
+                        foreach (var item in g)
+                        {
+                            item.LinkToPath = file;
+                        }
                     }
                 });
         }
