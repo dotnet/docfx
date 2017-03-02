@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Common
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Plugins;
 
@@ -182,7 +183,7 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
-        public static void Dereference(this Manifest manifest, string manifestFolder)
+        public static void Dereference(this Manifest manifest, string manifestFolder, int parallelism)
         {
             if (manifest == null)
             {
@@ -193,57 +194,64 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(manifestFolder));
             }
             FileWriterBase.EnsureFolder(manifestFolder);
-            lock (manifest)
-            {
-                var ofiList = (from f in manifest.Files
-                               from ofi in f.OutputFiles.Values
-                               where ofi.LinkToPath != null
-                               select ofi).ToList();
-                if (ofiList.Count == 0)
+            var fal = FileAbstractLayerBuilder.Default
+                .ReadFromManifest(manifest, manifestFolder)
+                .WriteToRealFileSystem(manifestFolder)
+                .Create();
+            Parallel.ForEach(
+                from f in manifest.Files
+                from ofi in f.OutputFiles.Values
+                where ofi.LinkToPath != null
+                select ofi,
+                new ParallelOptions { MaxDegreeOfParallelism = parallelism },
+                ofi =>
                 {
-                    return;
-                }
-                var fal = FileAbstractLayerBuilder.Default
-                    .ReadFromManifest(manifest, manifestFolder)
-                    .WriteToRealFileSystem(manifestFolder)
-                    .Create();
-                foreach (var rp in ofiList)
-                {
-                    fal.Copy(rp.RelativePath, rp.RelativePath);
-                }
-                foreach (var ofi in ofiList)
-                {
-                    ofi.LinkToPath = null;
-                }
-            }
+                    try
+                    {
+                        fal.Copy(ofi.RelativePath, ofi.RelativePath);
+                        ofi.LinkToPath = null;
+                    }
+                    catch (PathTooLongException)
+                    {
+                        Logger.LogError($"Unable to dereference file: {ofi.RelativePath}.", file: ofi.RelativePath);
+                    }
+                });
         }
 
-        public static void Shrink(this Manifest manifest, string incrementalFolder)
+        public static void Shrink(this Manifest manifest, string incrementalFolder, int parallism = 0)
         {
             lock (manifest)
             {
-                Shrink(manifest.Files, incrementalFolder);
+                Shrink(manifest.Files, incrementalFolder, parallism);
             }
         }
 
-        public static void Shrink(this IEnumerable<ManifestItem> items, string incrementalFolder)
+        public static void Shrink(this IEnumerable<ManifestItem> items, string incrementalFolder, int parallism = 0)
         {
-            foreach (var g in from m in items
-                              from ofi in m.OutputFiles.Values
-                              where ofi.Hash != null &&
-                                ofi.LinkToPath != null &&
-                                ofi.LinkToPath.Length > incrementalFolder.Length &&
-                                ofi.LinkToPath.StartsWith(incrementalFolder) &&
-                                (ofi.LinkToPath[incrementalFolder.Length + 1] == '\\' || ofi.LinkToPath[incrementalFolder.Length + 1] == '/')
-                              group ofi by ofi.Hash)
-            {
-                var first = g.First();
-                foreach (var item in g.Skip(1))
+            Parallel.ForEach(
+                from m in items
+                from ofi in m.OutputFiles.Values
+                where ofi.Hash != null &&
+                    ofi.LinkToPath != null &&
+                    ofi.LinkToPath.Length > incrementalFolder.Length &&
+                    ofi.LinkToPath.StartsWith(incrementalFolder) &&
+                    (ofi.LinkToPath[incrementalFolder.Length] == '\\' || ofi.LinkToPath[incrementalFolder.Length] == '/')
+                group ofi by ofi.Hash into g
+                select g.ToList(),
+                new ParallelOptions { MaxDegreeOfParallelism = parallism > 0 ? parallism : Environment.ProcessorCount },
+                list =>
                 {
-                    File.Delete(Environment.ExpandEnvironmentVariables(item.LinkToPath));
-                    item.LinkToPath = first.LinkToPath;
-                }
-            }
+                    var groups = from item in list group item by item.LinkToPath;
+                    var file = groups.First().First().LinkToPath;
+                    foreach (var g in groups.Skip(1))
+                    {
+                        File.Delete(Environment.ExpandEnvironmentVariables(g.First().LinkToPath));
+                        foreach (var item in g)
+                        {
+                            item.LinkToPath = file;
+                        }
+                    }
+                });
         }
     }
 }

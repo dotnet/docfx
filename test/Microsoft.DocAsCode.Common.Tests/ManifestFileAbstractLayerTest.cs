@@ -112,7 +112,7 @@ namespace Microsoft.DocAsCode.Common.Tests
                 Assert.Equal("😎", File.ReadAllText(pp));
             }
 
-            manifest.Dereference(manifestFolder);
+            manifest.Dereference(manifestFolder, 2);
 
             Assert.Null(manifest.Files.First(mi => mi.SourceRelativePath == "temp.md").OutputFiles[".html"].LinkToPath);
             Assert.True(File.Exists(Path.Combine(manifestFolder, "temp.html")));
