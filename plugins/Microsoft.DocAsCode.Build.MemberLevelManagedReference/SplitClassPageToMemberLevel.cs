@@ -117,6 +117,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             // Convert children to references
             page.References = itemsToSplit.Select(ConvertToReference).Concat(page.References).ToList();
 
+            primaryItem.Metadata[SplitReferencePropertyName] = true;
+
             page.Items = new List<ItemViewModel> { primaryItem };
 
             // Regenerate uids
