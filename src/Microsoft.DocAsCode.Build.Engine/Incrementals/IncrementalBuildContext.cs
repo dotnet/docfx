@@ -125,7 +125,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             OSPlatformSensitiveDictionary<BuildPhase?> mi = null;
             string name = hostService.Processor.Name;
-            lock (_sync)
+            lock (_modelLoadInfo)
             {
                 if (!_modelLoadInfo.TryGetValue(name, out mi))
                 {

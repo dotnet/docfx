@@ -229,8 +229,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var uid in uids)
             {
                 var item = new DependencyItemSourceInfo(DependencyItemSourceType.Uid, uid);
-                yield return new DependencyItem(fromNode, item, fromNode, DependencyTypeName.Uid);
-                yield return new DependencyItem(item, fromNode, fromNode, DependencyTypeName.Uid);
+                yield return new DependencyItem(fromNode, item, fromNode, DependencyTypeName.Overwrite);
+                yield return new DependencyItem(item, fromNode, fromNode, DependencyTypeName.Overwrite);
             }
         }
 
