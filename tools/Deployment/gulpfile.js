@@ -155,6 +155,27 @@ gulp.task("publish:myget-dev", ["e2eTest"], () => {
     return publish(artifactsFolder, config.myget["exe"], config.myget["apiKey"], config.myget["devUrl"]);
 });
 
+gulp.task("publish:myget-test", ["e2eTest"], () => {
+    if (!config.docfx["artifactsFolder"]) {
+        throw new Error("Can't find artifacts folder in configuration.");
+    }
+
+    if (!config.myget["exe"]) {
+        throw new Error("Can't find nuget command in configuration.");
+    }
+
+    if (!config.myget["apiKey"]) {
+        throw new Error("Can't find myget api key in configuration.");
+    }
+
+    if (!config.myget["testUrl"]) {
+        throw new Error("Can't find myget url for docfx test feed in configuration.");
+    }
+
+    let artifactsFolder = path.join(__dirname, config.docfx["artifactsFolder"]);
+    return publish(artifactsFolder, config.myget["exe"], config.myget["apiKey"], config.myget["testUrl"]);
+});
+
 gulp.task("publish:myget-master", ["e2eTest"], () => {
     if (!config.docfx["artifactsFolder"]) {
         throw new Error("Can't find artifacts folder in configuration.");
@@ -176,6 +197,7 @@ gulp.task("publish:myget-master", ["e2eTest"], () => {
     return publish(artifactsFolder, config.myget["exe"], config.myget["apiKey"], config.myget["masterUrl"]);
 });
 
+gulp.task("test", ["build", "e2eTest", "publish:myget-test"]);
 gulp.task("dev", ["build", "e2eTest"]);
 gulp.task("stable", ["build", "e2eTest", "publish:myget-dev"]);
 

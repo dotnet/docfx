@@ -9,6 +9,7 @@
   },
   "myget": {
     "exe": "C:/nuget.exe",
+    "testUrl": "https://www.myget.org/F/docfx-test/api/v2/package",
     "devUrl": "https://www.myget.org/F/docfx-dev/api/v2/package",
     "masterUrl": "https://www.myget.org/F/docfx/api/v2/package"
   },
