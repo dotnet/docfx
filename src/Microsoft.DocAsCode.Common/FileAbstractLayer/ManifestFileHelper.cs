@@ -7,9 +7,9 @@ namespace Microsoft.DocAsCode.Common
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Plugins;
-    using System.Threading.Tasks;
 
     public static class ManifestFileHelper
     {
