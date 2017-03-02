@@ -336,7 +336,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     if (updated != item)
                     {
                         _dependencyItems.Remove(item);
-                        if (from == null || !from.Equals(to))
+                        if (from != null && from.Equals(to))
+                        {
+                            Logger.LogDiagnostic($"Dependency item is ignored because it is a self-dependency after the resolution: {JsonUtility.Serialize(item)}.");
+                        }
+                        else
                         {
                             _dependencyItems.Add(updated);
                         }
