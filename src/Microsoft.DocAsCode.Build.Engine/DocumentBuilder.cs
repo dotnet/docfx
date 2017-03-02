@@ -167,7 +167,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 
                 using (new PerformanceScope("Dereference"))
                 {
-                    generatedManifest.Dereference(parameters[0].OutputBaseDir);
+                    generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
                 }
 
                 using (new PerformanceScope("SaveManifest"))

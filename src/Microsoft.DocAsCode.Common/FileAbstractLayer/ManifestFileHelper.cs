@@ -183,7 +183,7 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
-        public static void Dereference(this Manifest manifest, string manifestFolder)
+        public static void Dereference(this Manifest manifest, string manifestFolder, int parallism)
         {
             if (manifest == null)
             {
@@ -203,6 +203,7 @@ namespace Microsoft.DocAsCode.Common
                 from ofi in f.OutputFiles.Values
                 where ofi.LinkToPath != null
                 select ofi,
+                new ParallelOptions { MaxDegreeOfParallelism = parallism },
                 ofi =>
                 {
                     try
@@ -217,32 +218,35 @@ namespace Microsoft.DocAsCode.Common
                 });
         }
 
-        public static void Shrink(this Manifest manifest, string incrementalFolder)
+        public static void Shrink(this Manifest manifest, string incrementalFolder, int parallism = 0)
         {
             lock (manifest)
             {
-                Shrink(manifest.Files, incrementalFolder);
+                Shrink(manifest.Files, incrementalFolder, parallism);
             }
         }
 
-        public static void Shrink(this IEnumerable<ManifestItem> items, string incrementalFolder)
+        public static void Shrink(this IEnumerable<ManifestItem> items, string incrementalFolder, int parallism = 0)
         {
-            foreach (var g in from m in items
-                              from ofi in m.OutputFiles.Values
-                              where ofi.Hash != null &&
-                                ofi.LinkToPath != null &&
-                                ofi.LinkToPath.Length > incrementalFolder.Length &&
-                                ofi.LinkToPath.StartsWith(incrementalFolder) &&
-                                (ofi.LinkToPath[incrementalFolder.Length + 1] == '\\' || ofi.LinkToPath[incrementalFolder.Length + 1] == '/')
-                              group ofi by ofi.Hash)
-            {
-                var first = g.First();
-                foreach (var item in g.Skip(1))
+            Parallel.ForEach(
+                from m in items
+                from ofi in m.OutputFiles.Values
+                where ofi.Hash != null &&
+                    ofi.LinkToPath != null &&
+                    ofi.LinkToPath.Length > incrementalFolder.Length &&
+                    ofi.LinkToPath.StartsWith(incrementalFolder) &&
+                    (ofi.LinkToPath[incrementalFolder.Length] == '\\' || ofi.LinkToPath[incrementalFolder.Length] == '/')
+                group ofi by ofi.Hash into g
+                select g.ToList(),
+                new ParallelOptions { MaxDegreeOfParallelism = parallism > 0 ? parallism : Environment.ProcessorCount },
+                list =>
                 {
-                    File.Delete(Environment.ExpandEnvironmentVariables(item.LinkToPath));
-                    item.LinkToPath = first.LinkToPath;
-                }
-            }
+                    foreach (var item in list.Skip(1))
+                    {
+                        File.Delete(Environment.ExpandEnvironmentVariables(item.LinkToPath));
+                        item.LinkToPath = list[0].LinkToPath;
+                    }
+                });
         }
     }
 }
