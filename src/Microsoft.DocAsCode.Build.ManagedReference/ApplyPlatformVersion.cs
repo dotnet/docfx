@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
-    public class ApplyPlatformVersion : BaseDocumentBuildStep
+    public class ApplyPlatformVersion : BaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         public override int BuildOrder => 0x10;
 
@@ -63,6 +63,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             host.LogInfo("Platform applied.");
             return models;
         }
+
+        #region ISupportIncrementalBuildStep Members
+
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
+
+        public string GetIncrementalContextHash() => null;
+
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
+
+        #endregion
 
         private static List<string> GetPlatformVersionFromMetadata(object value)
         {

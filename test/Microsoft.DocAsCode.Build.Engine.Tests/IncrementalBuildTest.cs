@@ -187,10 +187,7 @@ tagRules : [
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
                     Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
-                    Assert.False(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
-                    Assert.Equal(
-                        processorsStatus[nameof(ManagedReferenceDocumentProcessor)].Details,
-                        "Processor ManagedReferenceDocumentProcessor cannot suppport incremental build because the following steps don't implement ISupportIncrementalBuildStep interface: ApplyOverwriteDocumentForMref,BuildManagedReferenceDocument,FillReferenceInformation,ValidateManagedReferenceDocumentMetadata.");
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
                     // check xrefmap
@@ -284,10 +281,7 @@ tagRules : [
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
                     Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
-                    Assert.False(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
-                    Assert.Equal(
-                        processorsStatus[nameof(ManagedReferenceDocumentProcessor)].Details,
-                        "Processor ManagedReferenceDocumentProcessor cannot suppport incremental build because the following steps don't implement ISupportIncrementalBuildStep interface: ApplyOverwriteDocumentForMref,BuildManagedReferenceDocument,FillReferenceInformation,ValidateManagedReferenceDocumentMetadata.");
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
                     // check xrefmap
@@ -1866,7 +1860,7 @@ tagRules : [
         public void TestTocAddItem()
         {
             #region Prepare test data
- 
+
             var inputFolder = GetRandomFolder();
             var outputFolder = GetRandomFolder();
             var templateFolder = GetRandomFolder();
@@ -2251,6 +2245,135 @@ tagRules : [
                     Assert.Equal(
                         GetLogMessages("IncrementalBuild.TestDependencyFileDelete-forcebuild-second"),
                         GetLogMessages(new[] { "IncrementalBuild.TestDependencyFileDelete-second", "IncrementalBuild.TestDependencyFileDelete-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact]
+        public void TestManagedReferenceDependencyRemove()
+        {
+            // conceptual2--->System.Console.csyml(phase 2)
+            // System.ConsoleColor.csyml--->System.Console.csyml(phase 2)
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
+            CreateFile("ManagedReference.html.primary.tmpl", "managed content", templateFolder);
+            CreateFile("toc.html.tmpl", "toc", templateFolder);
+
+            var tocFile = CreateFile("toc.md",
+                new[]
+                {
+                    "# [test1](test.md)",
+                    "## [test2](test/test.md)",
+                    "# Api",
+                    "## [Console](@System.Console)",
+                    "## [ConsoleColor](xref:System.ConsoleColor)",
+                },
+                inputFolder);
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "# Hello World",
+                },
+                inputFolder);
+            var conceptualFile2 = CreateFile("test/test.md",
+                new[]
+                {
+                    "Test link: [link text](@System.Console)",
+                    "<p>",
+                    "test",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
+            files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, "TestData/", null);
+            #endregion
+
+            Init("IncrementalBuild.TestManagedReferenceDependencyRemove");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceDependencyRemove");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceDependencyRemove.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceDependencyRemove.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceDependencyRemove-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // remove System.Console.csyml
+                FileCollection newfiles = new FileCollection(Directory.GetCurrentDirectory());
+                newfiles.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
+                newfiles.Add(DocumentType.Article, new[] { "TestData/System.ConsoleColor.csyml" }, "TestData/", null);
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceDependencyRemove-second"))
+                {
+                    BuildDocument(
+                        newfiles,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceDependencyRemove-forcebuild-second"))
+                {
+                    BuildDocument(
+                        newfiles,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(4, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestManagedReferenceDependencyRemove-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestManagedReferenceDependencyRemove-second", "IncrementalBuild.TestManagedReferenceDependencyRemove-first" }));
                 }
             }
             finally
