@@ -289,6 +289,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private void ReportDependencyCoreNoLock(DependencyItem dependency)
         {
+            if (dependency.From.Equals(dependency.To))
+            {
+                Logger.LogDiagnostic($"Dependency item is ignored because it is a self-dependency: {JsonUtility.Serialize(dependency)}.");
+                return;
+            }
             if (_dependencyItems.Add(dependency))
             {
                 if (CanReadDependency(dependency))
@@ -331,14 +336,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     if (updated != item)
                     {
                         _dependencyItems.Remove(item);
-                        _dependencyItems.Add(updated);
+                        if (from == null || !from.Equals(to))
+                        {
+                            _dependencyItems.Add(updated);
+                        }
                     }
 
                     // update index
-                    if (from != null && to != null && reportedBy != null)
+                    if (from != null && to != null && reportedBy != null && !from.Equals(to))
                     {
                         CreateOrUpdate(_indexOnFrom, updated.From.Value, updated);
                         CreateOrUpdate(_indexOnReportedBy, updated.ReportedBy.Value, updated);
+                        CreateOrUpdate(_indexOnTo, updated.To.Value, updated);
                     }
                 }
             }
