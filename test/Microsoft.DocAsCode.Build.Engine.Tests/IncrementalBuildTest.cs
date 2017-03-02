@@ -2288,7 +2288,7 @@ tagRules : [
             var conceptualFile2 = CreateFile("test/test.md",
                 new[]
                 {
-                    "Test link: [link text](@System.Console)",
+                    "Test link: @System.Console",
                     "<p>",
                     "test",
                 },
