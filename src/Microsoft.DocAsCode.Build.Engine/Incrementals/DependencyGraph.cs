@@ -62,14 +62,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             });
 
         private readonly HashSet<DependencyItem> _dependencyItems;
+        private readonly HashSet<ReferenceItem> _referenceItems = new HashSet<ReferenceItem>();
         private readonly object _typeSync = new object();
-        private readonly object _referenceSync = new object();
         private readonly ReaderWriterLockSlim _itemsSync = new ReaderWriterLockSlim();
+        private readonly ReaderWriterLockSlim _referenceSync = new ReaderWriterLockSlim();
         private readonly OSPlatformSensitiveDictionary<HashSet<DependencyItem>> _indexOnFrom = new OSPlatformSensitiveDictionary<HashSet<DependencyItem>>();
         private readonly OSPlatformSensitiveDictionary<HashSet<DependencyItem>> _indexOnTo = new OSPlatformSensitiveDictionary<HashSet<DependencyItem>>();
         private readonly OSPlatformSensitiveDictionary<HashSet<DependencyItem>> _indexOnReportedBy = new OSPlatformSensitiveDictionary<HashSet<DependencyItem>>();
+        private readonly OSPlatformSensitiveDictionary<HashSet<ReferenceItem>> _indexOnReferenceReportedBy = new OSPlatformSensitiveDictionary<HashSet<ReferenceItem>>();
         private ImmutableDictionary<string, DependencyType> _types;
-        private readonly Dictionary<DependencyItemSourceInfo, string> _referenceItems = new Dictionary<DependencyItemSourceInfo, string>();
         private bool _isResolved = false;
 
         #endregion
@@ -79,14 +80,16 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         internal DependencyGraph()
             : this(
                 new HashSet<DependencyItem>(),
-                _defaultTypes.ToDictionary(item => item.Name, item => item))
+                _defaultTypes.ToDictionary(item => item.Name, item => item),
+                new HashSet<ReferenceItem>())
         {
         }
 
-        private DependencyGraph(HashSet<DependencyItem> dependencies, Dictionary<string, DependencyType> types)
+        private DependencyGraph(HashSet<DependencyItem> dependencies, Dictionary<string, DependencyType> types, HashSet<ReferenceItem> references)
         {
             _dependencyItems = dependencies;
             _types = types.ToImmutableDictionary();
+            _referenceItems = references;
             RebuildIndex();
         }
 
@@ -145,45 +148,47 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     throw new ArgumentException("Elements cannot contain null.", nameof(dependency));
                 }
-                ReportDependencyCore(dependency);
+                ReportDependency(dependency);
             }
         }
 
-        public void ReportReference(string file, IEnumerable<DependencyItemSourceInfo> references)
+        public void ReportReference(ReferenceItem reference)
         {
-            if (file == null)
+            if (reference == null)
             {
-                throw new ArgumentNullException(nameof(file));
+                throw new ArgumentNullException(nameof(reference));
             }
+            ReportReferenceCore(reference);
+        }
+
+        public void ReportReference(IEnumerable<ReferenceItem> references)
+        {
             if (references == null)
             {
                 throw new ArgumentNullException(nameof(references));
             }
-            lock (_referenceSync)
+            foreach (var reference in references)
             {
-                foreach (var r in references)
-                {
-                    _referenceItems[r] = file;
-                }
+                ReportReference(reference);
             }
         }
 
         public void ResolveReference()
         {
-            Write(() => ResolveReferenceCore());
+            WriteDependency(() => ResolveReferenceCore());
         }
 
         public bool HasDependencyReportedBy(string reportedBy)
         {
-            return Read(() => HasDependencyReportedByNoLock(reportedBy));
+            return ReadDependency(() => HasDependencyReportedByNoLock(reportedBy));
         }
 
         public bool HasDependencyFrom(string from)
         {
-            return Read(() => HasDependencyFromNoLock(from));
+            return ReadDependency(() => HasDependencyFromNoLock(from));
         }
 
-        public IEnumerable<string> FromNodes => Read(() =>
+        public IEnumerable<string> FromNodes => ReadDependency(() =>
         {
             if (!_isResolved)
             {
@@ -192,7 +197,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return _indexOnFrom.Keys;
         });
 
-        public IEnumerable<string> ReportedBys => Read(() =>
+        public IEnumerable<string> ReportedBys => ReadDependency(() =>
         {
             if (!_isResolved)
             {
@@ -201,7 +206,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return _indexOnReportedBy.Keys;
         });
 
-        public IEnumerable<string> ToNodes => Read(() =>
+        public IEnumerable<string> ToNodes => ReadDependency(() =>
         {
             if (!_isResolved)
             {
@@ -210,45 +215,52 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return _indexOnTo.Keys;
         });
 
+        public IEnumerable<string> ReferenceReportedBys => ReadReference(() => _indexOnReferenceReportedBy.Keys);
+
         public HashSet<DependencyItem> GetDependencyReportedBy(string reportedBy)
         {
-            return Read(() => GetDependencyReportedByNoLock(reportedBy));
+            return ReadDependency(() => GetDependencyReportedByNoLock(reportedBy));
         }
 
         public HashSet<DependencyItem> GetDependencyFrom(string from)
         {
-            return Read(() => GetDependencyFromNoLock(from));
+            return ReadDependency(() => GetDependencyFromNoLock(from));
         }
 
         public HashSet<DependencyItem> GetDependencyTo(string to)
         {
-            return Read(() => GetDependencyToNoLock(to));
+            return ReadDependency(() => GetDependencyToNoLock(to));
         }
 
         public HashSet<DependencyItem> GetAllDependencyFrom(string from)
         {
-            return Read(() => GetAllDependencyFromNoLock(from));
+            return ReadDependency(() => GetAllDependencyFromNoLock(from));
         }
 
         public HashSet<DependencyItem> GetAllDependencyTo(string to)
         {
-            return Read(() => GetAllDependencyToNoLock(to));
+            return ReadDependency(() => GetAllDependencyToNoLock(to));
         }
 
         public HashSet<string> GetAllDependentNodes()
         {
-            return Read(GetAllDependentNodesNoLock);
+            return ReadDependency(GetAllDependentNodesNoLock);
+        }
+
+        public HashSet<ReferenceItem> GetReferenceReportedBy(string reportedBy)
+        {
+            return ReadReference(() => GetReferenceReportedByNoLock(reportedBy));
         }
 
         public void Save(TextWriter writer)
         {
-            Read(() => SaveNoLock(writer));
+            ReadDependency(() => SaveNoLock(writer));
         }
 
         public static DependencyGraph Load(TextReader reader)
         {
-            var dependencies = JsonUtility.Deserialize<Tuple<HashSet<DependencyItem>, Dictionary<string, DependencyType>>>(reader);
-            return new DependencyGraph(dependencies.Item1, dependencies.Item2);
+            var dependencies = JsonUtility.Deserialize<Tuple<HashSet<DependencyItem>, Dictionary<string, DependencyType>, HashSet<ReferenceItem>>>(reader);
+            return new DependencyGraph(dependencies.Item1, dependencies.Item2, dependencies.Item3);
         }
 
         #endregion
@@ -283,13 +295,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             if (IsValidDependency(dependency))
             {
-                Write(() => ReportDependencyCoreNoLock(dependency));
+                WriteDependency(() => ReportDependencyCoreNoLock(dependency));
             }
         }
 
         private void ReportDependencyCoreNoLock(DependencyItem dependency)
         {
-            if (dependency.From.Equals(dependency.To))
+            if (dependency.From == dependency.To)
             {
                 Logger.LogDiagnostic($"Dependency item is ignored because it is a self-dependency: {JsonUtility.Serialize(dependency)}.");
                 return;
@@ -311,62 +323,78 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
         }
 
+        private void ReportReferenceCore(ReferenceItem reference)
+        {
+            WriteReference(() => ReportReferenceCoreNoLock(reference));
+        }
+
+        private void ReportReferenceCoreNoLock(ReferenceItem reference)
+        {
+            _referenceItems.Add(reference);
+            CreateOrUpdate(_indexOnReferenceReportedBy, reference.ReportedBy, reference);
+        }
+
         private void ResolveReferenceCore()
         {
-            lock (_referenceSync)
-            {
-                foreach (var item in _dependencyItems.Where(i => !CanReadDependency(i)).ToList())
-                {
-                    var updated = item;
-                    var from = TryResolveReference(item.From);
-                    var to = TryResolveReference(item.To);
-                    var reportedBy = TryResolveReference(item.ReportedBy);
-                    if (from != null)
-                    {
-                        updated = updated.ChangeFrom(from);
-                    }
-                    if (to != null)
-                    {
-                        updated = updated.ChangeTo(to);
-                    }
-                    if (reportedBy != null)
-                    {
-                        updated = updated.ChangeReportedBy(reportedBy);
-                    }
-                    if (updated != item)
-                    {
-                        _dependencyItems.Remove(item);
-                        if (from != null && from.Equals(to))
-                        {
-                            Logger.LogDiagnostic($"Dependency item is ignored because it is a self-dependency after the resolution: {JsonUtility.Serialize(item)}.");
-                        }
-                        else
-                        {
-                            _dependencyItems.Add(updated);
-                        }
-                    }
-
-                    // update index
-                    if (from != null && to != null && reportedBy != null && !from.Equals(to))
-                    {
-                        CreateOrUpdate(_indexOnFrom, updated.From.Value, updated);
-                        CreateOrUpdate(_indexOnReportedBy, updated.ReportedBy.Value, updated);
-                        CreateOrUpdate(_indexOnTo, updated.To.Value, updated);
-                    }
-                }
-            }
-
+            ReadReference(() => ResolveReferenceCoreNoLock());
             _isResolved = true;
         }
 
-        private DependencyItemSourceInfo TryResolveReference(DependencyItemSourceInfo source)
+        private void ResolveReferenceCoreNoLock()
+        {
+            var indexer = (from r in _referenceItems
+                           group r by r.Reference into g
+                           select g).ToDictionary(gr => gr.Key, gr => gr.Select(i => i.File).First());
+
+            foreach (var item in _dependencyItems.Where(i => !CanReadDependency(i)).ToList())
+            {
+                var updated = item;
+                var from = TryResolveReference(indexer, item.From);
+                var to = TryResolveReference(indexer, item.To);
+                var reportedBy = TryResolveReference(indexer, item.ReportedBy);
+                if (from != null)
+                {
+                    updated = updated.ChangeFrom(from);
+                }
+                if (to != null)
+                {
+                    updated = updated.ChangeTo(to);
+                }
+                if (reportedBy != null)
+                {
+                    updated = updated.ChangeReportedBy(reportedBy);
+                }
+                if (updated != item)
+                {
+                    _dependencyItems.Remove(item);
+                    if (from != null && from == to)
+                    {
+                        Logger.LogDiagnostic($"Dependency item is ignored because it is a self-dependency after the resolution: {JsonUtility.Serialize(item)}.");
+                    }
+                    else
+                    {
+                        _dependencyItems.Add(updated);
+                    }
+                }
+
+                // update index
+                if (from != null && to != null && reportedBy != null && from != to)
+                {
+                    CreateOrUpdate(_indexOnFrom, updated.From.Value, updated);
+                    CreateOrUpdate(_indexOnReportedBy, updated.ReportedBy.Value, updated);
+                    CreateOrUpdate(_indexOnTo, updated.To.Value, updated);
+                }
+            }
+        }
+
+        private DependencyItemSourceInfo TryResolveReference(Dictionary<DependencyItemSourceInfo, string> indexer, DependencyItemSourceInfo source)
         {
             if (source.SourceType == DependencyItemSourceType.File)
             {
                 return source;
             }
             string file;
-            if (!_referenceItems.TryGetValue(source, out file))
+            if (!indexer.TryGetValue(source, out file))
             {
                 Logger.LogInfo($"Dependency graph Failed to resolve reference: {JsonUtility.Serialize(source)}.");
                 return null;
@@ -466,6 +494,16 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                                        select item.To.Value);
         }
 
+        private HashSet<ReferenceItem> GetReferenceReportedByNoLock(string reportedBy)
+        {
+            HashSet<ReferenceItem> indice;
+            if (!_indexOnReferenceReportedBy.TryGetValue(reportedBy, out indice))
+            {
+                return new HashSet<ReferenceItem>();
+            }
+            return indice;
+        }
+
         private bool HasDependencyReportedByNoLock(string reportedBy)
         {
             if (!_isResolved)
@@ -490,7 +528,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
             }
-            JsonUtility.Serialize(writer, Tuple.Create(_dependencyItems, _types));
+            JsonUtility.Serialize(writer, Tuple.Create(_dependencyItems, _types, _referenceItems));
         }
 
         private void RebuildIndex()
@@ -504,15 +542,19 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     CreateOrUpdate(_indexOnTo, item.To.Value, item);
                 }
             }
+            foreach (var reference in _referenceItems)
+            {
+                CreateOrUpdate(_indexOnReferenceReportedBy, reference.ReportedBy, reference);
+            }
             _isResolved = true;
         }
 
-        private static void CreateOrUpdate(Dictionary<string, HashSet<DependencyItem>> index, string key, DependencyItem value)
+        private static void CreateOrUpdate<T>(Dictionary<string, HashSet<T>> index, string key, T value)
         {
-            HashSet<DependencyItem> items;
+            HashSet<T> items;
             if (!index.TryGetValue(key, out items))
             {
-                items = new HashSet<DependencyItem>();
+                items = new HashSet<T>();
                 index[key] = items;
             }
             items.Add(value);
@@ -535,57 +577,99 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return true;
         }
 
-        private void Read(Action reader)
+        #region Read/Write
+
+        private void ReadDependency(Action reader)
         {
-            _itemsSync.EnterReadLock();
+            Read(_itemsSync, reader);
+        }
+
+        private T ReadDependency<T>(Func<T> reader)
+        {
+            return Read(_itemsSync, reader);
+        }
+        private void ReadReference(Action reader)
+        {
+            Read(_referenceSync, reader);
+        }
+
+        private T ReadReference<T>(Func<T> reader)
+        {
+            return Read(_referenceSync, reader);
+        }
+
+        private void WriteDependency(Action writer)
+        {
+            Write(_itemsSync, writer);
+        }
+
+        private T WriteDependency<T>(Func<T> writer)
+        {
+            return Write(_itemsSync, writer);
+        }
+
+        private void WriteReference(Action writer)
+        {
+            Write(_referenceSync, writer);
+        }
+
+        private T WriteReference<T>(Func<T> writer)
+        {
+            return Write(_referenceSync, writer);
+        }
+
+        private static void Read(ReaderWriterLockSlim slim, Action reader)
+        {
+            slim.EnterReadLock();
             try
             {
                 reader();
             }
             finally
             {
-                _itemsSync.ExitReadLock();
+                slim.ExitReadLock();
             }
         }
 
-        private T Read<T>(Func<T> reader)
+        private static T Read<T>(ReaderWriterLockSlim slim, Func<T> reader)
         {
-            _itemsSync.EnterReadLock();
+            slim.EnterReadLock();
             try
             {
                 return reader();
             }
             finally
             {
-                _itemsSync.ExitReadLock();
+                slim.ExitReadLock();
             }
         }
 
-        private void Write(Action writer)
+        private static void Write(ReaderWriterLockSlim slim, Action writer)
         {
-            _itemsSync.EnterWriteLock();
+            slim.EnterWriteLock();
             try
             {
                 writer();
             }
             finally
             {
-                _itemsSync.ExitWriteLock();
+                slim.ExitWriteLock();
             }
         }
 
-        private T Write<T>(Func<T> writer)
+        private static T Write<T>(ReaderWriterLockSlim slim, Func<T> writer)
         {
-            _itemsSync.EnterWriteLock();
+            slim.EnterWriteLock();
             try
             {
                 return writer();
             }
             finally
             {
-                _itemsSync.ExitWriteLock();
+                slim.ExitWriteLock();
             }
         }
+        #endregion
 
         #endregion
     }

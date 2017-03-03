@@ -3170,7 +3170,7 @@ tagRules : [
             }
         }
 
-        [Fact(Skip = "couldn't pass. need update dependencygraph")]
+        [Fact]
         public void TestManagedReferenceWithOverwriteAddOverwrite()
         {
             #region Prepare test data
