@@ -237,21 +237,21 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 foreach (var pair in item.Names)
                 {
-                    reference.NameInDevLangs[Constants.ExtensionMemberPrefix.Name + pair.Key] = pair.Value;
+                    reference.NameInDevLangs[pair.Key] = pair.Value;
                 }
             }
             if (item.FullNames.Count > 0)
             {
                 foreach (var pair in item.FullNames)
                 {
-                    reference.FullNameInDevLangs[Constants.ExtensionMemberPrefix.FullName + pair.Key] = pair.Value;
+                    reference.FullNameInDevLangs[pair.Key] = pair.Value;
                 }
             }
             if (item.NamesWithType.Count > 0)
             {
                 foreach (var pair in item.NamesWithType)
                 {
-                    reference.NameWithTypeInDevLangs[Constants.ExtensionMemberPrefix.NameWithType + pair.Key] = pair.Value;
+                    reference.NameWithTypeInDevLangs[pair.Key] = pair.Value;
                 }
             }
 
@@ -267,23 +267,23 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             if (reference.NameInDevLangs.Count > 0)
             {
-                foreach (var pair in item.Names)
+                foreach (var pair in reference.NameInDevLangs)
                 {
-                    item.Metadata[Constants.ExtensionMemberPrefix.Name + pair.Key] = pair.Value;
+                    item.Names[pair.Key] = pair.Value;
                 }
             }
             if (reference.FullNameInDevLangs.Count > 0)
             {
-                foreach (var pair in item.FullNames)
+                foreach (var pair in reference.FullNameInDevLangs)
                 {
-                    item.Metadata[Constants.ExtensionMemberPrefix.FullName + pair.Key] = pair.Value;
+                    item.FullNames[pair.Key] = pair.Value;
                 }
             }
             if (reference.NameWithTypeInDevLangs.Count > 0)
             {
-                foreach (var pair in item.NamesWithType)
+                foreach (var pair in reference.NameWithTypeInDevLangs)
                 {
-                    item.Metadata[Constants.ExtensionMemberPrefix.NameWithType + pair.Key] = pair.Value;
+                    item.NamesWithType[pair.Key] = pair.Value;
                 }
             }
         }
