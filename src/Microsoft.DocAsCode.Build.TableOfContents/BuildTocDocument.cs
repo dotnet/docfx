@@ -242,7 +242,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             parallelism);
 
             // handle not-in-toc items
-            UpdateNearestTocForNotInTocItem(models, host, nearest);
+            UpdateNearestTocForNotInTocItem(models, host, nearest, parallelism);
 
             foreach (var item in nearest)
             {
@@ -287,10 +287,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private void UpdateNearestTocForNotInTocItem(ImmutableList<FileModel> models, IHostService host, ConcurrentDictionary<string, Toc> nearest)
+        private void UpdateNearestTocForNotInTocItem(ImmutableList<FileModel> models, IHostService host, ConcurrentDictionary<string, Toc> nearest, int parallelism)
         {
             var allSourceFiles = host.SourceFiles;
-            foreach (var item in allSourceFiles.Keys.Except(nearest.Keys).ToList())
+
+            foreach (var item in allSourceFiles.Keys.Except(nearest.Keys, FilePathComparer.OSPlatformSensitiveStringComparer).ToList().AsParallel().WithDegreeOfParallelism(parallelism))
             {
                 var itemOutputFile = GetOutputPath(allSourceFiles[item]);
                 var near = (from m in models
