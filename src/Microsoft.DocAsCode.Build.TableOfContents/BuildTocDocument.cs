@@ -360,9 +360,10 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             switch (restruction.TypeOfKey)
             {
                 case TreeItemKeyType.TopicUid:
-                    return item.TopicUid == restruction.Key;
+                    // make sure TocHref is null so that TopicUid is not the resolved homepage in `href: api/` case
+                    return item.TocHref == null && item.TopicUid == restruction.Key;
                 case TreeItemKeyType.TopicHref:
-                    return FilePathComparer.OSPlatformSensitiveStringComparer.Compare(item.TopicHref, restruction.Key) == 0;
+                    return item.TocHref == null && FilePathComparer.OSPlatformSensitiveStringComparer.Compare(item.TopicHref, restruction.Key) == 0;
                 default:
                     throw new NotSupportedException($"{restruction.TypeOfKey} is not a supported ComparerKeyType");
             }
