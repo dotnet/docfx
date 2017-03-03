@@ -99,6 +99,8 @@ items:
   - vb
   platform:
   - net46
+  version:
+  - net46
   name: Cat()
   nameWithType: Cat<T, K>.Cat()
   fullName: CatLibrary.Cat<T, K>.Cat()
@@ -134,6 +136,8 @@ items:
   - csharp
   - vb
   platform:
+  - net2
+  version:
   - net2
   name: Cat(T)
   nameWithType: Cat<T, K>.Cat(T)

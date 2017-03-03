@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.ManagedReference
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
@@ -151,7 +152,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 Metadata = new Dictionary<string, object>
                 {
                     [IsOverloadPropertyName] = true,
-                    [SplitReferencePropertyName] = true
+                    [SplitReferencePropertyName] = true,
+                    [Constants.MetadataName.Version] = MergeVersion(overload)
                 },
                 Platform = MergePlatform(overload)
             };
@@ -195,6 +197,35 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             platforms.Sort();
             return platforms;
+        }
+
+        private List<string> MergeVersion(IEnumerable<ItemViewModel> children)
+        {
+            var versions = new List<string>();
+            foreach (var child in children)
+            {
+                object versionObj;
+                if (child.Metadata.TryGetValue(Constants.MetadataName.Version, out versionObj))
+                {
+                    try
+                    {
+                        var version = (List<object>) versionObj;
+                        versions.AddRange(version.Select(v => v.ToString()));
+                    }
+                    catch (InvalidCastException ex)
+                    {
+                        Logger.LogError($"Only list of string is supported for metadata version in ItemViewModel of {child.Uid}, {ex.Message}.");
+                        throw;
+                    }
+                }
+            }
+            if (versions.Count == 0)
+            {
+                return null;
+            }
+
+            versions.Sort();
+            return versions;
         }
 
         private string GetOverloadItemName(string overload, string parent, bool isCtor)
@@ -308,6 +339,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             if (item.Platform != null)
             {
                 result.Metadata[Constants.PropertyName.Platform] = item.Platform;
+            }
+
+            object version;
+            if (item.Metadata.TryGetValue(Constants.MetadataName.Version, out version))
+            {
+                result.Metadata[Constants.MetadataName.Version] = version;
             }
 
             if (item.Names.Count > 0)

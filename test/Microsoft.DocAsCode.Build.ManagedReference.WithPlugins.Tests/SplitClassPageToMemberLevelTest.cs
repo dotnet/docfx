@@ -122,6 +122,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.Equal("CatLibrary.Cat`2.#ctor*", ctor.TopicUid);
                 Assert.Equal("Constructor", ctor.Metadata["type"].ToString());
                 Assert.Equal(new List<string> { "net2", "net46" }, JArray.FromObject(ctor.Metadata[Constants.PropertyName.Platform]).Select(s => s.ToString()).ToList());
+                Assert.Equal(new List<string> { "net2", "net46" }, JArray.FromObject(ctor.Metadata[Constants.MetadataName.Version]).Select(s => s.ToString()).ToList());
             }
             {
                 var manifestFile = Path.GetFullPath(Path.Combine(_outputFolder, "manifest.json"));
