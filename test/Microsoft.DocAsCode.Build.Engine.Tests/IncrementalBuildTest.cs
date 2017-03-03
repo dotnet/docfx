@@ -1903,8 +1903,8 @@ tagRules : [
                 },
                 inputFolder);
 
-            FileCollection files = new FileCollection(inputFolder);
-            files.Add(DocumentType.Article, new[] { PathUtility.MakeRelativePath(inputFolder, tocFile), PathUtility.MakeRelativePath(inputFolder, tocFile2), PathUtility.MakeRelativePath(inputFolder, conceptualFile), PathUtility.MakeRelativePath(inputFolder, conceptualFile2) });
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { tocFile, tocFile2, conceptualFile, conceptualFile2 }, inputFolder, null);
 
             #endregion
 
@@ -1914,7 +1914,6 @@ tagRules : [
             var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestTocAddItem.Second.ForceBuild");
             try
             {
-                EnvironmentContext.SetBaseDirectory(Path.Combine(Directory.GetCurrentDirectory(), inputFolder));
                 using (new LoggerPhaseScope("IncrementalBuild.TestTocAddItem-first"))
                 {
                     BuildDocument(
@@ -1968,7 +1967,7 @@ tagRules : [
                 }
                 {
                     // check manifest
-                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(4, manifest.Files.Count);
@@ -1988,7 +1987,6 @@ tagRules : [
             }
             finally
             {
-                EnvironmentContext.SetBaseDirectory(Directory.GetCurrentDirectory());
                 CleanUp();
             }
         }
@@ -2033,8 +2031,8 @@ tagRules : [
                 },
                 inputFolder);
 
-            FileCollection files = new FileCollection(inputFolder);
-            files.Add(DocumentType.Article, new[] { PathUtility.MakeRelativePath(inputFolder, tocFile), PathUtility.MakeRelativePath(inputFolder, conceptualFile), PathUtility.MakeRelativePath(inputFolder, conceptualFile2) });
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 }, inputFolder, null);
 
             #endregion
 
@@ -2044,7 +2042,6 @@ tagRules : [
             var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestTocAddForNotInTocArticle.Second.ForceBuild");
             try
             {
-                EnvironmentContext.SetBaseDirectory(Path.Combine(Directory.GetCurrentDirectory(), inputFolder));
                 using (new LoggerPhaseScope("IncrementalBuild.TestTocAddForNotInTocArticle-first"))
                 {
                     BuildDocument(
@@ -2069,8 +2066,8 @@ tagRules : [
                         "",
                     },
                     inputFolder);
-                FileCollection newfiles = new FileCollection(inputFolder);
-                newfiles.Add(DocumentType.Article, new[] { PathUtility.MakeRelativePath(inputFolder, tocFile), PathUtility.MakeRelativePath(inputFolder, tocFile2), PathUtility.MakeRelativePath(inputFolder, conceptualFile), PathUtility.MakeRelativePath(inputFolder, conceptualFile2) });
+                FileCollection newfiles = new FileCollection(Directory.GetCurrentDirectory());
+                newfiles.Add(DocumentType.Article, new[] { tocFile, tocFile2, conceptualFile, conceptualFile2 }, inputFolder, null);
                 using (new LoggerPhaseScope("IncrementalBuild.TestTocAddForNotInTocArticle-second"))
                 {
                     BuildDocument(
@@ -2099,7 +2096,7 @@ tagRules : [
                 }
                 {
                     // check manifest
-                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
                     Assert.Equal(4, manifest.Files.Count);
@@ -2119,7 +2116,6 @@ tagRules : [
             }
             finally
             {
-                EnvironmentContext.SetBaseDirectory(Directory.GetCurrentDirectory());
                 CleanUp();
             }
         }
@@ -2374,6 +2370,964 @@ tagRules : [
                     Assert.Equal(
                         GetLogMessages("IncrementalBuild.TestManagedReferenceDependencyRemove-forcebuild-second"),
                         GetLogMessages(new[] { "IncrementalBuild.TestManagedReferenceDependencyRemove-second", "IncrementalBuild.TestManagedReferenceDependencyRemove-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact]
+        public void TestManagedReferenceToc()
+        {
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+
+            CreateFile("partials/head.tmpl.partial",
+                new[]
+                {
+                    "<meta property=\"docfx:navrel\" content=\"{{_navRel}}\">",
+                    "<meta property=\"docfx:tocrel\" content=\"{{_tocRel}}\">"
+                },
+                templateFolder);
+            CreateFile("conceptual.html.primary.tmpl", "{{>partials/head}}{{{conceptual}}}", templateFolder);
+            CreateFile("ManagedReference.html.primary.tmpl", "{{>partials/head}} managed content", templateFolder);
+            CreateFile("toc.html.tmpl", "{{>partials/head}} toc", templateFolder);
+
+            var tocFile = CreateFile("toc.md",
+                new[]
+                {
+                    "# [test1](test.md)",
+                    "# Api",
+                },
+                inputFolder);
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "# Hello World",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile }, inputFolder, null);
+            files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, null, null);
+            #endregion
+
+            Init("IncrementalBuild.TestManagedReferenceToc");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceToc");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceToc.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceToc.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceToc-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // add a toc.md
+                var tocFile2 = CreateFile("TestData/toc.md",
+                    new[]
+                    {
+                        "# Api",
+                        "## [Console](@System.Console)",
+                        "## [ConsoleColor](xref:System.ConsoleColor)",
+                    },
+                    inputFolder);
+                FileCollection newfiles = new FileCollection(Directory.GetCurrentDirectory());
+                newfiles.Add(DocumentType.Article, new[] { tocFile, conceptualFile, tocFile2 }, inputFolder, null);
+                newfiles.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, null, null);
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceToc-second"))
+                {
+                    BuildDocument(
+                        newfiles,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceToc-forcebuild-second"))
+                {
+                    BuildDocument(
+                        newfiles,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(5, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestManagedReferenceToc-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestManagedReferenceToc-second", "IncrementalBuild.TestManagedReferenceToc-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact]
+        public void TestManagedReferenceUpdateReference()
+        {
+            // a.yml references a.b.yml 
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+
+            CreateFile("ManagedReference.html.primary.tmpl",
+                new[]
+                {
+                    "Show children:",
+                    "{{#children}}",
+                    "  {{#children}}",
+                    "  <h4><xref uid=\"{{uid}}\" altProperty=\"fullName\" displayProperty=\"name\"/></h4>",
+                    "  <section>{{{summary}}}</section>",
+                    "  {{/children}}",
+                    "{{/children}}",
+                },
+                templateFolder);
+
+            var referenceFile = CreateFile("a.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A",
+                    "  commentId: N:A",
+                    "  id: A",
+                    "  children:",
+                    "  - A.B",
+                    "  name: A",
+                    "  nameWithType: A",
+                    "  fullName: A",
+                    "  type: Namespace",
+                    "references:",
+                    "- uid: A.B",
+                    "  commentId: T:A.B",
+                    "  isExternal: false",
+                    "  name: B",
+                    "  nameWithType: B",
+                    "  fullName: A.B",
+                },
+                inputFolder);
+            var referenceFile2 = CreateFile("a.b.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A.B",
+                    "  commentId: T:A.B",
+                    "  id: A.B",
+                    "  name: B",
+                    "  nameWithType: B",
+                    "  fullName: A.B",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class B",
+                    "  summary: \"This is class A.B\"",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2 }, inputFolder, null);
+
+            #endregion
+
+            Init("IncrementalBuild.TestManagedReferenceUpdateReference");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceUpdateReference");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceUpdateReference.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceUpdateReference.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceUpdateReference-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // update a.b.yml
+                UpdateFile("a.b.yml",
+                    new[]
+                    {
+                        "### YamlMime:ManagedReference",
+                        "items:",
+                        "- uid: A.B",
+                        "  commentId: T:A.B",
+                        "  id: A.B",
+                        "  name: B",
+                        "  nameWithType: B",
+                        "  fullName: A.B",
+                        "  type: Class",
+                        "  syntax:",
+                        "    content: public class B",
+                        "  summary: \"This is class A.B. Updated comments.\"",
+                    },
+                    inputFolder);
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceUpdateReference-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceUpdateReference-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(2, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestManagedReferenceUpdateReference-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestManagedReferenceUpdateReference-second", "IncrementalBuild.TestManagedReferenceUpdateReference-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact]
+        public void TestManagedReferenceWithOverwriteUpdateSrc()
+        {
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+
+            CreateFile("ManagedReference.html.primary.tmpl",
+                new[]
+                {
+                    "<div id = \"summary\">{{{summary}}}</div>",
+                    "<div id = \"conceptual\">{{{conceptual}}}</div>",
+                    "<div id = \"remarks\">{{{remarks}}}</div>",
+                }, templateFolder);
+
+            var referenceFile = CreateFile("a.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A",
+                    "  commentId: T:A",
+                    "  id: A",
+                    "  name: A",
+                    "  nameWithType: A",
+                    "  fullName: A",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class A",
+                    "  summary: \"This is class A\"",
+                },
+                inputFolder);
+            var referenceFile2 = CreateFile("b.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: B",
+                    "  commentId: T:B",
+                    "  id: B",
+                    "  name: B",
+                    "  nameWithType: B",
+                    "  fullName: B",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class B",
+                    "  summary: \"This is class B\"",
+                },
+                inputFolder);
+
+            var overwrite = CreateFile("overwrite.md",
+                new[]
+                {
+                    "---",
+                    "uid: A",
+                    "summary: \"This is from overwrite file: This is class A.\"",
+                    "---",
+                    "Furthur description, please refer to.",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2 }, inputFolder, null);
+            files.Add(DocumentType.Overwrite, new[] { overwrite }, inputFolder, null);
+
+            #endregion
+
+            Init("IncrementalBuild.TestManagedReferenceWithOverwriteUpdateSrc");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithOverwriteUpdateSrc");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithOverwriteUpdateSrc.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithOverwriteUpdateSrc.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithOverwriteUpdateSrc-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // update a.yml
+                UpdateFile("a.yml",
+                    new[]
+                    {
+                        "### YamlMime:ManagedReference",
+                        "items:",
+                        "- uid: A",
+                        "  commentId: T:A",
+                        "  id: A",
+                        "  name: A",
+                        "  nameWithType: A",
+                        "  fullName: A",
+                        "  type: Class",
+                        "  syntax:",
+                        "    content: public class A",
+                        "  summary: \"This is class A\"",
+                        "  remarks: \"Update: add remarks content.\"",
+                    },
+                    inputFolder);
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithOverwriteUpdateSrc-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithOverwriteUpdateSrc-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(2, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestManagedReferenceWithOverwriteUpdateSrc-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestManagedReferenceWithOverwriteUpdateSrc-second", "IncrementalBuild.TestManagedReferenceWithOverwriteUpdateSrc-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact]
+        public void TestManagedReferenceWithOverwriteUpdateOverwrite()
+        {
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+
+            CreateFile("ManagedReference.html.primary.tmpl",
+                new[]
+                {
+                    "<div id = \"summary\">{{{summary}}}</div>",
+                    "<div id = \"conceptual\">{{{conceptual}}}</div>",
+                    "<div id = \"remarks\">{{{remarks}}}</div>",
+                }, templateFolder);
+
+            var referenceFile = CreateFile("a.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A",
+                    "  commentId: T:A",
+                    "  id: A",
+                    "  name: A",
+                    "  nameWithType: A",
+                    "  fullName: A",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class A",
+                    "  summary: \"This is class A\"",
+                },
+                inputFolder);
+            var referenceFile2 = CreateFile("b.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: B",
+                    "  commentId: T:B",
+                    "  id: B",
+                    "  name: B",
+                    "  nameWithType: B",
+                    "  fullName: B",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class B",
+                    "  summary: \"This is class B\"",
+                },
+                inputFolder);
+
+            var overwrite = CreateFile("overwrite.md",
+                new[]
+                {
+                    "---",
+                    "uid: A",
+                    "summary: \"This is from overwrite file: This is class A.\"",
+                    "---",
+                    "Furthur description, please refer to.",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2 }, inputFolder, null);
+            files.Add(DocumentType.Overwrite, new[] { overwrite }, inputFolder, null);
+
+            #endregion
+
+            Init("IncrementalBuild.TestManagedReferenceWithOverwriteUpdateOverwrite");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithOverwriteUpdateOverwrite");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithOverwriteUpdateOverwrite.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithOverwriteUpdateOverwrite.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithOverwriteUpdateOverwrite-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // update overwrite.md
+                UpdateFile("overwrite.md",
+                    new[]
+                    {
+                        "---",
+                        "uid: A",
+                        "summary: \"Updated overwrite file: This is class A.\"",
+                        "---",
+                        "Furthur description, please refer to[Updated].",
+                    },
+                    inputFolder);
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithOverwriteUpdateOverwrite-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithOverwriteUpdateOverwrite-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(2, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestManagedReferenceWithOverwriteUpdateOverwrite-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestManagedReferenceWithOverwriteUpdateOverwrite-second", "IncrementalBuild.TestManagedReferenceWithOverwriteUpdateOverwrite-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact]
+        public void TestManagedReferenceWithOverwriteRemoveOverwrite()
+        {
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+
+            CreateFile("ManagedReference.html.primary.tmpl",
+                new[]
+                {
+                    "<div id = \"summary\">{{{summary}}}</div>",
+                    "<div id = \"conceptual\">{{{conceptual}}}</div>",
+                    "<div id = \"remarks\">{{{remarks}}}</div>",
+                }, templateFolder);
+
+            var referenceFile = CreateFile("a.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A",
+                    "  commentId: T:A",
+                    "  id: A",
+                    "  name: A",
+                    "  nameWithType: A",
+                    "  fullName: A",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class A",
+                    "  summary: \"This is class A\"",
+                },
+                inputFolder);
+            var referenceFile2 = CreateFile("b.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: B",
+                    "  commentId: T:B",
+                    "  id: B",
+                    "  name: B",
+                    "  nameWithType: B",
+                    "  fullName: B",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class B",
+                    "  summary: \"This is class B\"",
+                },
+                inputFolder);
+
+            var overwrite = CreateFile("overwrite.md",
+                new[]
+                {
+                    "---",
+                    "uid: A",
+                    "summary: \"This is from overwrite file: This is class A.\"",
+                    "---",
+                    "Furthur description, please refer to.",
+                    "",
+                    "---",
+                    "uid: B",
+                    "summary: \"This is from overwrite file: This is class B.\"",
+                    "---",
+                    "Conceptual for B.",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2 }, inputFolder, null);
+            files.Add(DocumentType.Overwrite, new[] { overwrite }, inputFolder, null);
+
+            #endregion
+
+            Init("IncrementalBuild.TestManagedReferenceWithOverwriteRemoveOverwrite");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithOverwriteRemoveOverwrite");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithOverwriteRemoveOverwrite.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithOverwriteRemoveOverwrite.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithOverwriteRemoveOverwrite-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // update overwrite.md to remove the overwrite of `B`
+                UpdateFile("overwrite.md",
+                    new[]
+                    {
+                        "---",
+                        "uid: A",
+                        "summary: \"This is from overwrite file: This is class A.\"",
+                        "---",
+                        "Furthur description, please refer to.",
+                    },
+                    inputFolder);
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithOverwriteRemoveOverwrite-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithOverwriteRemoveOverwrite-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(2, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestManagedReferenceWithOverwriteRemoveOverwrite-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestManagedReferenceWithOverwriteRemoveOverwrite-second", "IncrementalBuild.TestManagedReferenceWithOverwriteRemoveOverwrite-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact(Skip = "couldn't pass. need update dependencygraph")]
+        public void TestManagedReferenceWithOverwriteAddOverwrite()
+        {
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+
+            CreateFile("ManagedReference.html.primary.tmpl",
+                new[]
+                {
+                    "<div id = \"summary\">{{{summary}}}</div>",
+                    "<div id = \"conceptual\">{{{conceptual}}}</div>",
+                    "<div id = \"remarks\">{{{remarks}}}</div>",
+                }, templateFolder);
+
+            var referenceFile = CreateFile("a.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A",
+                    "  commentId: T:A",
+                    "  id: A",
+                    "  name: A",
+                    "  nameWithType: A",
+                    "  fullName: A",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class A",
+                    "  summary: \"This is class A\"",
+                },
+                inputFolder);
+            var referenceFile2 = CreateFile("b.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: B",
+                    "  commentId: T:B",
+                    "  id: B",
+                    "  name: B",
+                    "  nameWithType: B",
+                    "  fullName: B",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class B",
+                    "  summary: \"This is class B\"",
+                },
+                inputFolder);
+
+            var overwrite = CreateFile("overwrite.md",
+                new[]
+                {
+                    "---",
+                    "uid: A",
+                    "summary: \"This is from overwrite file: This is class A.\"",
+                    "---",
+                    "Furthur description, please refer to.",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2 }, inputFolder, null);
+            files.Add(DocumentType.Overwrite, new[] { overwrite }, inputFolder, null);
+
+            #endregion
+
+            Init("IncrementalBuild.TestManagedReferenceWithOverwriteAddOverwrite");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithOverwriteAddOverwrite");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithOverwriteAddOverwrite.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithOverwriteAddOverwrite.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithOverwriteAddOverwrite-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // update overwrite.md to add the overwrite of `B`
+                UpdateFile("overwrite.md",
+                    new[]
+                    {
+                        "---",
+                        "uid: A",
+                        "summary: \"This is from overwrite file: This is class A.\"",
+                        "---",
+                        "Furthur description, please refer to.",
+                        "",
+                        "---",
+                        "uid: B",
+                        "summary: \"This is from overwrite file: This is class B.\"",
+                        "---",
+                        "Conceptual for B.",
+                    },
+                    inputFolder);
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithOverwriteAddOverwrite-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithOverwriteAddOverwrite-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(2, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestManagedReferenceWithOverwriteAddOverwrite-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestManagedReferenceWithOverwriteAddOverwrite-second", "IncrementalBuild.TestManagedReferenceWithOverwriteAddOverwrite-first" }));
                 }
             }
             finally
