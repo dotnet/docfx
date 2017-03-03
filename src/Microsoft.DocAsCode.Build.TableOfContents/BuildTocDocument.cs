@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.TableOfContents
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
@@ -225,7 +226,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private void ReportDependency(ImmutableList<FileModel> models, IHostService host, ImmutableDictionary<string, TocItemInfo> tocModelCache, int parallelism)
         {
-            var nearest = new Dictionary<string, Toc>(FilePathComparer.OSPlatformSensitiveStringComparer);
+            var nearest = new ConcurrentDictionary<string, Toc>(FilePathComparer.OSPlatformSensitiveStringComparer);
             models.RunAll(model =>
             {
                 var wrapper = tocModelCache[model.OriginalFileAndType.FullPath];
@@ -264,7 +265,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private void UpdateNearestToc(IHostService host, TocItemViewModel item, FileModel toc, Dictionary<string, Toc> nearest)
+        private void UpdateNearestToc(IHostService host, TocItemViewModel item, FileModel toc, ConcurrentDictionary<string, Toc> nearest)
         {
             var tocHref = item.TocHref;
             var type = Utility.GetHrefType(tocHref);
@@ -286,7 +287,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private void UpdateNearestTocForNotInTocItem(ImmutableList<FileModel> models, IHostService host, Dictionary<string, Toc> nearest)
+        private void UpdateNearestTocForNotInTocItem(ImmutableList<FileModel> models, IHostService host, ConcurrentDictionary<string, Toc> nearest)
         {
             var allSourceFiles = host.SourceFiles;
             foreach (var item in allSourceFiles.Keys.Except(nearest.Keys).ToList())
@@ -309,7 +310,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private void UpdateNearestTocCore(IHostService host, string item, FileModel toc, Dictionary<string, Toc> nearest)
+        private void UpdateNearestTocCore(IHostService host, string item, FileModel toc, ConcurrentDictionary<string, Toc> nearest)
         {
             var allSourceFiles = host.SourceFiles;
             var tocOutputFile = GetOutputPath(toc.FileAndType);
@@ -318,14 +319,17 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 var itemOutputFile = GetOutputPath(itemSource);
                 var relative = tocOutputFile.RemoveWorkingFolder() - itemOutputFile;
-                Toc cur;
-                lock (nearest)
-                {
-                    if (!nearest.TryGetValue(item, out cur) || CompareRelativePath(relative, cur.OutputPath) < 0)
+                nearest.AddOrUpdate(
+                    item,
+                    k => new Toc { Model = toc, OutputPath = relative },
+                    (k, v) =>
                     {
-                        nearest[item] = new Toc { Model = toc, OutputPath = relative };
-                    }
-                }
+                        if (CompareRelativePath(relative, v.OutputPath) < 0)
+                        {
+                            return new Toc { Model = toc, OutputPath = relative };
+                        }
+                        return v;
+                    });
             }
         }
 
