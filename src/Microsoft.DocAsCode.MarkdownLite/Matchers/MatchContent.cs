@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             IsForward = isForward;
         }
 
-        public char this[int offset] => Text[GetIndex(offset)];
+        public char this[int offset] => Text[GetCharIndex(offset)];
 
         public bool Bos() => IsForward ? StartIndex == 0 : StartIndex == Text.Length;
 
@@ -43,6 +43,16 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         public MatchContent Reverse() => new MatchContent(Text, StartIndex, !IsForward);
 
         private int GetIndex(int offset)
+        {
+            int result = GetIndexNoThrow(offset);
+            if (result < 0 || result > Text.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(offset));
+            }
+            return result;
+        }
+
+        private int GetCharIndex(int offset)
         {
             int result = GetIndexNoThrow(offset);
             if (!IsForward)

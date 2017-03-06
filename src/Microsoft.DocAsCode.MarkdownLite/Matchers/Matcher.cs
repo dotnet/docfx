@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         public const int NotMatch = -1;
 
         private static readonly AnyCharMatcher AnyCharMatcher = new AnyCharMatcher();
-        private static readonly EofMatcher EofMatcher = new EofMatcher();
+        private static readonly EosMatcher EosMatcher = new EosMatcher();
 
         /// <summary>
         /// 
@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return new AnyCharInRangeMatcher(start, end);
         }
 
-        public static Matcher ExceptChar(params char[] ch)
+        public static Matcher AnyCharNotIn(params char[] ch)
         {
             if (ch == null)
             {
@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
             var array = (char[])ch.Clone();
             Array.Sort(array);
-            return new ExceptCharMatcher(ch);
+            return new AnyCharNotInMatcher(ch);
         }
 
         public static Matcher String(string text)
@@ -70,6 +70,8 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
             return new StringMatcher(text);
         }
+
+        public static Matcher Eos() => EosMatcher;
 
         public static Matcher Maybe(Matcher matcher) =>
             Repeat(matcher, 0, 1);
@@ -87,7 +89,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             {
                 throw new ArgumentOutOfRangeException(nameof(minOccur), "Should great than or equals 0.");
             }
-            if (minOccur < maxOccur)
+            if (minOccur > maxOccur)
             {
                 throw new ArgumentOutOfRangeException(nameof(maxOccur), "Should great than or equals minOccur.");
             }
@@ -96,57 +98,49 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public static Matcher Any(params Matcher[] matchers)
         {
-            if (matchers == null)
-            {
-                throw new ArgumentNullException(nameof(matchers));
-            }
-            foreach (var m in matchers)
-            {
-                if (m == null)
-                {
-                    throw new ArgumentException("Cannot contain null.", nameof(matchers));
-                }
-            }
+            ValidateMatcherArray(matchers);
             return new AnyMatcher(matchers);
         }
 
         public static Matcher Sequence(params Matcher[] matchers)
         {
-            if (matchers == null)
-            {
-                throw new ArgumentNullException(nameof(matchers));
-            }
-            foreach (var m in matchers)
-            {
-                if (m == null)
-                {
-                    throw new ArgumentException("Cannot contain null.", nameof(matchers));
-                }
-            }
+            ValidateMatcherArray(matchers);
             return new SequenceMatcher(matchers);
         }
 
         public static Matcher Test(params Matcher[] matchers)
         {
-            if (matchers == null)
-            {
-                throw new ArgumentNullException(nameof(matchers));
-            }
-            foreach (var m in matchers)
-            {
-                if (m == null)
-                {
-                    throw new ArgumentException("Cannot contain null.", nameof(matchers));
-                }
-            }
+            ValidateMatcherArray(matchers);
             return new TestMatcher(matchers, false);
         }
 
         public static Matcher NegativeTest(params Matcher[] matchers)
         {
+            ValidateMatcherArray(matchers);
+            return new TestMatcher(matchers, true);
+        }
+
+        public static Matcher ReverseTest(params Matcher[] matchers)
+        {
+            ValidateMatcherArray(matchers);
+            return new ReverseMatcher(new TestMatcher(matchers, false));
+        }
+
+        public static Matcher ReverseNegativeTest(params Matcher[] matchers)
+        {
+            ValidateMatcherArray(matchers);
+            return new ReverseMatcher(new TestMatcher(matchers, true));
+        }
+
+        private static void ValidateMatcherArray(Matcher[] matchers)
+        {
             if (matchers == null)
             {
                 throw new ArgumentNullException(nameof(matchers));
+            }
+            if (matchers.Length == 0)
+            {
+                throw new ArgumentException("Cannot be zero length.", nameof(matchers));
             }
             foreach (var m in matchers)
             {
@@ -155,9 +149,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                     throw new ArgumentException("Cannot contain null.", nameof(matchers));
                 }
             }
-            return new TestMatcher(matchers, true);
         }
-
-        public static Matcher Eof() => EofMatcher;
     }
 }

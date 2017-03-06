@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
-    internal sealed class EofMatcher : Matcher
+    internal sealed class EosMatcher : Matcher
     {
         public override int Match(MatchContent content)
         {

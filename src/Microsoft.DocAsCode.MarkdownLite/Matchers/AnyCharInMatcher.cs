@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             {
                 return NotMatch;
             }
-            return Array.BinarySearch(_ch, content[0]) < 0 ? 1 : NotMatch;
+            return Array.BinarySearch(_ch, content[0]) >= 0 ? 1 : NotMatch;
         }
     }
 }

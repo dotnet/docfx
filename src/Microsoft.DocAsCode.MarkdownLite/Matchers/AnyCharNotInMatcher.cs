@@ -5,11 +5,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
     using System;
 
-    internal sealed class ExceptCharMatcher : Matcher
+    internal sealed class AnyCharNotInMatcher : Matcher
     {
         private readonly char[] _ch;
 
-        public ExceptCharMatcher(char[] ch)
+        public AnyCharNotInMatcher(char[] ch)
         {
             _ch = ch;
         }
@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             {
                 return NotMatch;
             }
-            return Array.BinarySearch(_ch, content[0]) < 0 ? NotMatch : 1;
+            return Array.BinarySearch(_ch, content[0]) >= 0 ? NotMatch : 1;
         }
     }
 }
