@@ -5,7 +5,8 @@ v2.13(Pre-Release)
 1.  **Breaking Change**: Create new type for files in manifest.
 2.  Support working folder for dfm include and code.
 3.  Upgrade YamlDotNet to 4.1.
-4.  Bug fixes:
+4.  Support cross file definition reference for swagger.
+5.  Bug fixes:
     1. Filter config file is expected in working dir instead of project's dir/src dir.
     2. Create msbuild workspace with release configuration by default. https://github.com/dotnet/docfx/pull/1356
 
