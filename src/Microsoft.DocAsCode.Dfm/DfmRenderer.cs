@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Plugins;
 
     public class DfmRenderer : HtmlRenderer, IDisposable
     {
@@ -172,10 +173,12 @@ namespace Microsoft.DocAsCode.Dfm
             catch (DirectoryNotFoundException)
             {
                 return DfmFencesBlockHelper.GenerateReferenceNotFoundErrorMessage(renderer, token);
+                throw new DocumentException($"Unable to find directory for file: '{token.Path}'.");
             }
             catch (FileNotFoundException)
             {
                 return DfmFencesBlockHelper.GenerateReferenceNotFoundErrorMessage(renderer, token);
+                throw new DocumentException($"Unable to find file: '{token.Path}'.");
             }
         }
 
