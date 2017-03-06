@@ -8,7 +8,7 @@
     <title>Introduction to DocFX Template System | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to DocFX Template System | DocFX website ">
-    <meta name="generator" content="docfx 2.12.1.0">
+    <meta name="generator" content="docfx 2.13.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -17,6 +17,7 @@
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
     <meta property="docfx:rel" content="../">
+    
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -93,7 +94,7 @@
 <code>&lt;document_type&gt;.&lt;output_extension&gt;[.primary].&lt;template_extension&gt;</code>.</p>
 <ul>
 <li><code>&lt;document_type&gt;</code> is the <em>document type</em> current <em>Renderer</em> responsible to.</li>
-<li><code>&lt;output_extension&gt;</code> defines the extension of the output files going through current <em>Renderer</em>. For example, <code>conceputal.html.tmpl</code> transforms <code>file1.md</code> into output file <code>file1.html</code>, and <code>toc.json.tmpl</code> transforms <code>toc.md</code> into output file <code>toc.json</code>.</li>
+<li><code>&lt;output_extension&gt;</code> defines the extension of the output files going through current <em>Renderer</em>. For example, <code>conceptual.html.tmpl</code> transforms <code>file1.md</code> into output file <code>file1.html</code>, and <code>toc.json.tmpl</code> transforms <code>toc.md</code> into output file <code>toc.json</code>.</li>
 <li><code>[.primary]</code> is optional. It is used when there are multiple <em>Renderer</em>s with different extension for one particular document type. The output file transformed by the <code>.primary</code> <em>Renderer</em> is used as the file to be linked. The below example describes the behavior in detail.</li>
 <li><code>&lt;template_extension&gt;</code> is the extension of the <em>Renderer</em> file based on the templating language it uses. For Mustache <em>Renderer</em>, it is <code>.tmpl</code>, while for Liquid <em>Renderer</em>, it is <code>.liquid</code>.</li>
 </ul>
@@ -101,7 +102,7 @@
 <p>The following template contains two Mustache <em>Renderer</em> files for <code>conceptual</code> document type:</p>
 <pre><code>/- some_template/
     |- conceptual.html.primary.tmpl
-    \- concetpual.mta.json.tmpl
+    \- conceptual.mta.json.tmpl
 </code></pre><p>There are two Markdown files <code>A.md</code> and <code>B.md</code>, the content for <code>A.md</code> is:</p>
 <pre><code class="lang-markdown">[Link To B](B.md)
 </code></pre><p><em>DocFX Template System</em> produces two output files for <code>A.md</code>: <code>A.html</code> and <code>A.mta.json</code>, and also two output files for <code>B.md</code>: <code>B.html</code> and <code>B.mta.json</code>. According to <code>conceptual.html.primary.tmpl</code>, <code>.html</code> is the <strong>primary</strong> output file, the link from <code>A.md</code> to <code>B.md</code> is resolved to <code>B.html</code> instead of <code>B.mta.json</code>, which is to say, the content of <code>A.md</code> is transformed to:</p>

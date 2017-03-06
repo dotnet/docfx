@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.12.1) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.13) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.12.1) | DocFX website ">
-    <meta name="generator" content="docfx 2.12.1.0">
+    <meta name="title" content="Version Notes (Current Version: v2.13) | DocFX website ">
+    <meta name="generator" content="docfx 2.13.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -17,6 +17,7 @@
     <meta property="docfx:navrel" content="toc.html">
     <meta property="docfx:tocrel" content="toc.html">
     <meta property="docfx:rel" content="">
+    
   </head>
   <body data-spy="scroll" data-target="#affix">
     <div id="wrapper">
@@ -66,11 +67,19 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <h1 id="version-notes-current-version-v2121">Version Notes (Current Version: v2.12.1)</h1>
+              <h1 id="version-notes-current-version-v213">Version Notes (Current Version: v2.13)</h1>
               
-<h2 id="v2121">v2.12.1</h2>
+<h2 id="v213">v2.13</h2>
 <ol>
-<li>Bug fixes: clickable images links in markdown topics are no longer being rendered correctly.</li>
+<li><strong>Breaking Change</strong>: Create new type for files in manifest.</li>
+<li>Support working folder for dfm include and code.</li>
+<li>Upgrade YamlDotNet to 4.1.</li>
+<li>Support cross file definition reference for swagger.</li>
+<li>Bug fixes:<ol>
+<li>Filter config file is expected in working dir instead of project&#39;s dir/src dir.</li>
+<li>Create msbuild workspace with release configuration by default. <a href="https://github.com/dotnet/docfx/pull/1356">https://github.com/dotnet/docfx/pull/1356</a></li>
+</ol>
+</li>
 </ol>
 <h2 id="v212">v2.12</h2>
 <ol>

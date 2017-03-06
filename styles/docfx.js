@@ -20,13 +20,24 @@ $(function () {
     $('.IMPORTANT, .CAUTION').addClass('alert alert-danger');
   })();  
 
+  // Anchorjs 3.2.2 fails when title content contains '<' and '>'.
+  // TODO: enable this when anchorjs fixes this issue
   // Enable anchors for headings.
+  // (function () {
+  //   anchors.options = {
+  //     placement: 'left',
+  //     visible: 'touch'
+  //   };
+  //   anchors.add('article h2, article h3, article h4, article h5, article h6');
+  // })();
+
+  // Open links to different host in a new window.
   (function () {
-    anchors.options = {
-      placement: 'left',
-      visible: 'touch'
-    };
-    anchors.add('article h2, article h3, article h4, article h5, article h6');
+    if ($("meta[property='docfx:newtab']").attr("content") === "true") {
+      $(document.links).filter(function() {
+        return this.hostname !== window.location.hostname;
+      }).attr('target', '_blank');
+    }
   })();
 
   // Enable highlight.js
