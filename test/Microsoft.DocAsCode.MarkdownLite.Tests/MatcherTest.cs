@@ -208,7 +208,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         }
 
         [Fact]
-        public void TestNegativeTest()
+        public void TestNegativeTestMatcher()
         {
             var m = Matcher.NegativeTest(Matcher.Char('a'));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 0, true)));
@@ -244,7 +244,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         }
 
         [Fact]
-        public void TestReverseNegativeTest()
+        public void TestReverseNegativeTestMatcher()
         {
             var m = Matcher.ReverseNegativeTest(Matcher.Char('a'));
             Assert.Equal(0, m.Match(new MatchContent("abc", 0, true)));
@@ -259,6 +259,29 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             Assert.Equal(0, m.Match(new MatchContent("cba", 3, false)));
             Assert.Equal(0, m.Match(new MatchContent("cba", 2, true)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cba", 2, false)));
+        }
+
+        [Fact]
+        public void TestComplex()
+        {
+            var m = Matcher.Sequence(
+                Matcher.Repeat(
+                    Matcher.String("abc"),
+                    1,
+                    2),
+                Matcher.Test(
+                    Matcher.Any(
+                        Matcher.Char('\n'),
+                        Matcher.Eos()
+                    )
+                )
+            );
+            Assert.Equal(3, m.Match(new MatchContent("abc", 0, true)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abcd", 0, true)));
+            Assert.Equal(6, m.Match(new MatchContent("abcabc", 0, true)));
+            Assert.Equal(3, m.Match(new MatchContent("abc\nd", 0, true)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abcabcabc", 0, true)));
+            Assert.Equal(3, m.Match(new MatchContent("abc\nabcabc", 0, true)));
         }
     }
 }
