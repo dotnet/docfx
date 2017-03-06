@@ -209,7 +209,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private List<string> MergeVersion(IEnumerable<ItemViewModel> children)
         {
-            var versions = new List<string>();
+            var versions = new SortedSet<string>();
             foreach (var child in children)
             {
                 object versionObj;
@@ -218,14 +218,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     var versionList = versionObj as List<object>;
                     if (versionList != null)
                     {
-                        versions.AddRange(versionList.Select(v => v.ToString()));
+                        versions.UnionWith(versionList.Select(v => v.ToString()));
                     }
                     else
                     {
                         var versionJArray = versionObj as JArray;
                         if (versionJArray != null)
                         {
-                            versions.AddRange(versionJArray.Select(v => v.ToString()));
+                            versions.UnionWith(versionJArray.Select(v => v.ToString()));
                         }
 
                         throw new DocfxException($"Only list of string is supported for metadata version in ItemViewModel of {child.Uid}");
@@ -238,8 +238,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 return null;
             }
 
-            versions.Sort();
-            return versions.Distinct().ToList();
+            return versions.ToList();
         }
 
         private string GetOverloadItemName(string overload, string parent, bool isCtor)
