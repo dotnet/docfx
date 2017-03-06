@@ -3,17 +3,19 @@
 
 namespace Microsoft.DocAsCode.Build.ManagedReference
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
     using System.Linq;
     using System.IO;
 
+    using Newtonsoft.Json.Linq;
+
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
     [Export("ManagedReferenceDocumentProcessor", typeof(IDocumentBuildStep))]
@@ -152,11 +154,17 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 Metadata = new Dictionary<string, object>
                 {
                     [IsOverloadPropertyName] = true,
-                    [SplitReferencePropertyName] = true,
-                    [Constants.MetadataName.Version] = MergeVersion(overload)
+                    [SplitReferencePropertyName] = true
                 },
                 Platform = MergePlatform(overload)
             };
+
+            var mergeVersion = MergeVersion(overload);
+            if (mergeVersion != null)
+            {
+                newPrimaryItem.Metadata[Constants.MetadataName.Version] = MergeVersion(overload);
+            }
+
             var referenceItem = page.References.FirstOrDefault(s => s.Uid == key);
             if (referenceItem != null)
             {
@@ -207,25 +215,31 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 object versionObj;
                 if (child.Metadata.TryGetValue(Constants.MetadataName.Version, out versionObj))
                 {
-                    try
+                    var versionList = versionObj as List<object>;
+                    if (versionList != null)
                     {
-                        var version = (List<object>) versionObj;
-                        versions.AddRange(version.Select(v => v.ToString()));
+                        versions.AddRange(versionList.Select(v => v.ToString()));
                     }
-                    catch (InvalidCastException ex)
+                    else
                     {
-                        Logger.LogError($"Only list of string is supported for metadata version in ItemViewModel of {child.Uid}, {ex.Message}.");
-                        throw;
+                        var versionJArray = versionObj as JArray;
+                        if (versionJArray != null)
+                        {
+                            versions.AddRange(versionJArray.Select(v => v.ToString()));
+                        }
+
+                        throw new DocfxException($"Only list of string is supported for metadata version in ItemViewModel of {child.Uid}");
                     }
                 }
             }
+
             if (versions.Count == 0)
             {
                 return null;
             }
 
             versions.Sort();
-            return versions;
+            return versions.Distinct().ToList();
         }
 
         private string GetOverloadItemName(string overload, string parent, bool isCtor)
@@ -262,11 +276,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             // Save minimal info, as FillReferenceInformation will fill info from ItemViewModel if the property is needed
             var reference = new ReferenceViewModel
             {
-                 Uid = item.Uid,
-                 Parent = item.Parent,
-                 Name = item.Name,
-                 NameWithType = item.NameWithType,
-                 FullName = item.FullName,
+                Uid = item.Uid,
+                Parent = item.Parent,
+                Name = item.Name,
+                NameWithType = item.NameWithType,
+                FullName = item.FullName,
             };
 
             if (item.Names.Count > 0)

@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
@@ -21,7 +20,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
     using Newtonsoft.Json.Linq;
     using Xunit;
     using TableOfContents;
-    using System.Text.RegularExpressions;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "ManagedReferenceDocumentProcessorWithPlugins")]
