@@ -7,8 +7,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
     using Newtonsoft.Json;
 
+    using Microsoft.DocAsCode.Common;
+
     public class ReferenceItem : IEquatable<ReferenceItem>
     {
+        private StringComparer FileComparer => FilePathComparer.OSPlatformSensitiveStringComparer;
+
         [JsonProperty("reference")]
         public DependencyItemSourceInfo Reference { get; }
 
@@ -37,8 +41,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 return true;
             }
             return Reference == other.Reference &&
-                File == other.File &&
-                ReportedBy == other.ReportedBy;
+                FileComparer.Equals(File, other.File) &&
+                FileComparer.Equals(ReportedBy, other.ReportedBy);
         }
 
         public override bool Equals(object obj)
@@ -48,7 +52,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public override int GetHashCode()
         {
-            return Reference.GetHashCode() ^ (File.GetHashCode() >> 1) ^ (ReportedBy.GetHashCode() >> 2);
+            return Reference.GetHashCode() ^ (FileComparer.GetHashCode(File) >> 1) ^ (FileComparer.GetHashCode(ReportedBy) >> 2);
         }
     }
 }

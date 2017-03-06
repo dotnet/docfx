@@ -73,12 +73,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public static bool operator ==(DependencyItemSourceInfo a, DependencyItemSourceInfo b)
         {
-            if (ReferenceEquals(a, b))
-            {
-                return true;
-            }
-
-            return (object)a != null && a.Equals(b);
+            return object.Equals(a, b);
         }
 
         public static bool operator !=(DependencyItemSourceInfo a, DependencyItemSourceInfo b)
