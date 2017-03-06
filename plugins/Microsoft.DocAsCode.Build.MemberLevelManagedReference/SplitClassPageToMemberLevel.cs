@@ -3,11 +3,14 @@
 
 namespace Microsoft.DocAsCode.Build.ManagedReference
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
     using System.Linq;
     using System.IO;
+
+    using Newtonsoft.Json.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
@@ -162,6 +165,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 Platform = MergePlatform(overload),
                 IsExplicitInterfaceImplementation = firstMember.IsExplicitInterfaceImplementation,
             };
+
+            var mergeVersion = MergeVersion(overload);
+            if (mergeVersion != null)
+            {
+                newPrimaryItem.Metadata[Constants.MetadataName.Version] = MergeVersion(overload);
+            }
+
             var referenceItem = page.References.FirstOrDefault(s => s.Uid == key);
             if (referenceItem != null)
             {
@@ -190,6 +200,57 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             platforms.Sort();
             return platforms;
+        }
+
+        private List<string> MergeVersion(IEnumerable<ItemViewModel> children)
+        {
+            var versions = new SortedSet<string>();
+            foreach (var child in children)
+            {
+                object versionObj;
+                if (child.Metadata.TryGetValue(Constants.MetadataName.Version, out versionObj))
+                {
+                    var versionList = GetVersionFromMetadata(versionObj);
+                    versions.UnionWith(versionList);
+                }
+            }
+
+            if (versions.Count == 0)
+            {
+                return null;
+            }
+
+            return versions.ToList();
+        }
+
+        private List<string> GetVersionFromMetadata(object value)
+        {
+            var text = value as string;
+            if (text != null)
+            {
+                return new List<string> { text };
+            }
+
+            var collection = value as IEnumerable<object>;
+            if (collection != null)
+            {
+                return collection.OfType<string>().ToList();
+            }
+
+            var jarray = value as JArray;
+            if (jarray != null)
+            {
+                try
+                {
+                    return jarray.ToObject<List<string>>();
+                }
+                catch (Exception)
+                {
+                    Logger.LogWarning($"Unknown version metadata: {jarray.ToString()}");
+                }
+            }
+
+            return null;
         }
 
         private string GetOverloadItemName(string overload, string parent, bool isCtor)
@@ -226,11 +287,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             // Save minimal info, as FillReferenceInformation will fill info from ItemViewModel if the property is needed
             var reference = new ReferenceViewModel
             {
-                 Uid = item.Uid,
-                 Parent = item.Parent,
-                 Name = item.Name,
-                 NameWithType = item.NameWithType,
-                 FullName = item.FullName,
+                Uid = item.Uid,
+                Parent = item.Parent,
+                Name = item.Name,
+                NameWithType = item.NameWithType,
+                FullName = item.FullName,
             };
 
             if (item.Names.Count > 0)
@@ -303,6 +364,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             if (item.Platform != null)
             {
                 result.Metadata[Constants.PropertyName.Platform] = item.Platform;
+            }
+
+            object version;
+            if (item.Metadata.TryGetValue(Constants.MetadataName.Version, out version))
+            {
+                result.Metadata[Constants.MetadataName.Version] = version;
             }
 
             if (item.Names.Count > 0)

@@ -38,6 +38,11 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string SystemKeys = "_systemKeys";
         }
 
+        public static class MetadataName
+        {
+            public const string Version = "version";
+        }
+
         public static class ExtensionMemberPrefix
         {
             public const string NameWithType = PropertyName.NameWithType + PrefixSeparator;
