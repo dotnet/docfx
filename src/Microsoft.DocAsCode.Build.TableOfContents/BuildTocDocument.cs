@@ -8,8 +8,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
-    using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
@@ -242,7 +242,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             parallelism);
 
             // handle not-in-toc items
-            UpdateNearestTocForNotInTocItem(models, host, nearest);
+            UpdateNearestTocForNotInTocItem(models, host, nearest, parallelism);
 
             foreach (var item in nearest)
             {
@@ -287,27 +287,30 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private void UpdateNearestTocForNotInTocItem(ImmutableList<FileModel> models, IHostService host, ConcurrentDictionary<string, Toc> nearest)
+        private void UpdateNearestTocForNotInTocItem(ImmutableList<FileModel> models, IHostService host, ConcurrentDictionary<string, Toc> nearest, int parallelism)
         {
             var allSourceFiles = host.SourceFiles;
-            foreach (var item in allSourceFiles.Keys.Except(nearest.Keys).ToList())
-            {
-                var itemOutputFile = GetOutputPath(allSourceFiles[item]);
-                var near = (from m in models
-                            let outputFile = GetOutputPath(m.FileAndType)
-                            let rel = outputFile.MakeRelativeTo(itemOutputFile)
-                            where rel.SubdirectoryCount == 0
-                            orderby rel.ParentDirectoryCount
-                            select new Toc
-                            {
-                                Model = m,
-                                OutputPath = rel,
-                            }).FirstOrDefault();
-                if (near != null)
+            Parallel.ForEach(
+                allSourceFiles.Keys.Except(nearest.Keys, FilePathComparer.OSPlatformSensitiveStringComparer).ToList(),
+                new ParallelOptions { MaxDegreeOfParallelism = parallelism },
+                item =>
                 {
-                    nearest[item] = near;
-                }
-            }
+                    var itemOutputFile = GetOutputPath(allSourceFiles[item]);
+                    var near = (from m in models
+                                let outputFile = GetOutputPath(m.FileAndType)
+                                let rel = outputFile.MakeRelativeTo(itemOutputFile)
+                                where rel.SubdirectoryCount == 0
+                                orderby rel.ParentDirectoryCount
+                                select new Toc
+                                {
+                                    Model = m,
+                                    OutputPath = rel,
+                                }).FirstOrDefault();
+                    if (near != null)
+                    {
+                        nearest[item] = near;
+                    }
+                });
         }
 
         private void UpdateNearestTocCore(IHostService host, string item, FileModel toc, ConcurrentDictionary<string, Toc> nearest)
