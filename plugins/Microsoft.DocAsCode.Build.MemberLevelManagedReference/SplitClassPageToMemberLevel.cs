@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.ManagedReference
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
@@ -15,7 +16,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
-    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
     [Export("ManagedReferenceDocumentProcessor", typeof(IDocumentBuildStep))]
@@ -215,21 +215,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 object versionObj;
                 if (child.Metadata.TryGetValue(Constants.MetadataName.Version, out versionObj))
                 {
-                    var versionList = versionObj as List<object>;
-                    if (versionList != null)
-                    {
-                        versions.UnionWith(versionList.Select(v => v.ToString()));
-                    }
-                    else
-                    {
-                        var versionJArray = versionObj as JArray;
-                        if (versionJArray != null)
-                        {
-                            versions.UnionWith(versionJArray.Select(v => v.ToString()));
-                        }
-
-                        throw new DocfxException($"Only list of string is supported for metadata version in ItemViewModel of {child.Uid}");
-                    }
+                    var versionList = GetVersionFromMetadata(versionObj);
+                    versions.UnionWith(versionList);
                 }
             }
 
@@ -239,6 +226,36 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
 
             return versions.ToList();
+        }
+
+        private List<string> GetVersionFromMetadata(object value)
+        {
+            var text = value as string;
+            if (text != null)
+            {
+                return new List<string> { text };
+            }
+
+            var collection = value as IEnumerable<object>;
+            if (collection != null)
+            {
+                return collection.OfType<string>().ToList();
+            }
+
+            var jarray = value as JArray;
+            if (jarray != null)
+            {
+                try
+                {
+                    return jarray.ToObject<List<string>>();
+                }
+                catch (Exception)
+                {
+                    Logger.LogWarning($"Unknown version metadata: {jarray.ToString()}");
+                }
+            }
+
+            return null;
         }
 
         private string GetOverloadItemName(string overload, string parent, bool isCtor)
