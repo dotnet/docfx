@@ -570,9 +570,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     IsFromSource = true,
                 };
             }
-            var dependency = LastBuildVersionInfo?.Dependency;
-            if (dependency != null)
+
+            if (CanVersionIncremental)
             {
+                var dependency = LastBuildVersionInfo.Dependency;
                 foreach (var f in dependency.GetAllDependentNodes())
                 {
                     if (keys.Contains(f))
@@ -608,6 +609,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             catch (ArgumentException)
             {
                 // ignore the file if it contains illegal characters
+            }
+            catch (Exception ex)
+            {
+                Logger.LogVerbose($"Failed to get full path for: {path}. Exception details: {ex.Message}.");
             }
             return fullPath;
         }

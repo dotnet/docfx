@@ -450,6 +450,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
             }
             return new HashSet<string>(from item in _dependencyItems
+                                       where CanReadDependency(item)
                                        select item.To.Value);
         }
 
