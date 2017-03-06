@@ -1,4 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// For docfx preview extension
+var refresh;
+
 $(function () {
   var active = 'active';
   var expanded = 'in';
@@ -6,6 +9,19 @@ $(function () {
   var filtered = 'filtered';
   var show = 'show';
   var hide = 'hide';
+
+  // Styling for tables in conceptual documents using Bootstrap.
+  // See http://getbootstrap.com/css/#tables
+  function renderTables() {
+    $('table').addClass('table table-bordered table-striped table-condensed');
+  };
+
+  // Styling for alerts.
+  function renderAlerts() {
+    $('.NOTE, .TIP').addClass('alert alert-info');
+    $('.WARNING').addClass('alert alert-warning');
+    $('.IMPORTANT, .CAUTION').addClass('alert alert-danger');
+  };
 
   // Anchorjs 3.2.2 fails when title content contains '<' and '>'.
   // TODO: enable this when anchorjs fixes this issue
@@ -21,11 +37,55 @@ $(function () {
   // Open links to different host in a new window.
   (function () {
     if ($("meta[property='docfx:newtab']").attr("content") === "true") {
-      $(document.links).filter(function () {
+      $(document.links).filter(function() {
         return this.hostname !== window.location.hostname;
       }).attr('target', '_blank');
     }
   })();
+
+  // Enable highlight.js
+  function enableHighlight() {
+    $('pre code').each(function(i, block) {
+      hljs.highlightBlock(block);
+    });
+  };
+
+  // Line highlight for code snippet
+  function codeSnippetHighlight() {
+    $('pre code[highlight-lines]').each(function (i, block) {
+      if (block.innerHTML === "") return;
+      var lines = block.innerHTML.split('\n');
+
+      queryString = block.getAttribute('highlight-lines');
+      if (!queryString) return;
+
+      var ranges = queryString.split(',');
+      for (var j = 0, range; range = ranges[j++];) {
+        var found = range.match(/^(\d+)\-(\d+)?$/);
+        if (found) {
+          // consider region as `{startlinenumber}-{endlinenumber}`, in which {endlinenumber} is optional
+          var start = +found[1];
+          var end = +found[2];
+          if (isNaN(end) || end > lines.length) {
+            end = lines.length;
+          }
+        } else {
+          // consider region as a sigine line number
+          if (isNaN(range)) continue;
+          var start = +range;
+          var end = start;
+        }
+        if (start <= 0 || end <= 0 || start > end || start > lines.length) {
+          // skip current region if invalid
+          continue;
+        }
+        lines[start - 1] = '<span class="line-highlight">' + lines[start - 1];
+        lines[end - 1] = lines[end - 1] + '</span>';
+      }
+
+      block.innerHTML = lines.join('\n');
+    });
+  };
 
   //Adjust the position of search box in navbar
   (function () {
@@ -466,148 +526,13 @@ $(function () {
     }
   })();
 
-  // Show footer
-  (function () {
-    initFooter();
-    $(window).on("scroll", showFooter);
-
-    function initFooter() {
-      if (needFooter()) {
-        shiftUpBottomCss();
-        $("footer").show();
-      } else {
-        resetBottomCss();
-        $("footer").hide();
-      }
-    }
-
-    function showFooter() {
-      if (needFooter()) {
-        shiftUpBottomCss();
-        $("footer").fadeIn();
-      } else {
-        resetBottomCss();
-        $("footer").fadeOut();
-      }
-    }
-
-    function needFooter() {
-      var scrollHeight = $(document).height();
-      var scrollPosition = $(window).height() + $(window).scrollTop();
-      return (scrollHeight - scrollPosition) < 1;
-    }
-
-    function resetBottomCss() {
-      $(".sidetoc").removeClass("shiftup");
-      $(".sideaffix").removeClass("shiftup");
-    }
-
-    function shiftUpBottomCss() {
-      $(".sidetoc").addClass("shiftup");
-      $(".sideaffix").addClass("shiftup");
-    }
-  })();
-
-  // For LOGO SVG
-  // Replace SVG with inline SVG
-  // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
-  jQuery('img.svg').each(function () {
-    var $img = jQuery(this);
-    var imgID = $img.attr('id');
-    var imgClass = $img.attr('class');
-    var imgURL = $img.attr('src');
-
-    jQuery.get(imgURL, function (data) {
-      // Get the SVG tag, ignore the rest
-      var $svg = jQuery(data).find('svg');
-
-      // Add replaced image's ID to the new SVG
-      if (typeof imgID !== 'undefined') {
-        $svg = $svg.attr('id', imgID);
-      }
-      // Add replaced image's classes to the new SVG
-      if (typeof imgClass !== 'undefined') {
-        $svg = $svg.attr('class', imgClass + ' replaced-svg');
-      }
-
-      // Remove any invalid XML tags as per http://validator.w3.org
-      $svg = $svg.removeAttr('xmlns:a');
-
-      // Replace image with new SVG
-      $img.replaceWith($svg);
-
-    }, 'xml');
-  });
-
-  previewPageRefresh();
-})
-
-// This function is extracted for docfx preview
-function previewPageRefresh() {
-  // Styling for tables in conceptual documents using Bootstrap.
-  // See http://getbootstrap.com/css/#tables
-  (function () {
-    $('table').addClass('table table-bordered table-striped table-condensed');
-  })();
-
-  // Styling for alerts.
-  (function () {
-    $('.NOTE, .TIP').addClass('alert alert-info');
-    $('.WARNING').addClass('alert alert-warning');
-    $('.IMPORTANT, .CAUTION').addClass('alert alert-danger');
-  })();
-
-  // Enable highlight.js
-  (function () {
-    $('pre code').each(function (i, block) {
-      hljs.highlightBlock(block);
-    });
-  })();
-
-  // Line highlight for code snippet
-  (function () {
-    $('pre code[highlight-lines]').each(function (i, block) {
-      if (block.innerHTML === "") return;
-      var lines = block.innerHTML.split('\n');
-
-      queryString = block.getAttribute('highlight-lines');
-      if (!queryString) return;
-
-      var ranges = queryString.split(',');
-      for (var j = 0, range; range = ranges[j++];) {
-        var found = range.match(/^(\d+)\-(\d+)?$/);
-        if (found) {
-          // consider region as `{startlinenumber}-{endlinenumber}`, in which {endlinenumber} is optional
-          var start = +found[1];
-          var end = +found[2];
-          if (isNaN(end) || end > lines.length) {
-            end = lines.length;
-          }
-        } else {
-          // consider region as a sigine line number
-          if (isNaN(range)) continue;
-          var start = +range;
-          var end = start;
-        }
-        if (start <= 0 || end <= 0 || start > end || start > lines.length) {
-          // skip current region if invalid
-          continue;
-        }
-        lines[start - 1] = '<span class="line-highlight">' + lines[start - 1];
-        lines[end - 1] = lines[end - 1] + '</span>';
-      }
-
-      block.innerHTML = lines.join('\n');
-    });
-  })();
-
   //Setup Affix
-  (function () {
+  function setupAffix() {
     var hierarchy = getHierarchy();
     if (hierarchy.length > 0) {
       var html = '<h5 class="title">In This Article</h5>'
       html += formList(hierarchy, ['nav', 'bs-docs-sidenav']);
-      $("#affix").append(html);
+      $("#affix").empty().append(html);
       if ($('footer').is(':visible')) {
         $(".sideaffix").css("bottom", "70px");
       }
@@ -622,7 +547,7 @@ function previewPageRefresh() {
           });
           var container = $('#affix > ul');
           var height = container.height();
-          container.scrollTop(container.scrollTop() + top - height / 2);
+          container.scrollTop(container.scrollTop() + top - height/2);
         }
       })
     }
@@ -710,33 +635,116 @@ function previewPageRefresh() {
       return str
         .replace(/[!"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "\\$&");
     }
-  })();
-}
-
-function formList(item, classes) {
-  var level = 1;
-  var model = {
-    items: item
-  };
-  var cls = [].concat(classes).join(" ");
-  return getList(model, cls);
-
-  function getList(model, cls) {
-    if (!model || !model.items) return null;
-    var l = model.items.length;
-    if (l === 0) return null;
-    var html = '<ul class="level' + level + ' ' + (cls || '') + '">';
-    level++;
-    for (var i = 0; i < l; i++) {
-      var item = model.items[i];
-      var href = item.href;
-      var name = item.name;
-      if (!name) continue;
-      html += href ? '<li><a href="' + href + '">' + name + '</a>' : '<li>' + name;
-      html += getList(item, cls) || '';
-      html += '</li>';
-    }
-    html += '</ul>';
-    return html;
   }
-}
+
+  function formList(item, classes) {
+    var level = 1;
+    var model = {
+      items: item
+    };
+    var cls = [].concat(classes).join(" ");
+    return getList(model, cls);
+
+    function getList(model, cls) {
+      if (!model || !model.items) return null;
+      var l = model.items.length;
+      if (l === 0) return null;
+      var html = '<ul class="level' + level + ' ' + (cls || '') + '">';
+      level++;
+      for (var i = 0; i < l; i++) {
+        var item = model.items[i];
+        var href = item.href;
+        var name = item.name;
+        if (!name) continue;
+        html += href ? '<li><a href="' + href + '">' + name + '</a>' : '<li>' + name;
+        html += getList(item, cls) || '';
+        html += '</li>';
+      }
+      html += '</ul>';
+      return html;
+    }
+  }
+
+  // Show footer
+  (function () {
+    initFooter();
+    $(window).on("scroll", showFooter);
+
+    function initFooter() {
+      if (needFooter()) {
+        shiftUpBottomCss();
+        $("footer").show();
+      } else {
+        resetBottomCss();
+        $("footer").hide();
+      }
+    }
+
+    function showFooter() {
+      if (needFooter()) {
+        shiftUpBottomCss();
+        $("footer").fadeIn();
+      } else {
+        resetBottomCss();
+        $("footer").fadeOut();
+      }
+    }
+
+    function needFooter() {
+      var scrollHeight = $(document).height();
+      var scrollPosition = $(window).height() + $(window).scrollTop();
+      return (scrollHeight - scrollPosition) < 1;
+    }
+
+    function resetBottomCss() {
+      $(".sidetoc").removeClass("shiftup");
+      $(".sideaffix").removeClass("shiftup");
+    }
+
+    function shiftUpBottomCss() {
+      $(".sidetoc").addClass("shiftup");
+      $(".sideaffix").addClass("shiftup");
+    }
+  })();
+
+  // For LOGO SVG
+  // Replace SVG with inline SVG
+  // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
+  jQuery('img.svg').each(function () {
+    var $img = jQuery(this);
+    var imgID = $img.attr('id');
+    var imgClass = $img.attr('class');
+    var imgURL = $img.attr('src');
+
+    jQuery.get(imgURL, function (data) {
+      // Get the SVG tag, ignore the rest
+      var $svg = jQuery(data).find('svg');
+
+      // Add replaced image's ID to the new SVG
+      if (typeof imgID !== 'undefined') {
+        $svg = $svg.attr('id', imgID);
+      }
+      // Add replaced image's classes to the new SVG
+      if (typeof imgClass !== 'undefined') {
+        $svg = $svg.attr('class', imgClass + ' replaced-svg');
+      }
+
+      // Remove any invalid XML tags as per http://validator.w3.org
+      $svg = $svg.removeAttr('xmlns:a');
+
+      // Replace image with new SVG
+      $img.replaceWith($svg);
+
+    }, 'xml');
+  });
+
+  refresh = function(){
+    renderTables();
+    renderAlerts();
+    enableHighlight();
+    codeSnippetHighlight();
+    setupAffix();
+  };
+
+  refresh();
+})
