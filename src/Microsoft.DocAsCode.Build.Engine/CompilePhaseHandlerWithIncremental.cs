@@ -123,7 +123,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var ldg = LastBuildVersionInfo?.Dependency;
                 if (ldg != null)
                 {
-                    // to-do: need reload dependency reference info.
+                    CurrentBuildVersionInfo.Dependency.ReportReference(from r in ldg.ReferenceReportedBys
+                                                                       where !IncrementalContext.ChangeDict.ContainsKey(r) || IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
+                                                                       where !fileSet.Contains(r)
+                                                                       from reference in ldg.GetReferenceReportedBy(r)
+                                                                       select reference);
                     CurrentBuildVersionInfo.Dependency.ReportDependency(from r in ldg.ReportedBys
                                                                         where !IncrementalContext.ChangeDict.ContainsKey(r) || IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
                                                                         where !fileSet.Contains(r)

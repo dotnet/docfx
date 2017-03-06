@@ -70,5 +70,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             return info == null ? null : new DependencyItemSourceInfo(DependencyItemSourceType.File, info);
         }
+
+        public static bool operator ==(DependencyItemSourceInfo a, DependencyItemSourceInfo b)
+        {
+            return object.Equals(a, b);
+        }
+
+        public static bool operator !=(DependencyItemSourceInfo a, DependencyItemSourceInfo b)
+        {
+            return !(a == b);
+        }
     }
 }
