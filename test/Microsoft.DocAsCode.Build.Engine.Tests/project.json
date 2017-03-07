@@ -20,6 +20,7 @@
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "System.Collections.Immutable": "1.2.0",
     "Microsoft.Composition": "1.0.27",
+    "Microsoft.DocAsCode.Build.MemberLevelManagedReference": "1.0.0",
   },
   "buildOptions": {
     "compile": {

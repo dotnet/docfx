@@ -56,7 +56,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 .ToImmutableDictionary(v => v.Key, v => v.Value.ToImmutableList());
             foreach (var r in pageViewModel.References)
             {
-                host.ReportDependencyTo(model, r.Uid, DependencyItemSourceType.Uid, DependencyTypeName.Reference);
+                if (r.IsExternal == false)
+                {
+                    host.ReportDependencyTo(model, r.Uid, DependencyItemSourceType.Uid, DependencyTypeName.Reference);
+                }
             }
         }
 

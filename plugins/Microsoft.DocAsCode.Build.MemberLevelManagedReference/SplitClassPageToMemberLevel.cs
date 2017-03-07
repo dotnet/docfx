@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Plugins;
 
     [Export("ManagedReferenceDocumentProcessor", typeof(IDocumentBuildStep))]
-    public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
+    public class SplitClassPageToMemberLevel : BaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         private const char OverloadLastChar = '*';
         private const char Separator = '.';
@@ -72,6 +72,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             return collection;
         }
+
+        #region ISupportIncrementalBuildStep Members
+
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
+
+        public string GetIncrementalContextHash() => null;
+
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
+
+        #endregion
 
         private SplittedResult SplitModelToOverloadLevel(FileModel model)
         {

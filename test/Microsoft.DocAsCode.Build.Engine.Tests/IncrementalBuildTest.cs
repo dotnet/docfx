@@ -3336,6 +3336,284 @@ tagRules : [
             }
         }
 
+        [Fact]
+        public void TestManagedReferenceEnableSplit()
+        {
+            // a.yml references a.b.yml
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+
+            CreateFile("ManagedReference.html.primary.tmpl",
+                new[]
+                {
+                    "Show children:",
+                    "{{#children}}",
+                    "  {{#children}}",
+                    "  <h4><xref uid=\"{{uid}}\" altProperty=\"fullName\" displayProperty=\"name\"/></h4>",
+                    "  <section>{{{summary}}}</section>",
+                    "  {{/children}}",
+                    "{{/children}}",
+                },
+                templateFolder);
+
+            var referenceFile = CreateFile("a.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A",
+                    "  commentId: N:A",
+                    "  id: A",
+                    "  children:",
+                    "  - A.B",
+                    "  name: A",
+                    "  nameWithType: A",
+                    "  fullName: A",
+                    "  type: Namespace",
+                    "references:",
+                    "- uid: A.B",
+                    "  commentId: T:A.B",
+                    "  isExternal: false",
+                    "  name: B",
+                    "  nameWithType: B",
+                    "  fullName: A.B",
+                },
+                inputFolder);
+            var referenceFile2 = CreateFile("a.b.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A.B",
+                    "  commentId: T:A.B",
+                    "  id: A.B",
+                    "  children:",
+                    "  - A.B.M1",
+                    "  - A.B.M2",
+                    "  - A.B.M2(A.B)",
+                    "  parent: A",
+                    "  name: B",
+                    "  nameWithType: B",
+                    "  fullName: A.B",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class B",
+                    "  summary: \"This is class A.B\"",
+                    "- uid: A.B.M1",
+                    "  commentId: M:A.B.M1",
+                    "  id: A.B.M1",
+                    "  parent: A.B",
+                    "  name: M1()",
+                    "  nameWithType: B.M1()",
+                    "  fullName: A.B.M1()",
+                    "  type: Method",
+                    "  syntax:",
+                    "    content: public void M1()",
+                    "  summary: \"This is method A.B.M1()\"",
+                    "  overload: A.B.M1*",
+                    "- uid: A.B.M2",
+                    "  commentId: M:A.B.M2",
+                    "  id: A.B.M2",
+                    "  parent: A.B",
+                    "  name: M2()",
+                    "  nameWithType: B.M2()",
+                    "  fullName: A.B.M2()",
+                    "  type: Method",
+                    "  syntax:",
+                    "    content: public void M2()",
+                    "  summary: \"This is method A.B.M2()\"",
+                    "  overload: A.B.M2*",
+                    "- uid: A.B.M2(A.B)",
+                    "  commentId: M:A.B.M2(A.B)",
+                    "  id: A.B.M2",
+                    "  parent: A.B",
+                    "  name: M2(B)",
+                    "  nameWithType: B.M2(B)",
+                    "  fullName: A.B.M2(A.B)",
+                    "  type: Method",
+                    "  syntax:",
+                    "    content: public void M2(B b)",
+                    "  summary: \"This is method A.B.M2(A.B)\"",
+                    "  overload: A.B.M2*",
+                    "references:",
+                    "- uid: A.B.M1*",
+                    "  commentId: \"overload: A.B.M1*\"",
+                    "  isExternal: false",
+                    "  name: M1",
+                    "  nameWithType: B.M1",
+                    "  fullName: A.B.M1",
+                    "- uid: A.B.M2*",
+                    "  commentId: \"overload: A.B.M2*\"",
+                    "  isExternal: false",
+                    "  name: M2",
+                    "  nameWithType: B.M2",
+                    "  fullName: A.B.M2",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2 }, inputFolder, null);
+
+            #endregion
+
+            Init("IncrementalBuild.TestManagedReferenceEnableSplit");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceEnableSplit");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceEnableSplit.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceEnableSplit.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceEnableSplit-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder,
+                        enableSplit: true);
+
+                }
+
+                ClearListener();
+
+                // update a.b.yml: update A.B.M2(A.B) method summary
+                UpdateFile("a.b.yml",
+                    new[]
+                    {
+                        "### YamlMime:ManagedReference",
+                        "items:",
+                        "- uid: A.B",
+                        "  commentId: T:A.B",
+                        "  id: A.B",
+                        "  children:",
+                        "  - A.B.M1",
+                        "  - A.B.M2",
+                        "  - A.B.M2(A.B)",
+                        "  parent: A",
+                        "  name: B",
+                        "  nameWithType: B",
+                        "  fullName: A.B",
+                        "  type: Class",
+                        "  syntax:",
+                        "    content: public class B",
+                        "  summary: \"This is class A.B\"",
+                        "- uid: A.B.M1",
+                        "  commentId: M:A.B.M1",
+                        "  id: A.B.M1",
+                        "  parent: A.B",
+                        "  name: M1()",
+                        "  nameWithType: B.M1()",
+                        "  fullName: A.B.M1()",
+                        "  type: Method",
+                        "  syntax:",
+                        "    content: public void M1()",
+                        "  summary: \"This is method A.B.M1()\"",
+                        "  overload: A.B.M1*",
+                        "- uid: A.B.M2",
+                        "  commentId: M:A.B.M2",
+                        "  id: A.B.M2",
+                        "  parent: A.B",
+                        "  name: M2()",
+                        "  nameWithType: B.M2()",
+                        "  fullName: A.B.M2()",
+                        "  type: Method",
+                        "  syntax:",
+                        "    content: public void M2()",
+                        "  summary: \"This is method A.B.M2()\"",
+                        "  overload: A.B.M2*",
+                        "- uid: A.B.M2(A.B)",
+                        "  commentId: M:A.B.M2(A.B)",
+                        "  id: A.B.M2",
+                        "  parent: A.B",
+                        "  name: M2(B)",
+                        "  nameWithType: B.M2(B)",
+                        "  fullName: A.B.M2(A.B)",
+                        "  type: Method",
+                        "  syntax:",
+                        "    content: public void M2(B b)",
+                        "  summary: \"This is updated method A.B.M2(A.B)\"",
+                        "  overload: A.B.M2*",
+                        "references:",
+                        "- uid: A.B.M1*",
+                        "  commentId: \"overload: A.B.M1*\"",
+                        "  isExternal: false",
+                        "  name: M1",
+                        "  nameWithType: B.M1",
+                        "  fullName: A.B.M1",
+                        "- uid: A.B.M2*",
+                        "  commentId: \"overload: A.B.M2*\"",
+                        "  isExternal: false",
+                        "  name: M2",
+                        "  nameWithType: B.M2",
+                        "  fullName: A.B.M2",
+                    },
+                    inputFolder);
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceEnableSplit-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder,
+                        enableSplit: true);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceEnableSplit-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        enableSplit: true);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(4, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestManagedReferenceEnableSplit-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestManagedReferenceEnableSplit-second", "IncrementalBuild.TestManagedReferenceEnableSplit-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
         private static bool CompareDir(string path1, string path2)
         {
             var files1 = new DirectoryInfo(path1).GetFiles("*.*", SearchOption.AllDirectories).Where(f => f.Name != "xrefmap.yml" && f.Name != "manifest.json").OrderBy(f => f.FullName).ToList();
@@ -3367,9 +3645,10 @@ tagRules : [
             string templateHash = null,
             string templateFolder = null,
             string intermediateFolder = null,
-            Dictionary<string, ChangeKindWithDependency> changes = null)
+            Dictionary<string, ChangeKindWithDependency> changes = null,
+            bool enableSplit = false)
         {
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, templateHash, intermediateFolder))
+            using (var builder = new DocumentBuilder(LoadAssemblies(enableSplit), ImmutableArray<string>.Empty, templateHash, intermediateFolder))
             {
                 if (applyTemplateSettings == null)
                 {
@@ -3390,12 +3669,16 @@ tagRules : [
             }
         }
 
-        private IEnumerable<Assembly> LoadAssemblies()
+        private IEnumerable<Assembly> LoadAssemblies(bool enableSplit = false)
         {
             yield return typeof(ConceptualDocumentProcessor).Assembly;
             yield return typeof(ManagedReferenceDocumentProcessor).Assembly;
             yield return typeof(ResourceDocumentProcessor).Assembly;
             yield return typeof(TocDocumentProcessor).Assembly;
+            if (enableSplit)
+            {
+                yield return typeof(SplitClassPageToMemberLevel).Assembly;
+            }
         }
     }
 }
