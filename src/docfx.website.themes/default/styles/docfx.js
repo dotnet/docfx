@@ -1,5 +1,4 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
-// For docfx preview extension
 $(function () {
   var active = 'active';
   var expanded = 'in';
@@ -16,6 +15,7 @@ $(function () {
   adjustSearchBoxPosition();
   supportFullTextSearch();
   updateHref();
+  setupAffix();
   showFooter();
 
   window.refresh = function () {
@@ -24,20 +24,20 @@ $(function () {
     enableHighlight();
     highlightLines();
     setupAffix();
-  };
+  }
 
   // Styling for tables in conceptual documents using Bootstrap.
   // See http://getbootstrap.com/css/#tables
   function renderTables() {
     $('table').addClass('table table-bordered table-striped table-condensed');
-  };
+  }
 
   // Styling for alerts.
   function renderAlerts() {
     $('.NOTE, .TIP').addClass('alert alert-info');
     $('.WARNING').addClass('alert alert-warning');
     $('.IMPORTANT, .CAUTION').addClass('alert alert-danger');
-  };
+  }
 
   // Anchorjs 3.2.2 fails when title content contains '<' and '>'.
   // TODO: enable this when anchorjs fixes this issue
@@ -57,14 +57,14 @@ $(function () {
         return this.hostname !== window.location.hostname;
       }).attr('target', '_blank');
     }
-  };
+  }
 
   // Enable highlight.js
   function enableHighlight() {
     $('pre code').each(function (i, block) {
       hljs.highlightBlock(block);
     });
-  };
+  }
 
   // Line highlight for code snippet
   function highlightLines() {
@@ -101,7 +101,7 @@ $(function () {
 
       block.innerHTML = lines.join('\n');
     });
-  };
+  }
 
   //Adjust the position of search box in navbar
   function adjustSearchBoxPosition() {
@@ -123,7 +123,7 @@ $(function () {
         navbar.addClass(collapsed);
       }
     }
-  };
+  }
 
   // Support full-text-search
   function supportFullTextSearch() {
@@ -202,7 +202,7 @@ $(function () {
           });
         });
       }
-    };
+    }
 
     // Highlight the searching keywords
     function highlightKeywords() {
@@ -540,7 +540,7 @@ $(function () {
         return href.substr(0, index);
       }
     }
-  };
+  }
 
   //Setup Affix
   function setupAffix() {
@@ -684,7 +684,7 @@ $(function () {
   // Show footer
   function showFooter() {
     initFooter();
-    $(window).on("scroll", showFooter);
+    $(window).on("scroll", showFooterCore);
 
     function initFooter() {
       if (needFooter()) {
@@ -696,7 +696,7 @@ $(function () {
       }
     }
 
-    function showFooter() {
+    function showFooterCore() {
       if (needFooter()) {
         shiftUpBottomCss();
         $("footer").fadeIn();
@@ -721,7 +721,7 @@ $(function () {
       $(".sidetoc").addClass("shiftup");
       $(".sideaffix").addClass("shiftup");
     }
-  };
+  }
 
   // For LOGO SVG
   // Replace SVG with inline SVG
