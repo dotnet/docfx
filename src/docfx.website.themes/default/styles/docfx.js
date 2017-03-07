@@ -1,7 +1,5 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // For docfx preview extension
-var refresh;
-
 $(function () {
   var active = 'active';
   var expanded = 'in';
@@ -9,6 +7,24 @@ $(function () {
   var filtered = 'filtered';
   var show = 'show';
   var hide = 'hide';
+
+  renderTables();
+  renderAlerts();
+  openLinks();
+  enableHighlight();
+  highlightLines();
+  adjustSearchBoxPosition();
+  supportFullTextSearch();
+  updateHref();
+  showFooter();
+
+  window.refresh = function () {
+    renderTables();
+    renderAlerts();
+    enableHighlight();
+    highlightLines();
+    setupAffix();
+  };
 
   // Styling for tables in conceptual documents using Bootstrap.
   // See http://getbootstrap.com/css/#tables
@@ -35,23 +51,23 @@ $(function () {
   // })();
 
   // Open links to different host in a new window.
-  (function () {
+  function openLinks() {
     if ($("meta[property='docfx:newtab']").attr("content") === "true") {
-      $(document.links).filter(function() {
+      $(document.links).filter(function () {
         return this.hostname !== window.location.hostname;
       }).attr('target', '_blank');
     }
-  })();
+  };
 
   // Enable highlight.js
   function enableHighlight() {
-    $('pre code').each(function(i, block) {
+    $('pre code').each(function (i, block) {
       hljs.highlightBlock(block);
     });
   };
 
   // Line highlight for code snippet
-  function codeSnippetHighlight() {
+  function highlightLines() {
     $('pre code[highlight-lines]').each(function (i, block) {
       if (block.innerHTML === "") return;
       var lines = block.innerHTML.split('\n');
@@ -88,7 +104,7 @@ $(function () {
   };
 
   //Adjust the position of search box in navbar
-  (function () {
+  function adjustSearchBoxPosition() {
     autoCollapse();
     $(window).on('resize', autoCollapse);
     $(document).on('click', '.navbar-collapse.in', function (e) {
@@ -107,10 +123,10 @@ $(function () {
         navbar.addClass(collapsed);
       }
     }
-  })();
+  };
 
   // Support full-text-search
-  (function () {
+  function supportFullTextSearch() {
     var query;
     var relHref = $("meta[property='docfx\\:rel']").attr("content");
 
@@ -296,10 +312,10 @@ $(function () {
         });
       }
     }
-  })();
+  };
 
   // Update href in navbar
-  (function () {
+  function updateHref() {
     var toc = $('#sidetoc');
     var breadcrumb = new Breadcrumb();
     loadNavbar();
@@ -524,7 +540,7 @@ $(function () {
         return href.substr(0, index);
       }
     }
-  })();
+  };
 
   //Setup Affix
   function setupAffix() {
@@ -547,7 +563,7 @@ $(function () {
           });
           var container = $('#affix > ul');
           var height = container.height();
-          container.scrollTop(container.scrollTop() + top - height/2);
+          container.scrollTop(container.scrollTop() + top - height / 2);
         }
       })
     }
@@ -666,7 +682,7 @@ $(function () {
   }
 
   // Show footer
-  (function () {
+  function showFooter() {
     initFooter();
     $(window).on("scroll", showFooter);
 
@@ -705,7 +721,7 @@ $(function () {
       $(".sidetoc").addClass("shiftup");
       $(".sideaffix").addClass("shiftup");
     }
-  })();
+  };
 
   // For LOGO SVG
   // Replace SVG with inline SVG
@@ -737,14 +753,4 @@ $(function () {
 
     }, 'xml');
   });
-
-  refresh = function(){
-    renderTables();
-    renderAlerts();
-    enableHighlight();
-    codeSnippetHighlight();
-    setupAffix();
-  };
-
-  refresh();
 })
