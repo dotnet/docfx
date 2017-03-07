@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 EnableContentPlaceholder = false,
                 Host = host,
-                FileAndType = model.FileAndType,
+                FileAndType = model.OriginalFileAndType,
                 SkipMarkup = pageViewModel?.ShouldSkipMarkup ?? false,
             };
 

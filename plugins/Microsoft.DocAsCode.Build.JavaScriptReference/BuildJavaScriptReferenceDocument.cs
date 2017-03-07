@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
                 return markdown;
             }
 
-            var mr = host.Markup(markdown, model.FileAndType);
+            var mr = host.Markup(markdown, model.OriginalFileAndType);
             model.LinkToFiles = model.LinkToFiles.Union(mr.LinkToFiles);
             model.LinkToUids = model.LinkToUids.Union(mr.LinkToUids);
 

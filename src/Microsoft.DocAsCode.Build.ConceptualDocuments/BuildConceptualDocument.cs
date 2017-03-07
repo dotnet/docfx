@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             }
             var content = (Dictionary<string, object>)model.Content;
             var markdown = (string)content[ConceptualKey];
-            var result = host.Markup(markdown, model.FileAndType);
+            var result = host.Markup(markdown, model.OriginalFileAndType);
 
             var htmlInfo = SeparateHtml(result.Html);
             model.Properties.IsUserDefinedTitle = false;

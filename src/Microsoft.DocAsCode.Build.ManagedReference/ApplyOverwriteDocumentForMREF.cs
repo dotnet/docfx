@@ -79,7 +79,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                         EnableContentPlaceholder = true,
                         Host = host,
                         PlaceholderContent = placeholderContent,
-                        FileAndType = model.FileAndType,
+                        FileAndType = model.OriginalFileAndType,
                     };
 
                     _handler.Handle(item, context);
