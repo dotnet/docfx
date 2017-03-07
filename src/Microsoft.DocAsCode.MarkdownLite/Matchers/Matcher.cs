@@ -70,6 +70,19 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return new StringMatcher(text);
         }
 
+        public static Matcher CaseInsensitiveString(string text)
+        {
+            if (text == null)
+            {
+                throw new ArgumentNullException(nameof(text));
+            }
+            if (text.Length == 0)
+            {
+                throw new ArgumentException("Cannot be empty.", nameof(text));
+            }
+            return new CaseInsensitiveStringMatcher(text);
+        }
+
         public static Matcher EndOfString() => EndOfStringMatcher;
 
         public static Matcher Maybe(Matcher matcher) =>

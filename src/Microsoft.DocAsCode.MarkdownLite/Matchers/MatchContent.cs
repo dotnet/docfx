@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             {
                 result--;
             }
-            if (result < 0 || result > Text.Length)
+            if (result < 0 || result >= Text.Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(offset));
             }

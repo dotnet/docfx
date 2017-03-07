@@ -104,6 +104,28 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         }
 
         [Fact]
+        public void TestCaseInsensitiveStringMatcher()
+        {
+            var m = Matcher.CaseInsensitiveString("aBc");
+            Assert.Equal(3, m.Match(new MatchContent("abc", 0, ScanDirection.Forward)));
+            Assert.Equal(3, m.Match(new MatchContent("aBc", 0, ScanDirection.Forward)));
+            Assert.Equal(3, m.Match(new MatchContent("ABC", 0, ScanDirection.Forward)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 0, ScanDirection.Backward)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 1, ScanDirection.Forward)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 1, ScanDirection.Backward)));
+            Assert.Equal(3, m.Match(new MatchContent("aabc", 1, ScanDirection.Forward)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("aabc", 1, ScanDirection.Backward)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cba", 2, ScanDirection.Forward)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cba", 2, ScanDirection.Backward)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cba", 3, ScanDirection.Forward)));
+            Assert.Equal(3, m.Match(new MatchContent("cba", 3, ScanDirection.Backward)));
+            Assert.Equal(3, m.Match(new MatchContent("Cba", 3, ScanDirection.Backward)));
+            Assert.Equal(3, m.Match(new MatchContent("cbA", 3, ScanDirection.Backward)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cbb", 3, ScanDirection.Forward)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cbb", 3, ScanDirection.Backward)));
+        }
+
+        [Fact]
         public void TestEndOfStringMatcher()
         {
             var m = Matcher.EndOfString();
