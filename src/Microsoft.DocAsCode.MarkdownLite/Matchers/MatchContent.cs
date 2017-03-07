@@ -9,9 +9,9 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
     {
         public readonly string Text;
         public readonly int StartIndex;
-        public readonly bool IsForward;
+        public readonly ScanDirection Direction;
 
-        public MatchContent(string text, int startIndex, bool isForward = true)
+        public MatchContent(string text, int startIndex, ScanDirection direction = ScanDirection.Forward)
         {
             if (text == null)
             {
@@ -23,14 +23,16 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
             Text = text;
             StartIndex = startIndex;
-            IsForward = isForward;
+            Direction = direction;
         }
+
+        public char GetCurrentChar() => this[0];
 
         public char this[int offset] => Text[GetCharIndex(offset)];
 
-        public bool Bos() => IsForward ? StartIndex == 0 : StartIndex == Text.Length;
+        public bool BeginOfString() => Direction == ScanDirection.Forward ? StartIndex == 0 : StartIndex == Text.Length;
 
-        public bool Eos() => IsForward ? StartIndex == Text.Length : StartIndex == 0;
+        public bool EndOfString() => Direction == ScanDirection.Forward ? StartIndex == Text.Length : StartIndex == 0;
 
         public bool TestLength(int length)
         {
@@ -38,9 +40,9 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return result >= 0 && result <= Text.Length;
         }
 
-        public MatchContent Offset(int offset) => new MatchContent(Text, GetIndex(offset), IsForward);
+        public MatchContent Offset(int offset) => new MatchContent(Text, GetIndex(offset), Direction);
 
-        public MatchContent Reverse() => new MatchContent(Text, StartIndex, !IsForward);
+        public MatchContent Reverse() => new MatchContent(Text, StartIndex, (ScanDirection)(((byte)Direction + 1) % 2));
 
         private int GetIndex(int offset)
         {
@@ -55,7 +57,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         private int GetCharIndex(int offset)
         {
             int result = GetIndexNoThrow(offset);
-            if (!IsForward)
+            if (Direction == ScanDirection.Backward)
             {
                 result--;
             }
@@ -67,6 +69,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         }
 
         private int GetIndexNoThrow(int offset) =>
-            IsForward ? StartIndex + offset : StartIndex - offset;
+            Direction == ScanDirection.Forward ? StartIndex + offset : StartIndex - offset;
     }
 }

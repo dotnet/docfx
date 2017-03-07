@@ -16,11 +16,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public override int Match(MatchContent content)
         {
-            if (content.Eos())
+            if (content.EndOfString())
             {
                 return NotMatch;
             }
-            return Array.BinarySearch(_ch, content[0]) >= 0 ? 1 : NotMatch;
+            return Array.BinarySearch(_ch, content.GetCurrentChar()) >= 0 ? 1 : NotMatch;
         }
     }
 }

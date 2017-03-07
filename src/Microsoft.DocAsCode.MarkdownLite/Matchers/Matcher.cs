@@ -10,13 +10,12 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         public const int NotMatch = -1;
 
         private static readonly AnyCharMatcher AnyCharMatcher = new AnyCharMatcher();
-        private static readonly EosMatcher EosMatcher = new EosMatcher();
+        private static readonly EndOfStringMatcher EndOfStringMatcher = new EndOfStringMatcher();
 
         /// <summary>
-        /// 
+        /// Match string in content.
         /// </summary>
-        /// <param name="text"></param>
-        /// <param name="startIndex"></param>
+        /// <param name="content">The content.</param>
         /// <returns>Char count of match, <c>-1</c> is not match.</returns>
         public abstract int Match(MatchContent content);
 
@@ -42,7 +41,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         {
             if (start >= end)
             {
-                throw new ArgumentException(nameof(end), $"Should great than {start.ToString()}");
+                throw new ArgumentException(nameof(end), $"Should be greater than {start.ToString()}.");
             }
             return new AnyCharInRangeMatcher(start, end);
         }
@@ -71,7 +70,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return new StringMatcher(text);
         }
 
-        public static Matcher Eos() => EosMatcher;
+        public static Matcher EndOfString() => EndOfStringMatcher;
 
         public static Matcher Maybe(Matcher matcher) =>
             Repeat(matcher, 0, 1);
@@ -87,11 +86,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
             if (minOccur < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(minOccur), "Should great than or equals 0.");
+                throw new ArgumentOutOfRangeException(nameof(minOccur), "Should be greater than or equals 0.");
             }
             if (minOccur > maxOccur)
             {
-                throw new ArgumentOutOfRangeException(nameof(maxOccur), "Should great than or equals minOccur.");
+                throw new ArgumentOutOfRangeException(nameof(maxOccur), "Should be greater than or equals minOccur.");
             }
             return new RepeatMatcher(matcher, minOccur, maxOccur);
         }

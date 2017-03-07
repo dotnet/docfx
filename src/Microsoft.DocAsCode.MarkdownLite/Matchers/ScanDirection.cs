@@ -3,11 +3,9 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
-    internal sealed class EosMatcher : Matcher
+    public enum ScanDirection : byte
     {
-        public override int Match(MatchContent content)
-        {
-            return content.Eos() ? 0 : NotMatch;
-        }
+        Forward,
+        Backward,
     }
 }

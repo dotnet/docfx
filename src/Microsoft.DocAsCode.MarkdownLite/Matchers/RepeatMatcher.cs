@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                 {
                     return totalCharCount;
                 }
-                if (content.Eos())
+                if (content.EndOfString())
                 {
                     return totalCharCount;
                 }

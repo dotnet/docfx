@@ -3,13 +3,11 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
-    internal sealed class AnyCharMatcher : Matcher
+    internal sealed class EndOfStringMatcher : Matcher
     {
-        public AnyCharMatcher() { }
-
         public override int Match(MatchContent content)
         {
-            return content.EndOfString() ? NotMatch : 1;
+            return content.EndOfString() ? 0 : NotMatch;
         }
     }
 }
