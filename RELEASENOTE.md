@@ -1,5 +1,10 @@
-﻿Version Notes (Current Version: v2.13)
+﻿Version Notes (Current Version: v2.13.1)
 =======================================
+v2.13.1
+-----------
+1.  fix the perf issue introduced from reporting toc metadata dependency.
+2.  fix path too long issue.
+
 v2.13
 -----------
 1.  **Breaking Change**: Create new type for files in manifest.
