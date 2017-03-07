@@ -17,7 +17,8 @@ namespace Microsoft.DocAsCode
         {
             try
             {
-                return ExecSubCommand(args);
+                var result = ExecSubCommand(args);
+                return Logger.HasError ? 1 : result;
             }
             finally
             {
