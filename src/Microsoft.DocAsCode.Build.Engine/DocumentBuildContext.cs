@@ -71,14 +71,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                     versionFolder += "/";
                 }
             }
-            VersionOutputFolder = versionFolder;
+            VersionFolder = versionFolder;
         }
 
         public string BuildOutputFolder { get; }
 
         public string VersionName { get; }
 
-        public string VersionOutputFolder { get; }
+        public string VersionFolder { get; }
 
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 

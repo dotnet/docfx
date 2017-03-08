@@ -45,6 +45,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             var fileWithoutWorkingFolder = file.RemoveWorkingFolder();
             attrs.Path = fileWithoutWorkingFolder;
 
+            if (!string.IsNullOrEmpty(_context.VersionName))
+            {
+                attrs.VersionName = _context.VersionName;
+                attrs.VersionFolder = _context.VersionFolder;
+            }
+
             // 1. Root Toc is specified by RootTocKey, or by default in the top directory of output folder
             if (!string.IsNullOrEmpty(_context.RootTocPath))
             {

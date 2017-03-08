@@ -107,7 +107,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             {
                                 m.File = (RelativePath)m.FileAndType.DestinationDir + (((RelativePath)m.File) - (RelativePath)m.FileAndType.SourceDir);
                             }
-                            m.File = Path.Combine(context.VersionOutputFolder ?? string.Empty, m.File);
+                            m.File = Path.Combine(context.VersionFolder ?? string.Empty, m.File);
                             var result = hostService.Processor.Save(m);
                             if (result != null)
                             {
