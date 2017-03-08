@@ -74,5 +74,15 @@ namespace Microsoft.DocAsCode.Plugins
         /// The Root Toc Path of current version
         /// </summary>
         string RootTocPath { get; }
+
+        /// <summary>
+        /// Current file's version name
+        /// </summary>
+        string VersionName { get; }
+
+        /// <summary>
+        /// Current file's version root path from ~ ROOT
+        /// </summary>
+        string VersionFolder { get; }
     }
 }
