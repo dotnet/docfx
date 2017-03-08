@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <summary>
         /// Current file's version name
         /// </summary>
-        [JsonProperty("_versionName")]
+        [JsonProperty("_version")]
         public string VersionName { get; set; }
 
         /// <summary>
