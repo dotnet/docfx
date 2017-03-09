@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
     using System;
+    using System.Linq;
 
     public abstract class Matcher
     {
@@ -165,6 +166,15 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return new CaptureGroupMatcher(name, matcher);
         }
 
+        public static Matcher BackReference(string groupName)
+        {
+            if (groupName == null)
+            {
+                throw new ArgumentNullException(nameof(groupName));
+            }
+            return new BackRefereneceMatcher(groupName);
+        }
+
         private static void ValidateMatcherArray(Matcher[] matchers)
         {
             if (matchers == null)
@@ -183,5 +193,118 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                 }
             }
         }
+
+        /// <summary>
+        /// Sequence.
+        /// </summary>
+        public static Matcher operator +(Matcher left, Matcher right)
+        {
+            var seqLeft = left as SequenceMatcher;
+            var seqRight = right as SequenceMatcher;
+            if (seqLeft != null)
+            {
+                if (seqRight != null)
+                {
+                    return Sequence(seqLeft.Inners.Concat(seqRight.Inners).ToArray());
+                }
+                else
+                {
+                    return Sequence(seqLeft.Inners.Concat(new[] { right }).ToArray());
+                }
+            }
+            else
+            {
+                if (seqRight != null)
+                {
+                    return Sequence(new[] { seqLeft }.Concat(seqRight.Inners).ToArray());
+                }
+                else
+                {
+                    return Sequence(left, right);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Any.
+        /// </summary>
+        public static Matcher operator |(Matcher left, Matcher right)
+        {
+            var seqLeft = left as AnyMatcher;
+            var seqRight = right as AnyMatcher;
+            if (seqLeft != null)
+            {
+                if (seqRight != null)
+                {
+                    return Any(seqLeft.Inners.Concat(seqRight.Inners).ToArray());
+                }
+                else
+                {
+                    return Any(seqLeft.Inners.Concat(new[] { right }).ToArray());
+                }
+            }
+            else
+            {
+                if (seqRight != null)
+                {
+                    return Any(new[] { seqLeft }.Concat(seqRight.Inners).ToArray());
+                }
+                else
+                {
+                    return Any(left, right);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Repeat.
+        /// </summary>
+        public static Matcher operator *(Matcher matcher, int count) =>
+            Repeat(matcher, count, count);
+
+        /// <summary>
+        /// Repeat.
+        /// </summary>
+        public static Matcher operator *(Matcher matcher, Tuple<int, int> count) =>
+            Repeat(matcher, count.Item1, count.Item2);
+
+        /// <summary>
+        /// Test.
+        /// </summary>
+        public static Matcher operator ~(Matcher matcher) =>
+            Test(matcher);
+
+        /// <summary>
+        /// Negative test.
+        /// </summary>
+        public static Matcher operator !(Matcher matcher) =>
+            NegativeTest(matcher);
+
+        /// <summary>
+        /// Reverse test.
+        /// </summary>
+        public static Matcher operator -(Matcher matcher)
+        {
+            if (matcher is TestMatcher)
+            {
+                return new ReverseMatcher(matcher);
+            }
+            else
+            {
+                return ReverseTest(matcher);
+            }
+        }
+
+        /// <summary>
+        /// Group.
+        /// </summary>
+        public static Matcher operator >>(Matcher matcher, int groupName) =>
+            CaptureGroup(groupName.ToString(), matcher);
+
+        public static explicit operator Matcher(string text) =>
+            String(text);
+
+        public static explicit operator Matcher(char ch) =>
+            Char(ch);
     }
 }
