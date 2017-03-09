@@ -3,11 +3,14 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    using Matchers;
+    using System;
+    using System.Text.RegularExpressions;
+
+    using Microsoft.DocAsCode.MarkdownLite.Matchers;
 
     public class MarkdownCodeBlockRule : IMarkdownRule
     {
-        private static readonly Matcher CodeMatcher =
+        private static readonly Matcher _CodeMatcher =
             Matcher.Repeat(
                 Matcher.Sequence(
                     Matcher.Repeat(
@@ -28,7 +31,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual string Name => "Code";
 
-        public virtual Matcher Code => CodeMatcher;
+        [Obsolete("Please use CodeMatcher.", true)]
+        public virtual Regex Code => Regexes.Block.Code;
+
+        public virtual Matcher CodeMatcher => _CodeMatcher;
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
@@ -36,7 +42,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var match = context.Match(Code);
+            var match = context.Match(CodeMatcher);
             if (match?.Length > 0)
             {
                 var sourceInfo = context.Consume(match.Length);

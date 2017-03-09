@@ -3,8 +3,9 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    using Matchers;
     using System.Collections.Generic;
+
+    using Microsoft.DocAsCode.MarkdownLite.Matchers;
 
     public class MarkdownParsingContext : IMarkdownParsingContext
     {
