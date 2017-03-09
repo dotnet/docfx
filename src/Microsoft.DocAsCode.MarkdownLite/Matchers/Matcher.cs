@@ -32,6 +32,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             {
                 throw new ArgumentNullException(nameof(ch));
             }
+            if (ch.Length == 1)
+            {
+                return new CharMatcher(ch[0]);
+            }
             var array = (char[])ch.Clone();
             Array.Sort(array);
             return new AnyCharInMatcher(ch);
@@ -39,9 +43,13 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public static Matcher AnyCharInRange(char start, char end)
         {
-            if (start >= end)
+            if (start > end)
             {
                 throw new ArgumentException(nameof(end), $"Should be greater than {start.ToString()}.");
+            }
+            if (start == end)
+            {
+                return new CharMatcher(start);
             }
             return new AnyCharInRangeMatcher(start, end);
         }
@@ -142,6 +150,19 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         {
             ValidateMatcherArray(matchers);
             return new ReverseMatcher(new TestMatcher(matchers, true));
+        }
+
+        public static Matcher CaptureGroup(string name, Matcher matcher)
+        {
+            if (name == null)
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+            if (matcher == null)
+            {
+                throw new ArgumentNullException(nameof(matcher));
+            }
+            return new CaptureGroupMatcher(name, matcher);
         }
 
         private static void ValidateMatcherArray(Matcher[] matchers)

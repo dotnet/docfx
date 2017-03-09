@@ -284,13 +284,70 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         }
 
         [Fact]
+        public void TestCaptureGroupMatcher()
+        {
+            var m = Matcher.CaptureGroup("g", Matcher.Repeat(Matcher.Char('a'), 1));
+            {
+                var c = new MatchContent("abc", 0, ScanDirection.Forward);
+                Assert.Equal(1, m.Match(c));
+                var g = c.GetGroup("g");
+                Assert.NotNull(g);
+                Assert.Equal(0, g.Value.StartIndex);
+                Assert.Equal(1, g.Value.Count);
+                Assert.Equal("a", g.Value.GetValue());
+            }
+            {
+                var c = new MatchContent("abc", 0, ScanDirection.Backward);
+                Assert.Equal(Matcher.NotMatch, m.Match(c));
+                var g = c.GetGroup("g");
+                Assert.Null(g);
+            }
+            {
+                var c = new MatchContent("abc", 1, ScanDirection.Forward);
+                Assert.Equal(Matcher.NotMatch, m.Match(c));
+                var g = c.GetGroup("g");
+                Assert.Null(g);
+            }
+            {
+                var c = new MatchContent("abc", 1, ScanDirection.Backward);
+                Assert.Equal(1, m.Match(c));
+                var g = c.GetGroup("g");
+                Assert.NotNull(g);
+                Assert.Equal(0, g.Value.StartIndex);
+                Assert.Equal(1, g.Value.Count);
+                Assert.Equal("a", g.Value.GetValue());
+            }
+            {
+                var c = new MatchContent("aaa", 0, ScanDirection.Forward);
+                Assert.Equal(3, m.Match(c));
+                var g = c.GetGroup("g");
+                Assert.NotNull(g);
+                Assert.Equal(0, g.Value.StartIndex);
+                Assert.Equal(3, g.Value.Count);
+                Assert.Equal("aaa", g.Value.GetValue());
+            }
+            {
+                var c = new MatchContent("aaa", 3, ScanDirection.Backward);
+                Assert.Equal(3, m.Match(c));
+                var g = c.GetGroup("g");
+                Assert.NotNull(g);
+                Assert.Equal(0, g.Value.StartIndex);
+                Assert.Equal(3, g.Value.Count);
+                Assert.Equal("aaa", g.Value.GetValue());
+            }
+        }
+
+        [Fact]
         public void TestComplexMatcher()
         {
             var m = Matcher.Sequence(
-                Matcher.Repeat(
-                    Matcher.String("abc"),
-                    1,
-                    2),
+                Matcher.CaptureGroup("g",
+                    Matcher.Repeat(
+                        Matcher.String("abc"),
+                        1,
+                        2
+                    )
+                ),
                 Matcher.Test(
                     Matcher.Any(
                         Matcher.Char('\n'),
@@ -298,12 +355,50 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
                     )
                 )
             );
-            Assert.Equal(3, m.Match(new MatchContent("abc", 0, ScanDirection.Forward)));
-            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abcd", 0, ScanDirection.Forward)));
-            Assert.Equal(6, m.Match(new MatchContent("abcabc", 0, ScanDirection.Forward)));
-            Assert.Equal(3, m.Match(new MatchContent("abc\nd", 0, ScanDirection.Forward)));
-            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abcabcabc", 0, ScanDirection.Forward)));
-            Assert.Equal(3, m.Match(new MatchContent("abc\nabcabc", 0, ScanDirection.Forward)));
+            {
+                var result = m.Match("abc");
+                Assert.NotNull(result);
+                Assert.Equal(3, result.Length);
+                Assert.NotNull(result["g"]);
+                Assert.Equal(0, result["g"].StartIndex);
+                Assert.Equal(3, result["g"].Count);
+                Assert.Equal("abc", result["g"].GetValue());
+            }
+            {
+                var result = m.Match("abcd");
+                Assert.Null(result);
+            }
+            {
+                var result = m.Match("abcabc");
+                Assert.NotNull(result);
+                Assert.Equal(6, result.Length);
+                Assert.NotNull(result["g"]);
+                Assert.Equal(0, result["g"].StartIndex);
+                Assert.Equal(6, result["g"].Count);
+                Assert.Equal("abcabc", result["g"].GetValue());
+            }
+            {
+                var result = m.Match("abc\nd");
+                Assert.NotNull(result);
+                Assert.Equal(3, result.Length);
+                Assert.NotNull(result["g"]);
+                Assert.Equal(0, result["g"].StartIndex);
+                Assert.Equal(3, result["g"].Count);
+                Assert.Equal("abc", result["g"].GetValue());
+            }
+            {
+                var result = m.Match("abcabcabc");
+                Assert.Null(result);
+            }
+            {
+                var result = m.Match("abc\nabcabc");
+                Assert.NotNull(result);
+                Assert.Equal(3, result.Length);
+                Assert.NotNull(result["g"]);
+                Assert.Equal(0, result["g"].StartIndex);
+                Assert.Equal(3, result["g"].Count);
+                Assert.Equal("abc", result["g"].GetValue());
+            }
         }
     }
 }
