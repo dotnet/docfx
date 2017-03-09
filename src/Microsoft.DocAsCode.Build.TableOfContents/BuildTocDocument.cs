@@ -4,11 +4,12 @@
 namespace Microsoft.DocAsCode.Build.TableOfContents
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
-    using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
@@ -225,7 +226,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private void ReportDependency(ImmutableList<FileModel> models, IHostService host, ImmutableDictionary<string, TocItemInfo> tocModelCache, int parallelism)
         {
-            var nearest = new Dictionary<string, Toc>(FilePathComparer.OSPlatformSensitiveStringComparer);
+            var nearest = new ConcurrentDictionary<string, Toc>(FilePathComparer.OSPlatformSensitiveStringComparer);
             models.RunAll(model =>
             {
                 var wrapper = tocModelCache[model.OriginalFileAndType.FullPath];
@@ -241,7 +242,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             parallelism);
 
             // handle not-in-toc items
-            UpdateNearestTocForNotInTocItem(models, host, nearest);
+            UpdateNearestTocForNotInTocItem(models, host, nearest, parallelism);
 
             foreach (var item in nearest)
             {
@@ -264,7 +265,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private void UpdateNearestToc(IHostService host, TocItemViewModel item, FileModel toc, Dictionary<string, Toc> nearest)
+        private void UpdateNearestToc(IHostService host, TocItemViewModel item, FileModel toc, ConcurrentDictionary<string, Toc> nearest)
         {
             var tocHref = item.TocHref;
             var type = Utility.GetHrefType(tocHref);
@@ -286,30 +287,33 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private void UpdateNearestTocForNotInTocItem(ImmutableList<FileModel> models, IHostService host, Dictionary<string, Toc> nearest)
+        private void UpdateNearestTocForNotInTocItem(ImmutableList<FileModel> models, IHostService host, ConcurrentDictionary<string, Toc> nearest, int parallelism)
         {
             var allSourceFiles = host.SourceFiles;
-            foreach (var item in allSourceFiles.Keys.Except(nearest.Keys).ToList())
-            {
-                var itemOutputFile = GetOutputPath(allSourceFiles[item]);
-                var near = (from m in models
-                            let outputFile = GetOutputPath(m.FileAndType)
-                            let rel = outputFile.MakeRelativeTo(itemOutputFile)
-                            where rel.SubdirectoryCount == 0
-                            orderby rel.ParentDirectoryCount
-                            select new Toc
-                            {
-                                Model = m,
-                                OutputPath = rel,
-                            }).FirstOrDefault();
-                if (near != null)
+            Parallel.ForEach(
+                allSourceFiles.Keys.Except(nearest.Keys, FilePathComparer.OSPlatformSensitiveStringComparer).ToList(),
+                new ParallelOptions { MaxDegreeOfParallelism = parallelism },
+                item =>
                 {
-                    nearest[item] = near;
-                }
-            }
+                    var itemOutputFile = GetOutputPath(allSourceFiles[item]);
+                    var near = (from m in models
+                                let outputFile = GetOutputPath(m.FileAndType)
+                                let rel = outputFile.MakeRelativeTo(itemOutputFile)
+                                where rel.SubdirectoryCount == 0
+                                orderby rel.ParentDirectoryCount
+                                select new Toc
+                                {
+                                    Model = m,
+                                    OutputPath = rel,
+                                }).FirstOrDefault();
+                    if (near != null)
+                    {
+                        nearest[item] = near;
+                    }
+                });
         }
 
-        private void UpdateNearestTocCore(IHostService host, string item, FileModel toc, Dictionary<string, Toc> nearest)
+        private void UpdateNearestTocCore(IHostService host, string item, FileModel toc, ConcurrentDictionary<string, Toc> nearest)
         {
             var allSourceFiles = host.SourceFiles;
             var tocOutputFile = GetOutputPath(toc.FileAndType);
@@ -318,14 +322,17 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 var itemOutputFile = GetOutputPath(itemSource);
                 var relative = tocOutputFile.RemoveWorkingFolder() - itemOutputFile;
-                Toc cur;
-                lock (nearest)
-                {
-                    if (!nearest.TryGetValue(item, out cur) || CompareRelativePath(relative, cur.OutputPath) < 0)
+                nearest.AddOrUpdate(
+                    item,
+                    k => new Toc { Model = toc, OutputPath = relative },
+                    (k, v) =>
                     {
-                        nearest[item] = new Toc { Model = toc, OutputPath = relative };
-                    }
-                }
+                        if (CompareRelativePath(relative, v.OutputPath) < 0)
+                        {
+                            return new Toc { Model = toc, OutputPath = relative };
+                        }
+                        return v;
+                    });
             }
         }
 
@@ -356,9 +363,10 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             switch (restruction.TypeOfKey)
             {
                 case TreeItemKeyType.TopicUid:
-                    return item.TopicUid == restruction.Key;
+                    // make sure TocHref is null so that TopicUid is not the resolved homepage in `href: api/` case
+                    return item.TocHref == null && item.TopicUid == restruction.Key;
                 case TreeItemKeyType.TopicHref:
-                    return FilePathComparer.OSPlatformSensitiveStringComparer.Compare(item.TopicHref, restruction.Key) == 0;
+                    return item.TocHref == null && FilePathComparer.OSPlatformSensitiveStringComparer.Compare(item.TopicHref, restruction.Key) == 0;
                 default:
                     throw new NotSupportedException($"{restruction.TypeOfKey} is not a supported ComparerKeyType");
             }

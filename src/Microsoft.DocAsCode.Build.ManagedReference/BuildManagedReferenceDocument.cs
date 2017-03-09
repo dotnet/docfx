@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildManagedReferenceDocument : BuildReferenceDocumentBase
+    public class BuildManagedReferenceDocument : BuildReferenceDocumentBase, ISupportIncrementalBuildStep
     {
         private readonly IModelAttributeHandler _handler =
             new CompositeModelAttributeHandler(
@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 EnableContentPlaceholder = false,
                 Host = host,
-                FileAndType = model.FileAndType,
+                FileAndType = model.OriginalFileAndType,
                 SkipMarkup = pageViewModel?.ShouldSkipMarkup ?? false,
             };
 
@@ -54,7 +54,33 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             model.UidLinkSources = model.UidLinkSources.ToDictionary(v => v.Key, v => v.Value.ToList())
                 .Merge(context.UidLinkSources.Select(i => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(i.Key, i.Value)))
                 .ToImmutableDictionary(v => v.Key, v => v.Value.ToImmutableList());
+            foreach (var r in pageViewModel.References)
+            {
+                if (r.IsExternal == false)
+                {
+                    host.ReportDependencyTo(model, r.Uid, DependencyItemSourceType.Uid, DependencyTypeName.Reference);
+                }
+            }
         }
+
+        #endregion
+
+        #region ISupportIncrementalBuildStep Members
+
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
+
+        public string GetIncrementalContextHash() => null;
+
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => new[]
+        {
+            new DependencyType()
+            {
+                Name = DependencyTypeName.Reference,
+                IsTransitive = false,
+                Phase = BuildPhase.Link,
+                Transitivity = DependencyTransitivity.None,
+            }
+        };
 
         #endregion
     }

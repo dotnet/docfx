@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using YamlDotNet.Core;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocument
+    public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocument, ISupportIncrementalBuildStep
     {
         private readonly IModelAttributeHandler _handler =
             new CompositeModelAttributeHandler(
@@ -46,6 +46,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             ApplyOverwrite(host, overwrites, uid, articles, GetItemsFromOverwriteDocument, GetItemsToOverwrite);
         }
 
+        #region ISupportIncrementalBuildStep Members
+
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
+
+        public string GetIncrementalContextHash() => null;
+
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
+
+        #endregion
+
         /// <summary>
         /// TODO: Move to base and share with other overwrite components
         /// </summary>
@@ -69,7 +79,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                         EnableContentPlaceholder = true,
                         Host = host,
                         PlaceholderContent = placeholderContent,
-                        FileAndType = model.FileAndType,
+                        FileAndType = model.OriginalFileAndType,
                     };
 
                     _handler.Handle(item, context);

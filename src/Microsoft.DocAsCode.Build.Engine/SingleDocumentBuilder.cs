@@ -142,7 +142,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 {
                                     {
                                         context.VersionName,
-                                        new VersionInfo {VersionFolder = context.VersionOutputFolder}
+                                        new VersionInfo {VersionFolder = context.VersionFolder}
                                     }
                                 }
                         };

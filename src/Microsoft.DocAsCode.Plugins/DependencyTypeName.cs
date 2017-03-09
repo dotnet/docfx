@@ -11,5 +11,6 @@ namespace Microsoft.DocAsCode.Plugins
         public const string Overwrite = "overwrite";
         public const string Bookmark = "bookmark";
         public const string Metadata = "metadata";
+        public const string Reference = "reference";
     }
 }

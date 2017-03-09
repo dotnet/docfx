@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
-    public class MergeManagedReferenceDocument : BaseDocumentBuildStep
+    public class MergeManagedReferenceDocument : BaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         public override int BuildOrder => 0xff;
 
@@ -60,6 +60,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                    where p != null
                    select p;
         }
+
+        #region ISupportIncrementalBuildStep Members
+
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
+
+        public string GetIncrementalContextHash() => null;
+
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
+
+        #endregion
 
         private object MergeCore(string majorUid, FileModel model, IEnumerable<FileModel> others, IHostService host)
         {

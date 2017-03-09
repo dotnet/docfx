@@ -138,7 +138,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 return markdown;
             }
 
-            var mr = host.Markup(markdown, model.FileAndType);
+            var mr = host.Markup(markdown, model.OriginalFileAndType);
             model.LinkToFiles = model.LinkToFiles.Union(mr.LinkToFiles);
             model.LinkToUids = model.LinkToUids.Union(mr.LinkToUids);
 

@@ -97,6 +97,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 foreach (var model in h.Models)
                 {
+                    // to-do: move to plugins.
+                    if (model.Type == DocumentType.Overwrite)
+                    {
+                        continue;
+                    }
                     foreach (var u in model.Uids.Select(u => u.Name))
                     {
                         h.ReportReference(model, u, DependencyItemSourceType.Uid);
@@ -118,6 +123,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var ldg = LastBuildVersionInfo?.Dependency;
                 if (ldg != null)
                 {
+                    CurrentBuildVersionInfo.Dependency.ReportReference(from r in ldg.ReferenceReportedBys
+                                                                       where !IncrementalContext.ChangeDict.ContainsKey(r) || IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
+                                                                       where !fileSet.Contains(r)
+                                                                       from reference in ldg.GetReferenceReportedBy(r)
+                                                                       select reference);
                     CurrentBuildVersionInfo.Dependency.ReportDependency(from r in ldg.ReportedBys
                                                                         where !IncrementalContext.ChangeDict.ContainsKey(r) || IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
                                                                         where !fileSet.Contains(r)
@@ -213,6 +223,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var items = GetUidDependencyCore(model);
             if (model.Type == DocumentType.Overwrite)
             {
+                // to-do: move to plugins.
                 items = items.Concat(GetUidDependencyForOverwrite(model));
             }
             return items;
@@ -225,12 +236,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 yield break;
             }
             string fromNode = ((RelativePath)model.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
-            var uids = model.Uids.Select(u => u.File).ToImmutableHashSet();
+            var uids = model.Uids.Select(u => u.Name).ToImmutableHashSet();
             foreach (var uid in uids)
             {
                 var item = new DependencyItemSourceInfo(DependencyItemSourceType.Uid, uid);
-                yield return new DependencyItem(fromNode, item, fromNode, DependencyTypeName.Uid);
-                yield return new DependencyItem(item, fromNode, fromNode, DependencyTypeName.Uid);
+                yield return new DependencyItem(fromNode, item, fromNode, DependencyTypeName.Overwrite);
+                yield return new DependencyItem(item, fromNode, fromNode, DependencyTypeName.Overwrite);
             }
         }
 

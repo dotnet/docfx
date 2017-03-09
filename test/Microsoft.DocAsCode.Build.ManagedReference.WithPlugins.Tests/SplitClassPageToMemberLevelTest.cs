@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
@@ -21,7 +20,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
     using Newtonsoft.Json.Linq;
     using Xunit;
     using TableOfContents;
-    using System.Text.RegularExpressions;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "ManagedReferenceDocumentProcessorWithPlugins")]
@@ -63,6 +61,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.NotNull(model);
 
                 Assert.Equal("Hello world!", model.Metadata["meta"]);
+                Assert.Equal(true, model.Metadata["_splitReference"]);
                 Assert.Equal(20, model.Children.Count);
             }
             {
@@ -72,6 +71,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.NotNull(model);
 
                 Assert.Equal("Hello world!", model.Metadata["meta"]);
+                Assert.Equal(true, model.Metadata["_splitReference"]);
                 Assert.Equal(MemberType.Constructor, model.Type);
                 Assert.Equal(3, model.Children.Count);
             }
@@ -91,6 +91,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.NotNull(model);
 
                 Assert.Equal("Hello world!", model.Metadata["meta"]);
+                Assert.Equal(true, model.Metadata["_splitReference"]);
                 Assert.Equal(20, model.Children.Count);
             }
             {
@@ -100,6 +101,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.NotNull(model);
 
                 Assert.Equal("Hello world!", model.Metadata["meta"]);
+                Assert.Equal(true, model.Metadata["_splitReference"]);
                 Assert.Equal(MemberType.Constructor, model.Type);
                 Assert.Equal(3, model.Children.Count);
                 Assert.Equal(new List<string> { "net2", "net46" }, model.Platform);
@@ -122,6 +124,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.Equal("CatLibrary.Cat`2.#ctor*", ctor.TopicUid);
                 Assert.Equal("Constructor", ctor.Metadata["type"].ToString());
                 Assert.Equal(new List<string> { "net2", "net46" }, JArray.FromObject(ctor.Metadata[Constants.PropertyName.Platform]).Select(s => s.ToString()).ToList());
+                Assert.Equal(new List<string> { "net2", "net46" }, JArray.FromObject(ctor.Metadata[Constants.MetadataName.Version]).Select(s => s.ToString()).ToList());
             }
             {
                 var manifestFile = Path.GetFullPath(Path.Combine(_outputFolder, "manifest.json"));

@@ -65,5 +65,17 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// </summary>
         [JsonProperty("_tocKey")]
         public string TocKey { get; set; }
+
+        /// <summary>
+        /// Current file's version name
+        /// </summary>
+        [JsonProperty("_version")]
+        public string VersionName { get; set; }
+
+        /// <summary>
+        /// Current file's version root path from ~ ROOT
+        /// </summary>
+        [JsonProperty("_versionPath")]
+        public string VersionFolder { get; set; }
     }
 }

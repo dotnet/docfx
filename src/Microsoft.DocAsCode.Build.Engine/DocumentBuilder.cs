@@ -167,7 +167,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 
                 using (new PerformanceScope("Dereference"))
                 {
-                    generatedManifest.Dereference(parameters[0].OutputBaseDir);
+                    generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
                 }
 
                 using (new PerformanceScope("SaveManifest"))
@@ -241,7 +241,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var builder = new StringBuilder();
                 foreach (var item in
                     from assembly in assemblyList
-                    select assembly.FullName + "@" + assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version.ToString()
+                    select assembly.FullName + "@" + assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version.ToString() + "-" + assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version.ToString()
                     into item
                     orderby item
                     select item)

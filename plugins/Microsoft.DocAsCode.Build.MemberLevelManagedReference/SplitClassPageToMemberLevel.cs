@@ -3,11 +3,14 @@
 
 namespace Microsoft.DocAsCode.Build.ManagedReference
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
     using System.Linq;
     using System.IO;
+
+    using Newtonsoft.Json.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
@@ -16,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Plugins;
 
     [Export("ManagedReferenceDocumentProcessor", typeof(IDocumentBuildStep))]
-    public class SplitClassPageToMemberLevel : BaseDocumentBuildStep
+    public class SplitClassPageToMemberLevel : BaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         private const char OverloadLastChar = '*';
         private const char Separator = '.';
@@ -70,6 +73,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return collection;
         }
 
+        #region ISupportIncrementalBuildStep Members
+
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
+
+        public string GetIncrementalContextHash() => null;
+
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
+
+        #endregion
+
         private SplittedResult SplitModelToOverloadLevel(FileModel model)
         {
             if (model.Type != DocumentType.Article)
@@ -85,7 +98,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
 
             // Make sure new file names generated from current page is unique
-            var newFileNames = new Dictionary<string, int>();
+            var newFileNames = new Dictionary<string, int>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
             var primaryItem = page.Items[0];
             var itemsToSplit = page.Items.Skip(1);
@@ -119,6 +132,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             // Convert children to references
             page.References = itemsToSplit.Select(ConvertToReference).Concat(page.References).ToList();
+
+            primaryItem.Metadata[SplitReferencePropertyName] = true;
 
             page.Items = new List<ItemViewModel> { primaryItem };
 
@@ -160,6 +175,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 Platform = MergePlatform(overload),
                 IsExplicitInterfaceImplementation = firstMember.IsExplicitInterfaceImplementation,
             };
+
+            var mergeVersion = MergeVersion(overload);
+            if (mergeVersion != null)
+            {
+                newPrimaryItem.Metadata[Constants.MetadataName.Version] = MergeVersion(overload);
+            }
+
             var referenceItem = page.References.FirstOrDefault(s => s.Uid == key);
             if (referenceItem != null)
             {
@@ -188,6 +210,57 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             platforms.Sort();
             return platforms;
+        }
+
+        private List<string> MergeVersion(IEnumerable<ItemViewModel> children)
+        {
+            var versions = new SortedSet<string>();
+            foreach (var child in children)
+            {
+                object versionObj;
+                if (child.Metadata.TryGetValue(Constants.MetadataName.Version, out versionObj))
+                {
+                    var versionList = GetVersionFromMetadata(versionObj);
+                    versions.UnionWith(versionList);
+                }
+            }
+
+            if (versions.Count == 0)
+            {
+                return null;
+            }
+
+            return versions.ToList();
+        }
+
+        private List<string> GetVersionFromMetadata(object value)
+        {
+            var text = value as string;
+            if (text != null)
+            {
+                return new List<string> { text };
+            }
+
+            var collection = value as IEnumerable<object>;
+            if (collection != null)
+            {
+                return collection.OfType<string>().ToList();
+            }
+
+            var jarray = value as JArray;
+            if (jarray != null)
+            {
+                try
+                {
+                    return jarray.ToObject<List<string>>();
+                }
+                catch (Exception)
+                {
+                    Logger.LogWarning($"Unknown version metadata: {jarray.ToString()}");
+                }
+            }
+
+            return null;
         }
 
         private string GetOverloadItemName(string overload, string parent, bool isCtor)
@@ -224,32 +297,32 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             // Save minimal info, as FillReferenceInformation will fill info from ItemViewModel if the property is needed
             var reference = new ReferenceViewModel
             {
-                 Uid = item.Uid,
-                 Parent = item.Parent,
-                 Name = item.Name,
-                 NameWithType = item.NameWithType,
-                 FullName = item.FullName,
+                Uid = item.Uid,
+                Parent = item.Parent,
+                Name = item.Name,
+                NameWithType = item.NameWithType,
+                FullName = item.FullName,
             };
 
             if (item.Names.Count > 0)
             {
                 foreach (var pair in item.Names)
                 {
-                    reference.NameInDevLangs[Constants.ExtensionMemberPrefix.Name + pair.Key] = pair.Value;
+                    reference.NameInDevLangs[pair.Key] = pair.Value;
                 }
             }
             if (item.FullNames.Count > 0)
             {
                 foreach (var pair in item.FullNames)
                 {
-                    reference.FullNameInDevLangs[Constants.ExtensionMemberPrefix.FullName + pair.Key] = pair.Value;
+                    reference.FullNameInDevLangs[pair.Key] = pair.Value;
                 }
             }
             if (item.NamesWithType.Count > 0)
             {
                 foreach (var pair in item.NamesWithType)
                 {
-                    reference.NameWithTypeInDevLangs[Constants.ExtensionMemberPrefix.NameWithType + pair.Key] = pair.Value;
+                    reference.NameWithTypeInDevLangs[pair.Key] = pair.Value;
                 }
             }
 
@@ -265,23 +338,23 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             if (reference.NameInDevLangs.Count > 0)
             {
-                foreach (var pair in item.Names)
+                foreach (var pair in reference.NameInDevLangs)
                 {
-                    item.Metadata[Constants.ExtensionMemberPrefix.Name + pair.Key] = pair.Value;
+                    item.Names[pair.Key] = pair.Value;
                 }
             }
             if (reference.FullNameInDevLangs.Count > 0)
             {
-                foreach (var pair in item.FullNames)
+                foreach (var pair in reference.FullNameInDevLangs)
                 {
-                    item.Metadata[Constants.ExtensionMemberPrefix.FullName + pair.Key] = pair.Value;
+                    item.FullNames[pair.Key] = pair.Value;
                 }
             }
             if (reference.NameWithTypeInDevLangs.Count > 0)
             {
-                foreach (var pair in item.NamesWithType)
+                foreach (var pair in reference.NameWithTypeInDevLangs)
                 {
-                    item.Metadata[Constants.ExtensionMemberPrefix.NameWithType + pair.Key] = pair.Value;
+                    item.NamesWithType[pair.Key] = pair.Value;
                 }
             }
         }
@@ -301,6 +374,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             if (item.Platform != null)
             {
                 result.Metadata[Constants.PropertyName.Platform] = item.Platform;
+            }
+
+            object version;
+            if (item.Metadata.TryGetValue(Constants.MetadataName.Version, out version))
+            {
+                result.Metadata[Constants.MetadataName.Version] = version;
             }
 
             if (item.Names.Count > 0)

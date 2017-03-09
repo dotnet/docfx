@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
     internal class IncrementalBuildContext
     {
+        private readonly object _sync = new object();
         private DocumentBuildParameters _parameters;
         private Dictionary<string, OSPlatformSensitiveDictionary<BuildPhase?>> _modelLoadInfo = new Dictionary<string, OSPlatformSensitiveDictionary<BuildPhase?>>();
         private OSPlatformSensitiveDictionary<ChangeKindWithDependency> _changeDict = new OSPlatformSensitiveDictionary<ChangeKindWithDependency>();
@@ -124,9 +125,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             OSPlatformSensitiveDictionary<BuildPhase?> mi = null;
             string name = hostService.Processor.Name;
-            if (!_modelLoadInfo.TryGetValue(name, out mi))
+            lock (_modelLoadInfo)
             {
-                _modelLoadInfo[name] = mi = new OSPlatformSensitiveDictionary<BuildPhase?>();
+                if (!_modelLoadInfo.TryGetValue(name, out mi))
+                {
+                    _modelLoadInfo[name] = mi = new OSPlatformSensitiveDictionary<BuildPhase?>();
+                }
             }
             mi[file] = phase;
         }
@@ -251,35 +255,32 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             var newChanges = new List<string>();
 
-            foreach (var change in (from c in _changeDict
-                                    where c.Value != ChangeKindWithDependency.None
-                                    select c).ToList())
+            if (dg != null)
             {
-                var dgToLookUp = change.Value == ChangeKindWithDependency.Deleted ? LastBuildVersionInfo?.Dependency : dg;
-                if (dgToLookUp == null)
+                foreach (var change in (from c in _changeDict
+                                        where c.Value != ChangeKindWithDependency.None
+                                        select c).ToList())
                 {
-                    continue;
-                }
-
-                foreach (var dt in dgToLookUp.GetAllDependencyTo(change.Key))
-                {
-                    if (!isValid(dt))
+                    foreach (var dt in dg.GetAllDependencyTo(change.Key))
                     {
-                        continue;
-                    }
-                    string from = dt.From.Value;
-                    if (!_changeDict.ContainsKey(from))
-                    {
-                        _changeDict[from] = ChangeKindWithDependency.DependencyUpdated;
-                        newChanges.Add(from);
-                    }
-                    else
-                    {
-                        if (_changeDict[from] == ChangeKindWithDependency.None)
+                        if (!isValid(dt))
                         {
+                            continue;
+                        }
+                        string from = dt.From.Value;
+                        if (!_changeDict.ContainsKey(from))
+                        {
+                            _changeDict[from] = ChangeKindWithDependency.DependencyUpdated;
                             newChanges.Add(from);
                         }
-                        _changeDict[from] |= ChangeKindWithDependency.DependencyUpdated;
+                        else
+                        {
+                            if (_changeDict[from] == ChangeKindWithDependency.None)
+                            {
+                                newChanges.Add(from);
+                            }
+                            _changeDict[from] |= ChangeKindWithDependency.DependencyUpdated;
+                        }
                     }
                 }
             }
@@ -371,7 +372,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     IncrementalContextHash = ((ISupportIncrementalBuildStep)step).GetIncrementalContextHash(),
                 });
             }
-            CurrentBuildVersionInfo.Processors.Add(cpi);
+            lock (_sync)
+            {
+                CurrentBuildVersionInfo.Processors.Add(cpi);
+            }
             return cpi;
         }
 
@@ -570,9 +574,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     IsFromSource = true,
                 };
             }
-            var dependency = LastBuildVersionInfo?.Dependency;
-            if (dependency != null)
+
+            if (CanVersionIncremental)
             {
+                var dependency = LastBuildVersionInfo.Dependency;
                 foreach (var f in dependency.GetAllDependentNodes())
                 {
                     if (keys.Contains(f))
@@ -608,6 +613,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             catch (ArgumentException)
             {
                 // ignore the file if it contains illegal characters
+            }
+            catch (Exception ex)
+            {
+                Logger.LogVerbose($"Failed to get full path for: {path}. Exception details: {ex.Message}.");
             }
             return fullPath;
         }
