@@ -107,14 +107,14 @@ Paragraph1
             WriteToFile("r/empty.md", string.Empty);
             var dependency = new HashSet<string>();
             var marked = DocfxFlavoredMarked.Markup(root, "r/root.md", dependency: dependency);
-            Assert.Equal(@"<!-- BEGIN INCLUDE: Include content from &quot;r/b/linkAndRefRoot.md&quot; --><p>Paragraph1
+            Assert.Equal(@"<p>Paragraph1
 <a href=""~/r/b/a.md"" data-raw-source=""[link](a.md)"">link</a>
-<!-- BEGIN INCLUDE: Include content from &quot;r/link/link2.md&quot; --><a href=""~/r/link/md/c.md"" data-raw-source=""[link](md/c.md)"">link</a><!--END INCLUDE -->
+<a href=""~/r/link/md/c.md"" data-raw-source=""[link](md/c.md)"">link</a>
 <img src=""~/r/b/img/img.jpg"" alt=""Image"">
 <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include-[root](../root.md)]: Circular dependency found in &quot;r/b/linkAndRefRoot.md&quot; -->[!include-[root](../root.md)]<!--END ERROR INCLUDE --></p>
-<!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>
-<!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/a/refc.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;r/c/c.md&quot; --><p><strong>Hello</strong></p>
-<!--END INCLUDE --><!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/empty.md&quot; --><!--END INCLUDE --><!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[external](http://microsoft.com/a.md)]: Absolute path &quot;http://microsoft.com/a.md&quot; is not supported. -->[!include[external](http://microsoft.com/a.md)]<!--END ERROR INCLUDE -->".Replace("\r\n", "\n"), marked);
+<p><strong>Hello</strong></p>
+<p><strong>Hello</strong></p>
+<!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[external](http://microsoft.com/a.md)]: Absolute path &quot;http://microsoft.com/a.md&quot; is not supported. -->[!include[external](http://microsoft.com/a.md)]<!--END ERROR INCLUDE -->".Replace("\r\n", "\n"), marked);
             Assert.Equal(
                 new[]
                 {
@@ -141,8 +141,7 @@ Paragraph1
             WriteToFile("r/root.md", root);
             WriteToFile("r/b/linkAndRefRoot.md", linkAndRefRoot);
             var marked = DocfxFlavoredMarked.Markup(root, "r/root.md");
-            Assert.Equal(@"<!-- BEGIN INCLUDE: Include content from &quot;~/r/b/linkAndRefRoot.md&quot; --><p>Paragraph1</p>
-<!--END INCLUDE -->".Replace("\r\n", "\n"), marked);
+            Assert.Equal(@"<p>Paragraph1</p>".Replace("\r\n", "\n"), marked);
         }
 
         [Fact]
@@ -181,12 +180,11 @@ Paragraph1
             WriteToFile("r/c/d/d.md", d);
             var dependency = new HashSet<string>();
             var marked = DocfxFlavoredMarked.Markup(a, "r/a/a.md", dependency: dependency);
-            var expected = @"<!-- BEGIN INCLUDE: Include content from &quot;r/b/token.md&quot; --><p><img src=""~/r/img/img.jpg"" alt="""">
+            var expected = @"<p><img src=""~/r/img/img.jpg"" alt="""">
 <a href=""#anchor"" data-raw-source=""[](#anchor)""></a>
 <a href=""~/r/a/a.md"" data-raw-source=""[a](../a/a.md)"">a</a>
 <a href=""~/r/b/invalid.md"" data-raw-source=""[](invalid.md)""></a>
-<a href=""~/r/c/d/d.md#anchor"" data-raw-source=""[d](../c/d/d.md#anchor)"">d</a></p>
-<!--END INCLUDE -->".Replace("\r\n", "\n");
+<a href=""~/r/c/d/d.md#anchor"" data-raw-source=""[d](../c/d/d.md#anchor)"">d</a></p>".Replace("\r\n", "\n");
             Assert.Equal(expected, marked);
             Assert.Equal(
                 new[] { "../b/token.md" },
@@ -201,7 +199,7 @@ Paragraph1
 
             dependency.Clear();
             marked = DocfxFlavoredMarked.Markup(r, "r/r.md", dependency: dependency);
-            Assert.Equal($@"<!-- BEGIN INCLUDE: Include content from &quot;r/a/a.md&quot; -->{expected}<!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;r/c/d/d.md&quot; -->{expected}<!--END INCLUDE -->", marked);
+            Assert.Equal($@"{expected}{expected}", marked);
             Assert.Equal(
                 new[] { "a/a.md", "b/token.md", "c/d/d.md" },
                 dependency.OrderBy(x => x));
@@ -227,7 +225,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 
             var dependency = new HashSet<string>();
             var marked = DocfxFlavoredMarked.Markup(root, "root.md", dependency: dependency);
-            Assert.Equal("<p>Inline <!-- BEGIN INCLUDE: Include content from &quot;ref1.md&quot; --><!-- BEGIN INCLUDE: Include content from &quot;ref2.md&quot; -->## Inline inclusion do not parse header <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](root.md &quot;This is root&quot;)]: Circular dependency found in &quot;ref2.md&quot; -->[!include[root](root.md \"This is root\")]<!--END ERROR INCLUDE --><!--END INCLUDE --><!--END INCLUDE -->\nInline <!-- BEGIN INCLUDE: Include content from &quot;ref3.md&quot; --><strong>Hello</strong><!--END INCLUDE --></p>\n", marked);
+            Assert.Equal("<p>Inline ## Inline inclusion do not parse header <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](root.md &quot;This is root&quot;)]: Circular dependency found in &quot;ref2.md&quot; -->[!include[root](root.md \"This is root\")]<!--END ERROR INCLUDE -->\nInline <strong>Hello</strong></p>\n", marked);
             Assert.Equal(
                 new[] { "ref1.md", "ref2.md", "ref3.md", "root.md" },
                 dependency.OrderBy(x => x));
@@ -245,10 +243,10 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 
 [!INCLUDE [azure-ps-prerequisites-include.md](inc3.md)]";
 
-            var expected = @"<p><!-- BEGIN INCLUDE: Include content from &quot;inc1.md&quot; -->inc1<!--END INCLUDE -->.</p>
-<p><!-- BEGIN INCLUDE: Include content from &quot;inc2.md&quot; -->inc2<!--END INCLUDE --> <a href=""inc1.md"" data-raw-source=""[Resource Manager model](inc1.md)"">Resource Manager model</a>.</p>
-<!-- BEGIN INCLUDE: Include content from &quot;inc3.md&quot; --><p>inc3</p>
-<!--END INCLUDE -->";
+            var expected = @"<p>inc1.</p>
+<p>inc2 <a href=""inc1.md"" data-raw-source=""[Resource Manager model](inc1.md)"">Resource Manager model</a>.</p>
+<p>inc3</p>
+";
 
             var inc1 = @"inc1";
             var inc2 = @"inc2";
@@ -1427,13 +1425,13 @@ markdown token1.md content end.";
             var dependency = new HashSet<string>();
             var marked = DocfxFlavoredMarked.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder_{uniqueFolderName}"), root, fallbackFolders, $"root_{uniqueFolderName}.md", dependency: dependency);
             Assert.Equal($@"<p>1markdown root.md main content start.</p>
-<!-- BEGIN INCLUDE: Include content from &quot;a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md&quot; --><p>1markdown a.md main content start.</p>
-<!-- BEGIN INCLUDE: Include content from &quot;token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md&quot; --><p>1markdown token1.md content start.</p>
-<!-- BEGIN INCLUDE: Include content from &quot;token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md&quot; --><p><strong>1markdown token2.md main content</strong></p>
-<!--END INCLUDE --><p>markdown token1.md content end.</p>
-<!--END INCLUDE --><!-- BEGIN INCLUDE: Include content from &quot;token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md&quot; --><p><strong>1markdown token2.md main content</strong></p>
-<!--END INCLUDE --><p>markdown a.md main content end.</p>
-<!--END INCLUDE --><p>markdown root.md main content end.</p>
+<p>1markdown a.md main content start.</p>
+<p>1markdown token1.md content start.</p>
+<p><strong>1markdown token2.md main content</strong></p>
+<p>markdown token1.md content end.</p>
+<p><strong>1markdown token2.md main content</strong></p>
+<p>markdown a.md main content end.</p>
+<p>markdown root.md main content end.</p>
 ".Replace("\r\n", "\n"), marked);
             Assert.Equal(
                 new[] { $"../fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md", $"a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md" },
@@ -1509,12 +1507,12 @@ markdown a.md a.md content end.";
             var rootMarked = DocfxFlavoredMarked.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder"), root, fallbackFolders, "root.md", dependency: rootDependency);
             Assert.Equal(@"<p>markdown root.md main content start.</p>
 <p>mardown a content in root.md content start</p>
-<!-- BEGIN INCLUDE: Include content from &quot;a_folder/a.md&quot; --><p>markdown a.md main content start.</p>
+<p>markdown a.md main content start.</p>
 <p>code_in_a code in a.md content start</p>
 <pre><code class=""lang-cs"" name=""this is code_in_a code"">namespace code_in_a{}
 </code></pre><p>code_in_a in a.md content end</p>
 <p>markdown a.md a.md content end.</p>
-<!--END INCLUDE --><p>mardown a content in root.md content end</p>
+<p>mardown a content in root.md content end</p>
 <p>sample 1 code in root.md content start</p>
 <pre><code class=""lang-cs"" name=""this is sample 1 code"">namespace sample1{}
 </code></pre><p>sample 1 code in root.md content end</p>

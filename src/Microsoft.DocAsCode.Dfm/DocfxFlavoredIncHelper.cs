@@ -72,7 +72,6 @@ namespace Microsoft.DocAsCode.Dfm
                     src = new DfmEngine(engine).InternalMarkup(src, context.SetFilePathStack(parents).SetDependency(dependency).SetIsInclude());
 
                     result = UpdateToHrefFromWorkingFolder(src, currentPath);
-                    result = GenerateNodeWithCommentWrapper("INCLUDE", $"Include content from \"{currentPath}\"", result);
                     _cache.Add(currentPath, result);
                     _dependencyCache[currentPath] = dependency;
                 }
