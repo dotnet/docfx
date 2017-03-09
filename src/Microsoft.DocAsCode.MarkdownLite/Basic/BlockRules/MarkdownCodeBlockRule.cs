@@ -3,13 +3,32 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    using System.Text.RegularExpressions;
+    using Matchers;
 
     public class MarkdownCodeBlockRule : IMarkdownRule
     {
+        private static readonly Matcher CodeMatcher =
+            Matcher.Repeat(
+                Matcher.Sequence(
+                    Matcher.Repeat(
+                        Matcher.Char(' '),
+                        4
+                    ),
+                    Matcher.Repeat(
+                        Matcher.AnyCharNotIn('\n'),
+                        1
+                    ),
+                    Matcher.Repeat(
+                        Matcher.Char('\n'),
+                        0
+                    )
+                ),
+                1
+            );
+
         public virtual string Name => "Code";
 
-        public virtual Regex Code => Regexes.Block.Code;
+        public virtual Matcher Code => CodeMatcher;
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
@@ -17,21 +36,21 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            var match = Code.Match(context.CurrentMarkdown);
-            if (match.Length == 0)
+            var match = context.Match(Code);
+            if (match?.Length > 0)
             {
-                return null;
+                var sourceInfo = context.Consume(match.Length);
+                var capStr = Regexes.Lexers.LeadingWhiteSpaces.Replace(sourceInfo.Markdown, string.Empty);
+                if (parser.Options.Pedantic)
+                {
+                    return new MarkdownCodeBlockToken(this, parser.Context, capStr, null, sourceInfo);
+                }
+                else
+                {
+                    return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty), null, sourceInfo);
+                }
             }
-            var sourceInfo = context.Consume(match.Length);
-            var capStr = Regexes.Lexers.LeadingWhiteSpaces.Replace(match.Value, string.Empty);
-            if (parser.Options.Pedantic)
-            {
-                return new MarkdownCodeBlockToken(this, parser.Context, capStr, null, sourceInfo);
-            }
-            else
-            {
-                return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty), null, sourceInfo);
-            }
+            return null;
         }
     }
 }

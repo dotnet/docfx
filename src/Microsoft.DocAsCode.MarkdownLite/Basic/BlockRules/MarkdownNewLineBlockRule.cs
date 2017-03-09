@@ -5,21 +5,24 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System.Text.RegularExpressions;
 
+    using Microsoft.DocAsCode.MarkdownLite.Matchers;
+
     public class MarkdownNewLineBlockRule : IMarkdownRule
     {
+        private static readonly Matcher NewLineMatcher = Matcher.Repeat(Matcher.Char('\n'), 1);
+
         public virtual string Name => "NewLine";
 
-        public virtual Regex Newline => Regexes.Block.Newline;
+        public virtual Matcher NewLine => NewLineMatcher;
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            var match = Newline.Match(context.CurrentMarkdown);
-            if (match.Length == 0)
+            var match = context.Match(NewLine);
+            if (match?.Length > 0)
             {
-                return null;
+                return new MarkdownNewLineBlockToken(this, parser.Context, context.Consume(match.Length));
             }
-            var sourceInfo = context.Consume(match.Length);
-            return new MarkdownNewLineBlockToken(this, parser.Context, sourceInfo);
+            return null;
         }
     }
 }
