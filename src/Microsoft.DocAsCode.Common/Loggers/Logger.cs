@@ -7,6 +7,8 @@ namespace Microsoft.DocAsCode.Common
 
     public static class Logger
     {
+        public static bool HasError { get; private set; }
+
         private static readonly object _sync = new object();
         private static CompositeLogListener _syncListener = new CompositeLogListener();
         private static AsyncLogListener _asyncListener = new AsyncLogListener();
@@ -83,6 +85,11 @@ namespace Microsoft.DocAsCode.Common
             if (item.LogLevel < LogLevelThreshold)
             {
                 return;
+            }
+
+            if (item.LogLevel == LogLevel.Error)
+            {
+                HasError = true;
             }
 
             _syncListener.WriteLine(item);
