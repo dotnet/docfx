@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using Microsoft.DocAsCode.MarkdownLite.Matchers;
+
     public interface IMarkdownParsingContext
     {
         string CurrentMarkdown { get; }
@@ -11,5 +13,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
         bool IsInParagraph { get; set; }
 
         SourceInfo Consume(int charCount);
+        MatchResult Match(Matcher matcher);
     }
 }
