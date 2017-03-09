@@ -21,6 +21,14 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public DocumentBuildContext Context { get; }
 
+        public List<TreeItemRestructure> Restructions
+        {
+            get
+            {
+                return _restructions;
+            }
+        }
+
         public CompilePhaseHandler(DocumentBuildContext context)
         {
             Context = context;

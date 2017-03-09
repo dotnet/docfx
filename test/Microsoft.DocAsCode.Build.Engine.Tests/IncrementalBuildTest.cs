@@ -3614,6 +3614,241 @@ tagRules : [
             }
         }
 
+        [Fact]
+        public void TestManagedReferenceEnableSplitWithToc()
+        {
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+
+            CreateFile("ManagedReference.html.primary.tmpl",
+                new[]
+                {
+                    "Show children:",
+                    "{{#children}}",
+                    "  {{#children}}",
+                    "  <h4><xref uid=\"{{uid}}\" altProperty=\"fullName\" displayProperty=\"name\"/></h4>",
+                    "  <section>{{{summary}}}</section>",
+                    "  {{/children}}",
+                    "{{/children}}",
+                },
+                templateFolder);
+            CreateFile("partials/li.tmpl.partial",
+                new[]
+                {
+                    "<ul>",
+                    "{{#items}}",
+                    "<li>",
+                    "{{#topicHref}}<a href='{{topicHref}}' name='{{tocHref}}' title='{{name}}'>{{name}}</a>{{/topicHref}}",
+                    "{{^topicHref}}<a>{{{name}}}</a>{{/topicHref}}",
+                    "{{^leaf}}{{>partials/li}}{{/leaf}}",
+                    "</li>",
+                    "{{/items}}",
+                    "</ul>"
+                },
+                templateFolder);
+            CreateFile("toc.html.tmpl", "{{>partials/li}}", templateFolder);
+            CreateFile("toc.html.js",
+                new[]
+                {
+                    "exports.transform = function (model) {",
+                    "   transformItem(model, 1);",
+                    "   if (model.items && model.items.length > 0) model.leaf = false;",
+                    "   model.title = \"Table of Content\";",
+                    "   return model;",
+                    "   function transformItem(item, level) {",
+                    "       item.topicHref = item.topicHref || null;",
+                    "       item.tocHref = item.tocHref || null;",
+                    "       item.name = item.name || null;",
+                    "       item.level = level;",
+                    "       if (item.items && item.items.length > 0)",
+                    "       {",
+                    "           var length = item.items.length;",
+                    "           for (var i = 0; i < length; i++)",
+                    "           {",
+                    "               transformItem(item.items[i], level + 1);",
+                    "           };",
+                    "       }",
+                    "       else",
+                    "       {",
+                    "           item.items = [];",
+                    "           item.leaf = true;",
+                    "       }",
+                    "   }",
+                    "}",
+                },
+                templateFolder);
+
+            var referenceFile = CreateFile("b.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: B",
+                    "  commentId: T:B",
+                    "  id: B",
+                    "  children:",
+                    "  - B.M1",
+                    "  - B.M2",
+                    "  - B.M2(A.B)",
+                    "  name: B",
+                    "  nameWithType: B",
+                    "  fullName: B",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class B",
+                    "  summary: \"This is class B\"",
+                    "- uid: B.M1",
+                    "  commentId: M:B.M1",
+                    "  id: B.M1",
+                    "  parent: B",
+                    "  name: M1()",
+                    "  nameWithType: B.M1()",
+                    "  fullName: B.M1()",
+                    "  type: Method",
+                    "  syntax:",
+                    "    content: public void M1()",
+                    "  summary: \"This is method B.M1()\"",
+                    "  overload: B.M1*",
+                    "- uid: B.M2",
+                    "  commentId: M:B.M2",
+                    "  id: B.M2",
+                    "  parent: B",
+                    "  name: M2()",
+                    "  nameWithType: B.M2()",
+                    "  fullName: B.M2()",
+                    "  type: Method",
+                    "  syntax:",
+                    "    content: public void M2()",
+                    "  summary: \"This is method B.M2()\"",
+                    "  overload: B.M2*",
+                    "- uid: B.M2(B)",
+                    "  commentId: M:B.M2(B)",
+                    "  id: B.M2",
+                    "  parent: B",
+                    "  name: M2(B)",
+                    "  nameWithType: B.M2(B)",
+                    "  fullName: B.M2(B)",
+                    "  type: Method",
+                    "  syntax:",
+                    "    content: public void M2(B b)",
+                    "  summary: \"This is method B.M2(B)\"",
+                    "  overload: B.M2*",
+                    "references:",
+                    "- uid: B.M1*",
+                    "  commentId: \"overload: B.M1*\"",
+                    "  isExternal: false",
+                    "  name: M1",
+                    "  nameWithType: B.M1",
+                    "  fullName: B.M1",
+                    "- uid: B.M2*",
+                    "  commentId: \"overload: B.M2*\"",
+                    "  isExternal: false",
+                    "  name: M2",
+                    "  nameWithType: B.M2",
+                    "  fullName: B.M2",
+                },
+                inputFolder);
+
+            var tocFile = CreateFile("toc.yml",
+                new[]
+                {
+                    "### YamlMime:TableOfContent",
+                    "- uid: B",
+                    "  name: B",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { referenceFile, tocFile }, inputFolder, null);
+
+            #endregion
+
+            Init("IncrementalBuild.TestManagedReferenceEnableSplitWithToc");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceEnableSplitWithToc");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceEnableSplitWithToc.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceEnableSplitWithToc.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceEnableSplitWithToc-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder,
+                        enableSplit: true);
+
+                }
+
+                ClearListener();
+                // no changes
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceEnableSplitWithToc-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder,
+                        enableSplit: true);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceEnableSplitWithToc-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        enableSplit: true);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(4, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestManagedReferenceEnableSplitWithToc-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestManagedReferenceEnableSplitWithToc-second", "IncrementalBuild.TestManagedReferenceEnableSplitWithToc-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
         private static bool CompareDir(string path1, string path2)
         {
             var files1 = new DirectoryInfo(path1).GetFiles("*.*", SearchOption.AllDirectories).Where(f => f.Name != "xrefmap.yml" && f.Name != "manifest.json").OrderBy(f => f.FullName).ToList();
