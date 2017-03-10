@@ -139,6 +139,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
+        // TO-DO: move to plugins
         private void RegisterUnloadedTocRestructions(HashSet<string> nonIncreSet)
         {
             using (new LoggerPhaseScope("RegisterUnloadedTocRestructionsFromLastBuild", LogLevel.Diagnostic))
@@ -157,8 +158,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     if (!IncrementalContext.ChangeDict.ContainsKey(pathFromWorkingFolder) || IncrementalContext.ChangeDict[pathFromWorkingFolder] == ChangeKindWithDependency.None)
                     {
-                        _inner.Restructions.Add(pair.Value);
-                        CurrentBuildVersionInfo.TocRestructions[pair.Key] = pair.Value;
+                        _inner.Restructions.AddRange(pair.Value);
                     }
                 }
             }
@@ -187,30 +187,17 @@ namespace Microsoft.DocAsCode.Build.Engine
         private void UpdateTocRestructions(IEnumerable<HostService> hostServices)
         {
             var dict = (from r in _inner.Restructions
-                       group r by r.TypeOfKey into g
+                        from srcFile in r.SourceFiles ?? Enumerable.Empty<FileAndType>()
                        select new
                        {
-                           Type = g.Key,
-                           Value = g.ToDictionary(v => v.Key, v => v),
-                       }).ToDictionary(p => p.Type, p => p.Value);
+                           File = srcFile.File,
+                           Item = r,
+                       } into item
+                       group item by item.File).ToDictionary(p => p.Key, p => p.Select(i => i.Item).ToList());
             var restructions = CurrentBuildVersionInfo.TocRestructions;
-            foreach (var h in hostServices)
+            foreach (var pair in dict)
             {
-                foreach (var f in h.Models)
-                {
-                    if (f.Uids != null && dict.ContainsKey(TreeItemKeyType.TopicUid))
-                    {
-                        var uid = f.Uids.FirstOrDefault(u => dict[TreeItemKeyType.TopicUid].ContainsKey(u.Name));
-                        if (uid != null)
-                        {
-                            restructions[f.OriginalFileAndType.File] = dict[TreeItemKeyType.TopicUid][uid.Name];
-                        }
-                    }
-                    if (dict.ContainsKey(TreeItemKeyType.TopicHref) && dict[TreeItemKeyType.TopicHref].ContainsKey(f.LocalPathFromRoot))
-                    {
-                        restructions[f.OriginalFileAndType.File] = dict[TreeItemKeyType.TopicHref][f.LocalPathFromRoot];
-                    }
-                }
+                restructions[pair.Key] = pair.Value;
             }
         }
 

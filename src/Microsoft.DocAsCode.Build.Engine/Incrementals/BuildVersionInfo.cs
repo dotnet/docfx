@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// deserialized Toc Restructions.
         /// </summary>
         [JsonIgnore]
-        public IDictionary<string, TreeItemRestructure> TocRestructions { get; private set; } = new OSPlatformSensitiveDictionary<TreeItemRestructure>();
+        public IDictionary<string, List<TreeItemRestructure>> TocRestructions { get; private set; } = new OSPlatformSensitiveDictionary<List<TreeItemRestructure>>();
         #endregion
 
         public void SaveManifest(string baseDir)
@@ -118,7 +118,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             XRefSpecMap = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<List<XRefSpec>>>(Path.Combine(baseDir, XRefSpecMapFile));
             FileMap = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<FileMapItem>>(Path.Combine(baseDir, FileMapFile));
             BuildMessage = IncrementalUtility.LoadBuildMessage(Path.Combine(baseDir, BuildMessageFile));
-            TocRestructions = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<TreeItemRestructure>>(Path.Combine(baseDir, TocRestructionsFile));
+            TocRestructions = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<List<TreeItemRestructure>>>(Path.Combine(baseDir, TocRestructionsFile));
             foreach (var processor in Processors)
             {
                 processor.Load(baseDir);
