@@ -84,12 +84,11 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                              $"<meta name='markupTagType' content='{config.MarkupTagType}'>" +
                              $"<meta name='markupClassName' content='{config.MarkupClassName}'>";
 
-            for (int i = 0; i < addElements.Length; i++)
+            foreach (var addElement in addElements)
             {
-                string nodeName = addElements.Elements.ElementAt(i).NodeName;
-                dom.Select(nodeName)
+                dom.Select(addElement.NodeName)
                     .Last().
-                    After(addElements.Elements.ElementAt(i));
+                    After(addElement);
             }
 
             // Replace 'https' to 'http' for that VS Code don't support reference which use https protocol now
