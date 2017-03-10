@@ -117,16 +117,14 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     {
                         var m = GenerateNonOverloadPage(page, model, i, newFileNames);
                         splittedModels.Add(m.FileModel);
-
-                        // Order toc by display name
-                        children.Add(m.TreeItem);
+                        AddToTree(m.PrimaryItem, children);
                     }
                 }
                 else
                 {
                     var m = GenerateOverloadPage(page, model, overload, newFileNames);
                     splittedModels.Add(m.FileModel);
-                    children.Add(m.TreeItem);
+                    AddToTree(m.PrimaryItem, children);
                 }
             }
 
@@ -143,13 +141,21 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return new SplittedResult(primaryItem.Uid, children.OrderBy(s => GetDisplayName(s)), splittedModels);
         }
 
+        private void AddToTree(ItemViewModel item, List<TreeItem> tree)
+        {
+            if (!item.IsExplicitInterfaceImplementation)
+            {
+                var treeItem = ConvertToTreeItem(item);
+                tree.Add(treeItem);
+            }
+        }
+
         private ModelWrapper GenerateNonOverloadPage(PageViewModel page, FileModel model, ItemViewModel item, Dictionary<string, int> existingFileNames)
         {
             item.Metadata[SplitReferencePropertyName] = true;
             var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { item });
             var newModel = GenerateNewFileModel(model, newPage, item.Uid, existingFileNames);
-            var tree = ConvertToTreeItem(item);
-            return new ModelWrapper(newPage, newModel, tree);
+            return new ModelWrapper(item, newModel);
         }
 
         private ModelWrapper GenerateOverloadPage(PageViewModel page, FileModel model, IGrouping<string, ItemViewModel> overload, Dictionary<string, int> existingFileNames)
@@ -196,8 +202,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { newPrimaryItem }.Concat(overload).ToList());
             var newFileName = GetNewFileName(primaryItem.Uid, newPrimaryItem);
             var newModel = GenerateNewFileModel(model, newPage, newFileName, existingFileNames);
-            var tree = ConvertToTreeItem(newPrimaryItem);
-            return new ModelWrapper(newPage, newModel, tree);
+            return new ModelWrapper(newPrimaryItem, newModel);
         }
 
         private List<string> MergePlatform(IEnumerable<ItemViewModel> children)
@@ -519,15 +524,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private sealed class ModelWrapper
         {
-            public PageViewModel PageViewModel { get; }
+            public ItemViewModel PrimaryItem { get; }
             public FileModel FileModel { get; }
-            public TreeItem TreeItem { get; }
 
-            public ModelWrapper(PageViewModel page, FileModel fileModel, TreeItem tree)
+            public ModelWrapper(ItemViewModel item, FileModel fileModel)
             {
-                PageViewModel = page;
+                PrimaryItem = item;
                 FileModel = fileModel;
-                TreeItem = tree;
             }
         }
     }
