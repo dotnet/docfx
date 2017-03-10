@@ -7,6 +7,8 @@
     <PackageProjectUrl>https://github.com/dotnet/docfx</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</PackageLicenseUrl>
     <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.3' ">$(PackageTargetFallback);dotnet</PackageTargetFallback>
+    <Authors>Microsoft</Authors>
+    <Company>Microsoft</Company>
   </PropertyGroup>
 
   <ItemGroup>

@@ -5,6 +5,8 @@
     <AssemblyName>DfmHttpService</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>DfmHttpService</PackageId>
+    <Authors>Microsoft</Authors>
+    <Company>Microsoft</Company>
   </PropertyGroup>
 
   <ItemGroup>

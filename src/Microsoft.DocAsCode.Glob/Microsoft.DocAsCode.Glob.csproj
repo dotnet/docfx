@@ -6,6 +6,8 @@
     <PackageId>Microsoft.DocAsCode.Glob</PackageId>
     <PackageProjectUrl>https://github.com/dotnet/docfx</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</PackageLicenseUrl>
+    <Authors>Microsoft</Authors>
+    <Company>Microsoft</Company>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
