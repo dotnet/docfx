@@ -12,6 +12,8 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         private static readonly AnyCharMatcher AnyCharMatcher = new AnyCharMatcher();
         private static readonly EndOfStringMatcher EndOfStringMatcher = new EndOfStringMatcher();
+        private static readonly Matcher WhiteSpacesMatcher = Repeat(new CharMatcher(' '), 0);
+        private static readonly Matcher NewLineMatcher = new CharMatcher('\n');
 
         /// <summary>
         /// Match string in content.
@@ -39,7 +41,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
             var array = (char[])ch.Clone();
             Array.Sort(array);
-            return new AnyCharInMatcher(ch);
+            return new AnyCharInMatcher(array);
         }
 
         public static Matcher AnyCharInRange(char start, char end)
@@ -63,8 +65,12 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
             var array = (char[])ch.Clone();
             Array.Sort(array);
-            return new AnyCharNotInMatcher(ch);
+            return new AnyCharNotInMatcher(array);
         }
+
+        public static Matcher WhiteSpaces => WhiteSpacesMatcher;
+
+        public static Matcher NewLine => NewLineMatcher;
 
         public static Matcher String(string text)
         {
@@ -92,7 +98,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return new CaseInsensitiveStringMatcher(text);
         }
 
-        public static Matcher EndOfString() => EndOfStringMatcher;
+        public static Matcher EndOfString => EndOfStringMatcher;
 
         public static Matcher Maybe(Matcher matcher) =>
             Repeat(matcher, 0, 1);

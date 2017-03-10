@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownNewLineBlockRule : IMarkdownRule
     {
-        private static readonly Matcher _NewLineMatcher = Matcher.Repeat(Matcher.Char('\n'), 1);
+        private static readonly Matcher _NewLineMatcher = Matcher.NewLine.RepeatAtLeast(1);
 
         public virtual string Name => "NewLine";
 
