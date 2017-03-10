@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net452</TargetFramework>
+    <AssemblyName>Microsoft.DocAsCode.Build.JavaScriptReference</AssemblyName>
+    <PackageId>Microsoft.DocAsCode.Build.JavaScriptReference</PackageId>
+    <PackageProjectUrl>https://github.com/dotnet/docfx</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</PackageLicenseUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="docfx.plugins.config;resources\**\*">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="5.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Reference Include="System.Web" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net452</TargetFramework>
+    <AssemblyName>docfx.Tests</AssemblyName>
+    <PackageId>docfx.Tests</PackageId>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\TestBase.cs" />
+    <None Update="Assets\docfx.json_build\docfx.json;Assets\docfx.json_empty\docfx.json;Assets\docfx.json_invalid_key\docfx.json;Assets\docfx.json_invalid_format\docfx.json;Assets\docfx.json_metadata\docfx.json;Assets\docfx.json_metadata\docfxWithFilter.json;Assets\docfx.json_metadata_build\docfx.json;Assets\docfx.sample.1.json;Assets\filter.yaml.sample;Assets\test.cs.sample.1;Assets\test.csproj.sample.1;Assets\test.vb.sample.1;Assets\test.vbproj.sample.1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\docfx\docfx.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170106-08" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0-beta5-build1225" />
+    <PackageReference Include="xunit" Version="2.2.0-beta5-build3474" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.2.0" />
+    <PackageReference Include="Microsoft.Composition" Version="1.0.27" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

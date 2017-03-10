@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net452</TargetFramework>
+    <AssemblyName>Microsoft.DocAsCode.Build.MemberLevelManagedReference</AssemblyName>
+    <PackageId>Microsoft.DocAsCode.Build.MemberLevelManagedReference</PackageId>
+    <PackageProjectUrl>https://github.com/dotnet/docfx</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</PackageLicenseUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="resources\**">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Collections.Immutable" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net452</TargetFramework>
+    <AssemblyName>Microsoft.DocAsCode.Dfm.VscPreview</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>Microsoft.DocAsCode.Dfm.VscPreview</PackageId>
+    <PackageProjectUrl>https://github.com/dotnet/docfx</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</PackageLicenseUrl>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Microsoft.DocAsCode.Build.Engine\Microsoft.DocAsCode.Build.Engine.csproj" />
+    <ProjectReference Include="..\..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CsQuery" Version="1.3.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

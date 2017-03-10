@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net452</TargetFramework>
+    <AssemblyName>AzureMarkdownRewriterTool</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>AzureMarkdownRewriterTool</PackageId>
+    <PackageProjectUrl>https://github.com/dotnet/docfx</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</PackageLicenseUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.AzureMarkdownRewriters\Microsoft.DocAsCode.AzureMarkdownRewriters.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

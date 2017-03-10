@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net452</TargetFramework>
+    <AssemblyName>Microsoft.DocAsCode.Metadata.ManagedReference.Tests</AssemblyName>
+    <PackageId>Microsoft.DocAsCode.Metadata.ManagedReference.Tests</PackageId>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="TestData\filterconfig.yml;TestData\filterconfig_attribute.yml;TestData\System.Console.csyml;TestData\System.ConsoleColor.csyml;TestData\CatLibrary.dll;TestData\BaseClassForTestClass1.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Metadata.ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170106-08" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0-beta5-build1225" />
+    <PackageReference Include="xunit" Version="2.2.0-beta5-build3474" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

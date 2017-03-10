@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net452</TargetFramework>
+    <AssemblyName>Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests</AssemblyName>
+    <PackageId>Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests</PackageId>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\TestBase.cs" />
+    <None Update="TestData\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Engine\Microsoft.DocAsCode.Build.Engine.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.ManagedReference\Microsoft.DocAsCode.Build.ManagedReference.csproj" />
+    <ProjectReference Include="..\..\plugins\Microsoft.DocAsCode.Build.MemberLevelManagedReference\Microsoft.DocAsCode.Build.MemberLevelManagedReference.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.TableOfContents\Microsoft.DocAsCode.Build.TableOfContents.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170106-08" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0-beta5-build1225" />
+    <PackageReference Include="xunit" Version="2.2.0-beta5-build3474" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>
