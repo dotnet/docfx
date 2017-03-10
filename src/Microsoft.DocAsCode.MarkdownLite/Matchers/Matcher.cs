@@ -199,6 +199,14 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         /// </summary>
         public static Matcher operator +(Matcher left, Matcher right)
         {
+            if (left == null)
+            {
+                return right;
+            }
+            if (right == null)
+            {
+                return left;
+            }
             var seqLeft = left as SequenceMatcher;
             var seqRight = right as SequenceMatcher;
             if (seqLeft != null)
@@ -230,24 +238,32 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         /// </summary>
         public static Matcher operator |(Matcher left, Matcher right)
         {
-            var seqLeft = left as AnyMatcher;
-            var seqRight = right as AnyMatcher;
-            if (seqLeft != null)
+            if (left == null)
             {
-                if (seqRight != null)
+                return right;
+            }
+            if (right == null)
+            {
+                return left;
+            }
+            var anyLeft = left as AnyMatcher;
+            var anyRight = right as AnyMatcher;
+            if (anyLeft != null)
+            {
+                if (anyRight != null)
                 {
-                    return Any(seqLeft.Inners.Concat(seqRight.Inners).ToArray());
+                    return Any(anyLeft.Inners.Concat(anyRight.Inners).ToArray());
                 }
                 else
                 {
-                    return Any(seqLeft.Inners.Concat(new[] { right }).ToArray());
+                    return Any(anyLeft.Inners.Concat(new[] { right }).ToArray());
                 }
             }
             else
             {
-                if (seqRight != null)
+                if (anyRight != null)
                 {
-                    return Any(new[] { seqLeft }.Concat(seqRight.Inners).ToArray());
+                    return Any(new[] { anyLeft }.Concat(anyRight.Inners).ToArray());
                 }
                 else
                 {
@@ -261,45 +277,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         /// </summary>
         public static Matcher operator *(Matcher matcher, int count) =>
             Repeat(matcher, count, count);
-
-        /// <summary>
-        /// Repeat.
-        /// </summary>
-        public static Matcher operator *(Matcher matcher, Tuple<int, int> count) =>
-            Repeat(matcher, count.Item1, count.Item2);
-
-        /// <summary>
-        /// Test.
-        /// </summary>
-        public static Matcher operator ~(Matcher matcher) =>
-            Test(matcher);
-
-        /// <summary>
-        /// Negative test.
-        /// </summary>
-        public static Matcher operator !(Matcher matcher) =>
-            NegativeTest(matcher);
-
-        /// <summary>
-        /// Reverse test.
-        /// </summary>
-        public static Matcher operator -(Matcher matcher)
-        {
-            if (matcher is TestMatcher)
-            {
-                return new ReverseMatcher(matcher);
-            }
-            else
-            {
-                return ReverseTest(matcher);
-            }
-        }
-
-        /// <summary>
-        /// Group.
-        /// </summary>
-        public static Matcher operator >>(Matcher matcher, int groupName) =>
-            CaptureGroup(groupName.ToString(), matcher);
 
         public static explicit operator Matcher(string text) =>
             String(text);

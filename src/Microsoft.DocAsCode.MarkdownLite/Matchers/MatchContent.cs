@@ -11,13 +11,13 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
     {
         public readonly string Text;
         public readonly int StartIndex;
-        public readonly ScanDirection Direction;
+        public readonly MatchDirection Direction;
         private readonly Dictionary<string, KeyValuePair<int, int>> _group;
 
-        public MatchContent(string text, int startIndex, ScanDirection direction = ScanDirection.Forward)
+        public MatchContent(string text, int startIndex, MatchDirection direction = MatchDirection.Forward)
             : this(text, startIndex, direction, new Dictionary<string, KeyValuePair<int, int>>()) { }
 
-        private MatchContent(string text, int startIndex, ScanDirection direction, Dictionary<string, KeyValuePair<int, int>> group)
+        private MatchContent(string text, int startIndex, MatchDirection direction, Dictionary<string, KeyValuePair<int, int>> group)
         {
             if (text == null)
             {
@@ -37,9 +37,9 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public char this[int offset] => Text[GetCharIndex(offset)];
 
-        public bool BeginOfString() => Direction == ScanDirection.Forward ? StartIndex == 0 : StartIndex == Text.Length;
+        public bool BeginOfString() => Direction == MatchDirection.Forward ? StartIndex == 0 : StartIndex == Text.Length;
 
-        public bool EndOfString() => Direction == ScanDirection.Forward ? StartIndex == Text.Length : StartIndex == 0;
+        public bool EndOfString() => Direction == MatchDirection.Forward ? StartIndex == Text.Length : StartIndex == 0;
 
         public bool TestLength(int length)
         {
@@ -49,11 +49,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public MatchContent Offset(int offset) => new MatchContent(Text, GetIndex(offset), Direction, _group);
 
-        public MatchContent Reverse() => new MatchContent(Text, StartIndex, Direction ^ ScanDirection.Backward, _group);
+        public MatchContent Reverse() => new MatchContent(Text, StartIndex, Direction ^ MatchDirection.Backward, _group);
 
         public void AddGroup(string name, int startIndex, int count)
         {
-            if (Direction == ScanDirection.Forward)
+            if (Direction == MatchDirection.Forward)
             {
                 _group[name] = new KeyValuePair<int, int>(startIndex, count);
             }
@@ -94,7 +94,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         private int GetCharIndex(int offset)
         {
             int result = GetIndexNoThrow(offset);
-            if (Direction == ScanDirection.Backward)
+            if (Direction == MatchDirection.Backward)
             {
                 result--;
             }
@@ -106,6 +106,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         }
 
         private int GetIndexNoThrow(int offset) =>
-            Direction == ScanDirection.Forward ? StartIndex + offset : StartIndex - offset;
+            Direction == MatchDirection.Forward ? StartIndex + offset : StartIndex - offset;
     }
 }
