@@ -11,16 +11,16 @@ namespace Microsoft.DocAsCode.MarkdownLite
     public class GfmFencesBlockRule : IMarkdownRule
     {
         private static readonly Matcher _FencesMatcher =
-            Matcher.WhiteSpaces +
+            Matcher.WhiteSpacesOrEmpty +
             (Matcher.Char('`').RepeatAtLeast(3) | Matcher.Char('~').RepeatAtLeast(3)).ToGroup("flag") +
-            Matcher.WhiteSpaces +
+            Matcher.WhiteSpacesOrEmpty +
             Matcher.AnyCharNotIn(' ', '\n').RepeatAtLeast(0).ToGroup("lang") +
-            Matcher.WhiteSpaces + Matcher.NewLine +
+            Matcher.WhiteSpacesOrEmpty + Matcher.NewLine +
             (
-                (Matcher.WhiteSpaces + Matcher.NewLine.RepeatAtLeast(1) + Matcher.WhiteSpaces + Matcher.BackReference("flag") + Matcher.WhiteSpaces + (Matcher.NewLine | Matcher.EndOfString)).ToNegativeTest() +
-                Matcher.AnyChar()
+                (Matcher.WhiteSpacesOrEmpty + Matcher.NewLine.RepeatAtLeast(1) + Matcher.WhiteSpacesOrEmpty + Matcher.BackReference("flag") + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine | Matcher.EndOfString)).ToNegativeTest() +
+                Matcher.AnyChar
             ).RepeatAtLeast(1).ToGroup("code") +
-            Matcher.WhiteSpaces + Matcher.NewLine.RepeatAtLeast(1) + Matcher.WhiteSpaces + Matcher.BackReference("flag") + Matcher.WhiteSpaces + (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
+            Matcher.WhiteSpacesOrEmpty + Matcher.NewLine.RepeatAtLeast(1) + Matcher.WhiteSpacesOrEmpty + Matcher.BackReference("flag") + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
 
         public virtual string Name => "Fences";
 

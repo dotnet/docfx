@@ -10,11 +10,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
     {
         public const int NotMatch = -1;
 
-        private static readonly AnyCharMatcher AnyCharMatcher = new AnyCharMatcher();
-        private static readonly EndOfStringMatcher EndOfStringMatcher = new EndOfStringMatcher();
-        private static readonly Matcher WhiteSpacesMatcher = Repeat(new CharMatcher(' '), 0);
-        private static readonly Matcher NewLineMatcher = new CharMatcher('\n');
-
         /// <summary>
         /// Match string in content.
         /// </summary>
@@ -27,7 +22,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return new CharMatcher(ch);
         }
 
-        public static Matcher AnyChar() => AnyCharMatcher;
+        public static Matcher AnyChar { get; } = new AnyCharMatcher();
 
         public static Matcher AnyCharIn(params char[] ch)
         {
@@ -68,9 +63,9 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return new AnyCharNotInMatcher(array);
         }
 
-        public static Matcher WhiteSpaces => WhiteSpacesMatcher;
+        public static Matcher WhiteSpacesOrEmpty { get; } = Repeat(new CharMatcher(' '), 0);
 
-        public static Matcher NewLine => NewLineMatcher;
+        public static Matcher NewLine { get; } = new CharMatcher('\n');
 
         public static Matcher String(string text)
         {
@@ -98,7 +93,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return new CaseInsensitiveStringMatcher(text);
         }
 
-        public static Matcher EndOfString => EndOfStringMatcher;
+        public static Matcher EndOfString { get; } = new EndOfStringMatcher();
 
         public static Matcher Maybe(Matcher matcher) =>
             Repeat(matcher, 0, 1);

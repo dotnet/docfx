@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         [Fact]
         public void TestAnyCharMatcher()
         {
-            var m = Matcher.AnyChar();
+            var m = Matcher.AnyChar;
             Assert.Equal(1, m.Match(new MatchContent("abc", 0, MatchDirection.Forward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 0, MatchDirection.Backward)));
             Assert.Equal(1, m.Match(new MatchContent("abc", 1, MatchDirection.Forward)));
