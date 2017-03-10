@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var collection = new List<FileModel>(models);
 
             // Separate items into different models if the PageViewModel contains more than one item
-            var treeMapping = new Dictionary<string, IEnumerable<TreeItem>>();
+            var treeMapping = new Dictionary<string, Tuple<FileAndType, IEnumerable<TreeItem>>>();
             foreach (var model in models)
             {
                 var result = SplitModelToOverloadLevel(model);
@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     }
                     else
                     {
-                        treeMapping.Add(result.Uid, result.TreeItems);
+                        treeMapping.Add(result.Uid, Tuple.Create(model.OriginalFileAndType, result.TreeItems));
                         collection.AddRange(result.Models);
                     }
                 }
@@ -67,7 +67,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                      ActionType = TreeItemActionType.AppendChild,
                      Key = item.Key,
                      TypeOfKey = TreeItemKeyType.TopicUid,
-                     RestructuredItems = item.Value.ToImmutableList(),
+                     RestructuredItems = item.Value.Item2.ToImmutableList(),
+                     SourceFiles = new FileAndType[] { item.Value.Item1 }.ToImmutableList(),
                  }).ToImmutableList();
 
             return collection;

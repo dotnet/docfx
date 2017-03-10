@@ -14,5 +14,10 @@ namespace Microsoft.DocAsCode.Plugins
         public TreeItemActionType ActionType { get; set; }
 
         public IImmutableList<TreeItem> RestructuredItems { get; set; }
+
+        /// <summary>
+        /// Specifies which files trigger the restructure
+        /// </summary>
+        public IImmutableList<FileAndType> SourceFiles { get; set; }
     }
 }
