@@ -132,9 +132,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     Logger.UnregisterListener(_increContext.CurrentInfo.MessageInfo.GetListener());
 
-                    TraceIntermediateInfo(outputFolder, manifest);
-
                     manifest.Shrink(_increContext.CurrentBaseDir);
+
+                    TraceIntermediateInfo(outputFolder, manifest);
 
                     // Update manifest items in current post processing info
                     _increContext.CurrentInfo.ManifestItems.AddRange(manifest.Files);
@@ -164,7 +164,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                                        select oi)
                     {
                         if (oi.LinkToPath != null &&
-                            oi.LinkToPath.StartsWith(_increContext.CurrentBaseDir))
+                            oi.LinkToPath.Length > _increContext.CurrentBaseDir.Length &&
+                            oi.LinkToPath.StartsWith(_increContext.CurrentBaseDir) &&
+                            (oi.LinkToPath[_increContext.CurrentBaseDir.Length] == '\\' ||
+                            oi.LinkToPath[_increContext.CurrentBaseDir.Length] == '/'))
                         {
                             var cachedFileName = oi.LinkToPath.Substring(_increContext.CurrentBaseDir.Length).TrimStart('\\', '/');
                             _increContext.CurrentInfo.PostProcessOutputs[oi.RelativePath] = cachedFileName;
