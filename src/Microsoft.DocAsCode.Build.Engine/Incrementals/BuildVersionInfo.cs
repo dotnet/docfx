@@ -55,6 +55,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// The file link for the build message file (type is <see cref="BuildMessage"/>).
         /// </summary>
         public string BuildMessageFile { get; set; }
+        /// <summary>
+        /// The file link for the TocRestructions file.
+        /// </summary>
+        public string TocRestructionsFile { get; set; }
 
         #region Deserialized content
         /// <summary>
@@ -92,6 +96,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// </summary>
         [JsonIgnore]
         public BuildMessage BuildMessage { get; private set; } = new BuildMessage();
+        /// <summary>
+        /// deserialized Toc Restructions.
+        /// </summary>
+        [JsonIgnore]
+        public IDictionary<string, List<TreeItemRestructure>> TocRestructions { get; private set; } = new OSPlatformSensitiveDictionary<List<TreeItemRestructure>>();
         #endregion
 
         public void SaveManifest(string baseDir)
@@ -109,6 +118,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             XRefSpecMap = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<List<XRefSpec>>>(Path.Combine(baseDir, XRefSpecMapFile));
             FileMap = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<FileMapItem>>(Path.Combine(baseDir, FileMapFile));
             BuildMessage = IncrementalUtility.LoadBuildMessage(Path.Combine(baseDir, BuildMessageFile));
+            TocRestructions = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<List<TreeItemRestructure>>>(Path.Combine(baseDir, TocRestructionsFile));
             foreach (var processor in Processors)
             {
                 processor.Load(baseDir);
@@ -123,6 +133,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, XRefSpecMapFile), XRefSpecMap);
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, FileMapFile), FileMap);
             IncrementalUtility.SaveBuildMessage(Path.Combine(baseDir, BuildMessageFile), BuildMessage);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, TocRestructionsFile), TocRestructions);
             foreach (var processor in Processors)
             {
                 processor.Save(baseDir);

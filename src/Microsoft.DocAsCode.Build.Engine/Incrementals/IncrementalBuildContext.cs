@@ -90,6 +90,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 XRefSpecMapFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 FileMapFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 BuildMessageFile = IncrementalUtility.CreateRandomFileName(baseDir),
+                TocRestructionsFile = IncrementalUtility.CreateRandomFileName(baseDir),
             };
             cb.Versions.Add(cbv);
             var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, buildInfoIncrementalStatus, parameters, cbv, lbv);

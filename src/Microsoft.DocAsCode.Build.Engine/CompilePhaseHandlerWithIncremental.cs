@@ -67,7 +67,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     hostService.RegisterDependencyType();
                 }
             }
-            ReloadDependency(hostServices);
+            var fileSet = new HashSet<string>(from h in hostServices
+                                              where !h.CanIncrementalBuild
+                                              from f in h.Models
+                                              select IncrementalUtility.GetDependencyKey(f.OriginalFileAndType),
+                                                  FilePathComparer.OSPlatformSensitiveStringComparer);
+            ReloadDependency(fileSet);
+            RegisterUnloadedTocRestructions(fileSet);
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
@@ -75,6 +81,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             ReportReference(hostServices);
             ReportDependency(hostServices);
+            UpdateTocRestructions(hostServices);
             CurrentBuildVersionInfo.Dependency.ResolveReference();
             foreach (var h in hostServices.Where(h => h.ShouldTraceIncrementalInfo))
             {
@@ -110,29 +117,49 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void ReloadDependency(IEnumerable<HostService> hostServices)
+        private void ReloadDependency(HashSet<string> nonIncreSet)
         {
             // restore dependency graph from last dependency graph for unchanged files
             using (new LoggerPhaseScope("ReportDependencyFromLastBuild", LogLevel.Diagnostic))
             {
-                var fileSet = new HashSet<string>(from h in hostServices
-                                                  where !h.CanIncrementalBuild
-                                                  from f in h.Models
-                                                  select IncrementalUtility.GetDependencyKey(f.OriginalFileAndType),
-                                                  FilePathComparer.OSPlatformSensitiveStringComparer);
                 var ldg = LastBuildVersionInfo?.Dependency;
                 if (ldg != null)
                 {
                     CurrentBuildVersionInfo.Dependency.ReportReference(from r in ldg.ReferenceReportedBys
                                                                        where !IncrementalContext.ChangeDict.ContainsKey(r) || IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
-                                                                       where !fileSet.Contains(r)
+                                                                       where !nonIncreSet.Contains(r)
                                                                        from reference in ldg.GetReferenceReportedBy(r)
                                                                        select reference);
                     CurrentBuildVersionInfo.Dependency.ReportDependency(from r in ldg.ReportedBys
                                                                         where !IncrementalContext.ChangeDict.ContainsKey(r) || IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
-                                                                        where !fileSet.Contains(r)
+                                                                        where !nonIncreSet.Contains(r)
                                                                         from i in ldg.GetDependencyReportedBy(r)
                                                                         select i);
+                }
+            }
+        }
+
+        // TO-DO: move to plugins
+        private void RegisterUnloadedTocRestructions(HashSet<string> nonIncreSet)
+        {
+            using (new LoggerPhaseScope("RegisterUnloadedTocRestructionsFromLastBuild", LogLevel.Diagnostic))
+            {
+                var restructions = LastBuildVersionInfo?.TocRestructions;
+                if (restructions == null)
+                {
+                    return;
+                }
+                foreach (var pair in restructions)
+                {
+                    var pathFromWorkingFolder = ((RelativePath)pair.Key).GetPathFromWorkingFolder();
+                    if (nonIncreSet.Contains(pathFromWorkingFolder))
+                    {
+                        continue;
+                    }
+                    if (!IncrementalContext.ChangeDict.ContainsKey(pathFromWorkingFolder) || IncrementalContext.ChangeDict[pathFromWorkingFolder] == ChangeKindWithDependency.None)
+                    {
+                        _inner.Restructions.AddRange(pair.Value);
+                    }
                 }
             }
         }
@@ -155,6 +182,23 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
             return files;
+        }
+
+        private void UpdateTocRestructions(IEnumerable<HostService> hostServices)
+        {
+            var dict = (from r in _inner.Restructions
+                        from srcFile in r.SourceFiles ?? Enumerable.Empty<FileAndType>()
+                       select new
+                       {
+                           File = srcFile.File,
+                           Item = r,
+                       } into item
+                       group item by item.File).ToDictionary(p => p.Key, p => p.Select(i => i.Item).ToList());
+            var restructions = CurrentBuildVersionInfo.TocRestructions;
+            foreach (var pair in dict)
+            {
+                restructions[pair.Key] = pair.Value;
+            }
         }
 
         private void ReportDependency(IEnumerable<HostService> hostServices)
