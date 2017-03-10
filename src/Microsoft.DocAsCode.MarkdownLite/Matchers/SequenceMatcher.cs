@@ -5,17 +5,17 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
     internal sealed class SequenceMatcher : Matcher
     {
-        private readonly Matcher[] _inner;
+        private readonly Matcher[] _inners;
 
-        public SequenceMatcher(Matcher[] inner)
+        public SequenceMatcher(Matcher[] inners)
         {
-            _inner = inner;
+            _inners = inners;
         }
 
         public override int Match(MatchContent content)
         {
             int charCount = 0;
-            foreach (var m in _inner)
+            foreach (var m in _inners)
             {
                 var c = m.Match(content.Offset(charCount));
                 if (c == NotMatch)
@@ -29,5 +29,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
             return charCount;
         }
+
+        internal Matcher[] Inners => _inners;
     }
 }

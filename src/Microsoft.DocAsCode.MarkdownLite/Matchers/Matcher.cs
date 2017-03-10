@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
     using System;
+    using System.Linq;
 
     public abstract class Matcher
     {
@@ -165,6 +166,15 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return new CaptureGroupMatcher(name, matcher);
         }
 
+        public static Matcher BackReference(string groupName)
+        {
+            if (groupName == null)
+            {
+                throw new ArgumentNullException(nameof(groupName));
+            }
+            return new BackReferenceMatcher(groupName);
+        }
+
         private static void ValidateMatcherArray(Matcher[] matchers)
         {
             if (matchers == null)
@@ -183,5 +193,95 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                 }
             }
         }
+
+        /// <summary>
+        /// Sequence.
+        /// </summary>
+        public static Matcher operator +(Matcher left, Matcher right)
+        {
+            if (left == null)
+            {
+                return right;
+            }
+            if (right == null)
+            {
+                return left;
+            }
+            var seqLeft = left as SequenceMatcher;
+            var seqRight = right as SequenceMatcher;
+            if (seqLeft != null)
+            {
+                if (seqRight != null)
+                {
+                    return Sequence(seqLeft.Inners.Concat(seqRight.Inners).ToArray());
+                }
+                else
+                {
+                    return Sequence(seqLeft.Inners.Concat(new[] { right }).ToArray());
+                }
+            }
+            else
+            {
+                if (seqRight != null)
+                {
+                    return Sequence(new[] { seqLeft }.Concat(seqRight.Inners).ToArray());
+                }
+                else
+                {
+                    return Sequence(left, right);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Any.
+        /// </summary>
+        public static Matcher operator |(Matcher left, Matcher right)
+        {
+            if (left == null)
+            {
+                return right;
+            }
+            if (right == null)
+            {
+                return left;
+            }
+            var anyLeft = left as AnyMatcher;
+            var anyRight = right as AnyMatcher;
+            if (anyLeft != null)
+            {
+                if (anyRight != null)
+                {
+                    return Any(anyLeft.Inners.Concat(anyRight.Inners).ToArray());
+                }
+                else
+                {
+                    return Any(anyLeft.Inners.Concat(new[] { right }).ToArray());
+                }
+            }
+            else
+            {
+                if (anyRight != null)
+                {
+                    return Any(new[] { anyLeft }.Concat(anyRight.Inners).ToArray());
+                }
+                else
+                {
+                    return Any(left, right);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Repeat.
+        /// </summary>
+        public static Matcher operator *(Matcher matcher, int count) =>
+            Repeat(matcher, count, count);
+
+        public static explicit operator Matcher(string text) =>
+            String(text);
+
+        public static explicit operator Matcher(char ch) =>
+            Char(ch);
     }
 }

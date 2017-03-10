@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
-    public enum ScanDirection : byte
+    public enum MatchDirection : byte
     {
         Forward,
         Backward,
