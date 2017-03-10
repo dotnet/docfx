@@ -43,6 +43,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                 config.PageRefreshFunctionName = PreviewConstants.PageRefreshFunctionName;
                 config.Port = PreviewConstants.Port;
                 config.References = new Dictionary<string, string>(PreviewConstants.References);
+                config.TocMetadataName = PreviewConstants.tocMetadataName;
                 return config;
             }
 
@@ -95,6 +96,12 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                     }
                 }
             }
+
+            if (string.IsNullOrEmpty(config.TocMetadataName))
+            {
+                config.TocMetadataName = PreviewConstants.tocMetadataName;
+            }
+
             return config;
         }
     }

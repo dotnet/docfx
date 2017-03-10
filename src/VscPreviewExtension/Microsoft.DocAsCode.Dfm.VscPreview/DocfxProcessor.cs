@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             string relativePath = Console.ReadLine();
             string isFirstTime = Console.ReadLine();
             string result;
-            if (!string.IsNullOrEmpty(isFirstTime) && isFirstTime.ToLower() == "true")
+            if (isFirstTime?.ToLower() == "true")
             {
                 string previewFilePath = new Uri(Console.ReadLine()).LocalPath;
                 string pageUpdateJsFilePath = new Uri(Console.ReadLine()).LocalPath;
@@ -40,11 +40,11 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
         {
             if (string.IsNullOrEmpty(baseDir))
             {
-                throw new DocfxPreviewException("Base directory error");
+                throw new DocfxPreviewException("Base directory should not be null or empty");
             }
             if (string.IsNullOrEmpty(relativePath))
             {
-                throw new DocfxPreviewException("Relative path error");
+                throw new DocfxPreviewException("Relative path should not be null or empty");
             }
             var markupResult = DfmMarkup(baseDir, relativePath, markdownContent);
             if (!isFirstTime)
@@ -54,11 +54,11 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
 
             if (string.IsNullOrEmpty(previewFilePath))
             {
-                throw new DocfxPreviewException("Preview file path error");
+                throw new DocfxPreviewException("Preview file path should not be null or empty");
             }
             if (string.IsNullOrEmpty(pageUpdateJsFilePath))
             {
-                throw new DocfxPreviewException("Page Update js file path error");
+                throw new DocfxPreviewException("Page Update js file path should not be null or empty");
             }
 
             PreviewJsonConfig config = PreviewCommand.ParsePreviewCommand(baseDir);
@@ -84,20 +84,15 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                              $"<meta name='markupTagType' content='{config.MarkupTagType}'>" +
                              $"<meta name='markupClassName' content='{config.MarkupClassName}'>";
 
-            // Append page update js
-            dom.Select("script")
-                .Last()
-                .After(
-                    addElements.Elements.First());
-
-            for (int i = 1; i < addElements.Length; i++)
+            for (int i = 0; i < addElements.Length; i++)
             {
-                dom.Select("meta")
+                string nodeName = addElements.Elements.ElementAt(i).NodeName;
+                dom.Select(nodeName)
                     .Last().
                     After(addElements.Elements.ElementAt(i));
             }
 
-            // Replace 'https' to 'http'
+            // Replace 'https' to 'http' for that VS Code don't support reference which use https protocol now
             // Replace reference relative path to absolute path
             foreach (var item in config.References)
             {
@@ -120,9 +115,12 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             // Replace toc relative path to absolute path
             dom.Select("meta").Each((i, e) =>
             {
+                // TODO: Implement breadcrumb
                 var metaName = e.GetAttribute("name");
                 if (metaName == config.TocMetadataName)
+                {
                     e.SetAttribute("content", GetAbsolutePath(targetHtmlPath, e.GetAttribute("content")));
+                }
             });
 
             File.WriteAllText(previewFilePath, dom.Render());
