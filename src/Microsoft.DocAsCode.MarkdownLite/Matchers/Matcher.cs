@@ -172,7 +172,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             {
                 throw new ArgumentNullException(nameof(groupName));
             }
-            return new BackRefereneceMatcher(groupName);
+            return new BackReferenceMatcher(groupName);
         }
 
         private static void ValidateMatcherArray(Matcher[] matchers)

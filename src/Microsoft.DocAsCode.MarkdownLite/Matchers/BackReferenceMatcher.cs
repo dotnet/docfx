@@ -3,11 +3,11 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
-    internal sealed class BackRefereneceMatcher : Matcher
+    internal sealed class BackReferenceMatcher : Matcher
     {
         private readonly string _groupName;
 
-        public BackRefereneceMatcher(string groupName)
+        public BackReferenceMatcher(string groupName)
         {
             _groupName = groupName;
         }
