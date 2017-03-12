@@ -141,7 +141,8 @@ Paragraph1
             WriteToFile("r/root.md", root);
             WriteToFile("r/b/linkAndRefRoot.md", linkAndRefRoot);
             var marked = DocfxFlavoredMarked.Markup(root, "r/root.md");
-            Assert.Equal(@"<p>Paragraph1</p>".Replace("\r\n", "\n"), marked);
+            var expected = @"<p>Paragraph1</p>" + "\n";
+            Assert.Equal(expected, marked);
         }
 
         [Fact]
@@ -184,7 +185,7 @@ Paragraph1
 <a href=""#anchor"" data-raw-source=""[](#anchor)""></a>
 <a href=""~/r/a/a.md"" data-raw-source=""[a](../a/a.md)"">a</a>
 <a href=""~/r/b/invalid.md"" data-raw-source=""[](invalid.md)""></a>
-<a href=""~/r/c/d/d.md#anchor"" data-raw-source=""[d](../c/d/d.md#anchor)"">d</a></p>".Replace("\r\n", "\n");
+<a href=""~/r/c/d/d.md#anchor"" data-raw-source=""[d](../c/d/d.md#anchor)"">d</a></p>".Replace("\r\n", "\n") + "\n";
             Assert.Equal(expected, marked);
             Assert.Equal(
                 new[] { "../b/token.md" },

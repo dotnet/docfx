@@ -797,7 +797,7 @@ exports.getOptions = function (){
                         "<p><a href=\"invalid-a.md\">link a</a>",
                         "<a href=\"../b/invalid-b.md\">link b</a></p>",
                         $"<p><a href=\"invalid-a.md\">link a</a>",
-                        "<a href=\"../b/invalid-b.md\">link b</a></p>"),
+                        "<a href=\"../b/invalid-b.md\">link b</a></p>", ""),
                     File.ReadAllText(conceptualOutputPath));
             }
         }
