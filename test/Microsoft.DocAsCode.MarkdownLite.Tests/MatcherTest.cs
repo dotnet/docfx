@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         [Fact]
         public void TestAnyCharMatcher()
         {
-            var m = Matcher.AnyChar();
+            var m = Matcher.AnyChar;
             Assert.Equal(1, m.Match(new MatchContent("abc", 0, MatchDirection.Forward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 0, MatchDirection.Backward)));
             Assert.Equal(1, m.Match(new MatchContent("abc", 1, MatchDirection.Forward)));
@@ -130,7 +130,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         [Fact]
         public void TestEndOfStringMatcher()
         {
-            var m = Matcher.EndOfString();
+            var m = Matcher.EndOfString;
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 0, MatchDirection.Forward)));
             Assert.Equal(0, m.Match(new MatchContent("abc", 0, MatchDirection.Backward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 1, MatchDirection.Forward)));
@@ -198,7 +198,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         [Fact]
         public void TestSequenceMatcher()
         {
-            var m = Matcher.Sequence(Matcher.Char('a'), Matcher.EndOfString());
+            var m = Matcher.Sequence(Matcher.Char('a'), Matcher.EndOfString);
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 0, MatchDirection.Forward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 0, MatchDirection.Backward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 1, MatchDirection.Forward)));
@@ -442,7 +442,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         [Fact]
         public void TestComplexMatcher()
         {
-            var m = ((Matcher)"abc").Repeat(1, 2).ToGroup("g") + ((Matcher)'\n' | Matcher.EndOfString()).ToTest();
+            var m = ((Matcher)"abc").Repeat(1, 2).ToGroup("g") + (Matcher.NewLine | Matcher.EndOfString).ToTest();
             {
                 var result = m.Match("abc");
                 Assert.NotNull(result);

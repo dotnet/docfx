@@ -11,23 +11,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
     public class MarkdownCodeBlockRule : IMarkdownRule
     {
         private static readonly Matcher _CodeMatcher =
-            Matcher.Repeat(
-                Matcher.Sequence(
-                    Matcher.Repeat(
-                        Matcher.Char(' '),
-                        4
-                    ),
-                    Matcher.Repeat(
-                        Matcher.AnyCharNotIn('\n'),
-                        1
-                    ),
-                    Matcher.Repeat(
-                        Matcher.Char('\n'),
-                        0
-                    )
-                ),
-                1
-            );
+            (
+                Matcher.Char(' ').RepeatAtLeast(4) +
+                Matcher.AnyCharNotIn('\n').RepeatAtLeast(1) +
+                Matcher.NewLine.RepeatAtLeast(0)
+            ).RepeatAtLeast(1);
 
         public virtual string Name => "Code";
 
