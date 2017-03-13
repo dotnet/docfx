@@ -15,12 +15,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             (Matcher.Char('`').RepeatAtLeast(3) | Matcher.Char('~').RepeatAtLeast(3)).ToGroup("flag") +
             Matcher.WhiteSpacesOrEmpty +
             Matcher.AnyCharNotIn(' ', '\n').RepeatAtLeast(0).ToGroup("lang") +
-            Matcher.WhiteSpacesOrEmpty + Matcher.NewLine +
+            Matcher.WhiteSpacesOrEmpty + Matcher.NewLine.RepeatAtLeast(1) +
             (
-                (Matcher.WhiteSpacesOrEmpty + Matcher.NewLine.RepeatAtLeast(1) + Matcher.WhiteSpacesOrEmpty + Matcher.BackReference("flag") + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine | Matcher.EndOfString)).ToNegativeTest() +
+                (Matcher.NewLine.RepeatAtLeast(1) + Matcher.WhiteSpacesOrEmpty + Matcher.BackReference("flag") + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine | Matcher.EndOfString)).ToNegativeTest() +
                 Matcher.AnyChar
-            ).RepeatAtLeast(1).ToGroup("code") +
-            Matcher.WhiteSpacesOrEmpty + Matcher.NewLine.RepeatAtLeast(1) + Matcher.WhiteSpacesOrEmpty + Matcher.BackReference("flag") + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
+            ).RepeatAtLeast(0).ToGroup("code") +
+            Matcher.NewLine.RepeatAtLeast(1) + Matcher.WhiteSpacesOrEmpty + Matcher.BackReference("flag") + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
 
         public virtual string Name => "Fences";
 
