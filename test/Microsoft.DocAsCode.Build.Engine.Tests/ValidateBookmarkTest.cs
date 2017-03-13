@@ -67,7 +67,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             }
             Logger.UnregisterListener(_listener);
             var logs = _listener.Items;
-            Console.WriteLine(string.Concat(logs.Select(l => Tuple.Create(l.Message, l.File))));
             Assert.Equal(3, logs.Count);
             var expected = new[]
             {
@@ -108,7 +107,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Assert
             var logs = _listener.Items;
-            Console.WriteLine(string.Concat(logs.Select(l => Tuple.Create(l.Message, l.File))));
             Assert.Equal(1, logs.Count);
             var expected = new[]
             {

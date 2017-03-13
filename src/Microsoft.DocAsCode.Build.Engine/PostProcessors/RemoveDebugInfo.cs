@@ -33,6 +33,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     attr.Remove();
                 }
+                foreach (var attr in node.ChildAttributes("nocheck"))
+                {
+                    attr.Remove();
+                }
             }
         }
     }
