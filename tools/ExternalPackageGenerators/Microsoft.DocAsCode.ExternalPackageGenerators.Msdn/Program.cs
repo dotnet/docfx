@@ -415,7 +415,20 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
             var shortId = await _shortIdCache.GetAsync(pair.CommentId);
             if (string.IsNullOrEmpty(shortId))
             {
-                return null;
+                if (pair.CommentId.StartsWith("F:"))
+                {
+                    // work around for enum field.
+                    shortId = await _shortIdCache.GetAsync(
+                        "T:" + pair.CommentId.Remove(pair.CommentId.LastIndexOf('.')).Substring(2));
+                    if (string.IsNullOrEmpty(shortId))
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
             }
             return new XRefSpec
             {
@@ -538,34 +551,7 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
         {
             string alias = GetAlias(commentId);
             string currentCommentId = commentId;
-            if (alias == null)
-            {
-                do
-                {
-                    var containingCommentId = GetContainingCommentId(currentCommentId);
-                    if (containingCommentId == null)
-                    {
-                        return string.Empty;
-                    }
-                    var dict = await _commentIdToShortIdMapCache.GetAsync(containingCommentId);
-                    string shortId;
-                    if (dict.TryGetValue(commentId, out shortId))
-                    {
-                        return shortId;
-                    }
-                    else
-                    {
-                        // maybe case not match.
-                        shortId = dict.FirstOrDefault(p => string.Equals(p.Key, commentId, StringComparison.OrdinalIgnoreCase)).Value;
-                        if (shortId != null)
-                        {
-                            return shortId;
-                        }
-                    }
-                    currentCommentId = containingCommentId;
-                } while (commentId[0] == 'T'); // handle nested type
-            }
-            else
+            if (alias != null)
             {
                 using (var response = await _client.GetWithRetryAsync(string.Format(MsdnUrlTemplate, alias, _msdnVersion), _semaphoreForHttp, RetryDelay))
                 {
@@ -586,6 +572,30 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                     }
                 }
             }
+            do
+            {
+                var containingCommentId = GetContainingCommentId(currentCommentId);
+                if (containingCommentId == null)
+                {
+                    return string.Empty;
+                }
+                var dict = await _commentIdToShortIdMapCache.GetAsync(containingCommentId);
+                string shortId;
+                if (dict.TryGetValue(commentId, out shortId))
+                {
+                    return shortId;
+                }
+                else
+                {
+                    // maybe case not match.
+                    shortId = dict.FirstOrDefault(p => string.Equals(p.Key, commentId, StringComparison.OrdinalIgnoreCase)).Value;
+                    if (shortId != null)
+                    {
+                        return shortId;
+                    }
+                }
+                currentCommentId = containingCommentId;
+            } while (commentId[0] == 'T'); // handle nested type
             return string.Empty;
         }
 
@@ -678,6 +688,19 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
 
         private IEnumerable<string> GetAllCommentIdCore(string file)
         {
+            if (".xml".Equals(Path.GetExtension(file), StringComparison.OrdinalIgnoreCase))
+            {
+                return GetAllCommentIdFromXml(file);
+            }
+            if (".txt".Equals(Path.GetExtension(file), StringComparison.OrdinalIgnoreCase))
+            {
+                return GetAllCommentIdFromText(file);
+            }
+            throw new NotSupportedException($"Unable to read comment id from file: {file}.");
+        }
+
+        private IEnumerable<string> GetAllCommentIdFromXml(string file)
+        {
             return from reader in
                        new Func<XmlReader>(() => XmlReader.Create(file))
                        .EmptyIfThrow()
@@ -687,6 +710,11 @@ namespace Microsoft.DocAsCode.ExternalPackageGenerators.Msdn
                    let commentId = apiReader.GetAttribute("name")
                    where commentId != null
                    select commentId;
+        }
+
+        private IEnumerable<string> GetAllCommentIdFromText(string file)
+        {
+            return File.ReadLines(file);
         }
 
         private async Task<StrongBox<bool?>> IsUrlOkAsync(string pair)
