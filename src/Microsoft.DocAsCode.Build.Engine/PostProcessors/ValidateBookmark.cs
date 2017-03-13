@@ -150,6 +150,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string TransformPath(string basePathFromRoot, RelativePath relativePath)
         {
+            if (relativePath == RelativePath.Empty)
+            {
+                return ((RelativePath)basePathFromRoot).RemoveWorkingFolder();
+            }
             return ((RelativePath)basePathFromRoot + relativePath).RemoveWorkingFolder();
         }
 
