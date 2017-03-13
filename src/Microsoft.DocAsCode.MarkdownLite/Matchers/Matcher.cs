@@ -235,6 +235,22 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         }
 
         /// <summary>
+        /// Sequence.
+        /// </summary>
+        public static Matcher operator +(Matcher left, char right)
+        {
+            return left + new CharMatcher(right);
+        }
+
+        /// <summary>
+        /// Sequence.
+        /// </summary>
+        public static Matcher operator +(Matcher left, string right)
+        {
+            return left + new StringMatcher(right);
+        }
+
+        /// <summary>
         /// Any.
         /// </summary>
         public static Matcher operator |(Matcher left, Matcher right)
