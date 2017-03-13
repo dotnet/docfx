@@ -3,15 +3,56 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System;
     using System.Text.RegularExpressions;
+
+    using Microsoft.DocAsCode.MarkdownLite.Matchers;
 
     public class MarkdownHeadingBlockRule : IMarkdownRule
     {
+        private static readonly Matcher _HeadingMatcher =
+            Matcher.WhiteSpacesOrEmpty +
+            Matcher.Char('#').Repeat(1, 6).ToGroup("level") +
+            Matcher.WhiteSpacesOrEmpty +
+            (
+                (Matcher.WhiteSpacesOrEmpty + Matcher.Char('#').RepeatAtLeast(0) + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine | Matcher.EndOfString)).ToNegativeTest() +
+                Matcher.AnyCharNotIn('\n')
+            ).RepeatAtLeast(1).ToGroup("text") +
+            Matcher.WhiteSpacesOrEmpty + Matcher.Char('#').RepeatAtLeast(0) + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
+
         public virtual string Name => "Heading";
 
+        [Obsolete("Please use HeadingMatcher.")]
         public virtual Regex Heading => Regexes.Block.Heading;
 
+        public virtual Matcher HeadingMatcher => _HeadingMatcher;
+
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
+        {
+            if (Heading != Regexes.Block.Heading)
+            {
+                return OldMatch(parser, context);
+            }
+            var match = context.Match(HeadingMatcher);
+            if (match?.Length > 0)
+            {
+                var sourceInfo = context.Consume(match.Length);
+                return new TwoPhaseBlockToken(
+                    this,
+                    parser.Context,
+                    sourceInfo,
+                    (p, t) => new MarkdownHeadingBlockToken(
+                        t.Rule,
+                        t.Context,
+                        p.TokenizeInline(t.SourceInfo.Copy(match["text"].GetValue())),
+                        Regex.Replace(match["text"].GetValue().ToLower(), @"[^\p{L}\p{N}\- ]+", "").Replace(' ', '-'),
+                        match["level"].Count,
+                        t.SourceInfo));
+            }
+            return null;
+        }
+
+        private IMarkdownToken OldMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             var match = Heading.Match(context.CurrentMarkdown);
             if (match.Length == 0)
