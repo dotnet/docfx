@@ -387,7 +387,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     _dependencyItems.Remove(item);
                     if (from != null && from == to)
                     {
-                        Logger.LogDiagnostic($"Dependency item is ignored because it is a self-dependency after the resolution: {JsonUtility.Serialize(item)}.");
+                        Logger.LogDiagnostic($"Dependency item is ignored because it is a self-dependency after the resolution: {item}.");
                     }
                     else
                     {
@@ -406,7 +406,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
             if (unresolved.Count > 0)
             {
-                Logger.LogVerbose($"Dependency graph failed to resolve {unresolved.Count} references: {string.Join(";", unresolved)}.");
+                Logger.LogVerbose($"Dependency graph failed to resolve {unresolved.Count} references: {string.Join(Environment.NewLine, unresolved)}.");
             }
         }
 
