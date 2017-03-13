@@ -406,7 +406,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
             if (unresolved.Count > 0)
             {
-                Logger.LogVerbose($"Dependency graph failed to resolve references: {string.Join(";", unresolved)}.");
+                Logger.LogVerbose($"Dependency graph failed to resolve {unresolved.Count} references: {string.Join(";", unresolved)}.");
             }
         }
 
