@@ -119,8 +119,8 @@ content);
                 var outputHtml = GetOutputFilePath(file);
                 Assert.True(File.Exists(outputHtml));
                 var content = File.ReadAllText(outputHtml);
-                Assert.Equal($@"<!-- BEGIN INCLUDE: Include content from &quot;{tokenFileName}&quot; --><p><a href=""a#b"">Main</a></p>
-<!--END INCLUDE -->".Replace("\r\n", "\n"),
+                Assert.Equal($@"<p><a href=""a#b"">Main</a></p>
+".Replace("\r\n", "\n"),
 content);
             }
         }

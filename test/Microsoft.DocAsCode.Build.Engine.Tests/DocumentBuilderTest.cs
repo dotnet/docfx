@@ -796,9 +796,8 @@ exports.getOptions = function (){
                         "\n",
                         "<p><a href=\"invalid-a.md\">link a</a>",
                         "<a href=\"../b/invalid-b.md\">link b</a></p>",
-                        $"<!-- BEGIN INCLUDE: Include content from &quot;{_inputFolder}/b/token.md&quot; --><p><a href=\"invalid-a.md\">link a</a>",
-                        "<a href=\"../b/invalid-b.md\">link b</a></p>",
-                        "<!--END INCLUDE -->"),
+                        $"<p><a href=\"invalid-a.md\">link a</a>",
+                        "<a href=\"../b/invalid-b.md\">link b</a></p>", ""),
                     File.ReadAllText(conceptualOutputPath));
             }
         }
