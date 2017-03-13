@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
     using System;
     using System.IO;
     using System.Linq;
+    using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
@@ -70,6 +71,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             if (string.IsNullOrEmpty(targetHtmlPath))
             {
                 // TODO: If the return value is not a complete Html, it should be contacted with an Html header and tail
+                DocfxRebuild();
                 return markupResult;
             }
 
@@ -87,8 +89,8 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             foreach (var addElement in addElements)
             {
                 dom.Select(addElement.NodeName)
-                    .Last().
-                    After(addElement);
+                    .Last()
+                    .After(addElement);
             }
 
             // Replace 'https' to 'http' for that VS Code don't support reference which use https protocol now
@@ -102,7 +104,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                         return;
                     if (path.StartsWith("https"))
                     {
-                        e.SetAttribute(item.Value, path.Replace("https", "http"));
+                        e.SetAttribute(item.Value, ReplaceFirstOccurrence(path, "https", "http"));
                         return;
                     }
 
@@ -124,6 +126,12 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
 
             File.WriteAllText(previewFilePath, dom.Render());
             return markupResult;
+        }
+
+        private static string ReplaceFirstOccurrence(string input, string oldValue, string newValue)
+        {
+            Regex rgx = new Regex(oldValue);
+            return rgx.Replace(input, newValue, 1);
         }
 
         private static string DfmMarkup(string baseDir, string filename, string markdownContent)
