@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -78,6 +79,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             // RFC 3986: relative-ref = relative-part [ "?" query ] [ "#" fragment ]
             _linksWithBookmark[outputFile] =
                 (from node in GetNodesWithAttribute(document, "href")
+                 let nocheck = node.GetAttributeValue("nocheck", null)
+                 where !"bookmark".Equals(nocheck, StringComparison.OrdinalIgnoreCase)
                  let link = node.GetAttributeValue("href", null)
                  let bookmark = UriUtility.GetFragment(link).TrimStart('#')
                  let decodedLink = RelativePath.TryParse(HttpUtility.UrlDecode(UriUtility.GetPath(link)))

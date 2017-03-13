@@ -79,6 +79,45 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);
         }
 
+        [Fact]
+        public void TestNoCheck()
+        {
+            // Arrange
+            Manifest manifest = new Manifest
+            {
+                SourceBasePath = _outputFolder,
+                Files =
+                {
+                    new ManifestItem { SourceRelativePath = "test.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "test.html" } } } },
+                    new ManifestItem { SourceRelativePath = "testNoCheckBookmark.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "testNoCheckBookmark.html" } } } },
+                }
+            };
+            File.WriteAllText(Path.Combine(_outputFolder, "test.html"), @"<a href='test.html#invalid'>test</a>");
+            File.WriteAllText(Path.Combine(_outputFolder, "testNoCheckBookmark.html"), @"<a href='test.html#invalid' nocheck='bookmark'>test</a>");
+
+            // Act
+            Logger.RegisterListener(_listener);
+            using (new LoggerPhaseScope("validate_bookmark"))
+            {
+                new HtmlPostProcessor
+                {
+                    Handlers = { new ValidateBookmark() }
+                }.Process(manifest, _outputFolder);
+            }
+            Logger.UnregisterListener(_listener);
+
+            // Assert
+            var logs = _listener.Items;
+            Console.WriteLine(string.Concat(logs.Select(l => Tuple.Create(l.Message, l.File))));
+            Assert.Equal(1, logs.Count);
+            var expected = new[]
+            {
+                Tuple.Create("Illegal link: `<a href=\"test.md#invalid\">test</a>` -- missing bookmark. The file test.md doesn't contain a bookmark named invalid.", "test.md"),
+            };
+            var actual = logs.Select(l => Tuple.Create(l.Message, l.File)).ToList();
+            Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);
+        }
+
         private class LoggerListener : ILoggerListener
         {
             public string Phase { get; }
