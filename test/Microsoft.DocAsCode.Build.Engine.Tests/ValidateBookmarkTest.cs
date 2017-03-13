@@ -61,14 +61,20 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             File.WriteAllText(Path.Combine(_outputFolder, "Dir/f.html"), @"<a href='#b1'>Test local link</a>");
 
             Logger.RegisterListener(_listener);
-            using (new LoggerPhaseScope("validate_bookmark"))
+            try
             {
-                new HtmlPostProcessor
+                using (new LoggerPhaseScope("validate_bookmark"))
                 {
-                    Handlers = { new ValidateBookmark() }
-                }.Process(manifest, _outputFolder);
+                    new HtmlPostProcessor
+                    {
+                        Handlers = {new ValidateBookmark()}
+                    }.Process(manifest, _outputFolder);
+                }
             }
-            Logger.UnregisterListener(_listener);
+            finally
+            {
+                Logger.UnregisterListener(_listener);
+            }
             var logs = _listener.Items;
             Assert.Equal(4, logs.Count);
             var expected = new[]
@@ -100,14 +106,20 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             // Act
             Logger.RegisterListener(_listener);
-            using (new LoggerPhaseScope("validate_bookmark"))
+            try
             {
-                new HtmlPostProcessor
+                using (new LoggerPhaseScope("validate_bookmark"))
                 {
-                    Handlers = { new ValidateBookmark() }
-                }.Process(manifest, _outputFolder);
+                    new HtmlPostProcessor
+                    {
+                        Handlers = {new ValidateBookmark()}
+                    }.Process(manifest, _outputFolder);
+                }
             }
-            Logger.UnregisterListener(_listener);
+            finally
+            {
+                Logger.UnregisterListener(_listener);
+            }
 
             // Assert
             var logs = _listener.Items;
