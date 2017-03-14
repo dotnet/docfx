@@ -52,6 +52,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return new AnyCharInRangeMatcher(start, end);
         }
 
+        public static Matcher AnyCharNot(char ch)
+        {
+            return new AnyCharNotMatcher(ch);
+        }
+
         public static Matcher AnyCharNotIn(params char[] ch)
         {
             if (ch == null)
@@ -62,6 +67,8 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             Array.Sort(array);
             return new AnyCharNotInMatcher(array);
         }
+
+        public static Matcher WhiteSpaces { get; } = Repeat(new CharMatcher(' '), 1);
 
         public static Matcher WhiteSpacesOrEmpty { get; } = Repeat(new CharMatcher(' '), 0);
 
@@ -93,6 +100,8 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return new CaseInsensitiveStringMatcher(text);
         }
 
+        public static Matcher AnyStringInSingleLine { get; } = AnyCharNot('\n').RepeatAtLeast(1);
+
         public static Matcher EndOfString { get; } = new EndOfStringMatcher();
 
         public static Matcher Maybe(Matcher matcher) =>
@@ -114,6 +123,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             if (minOccur > maxOccur)
             {
                 throw new ArgumentOutOfRangeException(nameof(maxOccur), "Should be greater than or equals minOccur.");
+            }
+            var repeatable = matcher as IRepeatable;
+            if (repeatable != null)
+            {
+                return repeatable.Repeat(minOccur, maxOccur);
             }
             return new RepeatMatcher(matcher, minOccur, maxOccur);
         }

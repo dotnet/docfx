@@ -41,15 +41,129 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public bool EndOfString() => Direction == MatchDirection.Forward ? StartIndex == Text.Length : StartIndex == 0;
 
-        public bool TestLength(int length)
-        {
-            int result = GetIndexNoThrow(length);
-            return result >= 0 && result <= Text.Length;
-        }
+        public int Length => Direction == MatchDirection.Forward ? Text.Length - StartIndex : StartIndex;
 
         public MatchContent Offset(int offset) => new MatchContent(Text, GetIndex(offset), Direction, _group);
 
         public MatchContent Reverse() => new MatchContent(Text, StartIndex, Direction ^ MatchDirection.Backward, _group);
+
+        public int CountUntil(char ch)
+        {
+            if (EndOfString())
+            {
+                return 0;
+            }
+            int index;
+            if (Direction == MatchDirection.Forward)
+            {
+                index = Text.IndexOf(ch, StartIndex);
+                if (index == -1)
+                {
+                    return Length;
+                }
+                return index - StartIndex;
+            }
+            else
+            {
+                index = Text.LastIndexOf(ch, StartIndex - 1);
+                if (index == -1)
+                {
+                    return Length;
+                }
+                return StartIndex - 1 - index;
+            }
+        }
+
+        public int CountUntilAny(char[] ch)
+        {
+            if (ch == null)
+            {
+                throw new ArgumentNullException(nameof(ch));
+            }
+            if (EndOfString())
+            {
+                return 0;
+            }
+            int index;
+            if (Direction == MatchDirection.Forward)
+            {
+                index = Text.IndexOfAny(ch, StartIndex);
+                if (index == -1)
+                {
+                    return Length;
+                }
+                return index - StartIndex;
+            }
+            else
+            {
+                index = Text.LastIndexOfAny(ch, StartIndex - 1);
+                if (index == -1)
+                {
+                    return Length;
+                }
+                return StartIndex - 1 - index;
+            }
+        }
+
+        public int CountWhile(char ch)
+        {
+            if (EndOfString())
+            {
+                return 0;
+            }
+            if (Direction == MatchDirection.Forward)
+            {
+                for (int i = StartIndex; i < Text.Length; i++)
+                {
+                    if (Text[i] != ch)
+                    {
+                        return i - StartIndex;
+                    }
+                }
+                return Length;
+            }
+            else
+            {
+                for (int i = StartIndex - 1; i >= 0; i--)
+                {
+                    if (Text[i] != ch)
+                    {
+                        return StartIndex - 1 - i;
+                    }
+                }
+                return Length;
+            }
+        }
+
+        public int CountWhileAny(char[] ch)
+        {
+            if (EndOfString())
+            {
+                return 0;
+            }
+            if (Direction == MatchDirection.Forward)
+            {
+                for (int i = StartIndex; i < Text.Length; i++)
+                {
+                    if (Array.IndexOf(ch, Text[i]) == -1)
+                    {
+                        return i - StartIndex;
+                    }
+                }
+                return Length;
+            }
+            else
+            {
+                for (int i = StartIndex - 1; i >= 0; i--)
+                {
+                    if (Array.IndexOf(ch, Text[i]) == -1)
+                    {
+                        return StartIndex - 1 - i;
+                    }
+                }
+                return Length;
+            }
+        }
 
         public void AddGroup(string name, int startIndex, int count)
         {

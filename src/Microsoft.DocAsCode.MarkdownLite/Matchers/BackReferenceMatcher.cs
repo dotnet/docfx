@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                 return NotMatch;
             }
             var text = g.Value.GetValue();
-            if (!content.TestLength(text.Length))
+            if (content.Length < text.Length)
             {
                 return NotMatch;
             }
