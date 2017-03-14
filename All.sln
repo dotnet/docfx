@@ -160,10 +160,6 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.M
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests", "test\Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests\Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests.xproj", "{958DF90F-0528-4C53-9AC2-E86C60971B7D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MarkdownPerf", "MarkdownPerf", "{4B0FD66B-BD12-45F9-971C-E1760F6E950C}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MarkdownPerf", "tools\MarkdownPerf\MarkdownPerf\MarkdownPerf.xproj", "{12E22D0E-0C37-44F5-A4B6-377D884AECDC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -540,14 +536,6 @@ Global
 		{958DF90F-0528-4C53-9AC2-E86C60971B7D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{958DF90F-0528-4C53-9AC2-E86C60971B7D}.Release|x86.ActiveCfg = Release|Any CPU
 		{958DF90F-0528-4C53-9AC2-E86C60971B7D}.Release|x86.Build.0 = Release|Any CPU
-		{12E22D0E-0C37-44F5-A4B6-377D884AECDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{12E22D0E-0C37-44F5-A4B6-377D884AECDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{12E22D0E-0C37-44F5-A4B6-377D884AECDC}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{12E22D0E-0C37-44F5-A4B6-377D884AECDC}.Debug|x86.Build.0 = Debug|Any CPU
-		{12E22D0E-0C37-44F5-A4B6-377D884AECDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{12E22D0E-0C37-44F5-A4B6-377D884AECDC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{12E22D0E-0C37-44F5-A4B6-377D884AECDC}.Release|x86.ActiveCfg = Release|Any CPU
-		{12E22D0E-0C37-44F5-A4B6-377D884AECDC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -623,7 +611,5 @@ Global
 		{8C50AA79-A360-43A3-BCC2-658633B099EC} = {1C46FAD9-9D99-4102-8E57-82AF959A4B40}
 		{BC834D62-F7F1-4227-9D5F-3DF45197B335} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 		{958DF90F-0528-4C53-9AC2-E86C60971B7D} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
-		{4B0FD66B-BD12-45F9-971C-E1760F6E950C} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
-		{12E22D0E-0C37-44F5-A4B6-377D884AECDC} = {4B0FD66B-BD12-45F9-971C-E1760F6E950C}
 	EndGlobalSection
 EndGlobal
