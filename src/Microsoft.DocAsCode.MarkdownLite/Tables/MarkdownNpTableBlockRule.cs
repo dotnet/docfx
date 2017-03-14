@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         private static readonly Matcher _NpTableMatcher =
             // @" *\|?(.+)\n"
-            Matcher.WhiteSpacesOrEmpty + Matcher.Char('|').Maybe() + Matcher.AnyCharNotIn('\n').RepeatAtLeast(1).ToGroup("header") + Matcher.NewLine +
+            Matcher.WhiteSpacesOrEmpty + Matcher.Char('|').Maybe() + Matcher.AnyCharNot('\n').RepeatAtLeast(1).ToGroup("header") + Matcher.NewLine +
             // @" *\|? *"
             Matcher.WhiteSpacesOrEmpty + Matcher.Char('|').Maybe() + Matcher.WhiteSpacesOrEmpty +
             // @"([-:]+ *\|[-| :]*)"
@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             // @"\n"
             Matcher.NewLine +
             // @"((?:.*\|.*(?:\n|$))*)"
-            (Matcher.AnyCharNotIn('\n', '|').RepeatAtLeast(0) + '|' + Matcher.AnyCharNotIn('\n').RepeatAtLeast(0) + (Matcher.NewLine | Matcher.EndOfString)).RepeatAtLeast(0).ToGroup("body") +
+            (Matcher.AnyCharNotIn('\n', '|').RepeatAtLeast(0) + '|' + Matcher.AnyCharNot('\n').RepeatAtLeast(0) + (Matcher.NewLine | Matcher.EndOfString)).RepeatAtLeast(0).ToGroup("body") +
             // @"\n*"
             Matcher.NewLine.RepeatAtLeast(0);
 

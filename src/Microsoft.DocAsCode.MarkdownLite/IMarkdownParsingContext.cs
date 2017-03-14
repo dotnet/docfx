@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public interface IMarkdownParsingContext
     {
+        string Markdown { get; }
         string CurrentMarkdown { get; }
         int LineNumber { get; }
         string File { get; }

@@ -25,6 +25,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
             _lineIndexer = CreateLineIndexer(sourceInfo.Markdown);
         }
 
+        public string Markdown => _markdown;
+
         public string CurrentMarkdown
         {
             get

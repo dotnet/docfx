@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
-    internal sealed class CharMatcher : Matcher
+    internal sealed class CharMatcher : Matcher, IRepeatable
     {
         private readonly char _ch;
 
@@ -19,6 +19,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                 return NotMatch;
             }
             return content.GetCurrentChar() == _ch ? 1 : NotMatch;
+        }
+
+        public Matcher Repeat(int minOccur, int maxOccur)
+        {
+            return new CharRepeatMatcher(_ch, minOccur, maxOccur);
         }
     }
 }

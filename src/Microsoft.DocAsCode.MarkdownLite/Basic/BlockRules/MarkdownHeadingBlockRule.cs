@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             Matcher.WhiteSpacesOrEmpty +
             (
                 (Matcher.WhiteSpacesOrEmpty + Matcher.Char('#').RepeatAtLeast(0) + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine | Matcher.EndOfString)).ToNegativeTest() +
-                Matcher.AnyCharNotIn('\n')
+                Matcher.AnyCharNot('\n')
             ).RepeatAtLeast(1).ToGroup("text") +
             Matcher.WhiteSpacesOrEmpty + Matcher.Char('#').RepeatAtLeast(0) + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
 

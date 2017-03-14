@@ -5,11 +5,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
     using System;
 
-    internal sealed class AnyCharInMatcher : Matcher, IRepeatable
+    internal sealed class AnyCharNotMatcher : Matcher, IRepeatable
     {
-        private readonly char[] _ch;
+        private readonly char _ch;
 
-        public AnyCharInMatcher(char[] ch)
+        public AnyCharNotMatcher(char ch)
         {
             _ch = ch;
         }
@@ -20,12 +20,12 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             {
                 return NotMatch;
             }
-            return Array.BinarySearch(_ch, content.GetCurrentChar()) >= 0 ? 1 : NotMatch;
+            return content.GetCurrentChar() != _ch ? 1 : NotMatch;
         }
 
         public Matcher Repeat(int minOccur, int maxOccur)
         {
-            return new AnyCharInRepeatMatcher(_ch, minOccur, maxOccur);
+            return new AnyCharNotRepeatMatcher(_ch, minOccur, maxOccur);
         }
     }
 }

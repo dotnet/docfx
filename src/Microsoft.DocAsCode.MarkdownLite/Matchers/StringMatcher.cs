@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public override int Match(MatchContent content)
         {
-            if (!content.TestLength(_text.Length))
+            if (content.Length < _text.Length)
             {
                 return NotMatch;
             }
