@@ -313,6 +313,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             _manifestWithContext.RunAll(m =>
             {
+                if (m.FileModel.Type == DocumentType.Resource)
+                {
+                    return;
+                }
                 using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
                 {
                     Logger.LogDiagnostic("Generating system metadata...");
