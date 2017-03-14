@@ -61,16 +61,21 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             File.WriteAllText(Path.Combine(_outputFolder, "Dir/f.html"), @"<a href='#b1'>Test local link</a>");
 
             Logger.RegisterListener(_listener);
-            using (new LoggerPhaseScope("validate_bookmark"))
+            try
             {
-                new HtmlPostProcessor
+                using (new LoggerPhaseScope("validate_bookmark"))
                 {
-                    Handlers = { new ValidateBookmark() }
-                }.Process(manifest, _outputFolder);
+                    new HtmlPostProcessor
+                    {
+                        Handlers = {new ValidateBookmark()}
+                    }.Process(manifest, _outputFolder);
+                }
             }
-            Logger.UnregisterListener(_listener);
+            finally
+            {
+                Logger.UnregisterListener(_listener);
+            }
             var logs = _listener.Items;
-            Console.WriteLine(string.Concat(logs.Select(l => Tuple.Create(l.Message, l.File))));
             Assert.Equal(4, logs.Count);
             var expected = new[]
             {
@@ -78,6 +83,50 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Tuple.Create(@"Illegal link: `[link in token file](a.md#b3)` -- missing bookmark. The file a.md doesn't contain a bookmark named b3.", "token.md"),
                 Tuple.Create(@"Illegal link: `<a href=""a.md#b4"">link without source info</a>` -- missing bookmark. The file a.md doesn't contain a bookmark named b4.", "b.md"),
                 Tuple.Create(@"Illegal link: `<a href=""f.md#b1"">Test local link</a>` -- missing bookmark. The file f.md doesn't contain a bookmark named b1.", "f.md"),
+            };
+            var actual = logs.Select(l => Tuple.Create(l.Message, l.File)).ToList();
+            Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);
+        }
+
+        [Fact]
+        public void TestNoCheck()
+        {
+            // Arrange
+            Manifest manifest = new Manifest
+            {
+                SourceBasePath = _outputFolder,
+                Files =
+                {
+                    new ManifestItem { SourceRelativePath = "test.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "test.html" } } } },
+                    new ManifestItem { SourceRelativePath = "testNoCheckBookmark.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "testNoCheckBookmark.html" } } } },
+                }
+            };
+            File.WriteAllText(Path.Combine(_outputFolder, "test.html"), @"<a href='test.html#invalid'>test</a>");
+            File.WriteAllText(Path.Combine(_outputFolder, "testNoCheckBookmark.html"), @"<a href='test.html#invalid' nocheck='bookmark'>test</a>");
+
+            // Act
+            Logger.RegisterListener(_listener);
+            try
+            {
+                using (new LoggerPhaseScope("validate_bookmark"))
+                {
+                    new HtmlPostProcessor
+                    {
+                        Handlers = {new ValidateBookmark()}
+                    }.Process(manifest, _outputFolder);
+                }
+            }
+            finally
+            {
+                Logger.UnregisterListener(_listener);
+            }
+
+            // Assert
+            var logs = _listener.Items;
+            Assert.Equal(1, logs.Count);
+            var expected = new[]
+            {
+                Tuple.Create("Illegal link: `<a href=\"test.md#invalid\">test</a>` -- missing bookmark. The file test.md doesn't contain a bookmark named invalid.", "test.md"),
             };
             var actual = logs.Select(l => Tuple.Create(l.Message, l.File)).ToList();
             Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);

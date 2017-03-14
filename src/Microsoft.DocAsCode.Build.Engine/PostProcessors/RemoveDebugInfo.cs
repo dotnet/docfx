@@ -9,6 +9,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public sealed class RemoveDebugInfo : HtmlDocumentHandler
     {
+        private readonly string[] DebugInfoAttributes =
+        {
+            "sourceFile",
+            "sourceStartLineNumber",
+            "sourceEndLineNumber",
+            "data-raw-source",
+            "nocheck",
+        };
+
         protected override void HandleCore(HtmlDocument document, ManifestItem manifestItem, string inputFile, string outputFile)
         {
             foreach (var node in document.DocumentNode.Descendants())
@@ -17,21 +26,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     continue;
                 }
-                foreach (var attr in node.ChildAttributes("sourceFile"))
+                foreach (var remove in DebugInfoAttributes)
                 {
-                    attr.Remove();
-                }
-                foreach (var attr in node.ChildAttributes("sourceStartLineNumber"))
-                {
-                    attr.Remove();
-                }
-                foreach (var attr in node.ChildAttributes("sourceEndLineNumber"))
-                {
-                    attr.Remove();
-                }
-                foreach (var attr in node.ChildAttributes("data-raw-source"))
-                {
-                    attr.Remove();
+                    foreach (var attr in node.ChildAttributes(remove))
+                    {
+                        attr.Remove();
+                    }
                 }
             }
         }
