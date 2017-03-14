@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.SubCommands
 {
+    using System;
     using System.IO;
 
     using CommandLine;
@@ -29,7 +30,10 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 configFile = DocAsCode.Constants.ConfigFileName;
             }
-            if (!File.Exists(configFile)) throw new FileNotFoundException($"Config file {configFile} does not exist!");
+            if (!File.Exists(Environment.ExpandEnvironmentVariables(configFile)))
+            {
+                throw new FileNotFoundException($"Config file {configFile} does not exist!");
+            }
 
             return JsonUtility.Deserialize<T>(configFile);
         }

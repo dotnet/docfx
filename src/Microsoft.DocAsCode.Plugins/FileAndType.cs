@@ -22,10 +22,6 @@ namespace Microsoft.DocAsCode.Plugins
             {
                 throw new ArgumentNullException(nameof(file));
             }
-            if (!Path.IsPathRooted(baseDir))
-            {
-                throw new ArgumentException("Base directory must be rooted.", nameof(baseDir));
-            }
             if (string.IsNullOrWhiteSpace(file))
             {
                 throw new ArgumentException("File cannot be empty or whitespace.", nameof(file));
@@ -46,7 +42,7 @@ namespace Microsoft.DocAsCode.Plugins
             BaseDir = baseDir.Replace('\\', '/');
             File = file.Replace('\\', '/');
             Type = type;
-            FullPath = Path.Combine(BaseDir, File).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            FullPath = Path.Combine(Environment.ExpandEnvironmentVariables(BaseDir), File).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
             SourceDir = sourceDir?.Replace('\\', '/') ?? string.Empty;
             DestinationDir = destinationDir?.Replace('\\', '/') ?? string.Empty;
             StringComparer = GetStringComparer();
