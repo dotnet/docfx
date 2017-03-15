@@ -164,7 +164,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     _postProcessorsManager.Process(generatedManifest, outputDirectory);
                 }
-                
+
                 using (new PerformanceScope("Dereference"))
                 {
                     generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
@@ -189,13 +189,20 @@ namespace Microsoft.DocAsCode.Build.Engine
                     if (_intermediateFolder != null && transformDocument)
                     {
                         _currentBuildInfo.Save(_intermediateFolder);
-                        var root = new DirectoryInfo(Environment.ExpandEnvironmentVariables(_intermediateFolder));
-                        foreach (var dir in root.GetDirectories())
+                        try
                         {
-                            if (dir.Name != _currentBuildInfo.DirectoryName)
+                            var root = new DirectoryInfo(Environment.ExpandEnvironmentVariables(_intermediateFolder));
+                            foreach (var dir in root.GetDirectories())
                             {
-                                dir.Delete(true);
+                                if (dir.Name != _currentBuildInfo.DirectoryName)
+                                {
+                                    dir.Delete(true);
+                                }
                             }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.LogVerbose($"Failed to delete obsolete cache files. Details: {ex.Message}.");
                         }
                     }
                 }
