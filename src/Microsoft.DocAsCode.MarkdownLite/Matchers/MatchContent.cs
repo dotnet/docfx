@@ -47,34 +47,35 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public MatchContent Reverse() => new MatchContent(Text, StartIndex, Direction ^ MatchDirection.Backward, _group);
 
-        public int CountUntil(char ch)
+        public int CountUntil(char ch, int maxCount)
         {
             if (EndOfString())
             {
                 return 0;
             }
             int index;
+            int length = Math.Min(maxCount, Length);
             if (Direction == MatchDirection.Forward)
             {
-                index = Text.IndexOf(ch, StartIndex);
+                index = Text.IndexOf(ch, StartIndex, length);
                 if (index == -1)
                 {
-                    return Length;
+                    return length;
                 }
                 return index - StartIndex;
             }
             else
             {
-                index = Text.LastIndexOf(ch, StartIndex - 1);
+                index = Text.LastIndexOf(ch, StartIndex - 1, length);
                 if (index == -1)
                 {
-                    return Length;
+                    return length;
                 }
                 return StartIndex - 1 - index;
             }
         }
 
-        public int CountUntilAny(char[] ch)
+        public int CountUntilAny(char[] ch, int maxCount)
         {
             if (ch == null)
             {
@@ -85,83 +86,86 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                 return 0;
             }
             int index;
+            int length = Math.Min(maxCount, Length);
             if (Direction == MatchDirection.Forward)
             {
-                index = Text.IndexOfAny(ch, StartIndex);
+                index = Text.IndexOfAny(ch, StartIndex, length);
                 if (index == -1)
                 {
-                    return Length;
+                    return length;
                 }
                 return index - StartIndex;
             }
             else
             {
-                index = Text.LastIndexOfAny(ch, StartIndex - 1);
+                index = Text.LastIndexOfAny(ch, StartIndex - 1, length);
                 if (index == -1)
                 {
-                    return Length;
+                    return length;
                 }
                 return StartIndex - 1 - index;
             }
         }
 
-        public int CountWhile(char ch)
+        public int CountWhile(char ch, int maxCount)
         {
             if (EndOfString())
             {
                 return 0;
             }
+            var length = Math.Min(maxCount, Length);
             if (Direction == MatchDirection.Forward)
             {
-                for (int i = StartIndex; i < Text.Length; i++)
+                for (int i = 0; i < length; i++)
                 {
-                    if (Text[i] != ch)
+                    if (Text[StartIndex + i] != ch)
                     {
-                        return i - StartIndex;
+                        return i;
                     }
                 }
-                return Length;
+                return length;
             }
             else
             {
-                for (int i = StartIndex - 1; i >= 0; i--)
+                for (int i = 0; i < length; i++)
                 {
-                    if (Text[i] != ch)
+                    if (Text[StartIndex - 1 - i] != ch)
                     {
-                        return StartIndex - 1 - i;
+                        return i;
                     }
                 }
-                return Length;
+                return length;
             }
         }
 
-        public int CountWhileAny(char[] ch)
+        public int CountWhileAny(char[] ch, int maxCount)
         {
             if (EndOfString())
             {
                 return 0;
             }
+            var length = Math.Min(maxCount, Length);
             if (Direction == MatchDirection.Forward)
             {
-                for (int i = StartIndex; i < Text.Length; i++)
+                for (int i = 0; i < length; i++)
                 {
-                    if (Array.IndexOf(ch, Text[i]) == -1)
+                    if (Array.IndexOf(ch, Text[StartIndex + i]) == -1)
                     {
-                        return i - StartIndex;
+                        return i;
                     }
                 }
-                return Length;
+                return length;
             }
             else
             {
-                for (int i = StartIndex - 1; i >= 0; i--)
+                for (int i = 0; i < length; i++)
                 {
-                    if (Array.IndexOf(ch, Text[i]) == -1)
+                    if (Array.IndexOf(ch, Text[StartIndex - 1 - i]) == -1)
                     {
-                        return StartIndex - 1 - i;
+                        return i;
                     }
                 }
-                return Length;
+                return length;
             }
         }
 
