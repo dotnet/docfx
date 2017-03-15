@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.13.1)
+﻿Version Notes (Current Version: v2.13.2)
 =======================================
+v2.13.1
+-----------
+1.  fix null reference exception when content is empty
+
 v2.13.1
 -----------
 1.  fix the perf issue introduced from reporting toc metadata dependency.
