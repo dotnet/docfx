@@ -187,6 +187,8 @@ code
 <li><p>X</p>
 <blockquote>
 <p>a</p>
+</blockquote>
+<blockquote>
 <p>b</p>
 </blockquote>
 </li>
