@@ -187,6 +187,8 @@ code
 <li><p>X</p>
 <blockquote>
 <p>a</p>
+</blockquote>
+<blockquote>
 <p>b</p>
 </blockquote>
 </li>
@@ -572,6 +574,30 @@ aaa",
 [a]: targetfile.md
 [b]: myimage.png",
             @"<p><a href=""targetfile.md"" data-raw-source=""[![image][b]Some description][a]""><img src=""myimage.png"" alt=""image"">Some description</a></p>
+")]
+        [InlineData(
+            @"> a
+>
+> b
+
+>
+c
+
+>
+> d
+>
+e",
+            @"<blockquote>
+<p>a</p>
+<p>b</p>
+</blockquote>
+<blockquote>
+</blockquote>
+<p>c</p>
+<blockquote>
+<p>d</p>
+</blockquote>
+<p>e</p>
 ")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)

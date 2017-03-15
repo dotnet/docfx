@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual string Name => "Hr";
 
-        [Obsolete("Please use LHeadingMatcher.")]
+        [Obsolete("Please use HrMatcher.")]
         public virtual Regex Hr => Regexes.Block.Hr;
 
         public virtual Matcher HrMatcher => _HrMatcher;
