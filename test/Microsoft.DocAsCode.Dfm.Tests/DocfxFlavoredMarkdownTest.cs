@@ -554,7 +554,7 @@ This is also note<br/>This is also note with br</p>
         [Theory]
         [Trait("Related", "DfmMarkdown")]
         [InlineData(@"> [!div class=""tabbedCodeSnippets"" data-resources=""OutlookServices.Calendar""]
-
+>
 >```cs-i
     var outlookClient = await CreateOutlookClientAsync(""Calendar"");
     var events = await outlookClient.Me.Events.Take(10).ExecuteAsync();
@@ -563,7 +563,7 @@ This is also note<br/>This is also note with br</p>
                 System.Diagnostics.Debug.WriteLine(""Event '{0}'."", calendarEvent.Subject);
             }
 ```
-
+> 
 >```javascript-i
 outlookClient.me.events.getEvents().fetch().then(function(result) {
         result.currentPage.forEach(function(event) {
