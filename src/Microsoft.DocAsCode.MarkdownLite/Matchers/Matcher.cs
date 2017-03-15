@@ -102,6 +102,8 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public static Matcher AnyStringInSingleLine { get; } = AnyCharNot('\n').RepeatAtLeast(1);
 
+        public static Matcher AnyStringInSingleLineOrEmpty { get; } = AnyCharNot('\n').RepeatAtLeast(0);
+
         public static Matcher EndOfString { get; } = new EndOfStringMatcher();
 
         public static Matcher Maybe(Matcher matcher) =>

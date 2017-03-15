@@ -11,23 +11,31 @@ namespace Microsoft.DocAsCode.MarkdownLite
     public class MarkdownBlockquoteBlockRule : IMarkdownRule
     {
         private static readonly Matcher _BlockquoteMatcher =
-            // @" *>[^\n]+"
-            Matcher.WhiteSpacesOrEmpty + '>' + Matcher.AnyStringInSingleLine +
-            // @" (?:\n[^\n]+)*
             (
-                Matcher.NewLine +
-                // expect following:
+                // @" *> *\n"
+                (Matcher.WhiteSpacesOrEmpty + '>' + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine | Matcher.EndOfString)) |
                 (
-                    // heading
-                    (Matcher.Char('#').Repeat(1, 6) + Matcher.WhiteSpaces + Matcher.AnyStringInSingleLine + '\n') |
-                    // hr
-                    ((Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('-', '*', '_')).RepeatAtLeast(3) + Matcher.WhiteSpacesOrEmpty + '\n') |
-                    // list
-                    (Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('-', '*') + Matcher.WhiteSpaces + Matcher.AnyStringInSingleLine + '\n') |
-                    (Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharInRange('0', '9').RepeatAtLeast(1) + '.' + Matcher.WhiteSpaces + Matcher.AnyStringInSingleLine + '\n')
-                ).ToNegativeTest() +
-                Matcher.AnyStringInSingleLine
-            ).RepeatAtLeast(0) +
+                    // @" *>[^\n]+(\n[^\n]+)*"
+                    Matcher.WhiteSpacesOrEmpty + '>' + Matcher.AnyStringInSingleLine +
+                    (
+                        Matcher.NewLine +
+                        // expect following:
+                        (
+                            // heading
+                            (Matcher.Char('#').Repeat(1, 6) + Matcher.WhiteSpaces + Matcher.AnyStringInSingleLine + '\n') |
+                            // hr
+                            ((Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('-', '*', '_')).RepeatAtLeast(3) + Matcher.WhiteSpacesOrEmpty + '\n') |
+                            // list
+                            (Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('-', '*') + Matcher.WhiteSpaces + Matcher.AnyStringInSingleLine + '\n') |
+                            (Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharInRange('0', '9').RepeatAtLeast(1) + '.' + Matcher.WhiteSpaces + Matcher.AnyStringInSingleLine + '\n') |
+                            // @" *>"
+                            (Matcher.WhiteSpacesOrEmpty + '>')
+                        ).ToNegativeTest() +
+                        Matcher.AnyStringInSingleLine
+                    ).RepeatAtLeast(0) +
+                    (Matcher.NewLine | Matcher.EndOfString)
+                )
+            ).RepeatAtLeast(1) +
             Matcher.NewLine.RepeatAtLeast(0);
 
         public virtual string Name => "Blockquote";
