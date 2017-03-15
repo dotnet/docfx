@@ -189,9 +189,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     if (_intermediateFolder != null && transformDocument)
                     {
                         _currentBuildInfo.Save(_intermediateFolder);
-                        if (_lastBuildInfo != null)
+                        var root = new DirectoryInfo(Environment.ExpandEnvironmentVariables(_intermediateFolder));
+                        foreach (var dir in root.GetDirectories())
                         {
-                            Directory.Delete(Path.Combine(Environment.ExpandEnvironmentVariables(_intermediateFolder), _lastBuildInfo.DirectoryName), true);
+                            if (dir.Name != _currentBuildInfo.DirectoryName)
+                            {
+                                dir.Delete(true);
+                            }
                         }
                     }
                 }
