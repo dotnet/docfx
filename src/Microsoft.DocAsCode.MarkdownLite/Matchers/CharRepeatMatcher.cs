@@ -18,14 +18,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public override int Match(MatchContent content)
         {
-            var count = content.CountWhile(_ch);
+            var count = content.CountWhile(_ch, _maxOccur);
             if (count < _minOccur)
             {
                 return NotMatch;
-            }
-            if (count > _maxOccur)
-            {
-                return _maxOccur;
             }
             return count;
         }
