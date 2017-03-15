@@ -35,26 +35,51 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
             if (config == null)
             {
                 config = new PreviewJsonConfig();
-                config.MarkupResultLocation = PreviewConstants.MarkupResultLocation;
+                config.BuildSourceFolder = PreviewConstants.BuildSourceFolder;
+                config.BuildOutputSubFolder = PreviewConstants.BuildOutputSubfolder;
+                config.MarkupTagType = PreviewConstants.MarkupTagType;
+                config.MarkupClassName = PreviewConstants.MarkupClassName;
+                config.OutputFolder = PreviewConstants.OutputFolder;
+                config.PageRefreshFunctionName = PreviewConstants.PageRefreshFunctionName;
                 config.Port = PreviewConstants.Port;
-                config.OutputFolder = PreviewConstants.OutPutFolder;
                 config.References = new Dictionary<string, string>(PreviewConstants.References);
+                config.TocMetadataName = PreviewConstants.tocMetadataName;
                 return config;
             }
 
-            if (string.IsNullOrEmpty(config.MarkupResultLocation))
+            if (string.IsNullOrEmpty(config.BuildSourceFolder))
             {
-                config.MarkupResultLocation = PreviewConstants.MarkupResultLocation;
+                config.BuildSourceFolder = PreviewConstants.BuildSourceFolder;
+            }
+
+            if (string.IsNullOrEmpty(config.BuildOutputSubFolder))
+            {
+                config.BuildOutputSubFolder = PreviewConstants.BuildOutputSubfolder;
+            }
+
+            if (string.IsNullOrEmpty(config.MarkupTagType))
+            {
+                config.MarkupTagType = PreviewConstants.MarkupTagType;
+            }
+
+            if (string.IsNullOrEmpty(config.MarkupClassName))
+            {
+                config.MarkupClassName = PreviewConstants.MarkupClassName;
+            }
+
+            if (string.IsNullOrEmpty(config.OutputFolder))
+            {
+                config.OutputFolder = PreviewConstants.OutputFolder;
+            }
+
+            if (string.IsNullOrEmpty(config.PageRefreshFunctionName))
+            {
+                config.PageRefreshFunctionName = PreviewConstants.PageRefreshFunctionName;
             }
 
             if (string.IsNullOrEmpty(config.Port))
             {
                 config.Port = PreviewConstants.Port;
-            }
-
-            if (string.IsNullOrEmpty(config.OutputFolder))
-            {
-                config.OutputFolder = PreviewConstants.OutPutFolder;
             }
 
             if (config.References == null)
@@ -71,6 +96,12 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                     }
                 }
             }
+
+            if (string.IsNullOrEmpty(config.TocMetadataName))
+            {
+                config.TocMetadataName = PreviewConstants.tocMetadataName;
+            }
+
             return config;
         }
     }

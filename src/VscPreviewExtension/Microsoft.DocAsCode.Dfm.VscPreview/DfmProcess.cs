@@ -21,9 +21,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                         case "exit":
                             return;
                         case "docfxpreview":
-                            string baseDir = Console.ReadLine();
-                            string relativePath = Console.ReadLine();
-                            result = DocfxProcessor.DocfxProcess(baseDir, relativePath, GetMarkdownContent());
+                            result = DocfxProcessor.DocfxProcess(GetMarkdownContent());
                             SendWithEndCode(result);
                             break;
                         case "tokentreepreview":
