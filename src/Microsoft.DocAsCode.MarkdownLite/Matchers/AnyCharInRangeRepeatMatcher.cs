@@ -3,30 +3,29 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
-    internal sealed class AnyCharInRangeMatcher : Matcher, IRepeatable
+    internal sealed class AnyCharInRangeRepeatMatcher : Matcher
     {
         private readonly char _start;
         private readonly char _end;
+        private readonly int _minOccur;
+        private readonly int _maxOccur;
 
-        public AnyCharInRangeMatcher(char start, char end)
+        public AnyCharInRangeRepeatMatcher(char start, char end, int minOccur, int maxOccur)
         {
             _start = start;
             _end = end;
+            _minOccur = minOccur;
+            _maxOccur = maxOccur;
         }
 
         public override int Match(MatchContent content)
         {
-            if (content.EndOfString())
+            var count = content.CountWhileInRange(_start, _end, _maxOccur);
+            if (count < _minOccur)
             {
                 return NotMatch;
             }
-            var ch = content.GetCurrentChar();
-            return ch >= _start && ch <= _end ? 1 : NotMatch;
-        }
-
-        public Matcher Repeat(int minOccur, int maxOccur)
-        {
-            return new AnyCharInRangeRepeatMatcher(_start, _end, minOccur, maxOccur);
+            return count;
         }
     }
 }
