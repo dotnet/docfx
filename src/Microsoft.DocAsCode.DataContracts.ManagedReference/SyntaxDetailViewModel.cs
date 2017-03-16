@@ -5,6 +5,11 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
+
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.YamlSerialization;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
@@ -12,17 +17,59 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
     [Serializable]
     public class SyntaxDetailViewModel
     {
-        [YamlMember(Alias = "content")]
-        [JsonProperty("content")]
+        [YamlMember(Alias = Constants.PropertyName.Content)]
+        [JsonProperty(Constants.PropertyName.Content)]
         public string Content { get; set; }
 
-        [YamlMember(Alias = "content.csharp")]
-        [JsonProperty("content.csharp")]
-        public string ContentForCSharp { get; set; }
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Content)]
+        [JsonIgnore]
+        public SortedList<string, string> Contents { get; set; } = new SortedList<string, string>();
 
-        [YamlMember(Alias = "content.vb")]
-        [JsonProperty("content.vb")]
-        public string ContentForVB { get; set; }
+        [YamlIgnore]
+        [JsonIgnore]
+        public string ContentForCSharp
+        {
+            get
+            {
+                string result;
+                Contents.TryGetValue("csharp", out result);
+                return result;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    Contents.Remove("csharp");
+                }
+                else
+                {
+                    Contents["csharp"] = value;
+                }
+            }
+        }
+
+        [YamlIgnore]
+        [JsonIgnore]
+        public string ContentForVB
+        {
+            get
+            {
+                string result;
+                Contents.TryGetValue("vb", out result);
+                return result;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    Contents.Remove("vb");
+                }
+                else
+                {
+                    Contents["vb"] = value;
+                }
+            }
+        }
 
         [YamlMember(Alias = "parameters")]
         [JsonProperty("parameters")]
@@ -35,5 +82,16 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [YamlMember(Alias = "return")]
         [JsonProperty("return")]
         public ApiParameter Return { get; set; }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [YamlIgnore]
+        [JsonExtensionData]
+        [UniqueIdentityReferenceIgnore]
+        [MarkdownContentIgnore]
+        public CompositeDictionary ExtensionData =>
+            CompositeDictionary
+                .CreateBuilder()
+                .Add(Constants.ExtensionMemberPrefix.Content, Contents, JTokenConverter.Convert<string>)
+                .Create();
     }
 }
