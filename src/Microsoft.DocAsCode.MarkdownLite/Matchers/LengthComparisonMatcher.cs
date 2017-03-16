@@ -36,11 +36,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                     return count == g.Value.Count ? count : NotMatch;
                 case LengthComparison.LessThan:
                     return count < g.Value.Count ? count : NotMatch;
-                case LengthComparison.GreatThan:
+                case LengthComparison.GreaterThan:
                     return count > g.Value.Count ? count : NotMatch;
                 case LengthComparison.LessThanOrEquals:
                     return count <= g.Value.Count ? count : NotMatch;
-                case LengthComparison.GreatThanOrEquals:
+                case LengthComparison.GreaterThanOrEquals:
                     return count >= g.Value.Count ? count : NotMatch;
                 default:
                     throw new InvalidOperationException();

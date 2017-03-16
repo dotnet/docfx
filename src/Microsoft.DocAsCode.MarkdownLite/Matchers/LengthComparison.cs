@@ -7,8 +7,8 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
     {
         Equals,
         LessThan,
-        GreatThan,
+        GreaterThan,
         LessThanOrEquals,
-        GreatThanOrEquals,
+        GreaterThanOrEquals,
     }
 }

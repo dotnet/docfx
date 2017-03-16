@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                         (
                             Matcher.NewLine.RepeatAtLeast(1) +
                             (
-                                ((Matcher.AnyCharInRange('0', '9').RepeatAtLeast(1) + '.' + ' ') | Matcher.WhiteSpaces).ToTest() +
+                                ((Matcher.AnyCharInRange('0', '9').RepeatAtLeast(1) + '.' + Matcher.WhiteSpace) | Matcher.WhiteSpaces).ToTest() +
                                 Matcher.AnyStringInSingleLine
                             )
                         )
