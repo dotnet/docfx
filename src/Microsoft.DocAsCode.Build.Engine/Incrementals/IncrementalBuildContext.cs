@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Security.Cryptography;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -308,11 +309,16 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     FileAttributeItem item;
                     if (!TryGetFileAttributeFromLast(key, out item))
                     {
+                        string md5;
+                        using (var fs = File.OpenRead(f.FullPath))
+                        {
+                            md5 = Convert.ToBase64String(MD5.Create().ComputeHash(fs));
+                        }
                         fileAttributes[key] = new FileAttributeItem
                         {
                             File = key,
                             LastModifiedTime = File.GetLastWriteTimeUtc(f.FullPath),
-                            MD5 = StringExtension.GetMd5String(File.ReadAllText(f.FullPath)),
+                            MD5 = md5,
                             IsFromSource = f.IsFromSource,
                         };
                     }
