@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.DocAsCode.YamlSerialization</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.DocAsCode.YamlSerialization.YamlDeserializer">
+            <summary>
+            A fa�ade for the YAML library with the standard configuration.
+            </summary>
+        </member>
+        <member name="M:Microsoft.DocAsCode.YamlSerialization.YamlDeserializer.Deserialize(YamlDotNet.Core.EventReader,System.Type,YamlDotNet.Serialization.IValueDeserializer)">
+            <summary>
+            Deserializes an object of the specified type.
+            </summary>
+            <param name="reader">The <see cref="T:YamlDotNet.Core.EventReader" /> where to deserialize the object.</param>
+            <param name="type">The static type of the object to deserialize.</param>
+            <returns>Returns the deserialized object.</returns>
+        </member>
+        <member name="T:Microsoft.DocAsCode.YamlSerialization.Helpers.ArrayDictionary`2">
+            <summary>
+            Array based key-value cache.
+            *Optimized for small size.*
+            All method is thread safe.
+            </summary>
+        </member>
+        <member name="M:Microsoft.DocAsCode.YamlSerialization.Helpers.ReflectionExtensions.HasDefaultConstructor(System.Type)">
+            <summary>
+            Determines whether the specified type has a default constructor.
+            </summary>
+            <param name="type">The type.</param>
+            <returns>
+                <c>true</c> if the type has a default constructor; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.FullObjectGraphTraversalStrategy">
+            <summary>
+            An implementation of <see cref="T:YamlDotNet.Serialization.IObjectGraphTraversalStrategy"/> that traverses
+            readable properties, collections and dictionaries.
+            </summary>
+        </member>
+        <member name="T:Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies.RoundtripObjectGraphTraversalStrategy">
+            <summary>
+            An implementation of <see cref="T:YamlDotNet.Serialization.IObjectGraphTraversalStrategy"/> that traverses
+            properties that are read/write, collections and dictionaries, while ensuring that
+            the graph can be regenerated from the resulting document.
+            </summary>
+        </member>
+        <member name="T:Microsoft.DocAsCode.YamlSerialization.TypeInspectors.ExtensibleYamlAttributesTypeInspector">
+            <summary>
+            Applies the <see cref="T:YamlDotNet.Serialization.YamlMemberAttribute"/> to another <see cref="T:YamlDotNet.Serialization.ITypeInspector"/>.
+            </summary>
+        </member>
+    </members>
+</doc>
