@@ -118,7 +118,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                 for (int i = 0; i < length; i++)
                 {
                     var ch = Text[StartIndex + i];
-                    if (start >= ch && ch <= end)
+                    if (start <= ch && ch <= end)
                     {
                         return i;
                     }
@@ -130,7 +130,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                 for (int i = 0; i < length; i++)
                 {
                     var ch = Text[StartIndex - 1 - i];
-                    if (start >= ch && ch <= end)
+                    if (start <= ch && ch <= end)
                     {
                         return i;
                     }
@@ -213,7 +213,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                 for (int i = 0; i < length; i++)
                 {
                     var ch = Text[StartIndex + i];
-                    if (start < ch && ch > end)
+                    if (ch < start || end < ch)
                     {
                         return i;
                     }
@@ -225,7 +225,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                 for (int i = 0; i < length; i++)
                 {
                     var ch = Text[StartIndex - 1 - i];
-                    if (start < ch && ch > end)
+                    if (ch < start || end < ch)
                     {
                         return i;
                     }
