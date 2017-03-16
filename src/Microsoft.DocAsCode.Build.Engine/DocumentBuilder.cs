@@ -44,7 +44,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             string templateHash,
             string intermediateFolder = null,
             string commitFromSHA = null,
-            string commitToSHA = null)
+            string commitToSHA = null,
+            bool skipBookmarkValidation = false)
         {
             Logger.LogVerbose("Loading plug-in...");
             using (new LoggerPhaseScope("ImportPlugins", LogLevel.Verbose))
@@ -69,7 +70,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             _intermediateFolder = intermediateFolder;
             _lastBuildInfo = BuildInfo.Load(_intermediateFolder);
-            _postProcessorsManager = new PostProcessorsManager(_container, postProcessorNames);
+            _postProcessorsManager = new PostProcessorsManager(_container, postProcessorNames, skipBookmarkValidation);
         }
 
         public void Build(DocumentBuildParameters parameter)

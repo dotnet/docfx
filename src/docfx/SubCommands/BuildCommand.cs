@@ -281,6 +281,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
 
             config.LruSize = options.LruSize ?? config.LruSize;
+            config.SkipBookmarkValidation |= options.SkipBookmarkValidation;
 
             config.FileMetadataFilePaths =
                 new ListWithStringFallback(config.FileMetadataFilePaths.Select(
