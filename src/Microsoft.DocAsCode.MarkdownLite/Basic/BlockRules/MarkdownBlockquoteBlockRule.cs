@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                         // expect following:
                         (
                             // heading
-                            (Matcher.Char('#').Repeat(1, 6) + Matcher.WhiteSpaces + Matcher.AnyStringInSingleLine + '\n') |
+                            (Matcher.WhiteSpacesOrEmpty + Matcher.Char('#').Repeat(1, 6) + Matcher.WhiteSpaces + Matcher.AnyStringInSingleLine + '\n') |
                             // hr
                             ((Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('-', '*', '_')).RepeatAtLeast(3) + Matcher.WhiteSpacesOrEmpty + '\n') |
                             // list

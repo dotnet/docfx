@@ -68,9 +68,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return new AnyCharNotInMatcher(array);
         }
 
-        public static Matcher WhiteSpaces { get; } = Repeat(new CharMatcher(' '), 1);
+        public static Matcher WhiteSpace { get; } = new CharMatcher(' ');
 
-        public static Matcher WhiteSpacesOrEmpty { get; } = Repeat(new CharMatcher(' '), 0);
+        public static Matcher WhiteSpaces { get; } = Repeat(WhiteSpace, 1);
+
+        public static Matcher WhiteSpacesOrEmpty { get; } = Repeat(WhiteSpace, 0);
 
         public static Matcher NewLine { get; } = new CharMatcher('\n');
 
@@ -192,6 +194,19 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return new BackReferenceMatcher(groupName);
         }
 
+        public static Matcher CompareLength(Matcher inner, LengthComparison comparsion, string groupName)
+        {
+            if (inner == null)
+            {
+                throw new ArgumentNullException(nameof(inner));
+            }
+            if (groupName == null)
+            {
+                throw new ArgumentNullException(nameof(groupName));
+            }
+            return new LengthComparisonMatcher(inner, comparsion, groupName);
+        }
+
         private static void ValidateMatcherArray(Matcher[] matchers)
         {
             if (matchers == null)
@@ -241,7 +256,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             {
                 if (seqRight != null)
                 {
-                    return Sequence(new[] { seqLeft }.Concat(seqRight.Inners).ToArray());
+                    return Sequence(new[] { left }.Concat(seqRight.Inners).ToArray());
                 }
                 else
                 {
