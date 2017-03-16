@@ -257,7 +257,6 @@ namespace Microsoft.DocAsCode.Tests
             Assert.NotNull(memberViewModel.References.Find(s => s.Uid.Equals("Foo")));
         }
 
-
         [Fact]
         [Trait("Related", "docfx")]
         [Trait("Language", "CSharp")]
