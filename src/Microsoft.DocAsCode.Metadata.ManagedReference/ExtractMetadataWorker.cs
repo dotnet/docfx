@@ -342,6 +342,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     .Where(s => s is PortableExecutableReference)
                     .Select(s => ((PortableExecutableReference)s).FilePath));
                 FillProjectDependencyGraph(projectCache, projectDependencyGraph, project);
+                // duplicate project references will fail Project.GetCompilationAsync
+                var groups = project.ProjectReferences.GroupBy(r => r);
+                if (groups.Any(g => g.Count() > 1))
+                {
+                    projectCache[path] = project.WithProjectReferences(groups.Select(g => g.Key));
+                }
             }
 
             documentCache.AddDocuments(sourceFiles);

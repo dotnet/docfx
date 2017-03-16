@@ -29,7 +29,8 @@
         "Assets/test.cs.sample.1",
         "Assets/test.csproj.sample.1",
         "Assets/test.vb.sample.1",
-        "Assets/test.vbproj.sample.1"
+        "Assets/test.vbproj.sample.1",
+        "Assets/ref.csproj.sample.1"
       ]
     }
   },
