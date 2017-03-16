@@ -40,11 +40,6 @@ b:
             "<h1 id=\"hello-crosslink1-crosslink2dummy\">Hello <xref href=\"CrossLink1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@CrossLink1\"></xref> <xref href=\"CrossLink2\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@&#39;CrossLink2&#39;\"></xref>dummy</h1>\n<p><xref href=\"World\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@World\"></xref></p>\n")]
         [InlineData("a\n```\nc\n```",
             "<p>a</p>\n<pre><code>c\n</code></pre>")]
-        [InlineData(@"* Unordered list item 1
-* Unordered list item 2
-1. This Is Heading, Not Ordered List
--------------------------------------
-", "<ul>\n<li>Unordered list item 1</li>\n<li>Unordered list item 2</li>\n</ul>\n<h2 id=\"1-this-is-heading-not-ordered-list\">1. This Is Heading, Not Ordered List</h2>\n")]
         [InlineData(@" *hello* abc @api__1",
             "<p> <em>hello</em> abc <xref href=\"api__1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api__1\"></xref></p>\n")]
         [InlineData("@1abc", "<p>@1abc</p>\n")]
