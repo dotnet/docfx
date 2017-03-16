@@ -23,9 +23,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     // except following:
                     (
                         // heading
-                        (Matcher.WhiteSpacesOrEmpty + Matcher.Char('#').Repeat(1, 6) + Matcher.WhiteSpaces + Matcher.AnyStringInSingleLine + '\n') |
+                        (Matcher.WhiteSpacesOrEmpty + Matcher.Char('#').Repeat(1, 6) + Matcher.WhiteSpaces + Matcher.AnyCharNot('\n')) |
                         // hr
-                        ((Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('-', '*', '_')).RepeatAtLeast(3) + Matcher.WhiteSpacesOrEmpty + '\n') |
+                        ((Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('-', '*', '_')).RepeatAtLeast(3) + Matcher.WhiteSpacesOrEmpty + Matcher.NewLine) |
                         // blockquote
                         (Matcher.WhiteSpacesOrEmpty.CompareLength(LengthComparison.LessThan, "indent") + '>')
                     ).ToNegativeTest() +
@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                         (
                             Matcher.NewLine.RepeatAtLeast(1) +
                             (
-                                ((Matcher.AnyCharInRange('0', '9').RepeatAtLeast(1) + '.' + Matcher.WhiteSpace) | Matcher.WhiteSpaces).ToTest() +
+                                (Matcher.WhiteSpace | (Matcher.AnyCharInRange('0', '9').RepeatAtLeast(1) + '.' + Matcher.WhiteSpace)).ToTest() +
                                 Matcher.AnyStringInSingleLine
                             )
                         )
@@ -52,9 +52,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     // except following:
                     (
                         // heading
-                        (Matcher.WhiteSpacesOrEmpty + Matcher.Char('#').Repeat(1, 6) + Matcher.WhiteSpaces + Matcher.AnyStringInSingleLine + '\n') |
+                        (Matcher.WhiteSpacesOrEmpty + Matcher.Char('#').Repeat(1, 6) + Matcher.WhiteSpaces + Matcher.AnyCharNot('\n')) |
                         // hr
-                        ((Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('-', '*', '_')).RepeatAtLeast(3) + Matcher.WhiteSpacesOrEmpty + '\n') |
+                        ((Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('-', '*', '_')).RepeatAtLeast(3) + Matcher.WhiteSpacesOrEmpty + Matcher.NewLine) |
                         // blockquote
                         (Matcher.WhiteSpacesOrEmpty.CompareLength(LengthComparison.LessThan, "indent") + '>')
                     ).ToNegativeTest() +
@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                         (
                             Matcher.NewLine.RepeatAtLeast(1) +
                             (
-                                ((Matcher.AnyCharIn('*', '-') + Matcher.WhiteSpaces) | Matcher.WhiteSpaces).ToTest() +
+                                (Matcher.WhiteSpace | (Matcher.AnyCharIn('*', '-') + Matcher.WhiteSpace)).ToTest() +
                                 Matcher.AnyStringInSingleLine
                             )
                         )
