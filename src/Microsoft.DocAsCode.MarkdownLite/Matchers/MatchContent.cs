@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     public struct MatchContent
     {
@@ -107,6 +106,39 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
         }
 
+        public int CountUntilInRange(char start, char end, int maxCount)
+        {
+            if (EndOfString())
+            {
+                return 0;
+            }
+            var length = Math.Min(maxCount, Length);
+            if (Direction == MatchDirection.Forward)
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    var ch = Text[StartIndex + i];
+                    if (start <= ch && ch <= end)
+                    {
+                        return i;
+                    }
+                }
+                return length;
+            }
+            else
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    var ch = Text[StartIndex - 1 - i];
+                    if (start <= ch && ch <= end)
+                    {
+                        return i;
+                    }
+                }
+                return length;
+            }
+        }
+
         public int CountWhile(char ch, int maxCount)
         {
             if (EndOfString())
@@ -138,7 +170,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
         }
 
-        public int CountWhileAny(char[] ch, int maxCount)
+        internal int CountWhileAny(char[] ch, int maxCount)
         {
             if (EndOfString())
             {
@@ -149,7 +181,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             {
                 for (int i = 0; i < length; i++)
                 {
-                    if (Array.IndexOf(ch, Text[StartIndex + i]) == -1)
+                    if (Array.BinarySearch(ch, Text[StartIndex + i]) < 0)
                     {
                         return i;
                     }
@@ -160,7 +192,40 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             {
                 for (int i = 0; i < length; i++)
                 {
-                    if (Array.IndexOf(ch, Text[StartIndex - 1 - i]) == -1)
+                    if (Array.BinarySearch(ch, Text[StartIndex - 1 - i]) < 0)
+                    {
+                        return i;
+                    }
+                }
+                return length;
+            }
+        }
+
+        public int CountWhileInRange(char start, char end, int maxCount)
+        {
+            if (EndOfString())
+            {
+                return 0;
+            }
+            var length = Math.Min(maxCount, Length);
+            if (Direction == MatchDirection.Forward)
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    var ch = Text[StartIndex + i];
+                    if (ch < start || end < ch)
+                    {
+                        return i;
+                    }
+                }
+                return length;
+            }
+            else
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    var ch = Text[StartIndex - 1 - i];
+                    if (ch < start || end < ch)
                     {
                         return i;
                     }
