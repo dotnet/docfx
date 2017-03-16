@@ -83,6 +83,7 @@ namespace Microsoft.DocAsCode.Dfm
             catch (Exception e)
             {
                 return GenerateErrorNodeWithCommentWrapper("INCLUDE", e.Message, raw, sourceInfo);
+                throw new DocumentException($"Unable to find or resolve INCLUDE file: '{currentPath}'.");
             }
         }
 
