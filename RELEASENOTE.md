@@ -1,6 +1,6 @@
 ﻿Version Notes (Current Version: v2.13.2)
 =======================================
-v2.13.1
+v2.13.2
 -----------
 1.  fix null reference exception when content is empty
 
