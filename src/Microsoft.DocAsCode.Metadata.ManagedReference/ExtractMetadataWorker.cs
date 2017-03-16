@@ -343,9 +343,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     .Select(s => ((PortableExecutableReference)s).FilePath));
                 FillProjectDependencyGraph(projectCache, projectDependencyGraph, project);
                 // duplicate project references will fail Project.GetCompilationAsync
-                if (project.ProjectReferences.GroupBy(r => r.ProjectId).Any(g => g.Count() > 1))
+                var groups = project.ProjectReferences.GroupBy(r => r);
+                if (groups.Any(g => g.Count() > 1))
                 {
-                    projectCache[path] = project.WithProjectReferences(project.ProjectReferences.Distinct());
+                    projectCache[path] = project.WithProjectReferences(groups.Select(g => g.Key));
                 }
             }
 
