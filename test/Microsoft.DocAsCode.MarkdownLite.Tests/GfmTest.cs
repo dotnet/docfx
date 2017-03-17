@@ -640,6 +640,24 @@ not in code c.
 in code b.
 </code></pre><p>not in code c.</p>
 ")]
+        [InlineData(@"<div>a</div>", @"<div>a</div>")]
+        [InlineData(
+            @"<div>a</div>
+",
+            @"<div>a</div>
+")]
+        [InlineData(
+            @"<div>a</div>
+
+b",
+            @"<div>a</div>
+
+<p>b</p>
+")]
+        [InlineData(@"<input class=""a>"">", @"<input class=""a>"">")]
+        [InlineData(@"<input class=""a>""
+>", @"<input class=""a>""
+>")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
