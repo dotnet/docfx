@@ -153,11 +153,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string TransformPath(string basePathFromRoot, RelativePath relativePath)
         {
-            // Special logic for `RelativePath.Empty`: "C/d.html" + "" -> "C" rather than "C/d.html"
-            if (relativePath == RelativePath.Empty)
-            {
-                return ((RelativePath)basePathFromRoot).RemoveWorkingFolder();
-            }
             return ((RelativePath)basePathFromRoot + relativePath).RemoveWorkingFolder();
         }
 
