@@ -456,7 +456,7 @@ aaa",
         [InlineData(
             @"<!--a-->[b](c)<!--d-->e
 <!--f-->",
-            @"<p><!--a--><a href=""c"" data-raw-source=""[b](c)"">b</a><!--d-->e</p>
+            @"<!--a-->[b](c)<!--d-->e
 <!--f-->")]
         [InlineData(
             @"aabbcc:smile:ddee",
