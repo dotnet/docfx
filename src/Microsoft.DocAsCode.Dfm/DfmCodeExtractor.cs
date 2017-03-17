@@ -39,12 +39,12 @@ namespace Microsoft.DocAsCode.Dfm
 
                 if (!token.PathQueryOption.ValidateAndPrepare(fencesCode, token))
                 {
-                    Logger.LogError(token.PathQueryOption.ErrorMessage, line: token.SourceInfo.LineNumber.ToString());
+                    Logger.LogError(GenerateErrorMessage(token), line: token.SourceInfo.LineNumber.ToString());
                     return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = token.PathQueryOption.ErrorMessage, FencesCodeLines = fencesCode };
                 }
                 if (!string.IsNullOrEmpty(token.PathQueryOption.ErrorMessage))
                 {
-                    Logger.LogWarning(token.PathQueryOption.ErrorMessage, line: token.SourceInfo.LineNumber.ToString());
+                    Logger.LogWarning(GenerateErrorMessage(token), line: token.SourceInfo.LineNumber.ToString());
                 }
 
                 var includedLines = new List<string>();
@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.Dfm
 
                 if (!token.PathQueryOption.ValidateHighlightLinesAndDedentLength(includedLines.Count))
                 {
-                    Logger.LogWarning(token.PathQueryOption.ErrorMessage, line: token.SourceInfo.LineNumber.ToString());
+                    Logger.LogWarning(GenerateErrorMessage(token), line: token.SourceInfo.LineNumber.ToString());
                 }
 
                 var dedentLength = token.PathQueryOption.DedentLength ??
@@ -70,6 +70,11 @@ namespace Microsoft.DocAsCode.Dfm
                     FencesCodeLines = (dedentLength == 0 ? includedLines : includedLines.Select(s => Regex.Replace(s, string.Format(RemoveIndentSpacesRegexString, dedentLength), string.Empty))).ToArray()
                 };
             }
+        }
+
+        private static string GenerateErrorMessage(DfmFencesToken token)
+        {
+            return $"{token.PathQueryOption.ErrorMessage} when resolving \"{token.SourceInfo.Markdown.Trim()}\"";
         }
     }
 }
