@@ -15,16 +15,34 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         public override int Match(MatchContent content)
         {
             int charCount = 0;
-            foreach (var m in _inners)
+            if (content.Direction == MatchDirection.Forward)
             {
-                var c = m.Match(content.Offset(charCount));
-                if (c == NotMatch)
+                for (int i = 0; i < _inners.Length; i++)
                 {
-                    return NotMatch;
+                    var c = _inners[i].Match(content.Offset(charCount));
+                    if (c == NotMatch)
+                    {
+                        return NotMatch;
+                    }
+                    else
+                    {
+                        charCount += c;
+                    }
                 }
-                else
+            }
+            else
+            {
+                for (int i = _inners.Length - 1; i >= 0; i--)
                 {
-                    charCount += c;
+                    var c = _inners[i].Match(content.Offset(charCount));
+                    if (c == NotMatch)
+                    {
+                        return NotMatch;
+                    }
+                    else
+                    {
+                        charCount += c;
+                    }
                 }
             }
             return charCount;

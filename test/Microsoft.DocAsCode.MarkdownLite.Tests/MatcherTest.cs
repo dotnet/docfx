@@ -100,9 +100,9 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cba", 2, MatchDirection.Forward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cba", 2, MatchDirection.Backward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cba", 3, MatchDirection.Forward)));
-            Assert.Equal(3, m.Match(new MatchContent("cba", 3, MatchDirection.Backward)));
-            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cbb", 3, MatchDirection.Forward)));
-            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cbb", 3, MatchDirection.Backward)));
+            Assert.Equal(3, m.Match(new MatchContent("abc", 3, MatchDirection.Backward)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("bbc", 3, MatchDirection.Forward)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("bbc", 3, MatchDirection.Backward)));
         }
 
         [Fact]
@@ -154,11 +154,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             Assert.Equal(0, m.Match(new MatchContent("abc", 2, MatchDirection.Forward)));
             Assert.Equal(0, m.Match(new MatchContent("abc", 2, MatchDirection.Backward)));
             Assert.Equal(0, m.Match(new MatchContent("abc", 3, MatchDirection.Forward)));
-            Assert.Equal(0, m.Match(new MatchContent("abc", 3, MatchDirection.Backward)));
+            Assert.Equal(3, m.Match(new MatchContent("abc", 3, MatchDirection.Backward)));
             Assert.Equal(3, m.Match(new MatchContent("aabc", 1, MatchDirection.Forward)));
             Assert.Equal(0, m.Match(new MatchContent("aabc", 1, MatchDirection.Backward)));
             Assert.Equal(0, m.Match(new MatchContent("cba", 3, MatchDirection.Forward)));
-            Assert.Equal(3, m.Match(new MatchContent("cba", 3, MatchDirection.Backward)));
+            Assert.Equal(0, m.Match(new MatchContent("cba", 3, MatchDirection.Backward)));
         }
 
         [Fact]
@@ -188,11 +188,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 2, MatchDirection.Forward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 2, MatchDirection.Backward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 3, MatchDirection.Forward)));
-            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 3, MatchDirection.Backward)));
+            Assert.Equal(2, m.Match(new MatchContent("abc", 3, MatchDirection.Backward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cba", 3, MatchDirection.Forward)));
             Assert.Equal(1, m.Match(new MatchContent("cba", 3, MatchDirection.Backward)));
             Assert.Equal(1, m.Match(new MatchContent("cba", 2, MatchDirection.Forward)));
-            Assert.Equal(2, m.Match(new MatchContent("cba", 2, MatchDirection.Backward)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cba", 2, MatchDirection.Backward)));
         }
 
         [Fact]
@@ -202,7 +202,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 0, MatchDirection.Forward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 0, MatchDirection.Backward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 1, MatchDirection.Forward)));
-            Assert.Equal(1, m.Match(new MatchContent("abc", 1, MatchDirection.Backward)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 1, MatchDirection.Backward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 2, MatchDirection.Forward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 2, MatchDirection.Backward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 3, MatchDirection.Forward)));
@@ -378,10 +378,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
                 var c = new MatchContent("abc", 1, MatchDirection.Backward);
                 Assert.Equal(Matcher.NotMatch, m.Match(c));
                 var g = c.GetGroup("g");
-                Assert.NotNull(g);
-                Assert.Equal(0, g.Value.StartIndex);
-                Assert.Equal(1, g.Value.Count);
-                Assert.Equal("a", g.Value.GetValue());
+                Assert.Null(g);
             }
             {
                 var c = new MatchContent("aba", 0, MatchDirection.Forward);
@@ -393,29 +390,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
                 Assert.Equal("a", g.Value.GetValue());
             }
             {
-                var c = new MatchContent("aba", 3, MatchDirection.Backward);
-                Assert.Equal(3, m.Match(c));
-                var g = c.GetGroup("g");
-                Assert.NotNull(g);
-                Assert.Equal(2, g.Value.StartIndex);
-                Assert.Equal(1, g.Value.Count);
-                Assert.Equal("a", g.Value.GetValue());
-            }
-            {
                 var c = new MatchContent("aabaa", 0, MatchDirection.Forward);
                 Assert.Equal(5, m.Match(c));
                 var g = c.GetGroup("g");
                 Assert.NotNull(g);
                 Assert.Equal(0, g.Value.StartIndex);
-                Assert.Equal(2, g.Value.Count);
-                Assert.Equal("aa", g.Value.GetValue());
-            }
-            {
-                var c = new MatchContent("aabaa", 5, MatchDirection.Backward);
-                Assert.Equal(5, m.Match(c));
-                var g = c.GetGroup("g");
-                Assert.NotNull(g);
-                Assert.Equal(3, g.Value.StartIndex);
                 Assert.Equal(2, g.Value.Count);
                 Assert.Equal("aa", g.Value.GetValue());
             }
