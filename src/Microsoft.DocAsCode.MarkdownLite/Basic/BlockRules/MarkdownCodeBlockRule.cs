@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     {
         private static readonly Matcher _CodeMatcher =
             (
-                Matcher.Char(' ').RepeatAtLeast(4) +
+                Matcher.WhiteSpace.RepeatAtLeast(4) +
                 Matcher.AnyStringInSingleLine +
                 Matcher.NewLine.RepeatAtLeast(0)
             ).RepeatAtLeast(1);
