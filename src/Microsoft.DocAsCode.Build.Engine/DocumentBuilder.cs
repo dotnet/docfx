@@ -193,13 +193,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             _currentBuildInfo.Save(_intermediateFolder);
                             if (_lastBuildInfo != null)
                             {
-                                try
-                                {
-                                    Directory.Delete(Path.Combine(Environment.ExpandEnvironmentVariables(_intermediateFolder), _lastBuildInfo.DirectoryName), true);
-                                }
-                                catch (Exception)
-                                {
-                                }
+                                ClearCacheWithNoThrow(_lastBuildInfo.DirectoryName, true);
                             }
                         }
                     }
@@ -209,7 +203,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (_intermediateFolder != null)
                 {
-                    Directory.Delete(Path.Combine(Environment.ExpandEnvironmentVariables(_intermediateFolder), _currentBuildInfo.DirectoryName), true);
+                    ClearCacheWithNoThrow(_currentBuildInfo.DirectoryName, true);
                 }
                 throw;
             }
@@ -228,6 +222,19 @@ namespace Microsoft.DocAsCode.Build.Engine
             })
             {
                 return builder.Build(parameter);
+            }
+        }
+
+        private void ClearCacheWithNoThrow(string subFolder, bool recursive)
+        {
+            try
+            {
+                string fullPath = Path.Combine(Environment.ExpandEnvironmentVariables(_intermediateFolder), subFolder);
+                Directory.Delete(fullPath, recursive);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"Failed to delete cache files in path: {subFolder}. Details: {ex.Message}.");
             }
         }
 
