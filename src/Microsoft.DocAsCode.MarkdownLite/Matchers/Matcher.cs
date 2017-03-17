@@ -106,6 +106,17 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public static Matcher AnyStringInSingleLineOrEmpty { get; } = AnyCharNot('\n').RepeatAtLeast(0);
 
+        public static Matcher AnyWordCharacter { get; } =
+            AnyCharIn(
+                (from i in Enumerable.Range(0, 26)
+                 select (char)('a' + i))
+                .Concat(from i in Enumerable.Range(0, 26)
+                        select (char)('A' + i))
+                .Concat(from i in Enumerable.Range(0, 10)
+                        select (char)('0' + i))
+                .Concat(new[] { '_' })
+                .ToArray());
+
         public static Matcher EndOfString { get; } = new EndOfStringMatcher();
 
         public static Matcher Maybe(Matcher matcher) =>

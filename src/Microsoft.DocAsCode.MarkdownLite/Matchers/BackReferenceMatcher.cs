@@ -24,11 +24,24 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             {
                 return NotMatch;
             }
-            for (int i = 0; i < text.Length; i++)
+            if (content.Direction == MatchDirection.Forward)
             {
-                if (content[i] != text[i])
+                for (int i = 0; i < text.Length; i++)
                 {
-                    return NotMatch;
+                    if (content[i] != text[i])
+                    {
+                        return NotMatch;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < text.Length; i++)
+                {
+                    if (content[i] != text[text.Length - 1 - i])
+                    {
+                        return NotMatch;
+                    }
                 }
             }
             return text.Length;
