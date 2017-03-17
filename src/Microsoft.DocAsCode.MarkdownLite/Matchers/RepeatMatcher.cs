@@ -33,9 +33,9 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                 {
                     return totalCharCount;
                 }
-                if (content.EndOfString())
+                if (content.Length == totalCharCount)
                 {
-                    return totalCharCount;
+                    return count >= _minOccur ? totalCharCount : NotMatch;
                 }
             }
         }

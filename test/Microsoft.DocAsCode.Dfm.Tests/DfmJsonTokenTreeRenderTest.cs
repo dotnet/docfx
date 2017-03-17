@@ -46,12 +46,6 @@ b:
         [InlineData("a\n```\nc\n```",
              "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>1>Paragraph\",\"children\":[{\"name\":\"1>1>Text>a\"}]},{\"name\":\"2>4>Code>c\"}]}"
          )]
-        [InlineData(@"* Unordered list item 1
-* Unordered list item 2
-1. This Is Heading, Not Ordered List
--------------------------------------",
-             "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>2>ul\",\"children\":[{\"name\":\"1>1>ListItem\",\"children\":[{\"name\":\"1>1>NonParagraph\",\"children\":[{\"name\":\"1>1>Text>Unordered list item 1\"}]}]},{\"name\":\"2>2>ListItem\",\"children\":[{\"name\":\"2>2>NonParagraph\",\"children\":[{\"name\":\"2>2>Text>Unordered list item 2\"}]}]}]},{\"name\":\"3>4>Heading2\",\"children\":[{\"name\":\"3>3>Text>1. This Is Heading, Not Ordered List\"}]}]}"
-         )]
         [InlineData(@" *hello* abc @api__1",
              "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>1>Paragraph\",\"children\":[{\"name\":\"1>1>Text> \"},{\"name\":\"1>1>Em\",\"children\":[{\"name\":\"1>1>Text>hello\"}]},{\"name\":\"1>1>Text> abc \"},{\"name\":\"1>1>Xref>api__1\",\"children\":[]}]}]}"
          )]

@@ -43,5 +43,8 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public static Matcher ToReverseNegativeTest(this Matcher matcher) =>
             Matcher.ReverseNegativeTest(matcher);
+
+        public static Matcher CompareLength(this Matcher matcher, LengthComparison comparsion, string groupName) =>
+            Matcher.CompareLength(matcher, comparsion, groupName);
     }
 }

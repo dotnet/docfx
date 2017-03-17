@@ -536,6 +536,7 @@ aaa",
 <li><p>[a]: a</p>
 </li>
 <li><p>[b]: b</p>
+<p>[c]: c</p>
 </li>
 </ul>
 ")]
@@ -599,6 +600,12 @@ e",
 </blockquote>
 <p>e</p>
 ")]
+        [InlineData(
+            @"* Unordered list item 1
+* Unordered list item 2
+  ## This Is Heading, NOT in list
+",
+            "<ul>\n<li>Unordered list item 1</li>\n<li>Unordered list item 2</li>\n</ul>\n<h2 id=\"this-is-heading-not-in-list\">This Is Heading, NOT in list</h2>\n")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
