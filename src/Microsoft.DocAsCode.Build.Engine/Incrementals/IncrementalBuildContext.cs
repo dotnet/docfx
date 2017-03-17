@@ -261,6 +261,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 foreach (var change in (from c in _changeDict
                                         where c.Value != ChangeKindWithDependency.None
+                                        where c.Value != ChangeKindWithDependency.DependencyUpdated
                                         select c).ToList())
                 {
                     foreach (var dt in dg.GetAllDependencyTo(change.Key))

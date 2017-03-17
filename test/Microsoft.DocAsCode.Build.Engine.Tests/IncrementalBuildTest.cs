@@ -2512,7 +2512,7 @@ tagRules : [
         [Fact]
         public void TestManagedReferenceUpdateReference()
         {
-            // a.yml references a.b.yml 
+            // a.yml references a.b.yml, a.c.yml
             #region Prepare test data
 
             var inputFolder = GetRandomFolder();
@@ -2528,6 +2528,9 @@ tagRules : [
                     "  {{#children}}",
                     "  <h4><xref uid=\"{{uid}}\" altProperty=\"fullName\" displayProperty=\"name\"/></h4>",
                     "  <section>{{{summary}}}</section>",
+                    "  {{#syntax}}",
+                    "  <pre><code>{{syntax.content.0.value}}</code></pre>",
+                    "  {{/syntax}}",
                     "  {{/children}}",
                     "{{/children}}",
                 },
@@ -2543,6 +2546,7 @@ tagRules : [
                     "  id: A",
                     "  children:",
                     "  - A.B",
+                    "  - A.C",
                     "  name: A",
                     "  nameWithType: A",
                     "  fullName: A",
@@ -2554,6 +2558,12 @@ tagRules : [
                     "  name: B",
                     "  nameWithType: B",
                     "  fullName: A.B",
+                    "- uid: A.C",
+                    "  commentId: T:A.C",
+                    "  isExternal: false",
+                    "  name: C",
+                    "  nameWithType: C",
+                    "  fullName: A.C",
                 },
                 inputFolder);
             var referenceFile2 = CreateFile("a.b.yml",
@@ -2573,9 +2583,27 @@ tagRules : [
                     "  summary: \"This is class A.B\"",
                 },
                 inputFolder);
+            var referenceFile3 = CreateFile("a.c.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A.C",
+                    "  commentId: T:A.C",
+                    "  id: A.C",
+                    "  parent: A",
+                    "  name: C",
+                    "  nameWithType: C",
+                    "  fullName: A.C",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class C",
+                    "  summary: \"This is class A.C\"",
+                },
+                inputFolder);
 
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2 }, inputFolder, null);
+            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2, referenceFile3 }, inputFolder, null);
 
             #endregion
 
@@ -2652,7 +2680,7 @@ tagRules : [
                     var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
-                    Assert.Equal(2, manifest.Files.Count);
+                    Assert.Equal(3, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
                     Assert.Equal(2, incrementalInfo.Count);
@@ -3355,6 +3383,9 @@ tagRules : [
                     "  {{#children}}",
                     "  <h4><xref uid=\"{{uid}}\" altProperty=\"fullName\" displayProperty=\"name\"/></h4>",
                     "  <section>{{{summary}}}</section>",
+                    "  {{#syntax}}",
+                    "  <pre><code>{{syntax.content.0.value}}</code></pre>",
+                    "  {{/syntax}}",
                     "  {{/children}}",
                     "{{/children}}",
                 },
