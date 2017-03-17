@@ -12,15 +12,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
     public class GfmHtmlCommentBlockRule : IMarkdownRule
     {
         private static readonly Matcher _HtmlCommentMatcher =
-            // @" *<!--"
-            Matcher.WhiteSpacesOrEmpty + "<!--" +
-            // @"(?:[^-]|-(?!->))*"
+            Matcher.WhiteSpacesOrEmpty +
+            // @"<!--(?:[^-]|-(?!->))*-->"
+            Matcher.String("<!--") +
             (
                 Matcher.AnyCharNot('-').RepeatAtLeast(1) |
                 (Matcher.Char('-') + Matcher.String("->").ToNegativeTest())
-            ).RepeatAtLeast(0) +
-            // @"-->) *(?:\n|$)"
-            "-->" + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
+            ).RepeatAtLeast(0) + "-->" +
+            Matcher.AnyStringInSingleLineOrEmpty + (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
 
         public virtual string Name => "GfmHtmlComment";
 
