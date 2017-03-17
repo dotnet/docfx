@@ -1,0 +1,13 @@
+### YamlMime:ManagedReference
+items:
+- uid: System.String
+  langs:
+  - cpp
+  - csharp
+  - fsharp
+  - vb
+  syntax:
+    content: public sealed class String
+    content.vb: Public NotInheritable Class String
+    content.cpp: public ref class String sealed
+    content.fsharp: type String

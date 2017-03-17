@@ -30,6 +30,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string DisplayName = "displayName";
             public const string NameWithType = "nameWithType";
             public const string FullName = "fullName";
+            public const string Content = "content";
             public const string TocHref = "tocHref";
             public const string TopicHref = "topicHref";
             public const string TopicUid = "topicUid";
@@ -50,6 +51,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Name = PropertyName.Name + PrefixSeparator;
             public const string Modifiers = "modifiers" + PrefixSeparator;
             public const string Spec = "spec" + PrefixSeparator;
+            public const string Content = PropertyName.Content + PrefixSeparator;
         }
 
         public static class DevLang
