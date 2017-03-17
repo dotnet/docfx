@@ -195,8 +195,29 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 var method = model.Children.First(s => s.Uid == "CatLibrary.Cat`2.#ctor");
                 Assert.Equal("<p sourcefile=\"TestData/overwrite/mref.overwrite.not.predefined.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">Overwrite content</p>\n"
                     , method.Metadata["not_defined_property"]);
-
             }
+        }
+
+        [Fact]
+        public void ProcessMrefWithDynamicDevLangsShouldSucceed()
+        {
+            FileCollection files = new FileCollection(_defaultFiles);
+            files.RemoveAll(s => true);
+            files.Add(DocumentType.Article, new [] { "TestData/mref/System.String.yml" }, "TestData/");
+
+            BuildDocument(files);
+
+            var outputRawModelPath = GetRawModelFilePath("System.String.yml");
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+            Assert.NotNull(model);
+            Assert.NotNull(model.Syntax);
+            Assert.NotNull(model.Syntax.Content);
+            Assert.Equal(4, model.Syntax.Content.Count);
+            Assert.Equal("public ref class String sealed", model.Syntax.Content.First(c => c.Language == "cpp").Value);
+            Assert.Equal("public sealed class String", model.Syntax.Content.First(c => c.Language == "csharp").Value);
+            Assert.Equal("type String", model.Syntax.Content.First(c => c.Language == "fsharp").Value);
+            Assert.Equal("Public NotInheritable Class String", model.Syntax.Content.First(c => c.Language == "vb").Value);
         }
 
         [Fact]
