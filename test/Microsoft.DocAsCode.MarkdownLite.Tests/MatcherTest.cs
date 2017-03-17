@@ -95,12 +95,13 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 0, MatchDirection.Backward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 1, MatchDirection.Forward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("abc", 1, MatchDirection.Backward)));
+            Assert.Equal(3, m.Match(new MatchContent("abc", 3, MatchDirection.Backward)));
             Assert.Equal(3, m.Match(new MatchContent("aabc", 1, MatchDirection.Forward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("aabc", 1, MatchDirection.Backward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cba", 2, MatchDirection.Forward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cba", 2, MatchDirection.Backward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cba", 3, MatchDirection.Forward)));
-            Assert.Equal(3, m.Match(new MatchContent("abc", 3, MatchDirection.Backward)));
+            Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("cba", 3, MatchDirection.Backward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("bbc", 3, MatchDirection.Forward)));
             Assert.Equal(Matcher.NotMatch, m.Match(new MatchContent("bbc", 3, MatchDirection.Backward)));
         }
