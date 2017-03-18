@@ -378,6 +378,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     Name = step.Name,
                     IncrementalContextHash = ((ISupportIncrementalBuildStep)step).GetIncrementalContextHash(),
+                    ContextInfoFile = (step is ICanTraceContextInfo) ? IncrementalUtility.CreateRandomFileName(BaseDir) : null,
                 });
             }
             lock (_sync)
@@ -457,6 +458,83 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             IncrementalInfo.ReportProcessorStatus(processor.Name, true);
             Logger.LogVerbose($"Processor {processor.Name} enable incremental build.");
             return true;
+        }
+
+        #endregion
+
+        #region Plugin Context info
+
+        public void LoadContextInfo(HostService hostService, BuildPhase phase)
+        {
+            if (hostService == null)
+            {
+                throw new ArgumentNullException(nameof(hostService));
+            }
+            if (!hostService.CanIncrementalBuild)
+            {
+                return;
+            }
+            var lpi = LastBuildVersionInfo.Processors.Find(p => p.Name == hostService.Processor.Name);
+            if (lpi == null)
+            {
+                return;
+            }
+            var traceContext = CreateTraceContext(hostService, phase);
+            foreach (var step in hostService.Processor.BuildSteps.Where(s => s is ICanTraceContextInfo))
+            {
+                var stepInfo = lpi.Steps.Find(s => s.Name == step.Name);
+                if (stepInfo == null || stepInfo.ContextInfoFile == null)
+                {
+                    continue;
+                }
+                using (var reader = new StreamReader(Path.Combine(Environment.ExpandEnvironmentVariables(LastBaseDir), stepInfo.ContextInfoFile)))
+                {
+                    ((ICanTraceContextInfo)step).LoadFromContext(traceContext, reader);
+                }
+            }
+        }
+
+        public void SaveContextInfo(HostService hostService, BuildPhase phase)
+        {
+            if (hostService == null)
+            {
+                throw new ArgumentNullException(nameof(hostService));
+            }
+            if (!hostService.ShouldTraceIncrementalInfo)
+            {
+                return;
+            }
+            var lpi = CurrentBuildVersionInfo.Processors.Find(p => p.Name == hostService.Processor.Name);
+            if (lpi == null)
+            {
+                return;
+            }
+            var traceContext = CreateTraceContext(hostService, phase);
+            foreach (var step in hostService.Processor.BuildSteps.Where(s => s is ICanTraceContextInfo))
+            {
+                var stepInfo = lpi.Steps.Find(s => s.Name == step.Name);
+                if (stepInfo == null || stepInfo.ContextInfoFile == null)
+                {
+                    continue;
+                }
+                using (var writer = new StreamWriter(Path.Combine(Environment.ExpandEnvironmentVariables(BaseDir), stepInfo.ContextInfoFile)))
+                {
+                    ((ICanTraceContextInfo)step).SaveContext(traceContext, writer);
+                }
+            }
+        }
+
+        private TraceContext CreateTraceContext(HostService hostService, BuildPhase phase)
+        {
+            var increInfo = (from pair in GetModelLoadInfo(hostService)
+                             let incr = pair.Value == null ? true : false
+                             select new FileIncrementalInfo
+                             {
+                                 SourceFile = pair.Key,
+                                 IsIncremental = incr,
+                             }).ToList();
+
+            return new TraceContext(increInfo, phase);
         }
 
         #endregion

@@ -13,6 +13,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// The context hash for incremental.
         /// </summary>
         public string IncrementalContextHash { get; set; }
+        /// <summary>
+        /// The file link for context info.
+        /// </summary>
+        public string ContextInfoFile { get; set; }
 
         public override bool Equals(object obj)
         {
