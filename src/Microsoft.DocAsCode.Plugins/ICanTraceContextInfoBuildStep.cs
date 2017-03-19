@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Plugins
     using System.Collections.Generic;
     using System.IO;
 
-    public interface ICanTraceContextInfo
+    public interface ICanTraceContextInfoBuildStep : ISupportIncrementalBuildStep
     {
         void SaveContext(TraceContext traceContext, StreamWriter writer);
 

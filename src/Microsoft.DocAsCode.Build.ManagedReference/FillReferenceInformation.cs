@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class FillReferenceInformation : BaseDocumentBuildStep, ISupportIncrementalBuildStep, ICanTraceContextInfo
+    public class FillReferenceInformation : BaseDocumentBuildStep, ICanTraceContextInfoBuildStep
     {
         private Dictionary<string, SourceInfo> _items = new Dictionary<string, SourceInfo>();
 
@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         #endregion
 
-        #region ICanTraceContextInfo Members
+        #region ICanTraceContextInfoBuildStep Members
 
         public void LoadFromContext(TraceContext traceContext, StreamReader reader)
         {

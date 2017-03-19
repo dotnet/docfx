@@ -378,7 +378,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     Name = step.Name,
                     IncrementalContextHash = ((ISupportIncrementalBuildStep)step).GetIncrementalContextHash(),
-                    ContextInfoFile = (step is ICanTraceContextInfo) ? IncrementalUtility.CreateRandomFileName(BaseDir) : null,
+                    ContextInfoFile = (step is ICanTraceContextInfoBuildStep) ? IncrementalUtility.CreateRandomFileName(BaseDir) : null,
                 });
             }
             lock (_sync)
@@ -480,7 +480,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 return;
             }
             var traceContext = CreateTraceContext(hostService, phase);
-            foreach (var step in hostService.Processor.BuildSteps.Where(s => s is ICanTraceContextInfo))
+            foreach (var step in hostService.Processor.BuildSteps.Where(s => s is ICanTraceContextInfoBuildStep))
             {
                 var stepInfo = lpi.Steps.Find(s => s.Name == step.Name);
                 if (stepInfo == null || stepInfo.ContextInfoFile == null)
@@ -489,7 +489,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 }
                 using (var reader = new StreamReader(Path.Combine(Environment.ExpandEnvironmentVariables(LastBaseDir), stepInfo.ContextInfoFile)))
                 {
-                    ((ICanTraceContextInfo)step).LoadFromContext(traceContext, reader);
+                    ((ICanTraceContextInfoBuildStep)step).LoadFromContext(traceContext, reader);
                 }
             }
         }
@@ -510,7 +510,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 return;
             }
             var traceContext = CreateTraceContext(hostService, phase);
-            foreach (var step in hostService.Processor.BuildSteps.Where(s => s is ICanTraceContextInfo))
+            foreach (var step in hostService.Processor.BuildSteps.Where(s => s is ICanTraceContextInfoBuildStep))
             {
                 var stepInfo = lpi.Steps.Find(s => s.Name == step.Name);
                 if (stepInfo == null || stepInfo.ContextInfoFile == null)
@@ -519,7 +519,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 }
                 using (var writer = new StreamWriter(Path.Combine(Environment.ExpandEnvironmentVariables(BaseDir), stepInfo.ContextInfoFile)))
                 {
-                    ((ICanTraceContextInfo)step).SaveContext(traceContext, writer);
+                    ((ICanTraceContextInfoBuildStep)step).SaveContext(traceContext, writer);
                 }
             }
         }
