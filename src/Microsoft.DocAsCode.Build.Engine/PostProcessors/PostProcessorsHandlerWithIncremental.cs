@@ -221,18 +221,18 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (_increContext.IsIncremental)
             {
                 var restoredIncreItems = new List<ManifestItem>();
-                foreach (var increItem in increItems)
+                var increItemsGroup = (from f in increItems
+                                       group f by f.SourceRelativePath).ToDictionary(g => g.Key, g => g.ToList());
+                foreach (var pair in increItemsGroup)
                 {
-                    var cachedItem = _increContext.LastInfo.ManifestItems.FirstOrDefault(i => i.SourceRelativePath == increItem.SourceRelativePath);
-                    if (cachedItem == null)
+                    var cachedItems = _increContext.LastInfo.ManifestItems.Where(i => i.SourceRelativePath == pair.Key).ToList();
+                    if (cachedItems.Count != pair.Value.Count)
                     {
-                        throw new BuildCacheException($"Last manifest items doesn't contain the item with source relative path '{increItem.SourceRelativePath}'.");
+                        throw new BuildCacheException($"Last manifest items doesn't contain the item with source relative path '{pair.Key}'.");
                     }
 
                     // Update IsIncremental flag
-                    cachedItem.IsIncremental = true;
-
-                    restoredIncreItems.Add(cachedItem);
+                    restoredIncreItems.AddRange(cachedItems.Select(c => c.Clone(true, c.SourceRelativePath)));
                 }
 
                 // Update incremental items in manifest
