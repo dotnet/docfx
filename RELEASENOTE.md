@@ -1,6 +1,10 @@
-﻿Version Notes (Current Version: v2.14)
+﻿Version Notes (Current Version: v2.15)
 =======================================
-v2.14(Pre-Release)
+
+v2.15(Pre-Release)
+-----------
+
+v2.14
 -----------
 1.  Bug fixes:
     1. Fix duplicate project references fail GetCompilationAsync. https://github.com/dotnet/docfx/issues/1414
