@@ -1,4 +1,4 @@
 {
-  "site": "../../../../../../../docfx-seed/_site",
+  "site": "../../../../../../docfx-seed/_site",
   "port": "8080"
 }
