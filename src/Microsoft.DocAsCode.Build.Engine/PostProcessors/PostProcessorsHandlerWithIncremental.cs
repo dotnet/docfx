@@ -228,7 +228,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var cachedItems = _increContext.LastInfo.ManifestItems.Where(i => i.SourceRelativePath == pair.Key).ToList();
                     if (cachedItems.Count != pair.Value.Count)
                     {
-                        throw new BuildCacheException($"Last manifest items doesn't contain the item with source relative path '{pair.Key}'.");
+                        throw new BuildCacheException($"The count of items with source relative path '{pair.Key}' in last manifest doesn't match: last is {cachedItems.Count}, current is {pair.Value.Count}.");
                     }
 
                     // Update IsIncremental flag
