@@ -837,6 +837,84 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             }
         }
 
+        [Fact]
+        public void TestIncrementalSplitScenario()
+        {
+            try
+            {
+                const string intermediateFolderVariable = "%cache%";
+                var intermediateFolder = GetRandomFolder();
+                Environment.SetEnvironmentVariable("cache", intermediateFolder);
+                var currentBuildInfo = new BuildInfo
+                {
+                    DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolderVariable)
+                };
+                var lastBuildInfo = new BuildInfo
+                {
+                    DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolderVariable),
+                    PostProcessInfo = new PostProcessInfo()
+                };
+                lastBuildInfo.PostProcessInfo.PostProcessorInfos.Add(new PostProcessorInfo
+                {
+                    Name = typeof(AppendStringPostProcessor).Name
+                });
+
+                // Exclude c, which is not incremental
+                var preparedManifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental_split_case.json"));
+                PrepareCachedOutput(intermediateFolderVariable, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "CatLibrary.Cat-2", "CatLibrary.Cat-2.Name");
+
+                var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolderVariable, currentBuildInfo, lastBuildInfo, postProcessors, true);
+
+                // Check context
+                Assert.True(increContext.ShouldTraceIncrementalInfo);
+                Assert.True(increContext.IsIncremental);
+
+                var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
+                var manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental_split_case.json"));
+                var outputFolder = GetRandomFolder();
+                PrepareOutput(outputFolder, "CatLibrary.Cat-2", "CatLibrary.Cat-2.Name", "c");
+                SetDefaultFAL(manifest, outputFolder);
+                increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
+
+                // Check incremental flag
+                Assert.Equal(3, manifest.Files.Count);
+                Assert.True(manifest.Files.Single(i => i.OutputFiles[".html"].RelativePath == "CatLibrary.Cat-2.html").IsIncremental);
+                Assert.True(manifest.Files.Single(i => i.OutputFiles[".html"].RelativePath == "CatLibrary.Cat-2.Name.html").IsIncremental);
+                Assert.False(manifest.Files.Single(i => i.SourceRelativePath == "c.md").IsIncremental);
+                foreach (var file in manifest.Files)
+                {
+                    Assert.True(file.OutputFiles.ContainsKey(AppendStringPostProcessor.AdditionalExtensionString));
+                }
+
+                // Check output content
+                VerifyOutput(outputFolder, AppendStringPostProcessor.AppendString, "CatLibrary.Cat-2", "CatLibrary.Cat-2.Name", "c");
+
+                // Check cached PostProcessInfo
+                Assert.NotNull(currentBuildInfo.PostProcessInfo);
+
+                var postProcessorInfos = currentBuildInfo.PostProcessInfo.PostProcessorInfos;
+                Assert.Equal(1, currentBuildInfo.PostProcessInfo.PostProcessorInfos.Count);
+                Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
+                Assert.Null(postProcessorInfos[0].IncrementalContextHash);
+
+                var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
+                Assert.Equal(6, postProcessOutputs.Count); // no change for *.mta.json, so not in cache.
+                VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, AppendStringPostProcessor.AdditionalExtensionString, "CatLibrary.Cat-2", "CatLibrary.Cat-2.Name", "c");
+
+                // Check incremental info
+                Assert.Equal(1, manifest.IncrementalInfo.Count);
+                Assert.Equal(true, manifest.IncrementalInfo[0].Status.CanIncremental);
+                Assert.Equal(IncrementalPhase.PostProcessing, manifest.IncrementalInfo[0].Status.IncrementalPhase);
+                Assert.Equal("Can support incremental post processing.", manifest.IncrementalInfo[0].Status.Details);
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("cache", null);
+                EnvironmentContext.Clean();
+            }
+        }
+
         #region Private methods
 
         private static void PrepareOutput(string outputFolder, params string[] fileNames)
@@ -873,7 +951,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 var htmlContent = $"{fileName}{appendContent}";
                 CreateFile($"{cachedHtmlName}", htmlContent, baseFolder);
                 postProcessOutputs.Add($"{fileName}.html", cachedHtmlName);
-                manifestItems.First(i => Path.ChangeExtension(i.SourceRelativePath, null) == fileName).OutputFiles[".html"].LinkToPath = $@"{intermediateFolder}\{lastBuildInfo.DirectoryName}\test";
+                manifestItems.First(i => Path.ChangeExtension(i.OutputFiles[".html"].RelativePath, null) == fileName).OutputFiles[".html"].LinkToPath = $@"{intermediateFolder}\{lastBuildInfo.DirectoryName}\test";
 
                 var cachedMetaName = IncrementalUtility.CreateRandomFileName(baseFolder);
                 CreateFile($"{cachedMetaName}", $"{fileName}{MetaAppendContent}", baseFolder);
@@ -886,7 +964,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     CreateFile($"{cachedManifestItemsFileName}", htmlContent, baseFolder);
                     postProcessOutputs.Add(relativePath, cachedManifestItemsFileName);
 
-                    var item = manifestItems.FirstOrDefault(i => Path.ChangeExtension(i.SourceRelativePath, null) == fileName);
+                    var item = manifestItems.FirstOrDefault(i => Path.ChangeExtension(i.OutputFiles[".html"].RelativePath, null) == fileName);
                     if (item != null)
                     {
                         item.OutputFiles.Add($"{additionalFileExtension}", new OutputFileInfo { RelativePath = relativePath, LinkToPath = $@"{intermediateFolder}\{lastBuildInfo.DirectoryName}\test" });

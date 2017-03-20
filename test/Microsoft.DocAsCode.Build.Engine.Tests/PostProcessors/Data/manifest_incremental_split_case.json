@@ -1,0 +1,43 @@
+﻿{
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "CatLibrary.Cat-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "CatLibrary.Cat-2.html"
+        },
+        ".mta.json": {
+          "relative_path": "CatLibrary.Cat-2.mta.json"
+        }
+      },
+      "is_incremental": true
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "CatLibrary.Cat-2.yml",
+      "output": {
+        ".html": {
+          "relative_path": "CatLibrary.Cat-2.Name.html"
+        },
+        ".mta.json": {
+          "relative_path": "CatLibrary.Cat-2.Name.mta.json"
+        }
+      },
+      "is_incremental": true
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "c.md",
+      "output": {
+        ".html": {
+          "relative_path": "c.html"
+        },
+        ".mta.json": {
+          "relative_path": "c.mta.json"
+        }
+      },
+      "is_incremental": false
+    }
+  ]
+}
