@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ApplyPlatformVersion
    | DocFX website ">
-    <meta name="generator" content="docfx 2.13.2.0">
+    <meta name="generator" content="docfx 2.14.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -122,7 +122,7 @@
               <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Build.ManagedReference.dll</h6>
               <h5 id="Microsoft_DocAsCode_Build_ManagedReference_ApplyPlatformVersion_syntax">Syntax</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public class ApplyPlatformVersion : BaseDocumentBuildStep, IDocumentBuildStep</code></pre>
+                <pre><code class="lang-csharp hljs">public class ApplyPlatformVersion : BaseDocumentBuildStep, ISupportIncrementalBuildStep, IDocumentBuildStep</code></pre>
               </div>
               <h3 id="properties">Properties
               </h3>
@@ -158,6 +158,8 @@
               </table>
               <h5 class="overrides">Overrides</h5>
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_BuildOrder">BaseDocumentBuildStep.BuildOrder</a></div>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html#Microsoft_DocAsCode_Plugins_IDocumentBuildStep_BuildOrder">IDocumentBuildStep.BuildOrder</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ApplyPlatformVersion_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ApplyPlatformVersion.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
@@ -190,8 +192,123 @@
               </table>
               <h5 class="overrides">Overrides</h5>
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Name">BaseDocumentBuildStep.Name</a></div>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html#Microsoft_DocAsCode_Plugins_IDocumentBuildStep_Name">IDocumentBuildStep.Name</a></div>
               <h3 id="methods">Methods
               </h3>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ApplyPlatformVersion_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ApplyPlatformVersion.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/ApplyPlatformVersion.cs/#L69">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Build_ManagedReference_ApplyPlatformVersion_CanIncrementalBuild_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ApplyPlatformVersion.CanIncrementalBuild*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_ManagedReference_ApplyPlatformVersion_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ApplyPlatformVersion.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)">CanIncrementalBuild(FileAndType)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public bool CanIncrementalBuild(FileAndType fileAndType)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileAndType.html">FileAndType</a></td>
+                    <td><span class="parametername">fileAndType</span></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_">ISupportIncrementalBuildStep.CanIncrementalBuild(FileAndType)</a></div>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ApplyPlatformVersion_GetDependencyTypesToRegister.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ApplyPlatformVersion.GetDependencyTypesToRegister%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/ApplyPlatformVersion.cs/#L73">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Build_ManagedReference_ApplyPlatformVersion_GetDependencyTypesToRegister_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ApplyPlatformVersion.GetDependencyTypesToRegister*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_ManagedReference_ApplyPlatformVersion_GetDependencyTypesToRegister" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ApplyPlatformVersion.GetDependencyTypesToRegister">GetDependencyTypesToRegister()</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public IEnumerable&lt;DependencyType&gt; GetDependencyTypesToRegister()</code></pre>
+              </div>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.DependencyType.html">DependencyType</a>&gt;</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_GetDependencyTypesToRegister">ISupportIncrementalBuildStep.GetDependencyTypesToRegister()</a></div>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ApplyPlatformVersion_GetIncrementalContextHash.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ApplyPlatformVersion.GetIncrementalContextHash%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/ApplyPlatformVersion.cs/#L71">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Build_ManagedReference_ApplyPlatformVersion_GetIncrementalContextHash_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ApplyPlatformVersion.GetIncrementalContextHash*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_ManagedReference_ApplyPlatformVersion_GetIncrementalContextHash" data-uid="Microsoft.DocAsCode.Build.ManagedReference.ApplyPlatformVersion.GetIncrementalContextHash">GetIncrementalContextHash()</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public string GetIncrementalContextHash()</code></pre>
+              </div>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_GetIncrementalContextHash">ISupportIncrementalBuildStep.GetIncrementalContextHash()</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_ApplyPlatformVersion_Prebuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.ApplyPlatformVersion.Prebuild(System.Collections.Immutable.ImmutableList%7BMicrosoft.DocAsCode.Plugins.FileModel%7D%2CMicrosoft.DocAsCode.Plugins.IHostService)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
@@ -246,6 +363,8 @@
               </table>
               <h5 class="overrides">Overrides</h5>
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Prebuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_">BaseDocumentBuildStep.Prebuild(ImmutableList&lt;FileModel&gt;, IHostService)</a></div>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html#Microsoft_DocAsCode_Plugins_IDocumentBuildStep_Prebuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_">IDocumentBuildStep.Prebuild(ImmutableList&lt;FileModel&gt;, IHostService)</a></div>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
                   <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>

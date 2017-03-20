@@ -8,7 +8,7 @@
     <title>Introduction to REST API Documentation | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to REST API Documentation | DocFX website ">
-    <meta name="generator" content="docfx 2.13.2.0">
+    <meta name="generator" content="docfx 2.14.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -240,23 +240,22 @@ Footer for `microsoft.com/docfx/Contacts/1.6`
   &lt;h3 data-uid=&quot;microsoft.com/docfx/Contacts/1.6/delete_contacts&quot;&gt;delete_contacts&lt;/h3&gt;
 </code></pre><h4 id="overwrite-the-tags">Overwrite the tags</h4>
 <ol>
-<li><p>More information could be added to the tag as following:</p>
-<pre><code class="lang-md">---
-uid: microsoft.com/docfx/Contacts/1.6/tag/Basic
----
-
-Additional comments for `microsoft.com/docfx/Contacts/1.6/tag/Basic`
-</code></pre></li>
-<li><p>The <code>description</code> of the tag could be overwritten as following:</p>
-<pre><code class="lang-md">---
-uid: microsoft.com/docfx/Contacts/1.6/tag/Basic
-description: *content
----
-
-Overwrite description for `microsoft.com/docfx/Contacts/1.6/tag/Basic`
-</code></pre></li>
+<li>More information could be added to the tag as following:
+```md</li>
 </ol>
-<h3 id="add-other-metadata">Add other metadata</h3>
+<hr>
+<h2 id="---uid-microsoftcomdocfxcontacts16tagbasic">   uid: microsoft.com/docfx/Contacts/1.6/tag/Basic</h2>
+<p>   Additional comments for <code>microsoft.com/docfx/Contacts/1.6/tag/Basic</code></p>
+<pre><code>
+2. The `description` of the tag could be overwritten as following:
+   ```md
+   ---
+   uid: microsoft.com/docfx/Contacts/1.6/tag/Basic
+   description: *content
+   ---
+
+   Overwrite description for `microsoft.com/docfx/Contacts/1.6/tag/Basic`
+</code></pre><h3 id="add-other-metadata">Add other metadata</h3>
 <p>You can define your own metadata with YAML header. This functionality is quite useful when your own template is used.</p>
 <p>When the key of the metadata is already preserved by DocFX, for example, <code>summary</code>, the value of <code>summary</code> will be overwritten. You can also overwrite complex types, for example, <code>description</code> of a <code>parameter</code>. Make sure the data structure of the provided metadata is consistent with the one defined in DocFX, otherwise, DocFX is unable to cast the value and fails.</p>
 <p>When the key of the metadata is not preserved by DocFX, for example, <code>not_predefined</code>. The metadata is kept and can be used in the template.</p>

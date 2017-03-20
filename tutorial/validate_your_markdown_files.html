@@ -8,7 +8,7 @@
     <title>Validate Your Markdown Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Validate Your Markdown Files | DocFX website ">
-    <meta name="generator" content="docfx 2.13.2.0">
+    <meta name="generator" content="docfx 2.14.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -176,7 +176,7 @@ Now your DocFX project should look like this:</p>
 |- md.style
 \- rules
    \- plugins
-      \- &lt;your_rule&gt;.dll
+      \- &lt;your_rule&gt;.dll 
 </code></pre></li>
 <li><p>Update your <code>docfx.json</code> with following content:</p>
 <pre><code class="lang-json">{
@@ -329,7 +329,7 @@ i.e., there is no way to disable it unless delete the assembly file.</p>
    |- &lt;category-1&gt;.md.style
    \- &lt;category-2&gt;.md.style
 \- plugins
-   \- &lt;your_rule&gt;.dll
+   \- &lt;your_rule&gt;.dll 
 </code></pre><p>In <code>md.styles</code> folder, there is a set of definition files, with file extension <code>.md.style</code>, each file is a category.</p>
 <p>In one category, there is a set of rule definition.</p>
 <p>For example, create a file with name <code>test.md.style</code>, then write following content:</p>
