@@ -6,14 +6,20 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
+    using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class FillReferenceInformation : BaseDocumentBuildStep, ISupportIncrementalBuildStep
+    public class FillReferenceInformation : BaseDocumentBuildStep, ICanTraceContextInfoBuildStep
     {
+        private Dictionary<string, SourceInfo> _items = new Dictionary<string, SourceInfo>();
+
         public override string Name => nameof(FillReferenceInformation);
 
         public override int BuildOrder => 0x20;
@@ -28,7 +34,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     {
                         continue;
                     }
-                    FillCore((PageViewModel)model.Content, host);
+                    FillCore((PageViewModel)model.Content, host, model.OriginalFileAndType.File);
                 }
             }
         }
@@ -43,10 +49,58 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         #endregion
 
+        #region ICanTraceContextInfoBuildStep Members
+
+        public void LoadFromContext(TraceContext traceContext, StreamReader reader)
+        {
+            if (traceContext == null || traceContext.Phase != BuildPhase.Link)
+            {
+                return;
+            }
+            if (reader == null)
+            {
+                return;
+            }
+
+            using (reader)
+            {
+                var content = JsonUtility.Deserialize<IEnumerable<SourceInfo>>(reader);
+                var increInfo = (from f in traceContext.AllSourceFileInfo
+                                group f by f.SourceFile).ToDictionary(g => g.Key, g => g.First());
+                foreach (var c in content)
+                {
+                    FileIncrementalInfo info;
+                    if (increInfo.TryGetValue(c.File, out info) && info.IsIncremental)
+                    {
+                        _items[c.Item.Uid] = c;
+                    }
+                }
+            }
+        }
+
+        public void SaveContext(TraceContext traceContext, StreamWriter writer)
+        {
+            if (traceContext == null || traceContext.Phase != BuildPhase.Link)
+            {
+                return;
+            }
+            if (writer == null)
+            {
+                return;
+            }
+            using (writer)
+            {
+                JsonUtility.Serialize(writer, _items.Values);
+            }
+        }
+
+        #endregion
+
         #region Private methods
 
-        private void FillCore(PageViewModel model, IHostService host)
+        private void FillCore(PageViewModel model, IHostService host, string file)
         {
+            TraceSourceInfo(model, file);
             if (model.References == null || model.References.Count == 0)
             {
                 return;
@@ -56,6 +110,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 var m = host.LookupByUid(r.Uid).Find(x => x.Type == DocumentType.Article);
                 if (m == null)
                 {
+                    SourceInfo i;
+                    if (_items.TryGetValue(r.Uid, out i))
+                    {
+                        FillContent(r, i.Item);
+                    }
                     continue;
                 }
                 var page = (PageViewModel)m.Content;
@@ -64,13 +123,33 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 {
                     continue;
                 }
-                r.Additional["summary"] = item.Summary;
-                r.Additional["type"] = item.Type;
-                r.Additional["syntax"] = item.Syntax;
-                r.Additional["platform"] = item.Platform;
+                FillContent(r, item);
+            }
+        }
+
+        private void FillContent(ReferenceViewModel r, ItemViewModel item)
+        {
+            r.Additional["summary"] = item.Summary;
+            r.Additional["type"] = item.Type;
+            r.Additional["syntax"] = item.Syntax;
+            r.Additional["platform"] = item.Platform;
+        }
+
+        private void TraceSourceInfo(PageViewModel model, string file)
+        {
+            foreach (var item in model.Items)
+            {
+                _items[item.Uid] = new SourceInfo { Item = item, File = file };
             }
         }
 
         #endregion
+
+        private class SourceInfo
+        {
+            public ItemViewModel Item { get; set; }
+
+            public string File { get; set; }
+        }
     }
 }
