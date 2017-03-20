@@ -606,6 +606,13 @@ e",
   ## This Is Heading, NOT in list
 ",
             "<ul>\n<li>Unordered list item 1</li>\n<li>Unordered list item 2</li>\n</ul>\n<h2 id=\"this-is-heading-not-in-list\">This Is Heading, NOT in list</h2>\n")]
+        [InlineData(@"+ a
++ b",
+            @"<ul>
+<li>a</li>
+<li>b</li>
+</ul>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
