@@ -64,6 +64,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             ReloadModelsPerChanges(hostServices);
             RegisterUnloadedXRefSpec(hostServices);
             RegisterUnloadedFileMap(hostServices);
+            LoadContextInfo(hostServices);
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
@@ -73,8 +74,25 @@ namespace Microsoft.DocAsCode.Build.Engine
             UpdateManifest();
             UpdateFileMap(hostServices);
             UpdateXrefMap(hostServices);
+            SaveContextInfo(hostServices);
             RelayBuildMessage(hostServices);
             Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
+        }
+
+        private void LoadContextInfo(List<HostService> hostServices)
+        {
+            foreach (var h in hostServices)
+            {
+                IncrementalContext.LoadContextInfo(h, Phase);
+            }
+        }
+
+        private void SaveContextInfo(List<HostService> hostServices)
+        {
+            foreach (var h in hostServices)
+            {
+                IncrementalContext.SaveContextInfo(h, Phase);
+            }
         }
 
         private void ReloadModels(IEnumerable<HostService> hostServices)

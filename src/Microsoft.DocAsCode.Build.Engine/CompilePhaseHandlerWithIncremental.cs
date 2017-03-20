@@ -73,6 +73,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                               select IncrementalUtility.GetDependencyKey(f.OriginalFileAndType),
                                                   FilePathComparer.OSPlatformSensitiveStringComparer);
             ReloadDependency(fileSet);
+            LoadContextInfo(hostServices);
             RegisterUnloadedTocRestructions(fileSet);
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
@@ -88,6 +89,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 h.SaveIntermediateModel(IncrementalContext);
             }
             IncrementalContext.UpdateBuildVersionInfoPerDependencyGraph();
+            SaveContextInfo(hostServices);
             foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
             {
                 foreach (var file in GetFilesToRelayMessages(h))
@@ -96,6 +98,22 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
             Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
+        }
+
+        private void LoadContextInfo(List<HostService> hostServices)
+        {
+            foreach (var h in hostServices)
+            {
+                IncrementalContext.LoadContextInfo(h, Phase);
+            }
+        }
+
+        private void SaveContextInfo(List<HostService> hostServices)
+        {
+            foreach (var h in hostServices)
+            {
+                IncrementalContext.SaveContextInfo(h, Phase);
+            }
         }
 
         private void ReportReference(List<HostService> hostServices)
@@ -188,12 +206,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             var dict = (from r in _inner.Restructions
                         from srcFile in r.SourceFiles ?? Enumerable.Empty<FileAndType>()
-                       select new
-                       {
-                           File = srcFile.File,
-                           Item = r,
-                       } into item
-                       group item by item.File).ToDictionary(p => p.Key, p => p.Select(i => i.Item).ToList());
+                        select new
+                        {
+                            File = srcFile.File,
+                            Item = r,
+                        } into item
+                        group item by item.File).ToDictionary(p => p.Key, p => p.Select(i => i.Item).ToList());
             var restructions = CurrentBuildVersionInfo.TocRestructions;
             foreach (var pair in dict)
             {
