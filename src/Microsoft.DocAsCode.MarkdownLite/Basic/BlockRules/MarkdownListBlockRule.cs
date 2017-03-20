@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
         private static readonly Matcher _UnorderListMatcher =
             // @" *\d+. *"
-            (Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('*', '-') + Matcher.WhiteSpaces).ToGroup("indent") +
+            (Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('*', '+', '-') + Matcher.WhiteSpaces).ToGroup("indent") +
             Matcher.AnyStringInSingleLineOrEmpty +
             (
                 Matcher.NewLine +
@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                         (
                             Matcher.NewLine.RepeatAtLeast(1) +
                             (
-                                (Matcher.WhiteSpace | (Matcher.AnyCharIn('*', '-') + Matcher.WhiteSpace)).ToTest() +
+                                (Matcher.WhiteSpace | (Matcher.AnyCharIn('*', '+', '-') + Matcher.WhiteSpace)).ToTest() +
                                 Matcher.AnyStringInSingleLine
                             )
                         )
