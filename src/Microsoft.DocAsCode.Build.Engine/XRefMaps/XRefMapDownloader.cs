@@ -136,7 +136,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentException($"Invalid uri {uri.OriginalString}, expect: {uri.Scheme}:{{assemblyName}}/{{resourceName}}", nameof(uri));
             }
             var assemblyName = path.Remove(index);
-            var resourceName = path.Substring(index + 1);
+            var resourceName = assemblyName + "." + path.Substring(index + 1);
 
             var assembly = AppDomain.CurrentDomain.Load(assemblyName);
             using (var stream = assembly.GetManifestResourceStream(resourceName))

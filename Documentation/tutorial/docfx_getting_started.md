@@ -24,7 +24,7 @@ For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored
 -----------------------
 
 > [!Note]
-> Please make sure [Visual Studio 2015](https://www.visualstudio.com/vs/) or [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159) is installed before running DocFX.
+> Please make sure [Visual Studio 2015](https://www.visualstudio.com/vs/) or above, or [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159) is installed before running DocFX.
 
 *Step1.* DocFX ships as a [chocolatey package](https://chocolatey.org/packages/docfx).
 Install docfx through [Chocolatey](https://chocolatey.org/install) by calling `cinst docfx -y`.
@@ -48,7 +48,7 @@ Now you can view the generated website on http://localhost:8080.
 3. Use *DocFX* in Visual Studio
 ---------------
 
-As a prerequisite, you need [Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs) to use *DocFX* in IDE.
+As a prerequisite, you need [Visual Studio 2015](https://www.visualstudio.com/downloads/downloads) or above to use *DocFX* in IDE.
 
 *Step1.* Open Visual Studio and create a C# project as your documentation project. You can create an empty *ASP.NET Web Application* since it has a built-in *preview* feature that can be used to preview the generated website easily.
 

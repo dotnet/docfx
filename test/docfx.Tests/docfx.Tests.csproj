@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Shared\test.base.props" />
+
+  <ItemGroup>
+    <None Update="Assets\docfx.json_build\docfx.json;Assets\docfx.json_empty\docfx.json;Assets\docfx.json_invalid_key\docfx.json;Assets\docfx.json_invalid_format\docfx.json;Assets\docfx.json_metadata\docfx.json;Assets\docfx.json_metadata\docfxWithFilter.json;Assets\docfx.json_metadata_build\docfx.json;Assets\docfx.sample.1.json;Assets\filter.yaml.sample;Assets\test.cs.sample.1;Assets\test.csproj.sample.1;Assets\test.vb.sample.1;Assets\test.vbproj.sample.1;Assets\ref.csproj.sample.1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Shared\TestBase.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Collections.Immutable" Version="1.2.0" />
+    <PackageReference Include="Microsoft.Composition" Version="1.0.27" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj" />
+    <ProjectReference Include="..\..\src\docfx\docfx.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+</Project>
