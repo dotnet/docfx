@@ -1,5 +1,10 @@
-﻿Version Notes (Current Version: v2.14)
+﻿Version Notes (Current Version: v2.14.1)
 =======================================
+v2.14.1
+-----------
+1.  fix bug in markdown list.
+
+
 v2.14
 -----------
 1.  Bug fixes:
