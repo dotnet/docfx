@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.14.0.0">
+    <meta name="generator" content="docfx 2.14.1.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -506,47 +506,61 @@ Reserved metadatas:</p>
 <p>In above ways, the later way will always overwrite the former way if the same key of metadata is set.</p>
 <p>Here we will show you how to set global metadata and file metadata using separated metadata files. Take global metadata for example, you can set <code>globalMetadataFiles</code> in <code>docfx.json</code> or <code>--globalMetadataFiles</code> in build command line. The usage of <code>fileMetadataFiles</code> is the same as <code>globalMetadataFiles</code>.</p>
 <p>There&#39;re some metadata file examples:</p>
-<p>+ globalMetadata file example </p>
-<pre><code class="lang-json">    {
-        &quot;_appTitle&quot;: &quot;DocFX website&quot;,
-        &quot;_enableSearch&quot;: &quot;true&quot;
-    }
-</code></pre><p>+ fileMetadata file example</p>
-<pre><code class="lang-json">    {
-        &quot;priority&quot;: {
-            &quot;**.md&quot;: 2.5,
-            &quot;spec/**.md&quot;: 3
-        },
-        &quot;keywords&quot;: {
-            &quot;obj/docfx/**&quot;: [&quot;API&quot;, &quot;Reference&quot;],
-            &quot;spec/**.md&quot;: [&quot;Spec&quot;, &quot;Conceptual&quot;]
-        }
-    }
-</code></pre><p>There&#39;re some examples about how to use separated metadata files.</p>
-<p>+ use <code>globalMetadataFiles</code> in <code>docfx.json</code></p>
-<pre><code class="lang-json">    ...
-    &quot;globalMetadataFiles&quot;: [&quot;global1.json&quot;, &quot;global2.json&quot;],
-    ...
-</code></pre><p>+ use <code>--globalMetadataFiles</code> in build command line</p>
-<pre><code>    docfx build --globalMetadataFiles global1.json,global2.json
-</code></pre><p>+ use <code>fileMetadataFiles</code> in <code>docfx.json</code></p>
-<pre><code class="lang-json">    ...
-    &quot;fileMetadataFiles&quot;: [&quot;file1.json&quot;, &quot;file2.json&quot;],
-    ...
-</code></pre><p>+ use <code>--fileMetadataFiles</code> in build command line</p>
-<pre><code>    docfx build --fileMetadataFiles file1.json,file2.json
-</code></pre><p>Note that, metadata set in command line will merge with metadata set in <code>docfx.json</code>. </p>
-<p>+ If same key for global metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
+<ul>
+<li><p>globalMetadata file example </p>
+<pre><code class="lang-json">  {
+      &quot;_appTitle&quot;: &quot;DocFX website&quot;,
+      &quot;_enableSearch&quot;: &quot;true&quot;
+  }
+</code></pre></li>
+<li><p>fileMetadata file example</p>
+<pre><code class="lang-json">  {
+      &quot;priority&quot;: {
+          &quot;**.md&quot;: 2.5,
+          &quot;spec/**.md&quot;: 3
+      },
+      &quot;keywords&quot;: {
+          &quot;obj/docfx/**&quot;: [&quot;API&quot;, &quot;Reference&quot;],
+          &quot;spec/**.md&quot;: [&quot;Spec&quot;, &quot;Conceptual&quot;]
+      }
+  }
+</code></pre></li>
+</ul>
+<p>There&#39;re some examples about how to use separated metadata files.</p>
+<ul>
+<li><p>use <code>globalMetadataFiles</code> in <code>docfx.json</code></p>
+<pre><code class="lang-json">  ...
+  &quot;globalMetadataFiles&quot;: [&quot;global1.json&quot;, &quot;global2.json&quot;],
+  ...
+</code></pre></li>
+<li><p>use <code>--globalMetadataFiles</code> in build command line</p>
+<pre><code>  docfx build --globalMetadataFiles global1.json,global2.json
+</code></pre></li>
+<li><p>use <code>fileMetadataFiles</code> in <code>docfx.json</code></p>
+<pre><code class="lang-json">  ...
+  &quot;fileMetadataFiles&quot;: [&quot;file1.json&quot;, &quot;file2.json&quot;],
+  ...
+</code></pre></li>
+<li><p>use <code>--fileMetadataFiles</code> in build command line</p>
+<pre><code>  docfx build --fileMetadataFiles file1.json,file2.json
+</code></pre></li>
+</ul>
+<p>Note that, metadata set in command line will merge with metadata set in <code>docfx.json</code>. </p>
+<ul>
+<li><p>If same key for global metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
 <ol>
 <li>global metadata from docfx config file</li>
 <li>global metadata from global metadata files</li>
 <li>global metadata from command line</li>
 </ol>
-<p>+ If same file pattern for file metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
+</li>
+<li><p>If same file pattern for file metadata was set, the order to be overwritten would be(the later one will overwrite the former one): </p>
 <ol>
 <li>file metadata from docfx config file</li>
 <li>file metadata from file metadata files</li>
 </ol>
+</li>
+</ul>
 <p>Given multiple metadata files, the behavior would be <strong>undetermined</strong>, if same key is set in these files.</p>
 <h2 id="4-supported-file-mapping-format">4. Supported File Mapping Format</h2>
 <p>There are several ways to define file mapping.</p>
