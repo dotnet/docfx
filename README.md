@@ -21,10 +21,6 @@ We currently support C# and VB projects.
 #### Steps
 1. Option 1: Run `build.cmd` under *DocFX* code repo.
 2. Option 2: Open `All.sln` under *DocFX* code repo in Visual Studio and build All.sln.
-  
-> Possible build issues
-  1. *Test failure with message `\r\n` not equal to `\n` for Windows*
-  Set `git config --global core.autocrlf true`
 
 ## How do I play with *DocFX*?
 Please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
