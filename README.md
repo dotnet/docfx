@@ -15,15 +15,13 @@ We currently support C# and VB projects.
 
 ## How to build?
 #### Prerequisites
-1. [Visual Studio 2017](https://www.visualstudio.com/downloads/)
+1. [Visual Studio 2017](https://www.visualstudio.com/downloads/) with *.NET Core cross-platform development* toolset installed
 2. [Node.js](https://nodejs.org)
 
 #### Steps
 1. Option 1: Run `build.cmd` under *DocFX* code repo.
 2. Option 2: Open `All.sln` under *DocFX* code repo in Visual Studio and build All.sln.
-  - need [Visual Studio 2015 Update 3.3 or later](https://docs.microsoft.com/en-us/dotnet/articles/core/windows-prerequisites#visual-studio)
-  - need [.NET Core Tools for Visual Studio 2015](https://docs.microsoft.com/en-us/dotnet/articles/core/windows-prerequisites#net-core-tools-for-visual-studio-2015)
-
+  
 > Possible build issues
   1. *Test failure with message `\r\n` not equal to `\n` for Windows*
   Set `git config --global core.autocrlf true`
