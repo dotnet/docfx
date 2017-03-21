@@ -3,6 +3,8 @@
 
 v2.15(Pre-Release)
 -----------
+1.  Bug fixes:
+    1. Auto dedent the included code snippet, both when including the whole file and file sections.
 
 v2.14
 -----------
