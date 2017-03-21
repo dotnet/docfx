@@ -613,6 +613,19 @@ e",
 <li>b</li>
 </ul>
 ")]
+        [InlineData(
+            @"```md
+in code a.
+    ```
+in code b.
+   ````
+not in code c.
+",
+            @"<pre><code class=""lang-md"">in code a.
+    ```
+in code b.
+</code></pre><p>not in code c.</p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
