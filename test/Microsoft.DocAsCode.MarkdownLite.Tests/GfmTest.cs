@@ -231,9 +231,9 @@ c
 ")]
         [InlineData(@"1. First
 
-  |  | Header1 | Header2 |
-  ------- | ------- | --------
-  | Row1 | Cell11 | Cell12 |
+   |  | Header1 | Header2 |
+   ------- | ------- | --------
+   | Row1 | Cell11 | Cell12 |
 2. Second", @"<ol>
 <li><p>First</p>
 <table>
@@ -342,9 +342,9 @@ break list!
 ")]
         [InlineData(@"1. some text
 
-  ```
-  --
-  ```",
+   ```
+   --
+   ```",
             @"<ol>
 <li><p>some text</p>
 <pre><code>--
@@ -356,9 +356,18 @@ break list!
  --
  ```",
             @"<ol>
-<li>some text
-<code>--</code></li>
+<li>some text</li>
 </ol>
+<pre><code> --
+</code></pre>")]
+        [InlineData(@"1. some text
+ > 1",
+            @"<ol>
+<li>some text</li>
+</ol>
+<blockquote>
+<p>1</p>
+</blockquote>
 ")]
         [InlineData(
             @"a\<b <span>c</span>",
@@ -603,9 +612,14 @@ e",
         [InlineData(
             @"* Unordered list item 1
 * Unordered list item 2
-  ## This Is Heading, NOT in list
+  ## This Is Heading (in list).
 ",
-            "<ul>\n<li>Unordered list item 1</li>\n<li>Unordered list item 2</li>\n</ul>\n<h2 id=\"this-is-heading-not-in-list\">This Is Heading, NOT in list</h2>\n")]
+            @"<ul>
+<li>Unordered list item 1</li>
+<li>Unordered list item 2<h2 id=""this-is-heading-in-list"">This Is Heading (in list).</h2>
+</li>
+</ul>
+")]
         [InlineData(@"+ a
 + b",
             @"<ul>

@@ -322,7 +322,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             {
                 if (anyRight != null)
                 {
-                    return Any(new[] { anyLeft }.Concat(anyRight.Inners).ToArray());
+                    return Any(new[] { left }.Concat(anyRight.Inners).ToArray());
                 }
                 else
                 {

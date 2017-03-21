@@ -12,64 +12,70 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownListBlockRule : IMarkdownRule
     {
+        private static readonly Matcher _ChildList =
+            Matcher.WhiteSpacesOrEmpty.CompareLength(LengthComparison.GreaterThanOrEquals, "indent") +
+            ((Matcher.AnyCharInRange('0', '9').RepeatAtLeast(1) + '.') | Matcher.AnyCharIn('*', '+', '-')) +
+            Matcher.WhiteSpaces;
+        private static readonly Matcher _FollowingText =
+            Matcher.AnyStringInSingleLine + (Matcher.NewLine | Matcher.EndOfString) +
+            (
+                // todo : not other block rule
+                (
+                    Matcher.WhiteSpacesOrEmpty.CompareLength(LengthComparison.LessThan, "indent") +
+                    (
+                        // blockquote
+                        Matcher.Char('>') |
+                        // list
+                        (((Matcher.AnyCharInRange('0', '9').RepeatAtLeast(1) + '.') | Matcher.AnyCharIn('*', '+', '-')) + Matcher.WhiteSpaces) |
+                        // heading
+                        (Matcher.Char('#').Repeat(1, 6) + Matcher.WhiteSpaces + Matcher.AnyCharNotIn(' ', '\n')) |
+                        // hr
+                        ((Matcher.AnyCharIn('-', '*', '_') + Matcher.WhiteSpacesOrEmpty).RepeatAtLeast(3) + Matcher.NewLine) |
+                        // fence
+                        ((Matcher.Char('`').RepeatAtLeast(3) | Matcher.Char('~').RepeatAtLeast(3)) + Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharNotIn(' ', '\n').RepeatAtLeast(0) + Matcher.WhiteSpacesOrEmpty + Matcher.NewLine)
+                    )
+                ).ToNegativeTest() +
+                Matcher.AnyStringInSingleLine + (Matcher.NewLine | Matcher.EndOfString)
+            ).RepeatAtLeast(0);
+
         private static readonly Matcher _OrderListMatcher =
             // @" *(\d+. *)"
             (Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharInRange('0', '9').RepeatAtLeast(1).ToGroup("start") + '.' + Matcher.WhiteSpaces).ToGroup("indent") +
-            Matcher.AnyStringInSingleLineOrEmpty +
             (
-                Matcher.NewLine +
                 (
-                    // except following:
+                    // following text.
+                    _FollowingText +
+                    // following empty lines
                     (
-                        // heading
-                        (Matcher.WhiteSpacesOrEmpty + Matcher.Char('#').Repeat(1, 6) + Matcher.WhiteSpaces + Matcher.AnyCharNot('\n')) |
-                        // hr
-                        ((Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('-', '*', '_')).RepeatAtLeast(3) + Matcher.WhiteSpacesOrEmpty + Matcher.NewLine) |
-                        // blockquote
-                        (Matcher.WhiteSpacesOrEmpty.CompareLength(LengthComparison.LessThan, "indent") + '>')
-                    ).ToNegativeTest() +
-                    (
-                        Matcher.AnyStringInSingleLine |
-                        (
-                            Matcher.NewLine.RepeatAtLeast(1) +
-                            (
-                                (Matcher.WhiteSpace | (Matcher.AnyCharInRange('0', '9').RepeatAtLeast(1) + '.' + Matcher.WhiteSpace)).ToTest() +
-                                Matcher.AnyStringInSingleLine
-                            )
-                        )
-                    )
-                )
-            ).RepeatAtLeast(0) +
-            (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
+                        // child list
+                        (Matcher.NewLine.RepeatAtLeast(0) + _ChildList + _FollowingText) |
+                        // next list item, update indent
+                        (Matcher.NewLine.RepeatAtLeast(0) + (Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharInRange('0', '9').RepeatAtLeast(1) + '.' + Matcher.WhiteSpaces).ToGroup("indent") + _FollowingText) |
+                        // other
+                        (Matcher.NewLine.RepeatAtLeast(1) + Matcher.WhiteSpaces.CompareLength(LengthComparison.GreaterThanOrEquals, "indent") + _FollowingText)
+                    ).RepeatAtLeast(0)
+                ) |
+                Matcher.EndOfString
+            );
         private static readonly Matcher _UnorderListMatcher =
-            // @" *\d+. *"
+            // @" *(\d+. *)"
             (Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('*', '+', '-') + Matcher.WhiteSpaces).ToGroup("indent") +
-            Matcher.AnyStringInSingleLineOrEmpty +
             (
-                Matcher.NewLine +
                 (
-                    // except following:
+                    // following text.
+                    _FollowingText +
+                    // following empty lines
                     (
-                        // heading
-                        (Matcher.WhiteSpacesOrEmpty + Matcher.Char('#').Repeat(1, 6) + Matcher.WhiteSpaces + Matcher.AnyCharNot('\n')) |
-                        // hr
-                        ((Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('-', '*', '_')).RepeatAtLeast(3) + Matcher.WhiteSpacesOrEmpty + Matcher.NewLine) |
-                        // blockquote
-                        (Matcher.WhiteSpacesOrEmpty.CompareLength(LengthComparison.LessThan, "indent") + '>')
-                    ).ToNegativeTest() +
-                    (
-                        Matcher.AnyStringInSingleLine |
-                        (
-                            Matcher.NewLine.RepeatAtLeast(1) +
-                            (
-                                (Matcher.WhiteSpace | (Matcher.AnyCharIn('*', '+', '-') + Matcher.WhiteSpace)).ToTest() +
-                                Matcher.AnyStringInSingleLine
-                            )
-                        )
-                    )
-                )
-            ).RepeatAtLeast(0) +
-            (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
+                        // child list
+                        (Matcher.NewLine.RepeatAtLeast(0) + _ChildList + _FollowingText) |
+                        // next list item, update indent
+                        (Matcher.NewLine.RepeatAtLeast(0) + (Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('*', '+', '-') + Matcher.WhiteSpaces).ToGroup("indent") + _FollowingText) |
+                        // other
+                        (Matcher.NewLine.RepeatAtLeast(1) + Matcher.WhiteSpaces.CompareLength(LengthComparison.GreaterThanOrEquals, "indent") + _FollowingText)
+                    ).RepeatAtLeast(0)
+                ) |
+                Matcher.EndOfString
+            );
 
         public virtual string Name => "List";
 
@@ -147,16 +153,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     }
 
                     var c = parser.SwitchContext(MarkdownBlockContext.IsTop, false);
-                    if (!loose)
-                    {
-                        var bc = (MarkdownBlockContext)parser.Context;
-                        parser.SwitchContext(
-                            bc.SetRules(
-                                ImmutableList.Create<IMarkdownRule>(
-                                    this,
-                                    new MarkdownNewLineBlockRule(),
-                                    new MarkdownTextBlockRule())));
-                    }
                     var itemSourceInfo = sourceInfo.Copy(item, lineOffset);
                     var blockTokens = parser.Tokenize(itemSourceInfo);
                     parser.SwitchContext(c);
