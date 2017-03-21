@@ -1,7 +1,6 @@
 <Project>
   <PropertyGroup>
-    <TargetFramework>net452</TargetFramework>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFramework>net46</TargetFramework>
 
     <!-- Note: by convention assembly should be named after the root namespace -->
     <AssemblyName Condition=" '$(AssemblyName)' == '' ">$(MSBuildProjectName)</AssemblyName>

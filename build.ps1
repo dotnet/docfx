@@ -16,7 +16,7 @@ $releaseBranch = "master"
 $dotnetCommand = "dotnet"
 $nugetCommand = "$env:LOCALAPPDATA\Nuget\Nuget.exe"
 $gitCommand = "git"
-$framework = "net452"
+$framework = "net46"
 $packageVersion = "1.0.0"
 $assemblyVersion = "1.0.0.0"
 
