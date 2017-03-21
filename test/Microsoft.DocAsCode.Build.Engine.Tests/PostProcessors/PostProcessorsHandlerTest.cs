@@ -845,6 +845,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 const string intermediateFolderVariable = "%cache%";
                 var intermediateFolder = GetRandomFolder();
                 Environment.SetEnvironmentVariable("cache", intermediateFolder);
+                string phaseName = "TestIncrementalSplitScenario";
                 var currentBuildInfo = new BuildInfo
                 {
                     DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolderVariable)
@@ -858,6 +859,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 {
                     Name = typeof(AppendStringPostProcessor).Name
                 });
+                lastBuildInfo.PostProcessInfo.MessageInfo.GetListener().WriteLine(new LogItem { File = "CatLibrary.Cat-2.yml", LogLevel = LogLevel.Warning, Message = "Invalid bookmark.", Phase = phaseName });
 
                 // Exclude c, which is not incremental
                 var preparedManifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental_split_case.json"));
@@ -875,38 +877,50 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 var outputFolder = GetRandomFolder();
                 PrepareOutput(outputFolder, "CatLibrary.Cat-2", "CatLibrary.Cat-2.Name", "c");
                 SetDefaultFAL(manifest, outputFolder);
-                increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
+                IncrementalActions
+                    (phaseName, () =>
+                    {
+                        using (new LoggerPhaseScope(phaseName))
+                        {
+                            increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
+                        }
 
-                // Check incremental flag
-                Assert.Equal(3, manifest.Files.Count);
-                Assert.True(manifest.Files.Single(i => i.OutputFiles[".html"].RelativePath == "CatLibrary.Cat-2.html").IsIncremental);
-                Assert.True(manifest.Files.Single(i => i.OutputFiles[".html"].RelativePath == "CatLibrary.Cat-2.Name.html").IsIncremental);
-                Assert.False(manifest.Files.Single(i => i.SourceRelativePath == "c.md").IsIncremental);
-                foreach (var file in manifest.Files)
-                {
-                    Assert.True(file.OutputFiles.ContainsKey(AppendStringPostProcessor.AdditionalExtensionString));
-                }
+                        // Check incremental flag
+                        Assert.Equal(3, manifest.Files.Count);
+                        Assert.True(manifest.Files.Single(i => i.OutputFiles[".html"].RelativePath == "CatLibrary.Cat-2.html").IsIncremental);
+                        Assert.True(manifest.Files.Single(i => i.OutputFiles[".html"].RelativePath == "CatLibrary.Cat-2.Name.html").IsIncremental);
+                        Assert.False(manifest.Files.Single(i => i.SourceRelativePath == "c.md").IsIncremental);
+                        foreach (var file in manifest.Files)
+                        {
+                            Assert.True(file.OutputFiles.ContainsKey(AppendStringPostProcessor.AdditionalExtensionString));
+                        }
 
-                // Check output content
-                VerifyOutput(outputFolder, AppendStringPostProcessor.AppendString, "CatLibrary.Cat-2", "CatLibrary.Cat-2.Name", "c");
+                        // Check output content
+                        VerifyOutput(outputFolder, AppendStringPostProcessor.AppendString, "CatLibrary.Cat-2", "CatLibrary.Cat-2.Name", "c");
 
-                // Check cached PostProcessInfo
-                Assert.NotNull(currentBuildInfo.PostProcessInfo);
+                        // Check cached PostProcessInfo
+                        Assert.NotNull(currentBuildInfo.PostProcessInfo);
 
-                var postProcessorInfos = currentBuildInfo.PostProcessInfo.PostProcessorInfos;
-                Assert.Equal(1, currentBuildInfo.PostProcessInfo.PostProcessorInfos.Count);
-                Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
-                Assert.Null(postProcessorInfos[0].IncrementalContextHash);
+                        var postProcessorInfos = currentBuildInfo.PostProcessInfo.PostProcessorInfos;
+                        Assert.Equal(1, currentBuildInfo.PostProcessInfo.PostProcessorInfos.Count);
+                        Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
+                        Assert.Null(postProcessorInfos[0].IncrementalContextHash);
 
-                var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
-                Assert.Equal(6, postProcessOutputs.Count); // no change for *.mta.json, so not in cache.
-                VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, AppendStringPostProcessor.AdditionalExtensionString, "CatLibrary.Cat-2", "CatLibrary.Cat-2.Name", "c");
+                        var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
+                        Assert.Equal(6, postProcessOutputs.Count); // no change for *.mta.json, so not in cache.
+                        VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, AppendStringPostProcessor.AdditionalExtensionString, "CatLibrary.Cat-2", "CatLibrary.Cat-2.Name", "c");
 
-                // Check incremental info
-                Assert.Equal(1, manifest.IncrementalInfo.Count);
-                Assert.Equal(true, manifest.IncrementalInfo[0].Status.CanIncremental);
-                Assert.Equal(IncrementalPhase.PostProcessing, manifest.IncrementalInfo[0].Status.IncrementalPhase);
-                Assert.Equal("Can support incremental post processing.", manifest.IncrementalInfo[0].Status.Details);
+                        // Check incremental info
+                        Assert.Equal(1, manifest.IncrementalInfo.Count);
+                        Assert.Equal(true, manifest.IncrementalInfo[0].Status.CanIncremental);
+                        Assert.Equal(IncrementalPhase.PostProcessing, manifest.IncrementalInfo[0].Status.IncrementalPhase);
+                        Assert.Equal("Can support incremental post processing.", manifest.IncrementalInfo[0].Status.Details);
+
+                        // Check log messages
+                        var logs = Listener.Items.Where(i => i.Phase.StartsWith(phaseName)).ToList();
+                        Assert.Equal(2, logs.Count);
+                        Assert.True(logs.Where(l => l.Message.Contains("Invalid bookmark.")).Count() == 1);
+                    });
             }
             finally
             {
@@ -1018,5 +1032,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 .Create();
         }
         #endregion
+
+        private class LogItem : ILogItem
+        {
+            public string File { get; set; }
+
+            public string Line { get; set; }
+
+            public LogLevel LogLevel { get; set; }
+
+            public string Message { get; set; }
+
+            public string Phase { get; set; }
+        }
     }
 }

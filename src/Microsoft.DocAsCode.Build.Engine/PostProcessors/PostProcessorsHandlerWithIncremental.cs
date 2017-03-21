@@ -119,9 +119,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (_increContext.IsIncremental)
                 {
-                    foreach (var increItem in increItems)
+                    var sourcePaths = (from increItem in increItems
+                                       select increItem.SourceRelativePath).Distinct();
+                    foreach (var p in sourcePaths)
                     {
-                        _increContext.LastInfo.MessageInfo.Replay(increItem.SourceRelativePath);
+                        _increContext.LastInfo.MessageInfo.Replay(p);
                     }
 
                     // Add back incremental items
