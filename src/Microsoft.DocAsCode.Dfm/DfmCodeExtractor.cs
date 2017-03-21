@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.Dfm
         {
             var length = dedentLength ??
                                (from line in lines
-                                where !string.IsNullOrEmpty(line) && !string.IsNullOrWhiteSpace(line)
+                                where !string.IsNullOrWhiteSpace(line)
                                 select (int?)DfmCodeExtractorHelper.GetIndentLength(line)).Min() ?? 0;
             var normalizedLines = (length == 0 ? lines : lines.Select(s => Regex.Replace(s, string.Format(RemoveIndentSpacesRegexString, length), string.Empty))).ToArray();
             return normalizedLines;
