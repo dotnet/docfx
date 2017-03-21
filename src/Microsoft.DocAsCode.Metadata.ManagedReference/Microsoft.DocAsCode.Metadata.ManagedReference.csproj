@@ -26,7 +26,7 @@
     <PackageReference Include="System.Collections.Immutable" Version="1.2.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
     <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
