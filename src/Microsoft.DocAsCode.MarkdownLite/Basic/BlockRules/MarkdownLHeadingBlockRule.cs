@@ -10,13 +10,18 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownLHeadingBlockRule : IMarkdownRule
     {
-        // ^([^\n]+)\n *(=|-){2,} *(?:\n+|$)
+
         private static readonly Matcher _LHeadingMatcher =
-            // @"([^\n]+)\n"
-            Matcher.AnyStringInSingleLine.ToGroup("text") + Matcher.NewLine +
-            // @" *(=|-){2,} *"
-            Matcher.WhiteSpacesOrEmpty + Matcher.AnyCharIn('=', '-').RepeatAtLeast(2).ToGroup("level") + Matcher.WhiteSpacesOrEmpty +
-            // @"(?:\n+|$)"
+            (
+                Matcher.AnyStringInSingleLine +
+                (
+                    Matcher.NewLine +
+                    (Matcher.WhiteSpace.Repeat(0, 3) + Matcher.AnyCharIn('=', '-').RepeatAtLeast(2) + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine | Matcher.EndOfString)).ToNegativeTest() +
+                    Matcher.AnyStringInSingleLine
+                ).RepeatAtLeast(0)
+            ).ToGroup("text") +
+            Matcher.NewLine +
+            Matcher.WhiteSpace.Repeat(0, 3) + Matcher.AnyCharIn('=', '-').RepeatAtLeast(2).ToGroup("level") + Matcher.WhiteSpacesOrEmpty +
             (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
 
         public virtual string Name => "LHeading";

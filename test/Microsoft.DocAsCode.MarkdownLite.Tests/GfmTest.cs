@@ -640,6 +640,13 @@ not in code c.
 in code b.
 </code></pre><p>not in code c.</p>
 ")]
+        [InlineData(
+            @"h
+2
+-----",
+            @"<h2 id=""h2"">h
+2</h2>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {

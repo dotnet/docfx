@@ -27,10 +27,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
             builder.Add(new GfmFencesBlockRule());
             builder.Add(new MarkdownHeadingBlockRule());
             builder.Add(new MarkdownNpTableBlockRule());
-            builder.Add(new MarkdownLHeadingBlockRule());
             builder.Add(new MarkdownHrBlockRule());
             builder.Add(new MarkdownBlockquoteBlockRule());
             builder.Add(new MarkdownListBlockRule());
+            builder.Add(new MarkdownLHeadingBlockRule());
             builder.Add(new GfmHtmlCommentBlockRule());
             builder.Add(new MarkdownHtmlBlockRule());
             builder.Add(new MarkdownDefBlockRule());
