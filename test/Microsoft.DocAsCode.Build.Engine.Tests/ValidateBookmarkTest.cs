@@ -77,12 +77,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             }
             var logs = _listener.Items;
             Assert.Equal(4, logs.Count);
+            Assert.Equal(3, logs.Where(l => l.ErrorCode == ErrorCode.InvalidExternalBookmark).Count());
+            Assert.Equal(1, logs.Where(l => l.ErrorCode == ErrorCode.InvalidInternalBookmark).Count());
             var expected = new[]
             {
                 Tuple.Create(@"Illegal link: `[link with source info](a.md#b2)` -- missing bookmark. The file a.md doesn't contain a bookmark named b2.", "b.md"),
                 Tuple.Create(@"Illegal link: `[link in token file](a.md#b3)` -- missing bookmark. The file a.md doesn't contain a bookmark named b3.", "token.md"),
                 Tuple.Create(@"Illegal link: `<a href=""a.md#b4"">link without source info</a>` -- missing bookmark. The file a.md doesn't contain a bookmark named b4.", "b.md"),
-                Tuple.Create(@"Illegal link: `<a href=""f.md#b1"">Test local link</a>` -- missing bookmark. The file f.md doesn't contain a bookmark named b1.", "f.md"),
+                Tuple.Create(@"Illegal link: `<a href=""#b1"">Test local link</a>` -- missing bookmark. The file f.md doesn't contain a bookmark named b1.", "f.md"),
             };
             var actual = logs.Select(l => Tuple.Create(l.Message, l.File)).ToList();
             Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);
@@ -126,7 +128,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             Assert.Equal(1, logs.Count);
             var expected = new[]
             {
-                Tuple.Create("Illegal link: `<a href=\"test.md#invalid\">test</a>` -- missing bookmark. The file test.md doesn't contain a bookmark named invalid.", "test.md"),
+                Tuple.Create("Illegal link: `<a href=\"#invalid\">test</a>` -- missing bookmark. The file test.md doesn't contain a bookmark named invalid.", "test.md"),
             };
             var actual = logs.Select(l => Tuple.Create(l.Message, l.File)).ToList();
             Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);

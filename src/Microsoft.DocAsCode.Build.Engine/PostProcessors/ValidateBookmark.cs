@@ -115,16 +115,23 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         string currentFileSrc = linkItem.SourceFile ?? _fileMapping[currentFile];
                         string linkedToFileSrc = _fileMapping[linkedToFile];
-                        string link = linkItem.Href == string.Empty ? $"#{bookmark}" : $"{linkedToFileSrc}#{bookmark}";
+
+                        bool internalBookmark = linkItem.Href == string.Empty || FilePathComparer.OSPlatformSensitiveStringComparer.Equals(linkedToFileSrc, currentFileSrc);
+
+                        string link = internalBookmark ? $"#{bookmark}" : $"{linkedToFileSrc}#{bookmark}";
                         string content = linkItem.SourceFragment;
                         if (string.IsNullOrEmpty(content))
                         {
                             // Invalid bookmarks introduced from templates is a corner case, ignored.
                             content = $"<a href=\"{link}\">{title}</a>";
                         }
+
+                        string errorCode = internalBookmark ? ErrorCode.InvalidInternalBookmark : ErrorCode.InvalidExternalBookmark;
                         Logger.LogWarning($"Illegal link: `{content}` -- missing bookmark. The file {linkedToFileSrc} doesn't contain a bookmark named {bookmark}.",
-                            file: currentFileSrc,
-                            line: linkItem.SourceLineNumber != 0 ? linkItem.SourceLineNumber.ToString() : null);
+                            null,
+                            currentFileSrc,
+                            linkItem.SourceLineNumber != 0 ? linkItem.SourceLineNumber.ToString() : null,
+                            errorCode: errorCode);
                     }
                 }
             }

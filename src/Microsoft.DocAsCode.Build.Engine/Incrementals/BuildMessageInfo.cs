@@ -150,6 +150,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             public string Message { get; set; }
 
             public string Phase { get; set; }
+
+            public string ErrorCode { get; set; }
         }
     }
 }
