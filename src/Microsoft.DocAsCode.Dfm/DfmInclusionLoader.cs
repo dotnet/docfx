@@ -15,17 +15,17 @@ namespace Microsoft.DocAsCode.Dfm
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
-    internal sealed class DocfxFlavoredIncHelper : IDisposable
+    internal class DfmInclusionLoader : IDisposable
     {
         private readonly FileCacheLite _cache;
         private readonly Dictionary<string, HashSet<string>> _dependencyCache = new Dictionary<string, HashSet<string>>();
 
-        public DocfxFlavoredIncHelper()
+        public DfmInclusionLoader()
         {
             _cache = new FileCacheLite(new FilePathComparer());
         }
 
-        public string Load(IMarkdownRenderer adapter, string currentPath, string raw, SourceInfo sourceInfo, IMarkdownContext context, DfmEngine engine)
+        public virtual string Load(IMarkdownRenderer adapter, string currentPath, string raw, SourceInfo sourceInfo, IMarkdownContext context, DfmEngine engine)
         {
             return LoadCore(adapter, currentPath, raw, sourceInfo, context, engine);
         }
@@ -66,8 +66,7 @@ namespace Microsoft.DocAsCode.Dfm
                 if (!_dependencyCache.TryGetValue(currentPath, out dependency) ||
                     !_cache.TryGet(currentPath, out result))
                 {
-                    var filePathWithStatus = DfmFallbackHelper.GetFilePathWithFallback(originalRelativePath, context);
-                    var src = EnvironmentContext.FileAbstractLayer.ReadAllText(filePathWithStatus.Item1);
+                    var src = GetIncludedContent(originalRelativePath, context);
                     dependency = new HashSet<string>();
                     src = new DfmEngine(engine).InternalMarkup(src, context.SetFilePathStack(parents).SetDependency(dependency).SetIsInclude());
 
@@ -84,6 +83,12 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return GenerateErrorNodeWithCommentWrapper("INCLUDE", e.Message, raw, sourceInfo);
             }
+        }
+
+        protected virtual string GetIncludedContent(string filePath, IMarkdownContext context)
+        {
+            var filePathWithStatus = DfmFallbackHelper.GetFilePathWithFallback(filePath, context);
+            return EnvironmentContext.FileAbstractLayer.ReadAllText(filePathWithStatus.Item1);
         }
 
         private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, string html, SourceInfo sourceInfo)

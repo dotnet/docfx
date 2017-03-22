@@ -13,8 +13,8 @@ namespace Microsoft.DocAsCode.Dfm
 
     public class DfmRenderer : HtmlRenderer, IDisposable
     {
-        private readonly DocfxFlavoredIncHelper _inlineInclusionHelper = new DocfxFlavoredIncHelper();
-        private readonly DocfxFlavoredIncHelper _blockInclusionHelper = new DocfxFlavoredIncHelper();
+        private readonly DfmInclusionLoader _inlineInclusionHelper = new DfmInlineInclusionLoader(true);
+        private readonly DfmInclusionLoader _blockInclusionHelper = new DfmInclusionLoader();
         private readonly DfmCodeExtractor _dfmCodeExtractor = new DfmCodeExtractor();
 
         public ImmutableDictionary<string, string> Tokens { get; set; }

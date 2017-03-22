@@ -213,7 +213,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 
             var ref1 = @"[!include[ref2](ref2.md ""This is root"")]";
             var ref2 = @"## Inline inclusion do not parse header [!include[root](root.md ""This is root"")]";
-            var ref3 = @"**Hello**";
+            var ref3 = @"**Hello**  ";
             File.WriteAllText("root.md", root);
             File.WriteAllText("ref1.md", ref1);
             File.WriteAllText("ref2.md", ref2);

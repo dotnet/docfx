@@ -5,6 +5,7 @@ v2.15(Pre-Release)
 -----------
 1.  Bug fixes:
     1. Auto dedent the included code snippet, both when including the whole file and file sections.
+    2. [Breaking Change]For inline inclusion, trim ending white spaces, considering ending white spaces in inline inclusion in most cases are typos.
 
 v2.14
 -----------
