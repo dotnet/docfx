@@ -210,7 +210,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         private void ProcessUnloadedTemplateDependency(IEnumerable<HostService> hostServices)
         {
             var loaded = Context.ManifestItems;
-            var unloaded = GetUnloadedManifestItems(hostServices);
+            IEnumerable<ManifestItem> unloaded;
+            using (new LoggerPhaseScope("GetUnloadedManifestItems", LogLevel.Verbose))
+            {
+                unloaded = GetUnloadedManifestItems(hostServices);
+            }
             var types = new HashSet<string>(unloaded.Select(m => m.DocumentType).Except(loaded.Select(m => m.DocumentType)));
             if (types.Count > 0)
             {
