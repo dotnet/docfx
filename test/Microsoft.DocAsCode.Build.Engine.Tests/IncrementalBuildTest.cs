@@ -221,9 +221,9 @@ tagRules : [
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
-                            "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
+                            "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span></p>",
                             "<p>",
-                            "test</p>",
+                            "<p>test</p>",
                             ""),
                         File.ReadAllText(conceptualOutputPath));
                 }
@@ -315,9 +315,9 @@ tagRules : [
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
-                            "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
+                            "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span></p>",
                             "<p>",
-                            "test</p>",
+                            "<p>test</p>",
                             ""),
                         File.ReadAllText(conceptualOutputPath));
                 }

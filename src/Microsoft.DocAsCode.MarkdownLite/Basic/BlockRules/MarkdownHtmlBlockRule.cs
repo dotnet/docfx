@@ -92,7 +92,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 )
             ) +
             //  *(?:\n{2,}|$)
-            Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine.RepeatAtLeast(2) | (Matcher.NewLine.RepeatAtLeast(0) + Matcher.EndOfString));
+            Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
 
         public virtual string Name => "Html";
 
