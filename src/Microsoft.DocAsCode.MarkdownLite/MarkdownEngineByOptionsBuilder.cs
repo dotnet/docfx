@@ -34,10 +34,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 builder.Add(new MarkdownNpTableBlockRule());
             }
-            builder.Add(new MarkdownLHeadingBlockRule());
             builder.Add(new MarkdownHrBlockRule());
             builder.Add(new MarkdownBlockquoteBlockRule());
             builder.Add(new MarkdownListBlockRule());
+            builder.Add(new MarkdownLHeadingBlockRule());
             if (Options.Gfm)
             {
                 builder.Add(new GfmHtmlCommentBlockRule());
