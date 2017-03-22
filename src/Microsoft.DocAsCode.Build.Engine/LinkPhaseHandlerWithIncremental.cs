@@ -61,21 +61,61 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void PreHandle(List<HostService> hostServices)
         {
-            ReloadModelsPerChanges(hostServices);
-            RegisterUnloadedXRefSpec(hostServices);
-            RegisterUnloadedFileMap(hostServices);
-            LoadContextInfo(hostServices);
+            using (new LoggerPhaseScope("ReloadModelsPerChanges", LogLevel.Verbose))
+            {
+                ReloadModelsPerChanges(hostServices);
+            }
+
+            using (new LoggerPhaseScope("RegisterUnloadedXRefSpec", LogLevel.Verbose))
+            {
+                RegisterUnloadedXRefSpec(hostServices);
+            }
+
+            using (new LoggerPhaseScope("RegisterUnloadedFileMap", LogLevel.Verbose))
+            {
+                RegisterUnloadedFileMap(hostServices);
+            }
+
+            using (new LoggerPhaseScope("LoadContextInfo", LogLevel.Verbose))
+            {
+                LoadContextInfo(hostServices);
+            }
+
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
         private void PostHandle(List<HostService> hostServices)
         {
-            ProcessUnloadedTemplateDependency(hostServices);
-            UpdateManifest();
-            UpdateFileMap(hostServices);
-            UpdateXrefMap(hostServices);
-            SaveContextInfo(hostServices);
-            RelayBuildMessage(hostServices);
+            using (new LoggerPhaseScope("ProcessUnloadedTemplateDependency", LogLevel.Verbose))
+            {
+                ProcessUnloadedTemplateDependency(hostServices);
+            }
+
+            using (new LoggerPhaseScope("UpdateManifest", LogLevel.Verbose))
+            {
+                UpdateManifest();
+            }
+
+            using (new LoggerPhaseScope("UpdateFileMap", LogLevel.Verbose))
+            {
+                UpdateFileMap(hostServices);
+            }
+
+            using (new LoggerPhaseScope("UpdateXrefMap", LogLevel.Verbose))
+            {
+                UpdateXrefMap(hostServices);
+            }
+
+            using (new LoggerPhaseScope("SaveContextInfo", LogLevel.Verbose))
+            {
+                SaveContextInfo(hostServices);
+            }
+
+            using (new LoggerPhaseScope("RelayBuildMessage", LogLevel.Verbose))
+            {
+                RelayBuildMessage(hostServices);
+            }
+
             Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
