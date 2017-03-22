@@ -63,6 +63,7 @@ Inline file inclusion is in the following syntax, in which `<title>` stands for 
 > For inline file inclusion, the file included will be considered as containing only inline tags, for example,
 > `###header` inside the file will not transfer since `<h3>` is a block tag, while `[a](b)` will transform to
 > `<a href='b'>a</a>` since `<a>` is an inline tag.
+> Also, ending white spaces will be **trimmed**, considering ending white spaces in inline inclusion in most cases are typos.
 
 ```md
 ...Other inline contents... [!include[<title>](<filepath>)]
