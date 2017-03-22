@@ -131,8 +131,8 @@ foreach ($sln in (Get-ChildItem *.sln)) {
     & dotnet restore $sln.FullName
     ProcessLastExitCode $lastexitcode "dotnet restore $($sln.FullName)"
 
-    & dotnet build $sln.FullName -c $configuration -f $framework -v n /m:1
-    ProcessLastExitCode $lastexitcode "dotnet build $($sln.FullName) -c $configuration -f $framework -v n /m:1"
+    & dotnet build $sln.FullName -c $configuration -v n /m:1
+    ProcessLastExitCode $lastexitcode "dotnet build $($sln.FullName) -c $configuration -v n /m:1"
 }
 
 # Run unit test cases
