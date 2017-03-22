@@ -666,6 +666,33 @@ b",
 
         [Fact]
         [Trait("Related", "Markdown")]
+        public void TestTable_Html()
+        {
+            // 1. Prepare data
+            var source = @"
+<p>Here's example of how to create an instance of **Cat** class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>
+<pre><code class=""c#"">    var a = new Cat(object, int)();
+    int catNumber = new int();
+    unsafe
+    {
+        a.GetFeetLength(catNumber);
+    }</code></pre>
+<p>As you see, here we bring in <strong>pointer</strong> so we need to add <span class=""languagekeyword"">unsafe</span> keyword.</p>
+";
+            var expected = @"<p>Here&#39;s example of how to create an instance of <strong>Cat</strong> class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>
+<pre><code class=""c#"">    var a = new Cat(object, int)();
+    int catNumber = new int();
+    unsafe
+    {
+        a.GetFeetLength(catNumber);
+    }</code></pre>
+<p>As you see, here we bring in <strong>pointer</strong> so we need to add <span class=""languagekeyword"">unsafe</span> keyword.</p>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
         public void TestTable_WithEmptyColumn()
         {
             // 1. Prepare data
