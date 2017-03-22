@@ -185,65 +185,84 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void CopyToCurrentCache(List<ManifestItem> increItems)
         {
-            foreach (var item in from mi in increItems
-                                 from oi in mi.OutputFiles.Values
-                                 where oi.LinkToPath != null && oi.LinkToPath.StartsWith(_increContext.LastBaseDir)
-                                 select oi)
+            using (new PerformanceScope("CopyToCurrentCache"))
             {
-                string cachedFileName;
-                if (!_increContext.LastInfo.PostProcessOutputs.TryGetValue(item.RelativePath, out cachedFileName))
+                foreach (var item in from mi in increItems
+                                     from oi in mi.OutputFiles.Values
+                                     where oi.LinkToPath != null && oi.LinkToPath.StartsWith(_increContext.LastBaseDir)
+                                     select oi)
                 {
-                    throw new BuildCacheException($"Last incremental post processor outputs should contain {item.RelativePath}.");
-                }
+                    string cachedFileName;
+                    if (!_increContext.LastInfo.PostProcessOutputs.TryGetValue(item.RelativePath, out cachedFileName))
+                    {
+                        throw new BuildCacheException($"Last incremental post processor outputs should contain {item.RelativePath}.");
+                    }
 
-                IncrementalUtility.RetryIO(() =>
-                {
-                    // Copy last cached file to current cache.
-                    var newFileName = IncrementalUtility.GetRandomEntry(_increContext.CurrentBaseDir);
-                    var currentCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.CurrentBaseDir), newFileName);
-                    var lastCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.LastBaseDir), cachedFileName);
-                    File.Copy(lastCachedFile, currentCachedFile);
-                    item.LinkToPath = Path.Combine(_increContext.CurrentBaseDir, newFileName);
-                });
+                    IncrementalUtility.RetryIO(() =>
+                    {
+                        // Copy last cached file to current cache.
+                        var newFileName = IncrementalUtility.GetRandomEntry(_increContext.CurrentBaseDir);
+                        var currentCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.CurrentBaseDir), newFileName);
+                        var lastCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.LastBaseDir), cachedFileName);
+                        File.Copy(lastCachedFile, currentCachedFile);
+                        item.LinkToPath = Path.Combine(_increContext.CurrentBaseDir, newFileName);
+                    });
+                }
             }
         }
 
         private static void CheckNoIncrementalItems(Manifest manifest, string prependString)
         {
-            if (manifest.Files.Any(i => i.IsIncremental))
+            using (new PerformanceScope("CheckNoIncrementalItems"))
             {
-                throw new DocfxException($"{prependString} in inner post processor handler, manifest items should not have any incremental items.");
+                if (manifest.Files.Any(i => i.IsIncremental))
+                {
+                    throw new DocfxException($"{prependString} in inner post processor handler, manifest items should not have any incremental items.");
+                }
             }
         }
 
         private List<ManifestItem> RestoreIncrementalManifestItems(Manifest manifest)
         {
-            var increItems = manifest.Files.Where(i => i.IsIncremental).ToList();
-
-            if (_increContext.IsIncremental)
+            using (new PerformanceScope("RestoreIncrementalManifestItems"))
             {
-                var restoredIncreItems = new List<ManifestItem>();
-                var increItemsGroup = (from f in increItems
-                                       group f by f.SourceRelativePath).ToDictionary(g => g.Key, g => g.ToList());
-                foreach (var pair in increItemsGroup)
-                {
-                    var cachedItems = _increContext.LastInfo.ManifestItems.Where(i => i.SourceRelativePath == pair.Key).ToList();
-                    if (cachedItems.Count != pair.Value.Count)
-                    {
-                        throw new BuildCacheException($"The count of items with source relative path '{pair.Key}' in last manifest doesn't match: last is {cachedItems.Count}, current is {pair.Value.Count}.");
-                    }
+                var increItems = manifest.Files.Where(i => i.IsIncremental).ToList();
 
-                    // Update IsIncremental flag
-                    restoredIncreItems.AddRange(cachedItems.Select(c => c.Clone(true, c.SourceRelativePath)));
+                if (_increContext.IsIncremental)
+                {
+                    var restoredIncreItems = new List<ManifestItem>();
+                    Dictionary<string, List<ManifestItem>> increItemsGroup;
+                    using (new PerformanceScope("Group"))
+                    {
+                        increItemsGroup = (from f in increItems
+                                           group f by f.SourceRelativePath).ToDictionary(g => g.Key, g => g.ToList());
+                    }
+                    using (new PerformanceScope("Restore"))
+                    {
+                        foreach (var pair in increItemsGroup)
+                        {
+                            var cachedItems = _increContext.LastInfo.ManifestItems.Where(i => i.SourceRelativePath == pair.Key).ToList();
+                            if (cachedItems.Count != pair.Value.Count)
+                            {
+                                throw new BuildCacheException($"The count of items with source relative path '{pair.Key}' in last manifest doesn't match: last is {cachedItems.Count}, current is {pair.Value.Count}.");
+                            }
+
+                            // Update IsIncremental flag
+                            restoredIncreItems.AddRange(cachedItems.Select(c => c.Clone(true, c.SourceRelativePath)));
+                        }
+                    }
+                    using (new PerformanceScope("UpdateManifest"))
+                    {
+                        // Update incremental items in manifest
+                        manifest.Files.RemoveAll(m => increItems.Contains(m));
+                        manifest.Files.AddRange(restoredIncreItems);
+                    }
+                        
+                    return restoredIncreItems;
                 }
 
-                // Update incremental items in manifest
-                manifest.Files.RemoveAll(m => increItems.Contains(m));
-                manifest.Files.AddRange(restoredIncreItems);
-                return restoredIncreItems;
+                return increItems;
             }
-
-            return increItems;
         }
 
         #endregion
