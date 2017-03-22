@@ -9,4 +9,8 @@
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TEMP\" />
+  </ItemGroup>
 </Project>

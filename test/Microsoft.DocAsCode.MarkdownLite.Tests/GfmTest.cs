@@ -542,11 +542,8 @@ aaa",
 
   [c]: c",
             @"<ul>
-<li><p>[a]: a</p>
-</li>
-<li><p>[b]: b</p>
-<p>[c]: c</p>
-</li>
+<li></li>
+<li></li>
 </ul>
 ")]
         [InlineData(
