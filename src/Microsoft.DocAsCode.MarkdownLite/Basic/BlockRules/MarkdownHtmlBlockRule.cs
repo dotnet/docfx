@@ -45,7 +45,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
             Matcher.CaseInsensitiveString("ins") |
             Matcher.CaseInsensitiveString("del") |
             Matcher.CaseInsensitiveString("img");
-
+        private static readonly Matcher _ElementName =
+            (InlineElementNames + Matcher.AnyWordCharacter.ToNegativeTest()).ToNegativeTest() +
+            // \w+
+            Matcher.AnyWordCharacter.RepeatAtLeast(1) +
+            // (?!:\/|[^\w\s@]*@)
+            (
+                Matcher.String(":/") |
+                ((Matcher.AnyWordCharacter | Matcher.AnyCharIn(' ', '\n', '@')).ToNegativeTest() + Matcher.AnyChar).RepeatAtLeast(0) + '@'
+            ).ToNegativeTest() +
+            // \b
+            (Matcher.AnyWordCharacter.ToNegativeTest() | Matcher.EndOfString);
         private static readonly Matcher _HtmlMatcher =
             Matcher.WhiteSpacesOrEmpty +
             (
@@ -60,18 +70,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 // none-empty element
                 (
                     Matcher.Char('<') +
-                    (
-                        (InlineElementNames + Matcher.AnyWordCharacter.ToNegativeTest()).ToNegativeTest() +
-                        // \w+
-                        Matcher.AnyWordCharacter.RepeatAtLeast(1) +
-                        // (?!:\/|[^\w\s@]*@)
-                        (
-                            Matcher.String(":/") |
-                            ((Matcher.AnyWordCharacter | Matcher.AnyCharIn(' ', '\n', '@')).ToNegativeTest() + Matcher.AnyChar).RepeatAtLeast(0) + '@'
-                        ).ToNegativeTest() +
-                        // \b
-                        Matcher.AnyWordCharacter.ToNegativeTest()
-                    ).ToGroup("element") +
+                    _ElementName.ToGroup("element") +
                     // [\s\S]+?<\/\1>
                     (
                         Matcher.AnyCharNot('<').RepeatAtLeast(1) |
@@ -82,16 +81,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 // empty element
                 (
                     Matcher.Char('<') +
-                    (InlineElementNames + Matcher.AnyWordCharacter.ToNegativeTest()).ToNegativeTest() +
-                    // \w+
-                    Matcher.AnyWordCharacter.RepeatAtLeast(1) +
-                    // (?!:\/|[^\w\s@]*@)
-                    (
-                        Matcher.String(":/") |
-                        ((Matcher.AnyWordCharacter | Matcher.AnyCharIn(' ', '\n', '@')).ToNegativeTest() + Matcher.AnyChar).RepeatAtLeast(0) + '@'
-                    ).ToNegativeTest() +
-                    // \b
-                    (Matcher.AnyWordCharacter.ToNegativeTest() | Matcher.EndOfString) +
+                    _ElementName +
                     // (?:"[^"]*"|'[^']*'|[^'"">])*
                     (
                         Matcher.AnyCharNotIn('"', '\'', '>').RepeatAtLeast(1) |
