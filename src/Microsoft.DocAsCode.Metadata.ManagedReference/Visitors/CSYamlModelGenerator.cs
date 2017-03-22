@@ -473,7 +473,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     )
                 ),
                 null,
-                null
+                (BlockSyntax)null
             ).NormalizeWhitespace().ToString();
 
         private string GetFieldSyntax(IFieldSymbol symbol, IFilterVisitor filterVisitor)
@@ -1475,7 +1475,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             GetAttributes(methodSymbol, filterVisitor),
                             new SyntaxTokenList(),
                             SyntaxFactory.Token(keyword),
-                            null,
+                            (BlockSyntax)null,
                             SyntaxFactory.Token(SyntaxKind.SemicolonToken));
                     }
                     else
@@ -1485,7 +1485,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             GetAttributes(methodSymbol, filterVisitor),
                             SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.ProtectedKeyword)),
                             SyntaxFactory.Token(keyword),
-                            null,
+                            (BlockSyntax)null,
                             SyntaxFactory.Token(SyntaxKind.SemicolonToken));
                     }
                 case Accessibility.Public:
@@ -1493,7 +1493,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         GetAttributes(methodSymbol, filterVisitor),
                         new SyntaxTokenList(),
                         SyntaxFactory.Token(keyword),
-                        null,
+                        (BlockSyntax)null,
                         SyntaxFactory.Token(SyntaxKind.SemicolonToken));
                 default:
                     if (methodSymbol.ExplicitInterfaceImplementations.Length > 0)
@@ -1502,7 +1502,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             GetAttributes(methodSymbol, filterVisitor),
                             new SyntaxTokenList(),
                             SyntaxFactory.Token(keyword),
-                            null,
+                            (BlockSyntax)null,
                             SyntaxFactory.Token(SyntaxKind.SemicolonToken));
                     }
                     return null;
