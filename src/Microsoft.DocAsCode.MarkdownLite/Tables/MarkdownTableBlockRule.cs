@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             //  *\|(.+)\n
             Matcher.WhiteSpacesOrEmpty + '|' + Matcher.AnyStringInSingleLine.ToGroup("head") + Matcher.NewLine +
             //  *\|( *[-:]+[-| :]*)\n
-            Matcher.WhiteSpacesOrEmpty + (Matcher.AnyCharIn('-', ':').RepeatAtLeast(1) + Matcher.AnyCharIn('-', '|', ' ', ':').RepeatAtLeast(0)).ToGroup("align") + Matcher.NewLine +
+            Matcher.WhiteSpacesOrEmpty + '|' + Matcher.WhiteSpacesOrEmpty + (Matcher.AnyCharIn('-', ':').RepeatAtLeast(1) + Matcher.AnyCharIn('-', '|', ' ', ':').RepeatAtLeast(0)).ToGroup("align") + Matcher.NewLine +
             // ((?: *\|.*(?:\n|$))*)
             (Matcher.WhiteSpacesOrEmpty + '|' + Matcher.AnyStringInSingleLineOrEmpty + (Matcher.NewLine | Matcher.EndOfString)).RepeatAtLeast(0).ToGroup("body") +
             Matcher.NewLine.RepeatAtLeast(0);
