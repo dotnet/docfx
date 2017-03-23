@@ -218,7 +218,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             var types = new HashSet<string>(unloaded.Select(m => m.DocumentType).Except(loaded.Select(m => m.DocumentType)));
             if (types.Count > 0)
             {
-                TemplateProcessor.ProcessDependencies(types, Context.ApplyTemplateSettings);
+                using (new LoggerPhaseScope("ProcessDependencies", LogLevel.Verbose))
+                {
+                    TemplateProcessor.ProcessDependencies(types, Context.ApplyTemplateSettings);
+                }
             }
             foreach (var m in unloaded)
             {
