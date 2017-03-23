@@ -101,7 +101,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 return TryMatchOld(parser, context);
             }
             var match = context.Match(OrderListMatcher);
-            int start;
+            int start = 1;
             bool ordered;
             if (match == null)
             {
@@ -161,7 +161,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     lineOffset += lines;
                 }
 
-                return new MarkdownListBlockToken(this, parser.Context, tokens.ToImmutableArray(), ordered, sourceInfo);
+                return new MarkdownListBlockToken(this, parser.Context, tokens.ToImmutableArray(), ordered, start, sourceInfo);
             }
             return null;
         }
