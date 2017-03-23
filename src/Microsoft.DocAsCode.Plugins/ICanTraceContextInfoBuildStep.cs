@@ -7,8 +7,8 @@ namespace Microsoft.DocAsCode.Plugins
 
     public interface ICanTraceContextInfoBuildStep : ISupportIncrementalBuildStep
     {
-        void SaveContext(Stream writer);
+        void SaveContext(Stream stream);
 
-        void LoadFromContext(Stream reader);
+        void LoadContext(Stream stream);
     }
 }

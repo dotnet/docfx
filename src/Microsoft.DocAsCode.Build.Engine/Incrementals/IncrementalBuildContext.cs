@@ -502,7 +502,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 return;
             }
 
-            foreach (var step in hostService.Processor.BuildSteps.Where(s => s is ICanTraceContextInfoBuildStep))
+            foreach (var step in hostService.Processor.BuildSteps.OfType<ICanTraceContextInfoBuildStep>())
             {
                 var stepInfo = lpi.Steps.Find(s => s.Name == step.Name);
                 if (stepInfo == null || stepInfo.ContextInfoFile == null)
@@ -511,7 +511,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 }
                 using (var stream = File.OpenRead(Path.Combine(Environment.ExpandEnvironmentVariables(LastBaseDir), stepInfo.ContextInfoFile)))
                 {
-                    ((ICanTraceContextInfoBuildStep)step).LoadFromContext(stream);
+                    ((ICanTraceContextInfoBuildStep)step).LoadContext(stream);
                 }
             }
         }

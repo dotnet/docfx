@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         #region ICanTraceContextInfoBuildStep Members
 
-        public void LoadFromContext(Stream stream)
+        public void LoadContext(Stream stream)
         {
             if (stream == null)
             {
