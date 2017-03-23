@@ -321,12 +321,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return new List<ManifestItem>();
             }
-            return (from h in hostServices
-                    where h.CanIncrementalBuild
-                    from f in h.GetUnloadedModelFiles(IncrementalContext)
-                    from mani in LastBuildVersionInfo.Manifest
-                    where FilePathComparer.OSPlatformSensitiveStringComparer.Equals(f, mani.SourceRelativePath)
-                    let copied = UpdateItem(mani, f)
+            var unloadedFiles = (from h in hostServices
+                                 where h.CanIncrementalBuild
+                                 from f in h.GetUnloadedModelFiles(IncrementalContext)
+                                 select f).ToDictionary(f => f, f => f, FilePathComparer.OSPlatformSensitiveStringComparer);
+            return (from mani in LastBuildVersionInfo.Manifest
+                    where unloadedFiles.ContainsKey(mani.SourceRelativePath)
+                    let copied = UpdateItem(mani, unloadedFiles[mani.SourceRelativePath])
                     select copied).ToList();
         }
 
