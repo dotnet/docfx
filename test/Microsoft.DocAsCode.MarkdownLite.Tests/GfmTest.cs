@@ -655,6 +655,12 @@ b",
         [InlineData(@"<input class=""a>""
 >", @"<input class=""a>""
 >")]
+        [InlineData(@"6. a
+1. b", @"<ol start=""6"">
+<li>a</li>
+<li>b</li>
+</ol>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
