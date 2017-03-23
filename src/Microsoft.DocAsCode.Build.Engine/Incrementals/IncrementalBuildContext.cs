@@ -517,7 +517,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     continue;
                 }
-                using (var writer = new StreamWriter(Path.Combine(Environment.ExpandEnvironmentVariables(BaseDir), stepInfo.ContextInfoFile)))
+                using (var writer = new StreamWriter(Path.Combine(Environment.ExpandEnvironmentVariables(BaseDir), stepInfo.ContextInfoFile), append: true))
                 {
                     ((ICanTraceContextInfoBuildStep)step).SaveContext(traceContext, writer);
                 }
