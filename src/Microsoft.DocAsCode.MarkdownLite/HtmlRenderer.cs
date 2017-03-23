@@ -90,6 +90,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var type = token.Ordered ? "ol" : "ul";
             StringBuffer result = "<";
             result += type;
+            if (token.Ordered && token.Start != 1)
+            {
+                result += " start=\"";
+                result += token.Start.ToString();
+                result += "\"";
+            }
             result = AppendSourceInfo(result, renderer, token);
             result += ">\n";
             foreach (var t in token.Tokens)
