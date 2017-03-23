@@ -232,29 +232,38 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     var restoredIncreItems = new List<ManifestItem>();
                     Dictionary<string, List<ManifestItem>> increItemsGroup;
+                    Dictionary<string, List<ManifestItem>> lastItemsGroup;
                     using (new PerformanceScope("Group"))
                     {
-                        increItemsGroup = (from f in increItems
-                                           group f by f.SourceRelativePath).ToDictionary(g => g.Key, g => g.ToList());
+                        increItemsGroup = GroupBySourceRelativePath(increItems);
+                        lastItemsGroup = GroupBySourceRelativePath(_increContext.LastInfo.ManifestItems);
                     }
                     using (new PerformanceScope("Restore"))
                     {
                         foreach (var pair in increItemsGroup)
                         {
-                            var cachedItems = _increContext.LastInfo.ManifestItems.Where(i => i.SourceRelativePath == pair.Key).ToList();
+                            List<ManifestItem> cachedItems;
+                            if (!lastItemsGroup.TryGetValue(pair.Key, out cachedItems))
+                            {
+                                throw new BuildCacheException($"Last manifest items doesn't contain the item with source relative path '{pair.Key}.'");
+                            }
                             if (cachedItems.Count != pair.Value.Count)
                             {
                                 throw new BuildCacheException($"The count of items with source relative path '{pair.Key}' in last manifest doesn't match: last is {cachedItems.Count}, current is {pair.Value.Count}.");
                             }
 
                             // Update IsIncremental flag
-                            restoredIncreItems.AddRange(cachedItems.Select(c => c.Clone(true, c.SourceRelativePath)));
+                            cachedItems.ForEach(c => c.IsIncremental = true);
+                            restoredIncreItems.AddRange(cachedItems);
                         }
                     }
-                    using (new PerformanceScope("UpdateManifest"))
+                    using (new PerformanceScope("RemoveIncrementalItems"))
                     {
                         // Update incremental items in manifest
-                        manifest.Files.RemoveAll(m => increItems.Contains(m));
+                        manifest.Files.RemoveAll(m => m.IsIncremental);
+                    }
+                    using (new PerformanceScope("AddRestoredItems"))
+                    {
                         manifest.Files.AddRange(restoredIncreItems);
                     }
                         
@@ -263,6 +272,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 return increItems;
             }
+        }
+
+        private static Dictionary<string, List<ManifestItem>> GroupBySourceRelativePath(IEnumerable<ManifestItem> items)
+        {
+            return (from f in items
+                    group f by f.SourceRelativePath).ToDictionary(g => g.Key, g => g.ToList());
         }
 
         #endregion
