@@ -60,7 +60,7 @@ namespace Microsoft.DocAsCode.Common
                 File = TransformFile(file),
                 Line = line,
                 DateTime = DateTime.UtcNow,
-                ErrorCode = item.ErrorCode
+                Code = item.Code
             };
 
             _writer.WriteLine(JsonUtility.Serialize(reportItem));
@@ -126,8 +126,8 @@ namespace Microsoft.DocAsCode.Common
             public DateTime DateTime { get; set; }
             [JsonProperty("message_severity")]
             public MessageSeverity Severity { get; set; }
-            [JsonProperty("error_code")]
-            public string ErrorCode{ get; set; }
+            [JsonProperty("code")]
+            public string Code{ get; set; }
         }
 
         public enum MessageSeverity
