@@ -127,6 +127,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
 
             var increInfo = hs.IncrementalInfos;
+            if (increInfo == null)
+            {
+                return;
+            }
+
             foreach (var c in _lastContextInfo)
             {
                 FileIncrementalInfo info;
