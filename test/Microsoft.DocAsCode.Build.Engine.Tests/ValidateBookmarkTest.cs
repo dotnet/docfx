@@ -77,8 +77,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             }
             var logs = _listener.Items;
             Assert.Equal(4, logs.Count);
-            Assert.Equal(3, logs.Where(l => l.ErrorCode == ErrorCode.InvalidExternalBookmark).Count());
-            Assert.Equal(1, logs.Where(l => l.ErrorCode == ErrorCode.InvalidInternalBookmark).Count());
+            Assert.Equal(3, logs.Where(l => l.Code == ErrorCode.InvalidExternalBookmark).Count());
+            Assert.Equal(1, logs.Where(l => l.Code == ErrorCode.InvalidInternalBookmark).Count());
             var expected = new[]
             {
                 Tuple.Create(@"Illegal link: `[link with source info](a.md#b2)` -- missing bookmark. The file a.md doesn't contain a bookmark named b2.", "b.md"),

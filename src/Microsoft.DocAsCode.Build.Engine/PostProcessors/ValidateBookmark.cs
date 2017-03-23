@@ -131,7 +131,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             null,
                             currentFileSrc,
                             linkItem.SourceLineNumber != 0 ? linkItem.SourceLineNumber.ToString() : null,
-                            errorCode: errorCode);
+                            code: errorCode);
                     }
                 }
             }
