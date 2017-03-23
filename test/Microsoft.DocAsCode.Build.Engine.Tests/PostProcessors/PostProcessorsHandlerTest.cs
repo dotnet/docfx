@@ -1045,7 +1045,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             public string Phase { get; set; }
 
-            public string ErrorCode { get; set; }
+            public string Code { get; set; }
         }
     }
 }
