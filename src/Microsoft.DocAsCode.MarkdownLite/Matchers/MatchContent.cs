@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.CompilerServices;
 
     public struct MatchContent
     {
@@ -32,15 +33,26 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             _group = group;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public char GetCurrentChar() => this[0];
 
-        public char this[int offset] => Text[GetCharIndex(offset)];
+        public char this[int offset]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Text[GetCharIndex(offset)]; }
+        }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool BeginOfString() => Direction == MatchDirection.Forward ? StartIndex == 0 : StartIndex == Text.Length;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool EndOfString() => Direction == MatchDirection.Forward ? StartIndex == Text.Length : StartIndex == 0;
 
-        public int Length => Direction == MatchDirection.Forward ? Text.Length - StartIndex : StartIndex;
+        public int Length
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Direction == MatchDirection.Forward ? Text.Length - StartIndex : StartIndex; }
+        }
 
         public MatchContent Offset(int offset) => new MatchContent(Text, GetIndex(offset), Direction, _group);
 
@@ -264,6 +276,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetIndex(int offset)
         {
             int result = GetIndexNoThrow(offset);
@@ -274,6 +287,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return result;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetCharIndex(int offset)
         {
             int result = GetIndexNoThrow(offset);
@@ -288,6 +302,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return result;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetIndexNoThrow(int offset) =>
             Direction == MatchDirection.Forward ? StartIndex + offset : StartIndex - offset;
     }
