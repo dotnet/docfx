@@ -3,12 +3,10 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
-    using System.IO;
-
-    public interface ICanTraceContextInfoBuildStep : ISupportIncrementalBuildStep
+    public class FileIncrementalInfo
     {
-        void SaveContext(Stream writer);
+        public string SourceFile { get; set; }
 
-        void LoadFromContext(Stream reader);
+        public bool IsIncremental { get; set; }
     }
 }

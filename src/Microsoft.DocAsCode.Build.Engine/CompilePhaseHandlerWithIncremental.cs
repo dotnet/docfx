@@ -66,6 +66,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     hostService.RegisterDependencyType();
                 }
+
+                if (hostService.ShouldTraceIncrementalInfo)
+                {
+                    hostService.IncrementalInfos = IncrementalContext.GetModelIncrementalInfo(hostService, Phase);
+                }
             }
             var fileSet = new HashSet<string>(from h in hostServices
                                               where !h.CanIncrementalBuild
@@ -89,7 +94,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 h.SaveIntermediateModel(IncrementalContext);
             }
             IncrementalContext.UpdateBuildVersionInfoPerDependencyGraph();
-            SaveContextInfo(hostServices);
             foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
             {
                 foreach (var file in GetFilesToRelayMessages(h))
@@ -104,15 +108,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             foreach (var h in hostServices)
             {
-                IncrementalContext.LoadContextInfo(h, Phase);
-            }
-        }
-
-        private void SaveContextInfo(List<HostService> hostServices)
-        {
-            foreach (var h in hostServices)
-            {
-                IncrementalContext.SaveContextInfo(h, Phase);
+                IncrementalContext.LoadContextInfo(h);
             }
         }
 
