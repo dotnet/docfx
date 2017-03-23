@@ -2,7 +2,7 @@
   <Import Project="..\Shared\test.base.props" />
 
   <ItemGroup>
-    <None Update="Assets\docfx.json_build\docfx.json;Assets\docfx.json_empty\docfx.json;Assets\docfx.json_invalid_key\docfx.json;Assets\docfx.json_invalid_format\docfx.json;Assets\docfx.json_metadata\docfx.json;Assets\docfx.json_metadata\docfxWithFilter.json;Assets\docfx.json_metadata_build\docfx.json;Assets\docfx.sample.1.json;Assets\filter.yaml.sample;Assets\test.cs.sample.1;Assets\test.csproj.sample.1;Assets\test.vb.sample.1;Assets\test.vbproj.sample.1;Assets\ref.csproj.sample.1">
+    <None Update="Assets\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Collections.Immutable" Version="1.2.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
     <PackageReference Include="Microsoft.Composition" Version="1.0.27" />
   </ItemGroup>
 
