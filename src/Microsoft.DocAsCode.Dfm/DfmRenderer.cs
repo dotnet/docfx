@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode.Dfm
                 return StringBuffer.Empty;
             }
             var startLine = token.SourceInfo.LineNumber;
-            var endLine = startLine + token.Content.Count(ch => ch == '\n') + 2;
+            var endLine = token.SourceInfo.LineNumber + token.SourceInfo.ValidLineCount - 1;
             var sourceFile = token.SourceInfo.File;
 
             StringBuffer result = $"<yamlheader start=\"{startLine}\" end=\"{endLine}\"";
