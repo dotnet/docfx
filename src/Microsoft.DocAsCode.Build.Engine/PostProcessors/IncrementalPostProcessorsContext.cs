@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     internal class IncrementalPostProcessorsContext
     {
         private readonly List<PostProcessor> _postProcessors;
+        private readonly int _maxParallelism;
 
         #region Properties
 
@@ -49,7 +50,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             BuildInfo currentBuildInfo,
             BuildInfo lastBuildInfo,
             List<PostProcessor> postProcessors,
-            bool enableIncremental)
+            bool enableIncremental,
+            int maxParallelism)
         {
             if (intermediateFolder == null)
             {
@@ -77,6 +79,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             LastBaseDir = lastBuildInfo == null ? null : Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName);
             EnableIncremental = enableIncremental;
             IsIncremental = GetIsIncremental();
+            _maxParallelism = maxParallelism;
         }
 
         #endregion
