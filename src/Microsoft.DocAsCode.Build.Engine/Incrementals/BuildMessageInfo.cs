@@ -94,6 +94,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 LogLevel = item.LogLevel,
                 Message = item.Message,
                 Phase = item.Phase,
+                Code = item.Code
             });
         }
 
