@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
+    using System.Web;
 
     public class TemplateModelTransformer
     {
@@ -376,7 +377,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             // Resolve external xref map first, and then internal xref map.
             // Internal one overrides external one
-            var xrefSpec = context.GetXrefSpec(xref.Uid);
+            var xrefSpec = context.GetXrefSpec(HttpUtility.HtmlDecode(xref.Uid));
             xref.ApplyXrefSpec(xrefSpec);
 
             var convertedNode = xref.ConvertToHtmlNode(language);
