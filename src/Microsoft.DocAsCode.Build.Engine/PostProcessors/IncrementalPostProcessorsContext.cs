@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (maxParallelism <= 0)
             {
-                throw new ArgumentOutOfRangeException($"Max parallelism should be larger than 0, current value: {maxParallelism}.");
+                maxParallelism = Environment.ProcessorCount;
             }
 
             _postProcessors = postProcessors;
