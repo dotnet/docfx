@@ -97,7 +97,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     SourceInfo i;
                     if (_items.TryGetValue(r.Uid, out i))
                     {
-                        FillContent(r, i.Item);
+                        FillContent(r, i);
                     }
                     continue;
                 }
@@ -111,7 +111,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
         }
 
-        private void FillContent(ReferenceViewModel r, ItemViewModel item)
+        private void FillContent(ReferenceViewModel r, dynamic item)
         {
             r.Additional["summary"] = item.Summary;
             r.Additional["type"] = item.Type;
@@ -137,7 +137,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 FileIncrementalInfo info;
                 if (increInfo.TryGetValue(c.File, out info) && info.IsIncremental)
                 {
-                    _items[c.Item.Uid] = c;
+                    _items[c.Uid] = c;
                 }
             }
         }
@@ -146,7 +146,15 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         {
             foreach (var item in model.Items)
             {
-                _items[item.Uid] = new SourceInfo { Item = item, File = file };
+                _items[item.Uid] = new SourceInfo
+                {
+                    Uid = item.Uid,
+                    Summary = item.Summary,
+                    Type = item.Type,
+                    Syntax = item.Syntax,
+                    Platform = item.Platform,
+                    File = file
+                };
             }
         }
 
@@ -154,8 +162,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private class SourceInfo
         {
-            public ItemViewModel Item { get; set; }
-
+            public string Uid { get; set; }
+            public string Summary { get; set; }
+            public MemberType? Type { get; set; }
+            public SyntaxDetailViewModel Syntax { get; set; }
+            public List<string> Platform { get; set; }
             public string File { get; set; }
         }
     }
