@@ -170,13 +170,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public static class Helper
         {
-            public static readonly Regex EscapeWithEncode = new Regex(@"&", RegexOptionCompiled);
-            public static readonly Regex EscapeWithoutEncode = new Regex(@"&(?!#?\w+;)", RegexOptionCompiled);
+            public static readonly Regex HtmlEscapeWithEncode = new Regex(@"&", RegexOptionCompiled);
+            public static readonly Regex HtmlEscapeWithoutEncode = new Regex(@"&(?!#?\w+;)", RegexOptionCompiled);
 
-            public static readonly Regex Unescape = new Regex(@"&([#\w]+);", RegexOptionCompiled);
+            public static readonly Regex HtmlUnescape = new Regex(@"&([#\w]+);", RegexOptionCompiled);
 
-            public static readonly Regex MarkdownEscape = new Regex(@"\\([\\`*{}\[\]()#+\-.!_>])", RegexOptionCompiled);
-            public static readonly Regex MarkdownUnescape = new Regex(@"[\\()\[\]]", RegexOptionCompiled);
+            public static readonly Regex MarkdownUnescape = new Regex(@"\\([\\`*{}\[\]()#+\-.!_>])", RegexOptionCompiled);
+            public static readonly Regex MarkdownEscape = new Regex(@"[\\()\[\]]", RegexOptionCompiled);
         }
     }
 }
