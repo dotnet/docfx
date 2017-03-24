@@ -15,10 +15,10 @@ namespace Microsoft.DocAsCode.Dfm
     public class DfmYamlHeaderBlockRule : IMarkdownRule
     {
         private static readonly Matcher _EndSymbol =
-            Matcher.Char('-').RepeatAtLeast(3) + Matcher.WhiteSpacesOrEmpty +
+            Matcher.Char('-').Repeat(3, 3) + Matcher.WhiteSpacesOrEmpty +
             (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
         private static readonly Matcher _YamlHeaderMatcher =
-            Matcher.Char('-').RepeatAtLeast(3) + Matcher.WhiteSpacesOrEmpty + Matcher.NewLine +
+            Matcher.Char('-').Repeat(3, 3) + Matcher.WhiteSpacesOrEmpty + Matcher.NewLine +
             (
                 Matcher.AnyStringInSingleLine |
                 (Matcher.NewLine.RepeatAtLeast(1) + _EndSymbol.ToNegativeTest())
