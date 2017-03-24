@@ -313,10 +313,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                                  where h.CanIncrementalBuild
                                  from f in h.GetUnloadedModelFiles(IncrementalContext)
                                  select f).ToDictionary(f => f, f => f, FilePathComparer.OSPlatformSensitiveStringComparer);
-            return (from mani in LastBuildVersionInfo.Manifest
-                    where unloadedFiles.ContainsKey(mani.SourceRelativePath)
-                    let copied = UpdateItem(mani, unloadedFiles[mani.SourceRelativePath])
-                    select copied).ToList();
+
+            using (new LoggerPhaseScope("UpdateItems", LogLevel.Verbose))
+            {
+                return (from mani in LastBuildVersionInfo.Manifest
+                        where unloadedFiles.ContainsKey(mani.SourceRelativePath)
+                        let copied = UpdateItem(mani, unloadedFiles[mani.SourceRelativePath])
+                        select copied).ToList();
+            }
         }
 
         private ManifestItem UpdateItem(ManifestItem item, string sourceRelativePath)
