@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public virtual string Name => "DfmVideoBlock";
 
-        [Obsolete("Please use NewLineMatcher.")]
+        [Obsolete("Please use VideoMatcher.")]
         public virtual Regex VideoRegex => _videoRegex;
 
         public virtual Matcher VideoMatcher => _VideoMatcher;
