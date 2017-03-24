@@ -106,9 +106,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void LoadContextInfo(List<HostService> hostServices)
         {
-            foreach (var h in hostServices)
+            using (new LoggerPhaseScope("LoadPluginContextInfo", LogLevel.Verbose))
             {
-                IncrementalContext.LoadContextInfo(h);
+                foreach (var h in hostServices)
+                {
+                    IncrementalContext.LoadContextInfo(h);
+                }
             }
         }
 
@@ -134,7 +137,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private void ReloadDependency(HashSet<string> nonIncreSet)
         {
             // restore dependency graph from last dependency graph for unchanged files
-            using (new LoggerPhaseScope("ReportDependencyFromLastBuild", LogLevel.Diagnostic))
+            using (new LoggerPhaseScope("ReportDependencyFromLastBuild", LogLevel.Verbose))
             {
                 var ldg = LastBuildVersionInfo?.Dependency;
                 if (ldg != null)
@@ -156,7 +159,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         // TO-DO: move to plugins
         private void RegisterUnloadedTocRestructions(HashSet<string> nonIncreSet)
         {
-            using (new LoggerPhaseScope("RegisterUnloadedTocRestructionsFromLastBuild", LogLevel.Diagnostic))
+            using (new LoggerPhaseScope("RegisterUnloadedTocRestructionsFromLastBuild", LogLevel.Verbose))
             {
                 var restructions = LastBuildVersionInfo?.TocRestructions;
                 if (restructions == null)
