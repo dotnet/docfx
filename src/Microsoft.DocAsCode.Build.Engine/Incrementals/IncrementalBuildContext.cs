@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
     using System.Security.Cryptography;
@@ -164,6 +165,27 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 return mi;
             }
             return new OSPlatformSensitiveDictionary<BuildPhase?>();
+        }
+
+        public ImmutableDictionary<string, FileIncrementalInfo> GetModelIncrementalInfo(HostService hostService, BuildPhase phase)
+        {
+            if (hostService == null)
+            {
+                throw new ArgumentNullException(nameof(hostService));
+            }
+            if (!hostService.ShouldTraceIncrementalInfo)
+            {
+                throw new InvalidOperationException($"HostService: {hostService.Processor.Name} doesn't record incremental info, cannot call the method to get model incremental info.");
+            }
+            var increInfo = (from pair in GetModelLoadInfo(hostService)
+                             let incr = pair.Value == null ? true : false
+                             select new FileIncrementalInfo
+                             {
+                                 SourceFile = pair.Key,
+                                 IsIncremental = incr,
+                             }).ToImmutableDictionary(f => f.SourceFile, f => f, FilePathComparer.OSPlatformSensitiveStringComparer);
+
+            return increInfo;
         }
 
         #endregion
@@ -464,7 +486,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         #region Plugin Context info
 
-        public void LoadContextInfo(HostService hostService, BuildPhase phase)
+        public void LoadContextInfo(HostService hostService)
         {
             if (hostService == null)
             {
@@ -479,22 +501,22 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return;
             }
-            var traceContext = CreateTraceContext(hostService, phase);
-            foreach (var step in hostService.Processor.BuildSteps.Where(s => s is ICanTraceContextInfoBuildStep))
+
+            foreach (var step in hostService.Processor.BuildSteps.OfType<ICanTraceContextInfoBuildStep>())
             {
                 var stepInfo = lpi.Steps.Find(s => s.Name == step.Name);
                 if (stepInfo == null || stepInfo.ContextInfoFile == null)
                 {
                     continue;
                 }
-                using (var reader = new StreamReader(Path.Combine(Environment.ExpandEnvironmentVariables(LastBaseDir), stepInfo.ContextInfoFile)))
+                using (var stream = File.OpenRead(Path.Combine(Environment.ExpandEnvironmentVariables(LastBaseDir), stepInfo.ContextInfoFile)))
                 {
-                    ((ICanTraceContextInfoBuildStep)step).LoadFromContext(traceContext, reader);
+                    step.LoadContext(stream);
                 }
             }
         }
 
-        public void SaveContextInfo(HostService hostService, BuildPhase phase)
+        public void SaveContextInfo(HostService hostService)
         {
             if (hostService == null)
             {
@@ -509,32 +531,19 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return;
             }
-            var traceContext = CreateTraceContext(hostService, phase);
-            foreach (var step in hostService.Processor.BuildSteps.Where(s => s is ICanTraceContextInfoBuildStep))
+
+            foreach (var step in hostService.Processor.BuildSteps.OfType<ICanTraceContextInfoBuildStep>())
             {
                 var stepInfo = lpi.Steps.Find(s => s.Name == step.Name);
                 if (stepInfo == null || stepInfo.ContextInfoFile == null)
                 {
                     continue;
                 }
-                using (var writer = new StreamWriter(Path.Combine(Environment.ExpandEnvironmentVariables(BaseDir), stepInfo.ContextInfoFile)))
+                using (var stream = File.Create(Path.Combine(Environment.ExpandEnvironmentVariables(BaseDir), stepInfo.ContextInfoFile)))
                 {
-                    ((ICanTraceContextInfoBuildStep)step).SaveContext(traceContext, writer);
+                    step.SaveContext(stream);
                 }
             }
-        }
-
-        private TraceContext CreateTraceContext(HostService hostService, BuildPhase phase)
-        {
-            var increInfo = (from pair in GetModelLoadInfo(hostService)
-                             let incr = pair.Value == null ? true : false
-                             select new FileIncrementalInfo
-                             {
-                                 SourceFile = pair.Key,
-                                 IsIncremental = incr,
-                             }).ToList();
-
-            return new TraceContext(increInfo, phase);
         }
 
         #endregion

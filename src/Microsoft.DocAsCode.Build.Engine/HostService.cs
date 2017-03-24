@@ -37,6 +37,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public ImmutableDictionary<string, FileAndType> SourceFiles { get; set; }
 
+        public ImmutableDictionary<string, FileIncrementalInfo> IncrementalInfos { get; set; }
+
         public Dictionary<FileAndType, FileAndType> FileMap { get; } = new Dictionary<FileAndType, FileAndType>();
 
         public IMarkdownService MarkdownService { get; set; }
