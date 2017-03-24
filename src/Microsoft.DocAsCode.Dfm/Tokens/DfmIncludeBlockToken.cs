@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmIncludeBlockToken : IMarkdownToken
@@ -12,17 +14,21 @@ namespace Microsoft.DocAsCode.Dfm
         public string Src { get; }
         public string Name { get; }
         public string Title { get; }
-        public string Raw { get; }
+        [Obsolete]
+        public string Raw => SourceInfo.Markdown;
         public SourceInfo SourceInfo { get; }
 
+        [Obsolete]
         public DfmIncludeBlockToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, string raw, SourceInfo sourceInfo)
+            : this(rule, context, src, name, title, sourceInfo) { }
+
+        public DfmIncludeBlockToken(IMarkdownRule rule, IMarkdownContext context, string src, string name, string title, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Src = src;
             Name = name;
             Title = title;
-            Raw = raw;
             SourceInfo = sourceInfo;
         }
     }

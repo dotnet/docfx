@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public static string Escape(string html, bool encode = false)
         {
             return html
-                .ReplaceRegex(encode ? Regexes.Helper.EscapeWithEncode : Regexes.Helper.EscapeWithoutEncode, "&amp;")
+                .ReplaceRegex(encode ? Regexes.Helper.HtmlEscapeWithEncode : Regexes.Helper.HtmlEscapeWithoutEncode, "&amp;")
                 .Replace("<", "&lt;")
                 .Replace(">", "&gt;")
                 .Replace("\"", "&quot;")
@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public static string Unescape(string html)
         {
-            return Regexes.Helper.Unescape.Replace(html, match =>
+            return Regexes.Helper.HtmlUnescape.Replace(html, match =>
             {
                 var n = match.Groups[1].Value;
 
@@ -55,6 +55,16 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
                 return string.Empty;
             });
+        }
+
+        public static string EscapeMarkdown(string text)
+        {
+            return Regexes.Helper.MarkdownEscape.Replace(text, m => "\\" + m.Value);
+        }
+
+        public static string UnescapeMarkdown(string markdown)
+        {
+            return Regexes.Helper.MarkdownUnescape.Replace(markdown, m => m.Groups[1].Value);
         }
 
         public static string NotEmpty(IList<string> source, int index1, int index2)
