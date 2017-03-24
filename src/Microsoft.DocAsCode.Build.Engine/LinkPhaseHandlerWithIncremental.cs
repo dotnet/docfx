@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
@@ -328,12 +329,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             var result = item.Clone();
             result.IsIncremental = true;
             result.SourceRelativePath = sourceRelativePath;
-            foreach (var ofi in result.OutputFiles.Values)
-            {
-                if (ofi.LinkToPath != null &&
-                    ofi.LinkToPath.Length > IncrementalContext.LastBaseDir.Length &&
-                    ofi.LinkToPath.StartsWith(IncrementalContext.LastBaseDir) &&
-                    (ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '\\' || ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '/'))
+            Parallel.ForEach(
+                from ofi in result.OutputFiles.Values
+                where ofi.LinkToPath != null
+                where ofi.LinkToPath.Length > IncrementalContext.LastBaseDir.Length
+                where ofi.LinkToPath.StartsWith(IncrementalContext.LastBaseDir)
+                where (ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '\\' || ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '/')
+                select ofi,
+                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                ofi =>
                 {
                     IncrementalUtility.RetryIO(() =>
                     {
@@ -341,8 +345,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                         File.Copy(Environment.ExpandEnvironmentVariables(ofi.LinkToPath), Environment.ExpandEnvironmentVariables(path));
                         ofi.LinkToPath = path;
                     });
-                }
-            }
+                });
+
             return result;
         }
 
