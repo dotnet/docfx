@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Dfm
             (
                 Matcher.AnyCharNot(']').RepeatAtLeast(1) |
                 (Matcher.ReverseTest(Matcher.Char('\\')) + Matcher.Char(']'))
-            ).RepeatAtLeast(0).ToGroup("title") +
+            ).RepeatAtLeast(0).ToGroup("name") +
             ']' +
             Matcher.WhiteSpacesOrEmpty +
             '(' +
@@ -31,8 +31,8 @@ namespace Microsoft.DocAsCode.Dfm
             ) +
             Matcher.WhiteSpacesOrEmpty +
             (
-                (Matcher.Char('\'') + (Matcher.AnyCharNot('\'').RepeatAtLeast(1) | (Matcher.ReverseTest(Matcher.Char('\\')) + '\'')).ToGroup("optionalTitle") + '\'') |
-                (Matcher.Char('"') + (Matcher.AnyCharNot('"').RepeatAtLeast(1) | (Matcher.ReverseTest(Matcher.Char('\\')) + '"')).ToGroup("optionalTitle") + '"')
+                (Matcher.Char('\'') + (Matcher.AnyCharNot('\'').RepeatAtLeast(1) | (Matcher.ReverseTest(Matcher.Char('\\')) + '\'')).RepeatAtLeast(0).ToGroup("title") + '\'') |
+                (Matcher.Char('"') + (Matcher.AnyCharNot('"').RepeatAtLeast(1) | (Matcher.ReverseTest(Matcher.Char('\\')) + '"')).RepeatAtLeast(0).ToGroup("title") + '"')
             ).Maybe() +
             Matcher.WhiteSpacesOrEmpty +
             ')' +
@@ -58,19 +58,16 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 var sourceInfo = context.Consume(match.Length);
 
-                // [!include[title](path "optionalTitle")]
-                // 1. Get include file path 
+                // [!include[name](path "title")]
                 var path = match["path"].GetValue();
-
-                // 2. Get title
-                var value = match["title"].GetValue();
-                var title = match.GetGroup("optionalTitle")?.GetValue() ?? string.Empty;
+                var name = match["name"].GetValue();
+                var title = match.GetGroup("title")?.GetValue() ?? string.Empty;
 
                 return new DfmIncludeBlockToken(
                     this,
                     parser.Context,
                     StringHelper.UnescapeMarkdown(path),
-                    StringHelper.UnescapeMarkdown(value),
+                    StringHelper.UnescapeMarkdown(name),
                     StringHelper.UnescapeMarkdown(title),
                     sourceInfo);
             }
