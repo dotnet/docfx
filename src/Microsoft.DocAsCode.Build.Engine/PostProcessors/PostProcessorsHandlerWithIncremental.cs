@@ -194,7 +194,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                       select oi;
                 Parallel.ForEach(
                     itemsToBeCopied,
-                    new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                    new ParallelOptions { MaxDegreeOfParallelism = _increContext.MaxParallelism },
                     item =>
                     {
                         string cachedFileName;

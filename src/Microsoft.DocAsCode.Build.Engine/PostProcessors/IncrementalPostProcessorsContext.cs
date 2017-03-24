@@ -15,7 +15,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     internal class IncrementalPostProcessorsContext
     {
         private readonly List<PostProcessor> _postProcessors;
-        private readonly int _maxParallelism;
 
         #region Properties
 
@@ -28,6 +27,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string CurrentBaseDir { get; }
 
         public string LastBaseDir { get; }
+
+        public int MaxParallelism { get; }
 
         public IncrementalInfo IncrementalInfo { get; } = new IncrementalInfo();
 
@@ -65,6 +66,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(postProcessors));
             }
+            if (maxParallelism <= 0)
+            {
+                throw new ArgumentOutOfRangeException($"Max parallelism should be larger than 0, current value: {maxParallelism}.");
+            }
 
             _postProcessors = postProcessors;
 
@@ -79,7 +84,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             LastBaseDir = lastBuildInfo == null ? null : Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName);
             EnableIncremental = enableIncremental;
             IsIncremental = GetIsIncremental();
-            _maxParallelism = maxParallelism;
+            MaxParallelism = maxParallelism;
         }
 
         #endregion
