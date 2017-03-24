@@ -76,11 +76,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 RegisterUnloadedFileMap(hostServices);
             }
 
-            using (new LoggerPhaseScope("LoadContextInfo", LogLevel.Verbose))
-            {
-                LoadContextInfo(hostServices);
-            }
-
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
@@ -119,19 +114,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
-        private void LoadContextInfo(List<HostService> hostServices)
-        {
-            foreach (var h in hostServices)
-            {
-                IncrementalContext.LoadContextInfo(h, Phase);
-            }
-        }
-
         private void SaveContextInfo(List<HostService> hostServices)
         {
             foreach (var h in hostServices)
             {
-                IncrementalContext.SaveContextInfo(h, Phase);
+                IncrementalContext.SaveContextInfo(h);
             }
         }
 
@@ -152,6 +139,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var hostService in hostServices.Where(h => h.CanIncrementalBuild))
             {
                 hostService.ReloadModelsPerIncrementalChanges(IncrementalContext, newChanges, Phase);
+                hostService.IncrementalInfos = IncrementalContext.GetModelIncrementalInfo(hostService, Phase);
             }
         }
 

@@ -18,6 +18,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
     public class FillReferenceInformation : BaseDocumentBuildStep, ICanTraceContextInfoBuildStep
     {
+        private IEnumerable<SourceInfo> _lastContextInfo;
         private Dictionary<string, SourceInfo> _items = new Dictionary<string, SourceInfo>();
 
         public override string Name => nameof(FillReferenceInformation);
@@ -26,6 +27,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         public override void Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
+            ApplyLastContextInfo(host);
             if (models.Count > 0)
             {
                 foreach (var model in models)
@@ -51,44 +53,26 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         #region ICanTraceContextInfoBuildStep Members
 
-        public void LoadFromContext(TraceContext traceContext, StreamReader reader)
+        public void LoadContext(Stream stream)
         {
-            if (traceContext == null || traceContext.Phase != BuildPhase.Link)
-            {
-                return;
-            }
-            if (reader == null)
+            if (stream == null)
             {
                 return;
             }
 
-            using (reader)
+            using (var reader = new StreamReader(stream))
             {
-                var content = JsonUtility.Deserialize<IEnumerable<SourceInfo>>(reader);
-                var increInfo = (from f in traceContext.AllSourceFileInfo
-                                group f by f.SourceFile).ToDictionary(g => g.Key, g => g.First());
-                foreach (var c in content)
-                {
-                    FileIncrementalInfo info;
-                    if (increInfo.TryGetValue(c.File, out info) && info.IsIncremental)
-                    {
-                        _items[c.Item.Uid] = c;
-                    }
-                }
+                _lastContextInfo = JsonUtility.Deserialize<IEnumerable<SourceInfo>>(reader);
             }
         }
 
-        public void SaveContext(TraceContext traceContext, StreamWriter writer)
+        public void SaveContext(Stream stream)
         {
-            if (traceContext == null || traceContext.Phase != BuildPhase.Link)
+            if (stream == null)
             {
                 return;
             }
-            if (writer == null)
-            {
-                return;
-            }
-            using (writer)
+            using (var writer = new StreamWriter(stream))
             {
                 JsonUtility.Serialize(writer, _items.Values);
             }
@@ -113,7 +97,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     SourceInfo i;
                     if (_items.TryGetValue(r.Uid, out i))
                     {
-                        FillContent(r, i.Item);
+                        FillContent(r, i);
                     }
                     continue;
                 }
@@ -127,7 +111,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
         }
 
-        private void FillContent(ReferenceViewModel r, ItemViewModel item)
+        private void FillContent(ReferenceViewModel r, dynamic item)
         {
             r.Additional["summary"] = item.Summary;
             r.Additional["type"] = item.Type;
@@ -135,11 +119,42 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             r.Additional["platform"] = item.Platform;
         }
 
+        private void ApplyLastContextInfo(IHostService hs)
+        {
+            if (_lastContextInfo == null)
+            {
+                return;
+            }
+
+            var increInfo = hs.IncrementalInfos;
+            if (increInfo == null)
+            {
+                return;
+            }
+
+            foreach (var c in _lastContextInfo)
+            {
+                FileIncrementalInfo info;
+                if (increInfo.TryGetValue(c.File, out info) && info.IsIncremental)
+                {
+                    _items[c.Uid] = c;
+                }
+            }
+        }
+
         private void TraceSourceInfo(PageViewModel model, string file)
         {
             foreach (var item in model.Items)
             {
-                _items[item.Uid] = new SourceInfo { Item = item, File = file };
+                _items[item.Uid] = new SourceInfo
+                {
+                    Uid = item.Uid,
+                    Summary = item.Summary,
+                    Type = item.Type,
+                    Syntax = item.Syntax,
+                    Platform = item.Platform,
+                    File = file
+                };
             }
         }
 
@@ -147,8 +162,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private class SourceInfo
         {
-            public ItemViewModel Item { get; set; }
-
+            public string Uid { get; set; }
+            public string Summary { get; set; }
+            public MemberType? Type { get; set; }
+            public SyntaxDetailViewModel Syntax { get; set; }
+            public List<string> Platform { get; set; }
             public string File { get; set; }
         }
     }
