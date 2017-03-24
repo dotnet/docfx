@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Web;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -376,7 +377,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             // Resolve external xref map first, and then internal xref map.
             // Internal one overrides external one
-            var xrefSpec = context.GetXrefSpec(xref.Uid);
+            var xrefSpec = context.GetXrefSpec(HttpUtility.HtmlDecode(xref.Uid));
             xref.ApplyXrefSpec(xrefSpec);
 
             var convertedNode = xref.ConvertToHtmlNode(language);
