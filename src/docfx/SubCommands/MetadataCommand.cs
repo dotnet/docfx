@@ -140,13 +140,13 @@ namespace Microsoft.DocAsCode.SubCommands
                 jsonConfig = configFiles[0];
                 if (configFiles.Count > 1)
                 {
-                    Logger.Log(LogLevel.Warning, $"Multiple {DocAsCode.Constants.ConfigFileName} files are found! The first one \"{jsonConfig}\" is selected, and others are ignored.");
+                    Logger.Log(LogLevel.Warning, $"Multiple {DocAsCode.Constants.ConfigFileName} files are found! The first one \"{jsonConfig}\" is selected, and others \"{string.Join(", ", configFiles.Skip(1))}\" are ignored.");
                 }
                 else
                 {
                     if (otherFiles.Count > 0)
                     {
-                        Logger.Log(LogLevel.Warning, $"Config file \"{jsonConfig}\" is found in command line! This file and ONLY this file will be used in generating metadata, other command line parameters will be ignored.");
+                        Logger.Log(LogLevel.Warning, $"Config file \"{jsonConfig}\" is found in command line! This file and ONLY this file will be used in generating metadata, other command line parameters \"{string.Join(", ", otherFiles)}\" will be ignored.");
                     }
                     else Logger.Log(LogLevel.Verbose, $"Config file \"{jsonConfig}\" is used.");
                 }
