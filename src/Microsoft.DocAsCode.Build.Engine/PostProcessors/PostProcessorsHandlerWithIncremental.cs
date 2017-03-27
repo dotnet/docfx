@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
@@ -187,27 +188,31 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (new PerformanceScope("CopyToCurrentCache"))
             {
-                foreach (var item in from mi in increItems
-                                     from oi in mi.OutputFiles.Values
-                                     where oi.LinkToPath != null && oi.LinkToPath.StartsWith(_increContext.LastBaseDir)
-                                     select oi)
-                {
-                    string cachedFileName;
-                    if (!_increContext.LastInfo.PostProcessOutputs.TryGetValue(item.RelativePath, out cachedFileName))
+                var itemsToBeCopied = from mi in increItems
+                                      from oi in mi.OutputFiles.Values
+                                      where oi.LinkToPath != null && oi.LinkToPath.StartsWith(_increContext.LastBaseDir)
+                                      select oi;
+                Parallel.ForEach(
+                    itemsToBeCopied,
+                    new ParallelOptions { MaxDegreeOfParallelism = _increContext.MaxParallelism },
+                    item =>
                     {
-                        throw new BuildCacheException($"Last incremental post processor outputs should contain {item.RelativePath}.");
-                    }
+                        string cachedFileName;
+                        if (!_increContext.LastInfo.PostProcessOutputs.TryGetValue(item.RelativePath, out cachedFileName))
+                        {
+                            throw new BuildCacheException($"Last incremental post processor outputs should contain {item.RelativePath}.");
+                        }
 
-                    IncrementalUtility.RetryIO(() =>
-                    {
-                        // Copy last cached file to current cache.
-                        var newFileName = IncrementalUtility.GetRandomEntry(_increContext.CurrentBaseDir);
-                        var currentCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.CurrentBaseDir), newFileName);
-                        var lastCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.LastBaseDir), cachedFileName);
-                        File.Copy(lastCachedFile, currentCachedFile);
-                        item.LinkToPath = Path.Combine(_increContext.CurrentBaseDir, newFileName);
+                        IncrementalUtility.RetryIO(() =>
+                        {
+                            // Copy last cached file to current cache.
+                            var newFileName = IncrementalUtility.GetRandomEntry(_increContext.CurrentBaseDir);
+                            var currentCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.CurrentBaseDir), newFileName);
+                            var lastCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.LastBaseDir), cachedFileName);
+                            File.Copy(lastCachedFile, currentCachedFile);
+                            item.LinkToPath = Path.Combine(_increContext.CurrentBaseDir, newFileName);
+                        });
                     });
-                }
             }
         }
 

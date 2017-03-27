@@ -28,6 +28,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string LastBaseDir { get; }
 
+        public int MaxParallelism { get; }
+
         public IncrementalInfo IncrementalInfo { get; } = new IncrementalInfo();
 
         /// <summary>
@@ -49,7 +51,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             BuildInfo currentBuildInfo,
             BuildInfo lastBuildInfo,
             List<PostProcessor> postProcessors,
-            bool enableIncremental)
+            bool enableIncremental,
+            int maxParallelism)
         {
             if (intermediateFolder == null)
             {
@@ -62,6 +65,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (postProcessors == null)
             {
                 throw new ArgumentNullException(nameof(postProcessors));
+            }
+            if (maxParallelism <= 0)
+            {
+                maxParallelism = Environment.ProcessorCount;
             }
 
             _postProcessors = postProcessors;
@@ -77,6 +84,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             LastBaseDir = lastBuildInfo == null ? null : Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName);
             EnableIncremental = enableIncremental;
             IsIncremental = GetIsIncremental();
+            MaxParallelism = maxParallelism;
         }
 
         #endregion

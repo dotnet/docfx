@@ -98,7 +98,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             try
             {
-                _postProcessorsManager.IncrementalInitialize(_intermediateFolder, _currentBuildInfo, _lastBuildInfo, parameters[0].ForcePostProcess);
+                _postProcessorsManager.IncrementalInitialize(_intermediateFolder, _currentBuildInfo, _lastBuildInfo, parameters[0].ForcePostProcess, parameters[0].MaxParallelism);
 
                 var manifests = new List<Manifest>();
                 bool transformDocument = false;
