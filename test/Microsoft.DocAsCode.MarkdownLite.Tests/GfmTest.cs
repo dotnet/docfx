@@ -685,14 +685,35 @@ b",
     }</code></pre>
 <p>As you see, here we bring in <strong>pointer</strong> so we need to add <span class=""languagekeyword"">unsafe</span> keyword.</p>
 ";
-            var expected = @"<p>Here&#39;s example of how to create an instance of <strong>Cat</strong> class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>
+            var expected = @"<p><p>Here&#39;s example of how to create an instance of <strong>Cat</strong> class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>
 <pre><code class=""c#"">    var a = new Cat(object, int)();
     int catNumber = new int();
     unsafe
     {
         a.GetFeetLength(catNumber);
     }</code></pre>
-<p>As you see, here we bring in <strong>pointer</strong> so we need to add <span class=""languagekeyword"">unsafe</span> keyword.</p>
+<p>As you see, here we bring in <strong>pointer</strong> so we need to add <span class=""languagekeyword"">unsafe</span> keyword.</p></p>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestTable_Html_Div()
+        {
+            // 1. Prepare data
+            var source = @"
+<div>
+    <div>
+        <div>aaa</div>
+    </div>
+</div>
+";
+            var expected = @"<div>
+    <div>
+        <div>aaa</div>
+    </div>
+</div>
 ";
             TestGfmInGeneral(source, expected);
         }
