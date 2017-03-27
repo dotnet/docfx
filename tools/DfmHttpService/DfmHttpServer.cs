@@ -35,6 +35,7 @@ namespace DfmHttpService
 
             _listener.Start();
             _processing.Reset();
+            // Inform extension that server is ready to handle request
             Console.WriteLine("Ready");
             RunServerCore();
         }
