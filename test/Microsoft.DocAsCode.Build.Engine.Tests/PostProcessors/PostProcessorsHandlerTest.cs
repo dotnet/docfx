@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         private const string MetaAppendContent = "-meta";
         private const string PrependIncrementalPhaseName = "TestIncrementalPostProcessing";
         private static readonly PostProcessorsHandler PostProcessorsHandler = new PostProcessorsHandler();
+        private static readonly int MaxParallelism = Environment.ProcessorCount;
 
         [Fact]
         public void TestBasicScenario()
@@ -67,7 +68,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 PrepareCachedOutput(intermediateFolderVariable, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "a", "b");
 
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolderVariable, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolderVariable, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -144,7 +145,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                             {
                                 DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder)
                             };
-                            increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, null, postProcessors, true);
+                            increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, null, postProcessors, true, MaxParallelism);
 
                             // Check context
                             Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -202,7 +203,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                                 DirectoryName = Path.GetFileName(increContext.CurrentBaseDir),
                                 PostProcessInfo = increContext.CurrentInfo
                             };
-                            increContext = new IncrementalPostProcessorsContext(intermediateFolder, secondBuildInfo, lastBuildInfo, postProcessors, true);
+                            increContext = new IncrementalPostProcessorsContext(intermediateFolder, secondBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                             // Check context
                             Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -293,7 +294,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
                 var appendString = $"{AppendStringPostProcessor.AppendString}";
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -355,7 +356,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     DirectoryName = Path.GetFileName(increContext.CurrentBaseDir),
                     PostProcessInfo = increContext.CurrentInfo
                 };
-                increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, enableIncremental);
+                increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, enableIncremental, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -437,7 +438,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
                 var appendString = $"{AppendStringPostProcessor.AppendString}";
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -490,7 +491,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 // Add post processor which not supports incremental
                 postProcessors.AddRange(GetPostProcessors(typeof(NonIncrementalPostProcessor)));
-                increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.False(increContext.ShouldTraceIncrementalInfo);
@@ -543,7 +544,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 PrepareCachedOutput(intermediateFolder, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "a/b");
 
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -609,7 +610,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 // Add post processor which has changed context hash
                 var postProcessors = GetPostProcessors(typeof(AppendIntegerPostProcessor));
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -677,7 +678,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 // Set enable incremental post process flag to false
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, false);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, false, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -736,7 +737,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 // Pass null as last build info
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, null, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, null, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -803,7 +804,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 // Add not post processor which not support incremental
                 var postProcessors = GetPostProcessors(typeof(NonIncrementalPostProcessor));
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.False(increContext.ShouldTraceIncrementalInfo);
@@ -866,7 +867,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 PrepareCachedOutput(intermediateFolderVariable, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "CatLibrary.Cat-2", "CatLibrary.Cat-2.Name");
 
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolderVariable, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolderVariable, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
