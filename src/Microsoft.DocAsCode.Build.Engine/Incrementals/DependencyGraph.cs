@@ -247,6 +247,19 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return ReadDependency(GetAllDependentNodesNoLock);
         }
 
+        public HashSet<string> GetAllIncludeDependencyFrom(string from)
+        {
+            var files = new HashSet<string>();
+            foreach (var item in GetAllDependencyFrom(from))
+            {
+                if (item.Type == DependencyTypeName.Include)
+                {
+                    files.Add(item.To.Value);
+                }
+            }
+            return files;
+        }
+
         public HashSet<ReferenceItem> GetReferenceReportedBy(string reportedBy)
         {
             return ReadReference(() => GetReferenceReportedByNoLock(reportedBy));

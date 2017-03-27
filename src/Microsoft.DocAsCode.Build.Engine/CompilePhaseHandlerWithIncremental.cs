@@ -190,12 +190,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 // warnings from token file won't be delegated to article, so we need to add it manually
                 var key = ((RelativePath)f).GetPathFromWorkingFolder();
-                foreach (var item in CurrentBuildVersionInfo.Dependency.GetAllDependencyFrom(key))
+                foreach (var item in CurrentBuildVersionInfo.Dependency.GetAllIncludeDependencyFrom(key))
                 {
-                    if (item.Type == DependencyTypeName.Include)
-                    {
-                        files.Add(((RelativePath)item.To.Value).RemoveWorkingFolder());
-                    }
+                    files.Add(((RelativePath)item).RemoveWorkingFolder());
                 }
             }
             return files;

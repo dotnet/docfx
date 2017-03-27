@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     _innerHandler.Handle(postProcessors, manifest, outputFolder);
                     CheckNoIncrementalItems(manifest, "After processing");
                 }
-                PostHandle(manifest, increItems, outputFolder);
+                PostHandle(manifest, increItems);
             }
         }
 
@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void PreHandle(Manifest manifest, List<PostProcessor> postProcessors, string outputFolder, List<ManifestItem> increItems, List<ManifestItem> nonIncreItems)
         {
-            using (new PerformanceScope("Pre-handle in incremental post processing"))
+            using (new LoggerPhaseScope("PreHandle", LogLevel.Verbose))
             {
                 if (_increContext.ShouldTraceIncrementalInfo)
                 {
@@ -114,17 +114,18 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void PostHandle(Manifest manifest, List<ManifestItem> increItems, string outputFolder)
+        private void PostHandle(Manifest manifest, List<ManifestItem> increItems)
         {
-            using (new PerformanceScope("Post-handle in incremental post processing"))
+            using (new LoggerPhaseScope("PostHandle", LogLevel.Verbose))
             {
                 if (_increContext.IsIncremental)
                 {
-                    var sourcePaths = (from increItem in increItems
-                                       select increItem.SourceRelativePath).Distinct();
-                    foreach (var p in sourcePaths)
+                    using (new LoggerPhaseScope("ReplayMessages", LogLevel.Verbose))
                     {
-                        _increContext.LastInfo.MessageInfo.Replay(p);
+                        foreach (var file in GetFilesToReplayMessages(increItems))
+                        {
+                            _increContext.LastInfo.MessageInfo.Replay(file);
+                        }
                     }
 
                     // Add back incremental items
@@ -137,7 +138,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                     manifest.Shrink(_increContext.CurrentBaseDir);
 
-                    TraceIntermediateInfo(outputFolder, manifest);
+                    TraceIntermediateInfo(manifest);
 
                     // Update manifest items in current post processing info
                     _increContext.CurrentInfo.ManifestItems.AddRange(manifest.Files);
@@ -156,11 +157,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Trace intermediate info
 
-        private void TraceIntermediateInfo(string outputFolder, Manifest manifest)
+        private void TraceIntermediateInfo(Manifest manifest)
         {
             if (_increContext.ShouldTraceIncrementalInfo)
             {
-                using (new PerformanceScope("Trace intermediate info in incremental post processing"))
+                using (new LoggerPhaseScope("TraceIntermediateInfo", LogLevel.Verbose))
                 {
                     foreach (var oi in from mi in manifest.Files
                                        from oi in mi.OutputFiles.Values
@@ -184,9 +185,29 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Private methods
 
+        private HashSet<string> GetFilesToReplayMessages(List<ManifestItem> increItems)
+        {
+            var files = new HashSet<string>();
+            var sourcePaths = (from increItem in increItems
+                               select increItem.SourceRelativePath).Distinct();
+            foreach (var sourceRelativePath in sourcePaths)
+            {
+                files.Add(sourceRelativePath);
+                var pathFromWorkingFolder = ((RelativePath)sourceRelativePath).GetPathFromWorkingFolder();
+                foreach (var currentVersionInfo in _increContext.CurrentBuildInfo.Versions)
+                {
+                    foreach (var dep in currentVersionInfo.Dependency.GetAllIncludeDependencyFrom(pathFromWorkingFolder))
+                    {
+                        files.Add(((RelativePath)dep).RemoveWorkingFolder());
+                    }
+                }
+            }
+            return files;
+        }
+
         private void CopyToCurrentCache(List<ManifestItem> increItems)
         {
-            using (new PerformanceScope("CopyToCurrentCache"))
+            using (new LoggerPhaseScope("CopyToCurrentCache", LogLevel.Verbose))
             {
                 var itemsToBeCopied = from mi in increItems
                                       from oi in mi.OutputFiles.Values
@@ -218,18 +239,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static void CheckNoIncrementalItems(Manifest manifest, string prependString)
         {
-            using (new PerformanceScope("CheckNoIncrementalItems"))
+            if (manifest.Files.Any(i => i.IsIncremental))
             {
-                if (manifest.Files.Any(i => i.IsIncremental))
-                {
-                    throw new DocfxException($"{prependString} in inner post processor handler, manifest items should not have any incremental items.");
-                }
+                throw new DocfxException($"{prependString} in inner post processor handler, manifest items should not have any incremental items.");
             }
         }
 
         private List<ManifestItem> RestoreIncrementalManifestItems(Manifest manifest)
         {
-            using (new PerformanceScope("RestoreIncrementalManifestItems"))
+            using (new LoggerPhaseScope("RestoreIncrementalManifestItems", LogLevel.Verbose))
             {
                 var increItems = manifest.Files.Where(i => i.IsIncremental).ToList();
 
@@ -238,12 +256,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var restoredIncreItems = new List<ManifestItem>();
                     Dictionary<string, List<ManifestItem>> increItemsGroup;
                     Dictionary<string, List<ManifestItem>> lastItemsGroup;
-                    using (new PerformanceScope("Group"))
+                    using (new LoggerPhaseScope("Group", LogLevel.Verbose))
                     {
                         increItemsGroup = GroupBySourceRelativePath(increItems);
                         lastItemsGroup = GroupBySourceRelativePath(_increContext.LastInfo.ManifestItems);
                     }
-                    using (new PerformanceScope("Restore"))
+                    using (new LoggerPhaseScope("Restore", LogLevel.Verbose))
                     {
                         foreach (var pair in increItemsGroup)
                         {
@@ -262,12 +280,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                             restoredIncreItems.AddRange(cachedItems);
                         }
                     }
-                    using (new PerformanceScope("RemoveIncrementalItems"))
+                    using (new LoggerPhaseScope("RemoveIncrementalItems", LogLevel.Verbose))
                     {
                         // Update incremental items in manifest
                         manifest.Files.RemoveAll(m => m.IsIncremental);
                     }
-                    using (new PerformanceScope("AddRestoredItems"))
+                    using (new LoggerPhaseScope("AddRestoredItems", LogLevel.Verbose))
                     {
                         manifest.Files.AddRange(restoredIncreItems);
                     }
