@@ -37,8 +37,10 @@ exports.transform = function (model) {
                 items.push(element);
             }
         }, this);
-        for (var key in grouped) {
-            if (grouped.hasOwnProperty(key)) {
+        
+        // With order defined in groupNames
+        for (var key in groupNames) {
+            if (groupNames.hasOwnProperty(key) && grouped.hasOwnProperty(key)) {
                 items.push({
                     name: model.__global[groupNames[key].key] || groupNames[key].name,
                     items: grouped[key]
