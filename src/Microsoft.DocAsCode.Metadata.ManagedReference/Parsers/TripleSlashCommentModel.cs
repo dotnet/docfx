@@ -276,9 +276,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             foreach (XElement node in doc.XPathSelectElements("//code"))
             {
                 var source = node.Attribute("source");
-                if (source == null)
+                if (source == null || string.IsNullOrEmpty(source.Value))
                 {
                     continue;
+                }
+
+                if (context.Source == null || string.IsNullOrEmpty(context.Source.Path))
+                {
+                    Logger.LogWarning($"Unable to get source file path for {node.ToString()}");
+                    return;
                 }
 
                 var region = node.Attribute("region");
@@ -286,7 +292,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var path = source.Value;
                 if (!Path.IsPathRooted(path))
                 {
-                    path = Path.Combine(context.Source?.BasePath ?? ".", path);
+                    var directory = Path.GetDirectoryName(context.Source.Path);
+                    path = Path.Combine(context.Source?.BasePath ?? ".", directory, path);
                 }
 
                 ResolveCodeSource(node, path, region.Value);

@@ -124,7 +124,6 @@ namespace Example
                 Source = new SourceDetail()
                 {
                     Path = Path.Combine(inputFolder, "Source.cs"),
-                    BasePath = inputFolder
                 }
             };
 
