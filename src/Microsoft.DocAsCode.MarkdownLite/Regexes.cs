@@ -155,7 +155,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static readonly Regex UselessTableAlign = new Regex(@"^ *|\|? *$", RegexOptionCompiled);
             public static readonly Regex UselessTableRow = new Regex(@"^ *\| *| *\|? *$", RegexOptionCompiled);
             public static readonly Regex UselessGfmTableCell = new Regex(@"(?: *\| *)?\n$", RegexOptionCompiled);
-            public static readonly Regex TableSplitter = new Regex(@" *\| *", RegexOptionCompiled);
+            public static readonly Regex TableSplitter = new Regex(@" *(?<!\\)\| *", RegexOptionCompiled);
             public static readonly Regex EndWithNewLine = new Regex(@"\n$", RegexOptionCompiled);
             public static readonly Regex TableAlignRight = new Regex(@"^ *-+: *$", RegexOptionCompiled);
             public static readonly Regex TableAlignCenter = new Regex(@"^ *:-+: *$", RegexOptionCompiled);
