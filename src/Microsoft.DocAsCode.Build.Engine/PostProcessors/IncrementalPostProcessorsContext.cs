@@ -18,6 +18,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Properties
 
+        public BuildInfo CurrentBuildInfo { get; }
+
         public PostProcessInfo CurrentInfo { get; }
 
         public PostProcessInfo LastInfo { get; }
@@ -78,6 +80,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 currentBuildInfo.PostProcessInfo = GeneratePostProcessInfo();
             }
+            CurrentBuildInfo = currentBuildInfo;
             CurrentInfo = currentBuildInfo.PostProcessInfo;
             LastInfo = lastBuildInfo?.PostProcessInfo;
             CurrentBaseDir = Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName);

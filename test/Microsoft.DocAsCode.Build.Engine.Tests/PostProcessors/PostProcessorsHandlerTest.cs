@@ -198,11 +198,21 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                             {
                                 DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder)
                             };
+                            var dg = new DependencyGraph();
+                            dg.ReportDependency(new[] {
+                                new DependencyItem("~/a.md", "~/include.md", "~/a.md", DependencyTypeName.Include)
+                            });
+                            secondBuildInfo.Versions.Add(new BuildVersionInfo
+                            {
+                                Dependency = dg
+                            });
                             var lastBuildInfo = new BuildInfo
                             {
                                 DirectoryName = Path.GetFileName(increContext.CurrentBaseDir),
                                 PostProcessInfo = increContext.CurrentInfo
                             };
+                            // Add warning from include dependency.
+                            lastBuildInfo.PostProcessInfo.MessageInfo.GetListener().WriteLine(new LogItem { File = "include.md", LogLevel = LogLevel.Warning, Message = "Invalid bookmark from include file.", Phase = phaseName });
                             increContext = new IncrementalPostProcessorsContext(intermediateFolder, secondBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                             // Check context
@@ -251,8 +261,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                             // Check log messages
                             var logs = Listener.Items.Where(i => i.Phase.StartsWith(phaseName)).ToList();
-                            Assert.Equal(3, logs.Count);
-                            Assert.True(logs.All(l => l.Message.Contains("is not in html format.")));
+                            Assert.Equal(4, logs.Count);
+                            Assert.Equal(3, logs.Count(l => l.Message.Contains("is not in html format.")));
+                            Assert.Equal(1, logs.Count(l => l.Message.Contains("Invalid bookmark from include file."))); // Replay warning from include dependency.
                         }
                     });
             }
@@ -920,7 +931,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                         // Check log messages
                         var logs = Listener.Items.Where(i => i.Phase.StartsWith(phaseName)).ToList();
                         Assert.Equal(2, logs.Count);
-                        Assert.True(logs.Where(l => l.Message.Contains("Invalid bookmark.")).Count() == 1);
+                        Assert.True(logs.Count(l => l.Message.Contains("Invalid bookmark.")) == 1);
                     });
             }
             finally
