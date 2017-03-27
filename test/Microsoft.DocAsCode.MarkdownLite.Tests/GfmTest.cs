@@ -699,6 +699,27 @@ b",
 
         [Fact]
         [Trait("Related", "Markdown")]
+        public void TestTable_Html_Div()
+        {
+            // 1. Prepare data
+            var source = @"
+<div>
+    <div>
+        <div>aaa</div>
+    </div>
+</div>
+";
+            var expected = @"<div>
+    <div>
+        <div>aaa</div>
+    </div>
+</div>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
         public void TestTable_WithEmptyColumn()
         {
             // 1. Prepare data

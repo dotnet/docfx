@@ -555,11 +555,10 @@ _Em Text_
 - Simple text";
             var expected = @"# Test Complex String Em Del
 **Strong Text**
-
 <div>
 *Em Text*
-
 <div>
+
 * ~~Del Text~~
 * Simple text
 
@@ -581,10 +580,10 @@ _Em Text_
 - Simple text";
             var expected = @"# Test Complex String Em Del
 **Strong Text**
-
 <div>
 *Em Text*
 </div>
+
 * ~~Del Text~~
 * Simple text
 

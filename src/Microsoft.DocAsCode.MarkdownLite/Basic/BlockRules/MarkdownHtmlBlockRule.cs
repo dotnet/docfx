@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System;
     using System.Collections.Immutable;
-    using System.Linq;
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.MarkdownLite.Matchers;
@@ -56,6 +55,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
             ).ToNegativeTest() +
             // \b
             (Matcher.AnyWordCharacter.ToNegativeTest() | Matcher.EndOfString);
+        //  *(?:\n{2,}|$)
+        private static readonly Matcher _EndSymbol =
+            Matcher.WhiteSpacesOrEmpty +
+            (Matcher.NewLine.RepeatAtLeast(2) | (Matcher.NewLine.Maybe() + Matcher.EndOfString));
         private static readonly Matcher _HtmlMatcher =
             Matcher.WhiteSpacesOrEmpty +
             (
@@ -74,7 +77,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     // [\s\S]+?<\/\1>
                     (
                         Matcher.AnyCharNot('<').RepeatAtLeast(1) |
-                        (Matcher.Char('<') + ((Matcher.Char('/') + Matcher.BackReference("element") + '>' + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine | Matcher.EndOfString)).ToNegativeTest()))
+                        (Matcher.Char('<') + (Matcher.Char('/') + Matcher.BackReference("element") + '>' + _EndSymbol).ToNegativeTest())
                     ).RepeatAtLeast(1) +
                     Matcher.String("</") + Matcher.BackReference("element") + '>'
                 ) |
@@ -91,8 +94,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     '>'
                 )
             ) +
-            //  *(?:\n{2,}|$)
-            Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
+            _EndSymbol;
 
         public virtual string Name => "Html";
 
@@ -103,6 +105,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
+            if (context.IsInParagraph)
+            {
+                return null;
+            }
             if (Html != Regexes.Block.Html)
             {
                 return TryMatchOld(parser, context);
