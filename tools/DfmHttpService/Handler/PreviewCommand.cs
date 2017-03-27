@@ -40,7 +40,7 @@ namespace DfmHttpService
                 config.MarkupClassName = PreviewConstants.MarkupClassName;
                 config.OutputFolder = PreviewConstants.OutputFolder;
                 config.PageRefreshFunctionName = PreviewConstants.PageRefreshFunctionName;
-                config.DocfxServerPort = PreviewConstants.DocfxServerPort;
+                config.ServerPort = PreviewConstants.ServerPort;
                 config.NavigationPort = PreviewConstants.NavigationPort;
                 config.References = new Dictionary<string, string>(PreviewConstants.References);
                 config.TocMetadataName = PreviewConstants.TocMetadataName;
@@ -77,9 +77,9 @@ namespace DfmHttpService
                 config.PageRefreshFunctionName = PreviewConstants.PageRefreshFunctionName;
             }
 
-            if (string.IsNullOrEmpty(config.DocfxServerPort))
+            if (string.IsNullOrEmpty(config.ServerPort))
             {
-                config.DocfxServerPort = PreviewConstants.DocfxServerPort;
+                config.ServerPort = PreviewConstants.ServerPort;
             }
 
             if (string.IsNullOrEmpty(config.NavigationPort))

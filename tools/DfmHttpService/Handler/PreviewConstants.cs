@@ -15,7 +15,7 @@ namespace DfmHttpService
         public const string MarkupClassName = "content";
         public const string OutputFolder = "_site";
         public const string PageRefreshFunctionName = "refresh";
-        public const string DocfxServerPort = "4002";
+        public const string ServerPort = "4002";
         public const string NavigationPort = "4001";
         public const string TocMetadataName = "toc_rel";
         public const string PathPrefix = @"file:///";

@@ -29,8 +29,8 @@ namespace DfmHttpService
         [JsonProperty("pageRefreshFunctionName")]
         public string PageRefreshFunctionName { get; set; }
 
-        [JsonProperty("docfxServerPort")]
-        public string DocfxServerPort { get; set; }
+        [JsonProperty("serverPort")]
+        public string ServerPort { get; set; }
 
         [JsonProperty("navigationPort")]
         public string NavigationPort { get; set; }

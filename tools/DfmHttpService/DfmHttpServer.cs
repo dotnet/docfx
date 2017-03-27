@@ -18,7 +18,7 @@ namespace DfmHttpService
         {
             if (string.IsNullOrEmpty(port))
             {
-                port = PreviewConstants.DocfxServerPort;
+                port = PreviewConstants.ServerPort;
             }
             string UrlPrefix = $"http://localhost:{port}/";
             _listener.Prefixes.Add(UrlPrefix);
