@@ -108,7 +108,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 foreach (var linkItem in pair.Value)
                 {
                     string title = linkItem.Title;
-                    string linkedToFile = linkItem.Href == string.Empty ? currentFile : linkItem.Href;
+                    string linkedToFile = linkItem.Href;
                     string bookmark = linkItem.Bookmark;
                     HashSet<string> bookmarks;
                     if (_registeredBookmarks.TryGetValue(linkedToFile, out bookmarks) && !bookmarks.Contains(bookmark))
@@ -116,7 +116,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         string currentFileSrc = linkItem.SourceFile ?? _fileMapping[currentFile];
                         string linkedToFileSrc = _fileMapping[linkedToFile];
 
-                        bool internalBookmark = linkItem.Href == string.Empty || FilePathComparer.OSPlatformSensitiveStringComparer.Equals(linkedToFileSrc, currentFileSrc);
+                        bool internalBookmark = FilePathComparer.OSPlatformSensitiveStringComparer.Equals(linkedToFileSrc, _fileMapping[currentFile]);
 
                         string link = internalBookmark ? $"#{bookmark}" : $"{linkedToFileSrc}#{bookmark}";
                         string content = linkItem.SourceFragment;
