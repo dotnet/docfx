@@ -8,7 +8,7 @@
     <title>DocFX Flavored Markdown | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFX Flavored Markdown | DocFX website ">
-    <meta name="generator" content="docfx 2.14.1.0">
+    <meta name="generator" content="docfx 2.15.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -112,7 +112,8 @@ This is a conceptual topic with `uid` specified.
 <p>Inline file inclusion is in the following syntax, in which <code>&lt;title&gt;</code> stands for the title of the included file, and <code>&lt;filepath&gt;</code> stands for the file path of the included file. The file path can be either absolute or relative.<code>&lt;filepath&gt;</code> can be wrapped by <code>&#39;</code> or <code>&quot;</code>.</p>
 <div class="NOTE"><h5>Note</h5><p>For inline file inclusion, the file included will be considered as containing only inline tags, for example,
 <code>###header</code> inside the file will not transfer since <code>&lt;h3&gt;</code> is a block tag, while <code>[a](b)</code> will transform to
-<code>&lt;a href=&#39;b&#39;&gt;a&lt;/a&gt;</code> since <code>&lt;a&gt;</code> is an inline tag.</p>
+<code>&lt;a href=&#39;b&#39;&gt;a&lt;/a&gt;</code> since <code>&lt;a&gt;</code> is an inline tag.
+Also, ending white spaces will be <strong>trimmed</strong>, considering ending white spaces in inline inclusion in most cases are typos.</p>
 </div>
 <pre><code class="lang-md">...Other inline contents... [!include[&lt;title&gt;](&lt;filepath&gt;)]
 </code></pre><h3 id="block">Block</h3>

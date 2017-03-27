@@ -7663,6 +7663,18 @@ references:
   commentId: T:Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo
   fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo
   nameWithType: ProcessorStepInfo
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.ContextInfoFile
+  name: ContextInfoFile
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorStepInfo_ContextInfoFile
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.ContextInfoFile
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.ContextInfoFile
+  nameWithType: ProcessorStepInfo.ContextInfoFile
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.ContextInfoFile*
+  name: ContextInfoFile
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorStepInfo_ContextInfoFile_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.ContextInfoFile
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.ContextInfoFile
+  nameWithType: ProcessorStepInfo.ContextInfoFile
 - uid: Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.Equals(System.Object)
   name: Equals(Object)
   href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.ProcessorStepInfo.html#Microsoft_DocAsCode_Build_Engine_Incrementals_ProcessorStepInfo_Equals_System_Object_
@@ -11538,6 +11550,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.GetIncrementalContextHash
   fullName: Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.GetIncrementalContextHash
   nameWithType: FillReferenceInformation.GetIncrementalContextHash
+- uid: Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.LoadContext(System.IO.Stream)
+  name: LoadContext(Stream)
+  href: api/Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.html#Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_LoadContext_System_IO_Stream_
+  commentId: M:Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.LoadContext(System.IO.Stream)
+  fullName: Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.LoadContext(System.IO.Stream)
+  nameWithType: FillReferenceInformation.LoadContext(Stream)
+- uid: Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.LoadContext*
+  name: LoadContext
+  href: api/Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.html#Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_LoadContext_
+  commentId: Overload:Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.LoadContext
+  fullName: Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.LoadContext
+  nameWithType: FillReferenceInformation.LoadContext
 - uid: Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.Name
   name: Name
   href: api/Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.html#Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_Name
@@ -11565,6 +11589,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.Postbuild
   fullName: Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.Postbuild
   nameWithType: FillReferenceInformation.Postbuild
+- uid: Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.SaveContext(System.IO.Stream)
+  name: SaveContext(Stream)
+  href: api/Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.html#Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_SaveContext_System_IO_Stream_
+  commentId: M:Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.SaveContext(System.IO.Stream)
+  fullName: Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.SaveContext(System.IO.Stream)
+  nameWithType: FillReferenceInformation.SaveContext(Stream)
+- uid: Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.SaveContext*
+  name: SaveContext
+  href: api/Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.html#Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_SaveContext_
+  commentId: Overload:Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.SaveContext
+  fullName: Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.SaveContext
+  nameWithType: FillReferenceInformation.SaveContext
 - uid: Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor
   name: ManagedReferenceDocumentProcessor
   href: api/Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.html
@@ -16941,6 +16977,18 @@ references:
   commentId: T:Microsoft.DocAsCode.Common.ILogItem
   fullName: Microsoft.DocAsCode.Common.ILogItem
   nameWithType: ILogItem
+- uid: Microsoft.DocAsCode.Common.ILogItem.Code
+  name: Code
+  href: api/Microsoft.DocAsCode.Common.ILogItem.html#Microsoft_DocAsCode_Common_ILogItem_Code
+  commentId: P:Microsoft.DocAsCode.Common.ILogItem.Code
+  fullName: Microsoft.DocAsCode.Common.ILogItem.Code
+  nameWithType: ILogItem.Code
+- uid: Microsoft.DocAsCode.Common.ILogItem.Code*
+  name: Code
+  href: api/Microsoft.DocAsCode.Common.ILogItem.html#Microsoft_DocAsCode_Common_ILogItem_Code_
+  commentId: Overload:Microsoft.DocAsCode.Common.ILogItem.Code
+  fullName: Microsoft.DocAsCode.Common.ILogItem.Code
+  nameWithType: ILogItem.Code
 - uid: Microsoft.DocAsCode.Common.ILogItem.File
   name: File
   href: api/Microsoft.DocAsCode.Common.ILogItem.html#Microsoft_DocAsCode_Common_ILogItem_File
@@ -17343,6 +17391,12 @@ references:
   commentId: M:Microsoft.DocAsCode.Common.Logger.Log(Microsoft.DocAsCode.Common.LogLevel,System.String,System.String,System.String,System.String)
   fullName: Microsoft.DocAsCode.Common.Logger.Log(Microsoft.DocAsCode.Common.LogLevel, System.String, System.String, System.String, System.String)
   nameWithType: Logger.Log(LogLevel, String, String, String, String)
+- uid: Microsoft.DocAsCode.Common.Logger.Log(Microsoft.DocAsCode.Common.LogLevel,System.String,System.String,System.String,System.String,System.String)
+  name: Log(LogLevel, String, String, String, String, String)
+  href: api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_Log_Microsoft_DocAsCode_Common_LogLevel_System_String_System_String_System_String_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.Logger.Log(Microsoft.DocAsCode.Common.LogLevel,System.String,System.String,System.String,System.String,System.String)
+  fullName: Microsoft.DocAsCode.Common.Logger.Log(Microsoft.DocAsCode.Common.LogLevel, System.String, System.String, System.String, System.String, System.String)
+  nameWithType: Logger.Log(LogLevel, String, String, String, String, String)
 - uid: Microsoft.DocAsCode.Common.Logger.Log(System.Object)
   name: Log(Object)
   href: api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_Log_System_Object_
@@ -17361,6 +17415,12 @@ references:
   commentId: M:Microsoft.DocAsCode.Common.Logger.LogDiagnostic(System.String,System.String,System.String,System.String)
   fullName: Microsoft.DocAsCode.Common.Logger.LogDiagnostic(System.String, System.String, System.String, System.String)
   nameWithType: Logger.LogDiagnostic(String, String, String, String)
+- uid: Microsoft.DocAsCode.Common.Logger.LogDiagnostic(System.String,System.String,System.String,System.String,System.String)
+  name: LogDiagnostic(String, String, String, String, String)
+  href: api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogDiagnostic_System_String_System_String_System_String_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.Logger.LogDiagnostic(System.String,System.String,System.String,System.String,System.String)
+  fullName: Microsoft.DocAsCode.Common.Logger.LogDiagnostic(System.String, System.String, System.String, System.String, System.String)
+  nameWithType: Logger.LogDiagnostic(String, String, String, String, String)
 - uid: Microsoft.DocAsCode.Common.Logger.LogDiagnostic*
   name: LogDiagnostic
   href: api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogDiagnostic_
@@ -17373,6 +17433,12 @@ references:
   commentId: M:Microsoft.DocAsCode.Common.Logger.LogError(System.String,System.String,System.String,System.String)
   fullName: Microsoft.DocAsCode.Common.Logger.LogError(System.String, System.String, System.String, System.String)
   nameWithType: Logger.LogError(String, String, String, String)
+- uid: Microsoft.DocAsCode.Common.Logger.LogError(System.String,System.String,System.String,System.String,System.String)
+  name: LogError(String, String, String, String, String)
+  href: api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogError_System_String_System_String_System_String_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.Logger.LogError(System.String,System.String,System.String,System.String,System.String)
+  fullName: Microsoft.DocAsCode.Common.Logger.LogError(System.String, System.String, System.String, System.String, System.String)
+  nameWithType: Logger.LogError(String, String, String, String, String)
 - uid: Microsoft.DocAsCode.Common.Logger.LogError*
   name: LogError
   href: api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogError_
@@ -17385,6 +17451,12 @@ references:
   commentId: M:Microsoft.DocAsCode.Common.Logger.LogInfo(System.String,System.String,System.String,System.String)
   fullName: Microsoft.DocAsCode.Common.Logger.LogInfo(System.String, System.String, System.String, System.String)
   nameWithType: Logger.LogInfo(String, String, String, String)
+- uid: Microsoft.DocAsCode.Common.Logger.LogInfo(System.String,System.String,System.String,System.String,System.String)
+  name: LogInfo(String, String, String, String, String)
+  href: api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogInfo_System_String_System_String_System_String_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.Logger.LogInfo(System.String,System.String,System.String,System.String,System.String)
+  fullName: Microsoft.DocAsCode.Common.Logger.LogInfo(System.String, System.String, System.String, System.String, System.String)
+  nameWithType: Logger.LogInfo(String, String, String, String, String)
 - uid: Microsoft.DocAsCode.Common.Logger.LogInfo*
   name: LogInfo
   href: api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogInfo_
@@ -17403,6 +17475,12 @@ references:
   commentId: M:Microsoft.DocAsCode.Common.Logger.LogVerbose(System.String,System.String,System.String,System.String)
   fullName: Microsoft.DocAsCode.Common.Logger.LogVerbose(System.String, System.String, System.String, System.String)
   nameWithType: Logger.LogVerbose(String, String, String, String)
+- uid: Microsoft.DocAsCode.Common.Logger.LogVerbose(System.String,System.String,System.String,System.String,System.String)
+  name: LogVerbose(String, String, String, String, String)
+  href: api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogVerbose_System_String_System_String_System_String_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.Logger.LogVerbose(System.String,System.String,System.String,System.String,System.String)
+  fullName: Microsoft.DocAsCode.Common.Logger.LogVerbose(System.String, System.String, System.String, System.String, System.String)
+  nameWithType: Logger.LogVerbose(String, String, String, String, String)
 - uid: Microsoft.DocAsCode.Common.Logger.LogVerbose*
   name: LogVerbose
   href: api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogVerbose_
@@ -17415,6 +17493,12 @@ references:
   commentId: M:Microsoft.DocAsCode.Common.Logger.LogWarning(System.String,System.String,System.String,System.String)
   fullName: Microsoft.DocAsCode.Common.Logger.LogWarning(System.String, System.String, System.String, System.String)
   nameWithType: Logger.LogWarning(String, String, String, String)
+- uid: Microsoft.DocAsCode.Common.Logger.LogWarning(System.String,System.String,System.String,System.String,System.String)
+  name: LogWarning(String, String, String, String, String)
+  href: api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogWarning_System_String_System_String_System_String_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Common.Logger.LogWarning(System.String,System.String,System.String,System.String,System.String)
+  fullName: Microsoft.DocAsCode.Common.Logger.LogWarning(System.String, System.String, System.String, System.String, System.String)
+  nameWithType: Logger.LogWarning(String, String, String, String, String)
 - uid: Microsoft.DocAsCode.Common.Logger.LogWarning*
   name: LogWarning
   href: api/Microsoft.DocAsCode.Common.Logger.html#Microsoft_DocAsCode_Common_Logger_LogWarning_
@@ -19199,6 +19283,18 @@ references:
   commentId: T:Microsoft.DocAsCode.Common.ReportLogListener.ReportItem
   fullName: Microsoft.DocAsCode.Common.ReportLogListener.ReportItem
   nameWithType: ReportLogListener.ReportItem
+- uid: Microsoft.DocAsCode.Common.ReportLogListener.ReportItem.Code
+  name: Code
+  href: api/Microsoft.DocAsCode.Common.ReportLogListener.ReportItem.html#Microsoft_DocAsCode_Common_ReportLogListener_ReportItem_Code
+  commentId: P:Microsoft.DocAsCode.Common.ReportLogListener.ReportItem.Code
+  fullName: Microsoft.DocAsCode.Common.ReportLogListener.ReportItem.Code
+  nameWithType: ReportLogListener.ReportItem.Code
+- uid: Microsoft.DocAsCode.Common.ReportLogListener.ReportItem.Code*
+  name: Code
+  href: api/Microsoft.DocAsCode.Common.ReportLogListener.ReportItem.html#Microsoft_DocAsCode_Common_ReportLogListener_ReportItem_Code_
+  commentId: Overload:Microsoft.DocAsCode.Common.ReportLogListener.ReportItem.Code
+  fullName: Microsoft.DocAsCode.Common.ReportLogListener.ReportItem.Code
+  nameWithType: ReportLogListener.ReportItem.Code
 - uid: Microsoft.DocAsCode.Common.ReportLogListener.ReportItem.DateTime
   name: DateTime
   href: api/Microsoft.DocAsCode.Common.ReportLogListener.ReportItem.html#Microsoft_DocAsCode_Common_ReportLogListener_ReportItem_DateTime
@@ -24222,6 +24318,18 @@ references:
   commentId: T:Microsoft.DocAsCode.Dfm.DfmFencesBlockRule
   fullName: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule
   nameWithType: DfmFencesBlockRule
+- uid: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.DfmFencesMatcher
+  name: DfmFencesMatcher
+  href: api/Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockRule_DfmFencesMatcher
+  commentId: P:Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.DfmFencesMatcher
+  fullName: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.DfmFencesMatcher
+  nameWithType: DfmFencesBlockRule.DfmFencesMatcher
+- uid: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.DfmFencesMatcher*
+  name: DfmFencesMatcher
+  href: api/Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockRule_DfmFencesMatcher_
+  commentId: Overload:Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.DfmFencesMatcher
+  fullName: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.DfmFencesMatcher
+  nameWithType: DfmFencesBlockRule.DfmFencesMatcher
 - uid: Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.Name
   name: Name
   href: api/Microsoft.DocAsCode.Dfm.DfmFencesBlockRule.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockRule_Name
@@ -24486,6 +24594,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.Include
   fullName: Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.Include
   nameWithType: DfmIncludeBlockRule.Include
+- uid: Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.IncludeMatcher
+  name: IncludeMatcher
+  href: api/Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.html#Microsoft_DocAsCode_Dfm_DfmIncludeBlockRule_IncludeMatcher
+  commentId: P:Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.IncludeMatcher
+  fullName: Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.IncludeMatcher
+  nameWithType: DfmIncludeBlockRule.IncludeMatcher
+- uid: Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.IncludeMatcher*
+  name: IncludeMatcher
+  href: api/Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.html#Microsoft_DocAsCode_Dfm_DfmIncludeBlockRule_IncludeMatcher_
+  commentId: Overload:Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.IncludeMatcher
+  fullName: Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.IncludeMatcher
+  nameWithType: DfmIncludeBlockRule.IncludeMatcher
 - uid: Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.Name
   name: Name
   href: api/Microsoft.DocAsCode.Dfm.DfmIncludeBlockRule.html#Microsoft_DocAsCode_Dfm_DfmIncludeBlockRule_Name
@@ -24516,6 +24636,12 @@ references:
   commentId: T:Microsoft.DocAsCode.Dfm.DfmIncludeBlockToken
   fullName: Microsoft.DocAsCode.Dfm.DfmIncludeBlockToken
   nameWithType: DfmIncludeBlockToken
+- uid: Microsoft.DocAsCode.Dfm.DfmIncludeBlockToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.String,System.String,System.String,Microsoft.DocAsCode.MarkdownLite.SourceInfo)
+  name: DfmIncludeBlockToken(IMarkdownRule, IMarkdownContext, String, String, String, SourceInfo)
+  href: api/Microsoft.DocAsCode.Dfm.DfmIncludeBlockToken.html#Microsoft_DocAsCode_Dfm_DfmIncludeBlockToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_String_System_String_System_String_Microsoft_DocAsCode_MarkdownLite_SourceInfo_
+  commentId: M:Microsoft.DocAsCode.Dfm.DfmIncludeBlockToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.String,System.String,System.String,Microsoft.DocAsCode.MarkdownLite.SourceInfo)
+  fullName: Microsoft.DocAsCode.Dfm.DfmIncludeBlockToken.DfmIncludeBlockToken(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule, Microsoft.DocAsCode.MarkdownLite.IMarkdownContext, System.String, System.String, System.String, Microsoft.DocAsCode.MarkdownLite.SourceInfo)
+  nameWithType: DfmIncludeBlockToken.DfmIncludeBlockToken(IMarkdownRule, IMarkdownContext, String, String, String, SourceInfo)
 - uid: Microsoft.DocAsCode.Dfm.DfmIncludeBlockToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownRule,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext,System.String,System.String,System.String,System.String,Microsoft.DocAsCode.MarkdownLite.SourceInfo)
   name: DfmIncludeBlockToken(IMarkdownRule, IMarkdownContext, String, String, String, String, SourceInfo)
   href: api/Microsoft.DocAsCode.Dfm.DfmIncludeBlockToken.html#Microsoft_DocAsCode_Dfm_DfmIncludeBlockToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_System_String_System_String_System_String_System_String_Microsoft_DocAsCode_MarkdownLite_SourceInfo_
@@ -25617,6 +25743,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.YamlHeader
   fullName: Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.YamlHeader
   nameWithType: DfmYamlHeaderBlockRule.YamlHeader
+- uid: Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.YamlHeaderMatcher
+  name: YamlHeaderMatcher
+  href: api/Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockRule_YamlHeaderMatcher
+  commentId: P:Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.YamlHeaderMatcher
+  fullName: Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.YamlHeaderMatcher
+  nameWithType: DfmYamlHeaderBlockRule.YamlHeaderMatcher
+- uid: Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.YamlHeaderMatcher*
+  name: YamlHeaderMatcher
+  href: api/Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockRule_YamlHeaderMatcher_
+  commentId: Overload:Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.YamlHeaderMatcher
+  fullName: Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.YamlHeaderMatcher
+  nameWithType: DfmYamlHeaderBlockRule.YamlHeaderMatcher
 - uid: Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.YamlHeaderRegex
   name: YamlHeaderRegex
   href: api/Microsoft.DocAsCode.Dfm.DfmYamlHeaderBlockRule.html#Microsoft_DocAsCode_Dfm_DfmYamlHeaderBlockRule_YamlHeaderRegex
@@ -28611,6 +28749,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.GfmHtmlCommentBlockRule.HtmlComment
   fullName: Microsoft.DocAsCode.MarkdownLite.GfmHtmlCommentBlockRule.HtmlComment
   nameWithType: GfmHtmlCommentBlockRule.HtmlComment
+- uid: Microsoft.DocAsCode.MarkdownLite.GfmHtmlCommentBlockRule.HtmlCommentMatcher
+  name: HtmlCommentMatcher
+  href: api/Microsoft.DocAsCode.MarkdownLite.GfmHtmlCommentBlockRule.html#Microsoft_DocAsCode_MarkdownLite_GfmHtmlCommentBlockRule_HtmlCommentMatcher
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.GfmHtmlCommentBlockRule.HtmlCommentMatcher
+  fullName: Microsoft.DocAsCode.MarkdownLite.GfmHtmlCommentBlockRule.HtmlCommentMatcher
+  nameWithType: GfmHtmlCommentBlockRule.HtmlCommentMatcher
+- uid: Microsoft.DocAsCode.MarkdownLite.GfmHtmlCommentBlockRule.HtmlCommentMatcher*
+  name: HtmlCommentMatcher
+  href: api/Microsoft.DocAsCode.MarkdownLite.GfmHtmlCommentBlockRule.html#Microsoft_DocAsCode_MarkdownLite_GfmHtmlCommentBlockRule_HtmlCommentMatcher_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.GfmHtmlCommentBlockRule.HtmlCommentMatcher
+  fullName: Microsoft.DocAsCode.MarkdownLite.GfmHtmlCommentBlockRule.HtmlCommentMatcher
+  nameWithType: GfmHtmlCommentBlockRule.HtmlCommentMatcher
 - uid: Microsoft.DocAsCode.MarkdownLite.GfmHtmlCommentBlockRule.Name
   name: Name
   href: api/Microsoft.DocAsCode.MarkdownLite.GfmHtmlCommentBlockRule.html#Microsoft_DocAsCode_MarkdownLite_GfmHtmlCommentBlockRule_Name
@@ -30664,6 +30814,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.Def
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.Def
   nameWithType: MarkdownDefBlockRule.Def
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.DefMatcher
+  name: DefMatcher
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownDefBlockRule_DefMatcher
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.DefMatcher
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.DefMatcher
+  nameWithType: MarkdownDefBlockRule.DefMatcher
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.DefMatcher*
+  name: DefMatcher
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownDefBlockRule_DefMatcher_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.DefMatcher
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.DefMatcher
+  nameWithType: MarkdownDefBlockRule.DefMatcher
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.Name
   name: Name
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownDefBlockRule_Name
@@ -30688,6 +30850,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.TryMatch
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.TryMatch
   nameWithType: MarkdownDefBlockRule.TryMatch
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.TryMatchOld(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
+  name: TryMatchOld(IMarkdownParser, IMarkdownParsingContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownDefBlockRule_TryMatchOld_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.TryMatchOld(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.TryMatchOld(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser, Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
+  nameWithType: MarkdownDefBlockRule.TryMatchOld(IMarkdownParser, IMarkdownParsingContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.TryMatchOld*
+  name: TryMatchOld
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownDefBlockRule_TryMatchOld_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.TryMatchOld
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownDefBlockRule.TryMatchOld
+  nameWithType: MarkdownDefBlockRule.TryMatchOld
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownEmInlineRule
   name: MarkdownEmInlineRule
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownEmInlineRule.html
@@ -31630,6 +31804,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockRule.Html
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockRule.Html
   nameWithType: MarkdownHtmlBlockRule.Html
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockRule.HtmlMatcher
+  name: HtmlMatcher
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownHtmlBlockRule_HtmlMatcher
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockRule.HtmlMatcher
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockRule.HtmlMatcher
+  nameWithType: MarkdownHtmlBlockRule.HtmlMatcher
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockRule.HtmlMatcher*
+  name: HtmlMatcher
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownHtmlBlockRule_HtmlMatcher_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockRule.HtmlMatcher
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockRule.HtmlMatcher
+  nameWithType: MarkdownHtmlBlockRule.HtmlMatcher
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockRule.Name
   name: Name
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownHtmlBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownHtmlBlockRule_Name
@@ -34051,6 +34237,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockRule.Table
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockRule.Table
   nameWithType: MarkdownTableBlockRule.Table
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockRule.TableMatcher
+  name: TableMatcher
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTableBlockRule_TableMatcher
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockRule.TableMatcher
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockRule.TableMatcher
+  nameWithType: MarkdownTableBlockRule.TableMatcher
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockRule.TableMatcher*
+  name: TableMatcher
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTableBlockRule_TableMatcher_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockRule.TableMatcher
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockRule.TableMatcher
+  nameWithType: MarkdownTableBlockRule.TableMatcher
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
   name: TryMatch(IMarkdownParser, IMarkdownParsingContext)
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownTableBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTableBlockRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_
@@ -34384,6 +34582,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.Text
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.Text
   nameWithType: MarkdownTextBlockRule.Text
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TextMatcher
+  name: TextMatcher
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_TextMatcher
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TextMatcher
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TextMatcher
+  nameWithType: MarkdownTextBlockRule.TextMatcher
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TextMatcher*
+  name: TextMatcher
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_TextMatcher_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TextMatcher
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TextMatcher
+  nameWithType: MarkdownTextBlockRule.TextMatcher
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
   name: TryMatch(IMarkdownParser, IMarkdownParsingContext)
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_
@@ -34396,6 +34606,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatch
   fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatch
   nameWithType: MarkdownTextBlockRule.TryMatch
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatchOld(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
+  name: TryMatchOld(IMarkdownParser, IMarkdownParsingContext)
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_TryMatchOld_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatchOld(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatchOld(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser, Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
+  nameWithType: MarkdownTextBlockRule.TryMatchOld(IMarkdownParser, IMarkdownParsingContext)
+- uid: Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatchOld*
+  name: TryMatchOld
+  href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.html#Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_TryMatchOld_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatchOld
+  fullName: Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatchOld
+  nameWithType: MarkdownTextBlockRule.TryMatchOld
 - uid: Microsoft.DocAsCode.MarkdownLite.MarkdownTextInlineRule
   name: MarkdownTextInlineRule
   href: api/Microsoft.DocAsCode.MarkdownLite.MarkdownTextInlineRule.html
@@ -35219,6 +35441,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.AnyStringInSingleLineOrEmpty
   fullName: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.AnyStringInSingleLineOrEmpty
   nameWithType: Matcher.AnyStringInSingleLineOrEmpty
+- uid: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.AnyWordCharacter
+  name: AnyWordCharacter
+  href: api/Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.html#Microsoft_DocAsCode_MarkdownLite_Matchers_Matcher_AnyWordCharacter
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.AnyWordCharacter
+  fullName: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.AnyWordCharacter
+  nameWithType: Matcher.AnyWordCharacter
+- uid: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.AnyWordCharacter*
+  name: AnyWordCharacter
+  href: api/Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.html#Microsoft_DocAsCode_MarkdownLite_Matchers_Matcher_AnyWordCharacter_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.AnyWordCharacter
+  fullName: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.AnyWordCharacter
+  nameWithType: Matcher.AnyWordCharacter
 - uid: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.BackReference(System.String)
   name: BackReference(String)
   href: api/Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.html#Microsoft_DocAsCode_MarkdownLite_Matchers_Matcher_BackReference_System_String_
@@ -36263,6 +36497,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.StringHelper.Escape
   fullName: Microsoft.DocAsCode.MarkdownLite.StringHelper.Escape
   nameWithType: StringHelper.Escape
+- uid: Microsoft.DocAsCode.MarkdownLite.StringHelper.EscapeMarkdown(System.String)
+  name: EscapeMarkdown(String)
+  href: api/Microsoft.DocAsCode.MarkdownLite.StringHelper.html#Microsoft_DocAsCode_MarkdownLite_StringHelper_EscapeMarkdown_System_String_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.StringHelper.EscapeMarkdown(System.String)
+  fullName: Microsoft.DocAsCode.MarkdownLite.StringHelper.EscapeMarkdown(System.String)
+  nameWithType: StringHelper.EscapeMarkdown(String)
+- uid: Microsoft.DocAsCode.MarkdownLite.StringHelper.EscapeMarkdown*
+  name: EscapeMarkdown
+  href: api/Microsoft.DocAsCode.MarkdownLite.StringHelper.html#Microsoft_DocAsCode_MarkdownLite_StringHelper_EscapeMarkdown_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.StringHelper.EscapeMarkdown
+  fullName: Microsoft.DocAsCode.MarkdownLite.StringHelper.EscapeMarkdown
+  nameWithType: StringHelper.EscapeMarkdown
 - uid: Microsoft.DocAsCode.MarkdownLite.StringHelper.HtmlDecode(System.String)
   name: HtmlDecode(String)
   href: api/Microsoft.DocAsCode.MarkdownLite.StringHelper.html#Microsoft_DocAsCode_MarkdownLite_StringHelper_HtmlDecode_System_String_
@@ -36350,6 +36596,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.StringHelper.Unescape
   fullName: Microsoft.DocAsCode.MarkdownLite.StringHelper.Unescape
   nameWithType: StringHelper.Unescape
+- uid: Microsoft.DocAsCode.MarkdownLite.StringHelper.UnescapeMarkdown(System.String)
+  name: UnescapeMarkdown(String)
+  href: api/Microsoft.DocAsCode.MarkdownLite.StringHelper.html#Microsoft_DocAsCode_MarkdownLite_StringHelper_UnescapeMarkdown_System_String_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.StringHelper.UnescapeMarkdown(System.String)
+  fullName: Microsoft.DocAsCode.MarkdownLite.StringHelper.UnescapeMarkdown(System.String)
+  nameWithType: StringHelper.UnescapeMarkdown(String)
+- uid: Microsoft.DocAsCode.MarkdownLite.StringHelper.UnescapeMarkdown*
+  name: UnescapeMarkdown
+  href: api/Microsoft.DocAsCode.MarkdownLite.StringHelper.html#Microsoft_DocAsCode_MarkdownLite_StringHelper_UnescapeMarkdown_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.StringHelper.UnescapeMarkdown
+  fullName: Microsoft.DocAsCode.MarkdownLite.StringHelper.UnescapeMarkdown
+  nameWithType: StringHelper.UnescapeMarkdown
 - uid: Microsoft.DocAsCode.MarkdownLite.TokenHelper
   name: TokenHelper
   href: api/Microsoft.DocAsCode.MarkdownLite.TokenHelper.html
@@ -41366,6 +41624,36 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Plugins.FileAndType.Type
   fullName: Microsoft.DocAsCode.Plugins.FileAndType.Type
   nameWithType: FileAndType.Type
+- uid: Microsoft.DocAsCode.Plugins.FileIncrementalInfo
+  name: FileIncrementalInfo
+  href: api/Microsoft.DocAsCode.Plugins.FileIncrementalInfo.html
+  commentId: T:Microsoft.DocAsCode.Plugins.FileIncrementalInfo
+  fullName: Microsoft.DocAsCode.Plugins.FileIncrementalInfo
+  nameWithType: FileIncrementalInfo
+- uid: Microsoft.DocAsCode.Plugins.FileIncrementalInfo.IsIncremental
+  name: IsIncremental
+  href: api/Microsoft.DocAsCode.Plugins.FileIncrementalInfo.html#Microsoft_DocAsCode_Plugins_FileIncrementalInfo_IsIncremental
+  commentId: P:Microsoft.DocAsCode.Plugins.FileIncrementalInfo.IsIncremental
+  fullName: Microsoft.DocAsCode.Plugins.FileIncrementalInfo.IsIncremental
+  nameWithType: FileIncrementalInfo.IsIncremental
+- uid: Microsoft.DocAsCode.Plugins.FileIncrementalInfo.IsIncremental*
+  name: IsIncremental
+  href: api/Microsoft.DocAsCode.Plugins.FileIncrementalInfo.html#Microsoft_DocAsCode_Plugins_FileIncrementalInfo_IsIncremental_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.FileIncrementalInfo.IsIncremental
+  fullName: Microsoft.DocAsCode.Plugins.FileIncrementalInfo.IsIncremental
+  nameWithType: FileIncrementalInfo.IsIncremental
+- uid: Microsoft.DocAsCode.Plugins.FileIncrementalInfo.SourceFile
+  name: SourceFile
+  href: api/Microsoft.DocAsCode.Plugins.FileIncrementalInfo.html#Microsoft_DocAsCode_Plugins_FileIncrementalInfo_SourceFile
+  commentId: P:Microsoft.DocAsCode.Plugins.FileIncrementalInfo.SourceFile
+  fullName: Microsoft.DocAsCode.Plugins.FileIncrementalInfo.SourceFile
+  nameWithType: FileIncrementalInfo.SourceFile
+- uid: Microsoft.DocAsCode.Plugins.FileIncrementalInfo.SourceFile*
+  name: SourceFile
+  href: api/Microsoft.DocAsCode.Plugins.FileIncrementalInfo.html#Microsoft_DocAsCode_Plugins_FileIncrementalInfo_SourceFile_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.FileIncrementalInfo.SourceFile
+  fullName: Microsoft.DocAsCode.Plugins.FileIncrementalInfo.SourceFile
+  nameWithType: FileIncrementalInfo.SourceFile
 - uid: Microsoft.DocAsCode.Plugins.FileModel
   name: FileModel
   href: api/Microsoft.DocAsCode.Plugins.FileModel.html
@@ -41666,6 +41954,36 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Plugins.HomepageInfo.TocPath
   fullName: Microsoft.DocAsCode.Plugins.HomepageInfo.TocPath
   nameWithType: HomepageInfo.TocPath
+- uid: Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep
+  name: ICanTraceContextInfoBuildStep
+  href: api/Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.html
+  commentId: T:Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep
+  fullName: Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep
+  nameWithType: ICanTraceContextInfoBuildStep
+- uid: Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.LoadContext(System.IO.Stream)
+  name: LoadContext(Stream)
+  href: api/Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.html#Microsoft_DocAsCode_Plugins_ICanTraceContextInfoBuildStep_LoadContext_System_IO_Stream_
+  commentId: M:Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.LoadContext(System.IO.Stream)
+  fullName: Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.LoadContext(System.IO.Stream)
+  nameWithType: ICanTraceContextInfoBuildStep.LoadContext(Stream)
+- uid: Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.LoadContext*
+  name: LoadContext
+  href: api/Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.html#Microsoft_DocAsCode_Plugins_ICanTraceContextInfoBuildStep_LoadContext_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.LoadContext
+  fullName: Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.LoadContext
+  nameWithType: ICanTraceContextInfoBuildStep.LoadContext
+- uid: Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.SaveContext(System.IO.Stream)
+  name: SaveContext(Stream)
+  href: api/Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.html#Microsoft_DocAsCode_Plugins_ICanTraceContextInfoBuildStep_SaveContext_System_IO_Stream_
+  commentId: M:Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.SaveContext(System.IO.Stream)
+  fullName: Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.SaveContext(System.IO.Stream)
+  nameWithType: ICanTraceContextInfoBuildStep.SaveContext(Stream)
+- uid: Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.SaveContext*
+  name: SaveContext
+  href: api/Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.html#Microsoft_DocAsCode_Plugins_ICanTraceContextInfoBuildStep_SaveContext_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.SaveContext
+  fullName: Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.SaveContext
+  nameWithType: ICanTraceContextInfoBuildStep.SaveContext
 - uid: Microsoft.DocAsCode.Plugins.ICustomHrefGenerator
   name: ICustomHrefGenerator
   href: api/Microsoft.DocAsCode.Plugins.ICustomHrefGenerator.html
@@ -42272,6 +42590,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Plugins.IHostService.HasMetadataValidation
   fullName: Microsoft.DocAsCode.Plugins.IHostService.HasMetadataValidation
   nameWithType: IHostService.HasMetadataValidation
+- uid: Microsoft.DocAsCode.Plugins.IHostService.IncrementalInfos
+  name: IncrementalInfos
+  href: api/Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService_IncrementalInfos
+  commentId: P:Microsoft.DocAsCode.Plugins.IHostService.IncrementalInfos
+  fullName: Microsoft.DocAsCode.Plugins.IHostService.IncrementalInfos
+  nameWithType: IHostService.IncrementalInfos
+- uid: Microsoft.DocAsCode.Plugins.IHostService.IncrementalInfos*
+  name: IncrementalInfos
+  href: api/Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService_IncrementalInfos_
+  commentId: Overload:Microsoft.DocAsCode.Plugins.IHostService.IncrementalInfos
+  fullName: Microsoft.DocAsCode.Plugins.IHostService.IncrementalInfos
+  nameWithType: IHostService.IncrementalInfos
 - uid: Microsoft.DocAsCode.Plugins.IHostService.LogDiagnostic(System.String,System.String,System.String)
   name: LogDiagnostic(String, String, String)
   href: api/Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService_LogDiagnostic_System_String_System_String_System_String_

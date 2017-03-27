@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class MarkdownTextBlockRule
    | DocFX website ">
-    <meta name="generator" content="docfx 2.14.1.0">
+    <meta name="generator" content="docfx 2.15.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -124,7 +124,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/BlockRules/MarkdownTextBlockRule.cs/#L10">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/BlockRules/MarkdownTextBlockRule.cs/#L17">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_Name_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.Name*"></a>
               <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_Name" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.Name">Name</h4>
@@ -156,7 +156,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_Text.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.Text%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/BlockRules/MarkdownTextBlockRule.cs/#L12">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/BlockRules/MarkdownTextBlockRule.cs/#L19">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_Text_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.Text*"></a>
               <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_Text" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.Text">Text</h4>
@@ -164,7 +164,8 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual Regex Text { get; }</code></pre>
+                <pre><code class="lang-csharp hljs">[Obsolete(&quot;Please use LHeadingMatcher.&quot;)]
+public virtual Regex Text { get; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -181,6 +182,36 @@
                   </tr>
                 </tbody>
               </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_TextMatcher.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TextMatcher%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/BlockRules/MarkdownTextBlockRule.cs/#L22">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_TextMatcher_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TextMatcher*"></a>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_TextMatcher" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TextMatcher">TextMatcher</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public virtual Matcher TextMatcher { get; }</code></pre>
+              </div>
+              <h5 class="propertyValue">Property Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.html">Matcher</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
               <h3 id="methods">Methods
               </h3>
               <span class="small pull-right mobile-hide">
@@ -188,7 +219,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser%2CMicrosoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/BlockRules/MarkdownTextBlockRule.cs/#L14">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/BlockRules/MarkdownTextBlockRule.cs/#L24">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_TryMatch_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatch*"></a>
               <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)">TryMatch(IMarkdownParser, IMarkdownParsingContext)</h4>
@@ -237,6 +268,58 @@
               </table>
               <h5 class="implements">Implements</h5>
                   <div><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRule.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_">IMarkdownRule.TryMatch(IMarkdownParser, IMarkdownParsingContext)</a></div>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_TryMatchOld_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatchOld(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser%2CMicrosoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/BlockRules/MarkdownTextBlockRule.cs/#L39">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_TryMatchOld_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatchOld*"></a>
+              <h4 id="Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule_TryMatchOld_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_" data-uid="Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule.TryMatchOld(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)">TryMatchOld(IMarkdownParser, IMarkdownParsingContext)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public virtual IMarkdownToken TryMatchOld(IMarkdownParser parser, IMarkdownParsingContext context)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownParser.html">IMarkdownParser</a></td>
+                    <td><span class="parametername">parser</span></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.html">IMarkdownParsingContext</a></td>
+                    <td><span class="parametername">context</span></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html">IMarkdownToken</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
                   <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
@@ -252,7 +335,7 @@
                     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_MarkdownLite_MarkdownTextBlockRule.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.MarkdownLite.MarkdownTextBlockRule%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/BlockRules/MarkdownTextBlockRule.cs/#L8" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.MarkdownLite/Basic/BlockRules/MarkdownTextBlockRule.cs/#L11" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

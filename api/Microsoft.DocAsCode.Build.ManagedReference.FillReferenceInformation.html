@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class FillReferenceInformation
    | DocFX website ">
-    <meta name="generator" content="docfx 2.14.1.0">
+    <meta name="generator" content="docfx 2.15.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -123,7 +123,7 @@
               <h5 id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_syntax">Syntax</h5>
               <div class="codewrapper">
                 <pre><code class="lang-csharp hljs">[Export(&quot;ManagedReferenceDocumentProcessor&quot;, typeof (IDocumentBuildStep))]
-public class FillReferenceInformation : BaseDocumentBuildStep, ISupportIncrementalBuildStep, IDocumentBuildStep</code></pre>
+public class FillReferenceInformation : BaseDocumentBuildStep, ICanTraceContextInfoBuildStep, ISupportIncrementalBuildStep, IDocumentBuildStep</code></pre>
               </div>
               <h3 id="properties">Properties
               </h3>
@@ -132,7 +132,7 @@ public class FillReferenceInformation : BaseDocumentBuildStep, ISupportIncrement
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_BuildOrder.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.BuildOrder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L19">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L26">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_BuildOrder_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.BuildOrder*"></a>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_BuildOrder" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.BuildOrder">BuildOrder</h4>
@@ -166,7 +166,7 @@ public class FillReferenceInformation : BaseDocumentBuildStep, ISupportIncrement
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L17">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L24">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_Name_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.Name*"></a>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_Name" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.Name">Name</h4>
@@ -202,7 +202,7 @@ public class FillReferenceInformation : BaseDocumentBuildStep, ISupportIncrement
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L38">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L46">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_CanIncrementalBuild_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.CanIncrementalBuild*"></a>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)">CanIncrementalBuild(FileAndType)</h4>
@@ -251,7 +251,7 @@ public class FillReferenceInformation : BaseDocumentBuildStep, ISupportIncrement
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_GetDependencyTypesToRegister.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.GetDependencyTypesToRegister%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L42">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L50">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_GetDependencyTypesToRegister_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.GetDependencyTypesToRegister*"></a>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_GetDependencyTypesToRegister" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.GetDependencyTypesToRegister">GetDependencyTypesToRegister()</h4>
@@ -283,7 +283,7 @@ public class FillReferenceInformation : BaseDocumentBuildStep, ISupportIncrement
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_GetIncrementalContextHash.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.GetIncrementalContextHash%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L40">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L48">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_GetIncrementalContextHash_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.GetIncrementalContextHash*"></a>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_GetIncrementalContextHash" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.GetIncrementalContextHash">GetIncrementalContextHash()</h4>
@@ -312,10 +312,44 @@ public class FillReferenceInformation : BaseDocumentBuildStep, ISupportIncrement
                   <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_GetIncrementalContextHash">ISupportIncrementalBuildStep.GetIncrementalContextHash()</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_LoadContext_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.LoadContext(System.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L56">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_LoadContext_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.LoadContext*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_LoadContext_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.LoadContext(System.IO.Stream)">LoadContext(Stream)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public void LoadContext(Stream stream)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></td>
+                    <td><span class="parametername">stream</span></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.html#Microsoft_DocAsCode_Plugins_ICanTraceContextInfoBuildStep_LoadContext_System_IO_Stream_">ICanTraceContextInfoBuildStep.LoadContext(Stream)</a></div>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_Postbuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.Postbuild(System.Collections.Immutable.ImmutableList%7BMicrosoft.DocAsCode.Plugins.FileModel%7D%2CMicrosoft.DocAsCode.Plugins.IHostService)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L21">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L28">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_Postbuild_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.Postbuild*"></a>
               <h4 id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_Postbuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.Postbuild(System.Collections.Immutable.ImmutableList{Microsoft.DocAsCode.Plugins.FileModel},Microsoft.DocAsCode.Plugins.IHostService)">Postbuild(ImmutableList&lt;FileModel&gt;, IHostService)</h4>
@@ -351,6 +385,40 @@ public class FillReferenceInformation : BaseDocumentBuildStep, ISupportIncrement
               <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Postbuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_">BaseDocumentBuildStep.Postbuild(ImmutableList&lt;FileModel&gt;, IHostService)</a></div>
               <h5 class="implements">Implements</h5>
                   <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html#Microsoft_DocAsCode_Plugins_IDocumentBuildStep_Postbuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_">IDocumentBuildStep.Postbuild(ImmutableList&lt;FileModel&gt;, IHostService)</a></div>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_SaveContext_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.SaveContext(System.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L69">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_SaveContext_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.SaveContext*"></a>
+              <h4 id="Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation_SaveContext_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation.SaveContext(System.IO.Stream)">SaveContext(Stream)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public void SaveContext(Stream stream)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.io.stream(v=vs.110).aspx">Stream</a></td>
+                    <td><span class="parametername">stream</span></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="implements">Implements</h5>
+                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep.html#Microsoft_DocAsCode_Plugins_ICanTraceContextInfoBuildStep_SaveContext_System_IO_Stream_">ICanTraceContextInfoBuildStep.SaveContext(Stream)</a></div>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
                   <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
@@ -366,7 +434,7 @@ public class FillReferenceInformation : BaseDocumentBuildStep, ISupportIncrement
                     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_ManagedReference_FillReferenceInformation.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.ManagedReference.FillReferenceInformation%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L14" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.ManagedReference/FillReferenceInformation.cs/#L18" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
