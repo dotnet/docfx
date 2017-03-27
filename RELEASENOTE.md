@@ -1,7 +1,9 @@
-﻿Version Notes (Current Version: v2.15)
+﻿Version Notes (Current Version: v2.16)
 =======================================
+v2.16(Pre-Release)
+-----------
 
-v2.15(Pre-Release)
+v2.15
 -----------
 1.  Bug fixes:
     1. Auto dedent the included code snippet, both when including the whole file and file sections.
