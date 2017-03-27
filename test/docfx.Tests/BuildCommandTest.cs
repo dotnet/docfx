@@ -172,9 +172,9 @@ namespace Microsoft.DocAsCode.Tests
                     "<h1 id=\"hello-test1\">Hello Test1</h1>",
                     "<p>Test XRef: <a class=\"xref\" href=\"test2.html\">Hello World</a>",
                     "Test XRef: @unknown_xref",
-                    "Test link: <a href=\"test2.html\">link text</a></p>",
+                    "Test link: <a href=\"test2.html\">link text</a>",
                     "<p>",
-                    "<p>test</p>",
+                    "test</p>",
                     "",
                 },
                 File.ReadAllLines(file));
@@ -188,9 +188,9 @@ namespace Microsoft.DocAsCode.Tests
                     "<h1 id=\"hello-world\">Hello World</h1>",
                     "<p>Test XRef: <a class=\"xref\" href=\"test1.html\">Hello Test1</a>",
                     "Test XRef auto link: <a class=\"xref\" href=\"test1.html\">Hello Test1</a>",
-                    "Test link: <a href=\"test1.html\">link text</a></p>",
+                    "Test link: <a href=\"test1.html\">link text</a>",
                     "<p>",
-                    "<p>test</p>",
+                    "test</p>",
                     ""
                 },
                 File.ReadAllLines(file));
