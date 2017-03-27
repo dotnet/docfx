@@ -50,6 +50,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     new ManifestItem { SourceRelativePath = "d.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "d.html" } } } },
                     new ManifestItem { SourceRelativePath = "e.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "e.html" } } } },
                     new ManifestItem { SourceRelativePath = "f.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "Dir/f.html" } } } },
+                    new ManifestItem { SourceRelativePath = "g.md", OutputFiles = { { ".html", new OutputFileInfo { RelativePath = "g.html" } } } },
                 }
             };
 
@@ -59,6 +60,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             File.WriteAllText(Path.Combine(_outputFolder, "d.html"), @"<a href='illegal_path_*illegal character.html#b1'>Test illegal link path with wildchar *</a>");
             File.WriteAllText(Path.Combine(_outputFolder, "e.html"), @"<a href='illegal_path_%3Fillegal character.html#b1'>Test illegal link path with wildchar ?</a>");
             File.WriteAllText(Path.Combine(_outputFolder, "Dir/f.html"), @"<a href='#b1'>Test local link</a>");
+            File.WriteAllText(Path.Combine(_outputFolder, "g.html"), @"<a href='#b3' data-raw-source='[local link in token file](#b3)' sourceFile='token.md' sourceStartLineNumber='1'>local link in token file</a>");
 
             Logger.RegisterListener(_listener);
             try
@@ -76,15 +78,16 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Logger.UnregisterListener(_listener);
             }
             var logs = _listener.Items;
-            Assert.Equal(4, logs.Count);
+            Assert.Equal(5, logs.Count);
             Assert.Equal(3, logs.Where(l => l.Code == ErrorCode.InvalidExternalBookmark).Count());
-            Assert.Equal(1, logs.Where(l => l.Code == ErrorCode.InvalidInternalBookmark).Count());
+            Assert.Equal(2, logs.Where(l => l.Code == ErrorCode.InvalidInternalBookmark).Count());
             var expected = new[]
             {
                 Tuple.Create(@"Illegal link: `[link with source info](a.md#b2)` -- missing bookmark. The file a.md doesn't contain a bookmark named b2.", "b.md"),
                 Tuple.Create(@"Illegal link: `[link in token file](a.md#b3)` -- missing bookmark. The file a.md doesn't contain a bookmark named b3.", "token.md"),
                 Tuple.Create(@"Illegal link: `<a href=""a.md#b4"">link without source info</a>` -- missing bookmark. The file a.md doesn't contain a bookmark named b4.", "b.md"),
                 Tuple.Create(@"Illegal link: `<a href=""#b1"">Test local link</a>` -- missing bookmark. The file f.md doesn't contain a bookmark named b1.", "f.md"),
+                Tuple.Create(@"Illegal link: `[local link in token file](#b3)` -- missing bookmark. The file g.md doesn't contain a bookmark named b3.", "token.md"),
             };
             var actual = logs.Select(l => Tuple.Create(l.Message, l.File)).ToList();
             Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);
