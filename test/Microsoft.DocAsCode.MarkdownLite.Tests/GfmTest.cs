@@ -674,8 +674,6 @@ b",
         [Trait("Related", "Markdown")]
         public void TestTable_PipesInTableCell()
         {
-            // 
-            // 1. Prepare data
             var source = @"
 | column 1 | column 2|
 | ---- | ---- |
