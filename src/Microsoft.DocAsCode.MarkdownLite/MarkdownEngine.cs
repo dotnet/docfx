@@ -5,9 +5,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Text.RegularExpressions;
 
     public class MarkdownEngine : IMarkdownEngine
     {
+        private static readonly char[] NewLineOrTab = { '\n', '\t' };
+        private static readonly string[] Spaces = { "    ", "   ", "  ", " " };
+
         public MarkdownEngine(IMarkdownContext context, object renderer, Options options)
             : this(context, null, renderer, options, new Dictionary<string, LinkObj>())
         {
@@ -43,11 +47,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public static string Normalize(string markdown)
         {
-            return markdown
+            var result = markdown
                 .ReplaceRegex(Regexes.Lexers.NormalizeNewLine, "\n")
-                .Replace("\t", "    ")
                 .Replace("\u00a0", " ")
                 .Replace("\u2424", "\n");
+            return Regex.Replace(result, "\\t", m =>
+            {
+                if (m.Index == 0)
+                {
+                    return Spaces[0];
+                }
+                var index = result.LastIndexOfAny(NewLineOrTab, m.Index - 1);
+                return Spaces[(m.Index - index - 1) % 4];
+            });
         }
 
         public StringBuffer Mark(SourceInfo sourceInfo, IMarkdownContext context)

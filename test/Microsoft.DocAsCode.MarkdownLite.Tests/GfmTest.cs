@@ -672,6 +672,49 @@ b",
 
         [Fact]
         [Trait("Related", "Markdown")]
+        public void TestListWithTab()
+        {
+            // 1. Prepare data
+            var source = @"
+0.	a
+
+0.	b
+
+	c
+
+	d
+
+0.	e
+";
+            var expected = @"<ol start=""0"">
+<li><p>a</p>
+</li>
+<li><p>b</p>
+<p>c</p>
+<p>d</p>
+</li>
+<li><p>e</p>
+</li>
+</ol>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Theory]
+        [Trait("Related", "Markdown")]
+        [InlineData("\ta")]
+        [InlineData(" \ta")]
+        [InlineData("  \ta")]
+        [InlineData("   \ta")]
+        [InlineData("    a")]
+        public void TestTab(string md)
+        {
+            TestGfmInGeneral(md, @"<pre><code>a
+</code></pre>");
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
         public void TestTable_PipesInTableCell()
         {
             var source = @"
