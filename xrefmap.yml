@@ -6366,6 +6366,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllDependentNodes
   fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllDependentNodes
   nameWithType: DependencyGraph.GetAllDependentNodes
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllIncludeDependencyFrom(System.String)
+  name: GetAllIncludeDependencyFrom(String)
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_GetAllIncludeDependencyFrom_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllIncludeDependencyFrom(System.String)
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllIncludeDependencyFrom(System.String)
+  nameWithType: DependencyGraph.GetAllIncludeDependencyFrom(String)
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllIncludeDependencyFrom*
+  name: GetAllIncludeDependencyFrom
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_GetAllIncludeDependencyFrom_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllIncludeDependencyFrom
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetAllIncludeDependencyFrom
+  nameWithType: DependencyGraph.GetAllIncludeDependencyFrom
 - uid: Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.GetDependencyFrom(System.String)
   name: GetDependencyFrom(String)
   href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.DependencyGraph.html#Microsoft_DocAsCode_Build_Engine_Incrementals_DependencyGraph_GetDependencyFrom_System_String_
