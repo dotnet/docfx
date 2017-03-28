@@ -53,6 +53,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 .Replace("\u2424", "\n");
             return Regex.Replace(result, "\\t", m =>
             {
+                if (m.Index == 0)
+                {
+                    return Spaces[0];
+                }
                 var index = result.LastIndexOfAny(NewLineOrTab, m.Index - 1);
                 return Spaces[(m.Index - index - 1) % 4];
             });

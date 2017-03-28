@@ -700,6 +700,19 @@ b",
             TestGfmInGeneral(source, expected);
         }
 
+        [Theory]
+        [Trait("Related", "Markdown")]
+        [InlineData("	a")]
+        [InlineData(" 	a")]
+        [InlineData("  	a")]
+        [InlineData("   	a")]
+        [InlineData("    a")]
+        public void TestTab(string md)
+        {
+            TestGfmInGeneral(md, @"<pre><code>a
+</code></pre>");
+        }
+
         [Fact]
         [Trait("Related", "Markdown")]
         public void TestTable_PipesInTableCell()
