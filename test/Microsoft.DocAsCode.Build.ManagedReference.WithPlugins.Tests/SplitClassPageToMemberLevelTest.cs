@@ -105,6 +105,15 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.Equal(MemberType.Constructor, model.Type);
                 Assert.Equal(3, model.Children.Count);
                 Assert.Equal(new List<string> { "net2", "net46" }, model.Platform);
+                Assert.Equal("<p sourcefile=\"TestData/mref/CatLibrary.Cat`2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Overload summary</p>\n", model.Summary);
+                Assert.Equal("<p sourcefile=\"TestData/mref/CatLibrary.Cat`2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Overload <em>remarks</em></p>\n", model.Remarks);
+                Assert.Equal(new List<string>
+                {
+                    "<p sourcefile=\"TestData/mref/CatLibrary.Cat`2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Overload example 1</p>\n",
+                    "<p sourcefile=\"TestData/mref/CatLibrary.Cat`2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Overload <strong>example 2</strong></p>\n"
+                }, model.Examples);
+                Assert.Equal("Not defined Property", model.Metadata["not-defined"]);
+                Assert.NotNull(model.Source);
             }
             {
                 var outputRawModelPath = GetRawModelFilePath("toc.yml");
