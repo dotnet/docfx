@@ -1,5 +1,10 @@
-﻿Version Notes (Current Version: v2.15)
+﻿Version Notes (Current Version: v2.15.1)
 =======================================
+
+v2.15.1
+-----------
+1.  Bug fixes:
+    1. Fix markdown list with tab indent.
 
 v2.15
 -----------
