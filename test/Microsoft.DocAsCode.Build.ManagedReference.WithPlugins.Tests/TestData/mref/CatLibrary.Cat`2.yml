@@ -1419,6 +1419,13 @@ references:
   fullName: CatLibrary.Cat<T, K>.Cat
   nameWithType.vb: Cat(Of T, K).Cat
   fullName.vb: CatLibrary.Cat(Of T, K).Cat
+  summary: Overload summary
+  remarks: Overload *remarks*
+  example:
+    - Overload example 1
+    - Overload **example 2**
+  not-defined: Not defined Property
+  namespace: Namespace cannot be defined
 - uid: '{T}'
   commentId: '!:T'
   definition: T
