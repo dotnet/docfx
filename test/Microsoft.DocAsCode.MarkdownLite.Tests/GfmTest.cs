@@ -702,10 +702,10 @@ b",
 
         [Theory]
         [Trait("Related", "Markdown")]
-        [InlineData("	a")]
-        [InlineData(" 	a")]
-        [InlineData("  	a")]
-        [InlineData("   	a")]
+        [InlineData("\ta")]
+        [InlineData(" \ta")]
+        [InlineData("  \ta")]
+        [InlineData("   \ta")]
         [InlineData("    a")]
         public void TestTab(string md)
         {
