@@ -26,6 +26,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         private const string SplitReferencePropertyName = "_splitReference";
         private const string IsOverloadPropertyName = "_isOverload";
         private const int MaximumFileNameLength = 180;
+        private static readonly List<string> EmptyList = new List<string>();
+        private static readonly string[] EmptyArray = new string[0];
 
         public override string Name => nameof(SplitClassPageToMemberLevel);
 
@@ -179,19 +181,32 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     [IsOverloadPropertyName] = true,
                     [SplitReferencePropertyName] = true
                 },
-                Platform = MergePlatform(overload),
+                Platform = MergeList(overload, s => s.Platform ?? EmptyList),
+                SupportedLanguages = MergeList(overload, s => s.SupportedLanguages ?? EmptyArray).ToArray(),
                 IsExplicitInterfaceImplementation = firstMember.IsExplicitInterfaceImplementation,
+                Source = firstMember.Source,
+                Documentation = firstMember.Documentation
             };
 
-            var mergeVersion = MergeVersion(overload);
+            var mergeVersion = MergeList(overload, s =>
+            {
+                List<string> versionList = null;
+                object versionObj;
+                if (s.Metadata.TryGetValue(Constants.MetadataName.Version, out versionObj))
+                {
+                    versionList = GetVersionFromMetadata(versionObj);
+                }
+                return versionList ?? EmptyList;
+            });
             if (mergeVersion != null)
             {
-                newPrimaryItem.Metadata[Constants.MetadataName.Version] = MergeVersion(overload);
+                newPrimaryItem.Metadata[Constants.MetadataName.Version] = mergeVersion;
             }
 
             var referenceItem = page.References.FirstOrDefault(s => s.Uid == key);
             if (referenceItem != null)
             {
+                // The properties defined in reference section overwrites the pre-defined values
                 MergeWithReference(newPrimaryItem, referenceItem);
             }
 
@@ -206,37 +221,15 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return new ModelWrapper(newPrimaryItem, newModel);
         }
 
-        private List<string> MergePlatform(IEnumerable<ItemViewModel> children)
+        private List<string> MergeList(IEnumerable<ItemViewModel> children, Func<ItemViewModel, IEnumerable<string>> selector)
         {
-            var platforms = children.Where(s => s.Platform != null).SelectMany(s => s.Platform).Distinct().ToList();
-            if (platforms.Count == 0)
+            var items = children.SelectMany(selector).Distinct().OrderBy(s => s).ToList();
+            if (items.Count == 0)
             {
                 return null;
             }
 
-            platforms.Sort();
-            return platforms;
-        }
-
-        private List<string> MergeVersion(IEnumerable<ItemViewModel> children)
-        {
-            var versions = new SortedSet<string>();
-            foreach (var child in children)
-            {
-                object versionObj;
-                if (child.Metadata.TryGetValue(Constants.MetadataName.Version, out versionObj))
-                {
-                    var versionList = GetVersionFromMetadata(versionObj);
-                    versions.UnionWith(versionList);
-                }
-            }
-
-            if (versions.Count == 0)
-            {
-                return null;
-            }
-
-            return versions.ToList();
+            return items;
         }
 
         private List<string> GetVersionFromMetadata(object value)
@@ -247,26 +240,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 return new List<string> { text };
             }
 
-            var collection = value as IEnumerable<object>;
-            if (collection != null)
-            {
-                return collection.OfType<string>().ToList();
-            }
-
-            var jarray = value as JArray;
-            if (jarray != null)
-            {
-                try
-                {
-                    return jarray.ToObject<List<string>>();
-                }
-                catch (Exception)
-                {
-                    Logger.LogWarning($"Unknown version metadata: {jarray.ToString()}");
-                }
-            }
-
-            return null;
+            return GetListFromObject(value);
         }
 
         private string GetOverloadItemName(string overload, string parent, bool isCtor)
@@ -361,6 +335,62 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 foreach (var pair in reference.NameWithTypeInDevLangs)
                 {
                     item.NamesWithType[pair.Key] = pair.Value;
+                }
+            }
+
+            // SHOULD sync with ItemViewModel & ReferenceViewModel
+            // Make sure key inside Additional dictionary does not contain the same key value as ItemViewModel
+            foreach (var pair in reference.Additional)
+            {
+                switch (pair.Key)
+                {
+                    case "summary":
+                        {
+                            var summary = pair.Value as string;
+                            if (summary != null)
+                            {
+                                item.Summary = summary;
+                            }
+                            break;
+                        }
+                    case "remarks":
+                        {
+                            var remarks = pair.Value as string;
+                            if (remarks != null)
+                            {
+                                item.Remarks = remarks;
+                            }
+                            break;
+                        }
+                    case "example":
+                        {
+                            var examples = GetListFromObject(pair.Value);
+                            if (examples != null)
+                            {
+                                item.Examples = examples;
+                            }
+                            break;
+                        }
+                    case Constants.PropertyName.Id:
+                    case Constants.PropertyName.Type:
+                    case Constants.PropertyName.Source:
+                    case Constants.PropertyName.Documentation:
+                    case "isEii":
+                    case "isExtensionMethod":
+                    case "children":
+                    case "assemblies":
+                    case "namespace":
+                    case "langs":
+                    case "syntax":
+                    case "overridden":
+                    case "overload":
+                    case "exceptions":
+                    case "seealso":
+                    case "see":
+                        break;
+                    default:
+                        item.Metadata[pair.Key] = pair.Value;
+                        break;
                 }
             }
         }
@@ -496,6 +526,30 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         private ImmutableArray<UidDefinition> CalculateUids(PageViewModel page, string file)
         {
             return (from item in page.Items select new UidDefinition(item.Uid, file)).ToImmutableArray();
+        }
+
+        private List<string> GetListFromObject(object value)
+        {
+            var collection = value as IEnumerable<object>;
+            if (collection != null)
+            {
+                return collection.OfType<string>().ToList();
+            }
+
+            var jarray = value as JArray;
+            if (jarray != null)
+            {
+                try
+                {
+                    return jarray.ToObject<List<string>>();
+                }
+                catch (Exception)
+                {
+                    Logger.LogWarning($"Unknown version metadata: {jarray.ToString()}");
+                }
+            }
+
+            return null;
         }
 
         private T GetPropertyValue<T>(Dictionary<string, object> metadata, string key) where T : class
