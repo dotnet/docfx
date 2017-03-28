@@ -672,6 +672,91 @@ b",
 
         [Fact]
         [Trait("Related", "Markdown")]
+        public void TestListWithTab()
+        {
+            // 1. Prepare data
+            var source = @"
+0.	a
+
+0.	b
+
+	c
+
+	d
+
+0.	e
+";
+            var expected = @"<ol start=""0"">
+<li><p>a</p>
+</li>
+<li><p>b</p>
+<p>c</p>
+<p>d</p>
+</li>
+<li><p>e</p>
+</li>
+</ol>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Theory]
+        [Trait("Related", "Markdown")]
+        [InlineData("\ta")]
+        [InlineData(" \ta")]
+        [InlineData("  \ta")]
+        [InlineData("   \ta")]
+        [InlineData("    a")]
+        public void TestTab(string md)
+        {
+            TestGfmInGeneral(md, @"<pre><code>a
+</code></pre>");
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestTable_PipesInTableCell()
+        {
+            var source = @"
+| column 1 | column 2|
+| ---- | ---- |
+| test 1 - fenced pipe | `dotnet test --filter ""FullyQualifiedName~TestClass1|Category=Nightly""`|
+| test 2 - non-fenced, escaped pipe | dotnet test --filter ""FullyQualifiedName~TestClass1\|Category=Nightly"" |
+| test 3 - non-fenced, HTML coded pipe | dotnet test --filter ""FullyQualifiedName~TestClass1&#124;Category=Nightly"" |
+| test 4 - ""fenced"" with HTML `<code>` tag (the **workaround**) | <code>dotnet test --filter ""FullyQualifiedName~TestClass1&#124;Category=Nightly""</code> |
+";
+            var expected = @"<table>
+<thead>
+<tr>
+<th>column 1</th>
+<th>column 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>test 1 - fenced pipe</td>
+<td>`dotnet test --filter &quot;FullyQualifiedName~TestClass1</td>
+</tr>
+<tr>
+<td>test 2 - non-fenced, escaped pipe</td>
+<td>dotnet test --filter &quot;FullyQualifiedName~TestClass1|Category=Nightly&quot;</td>
+</tr>
+<tr>
+<td>test 3 - non-fenced, HTML coded pipe</td>
+<td>dotnet test --filter &quot;FullyQualifiedName~TestClass1&#124;Category=Nightly&quot;</td>
+</tr>
+<tr>
+<td>test 4 - &quot;fenced&quot; with HTML <code>&lt;code&gt;</code> tag (the <strong>workaround</strong>)</td>
+<td><code>dotnet test --filter &quot;FullyQualifiedName~TestClass1&#124;Category=Nightly&quot;</code></td>
+</tr>
+</tbody>
+</table>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
         public void TestTable_Html()
         {
             // 1. Prepare data
