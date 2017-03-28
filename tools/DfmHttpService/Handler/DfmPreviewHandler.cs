@@ -64,11 +64,11 @@ namespace DfmHttpService
 
             if (string.IsNullOrEmpty(builtHtmlPath))
             {
-                throw new HandlerClientException("Built Html Path path should not be null or empty");
+                throw new HandlerClientException("Built Html path should not be null or empty");
             }
             if (string.IsNullOrEmpty(pageUpdateJsFilePath))
             {
-                throw new HandlerClientException("Page Update js file path should not be null or empty");
+                throw new HandlerClientException("Page update js file path should not be null or empty");
             }
 
             PreviewJsonConfig config = PreviewCommand.ParsePreviewCommand(workspacePath);
