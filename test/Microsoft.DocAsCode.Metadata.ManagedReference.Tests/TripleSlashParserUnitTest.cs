@@ -3,10 +3,12 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 {
-    using DataContracts.Common;
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using System.Collections.Generic;
     using System.IO;
+
+    using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+
     using Xunit;
 
     [Trait("Owner", "lianwei")]
