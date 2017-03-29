@@ -811,11 +811,11 @@ b",
             var source = @"
 <span>a</span>
 
-<span>a</span>
+<span id=""a"" class=""x"">a</span>
 <span>b</span>
 ";
             var expected = @"<p><span>a</span></p>
-<p><span>a</span>
+<p><span id=""a"" class=""x"">a</span>
 <span>b</span></p>
 ";
             TestGfmInGeneral(source, expected);
