@@ -25,5 +25,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
             return 0;
         }
+
+        public override string ToString()
+        {
+            return (_isNegative ? "(?!" : "(?=") + string.Join<Matcher>("|", _inner) + ")";
+        }
     }
 }

@@ -46,5 +46,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
             return text.Length;
         }
+
+        public override string ToString()
+        {
+            return "(BackReference:<" + _groupName + ">)";
+        }
     }
 }

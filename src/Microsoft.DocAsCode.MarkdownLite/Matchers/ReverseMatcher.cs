@@ -16,5 +16,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         {
             return _inner.Match(content.Reverse());
         }
+
+        public override string ToString()
+        {
+            return "(Reverse:" + _inner + ")";
+        }
     }
 }

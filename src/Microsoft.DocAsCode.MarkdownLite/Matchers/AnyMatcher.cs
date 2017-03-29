@@ -31,5 +31,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         }
 
         internal Matcher[] Inners => _inners;
+
+        public override string ToString()
+        {
+            return "(" + string.Join<Matcher>("|", _inners) + ")";
+        }
     }
 }

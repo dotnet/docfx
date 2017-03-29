@@ -24,5 +24,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
             return result;
         }
+
+        public override string ToString()
+        {
+            return "(?<" + _groupName + ">" + _inner + ")";
+        }
     }
 }

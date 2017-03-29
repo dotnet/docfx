@@ -11,5 +11,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         {
             return content.EndOfString() ? NotMatch : 1;
         }
+
+        public override string ToString()
+        {
+            return ".";
+        }
     }
 }

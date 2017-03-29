@@ -25,5 +25,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
             return count;
         }
+
+        public override string ToString()
+        {
+            return "[" + string.Join("", _ch) + "]{" + _minOccur.ToString() + "," + _maxOccur.ToString() + "}";
+        }
     }
 }
