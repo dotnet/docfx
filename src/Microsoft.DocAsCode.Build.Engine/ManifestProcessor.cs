@@ -208,7 +208,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                     XRefSpec xref;
                     if (context.XRefSpecMap.TryGetValue(spec.Uid, out xref))
                     {
-                        Logger.LogWarning($"Uid({spec.Uid}) has already been defined in {((RelativePath)xref.Href).RemoveWorkingFolder()}.");
+                        Logger.LogWarning(
+                            $"Uid({spec.Uid}) has already been defined in {((RelativePath)xref.Href).RemoveWorkingFolder()}.",
+                            null,
+                            null,
+                            null,
+                            ErrorCode.DuplicateUids);
                     }
                     else
                     {
