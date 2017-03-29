@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Dfm.VscPreview
+namespace DfmHttpService
 {
     using System;
     using System.Collections.Generic;
@@ -29,8 +29,11 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
         [JsonProperty("pageRefreshFunctionName")]
         public string PageRefreshFunctionName { get; set; }
 
-        [JsonProperty("port")]
-        public string Port { get; set; }
+        [JsonProperty("serverPort")]
+        public string ServerPort { get; set; }
+
+        [JsonProperty("navigationPort")]
+        public string NavigationPort { get; set; }
 
         [JsonProperty("references")]
         public Dictionary<string, string> References { get; set; }

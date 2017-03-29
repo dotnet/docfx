@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Dfm.VscPreview
+namespace DfmHttpService
 {
     using System.Collections.Generic;
     using System.IO;
@@ -11,9 +11,9 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
 
     public class PreviewCommand
     {
-        public static PreviewJsonConfig ParsePreviewCommand(string baseDir)
+        public static PreviewJsonConfig ParsePreviewCommand(string workspacePath)
         {
-            string configFilePath = Path.Combine(baseDir, PreviewConstants.ConfigFile);
+            string configFilePath = Path.Combine(workspacePath, PreviewConstants.ConfigFilename);
             PreviewJsonConfig config = null;
             try
             {
@@ -22,10 +22,9 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                     config = JsonUtility.Deserialize<PreviewJsonConfig>(configFilePath);
                 }
             }
-            catch (JsonException e)
+            catch (JsonException ex)
             {
-                // TODO: reply to extension with an error message
-                throw e;
+                throw new HandlerServerException($"Error happened while parsing config file, {ex.Message}");
             }
             return MergeDefaultConfig(config);
         }
@@ -41,9 +40,10 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                 config.MarkupClassName = PreviewConstants.MarkupClassName;
                 config.OutputFolder = PreviewConstants.OutputFolder;
                 config.PageRefreshFunctionName = PreviewConstants.PageRefreshFunctionName;
-                config.Port = PreviewConstants.Port;
+                config.ServerPort = PreviewConstants.ServerPort;
+                config.NavigationPort = PreviewConstants.NavigationPort;
                 config.References = new Dictionary<string, string>(PreviewConstants.References);
-                config.TocMetadataName = PreviewConstants.tocMetadataName;
+                config.TocMetadataName = PreviewConstants.TocMetadataName;
                 return config;
             }
 
@@ -77,9 +77,14 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
                 config.PageRefreshFunctionName = PreviewConstants.PageRefreshFunctionName;
             }
 
-            if (string.IsNullOrEmpty(config.Port))
+            if (string.IsNullOrEmpty(config.ServerPort))
             {
-                config.Port = PreviewConstants.Port;
+                config.ServerPort = PreviewConstants.ServerPort;
+            }
+
+            if (string.IsNullOrEmpty(config.NavigationPort))
+            {
+                config.NavigationPort = PreviewConstants.NavigationPort;
             }
 
             if (config.References == null)
@@ -99,7 +104,7 @@ namespace Microsoft.DocAsCode.Dfm.VscPreview
 
             if (string.IsNullOrEmpty(config.TocMetadataName))
             {
-                config.TocMetadataName = PreviewConstants.tocMetadataName;
+                config.TocMetadataName = PreviewConstants.TocMetadataName;
             }
 
             return config;

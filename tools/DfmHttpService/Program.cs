@@ -12,12 +12,14 @@ namespace DfmHttpService
             var handler = new CompositeHandler(
                 new List<IHttpHandler>
                 {
+                    new TestServerAvailableHandler(),
                     new DfmPreviewHandler(),
                     new DfmTokenTreeHandler(),
+                    new DeleteTempPreviewFileHandler(),
                     new ExitHandler()
                 });
 
-            var service = new DfmHttpServer(handler);
+            var service = new DfmHttpServer(handler, args.Length > 0 ? args[0] : null);
             service.Start();
             service.WaitForExit();
         }

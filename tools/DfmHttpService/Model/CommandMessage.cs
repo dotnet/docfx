@@ -10,13 +10,25 @@ namespace DfmHttpService
         [JsonProperty("name")]
         public CommandName Name { get; set; }
 
-        [JsonProperty("filePath")]
-        public string FilePath { get; set; }
+        [JsonProperty("relativePath")]
+        public string RelativePath { get; set; }
 
         [JsonProperty("workspacePath")]
         public string WorkspacePath { get; set; }
 
-        [JsonProperty("documentation")]
-        public string Documentation { get; set; }
+        [JsonProperty("markdownContent")]
+        public string MarkdownContent { get; set; }
+
+        [JsonProperty("isFirstTime")]
+        public bool IsFirstTime { get; set; }
+
+        [JsonProperty("previewFilePath")]
+        public string PreviewFilePath { get; set; }
+
+        [JsonProperty("pageRefreshJsFilePath")]
+        public string PageRefreshJsFilePath { get; set; }
+
+        [JsonProperty("builtHtmlPath")]
+        public string BuiltHtmlPath { get; set; }
     }
 }

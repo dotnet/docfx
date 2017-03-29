@@ -5,19 +5,18 @@ namespace DfmHttpService
 {
     using System.Threading.Tasks;
 
-    internal class ExitHandler : IHttpHandler
+    internal class TestServerAvailableHandler: IHttpHandler
     {
         public bool CanHandle(ServiceContext context)
         {
-            return context.Message.Name == CommandName.Exit;
+            return context.Message.Name == CommandName.TestServerAvailable;
         }
 
         public Task HandleAsync(ServiceContext context)
         {
             return Task.Run(() =>
             {
-                Utility.ReplyNoContentResponse(context.HttpContext, "Dfm service exits");
-                context.Server.Terminate();
+                Utility.ReplyNoContentResponse(context.HttpContext, "Server Available");
             });
         }
     }
