@@ -119,6 +119,8 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public static Matcher EndOfString { get; } = new EndOfStringMatcher();
 
+        public static Matcher WordBoundary { get; } = AnyWordCharacter.ToNegativeTest() | EndOfString;
+
         public static Matcher Maybe(Matcher matcher) =>
             Repeat(matcher, 0, 1);
 
