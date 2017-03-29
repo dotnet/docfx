@@ -35795,6 +35795,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.WhiteSpacesOrEmpty
   fullName: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.WhiteSpacesOrEmpty
   nameWithType: Matcher.WhiteSpacesOrEmpty
+- uid: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.WordBoundary
+  name: WordBoundary
+  href: api/Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.html#Microsoft_DocAsCode_MarkdownLite_Matchers_Matcher_WordBoundary
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.WordBoundary
+  fullName: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.WordBoundary
+  nameWithType: Matcher.WordBoundary
+- uid: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.WordBoundary*
+  name: WordBoundary
+  href: api/Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.html#Microsoft_DocAsCode_MarkdownLite_Matchers_Matcher_WordBoundary_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.WordBoundary
+  fullName: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.WordBoundary
+  nameWithType: Matcher.WordBoundary
 - uid: Microsoft.DocAsCode.MarkdownLite.Matchers.MatcherExtensions
   name: MatcherExtensions
   href: api/Microsoft.DocAsCode.MarkdownLite.Matchers.MatcherExtensions.html
