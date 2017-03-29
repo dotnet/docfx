@@ -1,6 +1,10 @@
-﻿Version Notes (Current Version: v2.15.2)
+﻿Version Notes (Current Version: v2.15.3)
 =======================================
 
+v2.15.3
+-----------
+1.  Log duplicate uids warning with `DuplicateUids` code.
+    
 v2.15.2
 -----------
 1.  Bug fixes:
