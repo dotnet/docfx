@@ -18,6 +18,7 @@ var files = [
     "styles/*",
     "*.js",
     "*.tmpl",
+    "*.liquid",
     "favicon.ico",
     "logo.svg",
     "token.json",
