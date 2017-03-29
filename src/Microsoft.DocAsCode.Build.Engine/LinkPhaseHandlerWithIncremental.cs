@@ -275,12 +275,21 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void RelayBuildMessage(IEnumerable<HostService> hostServices)
         {
-            foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
+            var falseSet = new HashSet<string>(from h in hostServices
+                                               where !h.CanIncrementalBuild
+                                               from f in h.Models
+                                               select f.OriginalFileAndType.File,
+                                                  FilePathComparer.OSPlatformSensitiveStringComparer);
+            var fileSet = new HashSet<string>(from h in hostServices
+                                              where h.CanIncrementalBuild
+                                              from f in GetFilesToRelayMessages(h)
+                                              where !falseSet.Contains(f)
+                                              select f,
+                                              FilePathComparer.OSPlatformSensitiveStringComparer);
+
+            foreach (var file in fileSet)
             {
-                foreach (var file in GetFilesToRelayMessages(h))
-                {
-                    LastBuildMessageInfo.Replay(file);
-                }
+                LastBuildMessageInfo.Replay(file);
             }
         }
 

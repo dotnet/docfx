@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Build.ManagedReference;
     using Microsoft.DocAsCode.Build.ResourceFiles;
+    using Microsoft.DocAsCode.Build.RestApi;
     using Microsoft.DocAsCode.Build.TableOfContents;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -3880,6 +3881,129 @@ tagRules : [
             }
         }
 
+        [Fact]
+        public void TestOverwriteWarningRelay()
+        {
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+
+            CreateFile("RestApi.html.primary.tmpl", "{{{rest}}}", templateFolder);
+
+            var restFile = CreateFile("b.json",
+                new[]
+                {
+                    "{",
+                    "   \"swagger\": \"2.0\",",
+                    "   \"info\": {",
+                    "       \"title\": \"Contacts\",",
+                    "       \"version\": \"1.0.0\"},",
+                    "   \"paths\": {},",
+                    "   \"host\": \"petstore.swagger.io\",",
+                    "   \"basePath\": \"/v2\"",
+                    "}",
+
+                },
+                inputFolder);
+
+            var overwrite = CreateFile("overwrite.md",
+                new[]
+                {
+                    "---",
+                    "uid: petstore.swagger.io/v2/Contacts/1.0.0",
+                    "summary: \"[Test summary](notexisted.md)\"",
+                    "---",
+                    "[Test invalid link warning relay](notexisted2.md)",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { restFile }, inputFolder, null);
+            files.Add(DocumentType.Overwrite, new[] { overwrite }, inputFolder, null);
+
+            #endregion
+
+            Init("IncrementalBuild.TestOverwriteWarningRelay");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestOverwriteWarningRelay");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestOverwriteWarningRelay.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestOverwriteWarningRelay.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestOverwriteWarningRelay-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+                }
+
+                ClearListener();
+
+                // no change
+                using (new LoggerPhaseScope("IncrementalBuild.TestOverwriteWarningRelay-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestOverwriteWarningRelay-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(1, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestOverwriteWarningRelay-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestOverwriteWarningRelay-second", "IncrementalBuild.TestOverwriteWarningRelay-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
         private static bool CompareDir(string path1, string path2)
         {
             var files1 = new DirectoryInfo(path1).GetFiles("*.*", SearchOption.AllDirectories).Where(f => f.Name != "xrefmap.yml" && f.Name != "manifest.json").OrderBy(f => f.FullName).ToList();
@@ -3941,6 +4065,7 @@ tagRules : [
             yield return typeof(ManagedReferenceDocumentProcessor).Assembly;
             yield return typeof(ResourceDocumentProcessor).Assembly;
             yield return typeof(TocDocumentProcessor).Assembly;
+            yield return typeof(RestApiDocumentProcessor).Assembly;
             if (enableSplit)
             {
                 yield return typeof(SplitClassPageToMemberLevel).Assembly;
