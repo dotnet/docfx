@@ -12,40 +12,41 @@ namespace Microsoft.DocAsCode.MarkdownLite
     public class MarkdownHtmlBlockRule : IMarkdownRule
     {
         private static readonly Matcher InlineElementNames =
-            Matcher.CaseInsensitiveString("a") |
-            Matcher.CaseInsensitiveString("em") |
-            Matcher.CaseInsensitiveString("strong") |
-            Matcher.CaseInsensitiveString("small") |
-            Matcher.CaseInsensitiveString("s") |
-            Matcher.CaseInsensitiveString("cite") |
-            Matcher.CaseInsensitiveString("q") |
-            Matcher.CaseInsensitiveString("dfn") |
-            Matcher.CaseInsensitiveString("abbr") |
-            Matcher.CaseInsensitiveString("data") |
-            Matcher.CaseInsensitiveString("time") |
-            Matcher.CaseInsensitiveString("code") |
-            Matcher.CaseInsensitiveString("var") |
-            Matcher.CaseInsensitiveString("samp") |
-            Matcher.CaseInsensitiveString("kbd") |
-            Matcher.CaseInsensitiveString("sub") |
-            Matcher.CaseInsensitiveString("sup") |
-            Matcher.CaseInsensitiveString("i") |
-            Matcher.CaseInsensitiveString("b") |
-            Matcher.CaseInsensitiveString("u") |
-            Matcher.CaseInsensitiveString("mark") |
-            Matcher.CaseInsensitiveString("ruby") |
-            Matcher.CaseInsensitiveString("rt") |
-            Matcher.CaseInsensitiveString("rp") |
-            Matcher.CaseInsensitiveString("bdi") |
-            Matcher.CaseInsensitiveString("bdo") |
-            Matcher.CaseInsensitiveString("span") |
-            Matcher.CaseInsensitiveString("br") |
-            Matcher.CaseInsensitiveString("wbr") |
-            Matcher.CaseInsensitiveString("ins") |
-            Matcher.CaseInsensitiveString("del") |
-            Matcher.CaseInsensitiveString("img");
+            (Matcher.CaseInsensitiveString("a") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("em") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("strong") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("small") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("s") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("cite") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("q") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("dfn") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("abbr") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("data") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("time") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("code") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("var") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("samp") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("kbd") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("sub") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("sup") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("i") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("b") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("u") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("mark") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("ruby") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("rt") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("rp") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("bdi") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("bdo") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("span") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("br") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("wbr") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("ins") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("del") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("img") + Matcher.WordBoundary) |
+            (Matcher.CaseInsensitiveString("tu") + Matcher.WordBoundary);
         private static readonly Matcher _ElementName =
-            (InlineElementNames + Matcher.AnyWordCharacter.ToNegativeTest()).ToNegativeTest() +
+            InlineElementNames.ToNegativeTest() +
             // \w+
             Matcher.AnyWordCharacter.RepeatAtLeast(1) +
             // (?!:\/|[^\w\s@]*@)

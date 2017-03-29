@@ -757,7 +757,7 @@ b",
 
         [Fact]
         [Trait("Related", "Markdown")]
-        public void TestTable_Html()
+        public void TestHtml()
         {
             // 1. Prepare data
             var source = @"
@@ -784,7 +784,7 @@ b",
 
         [Fact]
         [Trait("Related", "Markdown")]
-        public void TestTable_Html_Div()
+        public void TestHtml_Div()
         {
             // 1. Prepare data
             var source = @"
@@ -799,6 +799,24 @@ b",
         <div>aaa</div>
     </div>
 </div>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestInlineHtml_Span()
+        {
+            // 1. Prepare data
+            var source = @"
+<span>a</span>
+
+<span id=""a"" class=""x"">a</span>
+<span>b</span>
+";
+            var expected = @"<p><span>a</span></p>
+<p><span id=""a"" class=""x"">a</span>
+<span>b</span></p>
 ";
             TestGfmInGeneral(source, expected);
         }
