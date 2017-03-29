@@ -1,5 +1,10 @@
-﻿Version Notes (Current Version: v2.15.1)
+﻿Version Notes (Current Version: v2.15.2)
 =======================================
+
+v2.15.2
+-----------
+1.  Bug fixes:
+    1. Markdown html should not match inline html element.
 
 v2.15.1
 -----------
