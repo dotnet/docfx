@@ -292,8 +292,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var path = source.Value;
                 if (!Path.IsPathRooted(path))
                 {
-                    var directory = Path.GetDirectoryName(context.Source.Path);
-                    path = Path.Combine(context.Source?.BasePath ?? ".", directory, path);
+                    string currentFilePath = context.Source.Remote != null ? Path.Combine(EnvironmentContext.BaseDirectory, context.Source.Remote.RelativePath) : context.Source.Path;
+                    var directory = Path.GetDirectoryName(currentFilePath);
+                    path = Path.Combine(directory, path);
                 }
 
                 ResolveCodeSource(node, path, region.Value);
