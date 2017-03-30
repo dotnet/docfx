@@ -102,7 +102,7 @@ The below sample would exclude all APIs whose uid starts with 'Microsoft.DevDiv'
 You can specify an attribute by its `uid`, `ctorArguments` and `ctorNamedArguments`.
   
 > *Note*
-
+>
 > `ctorArguments` requires a full match of the attribute's constructor arguments, while `ctorNamedArguments` supports a partial match.
 > Namely, `ctorArguments` should contain all the arguments while `ctorNamedArguments` could contain a subset of the named arguments. 
   

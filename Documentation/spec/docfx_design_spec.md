@@ -16,6 +16,8 @@ Overwrite Files | The files with YAML header used to override YAML files when `u
 2. Conceptual => Website
 3. YAML files => Website
 
+<!--break list-->
+
 2. Architecture
 ---------------
 ![Workflow](images/docfx_workflow.png)
