@@ -4,9 +4,11 @@
 namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 {
     using System.Collections.Generic;
-    using System.Linq;
+    using System.IO;
 
+    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
+
     using Xunit;
 
     [Trait("Owner", "lianwei")]
@@ -17,11 +19,28 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
         [Fact]
         public void TestTripleSlashParser()
         {
+            string inputFolder = Path.GetRandomFileName();
+            Directory.CreateDirectory(inputFolder);
+            File.WriteAllText(Path.Combine(inputFolder, "Example.cs"), @"
+using System;
+
+namespace Example
+{
+#region Example
+    static class Program
+    {
+        public int Main(string[] args)
+        {
+            Console.HelloWorld();
+        }
+    }
+#endregion
+}
+");
             string input = @"
 <member name='T:TestClass1.Partial1'>
     <summary>
         Parital classes <see cref='T:System.AccessViolationException'/><see cref='T:System.AccessViolationException'/>can not cross assemblies, Test <see langword='null'/>
-    
 
         ```
         Classes in assemblies are by definition complete.
@@ -76,7 +95,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             return GetExceptions(null, null).Count();
         }
     } 
-    </code> 
+    </code>
     </example>
 
     <example>
@@ -85,6 +104,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
     <example>
     Check empty code.
     <code></code>
+    </example>
+    <example>
+    This is an example using source reference.
+    <code source='Example.cs' region='Example'/>
     </example>
     <see cref=""T:Microsoft.DocAsCode.EntityModel.SpecIdHelper""/>
     <see cref=""T:System.Diagnostics.SourceSwitch""/>
@@ -100,8 +123,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             {
                 AddReferenceDelegate = null,
                 PreserveRawInlineComments = false,
+                Source = new SourceDetail()
+                {
+                    Path = Path.Combine(inputFolder, "Source.cs"),
+                }
             };
-
 
             var commentModel = TripleSlashCommentModel.CreateModel(input, SyntaxLanguage.CSharp, context);
             Assert.False(commentModel.IsInheritDoc, nameof(commentModel.IsInheritDoc));
@@ -109,7 +135,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
             var summary = commentModel.Summary;
             Assert.Equal(@"
 Parital classes <xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref><xref href=""System.AccessViolationException"" data-throw-if-not-resolved=""false""></xref>can not cross assemblies, Test <xref uid=""langword_csharp_null"" name=""null"" href=""""></xref>
-
 
 ```
 Classes in assemblies are by definition complete.
@@ -153,7 +178,7 @@ This sample shows how to call the <see cref=""M: Microsoft.DocAsCode.EntityModel
     {
         return GetExceptions(null, null).Count();
     }
-} </code></pre> 
+} </code></pre>
 ".Replace("\r\n", "\n"),
 @"
 This is another example
@@ -161,6 +186,16 @@ This is another example
 @"
 Check empty code.
 <pre><code></code></pre>
+".Replace("\r\n", "\n"),
+@"
+This is an example using source reference.
+<pre><code source=""Example.cs"" region=""Example"">    static class Program
+{
+    public int Main(string[] args)
+    {
+        Console.HelloWorld();
+    }
+}</code></pre>
 ".Replace("\r\n", "\n")};
             Assert.Equal(expected, example);
 

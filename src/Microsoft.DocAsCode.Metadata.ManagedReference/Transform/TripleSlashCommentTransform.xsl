@@ -53,6 +53,7 @@
             <xsl:value-of select="@language" />
           </xsl:attribute>
         </xsl:if>
+        <xsl:copy-of select="@source|@region"/>
         <xsl:apply-templates />
       </code>
     </pre>
