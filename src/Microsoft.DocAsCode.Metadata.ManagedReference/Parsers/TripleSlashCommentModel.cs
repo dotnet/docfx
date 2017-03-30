@@ -270,7 +270,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             return true;
         }
-        
+
         private void ResolveCodeSource(XDocument doc, ITripleSlashCommentParserContext context)
         {
             foreach (XElement node in doc.XPathSelectElements("//code"))
