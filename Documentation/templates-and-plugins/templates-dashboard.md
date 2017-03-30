@@ -20,8 +20,8 @@ templates:
         type: git
         url: "https://github.com/dotnet/docfx/tree/dev/src/docfx.website.themes/statictoc"
       usage:
-        command: "-t default,statictoc"
-        config: "template: [default, statictoc]"
+        command: "-t statictoc"
+        config: "template: statictoc"
     - name: sideway
       description: A simple template
       type: Internal
