@@ -23,10 +23,10 @@
         {{#items}}
           <li class="{{#active}}active{{/active}}">
             {{#href}}
-            <a href="{{href}}" title="{{name}}">{{name}}</a>
+            <a href="{{href}}" title="{{name}}" class="{{#active}}active{{/active}}">{{name}}</a>
             {{/href}}
             {{^href}}
-            <a>{{{name}}}</a>
+            <a class="{{#active}}active{{/active}}">{{{name}}}</a>
             {{/href}}
           </li>
         {{/items}}

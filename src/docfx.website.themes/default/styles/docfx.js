@@ -6,24 +6,25 @@ $(function () {
   var filtered = 'filtered';
   var show = 'show';
   var hide = 'hide';
+  var util = new util();
+
+  highlight();
+  enableSearch();
 
   renderTables();
   renderAlerts();
-  openLinks();
-  enableHighlight();
-  highlightLines();
-  adjustSearchBoxPosition();
-  supportFullTextSearch();
-  updateHref();
-  setupAffix();
-  showFooter();
+  renderLinks();
+  renderNavbar();
+  renderSidebar();
+  renderAffix();
+  renderFooter();
+  renderLogo();
 
   window.refresh = function () {
+    highlight();
     renderTables();
     renderAlerts();
-    enableHighlight();
-    highlightLines();
-    setupAffix();
+    renderAffix();
   }
 
   // Styling for tables in conceptual documents using Bootstrap.
@@ -51,7 +52,7 @@ $(function () {
   // })();
 
   // Open links to different host in a new window.
-  function openLinks() {
+  function renderLinks() {
     if ($("meta[property='docfx:newtab']").attr("content") === "true") {
       $(document.links).filter(function () {
         return this.hostname !== window.location.hostname;
@@ -60,14 +61,10 @@ $(function () {
   }
 
   // Enable highlight.js
-  function enableHighlight() {
+  function highlight() {
     $('pre code').each(function (i, block) {
       hljs.highlightBlock(block);
     });
-  }
-
-  // Line highlight for code snippet
-  function highlightLines() {
     $('pre code[highlight-lines]').each(function (i, block) {
       if (block.innerHTML === "") return;
       var lines = block.innerHTML.split('\n');
@@ -103,38 +100,43 @@ $(function () {
     });
   }
 
-  //Adjust the position of search box in navbar
-  function adjustSearchBoxPosition() {
-    autoCollapse();
-    $(window).on('resize', autoCollapse);
-    $(document).on('click', '.navbar-collapse.in', function (e) {
-      if ($(e.target).is('a')) {
-        $(this).collapse('hide');
-      }
-    });
-
-    function autoCollapse() {
-      var navbar = $('#autocollapse');
-      if (navbar.height() === null) {
-        setTimeout(autoCollapse, 300);
-      }
-      navbar.removeClass(collapsed);
-      if (navbar.height() > 60) {
-        navbar.addClass(collapsed);
-      }
-    }
-  }
-
   // Support full-text-search
-  function supportFullTextSearch() {
+  function enableSearch() {
     var query;
     var relHref = $("meta[property='docfx\\:rel']").attr("content");
-
-    if (typeof relHref != 'undefined') {
+    if (typeof relHref === 'undefined') {
+      return;
+    }
+    try {
       var search = searchFactory();
       search();
+      renderSearchBox();
       highlightKeywords();
       addSearchEvent();
+    } catch (e) {
+      console.error(e);
+    }
+
+    //Adjust the position of search box in navbar
+    function renderSearchBox() {
+      autoCollapse();
+      $(window).on('resize', autoCollapse);
+      $(document).on('click', '.navbar-collapse.in', function (e) {
+        if ($(e.target).is('a')) {
+          $(this).collapse('hide');
+        }
+      });
+
+      function autoCollapse() {
+        var navbar = $('#autocollapse');
+        if (navbar.height() === null) {
+          setTimeout(autoCollapse, 300);
+        }
+        navbar.removeClass(collapsed);
+        if (navbar.height() > 60) {
+          navbar.addClass(collapsed);
+        }
+      }
     }
 
     // Search factory
@@ -315,14 +317,21 @@ $(function () {
   };
 
   // Update href in navbar
-  function updateHref() {
-    var toc = $('#sidetoc');
-    var breadcrumb = new Breadcrumb();
-    loadNavbar();
-    loadToc();
+  function renderNavbar() {
+    var navbar = $('#navbar ul')[0];
+    if (typeof (navbar) === 'undefined') {
+      loadNavbar();
+    } else {
+      $('#navbar ul a.active').parents('li').addClass(active);
+      renderBreadcrumb();
+    }
+
     function loadNavbar() {
       var navbarPath = $("meta[property='docfx\\:navrel']").attr("content");
-      var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
+      if (typeof (navbarPath) === 'undefined') {
+        return;
+      }
+      var tocPath = $("meta[property='docfx\\:tocrel']").attr("content") || '';
       if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
       if (navbarPath) navbarPath = navbarPath.replace(/\\/g, '/');
       $.get(navbarPath, function (data) {
@@ -337,11 +346,11 @@ $(function () {
           navrel = navbarPath.substr(0, index + 1);
         }
         $('#navbar>ul').addClass('navbar-nav');
-        var currentAbsPath = getAbsolutePath(window.location.pathname);
+        var currentAbsPath = util.getAbsolutePath(window.location.pathname);
         // set active item
         $('#navbar').find('a[href]').each(function (i, e) {
           var href = $(e).attr("href");
-          if (isRelativePath(href)) {
+          if (util.isRelativePath(href)) {
             href = navrel + href;
             $(e).attr("href", href);
 
@@ -350,91 +359,49 @@ $(function () {
             var originalHref = e.name;
             if (originalHref) {
               originalHref = navrel + originalHref;
-              if (getDirectory(getAbsolutePath(originalHref)) === getDirectory(getAbsolutePath(tocPath))) {
+              if (util.getDirectory(util.getAbsolutePath(originalHref)) === util.getDirectory(util.getAbsolutePath(tocPath))) {
                 isActive = true;
               }
             } else {
-              if (getAbsolutePath(href) === currentAbsPath) {
+              if (util.getAbsolutePath(href) === currentAbsPath) {
                 isActive = true;
               }
             }
             if (isActive) {
-              $(e).parent().addClass(active);
-              if (!breadcrumb.isNavPartLoaded) {
-                breadcrumb.insert({
-                  href: e.href,
-                  name: e.innerHTML
-                }, 0);
-                breadcrumb.isNavPartLoaded = true;
-              }
-            } else {
-              $(e).parent().removeClass(active)
+              $(e).addClass(active);
             }
           }
         });
+        renderNavbar();
       });
     }
+  }
 
-    function loadToc() {
-      var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
-      if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
-      $('#sidetoc').load(tocPath + " #sidetoggle > div", function () {
-        if ($('footer').is(':visible')) {
-          $('.sidetoc').addClass('shiftup');
-        }
-        registerTocEvents();
+  function renderSidebar() {
+    var sidetoc = $('#sidetoggle .sidetoc')[0];
+    if (typeof (sidetoc) === 'undefined') {
+      loadToc();
+    } else {
+      registerTocEvents();
+      if ($('footer').is(':visible')) {
+        $('.sidetoc').addClass('shiftup');
+      }
 
-        var index = tocPath.lastIndexOf('/');
-        var tocrel = '';
-        if (index > -1) {
-          tocrel = tocPath.substr(0, index + 1);
-        }
-        var currentHref = getAbsolutePath(window.location.pathname);
-        $('#sidetoc').find('a[href]').each(function (i, e) {
-          var href = $(e).attr("href");
-          if (isRelativePath(href)) {
-            href = tocrel + href;
-            $(e).attr("href", href);
-          }
+      // Scroll to active item
+      var top = 0;
+      $('#toc a.active').parents('li').each(function (i, e) {
+        $(e).addClass(active).addClass(expanded);
+        $(e).children('a').addClass(active);
+        top += $(e).position().top;
 
-          if (getAbsolutePath(e.href) === currentHref) {
-            $(e).parent().addClass(active);
-            var parent = $(e).parent().parents('li').children('a');
-            if (!breadcrumb.isTocPartLoaded) {
-              for (var i = parent.length - 1; i >= 0; i--) {
-                breadcrumb.push({
-                  href: parent[i].href,
-                  name: parent[i].innerHTML
-                });
-              }
-              breadcrumb.push({
-                href: e.href,
-                name: e.innerHTML
-              });
-              breadcrumb.isTocPartLoaded = true;
-            }
-            if (parent.length > 0) {
-              parent.addClass(active);
-            }
-            // for active li, expand it
-            $(e).parents('ul.nav>li').addClass(expanded);
+      })
+      $('.sidetoc').scrollTop(top - 50);
 
-            // Scroll to active item
-            var top = 0;
-            $(e).parents('li').each(function (i, e) {
-              top += $(e).position().top;
-            });
-            // 50 is the size of the filter box
-            $('.sidetoc').scrollTop(top - 50);
-            if ($('footer').is(':visible')) {
-              $('.sidetoc').addClass('shiftup');
-            }
-          } else {
-            $(e).parent().removeClass(active);
-            $(e).parents('li').children('a').removeClass(active);
-          }
-        });
-      });
+      if ($('footer').is(':visible')) {
+        $('.sidetoc').addClass('shiftup');
+      }
+
+      renderBreadcrumb();
     }
 
     function registerTocEvents() {
@@ -494,60 +461,61 @@ $(function () {
       });
     }
 
-    function Breadcrumb() {
-      var breadcrumb = [];
-      var isNavPartLoaded = false;
-      var isTocPartLoaded = false;
-      this.push = pushBreadcrumb;
-      this.insert = insertBreadcrumb;
-
-      function pushBreadcrumb(obj) {
-        breadcrumb.push(obj);
-        setupBreadCrumb(breadcrumb);
+    function loadToc() {
+      var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
+      if (typeof (tocPath) === 'undefined') {
+        return;
       }
+      if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
+      $('#sidetoc').load(tocPath + " #sidetoggle > div", function () {
+        var index = tocPath.lastIndexOf('/');
+        var tocrel = '';
+        if (index > -1) {
+          tocrel = tocPath.substr(0, index + 1);
+        }
+        var currentHref = util.getAbsolutePath(window.location.pathname);
+        $('#sidetoc').find('a[href]').each(function (i, e) {
+          var href = $(e).attr("href");
+          if (util.isRelativePath(href)) {
+            href = tocrel + href;
+            $(e).attr("href", href);
+          }
 
-      function insertBreadcrumb(obj, index) {
-        breadcrumb.splice(index, 0, obj);
-        setupBreadCrumb(breadcrumb);
-      }
+          if (util.getAbsolutePath(e.href) === currentHref) {
+            $(e).addClass(active);
+          }
+        });
 
-      function setupBreadCrumb() {
-        var html = formList(breadcrumb, 'breadcrumb');
-        $('#breadcrumb').html(html);
-      }
-    }
-
-    function getAbsolutePath(href) {
-      // Use anchor to normalize href
-      var anchor = $('<a href="' + href + '"></a>')[0];
-      // Ignore protocal, remove search and query
-      return anchor.host + anchor.pathname;
-    }
-
-    function isRelativePath(href) {
-      return !isAbsolutePath(href);
-    }
-
-    function isAbsolutePath(href) {
-      return (/^(?:[a-z]+:)?\/\//i).test(href);
-    }
-
-    function getDirectory(href) {
-      if (!href) return '';
-      var index = href.lastIndexOf('/');
-      if (index == -1) return '';
-      if (index > -1) {
-        return href.substr(0, index);
-      }
+        renderSidebar();
+      });
     }
   }
 
+  function renderBreadcrumb() {
+    var breadcrumb = [];
+    $('#navbar a.active').each(function (i, e) {
+      breadcrumb.push({
+        href: e.href,
+        name: e.innerHTML
+      });
+    })
+    $('#toc a.active').each(function (i, e) {
+      breadcrumb.push({
+        href: e.href,
+        name: e.innerHTML
+      });
+    })
+
+    var html = util.formList(breadcrumb, 'breadcrumb');
+    $('#breadcrumb').html(html);
+  }
+
   //Setup Affix
-  function setupAffix() {
+  function renderAffix() {
     var hierarchy = getHierarchy();
     if (hierarchy.length > 0) {
       var html = '<h5 class="title">In This Article</h5>'
-      html += formList(hierarchy, ['nav', 'bs-docs-sidenav']);
+      html += util.formList(hierarchy, ['nav', 'bs-docs-sidenav']);
       $("#affix").empty().append(html);
       if ($('footer').is(':visible')) {
         $(".sideaffix").css("bottom", "70px");
@@ -653,36 +621,8 @@ $(function () {
     }
   }
 
-  function formList(item, classes) {
-    var level = 1;
-    var model = {
-      items: item
-    };
-    var cls = [].concat(classes).join(" ");
-    return getList(model, cls);
-
-    function getList(model, cls) {
-      if (!model || !model.items) return null;
-      var l = model.items.length;
-      if (l === 0) return null;
-      var html = '<ul class="level' + level + ' ' + (cls || '') + '">';
-      level++;
-      for (var i = 0; i < l; i++) {
-        var item = model.items[i];
-        var href = item.href;
-        var name = item.name;
-        if (!name) continue;
-        html += href ? '<li><a href="' + href + '">' + name + '</a>' : '<li>' + name;
-        html += getList(item, cls) || '';
-        html += '</li>';
-      }
-      html += '</ul>';
-      return html;
-    }
-  }
-
   // Show footer
-  function showFooter() {
+  function renderFooter() {
     initFooter();
     $(window).on("scroll", showFooterCore);
 
@@ -723,34 +663,96 @@ $(function () {
     }
   }
 
-  // For LOGO SVG
-  // Replace SVG with inline SVG
-  // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
-  jQuery('img.svg').each(function () {
-    var $img = jQuery(this);
-    var imgID = $img.attr('id');
-    var imgClass = $img.attr('class');
-    var imgURL = $img.attr('src');
+  function renderLogo() {
+    // For LOGO SVG
+    // Replace SVG with inline SVG
+    // http://stackoverflow.com/questions/11978995/how-to-change-color-of-svg-image-using-css-jquery-svg-image-replacement
+    jQuery('img.svg').each(function () {
+      var $img = jQuery(this);
+      var imgID = $img.attr('id');
+      var imgClass = $img.attr('class');
+      var imgURL = $img.attr('src');
 
-    jQuery.get(imgURL, function (data) {
-      // Get the SVG tag, ignore the rest
-      var $svg = jQuery(data).find('svg');
+      jQuery.get(imgURL, function (data) {
+        // Get the SVG tag, ignore the rest
+        var $svg = jQuery(data).find('svg');
 
-      // Add replaced image's ID to the new SVG
-      if (typeof imgID !== 'undefined') {
-        $svg = $svg.attr('id', imgID);
+        // Add replaced image's ID to the new SVG
+        if (typeof imgID !== 'undefined') {
+          $svg = $svg.attr('id', imgID);
+        }
+        // Add replaced image's classes to the new SVG
+        if (typeof imgClass !== 'undefined') {
+          $svg = $svg.attr('class', imgClass + ' replaced-svg');
+        }
+
+        // Remove any invalid XML tags as per http://validator.w3.org
+        $svg = $svg.removeAttr('xmlns:a');
+
+        // Replace image with new SVG
+        $img.replaceWith($svg);
+
+      }, 'xml');
+    });
+  }
+
+  function util() {
+    this.getAbsolutePath = getAbsolutePath;
+    this.isRelativePath = isRelativePath;
+    this.isAbsolutePath = isAbsolutePath;
+    this.getDirectory = getDirectory;
+    this.formList = formList;
+    function getAbsolutePath(href) {
+      // Use anchor to normalize href
+      var anchor = $('<a href="' + href + '"></a>')[0];
+      // Ignore protocal, remove search and query
+      return anchor.host + anchor.pathname;
+    }
+
+    function isRelativePath(href) {
+      return !isAbsolutePath(href);
+    }
+
+    function isAbsolutePath(href) {
+      return (/^(?:[a-z]+:)?\/\//i).test(href);
+    }
+
+    function getDirectory(href) {
+      if (!href) return '';
+      var index = href.lastIndexOf('/');
+      if (index == -1) return '';
+      if (index > -1) {
+        return href.substr(0, index);
       }
-      // Add replaced image's classes to the new SVG
-      if (typeof imgClass !== 'undefined') {
-        $svg = $svg.attr('class', imgClass + ' replaced-svg');
+    }
+
+
+    function formList(item, classes) {
+      var level = 1;
+      var model = {
+        items: item
+      };
+      var cls = [].concat(classes).join(" ");
+      return getList(model, cls);
+
+      function getList(model, cls) {
+        if (!model || !model.items) return null;
+        var l = model.items.length;
+        if (l === 0) return null;
+        var html = '<ul class="level' + level + ' ' + (cls || '') + '">';
+        level++;
+        for (var i = 0; i < l; i++) {
+          var item = model.items[i];
+          var href = item.href;
+          var name = item.name;
+          if (!name) continue;
+          html += href ? '<li><a href="' + href + '">' + name + '</a>' : '<li>' + name;
+          html += getList(item, cls) || '';
+          html += '</li>';
+        }
+        html += '</ul>';
+        return html;
       }
-
-      // Remove any invalid XML tags as per http://validator.w3.org
-      $svg = $svg.removeAttr('xmlns:a');
-
-      // Replace image with new SVG
-      $img.replaceWith($svg);
-
-    }, 'xml');
-  });
+    }
+  }
 })
