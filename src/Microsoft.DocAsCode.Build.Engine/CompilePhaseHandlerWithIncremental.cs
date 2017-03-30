@@ -94,21 +94,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 h.SaveIntermediateModel(IncrementalContext);
             }
             IncrementalContext.UpdateBuildVersionInfoPerDependencyGraph();
-            var falseSet = new HashSet<string>(from h in hostServices
-                                              where !h.CanIncrementalBuild
-                                              from f in h.Models
-                                              select f.OriginalFileAndType.File,
-                                                  FilePathComparer.OSPlatformSensitiveStringComparer);
-            var fileSet = new HashSet<string>(from h in hostServices
-                                              where h.CanIncrementalBuild
-                                              from f in GetFilesToRelayMessages(h)
-                                              where !falseSet.Contains(f)
-                                              select f,
-                                              FilePathComparer.OSPlatformSensitiveStringComparer);
-            foreach (var file in fileSet)
-            {
-                LastBuildMessageInfo.Replay(file);
-            }
+            BuildPhaseUtility.RelayBuildMessage(IncrementalContext, hostServices, Phase);
             Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
@@ -187,23 +173,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
             }
-        }
-
-        private IEnumerable<string> GetFilesToRelayMessages(HostService hs)
-        {
-            var files = new HashSet<string>();
-            foreach (var f in hs.GetUnloadedModelFiles(IncrementalContext))
-            {
-                files.Add(f);
-
-                // warnings from token file won't be delegated to article, so we need to add it manually
-                var key = ((RelativePath)f).GetPathFromWorkingFolder();
-                foreach (var item in CurrentBuildVersionInfo.Dependency.GetAllIncludeDependencyFrom(key))
-                {
-                    files.Add(((RelativePath)item).RemoveWorkingFolder());
-                }
-            }
-            return files;
         }
 
         private void UpdateTocRestructions(IEnumerable<HostService> hostServices)
