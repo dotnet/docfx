@@ -55,7 +55,7 @@ docfx metadata [<projects>]
       |     |-- <namespace>.yml
       |     |-- <class>.yml
       |-- toc.yml
-      |-- index.yml     
+      |-- index.yml
 ```
 
 ####2.2.1 Optional `<projects>` argument
@@ -257,7 +257,7 @@ To use a custom template, one way is to specify template path with `--template` 
 
 > [!Note]
 > The template path could either be a zip file called `<template>.zip` or a folder called `<template>`.
-
+>
 > [!Warning]
 > DocFX has embedded templates: `default`, `iframe.html`, `statictoc` and `common`.
 > Please avoid using these as template folder name.

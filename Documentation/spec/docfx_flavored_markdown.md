@@ -168,16 +168,16 @@ Here are all the supported note types with the styling of the default theme appl
 
 > [!NOTE]
 > This is a note which needs your attention, but it's not super important.
-
+>
 > [!TIP]
 > This is a note which needs your attention, but it's not super important.
-
+>
 > [!WARNING]
 > This is a warning containing some important message.
-
+>
 > [!IMPORTANT]
 > This is a warning containing some important message.
-
+>
 > [!CAUTION]
 > This is a warning containing some important message.
 

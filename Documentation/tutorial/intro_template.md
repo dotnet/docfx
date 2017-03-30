@@ -126,16 +126,16 @@ If a *Preprocessor* has no corresponding *Renderer* however it still needs to be
 The Module syntax in *Preprocessor* is simple,
 
 1. To export function property from one Module file `common.js`:
-```js
-exports.util = function () {}
-```
+   ```js
+   exports.util = function () {}
+   ```
 
 2. To use the exported function property inside `common.js`:
-```js
-var common = require('./common.js');
-// call util
-common.util();
-```
+   ```js
+   var common = require('./common.js');
+   // call util
+   common.util();
+   ```
 
 > [!Note]
 > Only relative path starting with `./` is supported.
