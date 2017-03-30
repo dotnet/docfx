@@ -109,7 +109,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             using (new LoggerPhaseScope("RelayBuildMessage", LogLevel.Verbose))
             {
-                RelayBuildMessage(hostServices);
+                BuildPhaseUtility.RelayBuildMessage(IncrementalContext, hostServices, Phase);
             }
 
             Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
@@ -271,34 +271,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
             }
-        }
-
-        private void RelayBuildMessage(IEnumerable<HostService> hostServices)
-        {
-            foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
-            {
-                foreach (var file in GetFilesToRelayMessages(h))
-                {
-                    LastBuildMessageInfo.Replay(file);
-                }
-            }
-        }
-
-        private IEnumerable<string> GetFilesToRelayMessages(HostService hs)
-        {
-            var files = new HashSet<string>();
-            foreach (var f in hs.GetUnloadedModelFiles(IncrementalContext))
-            {
-                files.Add(f);
-
-                // warnings from token file won't be delegated to article, so we need to add it manually
-                var key = ((RelativePath)f).GetPathFromWorkingFolder();
-                foreach (var item in CurrentBuildVersionInfo.Dependency.GetAllIncludeDependencyFrom(key))
-                {
-                    files.Add(((RelativePath)item).RemoveWorkingFolder());
-                }
-            }
-            return files;
         }
 
         private List<ManifestItem> GetUnloadedManifestItems(IEnumerable<HostService> hostServices)
