@@ -1,7 +1,7 @@
 {
   "name": "DfmPreview",
   "displayName": "DfmPreview",
-  "description": "Preview the DocFX and token tree in Visual Studio Code",
+  "description": "Preview DocFX generated Html and token tree in Visual Studio Code",
   "version": "0.0.21",
   "publisher": "docfxsvc",
   "engines": {
