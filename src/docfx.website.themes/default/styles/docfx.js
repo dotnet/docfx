@@ -393,7 +393,6 @@ $(function () {
         $(e).addClass(active).addClass(expanded);
         $(e).children('a').addClass(active);
         top += $(e).position().top;
-
       })
       $('.sidetoc').scrollTop(top - 50);
 
