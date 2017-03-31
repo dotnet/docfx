@@ -5,7 +5,7 @@ param(
 
 ################################################################################################
 # Usage:
-# Run buildDocfxPreviewExtension.ps1
+# Run build.ps1
 #   [-command Command]: package or publish, default to be package
 #   [-version Version]: Publish version which should be newer than published version
 ################################################################################################
@@ -29,13 +29,9 @@ function ProcessLastExitCode {
 Push-Location $scriptHome
 
 Write-Host "Build $HttpServiceFolder to the target folder"
-$outputFolder = Join-Path $scriptHome "$extensionFolder\$HttpServiceFolder"
-& dotnet publish ".\$HttpServiceFolder" -c $configuration -f $framework -o $outputFolder
+$outputFolder = Join-Path $scriptHome $HttpServiceFolder
+& dotnet publish "..\$HttpServiceFolder" -c $configuration -f $framework -o $outputFolder
 ProcessLastExitCode $lastexitcode "Error occurs when building $HttpServiceFolder"
-Pop-Location
-
-$extensionFolderPath = Join-Path $scriptHome $extensionFolder
-Push-Location $extensionFolderPath
 
 Write-Host "`n$command extension"
 & vsce $command $version

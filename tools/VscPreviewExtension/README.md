@@ -76,3 +76,4 @@ Please file any issue through the [Github Issue](https://github.com/dotnet/docfx
 * Auto trigger the tokenTree refresh when the textEditor change
 * `Cross-platform`
 * User configurable
+* Better preview match performance like default markdown extension of VS Code

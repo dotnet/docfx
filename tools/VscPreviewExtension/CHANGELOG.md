@@ -1,12 +1,12 @@
-## Known Issues
-* Preview match: File inclusion
-* Match when multiple open editor
-
 ## Current Version **0.0.21**
+### new features
+* Bug fix: remove background block of the inline code
 
-* **0.0.21**
-  * Bug fix: remove background block of the inline code
+## Known Issues
+* When markdown use *file include* feature or there are multiple opened editors, preview match can't provide a good performance
+* Should kill child process when extension shutdown
 
+## Verison History
 * **0.0.20**
   * Improve: remove the `img` folder in the publish version
 
