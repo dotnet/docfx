@@ -7,7 +7,7 @@ param(
 # Usage:
 # Run buildDocfxPreviewExtension.ps1
 #   [-command Command]: package or publish, default to be package
-#   [-version Version]: Publish version whichc should newer than published version
+#   [-version Version]: Publish version which should be newer than published version
 ################################################################################################
 $ErrorActionPreference = 'Stop'
 $scriptPath = $MyInvocation.MyCommand.Path
