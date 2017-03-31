@@ -46,5 +46,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                     throw new InvalidOperationException();
             }
         }
+
+        public override string ToString()
+        {
+            return "(Length:" + _comparsion.ToString() + "<" + _groupName + ">)";
+        }
     }
 }

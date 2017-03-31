@@ -25,5 +25,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         {
             return new CharRepeatMatcher(_ch, minOccur, maxOccur);
         }
+
+        public override string ToString()
+        {
+            return EscapeText(_ch.ToString());
+        }
     }
 }

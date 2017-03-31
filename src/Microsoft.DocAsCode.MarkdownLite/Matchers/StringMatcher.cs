@@ -40,5 +40,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
             return _text.Length;
         }
+
+        public override string ToString()
+        {
+            return EscapeText(_text);
+        }
     }
 }

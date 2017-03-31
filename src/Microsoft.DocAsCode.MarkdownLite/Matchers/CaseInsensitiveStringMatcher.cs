@@ -30,5 +30,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
             return _upperCaseText.Length;
         }
+
+        public override string ToString()
+        {
+            return "(CaseInsensitive:" + EscapeText(_lowerCaseText) + ")";
+        }
     }
 }

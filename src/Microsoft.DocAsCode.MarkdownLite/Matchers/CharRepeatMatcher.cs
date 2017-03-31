@@ -25,5 +25,15 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
             return count;
         }
+
+        public override string ToString()
+        {
+            return EscapeText(_ch.ToString()) +
+                "{" +
+                _minOccur.ToString() +
+                "," +
+                (_maxOccur == int.MaxValue ? string.Empty : _maxOccur.ToString()) +
+                "}";
+        }
     }
 }
