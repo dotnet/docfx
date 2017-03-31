@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public override string ToString()
         {
-            return "(CaseInsensitive:" + _lowerCaseText + ")";
+            return "(CaseInsensitive:" + EscapeText(_lowerCaseText) + ")";
         }
     }
 }

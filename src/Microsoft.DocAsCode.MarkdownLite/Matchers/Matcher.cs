@@ -17,6 +17,35 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         /// <returns>Char count of match, <c>-1</c> is not match.</returns>
         public abstract int Match(MatchContent content);
 
+        protected string EscapeText(string text)
+        {
+            return text
+                .Replace(@"\", @"\\")
+                .Replace("\n", @"\n")
+                .Replace("\r", @"\r")
+                .Replace("\t", @"\t")
+                .Replace("\"", @"\""")
+                .Replace("\'", @"\'")
+                .Replace("\a", @"\a")
+                .Replace("\b", @"\b")
+                .Replace("\f", @"\f")
+                .Replace("\v", @"\v")
+                .Replace("\0", @"\0")
+                .Replace("[", @"\[")
+                .Replace("]", @"\]")
+                .Replace("(", @"\(")
+                .Replace(")", @"\)")
+                .Replace("{", @"\{")
+                .Replace("}", @"\}")
+                .Replace("<", @"\<")
+                .Replace(">", @"\>")
+                .Replace(":", @"\:")
+                .Replace("|", @"\|")
+                .Replace("-", @"\-")
+                .Replace("^", @"\^")
+                .Replace("$", @"\$");
+        }
+
         public static Matcher Char(char ch)
         {
             return new CharMatcher(ch);

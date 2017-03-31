@@ -30,7 +30,15 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public override string ToString()
         {
-            return "[" + _start.ToString() + "-" + _end.ToString() + "]{" + _minOccur.ToString() + "," + _maxOccur.ToString() + "}";
+            return "[" +
+                EscapeText(_start.ToString()) +
+                "-" +
+                EscapeText(_end.ToString()) +
+                "]{" +
+                _minOccur.ToString() +
+                "," +
+                (_maxOccur == int.MaxValue ? string.Empty : _maxOccur.ToString()) +
+                "}";
         }
     }
 }

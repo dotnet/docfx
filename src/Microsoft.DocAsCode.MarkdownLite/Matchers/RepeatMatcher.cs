@@ -42,7 +42,12 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public override string ToString()
         {
-            return _inner.ToString() + "{" + _minOccur.ToString() + "," + _maxOccur.ToString() + "}";
+            return _inner.ToString() +
+                "{" +
+                _minOccur.ToString() +
+                "," +
+                (_maxOccur == int.MaxValue ? string.Empty : _maxOccur.ToString()) +
+                "}";
         }
     }
 }

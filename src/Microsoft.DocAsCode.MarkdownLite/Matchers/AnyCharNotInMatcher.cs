@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public override string ToString()
         {
-            return "[^" + string.Join(string.Empty, _ch) + "]";
+            return "[^" + EscapeText(string.Join(string.Empty, _ch)) + "]";
         }
     }
 }

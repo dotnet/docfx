@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public override string ToString()
         {
-            return _ch.ToString();
+            return EscapeText(_ch.ToString());
         }
     }
 }

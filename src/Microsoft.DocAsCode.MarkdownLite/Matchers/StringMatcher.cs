@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public override string ToString()
         {
-            return _text;
+            return EscapeText(_text);
         }
     }
 }
