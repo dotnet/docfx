@@ -15,7 +15,7 @@ $scriptHome = Split-Path $scriptPath
 $configuration = "Release"
 $framework = "net46"
 $HttpServiceFolder = "DfmHttpService"
-$extensionFolder = "VscPreviewExtension"
+$HttpServiceFolderPath = "..\$HttpServiceFolder"
 
 function ProcessLastExitCode {
     param($exitCode, $msg)
@@ -30,7 +30,7 @@ Push-Location $scriptHome
 
 Write-Host "Build $HttpServiceFolder to the target folder"
 $outputFolder = Join-Path $scriptHome $HttpServiceFolder
-& dotnet publish "..\$HttpServiceFolder" -c $configuration -f $framework -o $outputFolder
+& dotnet publish $HttpServiceFolderPath -c $configuration -f $framework -o $outputFolder
 ProcessLastExitCode $lastexitcode "Error occurs when building $HttpServiceFolder"
 
 Write-Host "`n$command extension"
