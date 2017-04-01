@@ -1,5 +1,12 @@
-﻿Version Notes (Current Version: v2.15.3)
+﻿Version Notes (Current Version: v2.15.4)
 =======================================
+
+v2.15.4
+-----------
+1.  Switch to legacy markdown engine as default:
+    1. Rename new markdown engine to `dfm-latest` and `dfm-2.15`.
+    2. add back legacy markdown engine to `dfm` and `dfm-2.13`.
+    Markdown engine can be switch by command line option `markdownEngineName` or `docfx.json`, see [document](http://dotnet.github.io/docfx/tutorial/docfx.exe_user_manual.html?q=docfx.json#32-properties-for-build).
 
 v2.15.3
 -----------
