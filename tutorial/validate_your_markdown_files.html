@@ -8,7 +8,7 @@
     <title>Validate Your Markdown Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Validate Your Markdown Files | DocFX website ">
-    <meta name="generator" content="docfx 2.15.3.0">
+    <meta name="generator" content="docfx 2.15.4.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -198,9 +198,8 @@ For more information about template, please refer to our <a href="howto_build_yo
 <ol>
 <li>Create a project in your code editor (e.g. Visual Studio).</li>
 <li>Add nuget package <code>Microsoft.DocAsCode.MarkdownLite</code> and <code>Microsoft.Composition</code>.</li>
-<li>Create a class and implements <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider.html">IMarkdownTokenValidatorProvider</a><blockquote><p><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.html">MarkdownTokenValidatorFactory</a> contains some helper methods to create a validator.</p>
-</blockquote>
-</li>
+<li>Create a class and implements <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidatorProvider.html">IMarkdownTokenValidatorProvider</a>
+&gt; <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownTokenValidatorFactory.html">MarkdownTokenValidatorFactory</a> contains some helper methods to create a validator.</li>
 <li>Add ExportAttribute with rule name.</li>
 </ol>
 <p>For example, the following rule require all code block to be <code>csharp</code>:</p>

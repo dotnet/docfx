@@ -8,7 +8,7 @@
     <title>Doc-as-Code: Metadata Format Specification | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Doc-as-Code: Metadata Format Specification | DocFX website ">
-    <meta name="generator" content="docfx 2.15.3.0">
+    <meta name="generator" content="docfx 2.15.4.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -247,8 +247,7 @@ references:
 <p>Reference section also contains a list of <em>items</em>. These <em>items</em> serve as the references by <em>items</em> in <em>item section</em> and won&#39;t show up in documentation. Also, reference <em>item</em> doesn&#39;t need to have full <em>properties</em>, it just contains necessary information needed by its referrer (for example, name or URL).</p>
 <p>In metadata file, all <em>items</em> <strong>MUST</strong> be referenced by <em>UID</em>.</p>
 <blockquote><p>It&#39;s <strong>RECOMMENDED</strong> to include all referenced <em>items</em> in reference section. This makes the file self-contained and easy to render at runtime.</p>
-</blockquote>
-<blockquote><p>Many programming languages have the concept of &quot;template instantiation&quot;. For example, in C#, you can create a new type <code>List&lt;int&gt;</code> from <code>List&lt;T&gt;</code> with argument <code>int</code>. You can create a reference for &quot;template instances&quot;. For example, for a class inherited from <code>List&lt;int&gt;</code>:</p>
+<p>Many programming languages have the concept of &quot;template instantiation&quot;. For example, in C#, you can create a new type <code>List&lt;int&gt;</code> from <code>List&lt;T&gt;</code> with argument <code>int</code>. You can create a reference for &quot;template instances&quot;. For example, for a class inherited from <code>List&lt;int&gt;</code>:</p>
 </blockquote>
 <pre><code class="lang-yaml">items:
 - uid: NumberList

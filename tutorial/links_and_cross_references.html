@@ -8,7 +8,7 @@
     <title>Links and Cross References | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Links and Cross References | DocFX website ">
-    <meta name="generator" content="docfx 2.15.3.0">
+    <meta name="generator" content="docfx 2.15.4.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -174,15 +174,15 @@ uid: fileA
 <h4 id="shorthand-form">Shorthand form</h4>
 <p>You can also use <code>@uid_to_another_file</code> to quickly reference another file. There are some rules for DocFX to determine whether a string following <code>@</code> are UID:</p>
 <ol>
-<li>The string after <code>@</code> must start with <code>[A-Za-z]</code>, and end with:</li>
-</ol>
+<li><p>The string after <code>@</code> must start with <code>[A-Za-z]</code>, and end with:</p>
 <ul>
 <li>Whitespace or line end</li>
 <li>Punctuation (<code>[.,;:!?`~]</code>) followed by whitespace or line end</li>
 <li>Two or more punctuations (<code>[.,;:!?`~]</code>)</li>
 </ul>
-<ol start="2">
-<li>A string enclosed by a pair of quotes (<code>&#39;</code> or <code>&quot;</code>)</li>
+</li>
+<li><p>A string enclosed by a pair of quotes (<code>&#39;</code> or <code>&quot;</code>)</p>
+</li>
 </ol>
 <p>The render result of <code>@</code> form is same as auto link form. For example, <code>@System.String</code> is same as <code>&lt;xref:System.String&gt;</code>.</p>
 <div class="WARNING"><h5>Warning</h5><p>Since <code>@</code> is a common character in a document, DocFX doesn&#39;t show a warning if UID isn&#39;t found for a shorthand form xref link.
@@ -222,14 +222,14 @@ to be <a href="https://en.wikipedia.org/wiki/Percent-encoding">encoded</a> to <c
 - ...
 </code></pre><p>It&#39;s a YAML object that contains following properties:</p>
 <ol>
-<li><code>references</code>: a list of topic information, each item contains following properties:</li>
-</ol>
-<ul>
+<li><code>references</code>: a list of topic information, each item contains following properties:<ul>
 <li><code>uid</code>: UID to a conceptual topic or API reference</li>
 <li><code>name</code>: title of the topic</li>
 <li><code>href</code>: url to the topic, which is an absolute url or relative path to current file (<code>xrefmap.yml</code>)</li>
 <li><code>fullName</code>: doesn&#39;t apply to conceptual, means the fully qualified name of API. For example, for String class, its name is <code>String</code> and fully qualified name is <code>System.String</code>. This property is not used in link title resolve for now but reserved for future use.</li>
 </ul>
+</li>
+</ol>
 <div class="TIP"><h5>Tip</h5><p>Topic is not necessarily to be a file, it can also be a section inside a file. For example, a method in a class. 
 In this case its url could be an anchor in a file.</p>
 </div>

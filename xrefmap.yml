@@ -4100,6 +4100,36 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.Engine.DfmJsonTokenTreeServiceProvider.TokenTreeValidator
   fullName: Microsoft.DocAsCode.Build.Engine.DfmJsonTokenTreeServiceProvider.TokenTreeValidator
   nameWithType: DfmJsonTokenTreeServiceProvider.TokenTreeValidator
+- uid: Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider
+  name: DfmLegacyServiceProvider
+  href: api/Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.html
+  commentId: T:Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider
+  fullName: Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider
+  nameWithType: DfmLegacyServiceProvider
+- uid: Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)
+  name: CreateMarkdownService(MarkdownServiceParameters)
+  href: api/Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.html#Microsoft_DocAsCode_Build_Engine_DfmLegacyServiceProvider_CreateMarkdownService_Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)
+  fullName: Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)
+  nameWithType: DfmLegacyServiceProvider.CreateMarkdownService(MarkdownServiceParameters)
+- uid: Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.CreateMarkdownService*
+  name: CreateMarkdownService
+  href: api/Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.html#Microsoft_DocAsCode_Build_Engine_DfmLegacyServiceProvider_CreateMarkdownService_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.CreateMarkdownService
+  fullName: Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.CreateMarkdownService
+  nameWithType: DfmLegacyServiceProvider.CreateMarkdownService
+- uid: Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.TokenTreeValidator
+  name: TokenTreeValidator
+  href: api/Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.html#Microsoft_DocAsCode_Build_Engine_DfmLegacyServiceProvider_TokenTreeValidator
+  commentId: P:Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.TokenTreeValidator
+  fullName: Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.TokenTreeValidator
+  nameWithType: DfmLegacyServiceProvider.TokenTreeValidator
+- uid: Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.TokenTreeValidator*
+  name: TokenTreeValidator
+  href: api/Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.html#Microsoft_DocAsCode_Build_Engine_DfmLegacyServiceProvider_TokenTreeValidator_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.TokenTreeValidator
+  fullName: Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.TokenTreeValidator
+  nameWithType: DfmLegacyServiceProvider.TokenTreeValidator
 - uid: Microsoft.DocAsCode.Build.Engine.DfmServiceProvider
   name: DfmServiceProvider
   href: api/Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.html
@@ -36128,6 +36158,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.Options.LangPrefix
   fullName: Microsoft.DocAsCode.MarkdownLite.Options.LangPrefix
   nameWithType: Options.LangPrefix
+- uid: Microsoft.DocAsCode.MarkdownLite.Options.LegacyMode
+  name: LegacyMode
+  href: api/Microsoft.DocAsCode.MarkdownLite.Options.html#Microsoft_DocAsCode_MarkdownLite_Options_LegacyMode
+  commentId: P:Microsoft.DocAsCode.MarkdownLite.Options.LegacyMode
+  fullName: Microsoft.DocAsCode.MarkdownLite.Options.LegacyMode
+  nameWithType: Options.LegacyMode
+- uid: Microsoft.DocAsCode.MarkdownLite.Options.LegacyMode*
+  name: LegacyMode
+  href: api/Microsoft.DocAsCode.MarkdownLite.Options.html#Microsoft_DocAsCode_MarkdownLite_Options_LegacyMode_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.Options.LegacyMode
+  fullName: Microsoft.DocAsCode.MarkdownLite.Options.LegacyMode
+  nameWithType: Options.LegacyMode
 - uid: Microsoft.DocAsCode.MarkdownLite.Options.Mangle
   name: Mangle
   href: api/Microsoft.DocAsCode.MarkdownLite.Options.html#Microsoft_DocAsCode_MarkdownLite_Options_Mangle

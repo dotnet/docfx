@@ -8,7 +8,7 @@
     <title>How-to: Filter Out Unwanted APIs or Attributes  | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Filter Out Unwanted APIs or Attributes  | DocFX website ">
-    <meta name="generator" content="docfx 2.15.3.0">
+    <meta name="generator" content="docfx 2.15.4.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -149,8 +149,7 @@ If a type is excluded, all members defined in the type would also be excluded.</
 </code></pre><h4 id="3-exclude-or-include-apis-by-containing-matched-attributes">3) <code>exclude</code> or <code>include</code> APIs by containing matched attributes.</h4>
 <p>You can specify an attribute by its <code>uid</code>, <code>ctorArguments</code> and <code>ctorNamedArguments</code>.</p>
 <blockquote><p><em>Note</em></p>
-</blockquote>
-<blockquote><p><code>ctorArguments</code> requires a full match of the attribute&#39;s constructor arguments, while <code>ctorNamedArguments</code> supports a partial match.
+<p><code>ctorArguments</code> requires a full match of the attribute&#39;s constructor arguments, while <code>ctorNamedArguments</code> supports a partial match.
 Namely, <code>ctorArguments</code> should contain all the arguments while <code>ctorNamedArguments</code> could contain a subset of the named arguments. </p>
 </blockquote>
 <p>The sample below excludes all APIs which have EditorBrowsableAttribute and its constructor argument is EditorBrowsableState.Never.</p>

@@ -8,7 +8,7 @@
     <title>Introduction to DocFX Template System | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to DocFX Template System | DocFX website ">
-    <meta name="generator" content="docfx 2.15.3.0">
+    <meta name="generator" content="docfx 2.15.4.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -150,16 +150,16 @@ So most of the time <a href="#preprocessor"><em>Preprocessor File</em></a> is us
 <p><em>Preprocessor</em> leverages the concept of <em>Module</em> as similar to the <a href="https://nodejs.org/dist/latest-v6.x/docs/api/modules.html">Module in Node.js</a>. The syntax of Module in <em>Preprocessor</em> is a <em>subset</em> of the one in Node.js. The advantage of the Module concept is that the <em>Preprocessor</em> script file can also be run in Node.js.
 The Module syntax in <em>Preprocessor</em> is simple,</p>
 <ol>
-<li>To export function property from one Module file <code>common.js</code>:</li>
-</ol>
+<li><p>To export function property from one Module file <code>common.js</code>:</p>
 <pre><code class="lang-js">exports.util = function () {}
-</code></pre><ol start="2">
-<li>To use the exported function property inside <code>common.js</code>:</li>
-</ol>
+</code></pre></li>
+<li><p>To use the exported function property inside <code>common.js</code>:</p>
 <pre><code class="lang-js">var common = require(&#39;./common.js&#39;);
 // call util
 common.util();
-</code></pre><div class="NOTE"><h5>Note</h5><p>Only relative path starting with <code>./</code> is supported.</p>
+</code></pre></li>
+</ol>
+<div class="NOTE"><h5>Note</h5><p>Only relative path starting with <code>./</code> is supported.</p>
 </div>
 <h4 id="log">Log</h4>
 <p>You can call the following functions to log messages with different error level: <code>console.log</code>, <code>console.warn</code> or <code>console.warning</code> and <code>console.err</code>.</p>
@@ -191,7 +191,6 @@ common.util();
     };
 }
 </code></pre><!-- TODO: add bookmarks part when it is implemented -->
-
 <h4 id="function-2-exportstransform">Function 2: <code>exports.transform</code></h4>
 <p>Function property <code>transform</code> takes the data model produced by document processor (described in further detail in <a href="#the-input-data-model">The Input Data Model</a>) as the input argument, and returns the <em>View Model</em>. <em>View Model</em> is the exact model to apply the corresponding <em>Renderer</em>.</p>
 <p>A sample <code>exports.transform</code> for <code>conceptual.txt.js</code> is:</p>
