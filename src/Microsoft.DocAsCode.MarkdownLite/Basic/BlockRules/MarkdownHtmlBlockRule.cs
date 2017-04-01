@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 return null;
             }
-            if (Html != Regexes.Block.Html)
+            if (Html != Regexes.Block.Html || parser.Options.LegacyMode)
             {
                 return TryMatchOld(parser, context);
             }
