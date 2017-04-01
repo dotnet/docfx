@@ -76,8 +76,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         private static int GetValidLineCount(string markdown, int lineCount)
         {
-            if (markdown == "")
+            if (string.IsNullOrEmpty(markdown))
+            {
                 return 0;
+            }
             var indexOfLastChar = markdown.Length - 1;
             var validLineCount = lineCount;
 
