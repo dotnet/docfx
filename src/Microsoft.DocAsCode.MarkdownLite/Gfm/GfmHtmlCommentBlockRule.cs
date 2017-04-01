@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            if (HtmlComment != Regexes.Block.Gfm.HtmlComment)
+            if (HtmlComment != Regexes.Block.Gfm.HtmlComment || parser.Options.LegacyMode)
             {
                 return TryMatchOld(parser, context);
             }

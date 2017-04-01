@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            if (Blockquote != Regexes.Block.Blockquote)
+            if (Blockquote != Regexes.Block.Blockquote || parser.Options.LegacyMode)
             {
                 return TryMatchOld(parser, context);
             }

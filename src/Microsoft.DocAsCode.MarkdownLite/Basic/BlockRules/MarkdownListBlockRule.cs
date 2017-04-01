@@ -96,7 +96,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             if (OrderList != Regexes.Block.OrderList ||
-                UnorderList != Regexes.Block.UnorderList)
+                UnorderList != Regexes.Block.UnorderList ||
+                parser.Options.LegacyMode)
             {
                 return TryMatchOld(parser, context);
             }

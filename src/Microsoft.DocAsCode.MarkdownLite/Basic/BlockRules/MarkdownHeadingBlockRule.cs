@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            if (Heading != Regexes.Block.Heading)
+            if (Heading != Regexes.Block.Heading || parser.Options.LegacyMode)
             {
                 return OldMatch(parser, context);
             }
