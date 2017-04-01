@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            if (Hr != Regexes.Block.Hr)
+            if (Hr != Regexes.Block.Hr || parser.Options.LegacyMode)
             {
                 return TryMatchOld(parser, context);
             }

@@ -16,9 +16,9 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
-    [Export("dfm-latest", typeof(IMarkdownServiceProvider))]
-    [Export("dfm-2.15", typeof(IMarkdownServiceProvider))]
-    public class DfmServiceProvider : IMarkdownServiceProvider
+    [Export("dfm", typeof(IMarkdownServiceProvider))]
+    [Export("dfm-2.13", typeof(IMarkdownServiceProvider))]
+    public class DfmLegacyServiceProvider : IMarkdownServiceProvider
     {
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
         {
@@ -60,6 +60,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             public DfmService(string baseDir, string templateDir, ImmutableDictionary<string, string> tokens, IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator, IReadOnlyList<string> fallbackFolders = null)
             {
                 var options = DocfxFlavoredMarked.CreateDefaultOptions();
+                options.LegacyMode = true;
                 options.ShouldExportSourceInfo = true;
                 _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, templateDir, options, fallbackFolders);
                 _builder.TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(tokenTreeValidator);
