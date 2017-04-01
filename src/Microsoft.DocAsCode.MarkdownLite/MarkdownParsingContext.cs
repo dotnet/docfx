@@ -50,16 +50,17 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public SourceInfo ToSourceInfo()
         {
-            return SourceInfo.Create(CurrentMarkdown, _file, _lineNumber);
+            return SourceInfo.Create(CurrentMarkdown, _file, _lineNumber, _lineIndexer.Count - CalcLineNumber());
         }
 
         public SourceInfo Consume(int charCount)
         {
             var offset = CalcLineNumber();
             string markdown = _markdown.Substring(_startIndex, charCount);
+            var result = SourceInfo.Create(markdown, _file, _lineNumber + offset, CalcLineNumber(charCount) - CalcLineNumber() + 1);
             _startIndex += charCount;
             _currentMarkdown = null;
-            return SourceInfo.Create(markdown, _file, _lineNumber + offset);
+            return result;
         }
 
         public MatchResult Match(Matcher matcher)
@@ -83,9 +84,9 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return lineIndexer;
         }
 
-        private int CalcLineNumber()
+        private int CalcLineNumber(int offset = 0)
         {
-            var index = _lineIndexer.BinarySearch(_startIndex);
+            var index = _lineIndexer.BinarySearch(_startIndex + offset);
             if (index >= 0)
             {
                 return index;

@@ -3,14 +3,18 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System.Runtime.CompilerServices;
+
     public struct SourceInfo
     {
+        private int _validLineCount;
+
         private SourceInfo(string markdown, string file, int lineNumber, int validLineCount)
         {
             Markdown = markdown;
             File = file;
             LineNumber = lineNumber;
-            ValidLineCount = validLineCount;
+            _validLineCount = validLineCount;
         }
 
         public string Markdown { get; }
@@ -19,16 +23,36 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public int LineNumber { get; }
 
-        public int ValidLineCount { get; }
-
-        public static SourceInfo Create(string markdown, string file, int lineNumber = 1)
+        public int ValidLineCount
         {
-            return new SourceInfo(markdown, file, lineNumber, GetValidLineCount(markdown));
+            get
+            {
+                if (_validLineCount <= 0)
+                {
+                    _validLineCount = GetValidLineCount(Markdown);
+                }
+                return _validLineCount;
+            }
+        }
+
+        public static SourceInfo Create(string markdown, string file)
+        {
+            return Create(markdown, file, 1);
+        }
+
+        public static SourceInfo Create(string markdown, string file, int lineNumber)
+        {
+            return new SourceInfo(markdown, file, lineNumber, 0);
+        }
+
+        public static SourceInfo Create(string markdown, string file, int lineNumber, int lineCount)
+        {
+            return new SourceInfo(markdown, file, lineNumber, lineCount == 0 ? 0 : GetValidLineCount(markdown, lineCount));
         }
 
         public SourceInfo Copy(string markdown, int lineOffset = 0)
         {
-            return new SourceInfo(markdown, File, LineNumber + lineOffset, GetValidLineCount(markdown));
+            return new SourceInfo(markdown, File, LineNumber + lineOffset, 0);
         }
 
         private static int GetValidLineCount(string markdown)
@@ -47,6 +71,20 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     validLineCount++;
             }
 
+            return validLineCount;
+        }
+
+        private static int GetValidLineCount(string markdown, int lineCount)
+        {
+            if (markdown == "")
+                return 0;
+            var indexOfLastChar = markdown.Length - 1;
+            var validLineCount = lineCount;
+
+            while (indexOfLastChar >= 0 && markdown[indexOfLastChar--] == '\n')
+            {
+                validLineCount--;
+            }
             return validLineCount;
         }
     }
