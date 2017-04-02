@@ -14,8 +14,8 @@ $scriptPath = $MyInvocation.MyCommand.Path
 $scriptHome = Split-Path $scriptPath
 $configuration = "Release"
 $framework = "net46"
-$HttpServiceFolder = "DfmHttpService"
-$HttpServiceFolderPath = "..\$HttpServiceFolder"
+$httpServiceFolder = "DfmHttpService"
+$httpServiceFolderPath = "..\$httpServiceFolder"
 
 function ProcessLastExitCode {
     param($exitCode, $msg)
@@ -28,10 +28,10 @@ function ProcessLastExitCode {
 
 Push-Location $scriptHome
 
-Write-Host "Build $HttpServiceFolder to the target folder"
-$outputFolder = Join-Path $scriptHome $HttpServiceFolder
-& dotnet publish $HttpServiceFolderPath -c $configuration -f $framework -o $outputFolder
-ProcessLastExitCode $lastexitcode "Error occurs when building $HttpServiceFolder"
+Write-Host "Build $httpServiceFolder to the target folder"
+$outputFolder = Join-Path $scriptHome $httpServiceFolder
+& dotnet publish $httpServiceFolderPath -c $configuration -f $framework -o $outputFolder
+ProcessLastExitCode $lastexitcode "Error occurs when building $httpServiceFolder"
 
 Write-Host "`n$command extension"
 & vsce $command $version

@@ -7,5 +7,5 @@ src/**
 .gitignore
 tsconfig.json
 img/**
-*.cmd
-*.ps1
+build.cmd
+build.ps1
