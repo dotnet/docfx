@@ -10,15 +10,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownHeadingBlockRule : IMarkdownRule
     {
+        private static readonly Matcher _EndSymbol =
+            (Matcher.WhiteSpaces + Matcher.Char('#').RepeatAtLeast(1)).Maybe() +
+            Matcher.WhiteSpacesOrEmpty +
+            (Matcher.NewLine | Matcher.EndOfString);
         private static readonly Matcher _HeadingMatcher =
             Matcher.WhiteSpacesOrEmpty +
             Matcher.Char('#').Repeat(1, 6).ToGroup("level") +
             Matcher.WhiteSpacesOrEmpty +
             (
-                (Matcher.WhiteSpacesOrEmpty + Matcher.Char('#').RepeatAtLeast(0) + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine | Matcher.EndOfString)).ToNegativeTest() +
-                Matcher.AnyCharNot('\n')
+                _EndSymbol.ToNegativeTest() +
+                (Matcher.AnyCharNotIn('\n', ' ').RepeatAtLeast(1) | Matcher.WhiteSpaces)
             ).RepeatAtLeast(1).ToGroup("text") +
-            Matcher.WhiteSpacesOrEmpty + Matcher.Char('#').RepeatAtLeast(0) + Matcher.WhiteSpacesOrEmpty + (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
+            _EndSymbol;
 
         public virtual string Name => "Heading";
 
