@@ -115,7 +115,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         {
             if (item.Metadata != null)
             {
-                foreach (var pair in item.Metadata)
+                foreach (var pair in (Dictionary<string, object>)item.Metadata)
                 {
                     switch (pair.Key)
                     {
