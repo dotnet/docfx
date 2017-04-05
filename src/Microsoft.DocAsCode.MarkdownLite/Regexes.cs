@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             [Obsolete]
             public static readonly Regex Hr = new Regex(@"^( *[-*_]){3,} *(?:\n+|$)", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]
-            public static readonly Regex Heading = new Regex(@"^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex Heading = new Regex(@"^ *(#{1,6}) *([^\n]+?)(?: +#*)? *(?:\n+|$)", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]
             public static readonly Regex LHeading = new Regex(@"^([^\n]+)\n *(=|-){2,} *(?:\n+|$)", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]
