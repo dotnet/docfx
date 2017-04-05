@@ -114,6 +114,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 }, model.Examples);
                 Assert.Equal("Not defined Property", model.Metadata["not-defined"]);
                 Assert.NotNull(model.Source);
+
+                Assert.Equal("net46", JArray.FromObject(model.Children[0].Metadata[Constants.MetadataName.Version])[0].ToString());
+                Assert.Equal("net2", JArray.FromObject(model.Children[1].Metadata[Constants.MetadataName.Version])[0].ToString());
             }
             {
                 var outputRawModelPath = GetRawModelFilePath("toc.yml");
