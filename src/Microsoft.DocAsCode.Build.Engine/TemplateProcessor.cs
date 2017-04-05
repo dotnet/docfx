@@ -8,7 +8,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -107,32 +106,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 try
                 {
-                    // TODO: support glob pattern
-                    if (resourceInfo.IsRegexPattern)
+                    using (var stream = _resourceProvider.GetResourceStream(resourceInfo.ResourceKey))
                     {
-                        var regex = new Regex(resourceInfo.ResourceKey, RegexOptions.IgnoreCase);
-                        foreach (var name in _resourceProvider.Names)
-                        {
-                            if (regex.IsMatch(name))
-                            {
-                                using (var stream = _resourceProvider.GetResourceStream(name))
-                                {
-                                    ProcessSingleDependency(stream, outputDirectory, name);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        using (var stream = _resourceProvider.GetResourceStream(resourceInfo.ResourceKey))
-                        {
-                            ProcessSingleDependency(stream, outputDirectory, resourceInfo.FilePath);
-                        }
+                        ProcessSingleDependency(stream, outputDirectory, resourceInfo.ResourceKey);
                     }
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Info, $"Unable to get relative resource for {resourceInfo.FilePath}: {e.Message}");
+                    Logger.Log(LogLevel.Info, $"Unable to get relative resource for {resourceInfo.ResourceKey}: {e.Message}");
                 }
             }
         }

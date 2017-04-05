@@ -117,7 +117,7 @@ name2=test2;
         public void TestMustacheTemplateProcessSingleTemplateWithNoScriptWithPartialShouldWork()
         {
             // 1. Prepare template
-            var templateName = "NoScriptWithPartial";
+            var templateName = "Subfolder/NoScriptWithPartial";
             string template = @"
 {{#model}}
 {{name}}
