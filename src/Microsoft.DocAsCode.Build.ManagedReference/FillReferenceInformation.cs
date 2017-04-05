@@ -119,7 +119,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 {
                     switch (pair.Key)
                     {
-
                         case Constants.ExtensionMemberPrefix.Spec:
                             break;
                         default:
