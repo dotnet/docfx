@@ -1046,7 +1046,7 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
 
         [Fact]
         [Trait("Related", "Markdown")]
-        public void TestGfmHeading_WithSharpAtTheEndInTitle_Legacy()
+        public void TestGfmHeading_WithSharpAtTheEndInTitle()
         {
             var source = @"# Language C#
 # Language C# #";
