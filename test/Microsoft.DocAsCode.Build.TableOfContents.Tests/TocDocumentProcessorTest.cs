@@ -87,11 +87,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
         public void ProcessMarkdownTocWithAbsoluteHrefShouldSucceed()
         {
             var content = @"
-#[Topic1](/href1)
-##Topic1.1
-###[Topic1.1.1](/href1.1.1)
-##[Topic1.2]()
-#[Topic2](http://href.com)
+#[Topic1 Language](/href1) #
+##Topic1.1 Language C#
+###[Topic1.1.1](/href1.1.1) ###
+##[Topic1.2]() ##
+#[Topic2](http://href.com) #
 ";
             var toc = _fileCreator.CreateFile(content, FileType.MarkdownToc);
             FileCollection files = new FileCollection(_inputFolder);
@@ -107,14 +107,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                 {
                     new TocItemViewModel
                     {
-                        Name = "Topic1",
+                        Name = "Topic1 Language",
                         Href = "/href1",
                         TopicHref = "/href1",
                         Items = new TocViewModel
                         {
                             new TocItemViewModel
                             {
-                                Name = "Topic1.1",
+                                Name = "Topic1.1 Language C#",
                                 Items = new TocViewModel
                                 {
                                     new TocItemViewModel
