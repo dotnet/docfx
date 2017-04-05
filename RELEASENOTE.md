@@ -1,5 +1,10 @@
-﻿Version Notes (Current Version: v2.15.4)
+﻿Version Notes (Current Version: v2.15.5)
 =======================================
+
+v2.15.5
+-----------
+1. Fill metadata into Reference as expand Output only consumes its own PageViewModel.
+2. Fix `#` in the end of heading is missing.
 
 v2.15.4
 -----------
