@@ -21,7 +21,7 @@ export class ChildProcessHost {
 
     constructor(context: ExtensionContext) {
         // TODO: make path configurable
-        let exePath = context.asAbsolutePath("./DfmParse/Microsoft.DocAsCode.Dfm.VscPreview.exe");
+        let exePath = context.asAbsolutePath("./DfmHttpService/DfmHttpService.exe");
         this._spawn = Common.spawn(exePath, {});
         if (!this._spawn.pid) {
             window.showErrorMessage("Error: DfmProcess lost!");
