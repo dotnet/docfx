@@ -50,7 +50,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             // Template file ends with .tmpl(Mustache) or .liquid(Liquid)
             // Template file naming convention: {template file name}.{file extension}.(tmpl|liquid)
-            var templates = resource.GetResources(@".*\.(tmpl|liquid|js)$").ToList();
+            // Only files under root folder is searched
+            var templates = resource.GetResources(@"[^/]*\.(tmpl|liquid|js)$").ToList();
             if (templates != null)
             {
                 foreach (var group in templates.GroupBy(s => Path.GetFileNameWithoutExtension(s.Key), StringComparer.OrdinalIgnoreCase))
@@ -111,7 +112,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     TemplateRendererResource templateResource =
                         currentTemplate == null ?
                         null :
-                        new TemplateRendererResource(currentTemplate.name, currentTemplate.item);
+                        new TemplateRendererResource(currentTemplate.name, currentTemplate.item, name);
                     TemplatePreprocessorResource templatePrepocessorResource =
                         currentScript == null ?
                         null :

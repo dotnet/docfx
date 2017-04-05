@@ -6,21 +6,46 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Text.RegularExpressions;
 
     internal class MustacheTemplateRenderer : ITemplateRenderer
     {
         private static readonly Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private readonly ResourceTemplateLocator _resourceTemplateLocator;
-        private readonly Nustache.Core.Template _template = null;
-        public MustacheTemplateRenderer(ResourceCollection resourceProvider, string template)
+        private readonly ResourceCollection _resource;
+        private readonly Nustache.Core.Template _template;
+        private readonly string _templateName;
+        public MustacheTemplateRenderer(ResourceCollection resourceProvider, TemplateRendererResource info)
         {
-            if (template == null) throw new ArgumentNullException(nameof(template));
+            if (info == null)
+            {
+                throw new ArgumentNullException(nameof(info));
+            }
+
+            if (info.Content == null)
+            {
+                throw new ArgumentNullException(nameof(info.Content));
+            }
+
+            if (info.TemplateName == null)
+            {
+                throw new ArgumentNullException(nameof(info.TemplateName));
+            }
+
+            _templateName = info.TemplateName;
+
             _resourceTemplateLocator = new ResourceTemplateLocator(resourceProvider);
+            _resource = resourceProvider;
+
             _template = new Nustache.Core.Template();
-            using (var reader = new StringReader(template))
+
+            using (var reader = new StringReader(info.Content))
+            {
                 _template.Load(reader);
-            Dependencies = ExtractDependentFilePaths(template);
+            }
+
+            Dependencies = ExtractDependencyResourceNames(info.Content).ToList();
         }
 
         public IEnumerable<string> Dependencies { get; }
@@ -41,13 +66,15 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// file path can be wrapped by quote ' or double quote " or none
         /// </summary>
         /// <param name="template"></param>
-        private IEnumerable<string> ExtractDependentFilePaths(string template)
+        private IEnumerable<string> ExtractDependencyResourceNames(string template)
         {
             foreach (Match match in IncludeRegex.Matches(template))
             {
                 var filePath = match.Groups["file"].Value;
-                if (string.IsNullOrWhiteSpace(filePath)) continue;
-                yield return filePath;
+                foreach (var name in ParseTemplateHelper.GetResourceName(filePath, _templateName, _resource))
+                {
+                    yield return name;
+                }
             }
         }
     }

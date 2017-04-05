@@ -16,7 +16,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private const string Primary = ".primary";
         private const string Auxiliary = ".aux";
-        private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
 
         private readonly object _locker = new object();
         private readonly ResourcePoolManager<ITemplateRenderer> _rendererPool = null;
@@ -205,27 +204,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     yield break;
                 }
+
                 foreach (var dependency in _renderer.Dependencies)
                 {
-                    string filePath = dependency;
-                    if (string.IsNullOrWhiteSpace(filePath))
-                    {
-                        continue;
-                    }
-                    if (filePath.StartsWith("./"))
-                    {
-                        filePath = filePath.Substring(2);
-                    }
-                    var regexPatternMatch = IsRegexPatternRegex.Match(filePath);
-                    if (regexPatternMatch.Groups.Count > 1)
-                    {
-                        filePath = regexPatternMatch.Groups[1].Value;
-                        yield return new TemplateResourceInfo(GetRelativeResourceKey(templateName, filePath), filePath, true);
-                    }
-                    else
-                    {
-                        yield return new TemplateResourceInfo(GetRelativeResourceKey(templateName, filePath), filePath, false);
-                    }
+                    yield return new TemplateResourceInfo(dependency);
                 }
             }
         }
@@ -239,11 +221,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (templateResource.Type == TemplateRendererType.Liquid)
             {
-                return LiquidTemplateRenderer.Create(resourceCollection, templateResource.Content);
+                return LiquidTemplateRenderer.Create(resourceCollection, templateResource);
             }
             else
             {
-                return new MustacheTemplateRenderer(resourceCollection, templateResource.Content);
+                return new MustacheTemplateRenderer(resourceCollection, templateResource);
             }
         }
 

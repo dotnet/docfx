@@ -7,32 +7,62 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
 
     internal class LiquidTemplateRenderer : ITemplateRenderer
     {
-        private static object _locker = new object();
-        private readonly DotLiquid.Template _template = null;
-        public static LiquidTemplateRenderer Create(ResourceCollection resourceProvider, string template)
+        private static readonly object _locker = new object();
+
+        private readonly DotLiquid.Template _template;
+
+        public static LiquidTemplateRenderer Create(ResourceCollection resourceProvider, TemplateRendererResource info)
         {
-            if (template == null) throw new ArgumentNullException(nameof(template));
+            if (info == null)
+            {
+                throw new ArgumentNullException(nameof(info));
+            }
+
+            if (info.Content == null)
+            {
+                throw new ArgumentNullException(nameof(info.Content));
+            }
+
+            if (info.TemplateName == null)
+            {
+                throw new ArgumentNullException(nameof(info.TemplateName));
+            }
+
+            // Guarantee that each time returns a new renderer
+            // As Dependency is a globally shared object, allow one entry at a time
             lock (_locker)
             {
                 DotLiquid.Template.RegisterTag<Dependency>("ref");
                 Dependency.PopDependencies();
-                var liquidTemplate = DotLiquid.Template.Parse(template);
+
+                var liquidTemplate = DotLiquid.Template.Parse(info.Content);
+
                 liquidTemplate.Registers.Add("file_system", new ResourceFileSystem(resourceProvider));
+
                 var dependencies = Dependency.PopDependencies();
-                return new LiquidTemplateRenderer(liquidTemplate, template, dependencies);
+
+                return new LiquidTemplateRenderer(liquidTemplate, info.Content, info.TemplateName, resourceProvider, dependencies);
             }
         }
 
-        private LiquidTemplateRenderer(DotLiquid.Template liquidTemplate, string template, IEnumerable<string> dependencies)
+        private LiquidTemplateRenderer(DotLiquid.Template liquidTemplate, string template, string templateName, ResourceCollection resource, IEnumerable<string> dependencies)
         {
             _template = liquidTemplate;
             Raw = template;
-            Dependencies = dependencies;
+            Dependencies = ParseDependencies(templateName, resource, dependencies).ToList();
+        }
+
+        private IEnumerable<string> ParseDependencies(string templateName, ResourceCollection resource, IEnumerable<string> raw)
+        {
+            return from item in raw
+                   from name in ParseTemplateHelper.GetResourceName(item, templateName, resource)
+                   select name;
         }
 
         public string Raw { get; }
@@ -54,7 +84,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         private sealed class Dependency : DotLiquid.Tag
         {
             private static readonly HashSet<string> SharedDependencies = new HashSet<string>();
-            private static object _locker = new object();
             public override void Initialize(string tagName, string markup, List<string> tokens)
             {
                 base.Initialize(tagName, markup, tokens);
