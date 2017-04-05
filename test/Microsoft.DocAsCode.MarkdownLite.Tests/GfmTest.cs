@@ -670,6 +670,14 @@ b",
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
+        public void TestLegacyGfmInGeneral(string source, string expected)
+        {
+            var builder = new GfmEngineBuilder(new Options { LegacyMode = true });
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
         [Fact]
         [Trait("Related", "Markdown")]
         public void TestListWithTab()
@@ -1034,6 +1042,20 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
             var expected = @"<p><a href=""girl.png"" title=""title is &quot;hello&quot; world."" data-raw-source=""[This is link text with quotation &#39; and double quotation &quot;hello&quot; world](girl.png &quot;title is &quot;hello&quot; world.&quot;)"">This is link text with quotation &#39; and double quotation &quot;hello&quot; world</a></p>
 ";
             TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestGfmHeading_WithSharpAtTheEndInTitle_Legacy()
+        {
+            var source = @"# Language C#
+# Language C# #";
+
+            var expected = @"<h1 id=""language-c"">Language C#</h1>
+<h1 id=""language-c-1"">Language C#</h1>
+";
+
+            TestLegacyGfmInGeneral(source, expected);
         }
     }
 }

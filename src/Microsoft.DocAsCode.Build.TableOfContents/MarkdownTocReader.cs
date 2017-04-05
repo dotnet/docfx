@@ -165,7 +165,7 @@
         {
             private static readonly Regex UidRegex = new Regex(@"^\s*(?:xref:|@)(\s*?\S+?[\s\S]*?)\s*$", RegexOptions.Compiled);
             public static readonly Regex TocRegex =
-                new Regex(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+)\]\((?<tocLink>(?!http[s]?://).*?)(\)| ""(?<displayText>.*)""\))( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
+                new Regex(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+)\]\((?<tocLink>(?!http[s]?://).*?)(\)| ""(?<displayText>.*)""\))(?:( |\t)+#*)?( |\t)*(\n|$)", RegexOptions.Compiled);
 
             public override Match Match(string text) => TocRegex.Match(text);
 
@@ -248,7 +248,7 @@
         internal sealed class ExternalLinkTocParseRule : ParseRule
         {
             public static readonly Regex TocRegex =
-                new Regex(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+?)\]\((?<tocLink>(http[s]?://).*?)\)( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
+                new Regex(@"^(?<headerLevel>#+)(( |\t)*)\[(?<tocTitle>.+?)\]\((?<tocLink>(http[s]?://).*?)\)(?:( |\t)+#*)?( |\t)*(\n|$)", RegexOptions.Compiled);
 
             public override Match Match(string text) => TocRegex.Match(text);
 
@@ -261,7 +261,7 @@
         internal sealed class ContainerParseRule : ParseRule
         {
             public static readonly Regex ContainerRegex =
-                new Regex(@"^(?<headerLevel>#+)(( |\t)*)(?<tocTitle>.+?)( |\t)*#*( |\t)*(\n|$)", RegexOptions.Compiled);
+                new Regex(@"^(?<headerLevel>#+)(( |\t)*)(?<tocTitle>.+?)(?:( |\t)+#*)?( |\t)*(\n|$)", RegexOptions.Compiled);
 
             public override Match Match(string text) => ContainerRegex.Match(text);
 
