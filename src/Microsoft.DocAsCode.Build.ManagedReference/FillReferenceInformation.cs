@@ -113,6 +113,22 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private void FillContent(ReferenceViewModel r, dynamic item)
         {
+            if (item.Metadata != null)
+            {
+                foreach (var pair in item.Metadata)
+                {
+                    switch (pair.Key)
+                    {
+
+                        case Constants.ExtensionMemberPrefix.Spec:
+                            break;
+                        default:
+                            r.Additional[pair.Key] = pair.Value;
+                            break;
+                    }
+                }
+            }
+
             r.Additional["summary"] = item.Summary;
             r.Additional["type"] = item.Type;
             r.Additional["syntax"] = item.Syntax;
@@ -153,7 +169,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     Type = item.Type,
                     Syntax = item.Syntax,
                     Platform = item.Platform,
-                    File = file
+                    File = file,
+                    Metadata = item.Metadata,
                 };
             }
         }
@@ -168,6 +185,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             public SyntaxDetailViewModel Syntax { get; set; }
             public List<string> Platform { get; set; }
             public string File { get; set; }
+            public Dictionary<string, object> Metadata { get; set; }
         }
     }
 }
