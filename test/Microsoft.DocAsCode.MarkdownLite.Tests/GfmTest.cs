@@ -1056,6 +1056,7 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
 ";
 
             TestLegacyGfmInGeneral(source, expected);
+            TestGfmInGeneral(source, expected);
         }
     }
 }
