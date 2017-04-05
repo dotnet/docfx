@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return true;
             }
 
-            if (symbol.IsImplicitlyDeclared)
+            if (!(symbol is INamespaceSymbol) && symbol.IsImplicitlyDeclared)
             {
                 return false;
             }

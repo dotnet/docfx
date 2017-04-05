@@ -31,9 +31,12 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void Exec(SubCommandRunningContext context)
         {
+            string originalGlobalNamespaceId = VisitorHelper.GlobalNamespaceId;
             EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Directory.GetCurrentDirectory() : Config.BaseDirectory));
             foreach (var inputModel in InputModels)
             {
+                VisitorHelper.GlobalNamespaceId = inputModel.GlobalNamespaceId;
+
                 // TODO: Use plugin to generate metadata for files with different extension?
                 using (var worker = new ExtractMetadataWorker(inputModel, inputModel.ForceRebuild, inputModel.UseCompatibilityFileName))
                 {
@@ -43,40 +46,49 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
             EnvironmentContext.Clean();
+            VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
         }
 
         private MetadataJsonConfig ParseOptions(MetadataCommandOptions options)
         {
+            MetadataJsonConfig config;
+
             string configFile;
             if (TryGetJsonConfig(options.Projects, out configFile))
             {
-                var config = CommandUtility.GetConfig<MetadataConfig>(configFile).Item;
+                config = CommandUtility.GetConfig<MetadataConfig>(configFile).Item;
                 if (config == null) throw new DocumentException($"Unable to find metadata subcommand config in file '{configFile}'.");
                 config.BaseDirectory = Path.GetDirectoryName(configFile);
-                config.OutputFolder = options.OutputFolder;
-                foreach (var item in config)
-                {
-                    item.Raw |= options.PreserveRawInlineComments;
-                    item.Force |= options.ForceRebuild;
-                    item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
-                    item.FilterConfigFile = string.IsNullOrEmpty(options.FilterConfigFile) ? item.FilterConfigFile : Path.GetFullPath(options.FilterConfigFile);
-                }
-                return config;
             }
             else
             {
-                var config = new MetadataJsonConfig();
+                config = new MetadataJsonConfig();
                 config.Add(new MetadataJsonItemConfig
                 {
-                    Force = options.ForceRebuild,
-                    ShouldSkipMarkup = options.ShouldSkipMarkup,
                     Destination = options.OutputFolder,
-                    Raw = options.PreserveRawInlineComments,
-                    Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = true },
-                    FilterConfigFile = string.IsNullOrEmpty(options.FilterConfigFile) ? null : Path.GetFullPath(options.FilterConfigFile)
+                    Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = true }
                 });
-                return config;
             }
+
+            foreach (var item in config)
+            {
+                item.Force |= options.ForceRebuild;
+                item.Raw |= options.PreserveRawInlineComments;
+                item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
+                if (!string.IsNullOrEmpty(options.FilterConfigFile))
+                {
+                    item.FilterConfigFile = Path.GetFullPath(options.FilterConfigFile);
+                }
+
+                if (!string.IsNullOrEmpty(options.GlobalNamespaceId))
+                {
+                    item.GlobalNamespaceId = options.GlobalNamespaceId;
+                }
+            }
+
+            config.OutputFolder = options.OutputFolder;
+
+            return config;
         }
 
         private IEnumerable<ExtractMetadataInputModel> GetInputModels(MetadataJsonConfig configs)
@@ -102,7 +114,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 ShouldSkipMarkup = configModel?.ShouldSkipMarkup ?? false,
                 ApiFolderName = string.Empty,
                 FilterConfigFile = configModel?.FilterConfigFile,
-                UseCompatibilityFileName = configModel?.UseCompatibilityFileName ?? false,
+                GlobalNamespaceId = configModel?.GlobalNamespaceId,
+                UseCompatibilityFileName = configModel?.UseCompatibilityFileName ?? false
             };
 
             var expandedFileMapping = GlobUtility.ExpandFileMapping(Config.BaseDirectory, projects);
