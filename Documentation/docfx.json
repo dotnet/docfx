@@ -57,6 +57,7 @@
       }
     },
     "dest": "_site",
+    "markdownEngineName": "dfm-latest",
     "template": [
       "default",
       "template"
