@@ -483,6 +483,10 @@ $(function () {
           if (util.getAbsolutePath(e.href) === currentHref) {
             $(e).addClass(active);
           }
+
+          $(e).text(function(index, text) {
+            return util.breakText(text);
+          })
         });
 
         renderSidebar();
@@ -701,6 +705,8 @@ $(function () {
     this.isAbsolutePath = isAbsolutePath;
     this.getDirectory = getDirectory;
     this.formList = formList;
+    this.breakText = breakText;
+
     function getAbsolutePath(href) {
       // Use anchor to normalize href
       var anchor = $('<a href="' + href + '"></a>')[0];
@@ -752,6 +758,11 @@ $(function () {
         html += '</ul>';
         return html;
       }
+    }
+
+    function breakText(text) {
+      if (!text) return text;
+      return text.replace(/([a-z])([A-Z])|(\.)(\w)/g, '$1$3\u200B$2$4')
     }
   }
 })
