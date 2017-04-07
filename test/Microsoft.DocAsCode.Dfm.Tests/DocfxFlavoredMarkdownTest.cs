@@ -1373,6 +1373,7 @@ line4
 public class MyClass
 #region
 {
+    #region main
     static void Main()
     {
     }
