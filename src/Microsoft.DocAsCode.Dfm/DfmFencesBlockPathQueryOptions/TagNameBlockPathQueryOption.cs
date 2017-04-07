@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace Microsoft.DocAsCode.Dfm
@@ -57,6 +57,14 @@ namespace Microsoft.DocAsCode.Dfm
         // Javascript code snippet block: <!-- <[/]snippetname> -->
         private static readonly Regex JavaScriptSnippetCommentStartLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex JavaScriptSnippetCommentEndLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        // Java code snippet comment block: // <[/]snippetname>
+        private static readonly Regex JavaCodeSnippetCommentStartLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex JavaCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        // Python code snippet comment block: # <[/]snippetname>
+        private static readonly Regex PythonCodeSnippetCommentStartLineRegex = new Regex(@"^\s*#\s*\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex PythonCodeSnippetCommentEndLineRegex = new Regex(@"^\s*#\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // Language names and aliases fllow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
         // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
@@ -190,6 +198,22 @@ namespace Microsoft.DocAsCode.Dfm
                 ["javascript"] = new List<ICodeSnippetExtractor>
                 {
                     new FlatNameCodeSnippetExtractor(JavaScriptSnippetCommentStartLineRegex, JavaScriptSnippetCommentEndLineRegex)
+                },
+                [".java"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(JavaCodeSnippetCommentStartLineRegex, JavaCodeSnippetCommentEndLineRegex)
+                },
+                ["java"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(JavaCodeSnippetCommentStartLineRegex, JavaCodeSnippetCommentEndLineRegex)
+                },
+                [".py"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(PythonCodeSnippetCommentStartLineRegex, PythonCodeSnippetCommentEndLineRegex)
+                },
+                ["python"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(PythonCodeSnippetCommentStartLineRegex, PythonCodeSnippetCommentEndLineRegex)
                 }
             };
 
