@@ -157,8 +157,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (symbol.IsGlobalNamespace)
             {
+                Append(VisitorHelper.GlobalNamespaceId);
                 return;
             }
+
             if (!symbol.ContainingNamespace.IsGlobalNamespace)
             {
                 symbol.ContainingNamespace.Accept(this);

@@ -30,6 +30,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public bool UseCompatibilityFileName { get; set; }
 
+        public string GlobalNamespaceId { get; set; }
+
         public override string ToString()
         {
             using(StringWriter writer = new StringWriter())

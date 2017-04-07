@@ -133,13 +133,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             item.Type = MemberType.Assembly;
             _references = new Dictionary<string, ReferenceItem>();
 
-            var typeMembers = symbol.GlobalNamespace.GetTypeMembers().Where(member => member.DeclaredAccessibility == Accessibility.Public);
-            if (typeMembers.Any())
+            IEnumerable<INamespaceSymbol> namespaces;
+            if (!string.IsNullOrEmpty(VisitorHelper.GlobalNamespaceId))
             {
-                Logger.LogWarning($"DocFX currently only supports generating metadata with namespace defined. The following types in assembly \"{symbol.MetadataName}\" will have no metadata generated: {string.Join(", ", typeMembers.Select(m => m.MetadataName))}. ");
+                namespaces = Enumerable.Repeat(symbol.GlobalNamespace, 1);
+            }
+            else
+            {
+                namespaces = symbol.GlobalNamespace.GetNamespaceMembers();
             }
 
-            var namespaces = symbol.GlobalNamespace.GetNamespaceMembers().ToList();
+
             item.Items = VisitDescendants(
                 namespaces,
                 ns => ns.GetMembers().OfType<INamespaceSymbol>(),

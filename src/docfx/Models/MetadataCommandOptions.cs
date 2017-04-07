@@ -41,5 +41,8 @@ namespace Microsoft.DocAsCode
 
         [Option("filter", HelpText = "Specify the filter config file")]
         public string FilterConfigFile { get; set; }
+
+        [Option("globalNamespaceId", HelpText = "Specify the name to use for the global namespace")]
+        public string GlobalNamespaceId { get; set; }
     }
 }
