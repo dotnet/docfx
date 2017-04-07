@@ -1365,6 +1365,34 @@ line4
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
         }
 
+        [Fact]
+        public void CodeSnippetTagsShouldSucceedWhenReferencedFileContainsRegionWithoutName()
+        {
+            // arrange
+            var content = @"#region
+public class MyClass
+#region
+{
+    static void Main()
+    {
+    }
+    #endregion
+}
+#endregion
+#endregion";
+            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
+
+            // act
+            var marked = DocfxFlavoredMarked.Markup("[!code[MyClass](Program.cs#main)]", "Program.cs");
+
+            // assert
+            var expected = @"<pre><code name=""MyClass"">static void Main()
+{
+}
+</code></pre>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
         private static void WriteToFile(string file, string content)
         {
             var dir = Path.GetDirectoryName(file);

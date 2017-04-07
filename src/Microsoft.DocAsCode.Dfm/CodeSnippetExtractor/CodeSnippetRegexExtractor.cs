@@ -26,6 +26,8 @@ namespace Microsoft.DocAsCode.Dfm
             var result = new Dictionary<string, DfmTagNameResolveResult>();
             foreach (var snippetTagGroup in snippetTagGroups)
             {
+                if (string.IsNullOrEmpty(snippetTagGroup.Key)) continue;
+
                 var tagResolveResult = new DfmTagNameResolveResult {IsSuccessful = true};
                 string tagName = snippetTagGroup.Key;
 
