@@ -1,9 +1,9 @@
 # DocFX Flavored Markdown Preview
 ------------
 
-[![Current Version](http://vsmarketplacebadge.apphb.com/version/docfxsvc.DfmPreview.svg)](http://marketplace.visualstudio.com/items?itemName=docfxsvc.DfmPreview)
-[![Install Count](http://vsmarketplacebadge.apphb.com/installs/docfxsvc.DfmPreview.svg)](https://marketplace.visualstudio.com/items?itemName=docfxsvc.DfmPreview)
-[![Open Issues](http://vsmarketplacebadge.apphb.com/rating/docfxsvc.DfmPreview.svg) ](https://marketplace.visualstudio.com/items?itemName=docfxsvc.DfmPreview)
+[![Current Version](http://vsmarketplacebadge.apphb.com/version/docfxsvc.DocFXPreview.svg)](http://marketplace.visualstudio.com/items?itemName=docfxsvc.DocFXPreview)
+[![Install Count](http://vsmarketplacebadge.apphb.com/installs/docfxsvc.DocFXPreview.svg)](https://marketplace.visualstudio.com/items?itemName=docfxsvc.DocFXPreview)
+[![Open Issues](http://vsmarketplacebadge.apphb.com/rating/docfxsvc.DocFXPreview.svg) ](https://marketplace.visualstudio.com/items?itemName=docfxsvc.DocFXPreview)
 
 An extension to support [**DFM**](https://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html) for Visual Studio Code! The preview provides the following features:
 
@@ -30,7 +30,7 @@ For further information and details about DocFX Flavored Markdown, please refere
 | `ctrl+k q` | `Open Dfm Preview to the side` | Preview to side |
 |  | `show Dfm Show` | Show Source |
 
-  ![PreviewToside](img/previewToSide.gif)
+  ![PreviewToside](images/previewToSide.gif)
 
 ## Token tree
 | Shortcuts | command title | command |
@@ -41,14 +41,14 @@ For further information and details about DocFX Flavored Markdown, please refere
 
   - Display the detailed information of node on mouseover
 
-  ![TokenTree](img/Tokentree.gif)
+  ![TokenTree](images/Tokentree.gif)
 
 - Match between markdown file with tokenTree Node
   - Click/select the text you want to match to the tokenTree
     > You can select multiple lines.
   - Click the text of node to match to the markdown file
 
-  ![Match](img/Match.gif)
+  ![Match](images/Match.gif)
 
 # Found a Bug?
 Please file any issue through the [Github Issue](https://github.com/dotnet/docfx/issues) system.
@@ -65,7 +65,7 @@ Please file any issue through the [Github Issue](https://github.com/dotnet/docfx
   * Press `F5` to debug
 
 # Source
-[docfx/src/VscPreviewExtension](https://github.com/dotnet/docfx/tree/dev/src/VscPreviewExtension)
+[docfx/src/VscPreviewExtension](https://github.com/dotnet/docfx/tree/dev/tools/VscPreviewExtension)
 
 # Licences
 *DocFX* is licensed under the [MIT license](LICENSE).

@@ -56,12 +56,12 @@ namespace DfmHttpService
             return message;
         }
 
-        public static void ReplySuccessfulResponse(HttpListenerContext context, string content, string contentType)
+        public static void ReplySuccessfulResponse(HttpListenerContext context, string content)
         {
             var response = context.Response;
             var buffer = Encoding.UTF8.GetBytes(content);
             response.ContentLength64 = buffer.Length;
-            response.ContentType = contentType;
+            response.ContentType = ContentType.Html;
             using (var write = response.OutputStream)
             {
                 write.Write(buffer, 0, buffer.Length);

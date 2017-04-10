@@ -7,7 +7,7 @@ import { ContentProvider } from "./contentProvider";
 export class TokenTreeContentProvider extends ContentProvider {
     public provideTextDocumentContent(uri: Uri): Thenable<string> {
         return workspace.openTextDocument(Uri.parse(uri.query)).then(document => {
-            var jsondata = this._content ? this._content.substring(0, this._content.length - 1) : "";
+            var jsondata = this._content ? JSON.stringify(this._content) : "";
             const content = [
                 "<!DOCTYPE html>",
                 "<html>",
@@ -15,7 +15,7 @@ export class TokenTreeContentProvider extends ContentProvider {
                 `<meta http-equiv="Content-type" content="text/html;charset=UTF-8">`,
                 `<link rel="stylesheet" type="text/css" href="${this.getMediaCssPath(`token.css`)}" >`,
                 `</head>`,
-                `<body><!-- ` + jsondata + `--><!--` + this.port.toString() + `-->`,
+                `<body><!-- ` + jsondata + `--><!--` + ContentProvider.port.toString() + `-->`,
                 `<div id="body"></div>`,
                 `<script type="text/javascript" src="${this.getNodeModulesPath(path.join('jquery', 'dist', 'jquery.min.js'))}"></script>`,
                 `<script type="text/javascript" src="${this.getNodeModulesPath(path.join('d3', 'd3.min.js'))}"></script>`,

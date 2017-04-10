@@ -2,70 +2,56 @@
 
 import { workspace, window, ExtensionContext, Uri } from "vscode";
 import * as childProcess from "child_process";
-import * as fs from "fs";
 
-import { ContentProvider } from "./contentProvider";
-import * as ConstVariable from "./constVariable";
 import { Common } from "./common";
+import * as ConstVariable from "./ConstVariable";
+import { DfmService } from "./dfmService";
 
 export class ChildProcessHost {
-    public provider: ContentProvider;
+    public static status = ConstVariable.stopStatus;
+    public isFirstTime;
 
-    protected _spawn: childProcess.ChildProcess;
-    protected _waiting: boolean;
+    protected static _serverPort = "4002";
+    protected _childProcessStarting = false;
+    protected _activeEditor;
     protected _documentUri: Uri;
 
-    private _content: string;
-    private _isMultipleRead = false;
-    private ENDCODE = 7; // '\a'
+    private static _spawn: childProcess.ChildProcess;
+    private _waiting = false;
+    private _context: ExtensionContext;
 
     constructor(context: ExtensionContext) {
-        // TODO: make path configurable
-        let exePath = context.asAbsolutePath("./DfmHttpService/DfmHttpService.exe");
-        this._spawn = Common.spawn(exePath, {});
-        if (!this._spawn.pid) {
-            window.showErrorMessage("Error: DfmProcess lost!");
-            return;
-        }
-        this._waiting = false;
+        this._context = context;
         this.initializeProvider(context);
-        let that = this;
-
-        this._spawn.stdout.on("data", function (data) {
-            // The output of child process will be cut if it is too long
-            let dfmResult = data.toString();
-            if (dfmResult.length > 0) {
-                let endCharCode = dfmResult.charCodeAt(dfmResult.length - 1);
-                if (that._isMultipleRead) {
-                    that._content += dfmResult;
-                } else {
-                    that._content = dfmResult;
-                }
-                that._isMultipleRead = endCharCode !== that.ENDCODE;
-                if (!that._isMultipleRead) {
-                    that.provider.update(that._documentUri, that._content);
-                }
-            }
-        });
-
-        this._spawn.stderr.on("data", function (data) {
-            window.showErrorMessage("Error:" + data + "\n");
-        });
-
-        this._spawn.on("exit", function (code) {
-            window.showErrorMessage("Child process exit with code " + code);
-        });
     }
 
-    public callDfm(uri: Uri) {
+    public static killChildProcess() {
+        DfmService.exit(ChildProcessHost._serverPort);
+    }
+
+    public updateContent(uri: Uri) {
+        if (this.isFirstTime) {
+            // In the first time, if wait for the timeout, activeTextEditor will be the preview window.
+            this.isFirstTime = false;
+            this.updateContentCore(uri);
+        } else if (!this._waiting) {
+            this._waiting = true;
+            setTimeout(() => {
+                this._waiting = false;
+                this.updateContentCore(uri);;
+            }, 300);
+        }
+    }
+
+    private updateContentCore(uri: Uri) {
         this._documentUri = uri;
-        this.sendMessage();
+        this._activeEditor = window.activeTextEditor;
+        this.sendHttpRequest(this._activeEditor);
     }
 
     protected initializeProvider(context: ExtensionContext) { }
 
-    protected sendMessage() {
-        let editor = window.activeTextEditor;
+    protected sendHttpRequest(editor) {
         if (!editor) {
             return;
         }
@@ -74,24 +60,50 @@ export class ChildProcessHost {
         let docContent = doc.getText();
         let fileName = doc.fileName;
         let rootPath = workspace.rootPath;
-        let filePath;
+        let relativePath;
         if (!rootPath || !fileName.includes(rootPath)) {
-            let indexOfFilename = fileName.lastIndexOf("\\");
-            rootPath = fileName.substr(0, indexOfFilename);
-            filePath = fileName.substring(indexOfFilename + 1);
+            let indexOffileName = fileName.lastIndexOf("\\");
+            rootPath = fileName.substr(0, indexOffileName);
+            relativePath = fileName.substring(indexOffileName + 1);
         } else {
             let rootPathLength = rootPath.length;
-            filePath = fileName.substr(rootPathLength + 1, fileName.length - rootPathLength);
+            relativePath = fileName.substr(rootPathLength + 1, fileName.length - rootPathLength);
         }
-        if (doc.languageId === ConstVariable.languageId) {
-            let numOfRow = doc.lineCount;
-            this.writeToStdin(rootPath, filePath, numOfRow, docContent);
+        if (doc.languageId === "markdown") {
+            this.sendHttpRequestCore(rootPath, relativePath, docContent);
         }
     }
 
-    protected writeToStdin(rootPath: string, filePath: string, numOfRow: number, docContent: string) { }
+    protected sendHttpRequestCore(rootPath: string, relativePath: string, docContent: string) {
+        window.showErrorMessage(`[Extension Error]: Not supported`);
+    }
 
-    protected appendWrap(content) {
-        return content + "\n";
+    protected newHttpServerAndStartPreview(activeTextEditor) {
+        let that = this;
+        let http = require("http");
+        let server = http.createServer();
+        server.listen(0);
+        server.on('listening', function () {
+            var port = server.address().port;
+            server.close();
+            ChildProcessHost._serverPort = port.toString();
+            let exePath = that._context.asAbsolutePath("./DfmHttpService/DfmHttpService.exe");
+            try {
+                ChildProcessHost._spawn = Common.spawn(exePath + " " + ChildProcessHost._serverPort, {});
+            }
+            catch (err) {
+                window.showErrorMessage(`[Extension Error]: ${err}`);
+            }
+            if (!ChildProcessHost._spawn.pid) {
+                window.showErrorMessage(`[Child process Error]: DfmProcess lost!`);
+                return;
+            }
+            ChildProcessHost._spawn.stdout.on("data", function (data) {
+                that.sendHttpRequest(activeTextEditor);
+            });
+            ChildProcessHost._spawn.stderr.on("data", function (data) {
+                window.showErrorMessage(`[Child process Error]: ${data.toString()}`);
+            });
+        })
     }
 }

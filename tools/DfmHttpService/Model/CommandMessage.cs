@@ -19,8 +19,8 @@ namespace DfmHttpService
         [JsonProperty("markdownContent")]
         public string MarkdownContent { get; set; }
 
-        [JsonProperty("isFirstTime")]
-        public bool IsFirstTime { get; set; }
+        [JsonProperty("writeTempPreviewFile")]
+        public bool WriteTempPreviewFile { get; set; }
 
         [JsonProperty("previewFilePath")]
         public string PreviewFilePath { get; set; }

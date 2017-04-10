@@ -3,28 +3,50 @@
 import { AxiosError } from 'axios';
 
 import { DfmHttpClient } from './dfmHttpClient';
-import { DfmServiceResult } from './dfmServiceResult';
+import * as ConstVariable from "./ConstVariable";
 
 export class DfmService {
-    private static client = new DfmHttpClient();
-
-    static async previewAsync(content: String): Promise<DfmServiceResult> {
+    static preview(docfxServicePort, content: String, workspacePath, relativePath, writeTempPreviewFile = false, previewFilePath = null, pageRefreshJsFilePath = null, builtHtmlPath = null) {
         if (!content) {
             return null;
         }
 
-        return await DfmService.client.sendPostRequestAsync("preview", content);
+        return new Promise(function (fulfill, reject) {
+            DfmHttpClient.sendPostRequest(docfxServicePort, ConstVariable.previewCommand, content, workspacePath, relativePath, writeTempPreviewFile, previewFilePath, pageRefreshJsFilePath, builtHtmlPath)
+                .then(function (res) {
+                    fulfill(res);
+                })
+                .catch(function (err) {
+                    reject(err);
+                })
+        })
     }
 
-    static async getTokenTreeAsync(content: String): Promise<DfmServiceResult> {
+    static getTokenTree(docfxServicePort, content: String, workspacePath, relativePath) {
         if (!content) {
             return null;
         }
 
-        return await DfmService.client.sendPostRequestAsync("generateTokenTree", content);
+        return new Promise(function (fulfill, reject) {
+            DfmHttpClient.sendPostRequest(docfxServicePort, ConstVariable.tokenTreeCommand, content, workspacePath, relativePath)
+                .then(function (res) {
+                    fulfill(res);
+                })
+                .catch(function (err) {
+                    reject(err);
+                })
+        })
     }
 
-    static async exitAsync() {
-        await DfmService.client.sendPostRequestAsync("exit", null);
+    static exit(docfxServicePort) {
+        return new Promise(function (fulfill, reject) {
+            DfmHttpClient.sendPostRequest(docfxServicePort, ConstVariable.exitCommand)
+                .then(function (res) {
+                    fulfill(res);
+                })
+                .catch(function (err) {
+                    reject(err);
+                })
+        })
     }
 }
