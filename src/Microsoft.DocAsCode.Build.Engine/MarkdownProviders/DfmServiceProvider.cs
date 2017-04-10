@@ -41,11 +41,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                 parameters.TemplateDir,
                 parameters.Tokens,
                 TokenTreeValidator,
-                fallbackFolders);
+                fallbackFolders,
+                DfmRendererPartProviders,
+                parameters.Extensions);
         }
 
         [ImportMany]
         public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; }
+
+        [ImportMany]
+        public IEnumerable<IDfmRendererPartProvider> DfmRendererPartProviders { get; set; }
 
         private sealed class DfmService : IMarkdownService, IHasIncrementalContext, IDisposable
         {
@@ -53,18 +58,27 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             private readonly ImmutableDictionary<string, string> _tokens;
 
-            private readonly DfmRenderer _renderer;
+            private readonly DfmRenderer _baseRenderer;
+            private readonly object _renderer;
 
             private readonly string _incrementalContextHash;
 
-            public DfmService(string baseDir, string templateDir, ImmutableDictionary<string, string> tokens, IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator, IReadOnlyList<string> fallbackFolders = null)
+            public DfmService(
+                string baseDir,
+                string templateDir,
+                ImmutableDictionary<string, string> tokens,
+                IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator,
+                IReadOnlyList<string> fallbackFolders,
+                IEnumerable<IDfmRendererPartProvider> dfmRendererPartProviders,
+                IReadOnlyDictionary<string, object> parameters)
             {
                 var options = DocfxFlavoredMarked.CreateDefaultOptions();
                 options.ShouldExportSourceInfo = true;
                 _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, templateDir, options, fallbackFolders);
                 _builder.TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(tokenTreeValidator);
                 _tokens = tokens;
-                _renderer = new DfmRenderer { Tokens = _tokens };
+                _baseRenderer = new DfmRenderer { Tokens = _tokens };
+                _renderer = RendererCreator.CreateRenderer(_baseRenderer, dfmRendererPartProviders, parameters);
                 _incrementalContextHash = ComputeIncrementalContextHash(baseDir, templateDir, tokenTreeValidator);
             }
 
@@ -118,7 +132,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             public void Dispose()
             {
-                _renderer.Dispose();
+                _baseRenderer.Dispose();
             }
         }
     }
