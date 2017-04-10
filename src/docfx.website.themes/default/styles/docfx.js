@@ -422,11 +422,11 @@ $(function () {
         $('#toc li>a').filter(function (i, e) {
           return $(e).siblings().length === 0
         }).each(function (i, anchor) {
-          var text = $(anchor).text();
+          var text = $(anchor).attr('title');
           var parent = $(anchor).parent();
           var parentNodes = parent.parents('ul>li');
           for (var i = 0; i < parentNodes.length; i++) {
-            var parentText = $(parentNodes[i]).children('a').text();
+            var parentText = $(parentNodes[i]).children('a').attr('title');
             if (parentText) text = parentText + '.' + text;
           };
           if (filterNavItem(text, val)) {
