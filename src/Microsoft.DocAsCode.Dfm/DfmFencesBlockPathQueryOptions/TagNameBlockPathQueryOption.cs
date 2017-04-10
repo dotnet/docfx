@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Dfm
         private static readonly Regex CSharpCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // C# code snippet region block: start -> #region snippetname, end -> #endregion
-        private static readonly Regex CSharpCodeSnippetRegionStartLineRegex = new Regex(@"^\s*#\s*region\s+(?<name>.+?)\s*$", RegexOptions.Compiled);
+        private static readonly Regex CSharpCodeSnippetRegionStartLineRegex = new Regex(@"^\s*#\s*region(?:\s+(?<name>.+?))?\s*$", RegexOptions.Compiled);
         private static readonly Regex CSharpCodeSnippetRegionEndLineRegex = new Regex(@"^\s*#\s*endregion(?:\s.*)?$", RegexOptions.Compiled);
 
         // VB code snippet comment block: ' <[/]snippetname>
@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Dfm
         private static readonly Regex VBCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\'\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // VB code snippet Region block: start -> # Region "snippetname", end -> # End Region
-        private static readonly Regex VBCodeSnippetRegionRegionStartLineRegex = new Regex(@"^\s*#\s*Region\s*(?<name>.+?)\s*$", RegexOptions.Compiled);
+        private static readonly Regex VBCodeSnippetRegionRegionStartLineRegex = new Regex(@"^\s*#\s*Region(?:\s+(?<name>.+?))?\s*$", RegexOptions.Compiled);
         private static readonly Regex VBCodeSnippetRegionRegionEndLineRegex = new Regex(@"^\s*#\s*End\s+Region(?:\s.*)?$", RegexOptions.Compiled);
 
         // C++ code snippet block: // <[/]snippetname>
@@ -242,7 +242,15 @@ namespace Microsoft.DocAsCode.Dfm
                             }));
 
             List<DfmTagNameResolveResult> results;
-            var tagNamesDictionary = lazyResolveResults.Value;
+            ConcurrentDictionary<string, List<DfmTagNameResolveResult>> tagNamesDictionary;
+            try
+            {
+                tagNamesDictionary = lazyResolveResults.Value;
+            }
+            catch (Exception e)
+            {
+                return new DfmTagNameResolveResult { IsSuccessful = false, ErrorMessage = $"error resolve tag names from {fencesPath}: {e.Message}" };
+            }
             if (!tagNamesDictionary.TryGetValue(tagName, out results) && !tagNamesDictionary.TryGetValue($"snippet{tagName}", out results))
             {
                 return new DfmTagNameResolveResult { IsSuccessful = false, ErrorMessage = $"Tag name {tagName} is not found" };
