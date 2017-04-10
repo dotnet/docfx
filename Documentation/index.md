@@ -17,7 +17,7 @@ footer{
       <a class="version-link" href="../RELEASENOTE.md">Version Notes</a><span>|</span><a class="github-link" href="https://github.com/dotnet/docfx">View in Github</a>
     </div>
     <div class="minitext">
-    A documentation generation tool for API reference and markdown files!
+    A documentation generation tool for API reference and Markdown files!
     </div>
     <div class="buttons-unit">
       <a href="tutorial/docfx_getting_started.md" class="button"><i class="glyphicon glyphicon-send"></i>Getting Started</a>
@@ -31,7 +31,7 @@ footer{
       <div class="col-md-8 col-md-offset-2 text-center">
         <i class="glyphicon glyphicon-grain"></i>
         <section>
-          <h2>Website from Source Code and MarkDown</h2>
+          <h2>Website from Source Code and Markdown</h2>
           <p class="lead">DocFX generates Documentation directly from source code (.NET, RESTful API, JavaScript, Java, etc...) and Markdown files.</p>
         </section>
       </div>
@@ -45,7 +45,7 @@ footer{
         <i class="glyphicon glyphicon-transfer"></i>
         <section>
           <h2>Run Everywhere</h2>
-          <p class="lead">DocFX runs on Linux, macOS, and Windows. The generated website can be deployed any web host with no additional configurations, e.g. Github Pages, Azure Websites...</p>
+          <p class="lead">DocFX runs on Linux, macOS, and Windows. The generated website can be deployed to any web host with no additional configurations, e.g. Github Pages, Azure Websites...</p>
         </section>
       </div>
     </div>
