@@ -91,7 +91,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             var utility = new TemplateUtility(context);
             _utilityObject = new
             {
-                resolveSourceRelativePath = new Func<string, string, string>(utility.ResolveSourceRelativePath)
+                resolveSourceRelativePath = new Func<string, string, string>(utility.ResolveSourceRelativePath),
+                updateHref = new Func<string, string, string>(utility.UpdateHref),
             };
 
             var engine = CreateDefaultEngine();
