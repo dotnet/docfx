@@ -49,6 +49,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var file = path.GetPathFromWorkingFolder().UrlDecode();
             if (!_context.AllSourceFiles.ContainsKey(file))
             {
+                Logger.LogWarning($"Invalid file link: ({originalHref})", file:sourceFileKey);
                 return originalHref;
             }
             return file.UrlEncode().ToString() + UriUtility.GetQueryStringAndFragment(originalHref);
