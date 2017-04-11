@@ -43,8 +43,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 TokenTreeValidator,
                 fallbackFolders,
                 DfmRendererPartProviders,
-                parameters.Extensions);
+                parameters.Extensions,
+                LegacyMode);
         }
+
+        protected virtual bool LegacyMode => false;
 
         [ImportMany]
         public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; }
@@ -69,9 +72,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator,
                 IReadOnlyList<string> fallbackFolders,
                 IEnumerable<IDfmCustomizedRendererPartProvider> dfmRendererPartProviders,
-                IReadOnlyDictionary<string, object> parameters)
+                IReadOnlyDictionary<string, object> parameters,
+                bool legacyMode)
             {
                 var options = DocfxFlavoredMarked.CreateDefaultOptions();
+                options.LegacyMode = legacyMode;
                 options.ShouldExportSourceInfo = true;
                 _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, templateDir, options, fallbackFolders);
                 _builder.TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(tokenTreeValidator);
