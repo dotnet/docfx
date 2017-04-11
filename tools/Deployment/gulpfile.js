@@ -66,7 +66,7 @@ function publish(artifactsFolder, mygetCommand, mygetKey, mygetUrl) {
     return Promise.all(promises);
 }
 
-gulp.task("build", ["clean"], () => {
+gulp.task("build", () => {
     if (!config.docfx || !config.docfx["home"]) {
         throw new Error("Can't find docfx home directory in configuration.");
     }
@@ -96,7 +96,7 @@ gulp.task("clean", () => {
     });
 });
 
-gulp.task("e2eTest:choco", () => {
+gulp.task("e2eTest:installFirefox", () => {
     if (!config.firefox["version"]) {
         throw new Error("Can't find firefox version in configuration.");
     }
@@ -104,7 +104,7 @@ gulp.task("e2eTest:choco", () => {
     return exec("choco", ["install", "firefox", "--version=" + config.firefox["version"], "-y"]);
 });
 
-gulp.task("e2eTest:buildSeed", ["build", "e2eTest:choco"], () => {
+gulp.task("e2eTest:buildSeed", () => {
     if (!config.docfx["exe"]) {
         throw new Error("Can't find docfx.exe in configuration.");
     }
@@ -116,7 +116,7 @@ gulp.task("e2eTest:buildSeed", ["build", "e2eTest:choco"], () => {
     return exec(path.join(__dirname, config.docfx["exe"]), ["docfx.json"], config.docfx["docfxSeedHome"]);
 });
 
-gulp.task("e2eTest:restore", ["e2eTest:buildSeed"], () => {
+gulp.task("e2eTest:restore", () => {
     if (!config.docfx["e2eTestsHome"]) {
         throw new Error("Can't find E2ETest directory in configuration.");
     }
@@ -124,7 +124,7 @@ gulp.task("e2eTest:restore", ["e2eTest:buildSeed"], () => {
     return exec("dotnet", ["restore"], config.docfx["e2eTestsHome"]);
 });
 
-gulp.task("e2eTest:test", ["e2eTest:restore"], () => {
+gulp.task("e2eTest:test", () => {
     if (!config.docfx["e2eTestsHome"]) {
         throw new Error("Can't find E2ETest directory in configuration.");
     }
@@ -132,9 +132,9 @@ gulp.task("e2eTest:test", ["e2eTest:restore"], () => {
     return exec("dotnet", ["test"], config.docfx["e2eTestsHome"]);
 });
 
-gulp.task("e2eTest", ["e2eTest:test"]);
+gulp.task("e2eTest", gulp.series("e2eTest:installFirefox", "e2eTest:buildSeed", "e2eTest:restore", "e2eTest:test"));
 
-gulp.task("publish:myget-dev", ["e2eTest"], () => {
+gulp.task("publish:myget-dev", () => {
     if (!config.docfx["artifactsFolder"]) {
         throw new Error("Can't find artifacts folder in configuration.");
     }
@@ -155,7 +155,7 @@ gulp.task("publish:myget-dev", ["e2eTest"], () => {
     return publish(artifactsFolder, config.myget["exe"], config.myget["apiKey"], config.myget["devUrl"]);
 });
 
-gulp.task("publish:myget-test", ["e2eTest"], () => {
+gulp.task("publish:myget-test", () => {
     if (!config.docfx["artifactsFolder"]) {
         throw new Error("Can't find artifacts folder in configuration.");
     }
@@ -176,7 +176,7 @@ gulp.task("publish:myget-test", ["e2eTest"], () => {
     return publish(artifactsFolder, config.myget["exe"], config.myget["apiKey"], config.myget["testUrl"]);
 });
 
-gulp.task("publish:myget-master", ["e2eTest"], () => {
+gulp.task("publish:myget-master", () => {
     if (!config.docfx["artifactsFolder"]) {
         throw new Error("Can't find artifacts folder in configuration.");
     }
@@ -197,8 +197,8 @@ gulp.task("publish:myget-master", ["e2eTest"], () => {
     return publish(artifactsFolder, config.myget["exe"], config.myget["apiKey"], config.myget["masterUrl"]);
 });
 
-gulp.task("test", ["build", "e2eTest", "publish:myget-test"]);
-gulp.task("dev", ["build", "e2eTest"]);
-gulp.task("stable", ["build", "e2eTest", "publish:myget-dev"]);
+gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
+gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
+gulp.task("stable", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
 
-gulp.task("default", ["dev"]);
+gulp.task("default", gulp.series("dev"));
