@@ -92,7 +92,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             _utilityObject = new
             {
                 resolveSourceRelativePath = new Func<string, string, string>(utility.ResolveSourceRelativePath),
-                updateHref = new Func<string, string, string>(utility.UpdateHref),
+                getHrefFromRoot = new Func<string, string, string>(utility.GetHrefFromRoot),
             };
 
             var engine = CreateDefaultEngine();

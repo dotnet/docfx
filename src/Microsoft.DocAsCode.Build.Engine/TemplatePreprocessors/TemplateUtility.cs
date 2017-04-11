@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public string UpdateHref(string originalHref, string sourceFileKey)
+        public string GetHrefFromRoot(string originalHref, string sourceFileKey)
         {
             if (string.IsNullOrEmpty(sourceFileKey) || string.IsNullOrEmpty(originalHref) || !RelativePath.IsRelativePath(originalHref))
             {
