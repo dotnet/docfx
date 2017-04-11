@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public interface IDfmRendererPart
+    public interface IDfmCustomizedRendererPart
     {
         string Name { get; }
         Type MarkdownRendererType { get; }

@@ -14,30 +14,35 @@ namespace Microsoft.DocAsCode.Dfm
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Common;
 
-    public static class RendererCreator
+    public static class CustomizedRendererCreator
     {
         #region Fields
         private static readonly ModuleBuilder _module = CreateModule();
-        private static readonly MethodInfo MatchMethod = typeof(IDfmRendererPart).GetMethod(nameof(IDfmRendererPart.Match));
-        private static readonly MethodInfo RenderMethod = typeof(IDfmRendererPart).GetMethod(nameof(IDfmRendererPart.Render));
+        private static readonly MethodInfo MatchMethod = typeof(IDfmCustomizedRendererPart).GetMethod(nameof(IDfmCustomizedRendererPart.Match));
+        private static readonly MethodInfo RenderMethod = typeof(IDfmCustomizedRendererPart).GetMethod(nameof(IDfmCustomizedRendererPart.Render));
         private static readonly ConstructorInfo BaseConstructor = typeof(PlugableRendererBase).GetConstructor(new[] { typeof(object) });
         private static readonly MethodInfo BaseRenderMethod = typeof(PlugableRendererBase).GetMethod(nameof(PlugableRendererBase.BaseRender));
+        private static readonly MethodInfo DisposeMethod = typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose));
+        private static readonly MethodInfo BaseDisposeMethod = typeof(PlugableRendererBase).GetMethod(nameof(PlugableRendererBase.Dispose));
         private static int _typeCounter;
         #endregion
 
         #region Public Methods
 
-        public static object CreateRenderer(object baseRenderer, IEnumerable<IDfmRendererPartProvider> partProviders, IReadOnlyDictionary<string, object> parameters)
+        public static object CreateRenderer(
+            object innerRenderer,
+            IEnumerable<IDfmCustomizedRendererPartProvider> partProviders,
+            IReadOnlyDictionary<string, object> parameters)
         {
-            if (baseRenderer == null)
+            if (innerRenderer == null)
             {
-                throw new ArgumentNullException(nameof(baseRenderer));
+                throw new ArgumentNullException(nameof(innerRenderer));
             }
             if (partProviders == null)
             {
-                return baseRenderer;
+                return innerRenderer;
             }
-            return CreateRendererNoCheck(baseRenderer, partProviders, parameters ?? ImmutableDictionary<string, object>.Empty);
+            return CreateRendererNoCheck(innerRenderer, partProviders, parameters ?? ImmutableDictionary<string, object>.Empty);
         }
 
         #endregion
@@ -53,38 +58,43 @@ namespace Microsoft.DocAsCode.Dfm
             return dynamicAssembly.DefineDynamicModule(name);
         }
 
-        private static object CreateRendererNoCheck(object baseRenderer, IEnumerable<IDfmRendererPartProvider> partProviders, IReadOnlyDictionary<string, object> parameters)
+        private static object CreateRendererNoCheck(
+            object innerRenderer,
+            IEnumerable<IDfmCustomizedRendererPartProvider> partProviders,
+            IReadOnlyDictionary<string, object> parameters)
         {
-            var partGroups = from provider in partProviders
-                             from part in provider.CreateParts(parameters)
-                             select new
-                             {
-                                 part,
-                                 types = Tuple.Create(part.MarkdownRendererType, part.MarkdownTokenType, part.MarkdownContextType)
-                             } into info
-                             group info.part by info.types;
-            if (!partGroups.Any())
-            {
-                return baseRenderer;
-            }
+            var partGroups = (from provider in partProviders
+                              from part in provider.CreateParts(parameters)
+                              select new
+                              {
+                                  part,
+                                  types = Tuple.Create(part.MarkdownRendererType, part.MarkdownTokenType, part.MarkdownContextType)
+                              } into info
+                              group info.part by info.types into g
+                              select new { g.Key, Items = g }).ToList();
             foreach (var item in from g in partGroups
                                  where !ValidateKey(g.Key)
-                                 from item in g
+                                 from item in g.Items
                                  select item)
             {
                 Logger.LogWarning($"Ignore invalid renderer part: {item.Name}.");
             }
+            if (!partGroups.Any(g => ValidateKey(g.Key)))
+            {
+                return innerRenderer;
+            }
             var type = _module.DefineType("renderer-t" + Interlocked.Increment(ref _typeCounter).ToString(), TypeAttributes.Public | TypeAttributes.Class, typeof(PlugableRendererBase));
-            var f = type.DefineField("f", typeof(IDfmRendererPart[]), FieldAttributes.Private | FieldAttributes.InitOnly);
+            var f = type.DefineField("f", typeof(IDfmCustomizedRendererPart[]), FieldAttributes.Private | FieldAttributes.InitOnly);
             DefineConstructor(type, f);
-            List<IDfmRendererPart> partList = new List<IDfmRendererPart>();
+            List<IDfmCustomizedRendererPart> partList = new List<IDfmCustomizedRendererPart>();
             foreach (var g in from g in partGroups
                               where ValidateKey(g.Key)
                               select g)
             {
-                DefineMethod(type, g.Key, g, f, partList);
+                DefineMethod(type, g.Key, g.Items, f, partList);
             }
-            return Activator.CreateInstance(type.CreateType(), baseRenderer, partList.ToArray());
+            OverrideDispose(type, f, partList.Count);
+            return Activator.CreateInstance(type.CreateType(), innerRenderer, partList.ToArray());
         }
 
         private static bool ValidateKey(Tuple<Type, Type, Type> types)
@@ -96,7 +106,7 @@ namespace Microsoft.DocAsCode.Dfm
         private static void DefineConstructor(TypeBuilder type, FieldBuilder f)
         {
             // public .ctor(object baseRenderer, IDfmRendererPart[] parts)
-            var ctor = type.DefineConstructor(MethodAttributes.Public, CallingConventions.HasThis, new[] { typeof(object), typeof(IDfmRendererPart[]) });
+            var ctor = type.DefineConstructor(MethodAttributes.Public, CallingConventions.HasThis, new[] { typeof(object), typeof(IDfmCustomizedRendererPart[]) });
             var il = ctor.GetILGenerator();
             //  : base(baseRenderer)
             il.Emit(OpCodes.Ldarg_0);
@@ -109,7 +119,12 @@ namespace Microsoft.DocAsCode.Dfm
             il.Emit(OpCodes.Ret);
         }
 
-        private static void DefineMethod(TypeBuilder hostType, Tuple<Type, Type, Type> types, IEnumerable<IDfmRendererPart> parts, FieldBuilder f, List<IDfmRendererPart> partList)
+        private static void DefineMethod(
+            TypeBuilder hostType,
+            Tuple<Type, Type, Type> types,
+            IEnumerable<IDfmCustomizedRendererPart> parts,
+            FieldBuilder f,
+            List<IDfmCustomizedRendererPart> partList)
         {
             const string MethodName = "Render";
             const MethodAttributes MethodAttr = MethodAttributes.NewSlot | MethodAttributes.Virtual | MethodAttributes.Public | MethodAttributes.HideBySig;
@@ -152,31 +167,35 @@ namespace Microsoft.DocAsCode.Dfm
             il.Emit(OpCodes.Ret);
         }
 
-        #endregion
-
-        #region PlugableRendererBase class
-
-        public abstract class PlugableRendererBase
+        private static void OverrideDispose(TypeBuilder hostType, FieldBuilder f, int partCount)
         {
-            private readonly object _baseRenderer;
-
-            public PlugableRendererBase(object baseRenderer)
+            const string MethodName = nameof(IDisposable.Dispose);
+            const MethodAttributes MethodAttr = MethodAttributes.ReuseSlot | MethodAttributes.Virtual | MethodAttributes.Public | MethodAttributes.HideBySig;
+            var method = hostType.DefineMethod(MethodName, MethodAttr, typeof(void), Type.EmptyTypes);
+            var il = method.GetILGenerator();
+            il.DeclareLocal(typeof(IDisposable));
+            for (int i = 0; i < partCount; i++)
             {
-                _baseRenderer = baseRenderer;
+                var next = il.DefineLabel();
+                // var temp = f[i] as IDisposable;
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldfld, f);
+                il.Emit(OpCodes.Ldc_I4, i);
+                il.Emit(OpCodes.Ldelem_Ref);
+                il.Emit(OpCodes.Isinst, typeof(IDisposable));
+                il.Emit(OpCodes.Stloc_0);
+                // if (temp != null) temp.Dispose();
+                il.Emit(OpCodes.Ldloc_0);
+                il.Emit(OpCodes.Brfalse, next);
+                il.Emit(OpCodes.Ldloc_0);
+                il.Emit(OpCodes.Callvirt, DisposeMethod);
+                il.MarkLabel(next);
             }
-
-            public StringBuffer Render(IMarkdownRenderer renderer, IMarkdownToken token, IMarkdownContext context)
-            {
-                return BaseRender(renderer, token, context);
-            }
-
-            public StringBuffer BaseRender(IMarkdownRenderer renderer, IMarkdownToken token, IMarkdownContext context)
-            {
-                // double dispatch.
-                return ((dynamic)_baseRenderer).Render((dynamic)renderer, (dynamic)token, (dynamic)context);
-            }
+            // base.Dispose();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Call, BaseDisposeMethod);
+            il.Emit(OpCodes.Ret);
         }
-
         #endregion
     }
 }

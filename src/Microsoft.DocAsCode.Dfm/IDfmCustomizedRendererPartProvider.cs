@@ -5,8 +5,8 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using System.Collections.Generic;
 
-    public interface IDfmRendererPartProvider
+    public interface IDfmCustomizedRendererPartProvider
     {
-        IEnumerable<IDfmRendererPart> CreateParts(IReadOnlyDictionary<string, object> parameters);
+        IEnumerable<IDfmCustomizedRendererPart> CreateParts(IReadOnlyDictionary<string, object> parameters);
     }
 }
