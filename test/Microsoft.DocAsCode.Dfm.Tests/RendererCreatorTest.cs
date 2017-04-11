@@ -5,16 +5,9 @@ namespace Microsoft.DocAsCode.Dfm.Tests
 {
     using System;
     using System.Collections.Generic;
-    using System.Composition.Hosting;
-    using System.Collections.Immutable;
-    using System.IO;
-    using System.Linq;
-    using System.Xml;
 
     using Xunit;
 
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.MarkdownLite;
 
     public partial class RendererCreatorTest
@@ -43,7 +36,7 @@ public void TestRendererCreator()
 
         private sealed class TestDfmRendererPartProvider : IDfmRendererPartProvider
         {
-            public IEnumerable<IDfmRendererPart> CreateParts(IReadOnlyDictionary<string, object> paramters)
+            public IEnumerable<IDfmRendererPart> CreateParts(IReadOnlyDictionary<string, object> parameters)
             {
                 yield return new CodeRendererPart();
             }

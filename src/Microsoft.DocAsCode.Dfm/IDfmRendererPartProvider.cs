@@ -7,6 +7,6 @@ namespace Microsoft.DocAsCode.Dfm
 
     public interface IDfmRendererPartProvider
     {
-        IEnumerable<IDfmRendererPart> CreateParts(IReadOnlyDictionary<string, object> paramters);
+        IEnumerable<IDfmRendererPart> CreateParts(IReadOnlyDictionary<string, object> parameters);
     }
 }
