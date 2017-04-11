@@ -200,7 +200,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
         }
-        
+
         private static ITemplatePreprocessor CreatePreprocessor(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
         {
             return new TemplateJintPreprocessor(resourceCollection, scriptResource, context);

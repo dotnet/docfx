@@ -20,7 +20,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private readonly DotLiquid.Template _template;
 
-        private readonly string _templateName;
         public static LiquidTemplateRenderer Create(ResourceCollection resourceProvider, TemplateRendererResource info)
         {
             if (info == null)
@@ -58,7 +57,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         private LiquidTemplateRenderer(DotLiquid.Template liquidTemplate, string template, string templateName, ResourceCollection resource, IEnumerable<string> dependencies)
         {
             _template = liquidTemplate;
-            _templateName = templateName;
             Raw = template;
             Dependencies = ParseDependencies(templateName, resource, dependencies).ToList();
         }
