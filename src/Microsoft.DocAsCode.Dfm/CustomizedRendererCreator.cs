@@ -71,15 +71,15 @@ namespace Microsoft.DocAsCode.Dfm
                                   types = Tuple.Create(part.MarkdownRendererType, part.MarkdownTokenType, part.MarkdownContextType)
                               } into info
                               group info.part by info.types into g
-                              select new { g.Key, Items = g }).ToList();
-            foreach (var item in from g in partGroups
-                                 where !ValidateKey(g.Key)
-                                 from item in g.Items
-                                 select item)
-            {
-                Logger.LogWarning($"Ignore invalid renderer part: {item.Name}.");
-            }
-            if (!partGroups.Any(g => ValidateKey(g.Key)))
+                              select new { g.Key, Items = g, IsValid = ValidateKey(g.Key) }).ToList();
+            Logger.LogWarning($@"Ignore invalid renderer parts: {
+                string.Join(
+                    ", ",
+                    from g in partGroups
+                    where !g.IsValid
+                    from item in g.Items
+                    select item.Name)}.");
+            if (!partGroups.Any(g => g.IsValid))
             {
                 return innerRenderer;
             }
@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.Dfm
             DefineConstructor(type, f);
             List<IDfmCustomizedRendererPart> partList = new List<IDfmCustomizedRendererPart>();
             foreach (var g in from g in partGroups
-                              where ValidateKey(g.Key)
+                              where g.IsValid
                               select g)
             {
                 DefineMethod(type, g.Key, g.Items, f, partList);
@@ -99,8 +99,18 @@ namespace Microsoft.DocAsCode.Dfm
 
         private static bool ValidateKey(Tuple<Type, Type, Type> types)
         {
-            return types.Item1 != null && types.Item2 != null && types.Item3 != null &&
-                types.Item1 != typeof(void) && types.Item2 != typeof(void) && types.Item3 != typeof(void);
+            return ValidateType(types.Item1, typeof(IMarkdownRenderer)) &&
+                ValidateType(types.Item2, typeof(IMarkdownToken)) &&
+                ValidateType(types.Item3, typeof(IMarkdownContext));
+        }
+
+        private static bool ValidateType(Type t, Type expected)
+        {
+            if (t == null || t == typeof(void) || t.IsValueType)
+            {
+                return false;
+            }
+            return t.IsVisible && expected.IsAssignableFrom(t);
         }
 
         private static void DefineConstructor(TypeBuilder type, FieldBuilder f)
