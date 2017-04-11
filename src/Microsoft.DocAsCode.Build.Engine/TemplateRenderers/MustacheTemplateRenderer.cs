@@ -12,10 +12,14 @@ namespace Microsoft.DocAsCode.Build.Engine
     internal class MustacheTemplateRenderer : ITemplateRenderer
     {
         private static readonly Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex MasterPageRegex = new Regex(@"{{\s*!\s*master\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex MasterPageBodyRegex = new Regex(@"{{\s*!\s*body\s*}}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         private readonly ResourceTemplateLocator _resourceTemplateLocator;
         private readonly ResourceCollection _resource;
         private readonly Nustache.Core.Template _template;
         private readonly string _templateName;
+
         public MustacheTemplateRenderer(ResourceCollection resourceProvider, TemplateRendererResource info)
         {
             if (info == null)
@@ -35,12 +39,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             _templateName = info.TemplateName;
 
-            _resourceTemplateLocator = new ResourceTemplateLocator(resourceProvider);
             _resource = resourceProvider;
+            _resourceTemplateLocator = new ResourceTemplateLocator(resourceProvider);
 
             _template = new Nustache.Core.Template();
-
-            using (var reader = new StringReader(info.Content))
+            var processedTemplate = ParseTemplateHelper.ExpandMasterPage(resourceProvider, info, MasterPageRegex, MasterPageBodyRegex);
+            using (var reader = new StringReader(processedTemplate))
             {
                 _template.Load(reader);
             }
@@ -49,6 +53,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         public IEnumerable<string> Dependencies { get; }
+
         public string Raw { get; }
 
         public string Render(object model)

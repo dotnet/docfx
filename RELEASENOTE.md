@@ -2,6 +2,9 @@
 =======================================
 v2.16(Pre-Release)
 -----------
+1. Introduce [Master page syntax](tutorial/intro_template.md#extended-syntax-for-master-page) into Template System:
+    1. Mustache: `{{!master('<master_page_name>')}}`
+    2. Liquid: `{% master <master_page_name> %}`
 
 v2.15
 -----------

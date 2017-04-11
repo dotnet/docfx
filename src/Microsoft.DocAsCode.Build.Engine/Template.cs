@@ -147,17 +147,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static string GetRelativeResourceKey(string templateName, string relativePath)
-        {
-            if (string.IsNullOrEmpty(templateName))
-            {
-                return relativePath;
-            }
-
-            // Make sure resource keys are combined using '/'
-            return StringExtension.ForwardSlashCombine(StringExtension.ToNormalizedPath(Path.GetDirectoryName(templateName)), relativePath);
-        }
-
         private static TemplateInfo GetTemplateInfo(string templateName)
         {
             // Remove folder
@@ -211,7 +200,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
         }
-
+        
         private static ITemplatePreprocessor CreatePreprocessor(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
         {
             return new TemplateJintPreprocessor(resourceCollection, scriptResource, context);
