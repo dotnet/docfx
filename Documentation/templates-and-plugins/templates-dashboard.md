@@ -1,5 +1,5 @@
 ﻿---
-title: Available Templates
+title: Available templates and themes
 documentType: dashboard
 contributionLink: ~/templates-and-plugins/contribute-your-template.md
 templates: 
@@ -12,7 +12,7 @@ templates:
         type: git
         url: "https://github.com/dotnet/docfx/tree/dev/src/docfx.website.themes/default"
     - name: statictoc
-      description: The template similar to default template however with static toc
+      description: The template similar to default template however with static toc. With static toc, the generated web pages can be previewed from local file system.
       type: Embedded
       thumbnail: ~/templates-and-plugins/images/default.green.screenshot.png
       homepage: https://github.com/dotnet/docfx/tree/dev/src/docfx.website.themes/statictoc
@@ -38,4 +38,4 @@ templates:
 ---
 
 # Dashboard for Templates
-Here lists all the available templates for `docfx build`. Add your own customized templates here for others to view and use!
+The templates listed here mainly focus on the layout and themes of the generated website. Add your own customized templates here for others to view and use!
