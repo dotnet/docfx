@@ -38,5 +38,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return originPath;
             }
         }
+
+        public string GetHrefFromRoot(string originalHref, string sourceFileKey)
+        {
+            if (string.IsNullOrEmpty(sourceFileKey) || string.IsNullOrEmpty(originalHref) || !RelativePath.IsRelativePath(originalHref))
+            {
+                return originalHref;
+            }
+            var path = (RelativePath)sourceFileKey + (RelativePath)UriUtility.GetPath(originalHref);
+            var file = path.GetPathFromWorkingFolder().UrlDecode();
+            if (!_context.AllSourceFiles.ContainsKey(file))
+            {
+                Logger.LogWarning($"Invalid file link: ({originalHref})", file:sourceFileKey);
+                return originalHref;
+            }
+            return file.UrlEncode().ToString() + UriUtility.GetQueryStringAndFragment(originalHref);
+        }
     }
 }
