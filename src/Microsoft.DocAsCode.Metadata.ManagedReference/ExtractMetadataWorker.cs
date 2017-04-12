@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.MSBuild;
+    using Microsoft.DotNet.ProjectModel.Workspaces;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
@@ -27,6 +28,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             { "Configuration", "Release" }
         }));
         private static readonly string[] SupportedSolutionExtensions = { ".sln" };
+        private static readonly string[] SupportedProjectName = { "project.json" };
         private static readonly string[] SupportedProjectExtensions = { ".csproj", ".vbproj" };
         private static readonly string[] SupportedSourceFileExtensions = { ".cs", ".vb" };
         private static readonly string[] SupportedVBSourceFileExtensions = { ".vb" };
@@ -169,7 +171,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         #region Check Supportability
         private static bool IsSupported(string filePath)
         {
-            return IsSupported(filePath, SupportedExtensions);
+            return IsSupported(filePath, SupportedExtensions, SupportedProjectName);
         }
 
         private static bool IsSupportedSolution(string filePath)
@@ -179,7 +181,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static bool IsSupportedProject(string filePath)
         {
-            return IsSupported(filePath, SupportedProjectExtensions);
+            return IsSupported(filePath, SupportedProjectExtensions, SupportedProjectName);
         }
 
         private static bool IsSupportedSourceFile(string filePath)
@@ -923,6 +925,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             try
             {
                 string name = Path.GetFileName(path);
+
+                if (name.Equals("project.json", StringComparison.OrdinalIgnoreCase))
+                {
+                    var workspace = new ProjectJsonWorkspace(path);
+                    return workspace.CurrentSolution.Projects.FirstOrDefault(p => p.FilePath == Path.GetFullPath(path));
+                }
 
                 return await _workspace.Value.OpenProjectAsync(path);
             }
