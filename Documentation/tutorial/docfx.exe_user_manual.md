@@ -101,7 +101,7 @@ If `toc.yml` or `toc.md` is found in current folder, it will be rendered as the 
 
 Property | Description
 ---------|----------------------------- 
-name     | **Requried**. The title of the navigation page.
+name     | **Required**. The title of the navigation page.
 href     | **Required**. Can be a folder or a file *UNDER* current folder. Folder must be end with `/`. If is a folder, TOC.md inside the folder will be rendered as second level TABLE-OF-CONTENT. As in website, it will be rendered as sidebar.
 homepage | The default content shown when no article is selected.
 
