@@ -8,12 +8,15 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
+    using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.Common;
 
     internal class LiquidTemplateRenderer : ITemplateRenderer
     {
         private static readonly object _locker = new object();
+        private static readonly Regex MasterPageRegex = new Regex(@"{%\-?\s*master\s*:?(:?['""]?)\s*(?<file>(.+?))\1\s*\-?%}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex MasterPageBodyRegex = new Regex(@"{%\-?\s*body\s*\-?%}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private readonly DotLiquid.Template _template;
 
@@ -34,18 +37,18 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(info.TemplateName));
             }
 
+            var processedTemplate = ParseTemplateHelper.ExpandMasterPage(resourceProvider, info, MasterPageRegex, MasterPageBodyRegex);
+
             // Guarantee that each time returns a new renderer
             // As Dependency is a globally shared object, allow one entry at a time
             lock (_locker)
             {
                 DotLiquid.Template.RegisterTag<Dependency>("ref");
                 Dependency.PopDependencies();
-
-                var liquidTemplate = DotLiquid.Template.Parse(info.Content);
+                var liquidTemplate = DotLiquid.Template.Parse(processedTemplate);
+                var dependencies = Dependency.PopDependencies();
 
                 liquidTemplate.Registers.Add("file_system", new ResourceFileSystem(resourceProvider));
-
-                var dependencies = Dependency.PopDependencies();
 
                 return new LiquidTemplateRenderer(liquidTemplate, info.Content, info.TemplateName, resourceProvider, dependencies);
             }

@@ -101,6 +101,47 @@ DocFX introduces the following syntax to define the dependency for the *Renderer
 > Mustache is logic-less, and for a specific `{{name}}` tag, Mustache searches its context and its parent context recursively.
 > So most of the time [*Preprocessor File*](#preprocessor) is used to re-define the data model used by the Mustache *Renderer*.
 
+#### Extended syntax for Master page
+In most cases templates with different document types share the same layout and style, for example, most of the pages can share navbar, header, or footer. 
+
+DocFX introduces the following syntax to use a master page:
+
+```mustache
+{{!master('<master_page_name>')}}
+```
+
+Inside the master page, the following syntax is used for pages to place their content body:
+
+```mustache
+{{!body}}
+```
+
+For example, with the following master page `_master.html`:
+```html with mustache
+<html>
+    <head></head>
+    <body>
+        {{!body}}
+    <body>
+</html>
+```
+
+A template `conceptual.html.tmpl` as follows:
+```mustache
+{{!master('_master.html')}}
+Hello World
+```
+
+renders as the same as:
+```mustache
+<html>
+    <head></head>
+    <body>
+        Hello World
+    <body>
+</html>
+```
+
 ### *Renderer* in Liquid syntax
 
 #### Naming rule
@@ -108,6 +149,45 @@ DocFX introduces the following syntax to define the dependency for the *Renderer
 
 #### Extended syntax for Dependencies
 DocFX introduces a custom tag `ref`, e.g. `{% ref file1 %}`, to specify the resource files that current template depends on.
+
+#### Extended syntax for Master page
+DocFX introduces custom tags `master` and `body` to use master page:
+
+```liquid
+{% master <master_page_name> %}
+```
+
+Inside the master page, the following syntax is used for pages to place their content body:
+
+```liquid
+{% body %}
+```
+
+For example, with the following master page `_master.html`:
+```html with liquid
+<html>
+    <head></head>
+    <body>
+        {% body %}
+    <body>
+</html>
+```
+
+A template `conceptual.html.liquid` as follows:
+```liqud
+{% master _master.html %}
+Hello World
+```
+
+renders as the same as:
+```liqud
+<html>
+    <head></head>
+    <body>
+        Hello World
+    <body>
+</html>
+```
 
 *Preprocessor*
 --------------------
