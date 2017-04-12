@@ -72,13 +72,16 @@ namespace Microsoft.DocAsCode.Dfm
                               } into info
                               group info.part by info.types into g
                               select new { g.Key, Items = g, IsValid = ValidateKey(g.Key) }).ToList();
-            Logger.LogWarning($@"Ignore invalid renderer parts: {
-                string.Join(
-                    ", ",
-                    from g in partGroups
-                    where !g.IsValid
-                    from item in g.Items
-                    select item.Name)}.");
+            if (partGroups.Any(g => !g.IsValid))
+            {
+                Logger.LogWarning($@"Ignore invalid renderer parts: {
+                    string.Join(
+                        ", ",
+                        from g in partGroups
+                        where !g.IsValid
+                        from item in g.Items
+                        select item.Name)}.");
+            }
             if (!partGroups.Any(g => g.IsValid))
             {
                 return innerRenderer;
