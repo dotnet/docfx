@@ -61,6 +61,8 @@
                 <p class="template-desc" >{{template.description}}</p>
                 {%- if template.usage -%}
                 <ul>
+                  {%- if template.usage.init -%}
+                  <li><span>Init:<code>{{template.usage.init}}</code></span></li>
                   {%- if template.usage.command -%}
                   <li><span>In command:<code>{{template.usage.command}}</code></span></li>
                   {%- endif -%}
