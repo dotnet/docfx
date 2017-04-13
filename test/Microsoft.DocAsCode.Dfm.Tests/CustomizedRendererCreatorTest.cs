@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
 
     using Microsoft.DocAsCode.MarkdownLite;
 
-    public partial class CustomizedRendererCreatorTest
+    public class CustomizedRendererCreatorTest
     {
         [Fact]
         [Trait("Related", "dfm")]

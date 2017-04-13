@@ -37,14 +37,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             return new DfmService(
+                this,
                 parameters.BasePath,
                 parameters.TemplateDir,
                 parameters.Tokens,
-                TokenTreeValidator,
                 fallbackFolders,
-                DfmRendererPartProviders,
-                parameters.Extensions,
-                LegacyMode);
+                parameters.Extensions);
         }
 
         protected virtual bool LegacyMode => false;
@@ -54,6 +52,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         [ImportMany]
         public IEnumerable<IDfmCustomizedRendererPartProvider> DfmRendererPartProviders { get; set; }
+
+        [ImportMany]
+        public IEnumerable<IDfmEngineCustomizer> DfmEngineCustomizers { get; set; }
 
         private sealed class DfmService : IMarkdownService, IHasIncrementalContext, IDisposable
         {
@@ -66,26 +67,28 @@ namespace Microsoft.DocAsCode.Build.Engine
             private readonly string _incrementalContextHash;
 
             public DfmService(
+                DfmServiceProvider provider,
                 string baseDir,
                 string templateDir,
                 ImmutableDictionary<string, string> tokens,
-                IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator,
                 IReadOnlyList<string> fallbackFolders,
-                IEnumerable<IDfmCustomizedRendererPartProvider> dfmRendererPartProviders,
-                IReadOnlyDictionary<string, object> parameters,
-                bool legacyMode)
+                IReadOnlyDictionary<string, object> parameters)
             {
                 var options = DocfxFlavoredMarked.CreateDefaultOptions();
-                options.LegacyMode = legacyMode;
+                options.LegacyMode = provider.LegacyMode;
                 options.ShouldExportSourceInfo = true;
                 _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, templateDir, options, fallbackFolders);
-                _builder.TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(tokenTreeValidator);
+                _builder.TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(provider.TokenTreeValidator);
                 _tokens = tokens;
-                _renderer = CustomizedRendererCreator.CreateRenderer(new DfmRenderer { Tokens = _tokens }, dfmRendererPartProviders, parameters);
-                _incrementalContextHash = ComputeIncrementalContextHash(baseDir, templateDir, tokenTreeValidator);
+                _renderer = CustomizedRendererCreator.CreateRenderer(new DfmRenderer { Tokens = _tokens }, provider.DfmRendererPartProviders, parameters);
+                foreach (var c in provider.DfmEngineCustomizers)
+                {
+                    c.Customize(_builder, parameters);
+                }
+                _incrementalContextHash = ComputeIncrementalContextHash(baseDir, templateDir, provider.TokenTreeValidator, parameters);
             }
 
-            private static string ComputeIncrementalContextHash(string baseDir, string templateDir, IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator)
+            private static string ComputeIncrementalContextHash(string baseDir, string templateDir, IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator, IReadOnlyDictionary<string, object> parameters)
             {
                 var content = (StringBuffer)"dfm";
                 if (baseDir != null)
@@ -110,7 +113,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
                     }
                 }
-
+                if (parameters.Count > 0)
+                {
+                    content += "::" + nameof(parameters) + "::";
+                    content += JsonUtility.Serialize(
+                        parameters
+                        .Where(p => p.Key != "fallbackFolders")
+                        .ToDictionary(p => p.Key, p => p.Value));
+                }
                 var contentText = content.ToString();
                 Logger.LogVerbose($"Dfm config content: {content}");
                 return contentText.GetMd5String();
