@@ -18,6 +18,9 @@
   "author": "Microsoft",
   "license": "MIT",
   "dependencies": {
+    "@types/axios": "^0.9.36",
+    "@types/node": "^7.0.12",
+    "axios": "^0.16.1",
     "child-process-promise": "^2.2.0",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
@@ -28,6 +31,7 @@
     "moment-timezone": "^0.5.10",
     "nconf": "^0.8.4",
     "request": "^2.69.0",
-    "sha1": "^1.1.1"
+    "sha1": "^1.1.1",
+    "typescript": "^2.2.2"
   }
 }

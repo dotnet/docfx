@@ -1,11 +1,16 @@
 {
   "docfx": {
     "home": "../../../docfx/",
+    "repoUrl": "git@github.com-ci:dotnet/docfx.git",
     "docfxSeedHome": "../../../docfx-seed/",
     "e2eTestsHome": "../../test/docfx.E2E.Tests/",
     "targetFolder": "../../target/",
     "artifactsFolder": "../../artifacts/",
-    "exe": "../../target/Release/docfx/docfx.exe"
+    "exe": "../../target/Release/docfx/docfx.exe",
+    "releaseNotePath": "../../../docfx/RELEASENOTE.md",
+    "releaseFolder": "../../../docfx/target/Release/docfx",
+    "assetZipPath": "../../../docfx/Documentation/_site/tutorial/artifacts/docfx.zip",
+    "siteFolder": "../../../docfx/Documentation/_site"
   },
   "myget": {
     "exe": "C:/nuget.exe",
@@ -15,5 +20,19 @@
   },
   "firefox": {
     "version": "46.0.1"
+  },
+  "choco": {
+    "homeDir": "../../../docfx/src/nuspec/chocolatey/docfx/",
+    "nuspec": "../../../docfx/src/nuspec/chocolatey/docfx/docfx.nuspec",
+    "chocoScript": "../../../docfx/src/nuspec/chocolatey/docfx/tools/chocolateyinstall.ps1"
+  },
+  "git": {
+    "name": "DocFX CI",
+    "email": "vscopbld@microsoft.com",
+    "message": "Update gh-pages"
+  },
+  "sync": {
+    "fromBranch": "dev",
+    "targetBranch": "stable"
   }
 }
