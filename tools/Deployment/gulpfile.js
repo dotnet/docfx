@@ -143,7 +143,7 @@ gulp.task("publish:myget-dev", () => {
 
     let mygetToken = process.env.MGAPIKEY;
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Myget.publishToMyget(artifactsFolder, config.myget["exe"], mygetToken, config.myget["devUrl"]);
+    return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], mygetToken, config.myget["devUrl"]);
 });
 
 gulp.task("publish:myget-test", () => {
@@ -164,10 +164,18 @@ gulp.task("publish:myget-test", () => {
     }
 
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Myget.publishToMyget(artifactsFolder, config.myget["exe"], config.myget["apiKey"], config.myget["testUrl"]);
+    return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], config.myget["apiKey"], config.myget["testUrl"]);
 });
 
 gulp.task("publish:myget-master", () => {
+    if (!config.docfx["home"]) {
+        throw new Error("Can't find home path in configuration.");
+    }
+
+    if (!config.docfx["releaseNotePath"]) {
+        throw new Error("Can't find RELEASENOTE path in configuration.");
+    }
+
     if (!config.docfx["artifactsFolder"]) {
         throw new Error("Can't find artifacts folder in configuration.");
     }
@@ -184,8 +192,10 @@ gulp.task("publish:myget-master", () => {
         throw new Error("Can't find myget url for docfx master feed in configuration.");
     }
 
+    let gitRootPath = path.resolve(config.docfx["home"]);
+    let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Myget.publishToMyget(artifactsFolder, config.myget["exe"], config.myget["apiKey"], config.myget["masterUrl"]);
+    return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], config.myget["apiKey"], config.myget["masterUrl"], gitRootPath, releaseNotePath);
 });
 
 gulp.task("updateGhPage", () => {
