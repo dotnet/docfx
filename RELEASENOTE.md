@@ -30,13 +30,11 @@ v2.16(Pre-Release)
         "content": [
             {
                 "files": "*.yml",
-                "src": "temp/api/netstandard1.4",
-                "dest": "api"
+                "src": "temp/api/netstandard1.4"
             },
             {
                 "files": "*.yml",
-                "src": "temp/api/net46",
-                "dest": "api"
+                "src": "temp/api/net46"
             }
         ],
         "fileMetadata": {
@@ -48,7 +46,8 @@ v2.16(Pre-Release)
                     "net46"
                 ]
             }
-        }
+        },
+        "dest": "api"
     },
     "build": {
         "content": [
