@@ -48,13 +48,13 @@ namespace Microsoft.DocAsCode.Build.Engine
         protected virtual bool LegacyMode => false;
 
         [ImportMany]
-        public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; }
+        public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; } = Enumerable.Empty<IMarkdownTokenTreeValidator>();
 
         [ImportMany]
-        public IEnumerable<IDfmCustomizedRendererPartProvider> DfmRendererPartProviders { get; set; }
+        public IEnumerable<IDfmCustomizedRendererPartProvider> DfmRendererPartProviders { get; set; } = Enumerable.Empty<IDfmCustomizedRendererPartProvider>();
 
         [ImportMany]
-        public IEnumerable<IDfmEngineCustomizer> DfmEngineCustomizers { get; set; }
+        public IEnumerable<IDfmEngineCustomizer> DfmEngineCustomizers { get; set; } = Enumerable.Empty<IDfmEngineCustomizer>();
 
         private sealed class DfmService : IMarkdownService, IHasIncrementalContext, IDisposable
         {
