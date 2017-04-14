@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            if (YamlHeader != YamlHeaderRegex)
+            if (YamlHeader != YamlHeaderRegex || parser.Options.LegacyMode)
             {
                 return TryMatchOld(parser, context);
             }
