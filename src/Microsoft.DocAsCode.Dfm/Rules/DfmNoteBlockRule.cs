@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return null;
             }
-            if (DfmNoteRegex != _dfmNoteRegex)
+            if (DfmNoteRegex != _dfmNoteRegex || parser.Options.LegacyMode)
             {
                 return TryMatchOld(parser, context);
             }

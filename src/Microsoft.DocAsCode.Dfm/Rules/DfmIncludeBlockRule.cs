@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
-            if (Include != _incRegex)
+            if (Include != _incRegex || parser.Options.LegacyMode)
             {
                 return TryMatchOld(parser, context);
             }
