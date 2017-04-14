@@ -44,5 +44,8 @@ namespace Microsoft.DocAsCode
 
         [Option("globalNamespaceId", HelpText = "Specify the name to use for the global namespace")]
         public string GlobalNamespaceId { get; set; }
+
+        [Option("property", HelpText = "--property <n1>=<v1>;<n2>=<v2> An optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the /property:<n1>=<v1>;<n2>=<v2> command line argument")]
+        public string MSBuildProperties { get; set; }
     }
 }
