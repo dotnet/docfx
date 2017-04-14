@@ -70,6 +70,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 });
             }
 
+            var msbuildProperties = ResolveMSBuildProperties(options);
             foreach (var item in config)
             {
                 item.Force |= options.ForceRebuild;
@@ -83,6 +84,19 @@ namespace Microsoft.DocAsCode.SubCommands
                 if (!string.IsNullOrEmpty(options.GlobalNamespaceId))
                 {
                     item.GlobalNamespaceId = options.GlobalNamespaceId;
+                }
+
+                if (item.MSBuildProperties == null)
+                {
+                    item.MSBuildProperties = msbuildProperties;
+                }
+                else
+                {
+                    // Command line properties overwrites the one defined in docfx.json
+                    foreach (var pair in msbuildProperties)
+                    {
+                        item.MSBuildProperties[pair.Key] = pair.Value;
+                    }
                 }
             }
 
@@ -115,7 +129,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 ApiFolderName = string.Empty,
                 FilterConfigFile = configModel?.FilterConfigFile,
                 GlobalNamespaceId = configModel?.GlobalNamespaceId,
-                UseCompatibilityFileName = configModel?.UseCompatibilityFileName ?? false
+                UseCompatibilityFileName = configModel?.UseCompatibilityFileName ?? false,
+                MSBuildProperties = configModel?.MSBuildProperties
             };
 
             var expandedFileMapping = GlobUtility.ExpandFileMapping(Config.BaseDirectory, projects);
@@ -125,6 +140,30 @@ namespace Microsoft.DocAsCode.SubCommands
             };
 
             return inputModel;
+        }
+
+        /// <summary>
+        /// <n1>=<v1>;<n2>=<v2>
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        private static Dictionary<string, string> ResolveMSBuildProperties(MetadataCommandOptions options)
+        {
+            var properties = new Dictionary<string, string>();
+            if (!string.IsNullOrEmpty(options.MSBuildProperties))
+            {
+                foreach (var pair in options.MSBuildProperties.Split(';'))
+                {
+                    var index = pair.IndexOf('=');
+                    if (index > -1)
+                    {
+                        // Latter one overwrites former one
+                        properties[pair.Substring(0, index)] = pair.Substring(index + 1, pair.Length - index - 1);
+                    }
+                }
+            }
+
+            return properties;
         }
 
         private static bool TryGetJsonConfig(List<string> projects, out string jsonConfig)

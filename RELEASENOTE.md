@@ -3,13 +3,70 @@
 v2.16(Pre-Release)
 -----------
 
+2.  Support the latest csproj format `<Project Sdk="Microsoft.NET.Sdk">`
+    1. The latest csproj introduces in a new property `TargetFrameworks`, docfx does not support it for now. To make docfx work, please specify `TargetFramework` when calling docfx. A sample `docfx.json` would be as follows. The `merge` command is to merge YAML files generated with different `TargetFramework` into one YAML file.
+    ```json
+{
+    "metadata": [
+        {
+            "src": "*.csproj",
+            "dest": "temp/api/netstandard1.4",
+            "properties": {
+                "TargetFramework": "netstandard1.4"
+            }
+        },
+        {
+            "src": "*.csproj",
+            "dest": "temp/api/net46",
+            "properties": {
+                "TargetFramework": "net46"
+            }
+        }
+    ],
+    "merge": {
+        "content": [
+            {
+                "files": "*.yml",
+                "src": "temp/api/netstandard1.4"
+            },
+            {
+                "files": "*.yml",
+                "src": "temp/api/net46"
+            }
+        ],
+        "fileMetadata": {
+            "platform": {
+                "temp/api/netstandard1.4/*.yml": [
+                    "netstandard1.4"
+                ],
+                "temp/api/net46/*.yml": [
+                    "net46"
+                ]
+            }
+        },
+        "dest": "api"
+    },
+    "build": {
+        "content": [
+            {
+                "files": [
+                    "api/*.yml",
+                    "**.md",
+                    "**/toc.yml"
+                ]
+            }
+        ],
+        "dest": "_site"
+    }
+}
+    ```
+
 v2.15
 -----------
 1.  Bug fixes:
     1. Auto dedent the included code snippet, both when including the whole file and file sections.
     2. [Breaking Change]For inline inclusion, trim ending white spaces, considering ending white spaces in inline inclusion in most cases are typos.
-2.  Support the latest csproj format `<Project Sdk="Microsoft.NET.Sdk">` 
-3.  Following GitHub markdown behavior changes.
+2.  Following GitHub markdown behavior changes.
 
 v2.14
 -----------
