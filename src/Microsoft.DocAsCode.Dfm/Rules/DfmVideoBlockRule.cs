@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return null;
             }
-            if (VideoRegex != _videoRegex)
+            if (VideoRegex != _videoRegex || parser.Options.LegacyMode)
             {
                 return TryMatchOld(parser, context);
             }

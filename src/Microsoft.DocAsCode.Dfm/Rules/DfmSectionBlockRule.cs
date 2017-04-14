@@ -25,6 +25,7 @@ namespace Microsoft.DocAsCode.Dfm
                 )
             ).Maybe() +
             ']' + Matcher.WhiteSpacesOrEmpty + Matcher.NewLine.RepeatAtLeast(0);
+        private static readonly Regex _sectionRegex = new Regex(@"^(?<rawmarkdown> *\[\!div( +(?<quote>`?)(?<attributes>.*?)(\k<quote>))?\]\s*\n?)(?<text>.*)(?:\n|$)", RegexOptions.Compiled, TimeSpan.FromSeconds(10));
 
         public string Name => "DfmSection";
 
@@ -36,6 +37,10 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return null;
             }
+            if (parser.Options.LegacyMode)
+            {
+                return TryMatchOld(parser, context);
+            }
             var match = context.Match(_SectionMatcher);
             if (match?.Length > 0)
             {
@@ -44,6 +49,18 @@ namespace Microsoft.DocAsCode.Dfm
                 return new DfmSectionBlockToken(this, parser.Context, attributes, sourceInfo);
             }
             return null;
+        }
+
+        private IMarkdownToken TryMatchOld(IMarkdownParser parser, IMarkdownParsingContext context)
+        {
+            var match = _sectionRegex.Match(context.CurrentMarkdown);
+            if (match.Length == 0)
+            {
+                return null;
+            }
+            var sourceInfo = context.Consume(match.Groups["rawmarkdown"].Length);
+            var attributes = ExtractAttibutes(match.Groups["attributes"].Value);
+            return new DfmSectionBlockToken(this, parser.Context, attributes, sourceInfo);
         }
 
         private string ExtractAttibutes(string attributeText)
