@@ -37,6 +37,8 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Platform = "platform";
 
             public const string SystemKeys = "_systemKeys";
+
+            public const string OutputFileName = "outputFileName";
         }
 
         public static class MetadataName

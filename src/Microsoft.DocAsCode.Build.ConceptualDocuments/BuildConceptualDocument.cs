@@ -41,7 +41,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             content["rawTitle"] = htmlInfo.RawTitle;
             content[ConceptualKey] = htmlInfo.Content;
 
-            if (result.YamlHeader != null && result.YamlHeader.Count > 0)
+            if (result.YamlHeader?.Count > 0)
             {
                 foreach (var item in result.YamlHeader)
                 {
@@ -61,9 +61,17 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                         {
                             model.DocumentType = item.Value as string;
                         }
-                        if (item.Key == Constants.PropertyName.Title)
+                        else if (item.Key == Constants.PropertyName.Title)
                         {
                             model.Properties.IsUserDefinedTitle = true;
+                        }
+                        else if (item.Key == Constants.PropertyName.OutputFileName)
+                        {
+                            var outputFileName = item.Value as string;
+                            if (!string.IsNullOrWhiteSpace(outputFileName))
+                            {
+                                model.File = (RelativePath)model.File + (RelativePath)outputFileName;
+                            }
                         }
                     }
                 }
