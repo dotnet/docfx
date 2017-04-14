@@ -29,6 +29,10 @@ namespace Microsoft.DocAsCode.DataContracts.RestApi
         [JsonProperty("operationId")]
         public string OperationId { get; set; }
 
+        [YamlMember(Alias = "tags")]
+        [JsonProperty("tags")]
+        public List<string> Tags { get; set; }
+
         [YamlMember(Alias = "parameters")]
         [JsonProperty("parameters")]
         public List<RestApiParameterViewModel> Parameters { get; set; }
