@@ -18,10 +18,10 @@ export function activate(context: ExtensionContext) {
     let tokenTreeProviderRegistration = workspace.registerTextDocumentContentProvider(ConstVariable.tokenTreeScheme, tokenTreeProcessor.provider);
 
     // Event register
-    let showPreviewRegistration = commands.registerCommand("DFM.showPreview", uri => showPreview(dfmPreviewProcessor));
-    let showPreviewToSideRegistration = commands.registerCommand("DFM.showPreviewToSide", uri => showPreview(dfmPreviewProcessor, uri, true));
-    let showSourceRegistration = commands.registerCommand("DFM.showSource", showSource);
-    let showTokenTreeToSideRegistration = commands.registerCommand("DFM.showTokenTreeToSide", uri => showTokenTree(tokenTreeProcessor));
+    let showPreviewRegistration = commands.registerCommand("DocFX.showDfmPreview", uri => showPreview(dfmPreviewProcessor));
+    let showPreviewToSideRegistration = commands.registerCommand("DocFX.showDfmPreviewToSide", uri => showPreview(dfmPreviewProcessor, uri, true));
+    let showSourceRegistration = commands.registerCommand("DocFX.showSource", showSource);
+    let showTokenTreeToSideRegistration = commands.registerCommand("DocFX.showTokenTreeToSide", uri => showTokenTree(tokenTreeProcessor));
 
     context.subscriptions.push(showPreviewRegistration, showPreviewToSideRegistration, showSourceRegistration, showTokenTreeToSideRegistration);
     context.subscriptions.push(previewProviderRegistration, tokenTreeProviderRegistration);
@@ -158,14 +158,14 @@ function showSource() {
 }
 
 function showPreview(dfmPreviewProcessor: PreviewCore, uri?: Uri, sideBySide: boolean = false) {
-    dfmPreviewProcessor.isFirstTime = true;
+    dfmPreviewProcessor.initialized = false;
     let resource = uri;
     if (!(resource instanceof Uri)) {
         if (window.activeTextEditor) {
             resource = window.activeTextEditor.document.uri;
         } else {
             // This is most likely toggling the preview
-            return commands.executeCommand("DFM.showSource");
+            return commands.executeCommand("DocFX.showSource");
         }
     }
 
@@ -182,13 +182,13 @@ function showPreview(dfmPreviewProcessor: PreviewCore, uri?: Uri, sideBySide: bo
 
 function showTokenTree(tokenTreeProcessor: TokenTreeCore, uri?: Uri) {
     let resource = uri;
-    tokenTreeProcessor.isFirstTime = true;
+    tokenTreeProcessor.initialized = false;
     if (!(resource instanceof Uri)) {
         if (window.activeTextEditor) {
             resource = window.activeTextEditor.document.uri;
         } else {
             // This is most likely toggling the preview
-            return commands.executeCommand("DFM.showSource");
+            return commands.executeCommand("DocFX.showSource");
         }
     }
 

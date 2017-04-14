@@ -9,7 +9,7 @@ import { DfmService } from "./dfmService";
 
 export class ChildProcessHost {
     public static status = ConstVariable.stopStatus;
-    public isFirstTime;
+    public initialized;
 
     protected static _serverPort = "4002";
     protected _childProcessStarting = false;
@@ -26,19 +26,19 @@ export class ChildProcessHost {
     }
 
     public static killChildProcess() {
-        DfmService.exit(ChildProcessHost._serverPort);
+        DfmService.exitAsync(ChildProcessHost._serverPort);
     }
 
     public updateContent(uri: Uri) {
-        if (this.isFirstTime) {
+        if (!this.initialized) {
             // In the first time, if wait for the timeout, activeTextEditor will be the preview window.
-            this.isFirstTime = false;
+            this.initialized = true;
             this.updateContentCore(uri);
         } else if (!this._waiting) {
             this._waiting = true;
             setTimeout(() => {
                 this._waiting = false;
-                this.updateContentCore(uri);;
+                this.updateContentCore(uri);
             }, 300);
         }
     }
@@ -62,9 +62,9 @@ export class ChildProcessHost {
         let rootPath = workspace.rootPath;
         let relativePath;
         if (!rootPath || !fileName.includes(rootPath)) {
-            let indexOffileName = fileName.lastIndexOf("\\");
-            rootPath = fileName.substr(0, indexOffileName);
-            relativePath = fileName.substring(indexOffileName + 1);
+            let indexOfFileName = fileName.lastIndexOf("\\");
+            rootPath = fileName.substr(0, indexOfFileName);
+            relativePath = fileName.substring(indexOfFileName + 1);
         } else {
             let rootPathLength = rootPath.length;
             relativePath = fileName.substr(rootPathLength + 1, fileName.length - rootPathLength);
@@ -79,6 +79,7 @@ export class ChildProcessHost {
     }
 
     protected newHttpServerAndStartPreview(activeTextEditor) {
+        window.showInformationMessage("Environment initializing, please wait several seconds!");
         let that = this;
         let http = require("http");
         let server = http.createServer();

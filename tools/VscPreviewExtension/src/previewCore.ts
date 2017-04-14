@@ -13,23 +13,23 @@ export class PreviewCore extends ChildProcessHost {
         this.provider = new MarkdownDocumentContentProvider(context);
     }
 
-    protected sendHttpRequestCore(rootPath: string, relativePath: string, docContent: string) {
+    protected async sendHttpRequestCore(rootPath: string, relativePath: string, docContent: string) {
         this.provider.fileName = relativePath;
         let that = this;
-        DfmService.preview(ChildProcessHost._serverPort, docContent, rootPath, relativePath)
-            .then(function (res: any) {
-                that._childProcessStarting = false;
-                that.provider.update(that._documentUri, res.data);
-            })
-            .catch(function (err) {
-                if (err.message == ConstVariable.noServiceErrorMessage) {
-                    if (!that._childProcessStarting) {
-                        that.newHttpServerAndStartPreview(that._activeEditor);
-                        that._childProcessStarting = true;
-                    }
-                } else {
-                    window.showErrorMessage(`[Server Error]: ${err}`);
+        try {
+            let res = await DfmService.previewAsync(ChildProcessHost._serverPort, docContent, rootPath, relativePath);
+            that._childProcessStarting = false;
+            that.provider.update(that._documentUri, res.data);
+        }
+        catch (err) {
+            if (err.message == ConstVariable.noServiceErrorMessage) {
+                if (!that._childProcessStarting) {
+                    that.newHttpServerAndStartPreview(that._activeEditor);
+                    that._childProcessStarting = true;
                 }
-            })
+            } else {
+                window.showErrorMessage(`[Server Error]: ${err}`);
+            }
+        }
     }
 }

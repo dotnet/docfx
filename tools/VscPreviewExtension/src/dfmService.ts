@@ -6,47 +6,23 @@ import { DfmHttpClient } from './dfmHttpClient';
 import * as ConstVariable from "./ConstVariable";
 
 export class DfmService {
-    static preview(docfxServicePort, content: String, workspacePath, relativePath, writeTempPreviewFile = false, previewFilePath = null, pageRefreshJsFilePath = null, builtHtmlPath = null) {
+    static async previewAsync(docfxServicePort, content: String, workspacePath, relativePath, writeTempPreviewFile = false, previewFilePath = null, pageRefreshJsFilePath = null, builtHtmlPath = null) {
         if (!content) {
             return null;
         }
 
-        return new Promise(function (fulfill, reject) {
-            DfmHttpClient.sendPostRequest(docfxServicePort, ConstVariable.previewCommand, content, workspacePath, relativePath, writeTempPreviewFile, previewFilePath, pageRefreshJsFilePath, builtHtmlPath)
-                .then(function (res) {
-                    fulfill(res);
-                })
-                .catch(function (err) {
-                    reject(err);
-                })
-        })
+        return await DfmHttpClient.sendPostRequest(docfxServicePort, ConstVariable.previewCommand, content, workspacePath, relativePath, writeTempPreviewFile, previewFilePath, pageRefreshJsFilePath, builtHtmlPath);
     }
 
-    static getTokenTree(docfxServicePort, content: String, workspacePath, relativePath) {
+    static async getTokenTreeAsync(docfxServicePort, content: String, workspacePath, relativePath) {
         if (!content) {
             return null;
         }
 
-        return new Promise(function (fulfill, reject) {
-            DfmHttpClient.sendPostRequest(docfxServicePort, ConstVariable.tokenTreeCommand, content, workspacePath, relativePath)
-                .then(function (res) {
-                    fulfill(res);
-                })
-                .catch(function (err) {
-                    reject(err);
-                })
-        })
+        return await DfmHttpClient.sendPostRequest(docfxServicePort, ConstVariable.tokenTreeCommand, content, workspacePath, relativePath);
     }
 
-    static exit(docfxServicePort) {
-        return new Promise(function (fulfill, reject) {
-            DfmHttpClient.sendPostRequest(docfxServicePort, ConstVariable.exitCommand)
-                .then(function (res) {
-                    fulfill(res);
-                })
-                .catch(function (err) {
-                    reject(err);
-                })
-        })
+    static async exitAsync(docfxServicePort) {
+        await DfmHttpClient.sendPostRequest(docfxServicePort, ConstVariable.exitCommand);
     }
 }
