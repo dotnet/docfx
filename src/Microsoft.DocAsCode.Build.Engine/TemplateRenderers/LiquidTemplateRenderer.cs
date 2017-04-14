@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Exceptions;
 
     internal class LiquidTemplateRenderer : ITemplateRenderer
     {
@@ -43,14 +44,21 @@ namespace Microsoft.DocAsCode.Build.Engine
             // As Dependency is a globally shared object, allow one entry at a time
             lock (_locker)
             {
-                DotLiquid.Template.RegisterTag<Dependency>("ref");
-                Dependency.PopDependencies();
-                var liquidTemplate = DotLiquid.Template.Parse(processedTemplate);
-                var dependencies = Dependency.PopDependencies();
+                try
+                {
+                    DotLiquid.Template.RegisterTag<Dependency>("ref");
+                    Dependency.PopDependencies();
+                    var liquidTemplate = DotLiquid.Template.Parse(processedTemplate);
+                    var dependencies = Dependency.PopDependencies();
 
-                liquidTemplate.Registers.Add("file_system", new ResourceFileSystem(resourceProvider));
+                    liquidTemplate.Registers.Add("file_system", new ResourceFileSystem(resourceProvider));
 
-                return new LiquidTemplateRenderer(liquidTemplate, info.Content, info.TemplateName, resourceProvider, dependencies);
+                    return new LiquidTemplateRenderer(liquidTemplate, info.Content, info.TemplateName, resourceProvider, dependencies);
+                }
+                catch (DotLiquid.Exceptions.SyntaxException e)
+                {
+                    throw new DocfxException($"Syntax error for template {info.TemplateName}: {e.Message}", e);
+                }
             }
         }
 

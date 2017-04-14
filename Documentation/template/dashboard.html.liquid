@@ -62,21 +62,22 @@
                 {%- if template.usage -%}
                 <ul>
                   {%- if template.usage.init -%}
-                  <li><span>Init:<code>{{template.usage.init}}</code></span></li>
+                  <li><span>Init:<code>{{template.usage.init | escape}}</code></span></li>
+                  {%- endif -%}
                   {%- if template.usage.command -%}
-                  <li><span>In command:<code>{{template.usage.command}}</code></span></li>
+                  <li><span>In command:<code>{{template.usage.command | escape}}</code></span></li>
                   {%- endif -%}
                   {%- if template.usage.config -%}
-                  <li><span>In <c>docfx.json</c>:<code>{{template.usage.config}}</code></span></li>
+                  <li><span>In <c>docfx.json</c>:<code>{{template.usage.config | escape}}</code></span></li>
                   {%- endif -%}
                 </ul>
                 {%- endif -%}
               </li>
           {%- endfor -%}
           </ul>
+          {%- endif -%}
         </div>
       </div>
-      {%- endif -%}
       {% include partials/footer -%}
     </div>
     {% include partials/scripts -%}
