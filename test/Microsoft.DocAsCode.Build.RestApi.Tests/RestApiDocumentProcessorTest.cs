@@ -70,14 +70,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
             Assert.Equal("200", item0.Responses[0].HttpStatusCode);
 
             // Verify tags of child
-            var item0Tag = (JArray)(item0.Metadata["tags"]);
-            Assert.NotNull(item0Tag);
-            Assert.Equal("contacts", item0Tag[0]);
+            Assert.Equal("contacts", item0.Tags[0]);
             var item1 = model.Children[1];
-            var item2Tag = (JArray)(item1.Metadata["tags"]);
-            Assert.NotNull(item2Tag);
-            Assert.Equal("contacts", item2Tag[0]);
-            Assert.Equal("pet store", item2Tag[1]);
+            Assert.Equal("contacts", item1.Tags[0]);
+            Assert.Equal("pet store", item1.Tags[1]);
 
             // Verify tags of root
             Assert.Equal(3, model.Tags.Count);
