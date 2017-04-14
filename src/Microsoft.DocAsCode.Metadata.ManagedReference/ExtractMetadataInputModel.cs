@@ -32,6 +32,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public string GlobalNamespaceId { get; set; }
 
+        public Dictionary<string, string> MSBuildProperties { get; set; }
+
         public override string ToString()
         {
             using(StringWriter writer = new StringWriter())

@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return GetConfig(key);
         }
 
-        public void SaveToCache(IEnumerable<string> inputProjects, IDictionary<string, List<string>> containedFiles, DateTime triggeredTime, string outputFolder, IList<string> fileRelativePaths, bool shouldSkipMarkup)
+        public void SaveToCache(IEnumerable<string> inputProjects, IDictionary<string, List<string>> containedFiles, DateTime triggeredTime, string outputFolder, IList<string> fileRelativePaths, bool shouldSkipMarkup, IDictionary<string, string> msbuildProperties)
         {
             var key = StringExtension.GetNormalizedFullPathKey(inputProjects);
             DateTime completeTime = DateTime.UtcNow;
@@ -51,7 +51,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 OutputFolder = StringExtension.ToNormalizedFullPath(outputFolder),
                 RelatvieOutputFiles = StringExtension.GetNormalizedPathList(fileRelativePaths),
                 BuildAssembly = AssemblyName,
-                ShouldSkipMarkup = shouldSkipMarkup
+                ShouldSkipMarkup = shouldSkipMarkup,
+                MSBuildProperties = msbuildProperties,
             };
             this.SaveConfig(key, info);
         }

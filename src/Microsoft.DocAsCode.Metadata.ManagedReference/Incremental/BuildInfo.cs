@@ -27,6 +27,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// </summary>
         public IDictionary<string, List<string>> ContainedFiles { get; set; }
 
+        public IDictionary<string, string> MSBuildProperties { get; set; }
+
         public string CheckSum { get; set; }
     }
 }

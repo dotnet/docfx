@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
-    using System.Threading.Tasks;
+    using System.Linq;
 
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.MSBuild;
@@ -23,6 +23,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private ConcurrentDictionary<string, VersionStamp> _metadataVersionCache;
         private AsyncConcurrentCache<string, bool> _projectUpToDateSnapshot;
         private bool _versionChanged;
+        private readonly BuildInfo _buildInfo;
         public IncrementalCheck(BuildInfo buildInfo)
         {
             var checkUtcTime = buildInfo.TriggeredUtcTime;
@@ -36,7 +37,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     Logger.Log(LogLevel.Verbose, $"Assembly '{version ?? "<undefined>"}' when last build took place is not current assembly '{currentVersion}', rebuild required");
                 }
             }
-
+            _buildInfo = buildInfo;
             _versionToBeCompared = VersionStamp.Create(checkUtcTime);
             _metadataVersionCache = new ConcurrentDictionary<string, VersionStamp>();
             _projectUpToDateSnapshot = new AsyncConcurrentCache<string, bool>();
@@ -51,6 +52,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             return false;
+        }
+
+        public bool MSBuildPropertiesUpdated(IDictionary<string, string> newProperties)
+        {
+            return !DictionaryEqual(_buildInfo.MSBuildProperties, newProperties);
         }
 
         /// <summary>
@@ -95,91 +101,33 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return false;
         }
 
-        /// <summary>
-        /// Load all the version this project source code dependent on: 
-        /// 1. project file version; 
-        /// 2. document version; 
-        /// 3. assembly reference version
-        /// TODO: In which case do project references not in current solution?
-        /// And save to global storage
-        /// </summary>
-        /// <param name="project"></param>
-        public async Task<bool> IsSingleProjectChanged(Project project)
-        {
-            if (_versionChanged) return true;
-            // 1. project file itself changed since <date>
-            var version = GetLastModifiedVersionForFile(project.FilePath);
-
-            if (VersionNewer(version))
-            {
-                Logger.Log(LogLevel.Verbose, $"project file '{project.Name}' version '{version.ToString()}' newer than '{_versionToBeCompared.ToString()}'");
-                return true;
-            }
-            else
-            {
-                Logger.Log(LogLevel.Verbose, $"project file '{project.Name}' version '{version.ToString()}' older than '{_versionToBeCompared.ToString()}', no need to rebuild");
-            }
-
-            // 2. project's containing source files changed since <date>
-            var documents = project.Documents;
-            foreach (var document in documents)
-            {
-                // Incase new document added into project however project file is not changed
-                // e.g. in kproj or csproj by <Compile Include="*.cs"/> 
-                VersionStamp documentVersion = await document.GetTextVersionAsync();
-                var path = document.FilePath;
-                if (!string.IsNullOrEmpty(path))
-                {
-                    var createdTime = GetCreatedVersionForFile(path);
-                    documentVersion = VersionNewer(documentVersion, createdTime) ? documentVersion : createdTime;
-                }
-
-                if (VersionNewer(documentVersion))
-                {
-                    Logger.Log(LogLevel.Verbose, $"document '{document.Name}' version '{documentVersion.ToString()}' newer than '{_versionToBeCompared.ToString()}'");
-                    return true;
-                }
-                else
-                {
-                    Logger.Log(LogLevel.Verbose, $"document '{document.Name}' version '{documentVersion.ToString()}' older than '{_versionToBeCompared.ToString()}', no need to rebuild");
-                }
-            }
-
-            // 3. project's assembly reference changed since <date>
-            var assemblyReferences = project.MetadataReferences;
-            foreach (var assemblyReference in assemblyReferences)
-            {
-                var executableReference = assemblyReference as PortableExecutableReference;
-                if (executableReference != null)
-                {
-                    var filePath = executableReference.FilePath;
-                    var assemblyVersion = _metadataVersionCache.GetOrAdd(filePath, s => GetLastModifiedVersionForFile(s));
-                    if (VersionNewer(assemblyVersion))
-                    {
-                        Console.WriteLine($"document {filePath} version {assemblyVersion} newer than {_versionToBeCompared}");
-                        return true;
-                    }
-                }
-            }
-
-            // TODO: In which case do project references not in current solution?
-            // EXAMPLE: <Roslyn>/VBCSCompilerTests, contains 11 project references, however 9 of them are in solution
-            // vbc2.vcxproj and vbc2.vcxproj are not in solution. Currently consider it as irrelavate to source code rebuild
-            var projectReferences = project.AllProjectReferences;
-
-            return false;
-        }
-
         private static VersionStamp GetLastModifiedVersionForFile(string filePath)
         {
             var dateTime = File.GetLastWriteTimeUtc(filePath);
             return VersionStamp.Create(dateTime);
         }
 
-        private static VersionStamp GetCreatedVersionForFile(string filePath)
+        private static bool DictionaryEqual<TKey, TValue>(IDictionary<TKey, TValue> dict1, IDictionary<TKey, TValue> dict2, IEqualityComparer<TValue> equalityComparer = null)
         {
-            var dateTime = File.GetCreationTimeUtc(filePath);
-            return VersionStamp.Create(dateTime);
+            if (Equals(dict1, dict2))
+            {
+                return true;
+            }
+
+            if (dict1 == null || dict2 == null || dict1.Count != dict2.Count)
+            {
+                return false;
+            }
+
+            if (equalityComparer == null)
+            {
+                equalityComparer = EqualityComparer<TValue>.Default;
+            }
+
+            return dict1.All(pair =>
+            {
+                return dict2.TryGetValue(pair.Key, out TValue val) && equalityComparer.Equals(pair.Value, val);
+            });
         }
     }
 }
