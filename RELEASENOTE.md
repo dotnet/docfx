@@ -2,8 +2,7 @@
 =======================================
 v2.16(Pre-Release)
 -----------
-
-2.  Support the latest csproj format `<Project Sdk="Microsoft.NET.Sdk">`
+1.  Support the latest csproj format `<Project Sdk="Microsoft.NET.Sdk">`
     1. The latest csproj introduces in a new property `TargetFrameworks`, docfx does not support it for now. To make docfx work, please specify `TargetFramework` when calling docfx. A sample `docfx.json` would be as follows. The `merge` command is to merge YAML files generated with different `TargetFramework` into one YAML file.
     ```json
 {
