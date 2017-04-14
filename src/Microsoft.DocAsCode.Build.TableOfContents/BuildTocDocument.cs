@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         /// <returns></returns>
         public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
-            var tocModelCache = new Dictionary<string, TocItemInfo>();
+            var tocModelCache = new Dictionary<string, TocItemInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
             foreach (var model in models)
             {
                 if (!tocModelCache.ContainsKey(model.OriginalFileAndType.FullPath))

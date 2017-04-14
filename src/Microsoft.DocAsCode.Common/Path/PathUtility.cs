@@ -25,6 +25,11 @@ namespace Microsoft.DocAsCode.Common
         private static readonly string InvalidOrNeedUrlEncodeFileNameCharsRegexString = $"{InvalidFileNameCharsRegexString}|{NeedUrlEncodeFileNameCharsRegexString}";
         private static readonly Regex InvalidOrNeedUrlEncodeFileNameCharsRegex = new Regex(InvalidOrNeedUrlEncodeFileNameCharsRegexString, RegexOptions.Compiled);
 
+        public static bool IsPathCaseInsensitive()
+        {
+            return Environment.OSVersion.Platform < PlatformID.Unix;
+        }
+
         public static string ToValidFilePath(this string input, char replacement = '_')
         {
             if (string.IsNullOrEmpty(input))
