@@ -131,15 +131,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             var dirs = Directory.GetDirectories(directory);
             if (searchLevel == 1)
             {
-                foreach (var dir in dirs)
+                if (dirs.Length > 0)
                 {
-                    var remainingFiles = Directory.GetFiles(dir, searchPattern, SearchOption.AllDirectories);
-
-                    if (remainingFiles.Length > 0)
-                    {
-                        throw new ResourceFileExceedsMaxDepthException(_maxDepth, PathUtility.MakeRelativePath(_directory, remainingFiles[0]), Name);
-                    }
+                    var dirPaths = (from dir in dirs select PathUtility.MakeRelativePath(_directory, dir)).ToDelimitedString();
+                    Logger.LogInfo($"The following directories exceed max allowed depth {_maxDepth}, ignored: {dirPaths}.");
                 }
+
                 return files;
             }
             List<string> allFiles = new List<string>(files);
