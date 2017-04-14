@@ -79,8 +79,8 @@ namespace Microsoft.DocAsCode.Build.Common
                        where prop.Prop.GetSetMethod() != null
                        where !prop.Prop.IsDefined(typeof(HrefIgnoreAttribute), false)
                        select prop;
-
             }
+
             private string GetHrefFromRoot(string originalHref, HandleModelAttributesContext context)
             {
                 if (context.FileAndType == null || string.IsNullOrEmpty(originalHref) || !RelativePath.IsRelativePath(originalHref))
