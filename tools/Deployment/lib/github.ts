@@ -10,20 +10,18 @@ import { GithubApi, AssetInfo, ReleaseDescription } from "./githubApi";
 export class Github {
     static async updateGithubReleaseAsync(
         repoUrl: string,
-        gitRootPath: string,
         releaseNotePath: string,
         releaseFolder: string,
         assetZipPath: string,
         githubToken: string): Promise<void> {
 
         Guard.argumentNotNullOrEmpty(repoUrl, "repoUrl");
-        Guard.argumentNotNullOrEmpty(gitRootPath, "gitRootRepo");
         Guard.argumentNotNullOrEmpty(releaseNotePath, "releaseNotePath");
         Guard.argumentNotNullOrEmpty(releaseFolder, "releaseFolder");
         Guard.argumentNotNullOrEmpty(assetZipPath, "assetZipPath");
         Guard.argumentNotNullOrEmpty(githubToken, "githubToken");
 
-        let isUpdated = await Common.isReleaseNoteUpdatedAsync(gitRootPath, releaseNotePath);
+        let isUpdated = await Common.isReleaseNoteVersionChangedAsync(releaseNotePath);
         if (!isUpdated) {
             console.log(`${releaseNotePath} hasn't been changed. Ignored to update github release package.`);
             return Promise.resolve();
@@ -37,13 +35,7 @@ export class Github {
         let arrayBuffer = new Uint8Array(data).buffer;
         let assetInfo = this.getAssetZipInfo(assetZipPath);
 
-        githubApi.publishReleaseAndAssetAsync(releaseDescription, assetInfo)
-            .then(() => {
-                console.log("publish release and asset successful");
-            })
-            .catch((err) => {
-                console.error(err);
-            });
+        return githubApi.publishReleaseAndAssetAsync(releaseDescription, assetInfo);
     }
 
     static async updateGhPagesAsync(

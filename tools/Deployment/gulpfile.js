@@ -117,13 +117,11 @@ gulp.task("publish:myget-master", () => {
     Guard.argumentNotNullOrEmpty(config.myget.apiKey, "config.myget.apiKey", "Can't find myget api key in configuration.");
     Guard.argumentNotNullOrEmpty(config.myget.masterUrl, "config.myget.masterUrl", "Can't find myget url for docfx master feed in configuration.");
     Guard.argumentNotNullOrEmpty(process.env.MGAPIKEY, "process.env.MGAPIKEY", "Can't find myget key in Environment Variables.");
-    Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find docfx home in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.releaseNotePath, "config.docfx.releaseNotePath", "Can't find RELEASENOTE.md in configuartion.");
 
-    let gitRootPath = path.resolve(config.docfx["home"]);
     let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
-    return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], mygetToken, config.myget["masterUrl"], gitRootPath, releaseNotePath);
+    return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], mygetToken, config.myget["masterUrl"], releaseNotePath);
 });
 
 gulp.task("updateGhPage", () => {
@@ -143,7 +141,6 @@ gulp.task("updateGhPage", () => {
 });
 
 gulp.task("publish:gh-release", () => {
-    Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find docfx home in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.releaseNotePath, "config.docfx.releaseNotePath", "Can't find RELEASENOTE.md in configuartion.");
     Guard.argumentNotNullOrEmpty(config.docfx.releaseFolder, "config.docfx.releaseFolder", "Can't find zip source folder in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.assetZipPath, "config.docfx.assetZipPath", "Can't find asset zip destination folder in configuration.");
@@ -151,12 +148,11 @@ gulp.task("publish:gh-release", () => {
 
     let githubToken = process.env.TOKEN;
 
-    let gitRootPath = path.resolve(config.docfx["home"]);
     let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
     let releaseFolder = path.resolve(config.docfx["releaseFolder"]);
     let assetZipPath = path.resolve(config.docfx["assetZipPath"]);
 
-    let promise = Github.updateGithubReleaseAsync(config.docfx["repoUrl"], gitRootPath, releaseNotePath, releaseFolder, assetZipPath, githubToken);
+    let promise = Github.updateGithubReleaseAsync(config.docfx["repoUrl"], releaseNotePath, releaseFolder, assetZipPath, githubToken);
     promise.then(() => {
         console.log("Update github release and assets successfully.");
     }).catch(err => {
@@ -166,7 +162,6 @@ gulp.task("publish:gh-release", () => {
 });
 
 gulp.task("publish:chocolatey", () => {
-    Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find home path in configuration.");
     Guard.argumentNotNullOrEmpty(config.choco.homeDir, "config.choco.homeDir", "Can't find homedir for chocolatey in configuration.");
     Guard.argumentNotNullOrEmpty(config.choco.nuspec, "config.choco.nuspec", "Can't find nuspec for chocolatey in configuration.");
     Guard.argumentNotNullOrEmpty(config.choco.chocoScript, "config.choco.chocoScript", "Can't find script for chocolatey in configuration.");
@@ -176,7 +171,6 @@ gulp.task("publish:chocolatey", () => {
 
     let chocoToken = process.env.CHOCO_TOKEN;
 
-    let gitRootPath = path.resolve(config.docfx["home"]);
     let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
     let assetZipPath = path.resolve(config.docfx["assetZipPath"]);
 
@@ -184,7 +178,7 @@ gulp.task("publish:chocolatey", () => {
     let nuspec = path.resolve(config.choco["nuspec"]);
     let homeDir = path.resolve(config.choco["homeDir"]);
 
-    let promise = Chocolatey.publishToChocolateyAsync(gitRootPath, releaseNotePath, assetZipPath, chocoScript, nuspec, homeDir, chocoToken);
+    let promise = Chocolatey.publishToChocolateyAsync(releaseNotePath, assetZipPath, chocoScript, nuspec, homeDir, chocoToken);
     promise.then(() => {
         console.log("Publish to chocolatey successfully.");
     }).catch(err => {
@@ -197,5 +191,4 @@ gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test")
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
 gulp.task("stable", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
 gulp.task("master", gulp.series("clean", "build", "e2eTest", "updateGhPage", "publish:gh-release", "publish:chocolatey", "publish:myget-master"));
-gulp.task("debug", gulp.series("publish:chocolatey"));
 gulp.task("default", gulp.series("dev"));

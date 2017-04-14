@@ -7,7 +7,6 @@ import { Common, Guard } from "./common";
 
 export class Chocolatey {
     public static async publishToChocolateyAsync(
-        gitRootPath: string,
         releaseNotePath: string,
         assetZipPath: string,
         chocoScriptPath: string,
@@ -15,7 +14,6 @@ export class Chocolatey {
         chocoHomeDir: string,
         chocoToken: string): Promise<void> {
 
-        Guard.argumentNotNullOrEmpty(gitRootPath, "gitRootPath");
         Guard.argumentNotNullOrEmpty(releaseNotePath, "releaseNotePath");
         Guard.argumentNotNullOrEmpty(assetZipPath, "assetZipPath");
         Guard.argumentNotNullOrEmpty(chocoScriptPath, "chocoScriptPath");
@@ -24,7 +22,7 @@ export class Chocolatey {
         Guard.argumentNotNullOrEmpty(chocoToken, "chocoToken");
 
         // Ignore to publish chocolatey package if RELEASENOTE.md hasn't been modified.
-        let isUpdated = await Common.isReleaseNoteUpdatedAsync(gitRootPath, releaseNotePath);
+        let isUpdated = await Common.isReleaseNoteVersionChangedAsync(releaseNotePath);
         if (!isUpdated) {
             console.log(`${releaseNotePath} hasn't been changed. Ignore to publish package to chocolatey.`);
             return Promise.resolve();

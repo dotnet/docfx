@@ -82,7 +82,7 @@ export class Common {
             throw new Error(`${releaseNotePath} doesn't exist.`);
         }
 
-        let regex = /\(Current\s+Version:\s+[vV]([\d\.]+)\)/;
+        let regex = /\(Current\s+Version:\s+v([\d\.]+)\)/i;
         let content = fs.readFileSync(releaseNotePath, "utf8");
 
         let match = regex.exec(content);
@@ -100,7 +100,7 @@ export class Common {
             throw new Error(`${releaseNotePath} doesn't exist.`);
         }
 
-        let regex = /---{3,}\r?\n([\s\S]+?)[vV][\d\.]+\r?\n---{3,}\r?\n/;
+        let regex = /\r?\n\s*v[\d\.]+\s*\r?\n-{3,}\r?\n([\s\S]+?)(\r?\n\s*v[\d\.]+\s*\r?\n-{3,}\r?\n|$)/i;
         let content = fs.readFileSync(releaseNotePath, "utf8");
 
         let match = regex.exec(content);
@@ -111,32 +111,21 @@ export class Common {
         return match[1].trim();
     }
 
-    static async isReleaseNoteUpdatedAsync(gitRootPath: string, releaseNotePath: string): Promise<boolean> {
-        Guard.argumentNotNullOrEmpty(gitRootPath, "gitRootPath");
-        Guard.argumentNotNullOrEmpty(releaseNotePath, "releaseNotePath");
+    static async isReleaseNoteVersionChangedAsync(releaseNotePath: string): Promise<boolean> {
+        let versionFromTag = await this.getCurrentVersionFromGitTag();
+        let versionFromReleaseNote = this.getVersionFromReleaseNote(releaseNotePath);
 
-        let files = await this.getLatestUpdatedFilesAsync();
-        if (!files) {
-            return false;
-        }
-
-        for (let file in files) {
-            if (path.join(gitRootPath, file) === releaseNotePath) {
-                return true;
-            }
-        }
-
-        return false;
+        return `v${versionFromTag}`.toLowerCase() !== versionFromReleaseNote.toLowerCase();
     }
 
-    static async getLatestUpdatedFilesAsync(): Promise<Array<string>> {
-        let result = await cp.exec("git diff-tree --no-commit-id --name-only -r HEAD");
+    static async getCurrentVersionFromGitTag(): Promise<string> {
+        let result = await cp.exec("git describe --abbrev=0 --tags");
         let content = result.stdout.trim();
         if (!content) {
             return null;
         }
 
-        return content.split(/\r?\n/);
+        return content;
     }
 }
 

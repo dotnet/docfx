@@ -11,7 +11,6 @@ export class Myget {
         mygetCommand: string,
         mygetKey: string,
         mygetUrl: string,
-        gitRootPath = null,
         releaseNotePath = null): Promise<void> {
 
         Guard.argumentNotNullOrEmpty(artifactsFolder, "artifactsFolder");
@@ -19,11 +18,11 @@ export class Myget {
         Guard.argumentNotNullOrEmpty(mygetKey, "mygetKey");
         Guard.argumentNotNullOrEmpty(mygetUrl, "mygetUrl");
 
-        if (!gitRootPath || !releaseNotePath) {
+        if (!releaseNotePath) {
             // Ignore to publish myget package if RELEASENOTE.md hasn't been modified.
-            let isUpdated = await Common.isReleaseNoteUpdatedAsync(gitRootPath, releaseNotePath);
+            let isUpdated = await Common.isReleaseNoteVersionChangedAsync(releaseNotePath);
             if (!isUpdated) {
-                console.log(`${releaseNotePath} hasn't been changed. Ignore to publish package to chocolatey.`);
+                console.log(`${releaseNotePath} hasn't been changed. Ignore to publish package to myget.org.`);
                 return Promise.resolve();
             }
         }

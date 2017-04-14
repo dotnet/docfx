@@ -6,10 +6,10 @@ import { Guard } from "./common";
 
 export class GithubApi {
     private readonly request;
-    private readonly UserAndRepo;
+    private readonly userAndRepo;
 
     constructor(repoUrl: string, token: string) {
-        this.UserAndRepo = this.getUserAndRepo(repoUrl);
+        this.userAndRepo = this.getUserAndRepo(repoUrl);
         this.request = axios.create({
             baseURL: "https://api.github.com",
             headers: {
@@ -62,7 +62,7 @@ export class GithubApi {
     async deleteLatestReleaseAsync(releaseId: string) {
         const releaseInfo = await this.getLatestReleaseAsync();
         const config = {
-            url: `/repos/${this.UserAndRepo}/releases/${releaseInfo.data["id"]}`,
+            url: `/repos/${this.userAndRepo}/releases/${releaseInfo.data["id"]}`,
             method: "DELETE",
         };
         return this.request(config);
@@ -70,7 +70,7 @@ export class GithubApi {
 
     private async createReleaseAsync(releaseInfo: ReleaseDescription) {
         const config = {
-            url: `/repos/${this.UserAndRepo}/releases`,
+            url: `/repos/${this.userAndRepo}/releases`,
             method: "POST",
             data: releaseInfo
         };
@@ -79,7 +79,7 @@ export class GithubApi {
 
     private async getLatestReleaseAsync() {
         const config = {
-            url: `/repos/${this.UserAndRepo}/releases/latest`,
+            url: `/repos/${this.userAndRepo}/releases/latest`,
             method: "GET",
         };
         return this.request(config);
@@ -87,7 +87,7 @@ export class GithubApi {
 
     private async updateReleaseAsync(releaseId: string, description: ReleaseDescription) {
         const config = {
-            url: `/repos/${this.UserAndRepo}/releases/${releaseId}`,
+            url: `/repos/${this.userAndRepo}/releases/${releaseId}`,
             method: "PATCH",
             data: description
         };
@@ -96,7 +96,7 @@ export class GithubApi {
 
     private async deleteReleaseAsync(releaseId: string) {
         const config = {
-            url: `/repos/${this.UserAndRepo}/releases/${releaseId}`,
+            url: `/repos/${this.userAndRepo}/releases/${releaseId}`,
             method: "DELETE",
         };
         return this.request(config);
@@ -104,7 +104,7 @@ export class GithubApi {
 
     private async uploadAssetAsync(releaseId: string, info: AssetInfo) {
         const config = {
-            url: `/repos/${this.UserAndRepo}/releases/${releaseId}/assets?name=${info.name}`,
+            url: `/repos/${this.userAndRepo}/releases/${releaseId}/assets?name=${info.name}`,
             baseURL: "https://uploads.github.com/",
             method: "POST",
             headers: {
