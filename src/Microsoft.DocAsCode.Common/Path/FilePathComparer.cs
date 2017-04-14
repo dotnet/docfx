@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.Common
 
         private static StringComparer GetStringComparer()
         {
-            if (Environment.OSVersion.Platform < PlatformID.Unix)
+            if (PathUtility.IsPathCaseInsensitive())
             {
                 return StringComparer.OrdinalIgnoreCase;
             }
