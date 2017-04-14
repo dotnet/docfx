@@ -67,9 +67,6 @@ export class Common {
     static computeSha1FromZip(zipPath: string): string {
         Guard.argumentNotNullOrEmpty(zipPath, "zipPath");
 
-        if (!zipPath) {
-            throw new Error(`${zipPath} can't null or undefined.`);
-        }
         if (!fs.existsSync(zipPath)) {
             throw new Error(`${zipPath} doesn't exist.`);
         }
@@ -144,15 +141,17 @@ export class Common {
 }
 
 export class Guard {
-    static argumentNotNull(argumentValue: Object, argumentName: string) {
+    static argumentNotNull(argumentValue: Object, argumentName: string, message = null) {
         if (argumentValue === null || argumentValue === undefined) {
-            throw new Error(`${argumentName} can't be null/undefined.`);
+            message = message || `${argumentName} can't be null/undefined.`;
+            throw new Error(message);
         }
     }
 
-    static argumentNotNullOrEmpty(stringValue: string, argumentName: string) {
-        if (stringValue === null || stringValue === "") {
-            throw new Error(`${argumentName} can't be null/undefined or empty string.`);
+    static argumentNotNullOrEmpty(stringValue: string, argumentName: string, message = null) {
+        if (stringValue === null || stringValue == undefined || stringValue === "") {
+            message = message || `${argumentName} can't be null/undefined or empty string.`;
+            throw new Error(message);
         }
     }
 }
