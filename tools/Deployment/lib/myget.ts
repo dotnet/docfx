@@ -3,14 +3,20 @@
 
 import * as glob from "glob";
 
-import { Common } from "./common";
+import { Common, Guard } from "./common";
 
 export class Myget {
-    static publishToMyget(artifactsFolder, mygetCommand, mygetKey, mygetUrl) {
+    static publishToMyget(artifactsFolder: string, mygetCommand: string, mygetKey: string, mygetUrl: string) {
+        Guard.argumentNotNullOrEmpty(artifactsFolder, "artifactsFolder");
+        Guard.argumentNotNullOrEmpty(mygetCommand, "mygetCommand");
+        Guard.argumentNotNullOrEmpty(mygetKey, "mygetKey");
+        Guard.argumentNotNullOrEmpty(mygetUrl, "mygetUrl");
+
         let packages = glob.sync(artifactsFolder + "/**/!(*.symbols).nupkg");
         let promises = packages.map(p => {
-            return Common.exec(mygetCommand, ["push", p, mygetKey, "-Source", mygetUrl]);
+            return Common.execAsync(mygetCommand, ["push", p, mygetKey, "-Source", mygetUrl]);
         });
+
         return Promise.all(promises);
     }
 }

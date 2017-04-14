@@ -4,14 +4,15 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import * as childProcess from "child-process-promise";
+import * as cp from "child-process-promise";
 import * as jszip from "jszip";
 import * as sha1 from "sha1";
 
-let spawn = childProcess.spawn;
-
 export class Common {
-    static async exec(command, args, workDir = null) {
+    static async execAsync(command: string, args: Array<string>, workDir = null):Promise<void> {
+        Guard.argumentNotNullOrEmpty(command, "command");
+        Guard.argumentNotNull(args, "args");
+
         let cwd = process.cwd();
         if (workDir) {
             if (!path.isAbsolute(workDir)) {
@@ -24,7 +25,7 @@ export class Common {
             process.chdir(workDir);
         }
 
-        let promise = spawn(command, args);
+        let promise = cp.spawn(command, args);
         let childProcess = promise.childProcess;
         childProcess.stdout.on("data", (data) => {
             process.stdout.write(data.toString());
@@ -38,6 +39,9 @@ export class Common {
     }
 
     static zipAssests(assetFolder: string, targetPath: string) {
+        Guard.argumentNotNullOrEmpty(assetFolder, "assetFolder");
+        Guard.argumentNotNullOrEmpty(targetPath, "targetPath");
+
         let zip = new jszip();
 
         fs.readdirSync(assetFolder).forEach(file => {
@@ -60,7 +64,9 @@ export class Common {
         fs.writeFileSync(targetPath, buffer);
     }
 
-    static computeSha1FromZip(zipPath) {
+    static computeSha1FromZip(zipPath: string): string {
+        Guard.argumentNotNullOrEmpty(zipPath, "zipPath");
+
         if (!zipPath) {
             throw new Error(`${zipPath} can't null or undefined.`);
         }
@@ -72,7 +78,9 @@ export class Common {
         return sha1(buffer);
     }
 
-    static getVersionFromReleaseNote(releaseNotePath): string {
+    static getVersionFromReleaseNote(releaseNotePath: string): string {
+        Guard.argumentNotNullOrEmpty(releaseNotePath, "releaseNotePath");
+
         if (!fs.existsSync(releaseNotePath)) {
             throw new Error(`${releaseNotePath} doesn't exist.`);
         }
@@ -88,7 +96,9 @@ export class Common {
         return match[1].trim();
     }
 
-    static getDescriptionFromReleaseNote(releaseNotePath): string {
+    static getDescriptionFromReleaseNote(releaseNotePath: string): string {
+        Guard.argumentNotNullOrEmpty(releaseNotePath, "releaseNotePath");
+
         if (!fs.existsSync(releaseNotePath)) {
             throw new Error(`${releaseNotePath} doesn't exist.`);
         }
@@ -104,8 +114,45 @@ export class Common {
         return match[1].trim();
     }
 
-    static isReleaseNoteUpdated(releaseNotePath) {
-        // TODO: implement
-        throw new Error("Not implemented.");
+    static async isReleaseNoteUpdatedAsync(gitRootPath: string, releaseNotePath: string): Promise<boolean> {
+        Guard.argumentNotNullOrEmpty(gitRootPath, "gitRootPath");
+        Guard.argumentNotNullOrEmpty(releaseNotePath, "releaseNotePath");
+
+        let files = await this.getLatestUpdatedFilesAsync();
+        if (!files) {
+            return false;
+        }
+
+        for (let file in files) {
+            if (path.join(gitRootPath, file) === releaseNotePath) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    static async getLatestUpdatedFilesAsync(): Promise<Array<string>> {
+        let result = await cp.exec("git diff-tree --no-commit-id --name-only -r HEAD");
+        let content = result.stdout.trim();
+        if (!content) {
+            return null;
+        }
+
+        return content.split(/\r?\n/);
+    }
+}
+
+export class Guard {
+    static argumentNotNull(argumentValue: Object, argumentName: string) {
+        if (argumentValue === null || argumentValue === undefined) {
+            throw new Error(`${argumentName} can't be null/undefined.`);
+        }
+    }
+
+    static argumentNotNullOrEmpty(stringValue: string, argumentName: string) {
+        if (stringValue === null || stringValue === "") {
+            throw new Error(`${argumentName} can't be null/undefined or empty string.`);
+        }
     }
 }

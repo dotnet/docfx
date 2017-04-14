@@ -1,16 +1,16 @@
 {
   "docfx": {
-    "home": "../../../docfx/",
+    "home": "../../",
     "repoUrl": "git@github.com-ci:dotnet/docfx.git",
     "docfxSeedHome": "../../../docfx-seed/",
     "e2eTestsHome": "../../test/docfx.E2E.Tests/",
     "targetFolder": "../../target/",
     "artifactsFolder": "../../artifacts/",
     "exe": "../../target/Release/docfx/docfx.exe",
-    "releaseNotePath": "../../../docfx/RELEASENOTE.md",
-    "releaseFolder": "../../../docfx/target/Release/docfx",
-    "assetZipPath": "../../../docfx/Documentation/_site/tutorial/artifacts/docfx.zip",
-    "siteFolder": "../../../docfx/Documentation/_site"
+    "releaseNotePath": "../../RELEASENOTE.md",
+    "releaseFolder": "../../target/Release/docfx",
+    "assetZipPath": "../../Documentation/_site/tutorial/artifacts/docfx.zip",
+    "siteFolder": "../../Documentation/_site"
   },
   "myget": {
     "exe": "C:/nuget.exe",
@@ -22,9 +22,9 @@
     "version": "46.0.1"
   },
   "choco": {
-    "homeDir": "../../../docfx/src/nuspec/chocolatey/docfx/",
-    "nuspec": "../../../docfx/src/nuspec/chocolatey/docfx/docfx.nuspec",
-    "chocoScript": "../../../docfx/src/nuspec/chocolatey/docfx/tools/chocolateyinstall.ps1"
+    "homeDir": "../../src/nuspec/chocolatey/docfx/",
+    "nuspec": "../../src/nuspec/chocolatey/docfx/docfx.nuspec",
+    "chocoScript": "../../src/nuspec/chocolatey/docfx/tools/chocolateyinstall.ps1"
   },
   "git": {
     "name": "DocFX CI",

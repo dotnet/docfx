@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 import * as axios from "axios";
+import { Guard } from "./common";
 
 export class GithubApi {
     private readonly request;
@@ -19,6 +20,9 @@ export class GithubApi {
     }
 
     async publishReleaseAndAssetAsync(releaseDescription: ReleaseDescription, assetInfo: AssetInfo) {
+        Guard.argumentNotNull(releaseDescription, "releaseDescription");
+        Guard.argumentNotNull(assetInfo, "assetInfo");
+
         await this.publishReleaseAsync(releaseDescription);
         return this.publishAssetAsync(assetInfo);
     }

@@ -4,13 +4,32 @@
 import * as fs from "fs-extra";
 import * as path from "path";
 
-import { Common } from "./common";
+import { Common, Guard } from "./common";
 import { GithubApi, AssetInfo, ReleaseDescription } from "./githubApi";
 
 export class Github {
-    static updateGithubReleaseAsync(repoUrl: string, releaseNotePath: string, releaseFolder: string, assetZipPath: string, githubToken: string) {
-        Common.zipAssests(releaseFolder, assetZipPath);
+    static async updateGithubReleaseAsync(
+        repoUrl: string,
+        gitRootPath: string,
+        releaseNotePath: string,
+        releaseFolder: string,
+        assetZipPath: string,
+        githubToken: string): Promise<void> {
 
+        Guard.argumentNotNullOrEmpty(repoUrl, "repoUrl");
+        Guard.argumentNotNullOrEmpty(gitRootPath, "gitRootRepo");
+        Guard.argumentNotNullOrEmpty(releaseNotePath, "releaseNotePath");
+        Guard.argumentNotNullOrEmpty(releaseFolder, "releaseFolder");
+        Guard.argumentNotNullOrEmpty(assetZipPath, "assetZipPath");
+        Guard.argumentNotNullOrEmpty(githubToken, "githubToken");
+
+        let isUpdated = await Common.isReleaseNoteUpdatedAsync(gitRootPath, releaseNotePath);
+        if (!isUpdated) {
+            console.log(`${releaseNotePath} hasn't been changed. Ignored to update github release package.`);
+            return Promise.resolve();
+        }
+
+        Common.zipAssests(releaseFolder, assetZipPath);
         let githubApi = new GithubApi(repoUrl, githubToken);
         let releaseDescription = this.getReleaseDescription(releaseNotePath);
 
@@ -25,6 +44,35 @@ export class Github {
             .catch((err) => {
                 console.error(err);
             });
+    }
+
+    static async updateGhPagesAsync(
+        repoUrl: string,
+        siteFolder: string,
+        gitUserName: string,
+        gitUserEmail: string,
+        gitCommitMessage: string) {
+
+        Guard.argumentNotNullOrEmpty(repoUrl, "repoUrl");
+        Guard.argumentNotNullOrEmpty(siteFolder, "siteFolder");
+        Guard.argumentNotNullOrEmpty(gitUserName, "gitUserName");
+        Guard.argumentNotNullOrEmpty(gitUserEmail, "gitUserEmail");
+        Guard.argumentNotNullOrEmpty(gitCommitMessage, "gitCommitMessage");
+
+        let branch = "gh-pages";
+        let targetDir = "docfxsite";
+
+        this.cleanGitInfo(siteFolder);
+
+        await Common.execAsync("git", ["clone", repoUrl, "-b", branch, targetDir]);
+        fs.mkdirsSync(path.join(siteFolder, ".git"));
+        fs.copySync(path.join(targetDir, ".git"), path.join(siteFolder, ".git"));
+
+        await Common.execAsync("git", ["config", "user.name", gitUserName], siteFolder);
+        await Common.execAsync("git", ["config", "user.email", gitUserEmail], siteFolder);
+        await Common.execAsync("git", ["add", "."], siteFolder);
+        await Common.execAsync("git", ["commit", "-m", gitCommitMessage], siteFolder);
+        return Common.execAsync("git", ["push", "origin", branch], siteFolder);
     }
 
     private static getReleaseDescription(releaseNotePath: string): ReleaseDescription {
@@ -50,23 +98,6 @@ export class Github {
         };
 
         return assetInfo;
-    }
-
-    static async updateGhPagesAsync(repoUrl: string, siteFolder: string, gitUserName: string, gitUserEmail: string, gitCommitMessage: string) {
-        let branch = "gh-pages";
-        let targetDir = "docfxsite";
-
-        this.cleanGitInfo(siteFolder);
-
-        // await Common.exec("git", ["clone", repoUrl, "-b", branch, targetDir]);
-        fs.mkdirsSync(path.join(siteFolder, ".git"));
-        fs.copySync(path.join(targetDir, ".git"), path.join(siteFolder, ".git"));
-
-        await Common.exec("git", ["config", "user.name", gitUserName], siteFolder);
-        await Common.exec("git", ["config", "user.email", gitUserEmail], siteFolder);
-        await Common.exec("git", ["add", "."], siteFolder);
-        await Common.exec("git", ["commit", "-m", gitCommitMessage], siteFolder);
-        return Common.exec("git", ["push", "origin", branch], siteFolder);
     }
 
     private static cleanGitInfo(repoRootFolder: string) {

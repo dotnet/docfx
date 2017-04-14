@@ -16,8 +16,7 @@ let Myget = require("./out/myget").Myget;
 let Github = require("./out/github").Github;
 let Chocolatey = require("./out/chocolatey").Chocolatey;
 
-let scriptHome = __dirname;
-let configFile = path.join(scriptHome, "config_gulp.json");
+let configFile = path.resolve("config_gulp.json");
 
 if (!fs.existsSync(configFile)) {
     throw new Error("Can't find config file");
@@ -58,7 +57,7 @@ gulp.task("build", () => {
         throw new Error("Can't find docfx home directory in configuration.");
     }
 
-    return Common.exec("powershell", ["./build.ps1", "-prod"], config.docfx["home"]);
+    return Common.execAsync("powershell", ["./build.ps1", "-prod"], config.docfx["home"]);
 });
 
 gulp.task("clean", () => {
@@ -66,13 +65,13 @@ gulp.task("clean", () => {
         throw new Error("Can't find docfx artifacts folder in configuration.");
     }
 
-    let artifactsFolder = path.join(scriptHome, config.docfx["artifactsFolder"]);
+    let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
 
     if (!config.docfx["targetFolder"]) {
         throw new Error("Can't find docfx target folder in configuration.");
     }
 
-    let targetFolder = path.join(scriptHome, config.docfx["targetFolder"]);
+    let targetFolder = path.resolve(config.docfx["targetFolder"]);
 
     return del([artifactsFolder, targetFolder], { force: true }).then((paths) => {
         if (!paths || paths.length === 0) {
@@ -88,7 +87,7 @@ gulp.task("e2eTest:installFirefox", () => {
         throw new Error("Can't find firefox version in configuration.");
     }
 
-    return Common.exec("choco", ["install", "firefox", "--version=" + config.firefox["version"], "-y"]);
+    return Common.execAsync("choco", ["install", "firefox", "--version=" + config.firefox["version"], "-y"]);
 });
 
 gulp.task("e2eTest:buildSeed", () => {
@@ -100,7 +99,7 @@ gulp.task("e2eTest:buildSeed", () => {
         throw new Error("Can't find docfx-seed in configuration.");
     }
 
-    return Common.exec(path.join(scriptHome, config.docfx["exe"]), ["docfx.json"], config.docfx["docfxSeedHome"]);
+    return Common.execAsync(path.resolve(config.docfx["exe"]), ["docfx.json"], config.docfx["docfxSeedHome"]);
 });
 
 gulp.task("e2eTest:restore", () => {
@@ -108,7 +107,7 @@ gulp.task("e2eTest:restore", () => {
         throw new Error("Can't find E2ETest directory in configuration.");
     }
 
-    return Common.exec("dotnet", ["restore"], config.docfx["e2eTestsHome"]);
+    return Common.execAsync("dotnet", ["restore"], config.docfx["e2eTestsHome"]);
 });
 
 gulp.task("e2eTest:test", () => {
@@ -116,7 +115,7 @@ gulp.task("e2eTest:test", () => {
         throw new Error("Can't find E2ETest directory in configuration.");
     }
 
-    return Common.exec("dotnet", ["test"], config.docfx["e2eTestsHome"]);
+    return Common.execAsync("dotnet", ["test"], config.docfx["e2eTestsHome"]);
 });
 
 gulp.task("e2eTest", gulp.series("e2eTest:installFirefox", "e2eTest:buildSeed", "e2eTest:restore", "e2eTest:test"));
@@ -143,7 +142,7 @@ gulp.task("publish:myget-dev", () => {
     }
 
     let mygetToken = process.env.MGAPIKEY;
-    let artifactsFolder = path.join(scriptHome, config.docfx["artifactsFolder"]);
+    let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
     return Myget.publishToMyget(artifactsFolder, config.myget["exe"], mygetToken, config.myget["devUrl"]);
 });
 
@@ -164,7 +163,7 @@ gulp.task("publish:myget-test", () => {
         throw new Error("Can't find myget url for docfx test feed in configuration.");
     }
 
-    let artifactsFolder = path.join(scriptHome, config.docfx["artifactsFolder"]);
+    let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
     return Myget.publishToMyget(artifactsFolder, config.myget["exe"], config.myget["apiKey"], config.myget["testUrl"]);
 });
 
@@ -185,7 +184,7 @@ gulp.task("publish:myget-master", () => {
         throw new Error("Can't find myget url for docfx master feed in configuration.");
     }
 
-    let artifactsFolder = path.join(scriptHome, config.docfx["artifactsFolder"]);
+    let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
     return Myget.publishToMyget(artifactsFolder, config.myget["exe"], config.myget["apiKey"], config.myget["masterUrl"]);
 });
 
@@ -220,6 +219,10 @@ gulp.task("updateGhPage", () => {
 });
 
 gulp.task("publish:gh-release", () => {
+    if (!config.docfx["home"]) {
+        throw new Error("Can't find home path in configuration.");
+    }
+
     if (!config.docfx["releaseNotePath"]) {
         throw new Error("Can't find RELEASENOTE path in configuration.");
     }
@@ -238,11 +241,12 @@ gulp.task("publish:gh-release", () => {
 
     let githubToken = process.env.TOKEN;
 
-    let releaseNotePath = path.join(scriptHome, config.docfx["releaseNotePath"]);
-    let releaseFolder = path.join(scriptHome, config.docfx["releaseFolder"]);
-    let assetZipPath = path.join(scriptHome, config.docfx["assetZipPath"]);
+    let gitRootPath = path.resolve(config.docfx["home"]);
+    let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
+    let releaseFolder = path.resolve(config.docfx["releaseFolder"]);
+    let assetZipPath = path.resolve(config.docfx["assetZipPath"]);
 
-    let promise = Github.updateGithubReleaseAsync(config.docfx["repoUrl"], releaseNotePath, releaseFolder, assetZipPath, githubToken);
+    let promise = Github.updateGithubReleaseAsync(config.docfx["repoUrl"], gitRootPath, releaseNotePath, releaseFolder, assetZipPath, githubToken);
     promise.then(() => {
         console.log("Update github release and assets successfully.");
     }).catch(err => {
@@ -252,6 +256,10 @@ gulp.task("publish:gh-release", () => {
 });
 
 gulp.task("publish:chocolatey", () => {
+    if (!config.docfx["home"]) {
+        throw new Error("Can't find home path in configuration.");
+    }
+
     if (!config.choco["homeDir"]) {
         throw new Error("Can't find homedir for chocolatey in configuration.");
     }
@@ -272,20 +280,21 @@ gulp.task("publish:chocolatey", () => {
         throw new Error("Can't find released zip path in configuration.");
     }
 
-    if (!process.env.CHOCO_TOKEN) {
-        throw new Error('No chocolatey.org account token in the environment.');
-    }
+    // if (!process.env.CHOCO_TOKEN) {
+    //     throw new Error('No chocolatey.org account token in the environment.');
+    // }
 
     let chocoToken = process.env.CHOCO_TOKEN;
 
-    let releaseNotePath = path.join(scriptHome, config.docfx["releaseNotePath"]);
-    let assetZipPath = path.join(scriptHome, config.docfx["assetZipPath"]);
+    let gitRootPath = path.resolve(config.docfx["home"]);
+    let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
+    let assetZipPath = path.resolve(config.docfx["assetZipPath"]);
 
-    let chocoScript = path.join(scriptHome, config.choco["chocoScript"]);
-    let nuspec = path.join(scriptHome, config.choco["nuspec"]);
-    let homeDir = path.join(scriptHome, config.choco["homeDir"]);
+    let chocoScript = path.resolve(config.choco["chocoScript"]);
+    let nuspec = path.resolve(config.choco["nuspec"]);
+    let homeDir = path.resolve(config.choco["homeDir"]);
 
-    let promise = Chocolatey.publishToChocolateyAsync(releaseNotePath, assetZipPath, chocoScript, nuspec, homeDir, chocoToken);
+    let promise = Chocolatey.publishToChocolateyAsync(gitRootPath, releaseNotePath, assetZipPath, chocoScript, nuspec, homeDir, chocoToken);
     promise.then(() => {
         console.log("Publish to chocolatey successfully.");
     }).catch(err => {
@@ -298,5 +307,5 @@ gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test")
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
 gulp.task("stable", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
 gulp.task("master", gulp.series("clean", "build", "e2eTest", "updateGhPage", "publish:gh-release", "publish:chocolatey", "publish:myget-master"));
-
+gulp.task("debug", gulp.series("publish:chocolatey"));
 gulp.task("default", gulp.series("dev"));
