@@ -315,6 +315,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
 - name: Topic2
   href: {referencedToc}
 ";
+            // Test for OS sensitive file path
+            if (PathUtility.IsPathCaseInsensitive())
+            {
+                subToc = subToc.ToUpperInvariant();
+            }
+
             var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
             FileCollection files = new FileCollection(_inputFolder);
             files.Add(DocumentType.Article, new[] { file1, file2, file3, toc, subToc });
