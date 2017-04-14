@@ -263,10 +263,10 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
         #endregion
 
-        #region HrefAttribute
+        #region UrlContentAttribute
 
         [Fact]
-        public void TestSimpleModelWithHrefAttributeShouldSucceed()
+        public void TestSimpleModelWithUrlContentAttributeShouldSucceed()
         {
             var model = new SimpleModel
             {
@@ -290,7 +290,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             var handler = new CompositeModelAttributeHandler(
                 new UniqueIdentityReferenceHandler(),
                 new MarkdownContentHandler(),
-                new HrefHandler());
+                new UrlContentHandler());
             if (context == null)
             {
                 context = GetDefaultContext();
@@ -391,7 +391,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             public string Identity { get; set; }
             [UniqueIdentityReference]
             public List<object> Identities { get; set; }
-            [Href]
+            [UrlContent]
             public string Href { get; set; }
         }
 

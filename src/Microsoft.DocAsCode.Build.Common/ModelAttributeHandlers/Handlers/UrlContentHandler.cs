@@ -13,9 +13,9 @@ namespace Microsoft.DocAsCode.Build.Common
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    public class HrefHandler : IModelAttributeHandler
+    public class UrlContentHandler : IModelAttributeHandler
     {
-        private readonly ConcurrentDictionary<Type, HrefHandlerImpl> _cache = new ConcurrentDictionary<Type, HrefHandlerImpl>();
+        private readonly ConcurrentDictionary<Type, UrlContentHandlerImpl> _cache = new ConcurrentDictionary<Type, UrlContentHandlerImpl>();
 
         public object Handle(object obj, HandleModelAttributesContext context)
         {
@@ -23,13 +23,24 @@ namespace Microsoft.DocAsCode.Build.Common
             {
                 return null;
             }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (context.Host == null)
+            {
+                throw new ArgumentNullException(nameof(context.Host));
+            }
+
             var type = obj.GetType();
-            return _cache.GetOrAdd(type, t => new HrefHandlerImpl(t, this)).Handle(obj, context);
+            return _cache.GetOrAdd(type, t => new UrlContentHandlerImpl(t, this)).Handle(obj, context);
         }
 
-        private sealed class HrefHandlerImpl : BaseModelAttributeHandler<HrefAttribute>
+        private sealed class UrlContentHandlerImpl : BaseModelAttributeHandler<UrlContentAttribute>
         {
-            public HrefHandlerImpl(Type type, IModelAttributeHandler handler) : base(type, handler)
+            public UrlContentHandlerImpl(Type type, IModelAttributeHandler handler) : base(type, handler)
             {
             }
 
@@ -70,14 +81,14 @@ namespace Microsoft.DocAsCode.Build.Common
                     return list;
                 }
 
-                throw new NotSupportedException($"Type {currentObj.GetType()} is NOT a supported type for {nameof(HrefAttribute)}");
+                throw new NotSupportedException($"Type {currentObj.GetType()} is NOT a supported type for {nameof(UrlContentAttribute)}");
             }
 
             protected override IEnumerable<PropInfo> GetProps(Type type)
             {
                 return from prop in base.GetProps(type)
                        where prop.Prop.GetSetMethod() != null
-                       where !prop.Prop.IsDefined(typeof(HrefIgnoreAttribute), false)
+                       where !prop.Prop.IsDefined(typeof(UrlContentIgnoreAttribute), false)
                        select prop;
             }
 

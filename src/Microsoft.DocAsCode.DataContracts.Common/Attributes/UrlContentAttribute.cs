@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     using System;
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
-    public class HrefIgnoreAttribute : Attribute
+    public class UrlContentAttribute : Attribute
     {
     }
 }
