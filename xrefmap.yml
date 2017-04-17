@@ -8938,12 +8938,12 @@ references:
   commentId: T:Microsoft.DocAsCode.Build.Engine.TemplateRendererResource
   fullName: Microsoft.DocAsCode.Build.Engine.TemplateRendererResource
   nameWithType: TemplateRendererResource
-- uid: Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.#ctor(System.String,System.String)
-  name: TemplateRendererResource(String, String)
-  href: api/Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.html#Microsoft_DocAsCode_Build_Engine_TemplateRendererResource__ctor_System_String_System_String_
-  commentId: M:Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.#ctor(System.String,System.String)
-  fullName: Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.TemplateRendererResource(System.String, System.String)
-  nameWithType: TemplateRendererResource.TemplateRendererResource(String, String)
+- uid: Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.#ctor(System.String,System.String,System.String)
+  name: TemplateRendererResource(String, String, String)
+  href: api/Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.html#Microsoft_DocAsCode_Build_Engine_TemplateRendererResource__ctor_System_String_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.#ctor(System.String,System.String,System.String)
+  fullName: Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.TemplateRendererResource(System.String, System.String, System.String)
+  nameWithType: TemplateRendererResource.TemplateRendererResource(String, String, String)
 - uid: Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.#ctor*
   name: TemplateRendererResource
   href: api/Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.html#Microsoft_DocAsCode_Build_Engine_TemplateRendererResource__ctor_
@@ -8974,6 +8974,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.ResourceName
   fullName: Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.ResourceName
   nameWithType: TemplateRendererResource.ResourceName
+- uid: Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.TemplateName
+  name: TemplateName
+  href: api/Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.html#Microsoft_DocAsCode_Build_Engine_TemplateRendererResource_TemplateName
+  commentId: P:Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.TemplateName
+  fullName: Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.TemplateName
+  nameWithType: TemplateRendererResource.TemplateName
+- uid: Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.TemplateName*
+  name: TemplateName
+  href: api/Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.html#Microsoft_DocAsCode_Build_Engine_TemplateRendererResource_TemplateName_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.TemplateName
+  fullName: Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.TemplateName
+  nameWithType: TemplateRendererResource.TemplateName
 - uid: Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.TemplateRenderTypeMapping
   name: TemplateRenderTypeMapping
   href: api/Microsoft.DocAsCode.Build.Engine.TemplateRendererResource.html#Microsoft_DocAsCode_Build_Engine_TemplateRendererResource_TemplateRenderTypeMapping
@@ -9016,42 +9028,42 @@ references:
   commentId: T:Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo
   fullName: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo
   nameWithType: TemplateResourceInfo
-- uid: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.#ctor(System.String,System.String,System.Boolean)
-  name: TemplateResourceInfo(String, String, Boolean)
-  href: api/Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html#Microsoft_DocAsCode_Build_Engine_TemplateResourceInfo__ctor_System_String_System_String_System_Boolean_
-  commentId: M:Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.#ctor(System.String,System.String,System.Boolean)
-  fullName: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.TemplateResourceInfo(System.String, System.String, System.Boolean)
-  nameWithType: TemplateResourceInfo.TemplateResourceInfo(String, String, Boolean)
+- uid: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.#ctor(System.String)
+  name: TemplateResourceInfo(String)
+  href: api/Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html#Microsoft_DocAsCode_Build_Engine_TemplateResourceInfo__ctor_System_String_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.#ctor(System.String)
+  fullName: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.TemplateResourceInfo(System.String)
+  nameWithType: TemplateResourceInfo.TemplateResourceInfo(String)
 - uid: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.#ctor*
   name: TemplateResourceInfo
   href: api/Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html#Microsoft_DocAsCode_Build_Engine_TemplateResourceInfo__ctor_
   commentId: Overload:Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.#ctor
   fullName: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.TemplateResourceInfo
   nameWithType: TemplateResourceInfo.TemplateResourceInfo
-- uid: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.FilePath
-  name: FilePath
-  href: api/Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html#Microsoft_DocAsCode_Build_Engine_TemplateResourceInfo_FilePath
-  commentId: P:Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.FilePath
-  fullName: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.FilePath
-  nameWithType: TemplateResourceInfo.FilePath
-- uid: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.FilePath*
-  name: FilePath
-  href: api/Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html#Microsoft_DocAsCode_Build_Engine_TemplateResourceInfo_FilePath_
-  commentId: Overload:Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.FilePath
-  fullName: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.FilePath
-  nameWithType: TemplateResourceInfo.FilePath
-- uid: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.IsRegexPattern
-  name: IsRegexPattern
-  href: api/Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html#Microsoft_DocAsCode_Build_Engine_TemplateResourceInfo_IsRegexPattern
-  commentId: P:Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.IsRegexPattern
-  fullName: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.IsRegexPattern
-  nameWithType: TemplateResourceInfo.IsRegexPattern
-- uid: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.IsRegexPattern*
-  name: IsRegexPattern
-  href: api/Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html#Microsoft_DocAsCode_Build_Engine_TemplateResourceInfo_IsRegexPattern_
-  commentId: Overload:Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.IsRegexPattern
-  fullName: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.IsRegexPattern
-  nameWithType: TemplateResourceInfo.IsRegexPattern
+- uid: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.Equals(System.Object)
+  name: Equals(Object)
+  href: api/Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html#Microsoft_DocAsCode_Build_Engine_TemplateResourceInfo_Equals_System_Object_
+  commentId: M:Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.Equals(System.Object)
+  fullName: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.Equals(System.Object)
+  nameWithType: TemplateResourceInfo.Equals(Object)
+- uid: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.Equals*
+  name: Equals
+  href: api/Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html#Microsoft_DocAsCode_Build_Engine_TemplateResourceInfo_Equals_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.Equals
+  fullName: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.Equals
+  nameWithType: TemplateResourceInfo.Equals
+- uid: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.GetHashCode
+  name: GetHashCode()
+  href: api/Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html#Microsoft_DocAsCode_Build_Engine_TemplateResourceInfo_GetHashCode
+  commentId: M:Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.GetHashCode
+  fullName: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.GetHashCode()
+  nameWithType: TemplateResourceInfo.GetHashCode()
+- uid: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.GetHashCode*
+  name: GetHashCode
+  href: api/Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html#Microsoft_DocAsCode_Build_Engine_TemplateResourceInfo_GetHashCode_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.GetHashCode
+  fullName: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.GetHashCode
+  nameWithType: TemplateResourceInfo.GetHashCode
 - uid: Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.ResourceKey
   name: ResourceKey
   href: api/Microsoft.DocAsCode.Build.Engine.TemplateResourceInfo.html#Microsoft_DocAsCode_Build_Engine_TemplateResourceInfo_ResourceKey
@@ -18347,6 +18359,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Common.PathUtility.IsDirectory
   fullName: Microsoft.DocAsCode.Common.PathUtility.IsDirectory
   nameWithType: PathUtility.IsDirectory
+- uid: Microsoft.DocAsCode.Common.PathUtility.IsPathCaseInsensitive
+  name: IsPathCaseInsensitive()
+  href: api/Microsoft.DocAsCode.Common.PathUtility.html#Microsoft_DocAsCode_Common_PathUtility_IsPathCaseInsensitive
+  commentId: M:Microsoft.DocAsCode.Common.PathUtility.IsPathCaseInsensitive
+  fullName: Microsoft.DocAsCode.Common.PathUtility.IsPathCaseInsensitive()
+  nameWithType: PathUtility.IsPathCaseInsensitive()
+- uid: Microsoft.DocAsCode.Common.PathUtility.IsPathCaseInsensitive*
+  name: IsPathCaseInsensitive
+  href: api/Microsoft.DocAsCode.Common.PathUtility.html#Microsoft_DocAsCode_Common_PathUtility_IsPathCaseInsensitive_
+  commentId: Overload:Microsoft.DocAsCode.Common.PathUtility.IsPathCaseInsensitive
+  fullName: Microsoft.DocAsCode.Common.PathUtility.IsPathCaseInsensitive
+  nameWithType: PathUtility.IsPathCaseInsensitive
 - uid: Microsoft.DocAsCode.Common.PathUtility.IsPathUnderSpecificFolder(System.String,System.String)
   name: IsPathUnderSpecificFolder(String, String)
   href: api/Microsoft.DocAsCode.Common.PathUtility.html#Microsoft_DocAsCode_Common_PathUtility_IsPathUnderSpecificFolder_System_String_System_String_
@@ -25062,6 +25086,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Dfm.DfmNoteBlockRule.Name
   fullName: Microsoft.DocAsCode.Dfm.DfmNoteBlockRule.Name
   nameWithType: DfmNoteBlockRule.Name
+- uid: Microsoft.DocAsCode.Dfm.DfmNoteBlockRule.NoteMatcher
+  name: NoteMatcher
+  href: api/Microsoft.DocAsCode.Dfm.DfmNoteBlockRule.html#Microsoft_DocAsCode_Dfm_DfmNoteBlockRule_NoteMatcher
+  commentId: P:Microsoft.DocAsCode.Dfm.DfmNoteBlockRule.NoteMatcher
+  fullName: Microsoft.DocAsCode.Dfm.DfmNoteBlockRule.NoteMatcher
+  nameWithType: DfmNoteBlockRule.NoteMatcher
+- uid: Microsoft.DocAsCode.Dfm.DfmNoteBlockRule.NoteMatcher*
+  name: NoteMatcher
+  href: api/Microsoft.DocAsCode.Dfm.DfmNoteBlockRule.html#Microsoft_DocAsCode_Dfm_DfmNoteBlockRule_NoteMatcher_
+  commentId: Overload:Microsoft.DocAsCode.Dfm.DfmNoteBlockRule.NoteMatcher
+  fullName: Microsoft.DocAsCode.Dfm.DfmNoteBlockRule.NoteMatcher
+  nameWithType: DfmNoteBlockRule.NoteMatcher
 - uid: Microsoft.DocAsCode.Dfm.DfmNoteBlockRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
   name: TryMatch(IMarkdownParser, IMarkdownParsingContext)
   href: api/Microsoft.DocAsCode.Dfm.DfmNoteBlockRule.html#Microsoft_DocAsCode_Dfm_DfmNoteBlockRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_
@@ -25452,6 +25488,30 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.TryMatch
   fullName: Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.TryMatch
   nameWithType: DfmVideoBlockRule.TryMatch
+- uid: Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.TryMatchOld(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
+  name: TryMatchOld(IMarkdownParser, IMarkdownParsingContext)
+  href: api/Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.html#Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_TryMatchOld_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_
+  commentId: M:Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.TryMatchOld(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
+  fullName: Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.TryMatchOld(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser, Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)
+  nameWithType: DfmVideoBlockRule.TryMatchOld(IMarkdownParser, IMarkdownParsingContext)
+- uid: Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.TryMatchOld*
+  name: TryMatchOld
+  href: api/Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.html#Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_TryMatchOld_
+  commentId: Overload:Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.TryMatchOld
+  fullName: Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.TryMatchOld
+  nameWithType: DfmVideoBlockRule.TryMatchOld
+- uid: Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.VideoMatcher
+  name: VideoMatcher
+  href: api/Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.html#Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_VideoMatcher
+  commentId: P:Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.VideoMatcher
+  fullName: Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.VideoMatcher
+  nameWithType: DfmVideoBlockRule.VideoMatcher
+- uid: Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.VideoMatcher*
+  name: VideoMatcher
+  href: api/Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.html#Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_VideoMatcher_
+  commentId: Overload:Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.VideoMatcher
+  fullName: Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.VideoMatcher
+  nameWithType: DfmVideoBlockRule.VideoMatcher
 - uid: Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.VideoRegex
   name: VideoRegex
   href: api/Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.html#Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_VideoRegex
@@ -27051,282 +27111,6 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Dfm.TagNameBlockPathQueryOption.ValidateAndPrepare
   fullName: Microsoft.DocAsCode.Dfm.TagNameBlockPathQueryOption.ValidateAndPrepare
   nameWithType: TagNameBlockPathQueryOption.ValidateAndPrepare
-- uid: Microsoft.DocAsCode.Dfm.VscPreview
-  name: Microsoft.DocAsCode.Dfm.VscPreview
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.html
-  commentId: N:Microsoft.DocAsCode.Dfm.VscPreview
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview
-  nameWithType: Microsoft.DocAsCode.Dfm.VscPreview
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException
-  name: DocfxPreviewException
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.html
-  commentId: T:Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException
-  nameWithType: DocfxPreviewException
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.#ctor
-  name: DocfxPreviewException()
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.html#Microsoft_DocAsCode_Dfm_VscPreview_DocfxPreviewException__ctor
-  commentId: M:Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.#ctor
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.DocfxPreviewException()
-  nameWithType: DocfxPreviewException.DocfxPreviewException()
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.#ctor(System.String)
-  name: DocfxPreviewException(String)
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.html#Microsoft_DocAsCode_Dfm_VscPreview_DocfxPreviewException__ctor_System_String_
-  commentId: M:Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.#ctor(System.String)
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.DocfxPreviewException(System.String)
-  nameWithType: DocfxPreviewException.DocfxPreviewException(String)
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.#ctor(System.String,System.Exception)
-  name: DocfxPreviewException(String, Exception)
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.html#Microsoft_DocAsCode_Dfm_VscPreview_DocfxPreviewException__ctor_System_String_System_Exception_
-  commentId: M:Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.#ctor(System.String,System.Exception)
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.DocfxPreviewException(System.String, System.Exception)
-  nameWithType: DocfxPreviewException.DocfxPreviewException(String, Exception)
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.#ctor*
-  name: DocfxPreviewException
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.html#Microsoft_DocAsCode_Dfm_VscPreview_DocfxPreviewException__ctor_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.#ctor
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.DocfxPreviewException.DocfxPreviewException
-  nameWithType: DocfxPreviewException.DocfxPreviewException
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.DocfxProcessor
-  name: DocfxProcessor
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.DocfxProcessor.html
-  commentId: T:Microsoft.DocAsCode.Dfm.VscPreview.DocfxProcessor
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.DocfxProcessor
-  nameWithType: DocfxProcessor
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.DocfxProcessor.DocfxProcess(System.String)
-  name: DocfxProcess(String)
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.DocfxProcessor.html#Microsoft_DocAsCode_Dfm_VscPreview_DocfxProcessor_DocfxProcess_System_String_
-  commentId: M:Microsoft.DocAsCode.Dfm.VscPreview.DocfxProcessor.DocfxProcess(System.String)
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.DocfxProcessor.DocfxProcess(System.String)
-  nameWithType: DocfxProcessor.DocfxProcess(String)
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.DocfxProcessor.DocfxProcess*
-  name: DocfxProcess
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.DocfxProcessor.html#Microsoft_DocAsCode_Dfm_VscPreview_DocfxProcessor_DocfxProcess_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.VscPreview.DocfxProcessor.DocfxProcess
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.DocfxProcessor.DocfxProcess
-  nameWithType: DocfxProcessor.DocfxProcess
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewCommand
-  name: PreviewCommand
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewCommand.html
-  commentId: T:Microsoft.DocAsCode.Dfm.VscPreview.PreviewCommand
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewCommand
-  nameWithType: PreviewCommand
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewCommand.ParsePreviewCommand(System.String)
-  name: ParsePreviewCommand(String)
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewCommand.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewCommand_ParsePreviewCommand_System_String_
-  commentId: M:Microsoft.DocAsCode.Dfm.VscPreview.PreviewCommand.ParsePreviewCommand(System.String)
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewCommand.ParsePreviewCommand(System.String)
-  nameWithType: PreviewCommand.ParsePreviewCommand(String)
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewCommand.ParsePreviewCommand*
-  name: ParsePreviewCommand
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewCommand.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewCommand_ParsePreviewCommand_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.VscPreview.PreviewCommand.ParsePreviewCommand
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewCommand.ParsePreviewCommand
-  nameWithType: PreviewCommand.ParsePreviewCommand
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants
-  name: PreviewConstants
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.html
-  commentId: T:Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants
-  nameWithType: PreviewConstants
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.BuildOutputSubfolder
-  name: BuildOutputSubfolder
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewConstants_BuildOutputSubfolder
-  commentId: F:Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.BuildOutputSubfolder
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.BuildOutputSubfolder
-  nameWithType: PreviewConstants.BuildOutputSubfolder
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.BuildSourceFolder
-  name: BuildSourceFolder
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewConstants_BuildSourceFolder
-  commentId: F:Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.BuildSourceFolder
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.BuildSourceFolder
-  nameWithType: PreviewConstants.BuildSourceFolder
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.ConfigFile
-  name: ConfigFile
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewConstants_ConfigFile
-  commentId: F:Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.ConfigFile
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.ConfigFile
-  nameWithType: PreviewConstants.ConfigFile
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.MarkupClassName
-  name: MarkupClassName
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewConstants_MarkupClassName
-  commentId: F:Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.MarkupClassName
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.MarkupClassName
-  nameWithType: PreviewConstants.MarkupClassName
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.MarkupTagType
-  name: MarkupTagType
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewConstants_MarkupTagType
-  commentId: F:Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.MarkupTagType
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.MarkupTagType
-  nameWithType: PreviewConstants.MarkupTagType
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.OutputFolder
-  name: OutputFolder
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewConstants_OutputFolder
-  commentId: F:Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.OutputFolder
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.OutputFolder
-  nameWithType: PreviewConstants.OutputFolder
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.PageRefreshFunctionName
-  name: PageRefreshFunctionName
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewConstants_PageRefreshFunctionName
-  commentId: F:Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.PageRefreshFunctionName
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.PageRefreshFunctionName
-  nameWithType: PreviewConstants.PageRefreshFunctionName
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.PathPrefix
-  name: PathPrefix
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewConstants_PathPrefix
-  commentId: F:Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.PathPrefix
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.PathPrefix
-  nameWithType: PreviewConstants.PathPrefix
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.Port
-  name: Port
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewConstants_Port
-  commentId: F:Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.Port
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.Port
-  nameWithType: PreviewConstants.Port
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.References
-  name: References
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewConstants_References
-  commentId: F:Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.References
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.References
-  nameWithType: PreviewConstants.References
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.tocMetadataName
-  name: tocMetadataName
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewConstants_tocMetadataName
-  commentId: F:Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.tocMetadataName
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewConstants.tocMetadataName
-  nameWithType: PreviewConstants.tocMetadataName
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig
-  name: PreviewJsonConfig
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html
-  commentId: T:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig
-  nameWithType: PreviewJsonConfig
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.BuildOutputSubFolder
-  name: BuildOutputSubFolder
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_BuildOutputSubFolder
-  commentId: P:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.BuildOutputSubFolder
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.BuildOutputSubFolder
-  nameWithType: PreviewJsonConfig.BuildOutputSubFolder
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.BuildOutputSubFolder*
-  name: BuildOutputSubFolder
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_BuildOutputSubFolder_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.BuildOutputSubFolder
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.BuildOutputSubFolder
-  nameWithType: PreviewJsonConfig.BuildOutputSubFolder
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.BuildSourceFolder
-  name: BuildSourceFolder
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_BuildSourceFolder
-  commentId: P:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.BuildSourceFolder
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.BuildSourceFolder
-  nameWithType: PreviewJsonConfig.BuildSourceFolder
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.BuildSourceFolder*
-  name: BuildSourceFolder
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_BuildSourceFolder_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.BuildSourceFolder
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.BuildSourceFolder
-  nameWithType: PreviewJsonConfig.BuildSourceFolder
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.MarkupClassName
-  name: MarkupClassName
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_MarkupClassName
-  commentId: P:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.MarkupClassName
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.MarkupClassName
-  nameWithType: PreviewJsonConfig.MarkupClassName
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.MarkupClassName*
-  name: MarkupClassName
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_MarkupClassName_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.MarkupClassName
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.MarkupClassName
-  nameWithType: PreviewJsonConfig.MarkupClassName
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.MarkupTagType
-  name: MarkupTagType
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_MarkupTagType
-  commentId: P:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.MarkupTagType
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.MarkupTagType
-  nameWithType: PreviewJsonConfig.MarkupTagType
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.MarkupTagType*
-  name: MarkupTagType
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_MarkupTagType_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.MarkupTagType
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.MarkupTagType
-  nameWithType: PreviewJsonConfig.MarkupTagType
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.OutputFolder
-  name: OutputFolder
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_OutputFolder
-  commentId: P:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.OutputFolder
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.OutputFolder
-  nameWithType: PreviewJsonConfig.OutputFolder
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.OutputFolder*
-  name: OutputFolder
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_OutputFolder_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.OutputFolder
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.OutputFolder
-  nameWithType: PreviewJsonConfig.OutputFolder
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.PageRefreshFunctionName
-  name: PageRefreshFunctionName
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_PageRefreshFunctionName
-  commentId: P:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.PageRefreshFunctionName
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.PageRefreshFunctionName
-  nameWithType: PreviewJsonConfig.PageRefreshFunctionName
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.PageRefreshFunctionName*
-  name: PageRefreshFunctionName
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_PageRefreshFunctionName_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.PageRefreshFunctionName
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.PageRefreshFunctionName
-  nameWithType: PreviewJsonConfig.PageRefreshFunctionName
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.Port
-  name: Port
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_Port
-  commentId: P:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.Port
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.Port
-  nameWithType: PreviewJsonConfig.Port
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.Port*
-  name: Port
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_Port_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.Port
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.Port
-  nameWithType: PreviewJsonConfig.Port
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.References
-  name: References
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_References
-  commentId: P:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.References
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.References
-  nameWithType: PreviewJsonConfig.References
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.References*
-  name: References
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_References_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.References
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.References
-  nameWithType: PreviewJsonConfig.References
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.TocMetadataName
-  name: TocMetadataName
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_TocMetadataName
-  commentId: P:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.TocMetadataName
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.TocMetadataName
-  nameWithType: PreviewJsonConfig.TocMetadataName
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.TocMetadataName*
-  name: TocMetadataName
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.html#Microsoft_DocAsCode_Dfm_VscPreview_PreviewJsonConfig_TocMetadataName_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.TocMetadataName
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.PreviewJsonConfig.TocMetadataName
-  nameWithType: PreviewJsonConfig.TocMetadataName
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.TokenTreeProcessor
-  name: TokenTreeProcessor
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.TokenTreeProcessor.html
-  commentId: T:Microsoft.DocAsCode.Dfm.VscPreview.TokenTreeProcessor
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.TokenTreeProcessor
-  nameWithType: TokenTreeProcessor
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.TokenTreeProcessor.TokenTreePreview(System.String)
-  name: TokenTreePreview(String)
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.TokenTreeProcessor.html#Microsoft_DocAsCode_Dfm_VscPreview_TokenTreeProcessor_TokenTreePreview_System_String_
-  commentId: M:Microsoft.DocAsCode.Dfm.VscPreview.TokenTreeProcessor.TokenTreePreview(System.String)
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.TokenTreeProcessor.TokenTreePreview(System.String)
-  nameWithType: TokenTreeProcessor.TokenTreePreview(String)
-- uid: Microsoft.DocAsCode.Dfm.VscPreview.TokenTreeProcessor.TokenTreePreview*
-  name: TokenTreePreview
-  href: api/Microsoft.DocAsCode.Dfm.VscPreview.TokenTreeProcessor.html#Microsoft_DocAsCode_Dfm_VscPreview_TokenTreeProcessor_TokenTreePreview_
-  commentId: Overload:Microsoft.DocAsCode.Dfm.VscPreview.TokenTreeProcessor.TokenTreePreview
-  fullName: Microsoft.DocAsCode.Dfm.VscPreview.TokenTreeProcessor.TokenTreePreview
-  nameWithType: TokenTreeProcessor.TokenTreePreview
 - uid: Microsoft.DocAsCode.Exceptions
   name: Microsoft.DocAsCode.Exceptions
   href: api/Microsoft.DocAsCode.Exceptions.html
@@ -35567,6 +35351,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.EndOfString
   fullName: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.EndOfString
   nameWithType: Matcher.EndOfString
+- uid: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.EscapeText(System.String)
+  name: EscapeText(String)
+  href: api/Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.html#Microsoft_DocAsCode_MarkdownLite_Matchers_Matcher_EscapeText_System_String_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.EscapeText(System.String)
+  fullName: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.EscapeText(System.String)
+  nameWithType: Matcher.EscapeText(String)
+- uid: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.EscapeText*
+  name: EscapeText
+  href: api/Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.html#Microsoft_DocAsCode_MarkdownLite_Matchers_Matcher_EscapeText_
+  commentId: Overload:Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.EscapeText
+  fullName: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.EscapeText
+  nameWithType: Matcher.EscapeText
 - uid: Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.Match(Microsoft.DocAsCode.MarkdownLite.Matchers.MatchContent)
   name: Match(MatchContent)
   href: api/Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.html#Microsoft_DocAsCode_MarkdownLite_Matchers_Matcher_Match_Microsoft_DocAsCode_MarkdownLite_Matchers_MatchContent_
@@ -36296,12 +36092,24 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MarkdownLite.SourceInfo.Copy
   fullName: Microsoft.DocAsCode.MarkdownLite.SourceInfo.Copy
   nameWithType: SourceInfo.Copy
+- uid: Microsoft.DocAsCode.MarkdownLite.SourceInfo.Create(System.String,System.String)
+  name: Create(String, String)
+  href: api/Microsoft.DocAsCode.MarkdownLite.SourceInfo.html#Microsoft_DocAsCode_MarkdownLite_SourceInfo_Create_System_String_System_String_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.SourceInfo.Create(System.String,System.String)
+  fullName: Microsoft.DocAsCode.MarkdownLite.SourceInfo.Create(System.String, System.String)
+  nameWithType: SourceInfo.Create(String, String)
 - uid: Microsoft.DocAsCode.MarkdownLite.SourceInfo.Create(System.String,System.String,System.Int32)
   name: Create(String, String, Int32)
   href: api/Microsoft.DocAsCode.MarkdownLite.SourceInfo.html#Microsoft_DocAsCode_MarkdownLite_SourceInfo_Create_System_String_System_String_System_Int32_
   commentId: M:Microsoft.DocAsCode.MarkdownLite.SourceInfo.Create(System.String,System.String,System.Int32)
   fullName: Microsoft.DocAsCode.MarkdownLite.SourceInfo.Create(System.String, System.String, System.Int32)
   nameWithType: SourceInfo.Create(String, String, Int32)
+- uid: Microsoft.DocAsCode.MarkdownLite.SourceInfo.Create(System.String,System.String,System.Int32,System.Int32)
+  name: Create(String, String, Int32, Int32)
+  href: api/Microsoft.DocAsCode.MarkdownLite.SourceInfo.html#Microsoft_DocAsCode_MarkdownLite_SourceInfo_Create_System_String_System_String_System_Int32_System_Int32_
+  commentId: M:Microsoft.DocAsCode.MarkdownLite.SourceInfo.Create(System.String,System.String,System.Int32,System.Int32)
+  fullName: Microsoft.DocAsCode.MarkdownLite.SourceInfo.Create(System.String, System.String, System.Int32, System.Int32)
+  nameWithType: SourceInfo.Create(String, String, Int32, Int32)
 - uid: Microsoft.DocAsCode.MarkdownLite.SourceInfo.Create*
   name: Create
   href: api/Microsoft.DocAsCode.MarkdownLite.SourceInfo.html#Microsoft_DocAsCode_MarkdownLite_SourceInfo_Create_
@@ -37952,6 +37760,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.ForceRebuild
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.ForceRebuild
   nameWithType: ExtractMetadataInputModel.ForceRebuild
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.GlobalNamespaceId
+  name: GlobalNamespaceId
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_GlobalNamespaceId
+  commentId: P:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.GlobalNamespaceId
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.GlobalNamespaceId
+  nameWithType: ExtractMetadataInputModel.GlobalNamespaceId
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.GlobalNamespaceId*
+  name: GlobalNamespaceId
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_GlobalNamespaceId_
+  commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.GlobalNamespaceId
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.GlobalNamespaceId
+  nameWithType: ExtractMetadataInputModel.GlobalNamespaceId
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.IndexFileName
   name: IndexFileName
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_IndexFileName
@@ -37976,6 +37796,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.Items
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.Items
   nameWithType: ExtractMetadataInputModel.Items
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.MSBuildProperties
+  name: MSBuildProperties
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_MSBuildProperties
+  commentId: P:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.MSBuildProperties
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.MSBuildProperties
+  nameWithType: ExtractMetadataInputModel.MSBuildProperties
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.MSBuildProperties*
+  name: MSBuildProperties
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_MSBuildProperties_
+  commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.MSBuildProperties
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.MSBuildProperties
+  nameWithType: ExtractMetadataInputModel.MSBuildProperties
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.PreserveRawInlineComments
   name: PreserveRawInlineComments
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataInputModel.html#Microsoft_DocAsCode_Metadata_ManagedReference_ExtractMetadataInputModel_PreserveRawInlineComments
@@ -40379,6 +40211,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.GetTypeParameterDescription
   fullName: Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.GetTypeParameterDescription
   nameWithType: VisitorHelper.GetTypeParameterDescription
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.GlobalNamespaceId
+  name: GlobalNamespaceId
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.html#Microsoft_DocAsCode_Metadata_ManagedReference_VisitorHelper_GlobalNamespaceId
+  commentId: P:Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.GlobalNamespaceId
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.GlobalNamespaceId
+  nameWithType: VisitorHelper.GlobalNamespaceId
+- uid: Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.GlobalNamespaceId*
+  name: GlobalNamespaceId
+  href: api/Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.html#Microsoft_DocAsCode_Metadata_ManagedReference_VisitorHelper_GlobalNamespaceId_
+  commentId: Overload:Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.GlobalNamespaceId
+  fullName: Microsoft.DocAsCode.Metadata.ManagedReference.VisitorHelper.GlobalNamespaceId
+  nameWithType: VisitorHelper.GlobalNamespaceId
 - uid: Microsoft.DocAsCode.Metadata.ManagedReference.YamlMetadataResolver
   name: YamlMetadataResolver
   href: api/Microsoft.DocAsCode.Metadata.ManagedReference.YamlMetadataResolver.html
@@ -40778,6 +40622,30 @@ references:
   commentId: Overload:Microsoft.DocAsCode.MetadataJsonItemConfig.Force
   fullName: Microsoft.DocAsCode.MetadataJsonItemConfig.Force
   nameWithType: MetadataJsonItemConfig.Force
+- uid: Microsoft.DocAsCode.MetadataJsonItemConfig.GlobalNamespaceId
+  name: GlobalNamespaceId
+  href: api/Microsoft.DocAsCode.MetadataJsonItemConfig.html#Microsoft_DocAsCode_MetadataJsonItemConfig_GlobalNamespaceId
+  commentId: P:Microsoft.DocAsCode.MetadataJsonItemConfig.GlobalNamespaceId
+  fullName: Microsoft.DocAsCode.MetadataJsonItemConfig.GlobalNamespaceId
+  nameWithType: MetadataJsonItemConfig.GlobalNamespaceId
+- uid: Microsoft.DocAsCode.MetadataJsonItemConfig.GlobalNamespaceId*
+  name: GlobalNamespaceId
+  href: api/Microsoft.DocAsCode.MetadataJsonItemConfig.html#Microsoft_DocAsCode_MetadataJsonItemConfig_GlobalNamespaceId_
+  commentId: Overload:Microsoft.DocAsCode.MetadataJsonItemConfig.GlobalNamespaceId
+  fullName: Microsoft.DocAsCode.MetadataJsonItemConfig.GlobalNamespaceId
+  nameWithType: MetadataJsonItemConfig.GlobalNamespaceId
+- uid: Microsoft.DocAsCode.MetadataJsonItemConfig.MSBuildProperties
+  name: MSBuildProperties
+  href: api/Microsoft.DocAsCode.MetadataJsonItemConfig.html#Microsoft_DocAsCode_MetadataJsonItemConfig_MSBuildProperties
+  commentId: P:Microsoft.DocAsCode.MetadataJsonItemConfig.MSBuildProperties
+  fullName: Microsoft.DocAsCode.MetadataJsonItemConfig.MSBuildProperties
+  nameWithType: MetadataJsonItemConfig.MSBuildProperties
+- uid: Microsoft.DocAsCode.MetadataJsonItemConfig.MSBuildProperties*
+  name: MSBuildProperties
+  href: api/Microsoft.DocAsCode.MetadataJsonItemConfig.html#Microsoft_DocAsCode_MetadataJsonItemConfig_MSBuildProperties_
+  commentId: Overload:Microsoft.DocAsCode.MetadataJsonItemConfig.MSBuildProperties
+  fullName: Microsoft.DocAsCode.MetadataJsonItemConfig.MSBuildProperties
+  nameWithType: MetadataJsonItemConfig.MSBuildProperties
 - uid: Microsoft.DocAsCode.MetadataJsonItemConfig.Raw
   name: Raw
   href: api/Microsoft.DocAsCode.MetadataJsonItemConfig.html#Microsoft_DocAsCode_MetadataJsonItemConfig_Raw

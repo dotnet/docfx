@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class DfmVideoBlockRule
    | DocFX website ">
-    <meta name="generator" content="docfx 1.0.0.0">
+    <meta name="generator" content="docfx 2.16.0.499">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -124,7 +124,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmVideoBlockRule.cs/#L14">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmVideoBlockRule.cs/#L28">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_Name_" data-uid="Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.Name*"></a>
               <h4 id="Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_Name" data-uid="Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.Name">Name</h4>
@@ -153,10 +153,40 @@
                   <div><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRule.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_Name">IMarkdownRule.Name</a></div>
               <span class="small pull-right mobile-hide">
                 <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_VideoMatcher.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.VideoMatcher%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmVideoBlockRule.cs/#L33">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_VideoMatcher_" data-uid="Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.VideoMatcher*"></a>
+              <h4 id="Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_VideoMatcher" data-uid="Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.VideoMatcher">VideoMatcher</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public virtual Matcher VideoMatcher { get; }</code></pre>
+              </div>
+              <h5 class="propertyValue">Property Value</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.Matchers.Matcher.html">Matcher</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_VideoRegex.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.VideoRegex%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmVideoBlockRule.cs/#L15">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmVideoBlockRule.cs/#L30">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_VideoRegex_" data-uid="Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.VideoRegex*"></a>
               <h4 id="Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_VideoRegex" data-uid="Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.VideoRegex">VideoRegex</h4>
@@ -164,7 +194,8 @@
               <div class="markdown level1 conceptual"></div>
               <h5 class="decalaration">Declaration</h5>
               <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public virtual Regex VideoRegex { get; }</code></pre>
+                <pre><code class="lang-csharp hljs">[Obsolete(&quot;Please use VideoMatcher.&quot;)]
+public virtual Regex VideoRegex { get; }</code></pre>
               </div>
               <h5 class="propertyValue">Property Value</h5>
               <table class="table table-bordered table-striped table-condensed">
@@ -188,7 +219,7 @@
                 <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser%2CMicrosoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
               </span>
               <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmVideoBlockRule.cs/#L17">View Source</a>
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmVideoBlockRule.cs/#L35">View Source</a>
               </span>
               <a id="Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_TryMatch_" data-uid="Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.TryMatch*"></a>
               <h4 id="Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_" data-uid="Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.TryMatch(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)">TryMatch(IMarkdownParser, IMarkdownParsingContext)</h4>
@@ -237,6 +268,58 @@
               </table>
               <h5 class="implements">Implements</h5>
                   <div><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRule.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownRule_TryMatch_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_">IMarkdownRule.TryMatch(IMarkdownParser, IMarkdownParsingContext)</a></div>
+              <span class="small pull-right mobile-hide">
+                <span class="divider">|</span>
+                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_TryMatchOld_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.TryMatchOld(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser%2CMicrosoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+              </span>
+              <span class="small pull-right mobile-hide">
+                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmVideoBlockRule.cs/#L54">View Source</a>
+              </span>
+              <a id="Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_TryMatchOld_" data-uid="Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.TryMatchOld*"></a>
+              <h4 id="Microsoft_DocAsCode_Dfm_DfmVideoBlockRule_TryMatchOld_Microsoft_DocAsCode_MarkdownLite_IMarkdownParser_Microsoft_DocAsCode_MarkdownLite_IMarkdownParsingContext_" data-uid="Microsoft.DocAsCode.Dfm.DfmVideoBlockRule.TryMatchOld(Microsoft.DocAsCode.MarkdownLite.IMarkdownParser,Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext)">TryMatchOld(IMarkdownParser, IMarkdownParsingContext)</h4>
+              <div class="markdown level1 summary"></div>
+              <div class="markdown level1 conceptual"></div>
+              <h5 class="decalaration">Declaration</h5>
+              <div class="codewrapper">
+                <pre><code class="lang-csharp hljs">public IMarkdownToken TryMatchOld(IMarkdownParser parser, IMarkdownParsingContext context)</code></pre>
+              </div>
+              <h5 class="parameters">Parameters</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownParser.html">IMarkdownParser</a></td>
+                    <td><span class="parametername">parser</span></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownParsingContext.html">IMarkdownParsingContext</a></td>
+                    <td><span class="parametername">context</span></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <h5 class="returns">Returns</h5>
+              <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html">IMarkdownToken</a></td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
               <h3 id="extensionmethods">Extension Methods</h3>
               <div>
                   <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
@@ -252,7 +335,7 @@
                     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmVideoBlockRule.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmVideoBlockRule%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmVideoBlockRule.cs/#L11" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/Rules/DfmVideoBlockRule.cs/#L12" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
@@ -272,7 +355,7 @@
               <a href="#top">Back to top</a>
             </span>
             
-            <span>Copyright © 2015-2016 Microsoft<br>Generated by <strong>DocFX</strong></span>
+            <span>Copyright © 2015-2017 Microsoft<br>Generated by <strong>DocFX</strong></span>
           </div>
         </div>
       </footer>
