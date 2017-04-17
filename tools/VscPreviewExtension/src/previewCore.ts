@@ -3,7 +3,7 @@
 import { ExtensionContext, window } from "vscode";
 import { MarkdownDocumentContentProvider } from "./markdownDocumentContentProvider";
 import { ChildProcessHost } from "./childProcessHost";
-import * as ConstVariable from "./constVariable";
+import * as ConstVariable from "./constVariables/commonVariables";
 import { DfmService } from "./dfmService";
 
 export class PreviewCore extends ChildProcessHost {
@@ -13,20 +13,17 @@ export class PreviewCore extends ChildProcessHost {
         this.provider = new MarkdownDocumentContentProvider(context);
     }
 
-    protected async sendHttpRequestCore(rootPath: string, relativePath: string, docContent: string) {
+    protected async sendHttpRequestCoreAsync(rootPath: string, relativePath: string, docContent: string) {
         this.provider.fileName = relativePath;
         let that = this;
         try {
             let res = await DfmService.previewAsync(ChildProcessHost._serverPort, docContent, rootPath, relativePath);
-            that._childProcessStarting = false;
+            that._isChildProcessStarting = false;
             that.provider.update(that._documentUri, res.data);
         }
         catch (err) {
             if (err.message == ConstVariable.noServiceErrorMessage) {
-                if (!that._childProcessStarting) {
-                    that.newHttpServerAndStartPreview(that._activeEditor);
-                    that._childProcessStarting = true;
-                }
+                that.newHttpServerAndStartPreview(that._activeEditor);
             } else {
                 window.showErrorMessage(`[Server Error]: ${err}`);
             }

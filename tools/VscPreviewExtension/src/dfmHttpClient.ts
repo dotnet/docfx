@@ -2,12 +2,12 @@
 
 import { default as Axios, AxiosResponse } from 'axios';
 
-import * as ConstVariable from "./ConstVariable";
+import * as ConstVariable from "./constVariables/commonVariables";
 
 export class DfmHttpClient {
     private static urlPrefix = "http://localhost:";
 
-    static async sendPostRequest(port: string, command, content = null, workspacePath = null, relativePath = null, writeTempPreviewFile = false, previewFilePath = null, pageRefreshJsFilePath = null, builtHtmlPath = null): Promise<AxiosResponse> {
+    static async sendPostRequestAsync(port: string, command: string, content = null, workspacePath = null, relativePath = null, writeTempPreviewFile = false, previewFilePath = null, pageRefreshJsFilePath = null, builtHtmlPath = null): Promise<AxiosResponse> {
         let promise = Axios.post(this.urlPrefix + port, {
             name: command,
             markdownContent: content,

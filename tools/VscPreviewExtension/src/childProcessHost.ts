@@ -4,15 +4,16 @@ import { workspace, window, ExtensionContext, Uri } from "vscode";
 import * as childProcess from "child_process";
 
 import { Common } from "./common";
-import * as ConstVariable from "./ConstVariable";
+import * as ConstVariable from "./constVariables/commonVariables";
 import { DfmService } from "./dfmService";
+import { PreviewType } from "./constVariables/previewType";
 
 export class ChildProcessHost {
-    public static status = ConstVariable.stopStatus;
+    public static previewType = PreviewType.dfmPreview;
     public initialized;
 
     protected static _serverPort = "4002";
-    protected _childProcessStarting = false;
+    protected _isChildProcessStarting = false;
     protected _activeEditor;
     protected _documentUri: Uri;
 
@@ -70,15 +71,18 @@ export class ChildProcessHost {
             relativePath = fileName.substr(rootPathLength + 1, fileName.length - rootPathLength);
         }
         if (doc.languageId === "markdown") {
-            this.sendHttpRequestCore(rootPath, relativePath, docContent);
+            this.sendHttpRequestCoreAsync(rootPath, relativePath, docContent);
         }
     }
 
-    protected sendHttpRequestCore(rootPath: string, relativePath: string, docContent: string) {
+    protected async sendHttpRequestCoreAsync(rootPath: string, relativePath: string, docContent: string) {
         window.showErrorMessage(`[Extension Error]: Not supported`);
     }
 
     protected newHttpServerAndStartPreview(activeTextEditor) {
+        if (this._isChildProcessStarting)
+            return;
+        this._isChildProcessStarting = true;
         window.showInformationMessage("Environment initializing, please wait several seconds!");
         let that = this;
         let http = require("http");
@@ -87,24 +91,29 @@ export class ChildProcessHost {
         server.on('listening', function () {
             var port = server.address().port;
             server.close();
-            ChildProcessHost._serverPort = port.toString();
-            let exePath = that._context.asAbsolutePath("./DfmHttpService/DfmHttpService.exe");
-            try {
-                ChildProcessHost._spawn = Common.spawn(exePath + " " + ChildProcessHost._serverPort, {});
-            }
-            catch (err) {
-                window.showErrorMessage(`[Extension Error]: ${err}`);
-            }
-            if (!ChildProcessHost._spawn.pid) {
-                window.showErrorMessage(`[Child process Error]: DfmProcess lost!`);
-                return;
-            }
-            ChildProcessHost._spawn.stdout.on("data", function (data) {
-                that.sendHttpRequest(activeTextEditor);
-            });
-            ChildProcessHost._spawn.stderr.on("data", function (data) {
-                window.showErrorMessage(`[Child process Error]: ${data.toString()}`);
-            });
+            that.newHttpServerAndStartPreviewCore(activeTextEditor, port);
         })
+    }
+
+    private newHttpServerAndStartPreviewCore(activeTextEditor, port) {
+        let that = this;
+        ChildProcessHost._serverPort = port.toString();
+        let exePath = that._context.asAbsolutePath("./DfmHttpService/DfmHttpService.exe");
+        try {
+            ChildProcessHost._spawn = Common.spawn(exePath + " " + ChildProcessHost._serverPort, {});
+        }
+        catch (err) {
+            window.showErrorMessage(`[Extension Error]: ${err}`);
+        }
+        if (!ChildProcessHost._spawn.pid) {
+            window.showErrorMessage(`[Child process Error]: DfmProcess lost!`);
+            return;
+        }
+        ChildProcessHost._spawn.stdout.on("data", function (data) {
+            that.sendHttpRequest(activeTextEditor);
+        });
+        ChildProcessHost._spawn.stderr.on("data", function (data) {
+            window.showErrorMessage(`[Child process Error]: ${data.toString()}`);
+        });
     }
 }

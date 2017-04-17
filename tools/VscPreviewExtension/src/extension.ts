@@ -5,11 +5,13 @@
 import { workspace, window, ExtensionContext, commands, Event, Uri, ViewColumn, TextDocument, Selection } from "vscode";
 import * as path from "path";
 import * as net from "net";
+
 import { PreviewCore } from "./previewCore";
 import { TokenTreeCore } from "./tokenTreeCore";
 import { ChildProcessHost } from "./childProcessHost";
 import { ContentProvider } from "./contentProvider";
-import * as ConstVariable from "./constVariable";
+import * as ConstVariable from "./constVariables/commonVariables";
+import { PreviewType } from "./constVariables/previewType";
 
 export function activate(context: ExtensionContext) {
     let dfmPreviewProcessor = new PreviewCore(context);
@@ -29,11 +31,11 @@ export function activate(context: ExtensionContext) {
     workspace.onDidSaveTextDocument(document => {
         if (isMarkdownFile(document)) {
             const uri = getMarkdownUri(document.uri);
-            switch (ChildProcessHost.status) {
-                case ConstVariable.dfmPreviewStatus:
+            switch (ChildProcessHost.previewType) {
+                case PreviewType.dfmPreview:
                     dfmPreviewProcessor.updateContent(uri);
                     break;
-                case ConstVariable.tokenTreeStatus:
+                case PreviewType.tokenTreePreview:
                     // TODO: make token tree change synchronous
                     break;
             }
@@ -43,11 +45,11 @@ export function activate(context: ExtensionContext) {
     workspace.onDidChangeTextDocument(event => {
         if (isMarkdownFile(event.document)) {
             const uri = getMarkdownUri(event.document.uri);
-            switch (ChildProcessHost.status) {
-                case ConstVariable.dfmPreviewStatus:
+            switch (ChildProcessHost.previewType) {
+                case PreviewType.dfmPreview:
                     dfmPreviewProcessor.updateContent(uri);
                     break;
-                case ConstVariable.tokenTreeStatus:
+                case PreviewType.tokenTreePreview:
                     // TODO: make token tree change synchronous
                     break;
             }
@@ -169,7 +171,7 @@ function showPreview(dfmPreviewProcessor: PreviewCore, uri?: Uri, sideBySide: bo
         }
     }
 
-    ChildProcessHost.status = ConstVariable.dfmPreviewStatus;
+    ChildProcessHost.previewType = PreviewType.dfmPreview;
 
     let thenable = commands.executeCommand("vscode.previewHtml",
         getMarkdownUri(resource),
@@ -192,7 +194,7 @@ function showTokenTree(tokenTreeProcessor: TokenTreeCore, uri?: Uri) {
         }
     }
 
-    ChildProcessHost.status = ConstVariable.tokenTreeStatus;
+    ChildProcessHost.previewType = PreviewType.tokenTreePreview;
 
     let thenable = commands.executeCommand("vscode.previewHtml",
         getTokenTreeUri(resource),
