@@ -358,7 +358,7 @@ break list!
             @"<ol>
 <li>some text</li>
 </ol>
-<pre><code> --
+<pre><code>--
 </code></pre>")]
         [InlineData(@"1. some text
  > 1",
