@@ -63,6 +63,9 @@ function isRelativePath(path) {
 
 var gitUrlPatternItems = {
     'github': {
+        // HTTPS form: https://github.com/{org}/{repo}.git
+        // SSH form: git@github.com:{org}/{repo}.git
+        // generate URL: https://github.com/{org}/{repo}/blob/{branch}/{path}
         'testRegex': /^(https?:\/\/)?(\S+\@)?(\S+\.)?github\.com(\/|:).*/i,
         'generateUrl': function (gitInfo) {
             var url = normalizeGitUrlToHttps(gitInfo.repo);
@@ -83,9 +86,13 @@ var gitUrlPatternItems = {
         }
     },
     'vso': {
-        'testRegex': /^https:\/\/.*\.visualstudio\.com\/.*/i,
+        // HTTPS form: https://{user}.visualstudio.com/{org}/_git/{repo}
+        // SSH form: ssh://{user}@{user}.visualstudio.com:22/{org}/_git/{repo}
+        // generated URL: https://{user}.visualstudio.com/{org}/_git/{repo}?path={path}&version=GB{branch}
+        'testRegex': /^(https?:\/\/)?(ssh:\/\/\S+\@)?(\S+\.)?visualstudio\.com(\/|:).*/i,
         'generateUrl': function (gitInfo) {
-            var url = gitInfo.repo + '?path=' + gitInfo.path + '&version=GB' + gitInfo.branch;
+            var url = normalizeGitUrlToHttps(gitInfo.repo);
+            url += '?path=' + gitInfo.path + '&version=GB' + gitInfo.branch;
             if (gitInfo.startLine && gitInfo.startLine > 0) {
                 url += '&line=' + gitInfo.startLine;
             }
@@ -100,7 +107,7 @@ var gitUrlPatternItems = {
 function normalizeGitUrlToHttps(repo) {
     var pos = repo.indexOf('@');
     if (pos == -1) return repo;
-    return 'https://' + repo.substr(pos + 1).replace(/:/g, '/');
+    return 'https://' + repo.substr(pos + 1).replace(/:[0-9]+/g, '').replace(/:/g, '/');
 }
 
 function getNewFileUrl(item, gitContribute, gitUrlPattern) {
