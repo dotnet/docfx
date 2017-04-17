@@ -23,6 +23,6 @@ export class DfmService {
     }
 
     static async exitAsync(docfxServicePort) {
-        DfmHttpClient.sendPostRequestAsync(docfxServicePort, Command.exitCommand);
+        await DfmHttpClient.sendPostRequestAsync(docfxServicePort, Command.exitCommand);
     }
 }

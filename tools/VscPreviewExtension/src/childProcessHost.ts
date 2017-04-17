@@ -26,8 +26,12 @@ export class ChildProcessHost {
         this.initializeProvider(context);
     }
 
-    public static killChildProcess() {
-        DfmService.exitAsync(ChildProcessHost._serverPort);
+    public static async killChildProcessAsync() {
+        try {
+            await DfmService.exitAsync(ChildProcessHost._serverPort);
+        } catch (err) {
+            window.showErrorMessage(`[Server Error]: ${err}`);
+        }
     }
 
     public updateContent(uri: Uri) {
@@ -87,7 +91,7 @@ export class ChildProcessHost {
         this.getFreePort(port => this.newHttpServerAndStartPreviewCore(port, activeTextEditor));
     }
 
-    private getFreePort(callback){
+    private getFreePort(callback) {
         let http = require("http");
         let server = http.createServer();
         server.listen(0);

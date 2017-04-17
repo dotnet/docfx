@@ -100,7 +100,7 @@ export function activate(context: ExtensionContext) {
 
 // This method is called when your extension is deactivated
 export function deactivate() {
-    ChildProcessHost.killChildProcess();
+    ChildProcessHost.killChildProcessAsync();
 }
 
 function mapToSelection(startLineNumber: number, endLineNumber: number) {
