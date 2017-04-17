@@ -3,9 +3,11 @@
 
 namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
+    using System.IO;
 
     using HtmlAgilityPack;
 
@@ -14,8 +16,6 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
-    using System.IO;
-    using System;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
     public class BuildConceptualDocument : BaseDocumentBuildStep, ISupportIncrementalBuildStep
