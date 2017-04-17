@@ -57,7 +57,7 @@ Setting the environment variable `DOCFX_SOURCE_BRANCH_NAME` tells DocFX which br
 Many build systems set an environment variable with the branch name.  DocFX uses the following:
 
 - `APPVEYOR_REPO_BRANCH` - [AppVeyor](https://www.appveyor.com/)
-- `BUILD_SOURCEBRANCHNAME` - [Visual Studio Online](https://www.visualstudio.com/vso/)
+- `BUILD_SOURCEBRANCHNAME` - [Visual Studio Team Services](https://www.visualstudio.com/team-services/)
 - `CI_BUILD_REF_NAME` - [GitLab CI](https://about.gitlab.com/gitlab-ci/)
 - `Git_Branch` - [TeamCity](https://www.jetbrains.com/teamcity/)
 - `GIT_BRANCH` - [Jenkins](https://jenkins.io/)
