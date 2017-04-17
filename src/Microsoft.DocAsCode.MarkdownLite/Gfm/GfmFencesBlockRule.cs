@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             Matcher.WhiteSpacesOrEmpty +
             (Matcher.NewLine | Matcher.EndOfString);
         private static readonly Matcher _FencesMatcher =
-            Matcher.WhiteSpacesOrEmpty +
+            Matcher.WhiteSpacesOrEmpty.ToGroup("spaces") +
             (Matcher.Char('`').ToGroup("flag").RepeatAtLeast(3) | Matcher.Char('~').ToGroup("flag").RepeatAtLeast(3)).ToGroup("flagLength") +
             Matcher.WhiteSpacesOrEmpty +
             Matcher.AnyCharNotIn(' ', '\n').RepeatAtLeast(0).ToGroup("lang") +
@@ -41,7 +41,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             if (match?.Length > 0)
             {
                 var sourceInfo = context.Consume(match.Length);
-                return new MarkdownCodeBlockToken(this, parser.Context, match["code"].GetValue(), match["lang"].GetValue(), sourceInfo);
+                var code = match["code"].GetValue();
+                if (match["spaces"].Count > 0)
+                {
+                    code = Regex.Replace(code, "^ {1," + match["spaces"].Count.ToString() + "}", string.Empty, RegexOptions.Multiline);
+                }
+                return new MarkdownCodeBlockToken(this, parser.Context, code, match["lang"].GetValue(), sourceInfo);
             }
             return null;
         }
