@@ -167,6 +167,10 @@ namespace Microsoft.DocAsCode.Dfm
                 {
                     new FlatNameCodeSnippetExtractor(HtmlCodeSnippetCommentStartLineRegex, HtmlCodeSnippetCommentEndLineRegex)
                 },
+                ["xaml"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(XamlCodeSnippetCommentStartLineRegex, XamlCodeSnippetCommentEndLineRegex)
+                },
                 [".xaml"] = new List<ICodeSnippetExtractor>
                 {
                     new FlatNameCodeSnippetExtractor(XamlCodeSnippetCommentStartLineRegex, XamlCodeSnippetCommentEndLineRegex)
