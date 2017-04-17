@@ -14,6 +14,8 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
+    using System.IO;
+    using System;
 
     [Export(nameof(ConceptualDocumentProcessor), typeof(IDocumentBuildStep))]
     public class BuildConceptualDocument : BaseDocumentBuildStep, ISupportIncrementalBuildStep
@@ -70,7 +72,20 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
                             var outputFileName = item.Value as string;
                             if (!string.IsNullOrWhiteSpace(outputFileName))
                             {
-                                model.File = (RelativePath)model.File + (RelativePath)outputFileName;
+                                string fn = null;
+                                try
+                                {
+                                    fn = Path.GetFileName(outputFileName);
+                                }
+                                catch (ArgumentException) { }
+                                if (fn == outputFileName)
+                                {
+                                    model.File = (RelativePath)model.File + (RelativePath)outputFileName;
+                                }
+                                else
+                                {
+                                    Logger.LogWarning($"Invalid output file name in yaml header: {outputFileName}, skip rename output file.");
+                                }
                             }
                         }
                     }
