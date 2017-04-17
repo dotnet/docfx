@@ -31,7 +31,7 @@ namespace DfmHttpService
                     var content = Preview(context.Message.WorkspacePath, context.Message.RelativePath,
                         context.Message.MarkdownContent, context.Message.WriteTempPreviewFile, context.Message.PreviewFilePath,
                         context.Message.PageRefreshJsFilePath, context.Message.BuiltHtmlPath);
-                    Utility.ReplySuccessfulResponse(context.HttpContext, content);
+                    Utility.ReplySuccessfulResponse(context.HttpContext, content, ContentType.Html);
                 }
                 catch(HandlerClientException ex)
                 {

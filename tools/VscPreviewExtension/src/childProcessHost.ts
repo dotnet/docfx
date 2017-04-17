@@ -84,18 +84,21 @@ export class ChildProcessHost {
             return;
         this._isChildProcessStarting = true;
         window.showInformationMessage("Environment initializing, please wait several seconds!");
-        let that = this;
+        this.getFreePort(port => this.newHttpServerAndStartPreviewCore(port, activeTextEditor));
+    }
+
+    private getFreePort(callback){
         let http = require("http");
         let server = http.createServer();
         server.listen(0);
         server.on('listening', function () {
             var port = server.address().port;
             server.close();
-            that.newHttpServerAndStartPreviewCore(activeTextEditor, port);
+            callback(port);
         })
     }
 
-    private newHttpServerAndStartPreviewCore(activeTextEditor, port) {
+    private newHttpServerAndStartPreviewCore(port, activeTextEditor) {
         let that = this;
         ChildProcessHost._serverPort = port.toString();
         let exePath = that._context.asAbsolutePath("./DfmHttpService/DfmHttpService.exe");
