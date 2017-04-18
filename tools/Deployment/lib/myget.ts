@@ -18,7 +18,7 @@ export class Myget {
         Guard.argumentNotNullOrEmpty(mygetKey, "mygetKey");
         Guard.argumentNotNullOrEmpty(mygetUrl, "mygetUrl");
 
-        if (!releaseNotePath) {
+        if (releaseNotePath) {
             // Ignore to publish myget package if RELEASENOTE.md hasn't been modified.
             let isUpdated = await Common.isReleaseNoteVersionChangedAsync(releaseNotePath);
             if (!isUpdated) {
