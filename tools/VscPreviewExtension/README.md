@@ -30,7 +30,7 @@ For further information and details about DocFX Flavored Markdown, please refere
 | `ctrl+k q` | `Open Dfm Preview to the side` | Preview to side |
 |  | `show Dfm Show` | Show Source |
 
-  ![PreviewToside](img/previewToSide.gif)
+  ![PreviewToside](images/previewToSide.gif)
 
 ## Token tree
 | Shortcuts | command title | command |
@@ -41,14 +41,14 @@ For further information and details about DocFX Flavored Markdown, please refere
 
   - Display the detailed information of node on mouseover
 
-  ![TokenTree](img/Tokentree.gif)
+  ![TokenTree](images/Tokentree.gif)
 
 - Match between markdown file with tokenTree Node
   - Click/select the text you want to match to the tokenTree
     > You can select multiple lines.
   - Click the text of node to match to the markdown file
 
-  ![Match](img/Match.gif)
+  ![Match](images/Match.gif)
 
 # Found a Bug?
 Please file any issue through the [Github Issue](https://github.com/dotnet/docfx/issues) system.
