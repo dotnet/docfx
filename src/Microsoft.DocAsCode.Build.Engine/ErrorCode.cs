@@ -8,5 +8,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         public const string InvalidInternalBookmark = "InvalidInternalBookmark";
         public const string InvalidExternalBookmark = "InvalidExternalBookmark";
         public const string DuplicateUids = "DuplicateUids";
+        public const string DuplicateOutputFiles = "DuplicateOutputFiles";
     }
 }
