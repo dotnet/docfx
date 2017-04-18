@@ -2,14 +2,15 @@
 =======================================
 v2.17(Pre-Release)
 -----------
-
-v2.16
------------
 1. Introduce [Master page syntax](~/tutorial/intro_template.md#extended-syntax-for-master-page) into Template System:
     1. Mustache: `{{!master('<master_page_name>')}}`
     2. Liquid: `{% master <master_page_name> %}`
 
-2.  Support the latest csproj format `<Project Sdk="Microsoft.NET.Sdk">`
+2. [Breaking Change] View model for `ManagedReference.html.primary.tmpl` is updated from `{item: model}` to `model`, if you overwrites `ManagedReference.html.primary.tmpl` in your own template, make sure to re-export the template file.
+
+v2.16
+-----------
+1.  Support the latest csproj format `<Project Sdk="Microsoft.NET.Sdk">`
     1. The latest csproj introduces in a new property `TargetFrameworks`, docfx does not support it for now. To make docfx work, please specify `TargetFramework` when calling docfx. A sample `docfx.json` would be as follows. The `merge` command is to merge YAML files generated with different `TargetFramework` into one YAML file.
     ```json
     {

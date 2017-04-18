@@ -15,6 +15,7 @@ var options = minimist(process.argv.slice(2), knownOptions);
 var files = [
     "fonts/*",
     "partials/*",
+    "layout/*",
     "styles/*",
     "*.js",
     "*.tmpl",
