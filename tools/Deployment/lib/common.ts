@@ -100,7 +100,7 @@ export class Common {
             throw new Error(`${releaseNotePath} doesn't exist.`);
         }
 
-        let regex = /\r?\n\s*v[\d\.]+\s*\r?\n-{3,}\r?\n([\s\S]+?)(\r?\n\s*v[\d\.]+\s*\r?\n-{3,}\r?\n|$)/i;
+        let regex = /\n\s*v[\d\.]+\s*\r?\n-{3,}\r?\n([\s\S]+?)(?:\r?\n\s*v[\d\.]+\s*\r?\n-{3,}|$)/i;
         let content = fs.readFileSync(releaseNotePath, "utf8");
 
         let match = regex.exec(content);
@@ -115,7 +115,7 @@ export class Common {
         let versionFromTag = await this.getCurrentVersionFromGitTag();
         let versionFromReleaseNote = this.getVersionFromReleaseNote(releaseNotePath);
 
-        return `v${versionFromTag}`.toLowerCase() !== versionFromReleaseNote.toLowerCase();
+        return `v${versionFromReleaseNote}`.toLowerCase() !== versionFromTag.toLowerCase();
     }
 
     static async getCurrentVersionFromGitTag(): Promise<string> {
