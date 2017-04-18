@@ -91,7 +91,6 @@ gulp.task("e2eTest", gulp.series("e2eTest:installFirefox", "e2eTest:buildSeed", 
 gulp.task("publish:myget-dev", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.artifactsFolder, "config.docfx.artifactsFolder", "Can't find artifacts folder in configuration.");
     Guard.argumentNotNullOrEmpty(config.myget.exe, "config.myget.exe", "Can't find nuget command in configuration.");
-    Guard.argumentNotNullOrEmpty(config.myget.apiKey, "config.myget.apiKey", "Can't find myget api key in configuration.");
     Guard.argumentNotNullOrEmpty(config.myget.devUrl, "config.myget.devUrl", "Can't find myget url for docfx dev feed in configuration.");
     Guard.argumentNotNullOrEmpty(process.env.MGAPIKEY, "process.env.MGAPIKEY", "Can't find myget key in Environment Variables.");
 
@@ -103,10 +102,10 @@ gulp.task("publish:myget-dev", () => {
 gulp.task("publish:myget-test", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.artifactsFolder, "config.docfx.artifactsFolder", "Can't find artifacts folder in configuration.");
     Guard.argumentNotNullOrEmpty(config.myget.exe, "config.myget.exe", "Can't find nuget command in configuration.");
-    Guard.argumentNotNullOrEmpty(config.myget.apiKey, "config.myget.apiKey", "Can't find myget api key in configuration.");
     Guard.argumentNotNullOrEmpty(config.myget.testUrl, "config.myget.testUrl", "Can't find myget url for docfx test feed in configuration.");
     Guard.argumentNotNullOrEmpty(process.env.MGAPIKEY, "process.env.MGAPIKEY", "Can't find myget key in Environment Variables.");
 
+    let mygetToken = process.env.MGAPIKEY;
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
     return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], mygetToken, config.myget["testUrl"]);
 });
@@ -114,11 +113,11 @@ gulp.task("publish:myget-test", () => {
 gulp.task("publish:myget-master", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.artifactsFolder, "config.docfx.artifactsFolder", "Can't find artifacts folder in configuration.");
     Guard.argumentNotNullOrEmpty(config.myget.exe, "config.myget.exe", "Can't find nuget command in configuration.");
-    Guard.argumentNotNullOrEmpty(config.myget.apiKey, "config.myget.apiKey", "Can't find myget api key in configuration.");
     Guard.argumentNotNullOrEmpty(config.myget.masterUrl, "config.myget.masterUrl", "Can't find myget url for docfx master feed in configuration.");
     Guard.argumentNotNullOrEmpty(process.env.MGAPIKEY, "process.env.MGAPIKEY", "Can't find myget key in Environment Variables.");
     Guard.argumentNotNullOrEmpty(config.docfx.releaseNotePath, "config.docfx.releaseNotePath", "Can't find RELEASENOTE.md in configuartion.");
 
+    let mygetToken = process.env.MGAPIKEY;
     let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
     return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], mygetToken, config.myget["masterUrl"], releaseNotePath);
