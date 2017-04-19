@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.16)
+﻿Version Notes (Current Version: v2.16.1)
 =======================================
+v2.16.1
+-----------
+1.  bug fix for model restore.
+
 v2.16
 -----------
 1.  Support the latest csproj format `<Project Sdk="Microsoft.NET.Sdk">`
