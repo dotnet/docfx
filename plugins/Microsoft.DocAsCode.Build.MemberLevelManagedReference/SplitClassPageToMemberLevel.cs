@@ -105,30 +105,18 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             var primaryItem = page.Items[0];
             var itemsToSplit = page.Items.Skip(1);
-
             var children = new List<TreeItem>();
             var splittedModels = new List<FileModel>();
-
-            var group = (from item in itemsToSplit group item by item.Overload).ToList();
-
-            // Per Overload per page
-            foreach (var overload in group)
+            foreach (var newPage in GetNewPages(page))
             {
-                if (overload.Key == null)
-                {
-                    foreach (var i in overload)
-                    {
-                        var m = GenerateNonOverloadPage(page, model, i, newFileNames);
-                        splittedModels.Add(m.FileModel);
-                        AddToTree(m.PrimaryItem, children);
-                    }
-                }
-                else
-                {
-                    var m = GenerateOverloadPage(page, model, overload, newFileNames);
-                    splittedModels.Add(m.FileModel);
-                    AddToTree(m.PrimaryItem, children);
-                }
+                var newPrimaryItem = newPage.Items[0];
+
+                var newFileName = GetNewFileName(primaryItem.Uid, newPrimaryItem);
+                var newModel = GenerateNewFileModel(model, newPage, newFileName, newFileNames);
+
+                newPrimaryItem.Metadata[SplitReferencePropertyName] = true;
+                splittedModels.Add(newModel);
+                AddToTree(newPrimaryItem, children);
             }
 
             // Convert children to references
@@ -144,6 +132,32 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return new SplittedResult(primaryItem.Uid, children.OrderBy(s => GetDisplayName(s)), splittedModels);
         }
 
+        private IEnumerable<PageViewModel> GetNewPages(PageViewModel page)
+        {
+            var primaryItem = page.Items[0];
+            var itemsToSplit = page.Items.Skip(1);
+            var group = (from item in itemsToSplit group item by item.Overload).ToList();
+
+            // Per Overload per page
+            foreach (var overload in group)
+            {
+                if (overload.Key == null)
+                {
+                    foreach (var item in overload)
+                    {
+                        yield return ExtractPageViewModel(page, new List <ItemViewModel> { item });
+                    }
+                }
+                else
+                {
+                    var m = GenerateOverloadPage(page, overload);
+                    var result = new List<ItemViewModel> { m };
+                    result.AddRange(overload);
+                    yield return ExtractPageViewModel(page, result);
+                }
+            }
+        }
+
         private void AddToTree(ItemViewModel item, List<TreeItem> tree)
         {
             if (!item.IsExplicitInterfaceImplementation)
@@ -153,15 +167,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
         }
 
-        private ModelWrapper GenerateNonOverloadPage(PageViewModel page, FileModel model, ItemViewModel item, Dictionary<string, int> existingFileNames)
-        {
-            item.Metadata[SplitReferencePropertyName] = true;
-            var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { item });
-            var newModel = GenerateNewFileModel(model, newPage, item.Uid, existingFileNames);
-            return new ModelWrapper(item, newModel);
-        }
-
-        private ModelWrapper GenerateOverloadPage(PageViewModel page, FileModel model, IGrouping<string, ItemViewModel> overload, Dictionary<string, int> existingFileNames)
+        private ItemViewModel GenerateOverloadPage(PageViewModel page, IGrouping<string, ItemViewModel> overload)
         {
             var primaryItem = page.Items[0];
 
@@ -215,10 +221,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 newPrimaryItem.Name = GetOverloadItemName(key, primaryItem.Uid, firstMember.Type == MemberType.Constructor);
             }
 
-            var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { newPrimaryItem }.Concat(overload).ToList());
-            var newFileName = GetNewFileName(primaryItem.Uid, newPrimaryItem);
-            var newModel = GenerateNewFileModel(model, newPage, newFileName, existingFileNames);
-            return new ModelWrapper(newPrimaryItem, newModel);
+            return newPrimaryItem;
         }
 
         private List<string> MergeList(IEnumerable<ItemViewModel> children, Func<ItemViewModel, IEnumerable<string>> selector)
