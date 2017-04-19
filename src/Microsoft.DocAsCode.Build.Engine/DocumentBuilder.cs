@@ -132,6 +132,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                             .WriteToLink(Path.Combine(_intermediateFolder, _currentBuildInfo.DirectoryName))
                             .Create();
                     }
+                    if (parameter.ApplyTemplateSettings.TransformDocument)
+                    {
+                        transformDocument = true;
+                    }
                     if (parameter.Files.Count == 0)
                     {
                         Logger.LogWarning(string.IsNullOrEmpty(parameter.VersionName)
@@ -139,10 +143,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                             : $"No files found, nothing is generated in version \"{parameter.VersionName}\".");
                         manifests.Add(new Manifest());
                         continue;
-                    }
-                    if (parameter.ApplyTemplateSettings.TransformDocument)
-                    {
-                        transformDocument = true;
                     }
                     parameter.Metadata = _postProcessorsManager.PrepareMetadata(parameter.Metadata);
                     if (!string.IsNullOrEmpty(parameter.VersionName))
