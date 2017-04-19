@@ -3882,6 +3882,232 @@ tagRules : [
         }
 
         [Fact]
+        public void TestManagedReferenceEnableSplitWithSplittedClassRebuilt()
+        {
+            // a.b.yml has a link to a.c.yml
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+
+            CreateFile("ManagedReference.html.primary.tmpl",
+                new[]
+                {
+                    "<div class=\"markdown level1 summary\">{{{summary}}}</div>",
+                    "Show children:",
+                    "{{#children}}",
+                    "  {{#children}}",
+                    "  <h4><xref uid=\"{{uid}}\" altProperty=\"fullName\" displayProperty=\"name\"/></h4>",
+                    "  <section>{{{summary}}}</section>",
+                    "  {{#syntax}}",
+                    "  <pre><code>{{syntax.content.0.value}}</code></pre>",
+                    "  {{/syntax}}",
+                    "  {{/children}}",
+                    "{{/children}}",
+                },
+                templateFolder);
+
+            var referenceFile = CreateFile("a.b.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A.B",
+                    "  commentId: T:A.B",
+                    "  id: A.B",
+                    "  children:",
+                    "  - A.B.M1",
+                    "  - A.B.M2",
+                    "  - A.B.M2(A.B)",
+                    "  parent: A",
+                    "  name: B",
+                    "  nameWithType: B",
+                    "  fullName: A.B",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class B",
+                    "  summary: \"This is class A.B . it has a link to @A.C class.\"",
+                    "- uid: A.B.M1",
+                    "  commentId: M:A.B.M1",
+                    "  id: A.B.M1",
+                    "  parent: A.B",
+                    "  name: M1()",
+                    "  nameWithType: B.M1()",
+                    "  fullName: A.B.M1()",
+                    "  type: Method",
+                    "  syntax:",
+                    "    content: public void M1()",
+                    "  summary: \"This is method A.B.M1().\"",
+                    "  overload: A.B.M1*",
+                    "- uid: A.B.M2",
+                    "  commentId: M:A.B.M2",
+                    "  id: A.B.M2",
+                    "  parent: A.B",
+                    "  name: M2()",
+                    "  nameWithType: B.M2()",
+                    "  fullName: A.B.M2()",
+                    "  type: Method",
+                    "  syntax:",
+                    "    content: public void M2()",
+                    "  summary: \"This is method A.B.M2().\"",
+                    "  overload: A.B.M2*",
+                    "- uid: A.B.M2(A.B)",
+                    "  commentId: M:A.B.M2(A.B)",
+                    "  id: A.B.M2",
+                    "  parent: A.B",
+                    "  name: M2(B)",
+                    "  nameWithType: B.M2(B)",
+                    "  fullName: A.B.M2(A.B)",
+                    "  type: Method",
+                    "  syntax:",
+                    "    content: public void M2(B b)",
+                    "  summary: \"This is method A.B.M2(A.B).\"",
+                    "  overload: A.B.M2*",
+                    "references:",
+                    "- uid: A.B.M1*",
+                    "  commentId: \"overload: A.B.M1*\"",
+                    "  isExternal: false",
+                    "  name: M1",
+                    "  nameWithType: B.M1",
+                    "  fullName: A.B.M1",
+                    "- uid: A.B.M2*",
+                    "  commentId: \"overload: A.B.M2*\"",
+                    "  isExternal: false",
+                    "  name: M2",
+                    "  nameWithType: B.M2",
+                    "  fullName: A.B.M2",
+                },
+                inputFolder);
+            var referenceFile2 = CreateFile("a.c.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A.C",
+                    "  commentId: T:A.C",
+                    "  id: A.C",                    
+                    "  parent: A",
+                    "  name: C",
+                    "  nameWithType: C",
+                    "  fullName: A.C",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class C",
+                    "  summary: \"This is class A.C\"",                    
+                    "references: []",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2 }, inputFolder, null);
+
+            #endregion
+
+            Init("IncrementalBuild.TestManagedReferenceEnableSplitWithSplittedClassRebuilt");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceEnableSplitWithSplittedClassRebuilt");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceEnableSplitWithSplittedClassRebuilt.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceEnableSplitWithSplittedClassRebuilt.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceEnableSplitWithSplittedClassRebuilt-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder,
+                        enableSplit: true);
+
+                }
+
+                ClearListener();
+
+                // update a.c.yml: update A.C summary
+                UpdateFile("a.c.yml",
+                    new[]
+                    {
+                        "### YamlMime:ManagedReference",
+                        "items:",
+                        "- uid: A.C",
+                        "  commentId: T:A.C",
+                        "  id: A.C",
+                        "  parent: A",
+                        "  name: C",
+                        "  nameWithType: C",
+                        "  fullName: A.C",
+                        "  type: Class",
+                        "  syntax:",
+                        "    content: public class C",
+                        "  summary: \"This is class A.C [Updated]\"",
+                        "references: []",
+                    },
+                    inputFolder);
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceEnableSplitWithSplittedClassRebuilt-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder,
+                        enableSplit: true);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceEnableSplitWithSplittedClassRebuilt-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        enableSplit: true);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(4, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestManagedReferenceEnableSplitWithSplittedClassRebuilt-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestManagedReferenceEnableSplitWithSplittedClassRebuilt-second", "IncrementalBuild.TestManagedReferenceEnableSplitWithSplittedClassRebuilt-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact]
         public void TestOverwriteWarningRelay()
         {
             #region Prepare test data
