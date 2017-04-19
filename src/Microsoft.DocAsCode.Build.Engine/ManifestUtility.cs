@@ -27,12 +27,11 @@ namespace Microsoft.DocAsCode.Common
                               .GroupBy(obj => obj.relativePath, FilePathComparer.OSPlatformSensitiveStringComparer)
                               .Where(g => g.Count() > 1))
             {
-                var duplicateSources = duplicates.Skip(1).Select(duplicate => duplicate.item.SourceRelativePath).ToList();
                 // TODO: plan to change this warning to error, add error code to analyze the impact.
                 Logger.LogWarning(
-                    $"Multiple input files are attempting to write to the same output file \"{duplicates.Key}\". Input file \"{duplicates.First().relativePath}\" is selected as the output content, please rename other input files to avoid duplicate output files: \"{string.Join(", ", duplicateSources)}\".",
+                    $"Multiple input files are attempting to write to the same output file \"{duplicates.Key}\". Please rename at least {duplicates.Count() - 1} of following input files to ensure no duplicate output files: \"{string.Join(", ", duplicates.Select(duplicate => duplicate.item.SourceRelativePath))}\".",
                     ErrorCode.DuplicateOutputFiles);
-                itemsToRemove.UnionWith(duplicateSources);
+                itemsToRemove.UnionWith(duplicates.Skip(1).Select(duplicate => duplicate.item.SourceRelativePath));
             }
             manifestItems.RemoveAll(m => itemsToRemove.Contains(m.SourceRelativePath));
         }
