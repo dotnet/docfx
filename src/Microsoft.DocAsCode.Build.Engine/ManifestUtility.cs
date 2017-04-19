@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Common
     using System.Collections.Generic;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
 
     public static class ManifestUtility
@@ -26,7 +27,10 @@ namespace Microsoft.DocAsCode.Common
                               .GroupBy(obj => obj.relativePath, FilePathComparer.OSPlatformSensitiveStringComparer)
                               .Where(g => g.Count() > 1))
             {
-                Logger.LogWarning($"Overwrite occurs while input files \"{string.Join(", ", duplicates.Select(duplicate => duplicate.item.SourceRelativePath))}\" writing to the same output file \"{duplicates.Key}\"");
+                // TODO: plan to change this warning to error, add error code to analyze the impact.
+                Logger.LogWarning(
+                    $"Multiple input files are attempting to write to the same output file \"{duplicates.Key}\". Please rename at least {duplicates.Count() - 1} of following input files to ensure no duplicate output files: \"{string.Join(", ", duplicates.Select(duplicate => duplicate.item.SourceRelativePath))}\".",
+                    ErrorCode.DuplicateOutputFiles);
                 itemsToRemove.UnionWith(duplicates.Skip(1).Select(duplicate => duplicate.item.SourceRelativePath));
             }
             manifestItems.RemoveAll(m => itemsToRemove.Contains(m.SourceRelativePath));
