@@ -109,7 +109,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var splittedModels = new List<FileModel>();
             foreach (var newPage in GetNewPages(page))
             {
-                var newPrimaryItem = page.Items[0];
+                var newPrimaryItem = newPage.Items[0];
 
                 var newFileName = GetNewFileName(primaryItem.Uid, newPrimaryItem);
                 var newModel = GenerateNewFileModel(model, newPage, newFileName, newFileNames);
