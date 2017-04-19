@@ -92,7 +92,7 @@ if ($prod -eq $true) {
     $firstLine = Get-Content ReleaseNote.md | Select-Object -First 1
     if ($firstLine -match ".*(v[0-9.]+)") {
         $mainVersion = ($matches[1] -split '\.')
-        for ($i = 0; $i -lt $mainVersion.length -and $i -lt 2; $i++) {
+        for ($i = 0; $i -lt $mainVersion.length -and $i -lt 3; $i++) {
             $version[$i] = $mainVersion[$i]
         }
     }
