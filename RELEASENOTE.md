@@ -1,8 +1,12 @@
-﻿Version Notes (Current Version: v2.16.1)
+﻿Version Notes (Current Version: v2.16.2)
 =======================================
+v2.16.2
+-----------
+1.  Bug fix for build script.
+
 v2.16.1
 -----------
-1.  bug fix for model restore.
+1.  Bug fix for model restore.
 
 v2.16
 -----------
