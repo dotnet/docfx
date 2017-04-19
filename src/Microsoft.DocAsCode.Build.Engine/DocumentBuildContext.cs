@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder)
             : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, string.Empty, null, null) { }
 
-        public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting,string rootTocPath)
+        public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath)
             : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null) { }
 
         public DocumentBuildContext(
@@ -65,7 +65,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (!string.IsNullOrEmpty(versionFolder))
             {
-                versionFolder = versionFolder.Replace('\\', '/') ;
+                versionFolder = versionFolder.Replace('\\', '/');
                 if (!versionFolder.EndsWith("/"))
                 {
                     versionFolder += "/";
@@ -116,6 +116,24 @@ namespace Microsoft.DocAsCode.Build.Engine
                 spec.Uid,
                 spec,
                 (uid, old) => old + spec);
+        }
+
+        internal void SaveExternalXRefSpec(TextWriter writer)
+        {
+            JsonUtility.Serialize(writer, ExternalXRefSpec);
+        }
+
+        internal void LoadExternalXRefSpec(TextReader reader)
+        {
+            if (ExternalXRefSpec.Count > 0)
+            {
+                throw new InvalidOperationException("Cannot load after report external xref spec.");
+            }
+            var dict = JsonUtility.Deserialize<Dictionary<string, XRefSpec>>(reader);
+            foreach (var pair in dict)
+            {
+                ExternalXRefSpec[pair.Key] = pair.Value;
+            }
         }
 
         public void ResolveExternalXRefSpec()

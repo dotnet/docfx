@@ -7,6 +7,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using System.Collections.Generic;
     using System.IO;
 
+    using Newtonsoft.Json;
+
     using Microsoft.DocAsCode.Common;
 
     public class BuildInfo
@@ -75,6 +77,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 var targetDirectory = Path.Combine(baseDir, buildInfo.DirectoryName);
                 foreach (var version in buildInfo.Versions)
                 {
+                    version.BaseDir = targetDirectory;
                     version.Load(targetDirectory);
                 }
                 buildInfo.PostProcessInfo?.Load(targetDirectory);

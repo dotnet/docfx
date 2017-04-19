@@ -54,7 +54,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         public void Handle(List<HostService> hostServices, int maxParallelism)
         {
             PreHandle(hostServices);
-            _inner.Handle(hostServices, maxParallelism);
+            _inner.Postbuild(hostServices, maxParallelism);
+            using (new LoggerPhaseScope("SaveExternalXRefSpec", LogLevel.Verbose))
+            {
+                SaveExternalXRefSpec();
+            }
+            _inner.ProcessManifest(hostServices, maxParallelism);
             PostHandle(hostServices);
         }
 
@@ -169,6 +174,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
+        private void LoadExternalXRefSpec()
+        {
+            if (CurrentBuildVersionInfo.ExternalXRefSpecFile != null)
+            {
+                using (var reader = File.OpenText(Path.Combine(IncrementalContext.BaseDir, CurrentBuildVersionInfo.ExternalXRefSpecFile)))
+                {
+                    Context.LoadExternalXRefSpec(reader);
+                }
+            }
+        }
+
         private void RegisterUnloadedFileMap(IEnumerable<HostService> hostServices)
         {
             var lastFileMap = LastBuildVersionInfo?.FileMap;
@@ -222,7 +238,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             Context.ManifestItems.Shrink(IncrementalContext.BaseDir);
             CurrentBuildVersionInfo.Manifest = Context.ManifestItems;
-            CurrentBuildVersionInfo.SaveManifest(IncrementalContext.BaseDir);
+            CurrentBuildVersionInfo.SaveManifest();
         }
 
         private void UpdateFileMap(IEnumerable<HostService> hostServices)
@@ -270,6 +286,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                                        select s);
                     }
                 }
+            }
+        }
+
+        private void SaveExternalXRefSpec()
+        {
+            CurrentBuildVersionInfo.ExternalXRefSpecFile = IncrementalUtility.CreateRandomFileName(CurrentBuildVersionInfo.BaseDir);
+            using (var writer = File.CreateText(Path.Combine(CurrentBuildVersionInfo.BaseDir, CurrentBuildVersionInfo.ExternalXRefSpecFile)))
+            {
+                Context.SaveExternalXRefSpec(writer);
             }
         }
 

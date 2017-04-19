@@ -26,18 +26,29 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void Handle(List<HostService> hostServices, int maxParallelism)
         {
-            foreach (var hostService in hostServices)
-            {
-                using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
-                {
-                    Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postbuilding...");
-                    using (new LoggerPhaseScope("Postbuild", LogLevel.Verbose))
-                    {
-                        Postbuild(hostService);
-                    }
-                }
-            }
+            Postbuild(hostServices, maxParallelism);
+            ProcessManifest(hostServices, maxParallelism);
+        }
 
+        public void Postbuild(List<HostService> hostServices, int maxParallelism)
+        {
+            hostServices.RunAll(
+                hostService =>
+                {
+                    using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
+                    {
+                        Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postbuilding...");
+                        using (new LoggerPhaseScope("Postbuild", LogLevel.Verbose))
+                        {
+                            Postbuild(hostService);
+                        }
+                    }
+                },
+                maxParallelism);
+        }
+
+        public void ProcessManifest(List<HostService> hostServices, int maxParallelism)
+        {
             if (Context != null)
             {
                 var manifestProcessor = new ManifestProcessor(hostServices, Context, TemplateProcessor);

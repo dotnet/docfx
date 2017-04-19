@@ -48,6 +48,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// </summary>
         public string XRefSpecMapFile { get; set; }
         /// <summary>
+        /// The file link for the ExternalXRefSpec file.
+        /// </summary>
+        public string ExternalXRefSpecFile { get; set; }
+        /// <summary>
         /// The file link for the FileMap file.
         /// </summary>
         public string FileMapFile { get; set; }
@@ -61,6 +65,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         public string TocRestructionsFile { get; set; }
 
         #region Deserialized content
+        [JsonIgnore]
+        public string BaseDir { get; internal set; }
+
         /// <summary>
         /// deserialized dependency graph
         /// </summary>
@@ -103,10 +110,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         public IDictionary<string, List<TreeItemRestructure>> TocRestructions { get; private set; } = new OSPlatformSensitiveDictionary<List<TreeItemRestructure>>();
         #endregion
 
-        public void SaveManifest(string baseDir)
+        public void SaveManifest()
         {
-            var expanded = Path.GetFullPath(Environment.ExpandEnvironmentVariables(baseDir));
-            IncrementalUtility.SaveIntermediateFile(Path.Combine(expanded, ManifestFile), Manifest);
+            IncrementalUtility.SaveIntermediateFile(Path.Combine(BaseDir, ManifestFile), Manifest);
         }
 
         internal void Load(string baseDir)
@@ -118,7 +124,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             ActionWhenNotNull(baseDir, XRefSpecMapFile, f => { XRefSpecMap = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<List<XRefSpec>>>(f); });
             ActionWhenNotNull(baseDir, FileMapFile, f => { FileMap = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<FileMapItem>>(f); });
             ActionWhenNotNull(baseDir, BuildMessageFile, f => { BuildMessage = IncrementalUtility.LoadBuildMessage(f); });
-            ActionWhenNotNull(baseDir, TocRestructionsFile, f => { TocRestructions = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<List<TreeItemRestructure>>>(f); });           
+            ActionWhenNotNull(baseDir, TocRestructionsFile, f => { TocRestructions = IncrementalUtility.LoadIntermediateFile<OSPlatformSensitiveDictionary<List<TreeItemRestructure>>>(f); });
             foreach (var processor in Processors)
             {
                 processor.Load(baseDir);
