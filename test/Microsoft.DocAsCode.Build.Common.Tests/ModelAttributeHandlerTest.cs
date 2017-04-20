@@ -244,7 +244,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             var model = new MarkdownModelWithIList
             {
                 ListContent = new List<string> { "*list*" },
-                ArrayContent = new [] { "@xref", "*content" }
+                ArrayContent = new[] { "@xref", "*content" }
             };
 
             var context = GetDefaultContext();
@@ -263,11 +263,34 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
         #endregion
 
+        #region UrlContentAttribute
+
+        [Fact]
+        public void TestSimpleModelWithUrlContentAttributeShouldSucceed()
+        {
+            var model = new SimpleModel
+            {
+                Href = "linkTarget"
+            };
+
+            var context = Handle(model);
+
+            Assert.Equal(0, context.LinkToUids.Count);
+            Assert.Equal(0, context.UidLinkSources.Count);
+            Assert.Equal(1, context.LinkToFiles.Count);
+            Assert.Equal(1, context.FileLinkSources.Count);
+            Assert.Equal("~/linkTarget", model.Href);
+        }
+        #endregion
+
         #region Helper Method
 
         private static HandleModelAttributesContext Handle(object model, HandleModelAttributesContext context = null)
         {
-            var handler = new CompositeModelAttributeHandler(new UniqueIdentityReferenceHandler(), new MarkdownContentHandler());
+            var handler = new CompositeModelAttributeHandler(
+                new UniqueIdentityReferenceHandler(),
+                new MarkdownContentHandler(),
+                new UrlContentHandler());
             if (context == null)
             {
                 context = GetDefaultContext();
@@ -283,7 +306,11 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
                 Host = new HostService(null, Enumerable.Empty<FileModel>())
                 {
                     MarkdownService = new DfmServiceProvider().CreateMarkdownService(new MarkdownServiceParameters { BasePath = string.Empty }),
-                    SourceFiles = ImmutableDictionary.Create<string, FileAndType>()
+                    SourceFiles = new Dictionary<string, FileAndType>
+                    {
+                        { "~/test" , new FileAndType(Environment.CurrentDirectory, "test", DocumentType.Article)},
+                        { "~/linkTarget" , new FileAndType(Environment.CurrentDirectory, "linkTarget", DocumentType.Article)}
+                    }.ToImmutableDictionary()
                 },
                 FileAndType = new FileAndType(Environment.CurrentDirectory, "test", DocumentType.Article),
             };
@@ -364,6 +391,8 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             public string Identity { get; set; }
             [UniqueIdentityReference]
             public List<object> Identities { get; set; }
+            [UrlContent]
+            public string Href { get; set; }
         }
 
         public class InvalidModel
