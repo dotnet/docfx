@@ -4070,7 +4070,7 @@ tagRules : [
                         "  type: Class",
                         "  syntax:",
                         "    content: public class C",
-                        "  summary: \"This is class A.C [update] @someuid\"",
+                        "  summary: \"This is class A.C [Updated] @someuid\"",
                         "references: []",
                     },
                     inputFolder);

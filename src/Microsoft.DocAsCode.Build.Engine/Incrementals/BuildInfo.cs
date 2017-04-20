@@ -7,8 +7,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using System.Collections.Generic;
     using System.IO;
 
-    using Newtonsoft.Json;
-
     using Microsoft.DocAsCode.Common;
 
     public class BuildInfo
