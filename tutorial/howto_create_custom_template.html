@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>How-to: Create A Custom Template | DocFX website </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="How-to: Create A Custom Template | DocFX website ">
+    <meta name="generator" content="docfx 2.16.2.2">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+              <h1 id="how-to-create-a-custom-template">How-to: Create A Custom Template</h1>
+              
+<p>Templates are organized as a zip package or a folder. The file path (without the <code>.zip</code> extension) of the zip package or the path of the folder is considered to be the template name.</p>
+<h2 id="quickstart">Quickstart</h2>
+<p>Let&#39;s create a template to transform Markdown files into a simple html file.</p>
+<h3 id="step-1-create-a-template-folder">Step 1. Create a template folder</h3>
+<p>Create a folder for the template, for example, <code>c:/docfx_howto/simple_template</code>.</p>
+<h3 id="step-2-add-renderer-file">Step 2. Add <em>Renderer</em> file</h3>
+<p>Create a file <code>conceptual.html.primary.tmpl</code> under the template folder with the following content:</p>
+<pre><code class="lang-mustache">{{{conceptual}}}
+</code></pre><p>Now a simple custom template is created.</p>
+<p>You may notice that DocFX reports a warning message saying that: <em>Warning: [Build Document.Apply Templates]There is no template processing document type(s): Toc</em>. It is because our custom template only specifies how to handle document with type <code>conceptual</code>.</p>
+<p>To test the output of the template, create a simple documentation project following <a href="walkthrough/walkthrough_create_a_docfx_project.html">Walkthrough Part I</a> or download the <a href="walkthrough/artifacts/walkthrough1.zip">zipped documentation project</a> directly.</p>
+<p>In the documentation project, run <code>docfx build docfx.json -t c:/docfx_howto/simple_template --serve</code>. The <code>-t</code> command option specifies the template name(s) used by the current build.</p>
+<p>Open <a href="http://localhost:8080">http://localhost:8080</a> and you can see a simple web page as follows:</p>
+<p><img src="images/simple_web_page.png" alt="Simple Web Page"></p>
+<h2 id="add-preprocessor-file">Add <em>Preprocessor</em> file</h2>
+<h3 id="step-3-add-preprocessor-file">Step 3. Add <em>Preprocessor</em> file</h3>
+<p>Sometimes the input data model is not exactly what <em>Renderer</em> wants, you may want to add some properties to the data model, or modify the data model a little bit before applying the <em>Renderer</em> file. This can be done by creating a <em>Preprocessor</em> file.</p>
+<p>Create a file <code>conceptual.html.primary.js</code> under the template folder with the following content:</p>
+<pre><code class="lang-javascript">exports.transform = function (model) {
+    model._extra_property = &quot;Hello world&quot;;
+    return model;
+}
+</code></pre><p>Update the file <code>conceptual.html.primary.tmpl</code> with the following content:</p>
+<pre><code class="lang-mustache">&lt;h1&gt;{{_extra_property}}&lt;/h1&gt;
+{{{conceptual}}}
+</code></pre><p>In the documentation project, run <code>docfx build docfx.json -t c:/docfx_howto/simple_template --serve</code>.</p>
+<p>Open <a href="http://localhost:8080">http://localhost:8080</a> and you can see <code>_extra_property</code> is added to the web page.</p>
+<p><img src="images/web_page_with_extra_property.png" alt="Updated Web Page"></p>
+<h2 id="merge-template-with-default-template">Merge template with <code>default</code> template</h2>
+<p>DocFX contains some embedded template resources that you can refer to directly. You can use <code>docfx template list</code> to list available templates provided by DocFX.</p>
+<p>Take <code>default</code> template as an example.</p>
+<p>Run <code>docfx template export default</code>. It exports what&#39;s inside <code>default</code> template into the folder <code>_exported_templates</code>. You can see that there are sets of <em>Preprocessor</em> and <em>Renderer</em> files to deal with different types of documents.</p>
+<p>DocFX supports specifying multiple templates for a documentation project. That allows you to leverage the <code>default</code> template for handling other types of documents, together with your custom template.</p>
+<p>When dealing with multiple templates, DocFX merges the files inside these templates.</p>
+<p>The principle for merging is: if a file name collides then the file in the latter template overwrites the one in the former template.</p>
+<p>For example, you can merge <code>default</code> template and your custom template by calling <code>docfx build docfx.json -t default, c:/docfx_howto/simple_template</code>. Multiple templates are split by a comma <code>,</code> in the command line. Or you can define it in <code>docfx.json</code> by:</p>
+<pre><code>&quot;build&quot;: {
+    &quot;template&quot;: [
+        &quot;default&quot;,
+        &quot;c:/docfx_howto/simple_template&quot;
+    ]
+}
+</code></pre><p>In the documentation project, run <code>docfx build docfx.json -t default,c:/docfx_howto/simple_template --serve</code>.</p>
+<p>Now the warning message <em>There is no template processing document type(s): Toc</em> disappears because the default template contains <em>Renderer</em> to handle TOC files.</p>
+<p>Open <a href="http://localhost:8080/toc.html">http://localhost:8080/toc.html</a> and you can see a toc web page.
+<img src="images/toc_web_page.png" alt="TOC Web Page"></p>
+<div class="TIP"><h5>Tip</h5><p>Run <code>docfx template export default</code> to view what&#39;s inside the default template.</p>
+</div>
+<div class="NOTE"><h5>Note</h5><p>It is possible that DocFX updates its embedded templates when a new version is released.
+So please make sure to re-export the template if you overwrite or are dependent on it in your custom template.</p>
+</div>
+<h2 id="extension-for-preprocessor-file">Extension for <em>Preprocessor</em> file</h2>
+<p>If you want to modify some properties based on DocFX <code>default</code> template&#39;s <em>Preprocessor</em>, you can use <em>Preprocessor</em> extension file to achieve this.</p>
+<p>For example, if you want to add a property to the managed reference&#39;s data model after <code>default</code> template&#39;s <em>Preprocessor</em>, you can update the file <code>ManagedReference.extension.js</code> in your custom template with the following content:</p>
+<pre><code>/**
+ * This method will be called at the start of exports.transform in ManagedReference.html.primary.js
+ */
+exports.preTransform = function (model) {
+  return model;
+}
+
+/**
+ * This method will be called at the end of exports.transform in ManagedReference.html.primary.js
+ */
+exports.postTransform = function (model) {
+  model._extra_property = &quot;Hello world&quot;;
+  return model;
+}
+</code></pre><p>Compared with modifying <code>ManagedReference.html.primary.js</code> directely, you needn&#39;t worry about merging your custom templates with DocFX&#39;s embedded templates when DocFX updates.</p>
+
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/howto_create_custom_template.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Copyright © 2015-2017 Microsoft<br>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

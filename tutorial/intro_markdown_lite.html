@@ -1,0 +1,250 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Markdown Lite | DocFX website </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Markdown Lite | DocFX website ">
+    <meta name="generator" content="docfx 2.16.2.2">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+              <h1 id="markdown-lite">Markdown Lite</h1>
+              
+<h2 id="introduction">Introduction</h2>
+<p>Markdown lite is a simple markdown tool to markup <code>md</code> file.</p>
+<h2 id="design-goal">Design goal</h2>
+<p>We write this tool for good extensibility, so our implementation should obey following principles:</p>
+<ol>
+<li>Extensibility:<ul>
+<li>Support markdown syntax extension.</li>
+<li>Support validation extension.</li>
+</ul>
+</li>
+<li>Correctness:
+We follow GFM syntax, but when some rules is too hard to implement, just breaking.</li>
+<li>Performance:
+Performance is not our major concern.</li>
+</ol>
+<h2 id="steps">Steps</h2>
+<p>There are three steps when calling <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownEngine.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownEngine_Markup_System_String_System_String_">markup method</a>:</p>
+<ul>
+<li><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownParser.html">Parse</a></li>
+<li><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenRewriter.html">Rewrite</a> or <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenValidator.html">validate</a></li>
+<li><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html">Render</a></li>
+</ul>
+<h3 id="step-1-parse">Step 1: Parse</h3>
+<p>In this step, it will parse markdown text to <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html">tokens</a>.
+The parser is based on <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRule.html">rules</a>, which make up the <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html">context</a>.</p>
+<p>For example,
+<a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockToken.html">heading token</a> is created by <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownHeadingBlockRule.html">heading rule</a>,
+the heading rule is belonging to <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownBlockContext.html">block context</a>.</p>
+<h3 id="step-2-rewrite-or-validate">Step 2: Rewrite or validate</h3>
+<p>In this step, it will walk through all <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html">tokens</a>,
+we can change it to another, or just validate.</p>
+<p>For example, we can create a rewriter to change all heading token with depth + 1:</p>
+<pre><code class="lang-csharp">MarkdownTokenRewriterFactory.FromLambda&lt;IMarkdownRewriteEngine, MarkdownHeadingBlockToken&gt;(
+    (engine, token) =&gt; new MarkdownHeadingBlockToken(token.Rule, token.Context, token.Content, token.Id, token.Depth + 1, token.SourceInfo);
+</code></pre><h3 id="step-3-render">Step 3: Render</h3>
+<p>In this step, it renders models to text content (html format by default).
+To simplify extension, we created an <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownRendererAdapter.html">adapter</a>,
+the adapter invoke methods by following rules:</p>
+<ol>
+<li>Method name is <code>Render</code></li>
+<li>Instance method</li>
+<li>Return type is <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.StringBuffer.html">StringBuffer</a></li>
+<li>The count of parameters is 3, and types are following:<ol>
+<li><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html">IMarkdownRenderer</a> or any type implements it.</li>
+<li><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html">IMarkdownToken</a> or any type implements it.</li>
+<li><a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html">IMarkdownContext</a> or any type implements it.</li>
+</ol>
+</li>
+<li>Always invoke the best overloaded method (The best is defined by <a href="https://msdn.microsoft.com/en-us/library/microsoft.csharp.runtimebinder.binder.invoke(v=vs.110).aspx">binder</a>).</li>
+</ol>
+<h2 id="engine-and-engine-builder">Engine and engine builder</h2>
+<p>Engine is a set of parser, rewriter and renderer.
+It can markup a markdown file to html file (or others).
+But it cannot be invoked in parallel.</p>
+<p>So we create an <a class="xref" href="../api/Microsoft.DocAsCode.MarkdownLite.MarkdownEngineBuilder.html">engine builder</a>.
+It defines all the rules of parser, rewriter and renderer.
+It can create instances when needed.</p>
+<h2 id="how-to-customize-markdown-syntax">How to customize markdown syntax</h2>
+<h3 id="define-markdown-syntax">Define markdown syntax</h3>
+<p>Define markdown:</p>
+<pre><code class="lang-md">: My label
+</code></pre><p>should be rendered as following html:</p>
+<pre><code class="lang-html">&lt;div id=&quot;My label&quot;&gt;&lt;/div&gt;
+</code></pre><h3 id="select-token-kind">Select token kind</h3>
+<p>First of all, we should select the context for this rule.
+And in this goal, the new line is required.
+So it should be a <a href="https://daringfireball.net/projects/markdown/syntax#block">block token</a>, all of the names for class should contain <code>Block</code>.</p>
+<h3 id="define-token">Define token</h3>
+<p>Create a token class like following:</p>
+<pre><code class="lang-csharp">public class MarkdownMyLabelBlockToken : IMarkdownToken
+{
+    public MarkdownMyLabelBlockToken(IMarkdownRule rule, IMarkdownContext context, string label, SourceInfo sourceInfo)
+    {
+        Rule = rule;
+        Context = context;
+        Label = label;
+        SourceInfo = sourceInfo;
+    }
+
+    public IMarkdownRule Rule { get; }
+
+    public IMarkdownContext Context { get; }
+
+    public string Label { get; }
+
+    public SourceInfo SourceInfo { get; }
+}
+</code></pre><h3 id="define-rule">Define rule</h3>
+<p>Create a rule class as following:</p>
+<pre><code class="lang-csharp">public class MarkdownMyLabelBlockRule : IMarkdownRule
+{
+    public virtual string Name =&gt; &quot;My Label&quot;;
+
+    public virtual Regex LabelRegex { get; } = new Regex(&quot;^\: *([^\n]+?) *(?:\n+|$)&quot;);
+
+    public virtual IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
+    {
+        var match = LabelRegex.Match(context.CurrentMarkdown);
+        if (match.Length == 0)
+        {
+            return null;
+        }
+        var sourceInfo = context.Consume(match.Length);
+        return new MarkdownMyLabelBlockToken(this, parser.Context, match.Group[1].Value, sourceInfo);
+    }
+}
+</code></pre><h3 id="define-renderer">Define renderer</h3>
+<p>Create a renderer class as following:</p>
+<pre><code class="lang-csharp">public class MyRenderer : HtmlRenderer
+{
+    public virtual StringBuffer Render(IMarkdownRenderer renderer, MarkdownMyLabelBlockToken token, IMarkdownContext context)
+    {
+        return StringBuffer.Empty + &quot;&lt;div id=\&quot;&quot; + token.Label + &quot;\&quot;&gt;&lt;/div&gt;&quot;;
+    }
+}
+</code></pre><h3 id="define-engine-builder">Define engine builder</h3>
+<p>Create an engine builder class as following:</p>
+<pre><code class="lang-csharp">public class MyEngineBuilder : GfmEngineBuilder
+{
+    public MyEngineBuilder(Options options) : base(options)
+    {
+         BlockRules = BlockRules.Insert(0, new MarkdownMyLabelBlockRule());
+    }
+}
+</code></pre><h3 id="markup-it">Markup it!</h3>
+<p>Then use your custom markdown in your code:</p>
+<pre><code class="lang-csharp">public string MarkupMyMarkdown(string markdown)
+{
+    var builder = new MyEngineBuilder(new Options());
+    var engine = builder.CreateEngine(new MyRender())
+    return engine.Markup(markdown);
+}
+</code></pre>
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/intro_markdown_lite.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Copyright © 2015-2017 Microsoft<br>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

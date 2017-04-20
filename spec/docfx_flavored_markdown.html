@@ -1,0 +1,402 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>DocFX Flavored Markdown | DocFX website </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="DocFX Flavored Markdown | DocFX website ">
+    <meta name="generator" content="docfx 2.16.2.2">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+              <h1 id="docfx-flavored-markdown">DocFX Flavored Markdown</h1>
+              
+<p>DocFX supports <code>DocFX Flavored Markdown</code>, or DFM. It supports all <a href="https://guides.github.com/features/mastering-markdown/">GitHub Flavored Markdown</a> syntax with 2 exceptions when resolving <a href="#differences-between-dfm-and-gfm">list</a>. Also, DFM adds new syntax to support additional functionalities, including cross reference and file inclusion.</p>
+<h2 id="yaml-header">Yaml Header</h2>
+<p>Yaml header in DFM is considered as the metadata for the Markdown file. It will transform to <code>yamlheader</code> tag when processed.
+Yaml header MUST be the first thing in the file and MUST take the form of valid YAML set between triple-dashed lines. Here is a basic example:</p>
+<pre><code class="lang-md">---
+uid: A.md
+title: A
+---
+</code></pre><h2 id="cross-reference">Cross Reference</h2>
+<p>Cross reference allows you to link to another topic by using its unique identifier (called UID) instead of using its file path.</p>
+<p>For conceptual Markdown files UID can be defined by adding a <code>uid</code> metadata in YAML header:</p>
+<pre><code class="lang-md">---
+uid: uid_of_the_file
+---
+
+This is a conceptual topic with `uid` specified.
+</code></pre><p>For reference topics, UIDs are auto generated from source code and can be found in generated YAML files.</p>
+<p>You can use one of the following syntax to cross reference a topic with UID defined:</p>
+<ol>
+<li>Markdown link: <code>[link_text](xref:uid_of_the_topic)</code></li>
+<li>Auto link: <code>&lt;xref:uid_of_the_topic&gt;</code></li>
+<li>Shorthand form: <code>@uid_of_the_topic</code></li>
+</ol>
+<p>All will render to:</p>
+<pre><code class="lang-html">&lt;a href=&quot;url_of_the_topic&quot;&gt;link_text&lt;/a&gt;
+</code></pre><p>If <code>link_text</code> is not specified, DocFX will extract the title from the target topic and use it as the link text.</p>
+<div class="NOTE"><h5>Note</h5><p>Hashtag in <code>xref</code> is always treated as separator between file name and anchor name. That means if you have <code>#</code> in UID, it has
+to be <a href="https://en.wikipedia.org/wiki/Percent-encoding">encoded</a> to <code>%23</code>.</p>
+<p>Actually <code>xref</code> format follows URI standard so all <a href="https://tools.ietf.org/html/rfc3986#section-2.2">reserved characters</a> should be encoded.</p>
+</div>
+<p>For more information, see <a href="../tutorial/links_and_cross_references.html#using-cross-reference">cross reference</a>.</p>
+<h2 id="file-inclusion">File Inclusion</h2>
+<p>DFM adds syntax to include other file parts into current file, the included file will also be considered as in DFM syntax.</p>
+<p>There are two types of file inclusion: Inline and block, as similar to inline code span and block code.</p>
+<div class="NOTE"><h5>Note</h5><p>YAML header is <strong>NOT</strong> supported when the file is an inclusion.</p>
+</div>
+<h3 id="inline">Inline</h3>
+<p>Inline file inclusion is in the following syntax, in which <code>&lt;title&gt;</code> stands for the title of the included file, and <code>&lt;filepath&gt;</code> stands for the file path of the included file. The file path can be either absolute or relative.<code>&lt;filepath&gt;</code> can be wrapped by <code>&#39;</code> or <code>&quot;</code>.</p>
+<div class="NOTE"><h5>Note</h5><p>For inline file inclusion, the file included will be considered as containing only inline tags, for example,
+<code>###header</code> inside the file will not transfer since <code>&lt;h3&gt;</code> is a block tag, while <code>[a](b)</code> will transform to
+<code>&lt;a href=&#39;b&#39;&gt;a&lt;/a&gt;</code> since <code>&lt;a&gt;</code> is an inline tag.
+Also, ending white spaces will be <strong>trimmed</strong>, considering ending white spaces in inline inclusion in most cases are typos.</p>
+</div>
+<pre><code class="lang-md">...Other inline contents... [!include[&lt;title&gt;](&lt;filepath&gt;)]
+</code></pre><h3 id="block">Block</h3>
+<p>Block file inclusion must be in a single line and with no prefix characters before the start <code>[</code>. Content inside the included file will transform using DFM syntax.</p>
+<pre><code class="lang-md">[!include[&lt;title&gt;](&lt;filepath&gt;)]
+</code></pre><h2 id="section-definition">Section definition</h2>
+<p>User may need to define section. Mostly used for code table.
+Give an example below.</p>
+<pre><code>&gt; [!div class=&quot;tabbedCodeSnippets&quot; data-resources=&quot;OutlookServices.Calendar&quot;]
+&gt; ```cs
+&gt; &lt;cs code text&gt;
+&gt; ```
+&gt; ```javascript
+&gt; &lt;js code text&gt;
+&gt; ```
+</code></pre><p>The above blockquote Markdown text will transform to section html as in the following:</p>
+<pre><code class="lang-html">&lt;div class=&quot;tabbedCodeSnippets&quot; data-resources=&quot;OutlookServices.Calendar&quot;&gt;
+  &lt;pre&gt;&lt;code&gt;cs code text&lt;/code&gt;&lt;/pre&gt;
+  &lt;pre&gt;&lt;code&gt;js code text&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</code></pre><h2 id="code-snippet">Code Snippet</h2>
+<p>Allows you to insert code with code language specified. The content of specified code path will expand.</p>
+<pre><code class="lang-md">[!code-&lt;language&gt;[&lt;name&gt;](&lt;codepath&gt;&lt;queryoption&gt;&lt;queryoptionvalue&gt; &quot;&lt;title&gt;&quot;)]
+</code></pre><ul>
+<li><strong><code>&lt;language&gt;</code></strong> can be made up of any number of character and &#39;-&#39;. However, the recommended value should follow <a href="http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases">Highlight.js language names and aliases</a>.</li>
+<li><strong><code>&lt;codepath&gt;</code></strong> is the relative path in file system which indicates the code snippet file that you want to expand.</li>
+<li><strong><code>&lt;queryoption&gt;</code></strong> and <strong><code>&lt;queryoptionvalue&gt;</code></strong> are used together to retrieve part of the code snippet file in the line range or tag name way. We have 2 query string options to represent these two ways:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>query string using <code>#</code></th>
+<th>query string using <code>?</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. line range</td>
+<td><code>#L{startlinenumber}-L{endlinenumber}</code></td>
+<td><code>?start={startlinenumber}&amp;end={endlinenumber}</code></td>
+</tr>
+<tr>
+<td>2. tagname</td>
+<td><code>#{tagname}</code></td>
+<td><code>?name={tagname}</code></td>
+</tr>
+<tr>
+<td>3. multiple region range</td>
+<td><em>Unsupported</em></td>
+<td><code>?range={rangequerystring}</code></td>
+</tr>
+<tr>
+<td>4. highlight lines</td>
+<td><em>Unsupported</em></td>
+<td><code>?highlight={rangequerystring}</code></td>
+</tr>
+<tr>
+<td>5. dedent</td>
+<td><em>Unsupported</em></td>
+<td><code>?dedent={dedentlength}</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>In <code>?</code> query string, the whole file will be included if none of the first three option is specified.</li>
+<li>If <code>dedent</code> isn&#39;t specified, the maximum common indent will be trimmed automatically.</li>
+<li><strong><code>&lt;title&gt;</code></strong> can be omitted.</li>
+</ul>
+<h3 id="code-snippet-sample">Code Snippet Sample</h3>
+<pre><code class="lang-md">[!code-csharp[Main](Program.cs)]
+
+[!code[Main](Program.cs#L12-L16 &quot;This is source file&quot;)]
+[!code-vb[Main](../Application/Program.vb#testsnippet &quot;This is source file&quot;)]
+
+[!code[Main](index.xml?start=5&amp;end=9)]
+[!code-javascript[Main](../jquery.js?name=testsnippet)]
+[!code[Main](index.xml?range=2,5-7,9-) &quot;This includes the lines 2, 5, 6, 7 and lines 9 to the last line&quot;]
+[!code[Main](index.xml?highlight=2,5-7,9-) &quot;This includes the whole file with lines 2,5-7,9- highlighted&quot;]
+</code></pre><h3 id="tag-name-representation-in-code-snippet-source-file">Tag Name Representation in Code Snippet Source File</h3>
+<p>DFM currently only supports the following <strong><code>&lt;language&gt;</code></strong> values to be able to retrieve by tag name:</p>
+<ul>
+<li>C#: cs, csharp</li>
+<li>VB: vb, vbnet</li>
+<li>C++: cpp, c++</li>
+<li>F#: fsharp</li>
+<li>XML: xml</li>
+<li>Html: html</li>
+<li>SQL: sql</li>
+<li>Javascript: javascript</li>
+</ul>
+<h2 id="note-warningtipimportant">Note (Warning/Tip/Important)</h2>
+<p>Using specific syntax inside block quote to indicate the following content is Note.</p>
+<pre><code>&gt; [!NOTE]
+&gt; &lt;note content&gt;
+&gt; [!WARNING]
+&gt; &lt;warning content&gt;
+</code></pre><p>The above content will be transformed to the following html:</p>
+<pre><code>&lt;div class=&quot;NOTE&quot;&gt;
+  &lt;h5&gt;NOTE&lt;/h5&gt;
+  &lt;p&gt;note content&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;WARNING&quot;&gt;
+  &lt;h5&gt;WARNING&lt;/h5&gt;
+  &lt;p&gt;WARNING content&lt;/p&gt;
+&lt;/div&gt;
+</code></pre><p>Here are all the supported note types with the styling of the default theme applied:</p>
+<div class="NOTE"><h5>Note</h5><p>This is a note which needs your attention, but it&#39;s not super important.</p>
+</div>
+<div class="TIP"><h5>Tip</h5><p>This is a note which needs your attention, but it&#39;s not super important.</p>
+</div>
+<div class="WARNING"><h5>Warning</h5><p>This is a warning containing some important message.</p>
+</div>
+<div class="IMPORTANT"><h5>Important</h5><p>This is a warning containing some important message.</p>
+</div>
+<div class="CAUTION"><h5>Caution</h5><p>This is a warning containing some important message.</p>
+</div>
+<h2 id="differences-between-dfm-and-gfm">Differences between DFM and GFM</h2>
+<h3 id="list">List</h3>
+<p>DFM list item always uses the first character in the first line to decide whether it is in the list item, but GFM does not.<br>For example:</p>
+<p>Case 1:</p>
+<pre><code class="lang-md">* a
+  * b
+    * c
+
+  text
+</code></pre><p><code>a</code> starts at column 3, <code>b</code> starts at column 5, <code>c</code> starts at column 7.</p>
+<table>
+<thead>
+<tr>
+<th><code>text</code> will be</th>
+<th>in DFM, <code>text</code> starts at column</th>
+<th>in GFM, <code>text</code> starts at column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>paragraph</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>part of item a</td>
+<td>2 ~ 3 (&gt; 1 and &lt;= 3)</td>
+<td>2 ~ 4</td>
+</tr>
+<tr>
+<td>part of item b</td>
+<td>4 ~ 5 (&gt; 3 and &lt;= 6)</td>
+<td>5 ~ 6</td>
+</tr>
+<tr>
+<td>part of item c</td>
+<td>6 or more (&gt; 6)</td>
+<td>7 or more</td>
+</tr>
+<tr>
+<td>part of item c and code</td>
+<td>11 (7 + 4)</td>
+<td>13</td>
+</tr>
+</tbody>
+</table>
+<p>Case 2:</p>
+<pre><code class="lang-md">1. a
+   2. b
+      3. c
+
+   text
+</code></pre><p><code>a</code> starts at column 4, <code>b</code> starts at column 7, <code>c</code> starts at column 10.</p>
+<table>
+<thead>
+<tr>
+<th><code>text</code> will be</th>
+<th>in DFM, <code>text</code> starts at column</th>
+<th>in GFM, <code>text</code> starts at column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>paragraph</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>part of item a</td>
+<td>2 ~ 4 (&gt; 1 and &lt;= 4)</td>
+<td>2 ~ 4</td>
+</tr>
+<tr>
+<td>part of item b</td>
+<td>5 ~ 7 (&gt; 4 and &lt;= 7)</td>
+<td>5 ~ 8</td>
+</tr>
+<tr>
+<td>part of item c</td>
+<td>8 or more (&gt; 7)</td>
+<td>9 or more</td>
+</tr>
+<tr>
+<td>part of item c and code</td>
+<td>14 (10 + 4)</td>
+<td>15</td>
+</tr>
+</tbody>
+</table>
+<h3 id="list-after-paragraph">List after paragraph</h3>
+<p>In GFM, list after paragraph must be separated by two or more new line character.<br>In DFM, one new line also works.</p>
+<p>For example:</p>
+<pre><code class="lang-md">text
+1. a
+2. b
+</code></pre><p>In GFM, it will be rendered as one paragraph with content <code>text 1. a 2. b</code>.<br>In DFM, it will be rendered as a paragraph (with content <code>text</code>) and a list.</p>
+<h2 id="differences-introduced-by-dfm-syntax">Differences introduced by DFM syntax</h2>
+<div class="WARNING"><h5>Warning</h5><p>Please note that DFM introduces more syntax to support more functionalities. When GFM does not support them, preview the
+Markdown file inside <em>GFM Preview</em> can lead to different results.</p>
+</div>
+<h3 id="yaml-header-1">YAML header</h3>
+<p>In GFM, YAML header must start at the very beginning of the Markdown file.
+In DFM, YAML header contains more powerful meanings. Refer to <a href="#yaml-header">Yaml Header</a> for details.</p>
+<pre><code class="lang-md">...some text...
+
+---
+a: b
+---
+</code></pre><p>In GFM, it would be rendered as <code>&lt;hr&gt;a: b&lt;hr&gt;</code>.<br>In DFM, it would be rendered as a YAML header.</p>
+<p>If you want to get <code>&lt;hr&gt;</code> in html in DFM, please use:</p>
+<pre><code class="lang-md">- - -
+***
+* * *
+</code></pre><p>or change content to make it not in YAML format:</p>
+<pre><code class="lang-md">---
+a\: b
+---
+</code></pre><h3 id="text-after-block-extension">Text after block extension</h3>
+<p>Some block extension in DFM cannot be recognized in GFM.
+In GFM, it would be treated as a part of paragraph.
+Then, following content would be treated as a part of paragraph.</p>
+<p>For example:</p>
+<pre><code class="lang-md">&gt; [!NOTE]
+&gt;     This is code.
+</code></pre><p>In GFM, it will be rendered as a paragraph with content <code>[!NOTE] This is code.</code> in blockquote.<br>In DFM, it will be rendered as a code in note.</p>
+
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/spec/docfx_flavored_markdown.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Copyright © 2015-2017 Microsoft<br>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

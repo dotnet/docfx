@@ -1,0 +1,267 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>&#128295; Advanced: Support Hyperlink | DocFX website </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="&#128295; Advanced: Support Hyperlink | DocFX website ">
+    <meta name="generator" content="docfx 2.16.2.2">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+              <h1 id="-advanced-support-hyperlink">🔧 Advanced: Support Hyperlink</h1>
+              
+<p>In this topic, we will support hyperlinking in rtf files.</p>
+<p>Create a hyperlink in the rtf file:</p>
+<ol>
+<li>Open <code>foo.rtf</code> by <code>Word</code>.</li>
+<li>Add a hyperlink in content</li>
+<li>Set the link target to an existing <code>bar.rtf</code></li>
+<li>Save the document.</li>
+</ol>
+<h2 id="about-link">About link</h2>
+<p>An author can write any valid hyperlink in the document, and then needs to run <code>DocFX build</code> to update file links.</p>
+<h3 id="what-is-file-link">What is file link:</h3>
+<ol>
+<li>The hyperlink must be a relative path and not rooted.<ul>
+<li>valid: <code>foo\bar.rtf</code>, <code>../foobar.rtf</code></li>
+<li>invalid: <code>/foo.rtf</code>, <code>c:\foo\bar.rtf</code>, <code>http://foo.bar/</code>, <code>mailto:foo@bar.foobar</code></li>
+</ul>
+</li>
+<li>The file must exist.</li>
+</ol>
+<h3 id="why-update-file-link">Why update file link:</h3>
+<p>The story is:</p>
+<ol>
+<li>In <code>foo.rtf</code>, it has a file link to <code>bar.rtf</code>.</li>
+<li>In document build, <code>bar.rtf</code> generates a file with the name <code>bar.html</code>.</li>
+<li>But in <code>foo.rtf</code>, the link target is still <code>bar.rtf</code>, thus in the output folder we cannot find this file and we will get a broken link.</li>
+<li>To resolve the broken link, we need to update the link target from <code>bar.rtf</code> to <code>bar.html</code>.</li>
+</ol>
+<p>File link is a relative path, but we cannot track the relative path easily.
+So we track the <em>normalized file path</em> instead.</p>
+<h3 id="what-is-a-normalized-file-path">What is a <em>normalized file path</em>:</h3>
+<ol>
+<li>It always starts from the working folder (the folder that contains <code>docfx.json</code>), and we write it as <code>~/</code>.</li>
+<li>No <code>../</code> or <code>./</code> or <code>//</code></li>
+<li>Replace <code>\</code> with <code>/</code>.</li>
+<li>No url encoding. The path must be same as it in the file system.</li>
+<li>No anchor.</li>
+</ol>
+<p>Finally, a valid <em>normalized file path</em> looks like: <code>~/foo/bar.rtf</code>.</p>
+<ul>
+<li><p>Pros</p>
+<ul>
+<li><p>Same form in different documents when the target is the same file.</p>
+<p>When file structure is:</p>
+<pre><code>z:\a\b\foo.rtf
+z:\a\b\c\bar.rtf
+z:\a\b\c\foobar.rtf
+</code></pre><p>Link target <code>c/foobar.rtf</code> in <code>foo.rtf</code> and link target <code>foobar.rtf</code> in <code>bar.rtf</code> is the same file.
+When the working folder is <code>z:\a\</code>, the link target is always <code>~/b/c/foobar.rtf</code>.</p>
+</li>
+<li><p>Avoids differences in style when referring to the same file.</p>
+<p>For example, the following hyperlinks target the same file: <code>a/foo.rtf</code>, <code>./a/foo.rtf</code>, <code>a/b/../foo.rtf</code>, <code>a//foo.rtf</code>, <code>a\foo.rtf</code></p>
+</li>
+</ul>
+</li>
+<li><p>Cons</p>
+<ul>
+<li>A folder with the name <code>~</code> is not supported.</li>
+</ul>
+</li>
+</ul>
+<h2 id="prepare">Prepare</h2>
+<ol>
+<li><p>Open the rtf plug-in library project in <code>Visual Studio</code>.</p>
+</li>
+<li><p>Add nuget packages:<br>for plug-in: <code>Microsoft.DocAsCode.Utility</code></p>
+</li>
+<li><p>Add framework assembly reference:
+<code>System.Core</code>, <code>System.Web</code>, <code>System.Xml.Linq</code></p>
+</li>
+</ol>
+<h2 id="update-rtf-document-processor">Update rtf document processor</h2>
+<ol>
+<li><p>Following the rules for hyperlink, add a <code>FixLink</code> help method:</p>
+<pre><code class="lang-csharp" name="FixLink">private static void FixLink(XAttribute link, RelativePath filePath, HashSet&lt;string&gt; linkToFiles)
+{
+    string linkFile;
+    string anchor = null;
+    if (PathUtility.IsRelativePath(link.Value))
+    {
+        var index = link.Value.IndexOf(&#39;#&#39;);
+        if (index == -1)
+        {
+            linkFile = link.Value;
+        }
+        else if (index == 0)
+        {
+            return;
+        }
+        else
+        {
+            linkFile = link.Value.Remove(index);
+            anchor = link.Value.Substring(index);
+        }
+        var path = filePath + (RelativePath)linkFile;
+        var file = (string)path.GetPathFromWorkingFolder();
+        link.Value = file + anchor;
+        linkToFiles.Add(HttpUtility.UrlDecode(file));
+    }
+}
+</code></pre><p><code>RelativePath</code> helps us generate the links correctly.</p>
+</li>
+<li><p>Then add <code>CollectLinksAndFixDocument</code> method:</p>
+<pre><code class="lang-csharp" name="CollectLinksAndFixDocument">private static HashSet&lt;string&gt; CollectLinksAndFixDocument(FileModel model)
+{
+    string content = (string)((Dictionary&lt;string, object&gt;)model.Content)[&quot;conceptual&quot;];
+    var doc = XDocument.Parse(content);
+    var links =
+        from attr in doc.Descendants().Attributes()
+        where &quot;href&quot;.Equals(attr.Name.LocalName, StringComparison.OrdinalIgnoreCase) || &quot;src&quot;.Equals(attr.Name.LocalName, StringComparison.OrdinalIgnoreCase)
+        select attr;
+    var path = (RelativePath)model.File;
+    var linkToFiles = new HashSet&lt;string&gt;();
+    foreach (var link in links)
+    {
+        FixLink(link, path, linkToFiles);
+    }
+    using (var sw = new StringWriter())
+    {
+        doc.Save(sw);
+        ((Dictionary&lt;string, object&gt;)model.Content)[&quot;conceptual&quot;] = sw.ToString();
+    }
+    return linkToFiles;
+}
+</code></pre></li>
+<li><p>Modify <code>Save</code> method with report links:</p>
+<pre><code class="lang-csharp" name="Save">public SaveResult Save(FileModel model)
+{
+    HashSet&lt;string&gt; linkToFiles = CollectLinksAndFixDocument(model);
+
+    return new SaveResult
+    {
+        DocumentType = &quot;Conceptual&quot;,
+        ModelFile = model.File,
+        LinkToFiles = linkToFiles.ToImmutableArray(),
+    };
+}
+</code></pre></li>
+</ol>
+<!-- todo : `Update Reference` is preserved for next version of plugin. -->
+
+<p>View final <a href="../codesnippet/Rtf/Hyperlink/RtfDocumentProcessor.cs">RtfDocumentProcessor.cs</a></p>
+<h2 id="test-and-verify">Test and verify</h2>
+<ol>
+<li>Build project.</li>
+<li>Copy dll to <code>Plugins</code> folder.</li>
+<li>Modify rtf file, create hyperlink, link to another rtf file, and save.</li>
+<li>Build with command <code>DocFX build</code>.</li>
+<li>Verify output html file.</li>
+</ol>
+
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/advanced_support_hyperlink.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Copyright © 2015-2017 Microsoft<br>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,149 @@
+/* Copyright (c) Microsoft Corporation. All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information. */
+/* Colors */
+button, a, .btn-primary {
+  color: #47A7A0;
+}
+.btn-primary:hover, .btn-primary:focus, button:hover, button:focus, a:hover, a:focus, .toc .nav > li.active > a:hover, .toc .nav > li.active > a:focus, .toc .nav > li > a:hover, .toc .nav > li > a:focus {
+  color: #6E8B60;
+}
+.btn-primary.disable, .btn-primary.disable:hover, a.disable, a.disable:hover{
+  color: #90ABB9;
+}
+.hero {
+    color: #C1D38B;
+    background-color: #385361;
+    background-image: -webkit-gradient(linear,left bottom,right top,color-stop(0%,#000),color-stop(100%,#385361));
+    background-image: -webkit-linear-gradient(45deg,#000 0,#385361 100%);
+    background-image: -moz-linear-gradient(45deg,#000 0,#385361 100%);
+    background-image: -ms-linear-gradient(45deg,#000 0,#385361 100%);
+    background-image: -o-linear-gradient(45deg,#000 0,#385361 100%);
+    background-image: linear-gradient(45deg,#000 0,#385361 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000', endColorstr='#385361', GradientType=1);
+
+}
+.hero strong {
+    color: #e7e7e7;
+}
+.buttons-unit .button {
+    color: #fff;
+    background: #6E8B60;
+}
+.buttons-unit .button:active {
+    background: #A27865;
+}
+.toc .nav > li.active > a, .affix ul > li.active > a, .affix ul > li.active > a:before {
+  color: #6E8B60
+}
+.btn-primary {
+    background: #385361;
+    color: #8BFEB4;
+}
+
+.affix ul > li > a:before {
+  color: #cccccc;
+}
+.toc .nav > li > a, .affix ul > li > a, .affix ul > li > a:hover {
+  color: #666666;
+}
+
+svg:hover path {
+    fill: #ffffff;
+}
+
+.counter-key-section{
+  border: 2px solid #6E8B60;
+  -webkit-border-image-source: -webkit-gradient(linear, left, right, color-stop(0%, rgba(0, 0, 0, 0)), color-stop(50%, #385361), color-stop(100%, rgba(0, 0, 0, 0)));
+  -webkit-border-image-source: -webkit-linear-gradient(90deg, rgba(0, 0, 0, 0), #385361 50%, rgba(0, 0, 0, 0));
+  -moz-border-image-source: -moz-linear-gradient(90deg, rgba(0, 0, 0, 0), #385361 50%, rgba(0, 0, 0, 0));
+  -ms-border-image-source: -ms-linear-gradient(90deg, rgba(0, 0, 0, 0), #385361 50%, rgba(0, 0, 0, 0));
+  -o-border-image-source: -o-linear-gradient(90deg, rgba(0, 0, 0, 0), #385361 50%, rgba(0, 0, 0, 0));
+  border-image-source: linear-gradient(90deg, rgba(0, 0, 0, 0), #385361 50%, rgba(0, 0, 0, 0));
+  border-image-slice: 1;
+}
+
+/* End Colors */
+
+.value-prop-heading {
+  font-size: 24px;
+}
+
+#vp-container{
+  margin-top: 30px;
+}
+
+.hero {
+    height: 350px;
+    margin-top: 50px;
+    padding-top: 50px;
+    font-weight: 300;
+    text-align: center;
+}
+.key-section{
+  padding: 30px 0;
+}
+
+.key-section .glyphicon, .counter-key-section .glyphicon {
+  font-size: 4em;
+  display: table-cell;
+  vertical-align: middle;
+}
+.glyphicon {
+  margin-right: 10px;
+  font-size: 16px;
+}
+
+.key-section section, .counter-key-section section {
+  display: table-cell;
+  padding-left: 20px;
+}
+
+.key-section section p, .counter-key-section section p {
+  text-align: initial;
+}
+
+.counter-key-section{
+  padding: 30px 0;
+}
+.buttons-unit-small{
+  font-size: 16px;
+}
+.version-link, .github-link{
+  margin: 5px;
+}
+.hero strong {
+    font-weight: 400;
+    font-family: Rockwell;
+}
+.hero .text {
+    font-size: 64px;
+    text-align: center;
+}
+.hero .minitext {
+    font-size: 20px;
+    text-align: center;
+    font-family: Candara;
+}
+.buttons-unit {
+    margin-top: 60px;
+    text-align: center;
+}
+.hero .button {
+    border-radius: 4px;
+    padding: 8px 16px;
+    margin: 0 12px;
+    box-shadow: 1px 3px 3px rgba(0,0,0,0.3);
+}
+.buttons-unit .button {
+    font-size: 24px;
+}
+
+@media only screen and (max-width: 768px) {
+  .hero {
+    height: 500px;
+    margin-top: 0px;
+  }
+  .hero .button {
+    display: block;
+    margin: 12px;
+  }
+}

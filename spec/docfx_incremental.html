@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Doc-as-code: DocFx.exe Incremental Build Specification | DocFX website </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Doc-as-code: DocFx.exe Incremental Build Specification | DocFX website ">
+    <meta name="generator" content="docfx 2.16.2.2">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+              <h1 id="doc-as-code-docfxexe-incremental-build-specification">Doc-as-code: DocFx.exe Incremental Build Specification</h1>
+              
+<p>This documentation describes the implementation of incrementally extracting metadata from source. Currently we are using <em>Roslyn</em> to compile and analyse source code on the fly. When input sources are large, it may take minutes to load and process the files. To speed up the extraction, previous extracted details are saved to cache for further reference. </p>
+<p>There are two level caches in current implementation. First one is called <em>Application</em> Level cache, and the other one is <em>Project</em> level cache.</p>
+<p><em>Application</em> level cache is saved in file <code>%LocalAppData%/xdoc/cache</code>.</p>
+<p>For <em>Project</em> level cache,</p>
+<p>a. If input sources are supported project files, e.g. <code>.csproj</code> or <code>.vbproj</code> files, <em>Project</em> level cache is located in file <code>obj/xdoc/.cache</code> under the same folder of the project file. </p>
+<p>b. If input sources are supported source code files, e.g. <code>.cs</code> or <code>.vb</code> files, <em>Project</em> level cache is located in file <code>obj/xdoc/.cache</code> under the same folder of the alphabetically first source code file.</p>
+<p>The cache file contains key-value pairs saved in <em>JSON</em> format. The key is the normalized input source code files, and the data structure for the value is as below:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TriggeredUTCTime</td>
+<td>The UTC time when the action is triggered</td>
+</tr>
+<tr>
+<td>CompletedUTCTime</td>
+<td>The UTC time when the action is completed</td>
+</tr>
+<tr>
+<td>OutputFolder</td>
+<td>The output folder for the extracted result</td>
+</tr>
+<tr>
+<td>RelativeOutputFiles</td>
+<td>The paths of the extracted results related to the <em>OutputFolder</em></td>
+</tr>
+<tr>
+<td>CheckSum</td>
+<td>The MD5 checksum calculated for all the extracted results</td>
+</tr>
+</tbody>
+</table>
+<p>Detailed Steps are described below: </p>
+<ol>
+<li>For each input solution/project/source files, get most latest <code>LastModifiedTime</code>.
+ a. For solution, get <code>LastModifiedTime</code> for the solution file, and containing projects
+ b. For project, get <code>LastModifiedTime</code> for the project file, project references, assembly references and containing documents.
+ c. For source files, get <code>LastModifiedTime</code> for the files</li>
+<li><p>Normalize project list, check if <em>Application</em> level cache for these project list exists. Compare <code>TriggeredUTCTime</code> with the <code>LastModifiedTime</code> fetched in #1, and check if checksum remains unchanged for output files. If is, copy result files to output folder. Otherwise, continue to #3.</p>
+</li>
+<li><p>For each supported solution/project/source code files,</p>
+<p> <em>Step 1</em>. Check if <em>Project</em> level cache exists. If not, go to <em>Step 4</em>.</p>
+<p> <em>Step 2</em>. Compare <code>TriggeredUTCTime</code> with the <code>LastModifiedTime</code> fetched in #1, and check if checksum remains unchanged for output files. If not, go to <em>Step 3</em>.</p>
+<p> <em>Step 3</em>. Generate YAML metadata for current project and save to <em>Project</em> level cache.</p>
+</li>
+<li><p>Read YAML metadata for each project, and merge with others following rules below:</p>
+<p> <em>Rule 1</em>. For <code>namespace</code>, if <code>uid</code> equals, <strong>append</strong>.</p>
+<p> <em>Rule 2</em>. For other type, if <code>uid</code> equals, <strong>override</strong>.</p>
+</li>
+<li><p>Save result, and update <em>*Application</em> level cache.</p>
+</li>
+</ol>
+
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/spec/docfx_incremental.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Copyright © 2015-2017 Microsoft<br>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

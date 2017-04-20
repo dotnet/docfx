@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Engineering Guidelines | DocFX website </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Engineering Guidelines | DocFX website ">
+    <meta name="generator" content="docfx 2.16.2.2">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="engineering_guideline">
+              <h1 id="engineering-guidelines">Engineering Guidelines</h1>
+              
+<h2 id="basics">Basics</h2>
+<h3 id="copyright-header-and-license-notice">Copyright header and license notice</h3>
+<p>All source code files require the following exact header according to its language (please do not make any changes to it).</p>
+<blockquote><p>extension: <strong>.cs</strong></p>
+</blockquote>
+<pre><code class="lang-csharp">// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+</code></pre><blockquote><p>extension: <strong>.js</strong></p>
+</blockquote>
+<pre><code class="lang-js">// Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
+</code></pre><blockquote><p>extension: <strong>.css</strong></p>
+</blockquote>
+<pre><code class="lang-css">/* Copyright (c) Microsoft Corporation. All Rights Reserved. Licensed under the MIT License. See License.txt in the project root for license information. */
+</code></pre><blockquote><p>extension: <strong>.tmpl</strong>, <strong>.tmpl.partial</strong></p>
+</blockquote>
+<pre><code class="lang-mustache">{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+</code></pre><h3 id="external-dependencies">External dependencies</h3>
+<p>This refers to dependencies on projects (that is, NuGet packages) outside of the <code>docfx</code> repo, and especially outside of Microsoft. Adding new dependencies requires additional approval.</p>
+<p>Current approved dependencies are:</p>
+<ul>
+<li>Newtonsoft.Json</li>
+<li>Jint</li>
+<li>HtmlAgilityPack</li>
+<li>Nustache</li>
+<li>YamlDotNet</li>
+</ul>
+<h3 id="code-reviews-and-checkins">Code reviews and checkins</h3>
+<p>To help ensure that only the highest quality code makes its way into the project, please submit all your code changes to GitHub as PRs. This includes runtime code changes, unit test updates, and deployment scripts. For example, sending a PR for just an update to a unit test might seem like a waste of time but the unit tests are just as important as the product code. As such, reviewing changes to unit tests is just as important.</p>
+<p>The advantages are numerous: Improving code quality; increasing visibility on changes and their potential impact; avoiding duplication of effort; and creating general awareness of progress being made in various areas.</p>
+<p>In general a PR should be signed off(using the <span class="emoji" shortcode="+1">👍</span> emoticon) by the owner of that code.</p>
+<p>To commit the PR to the repo, <strong>do not use the Big Green Button</strong>. Instead, do a typical push that you would use with Git (for example, local pull, rebase, merge or push).</p>
+<h2 id="source-code-management">Source Code Management</h2>
+<h3 id="branch-strategy">Branch strategy</h3>
+<p>In general:</p>
+<ul>
+<li><code>master</code> has the code for the latest release on NuGet.org. (e.g. <code>1.0.0</code>, <code>1.1.0</code>)</li>
+<li><code>dev</code> has the code that is being worked on but that we have not yet released. This is the branch into which developers normally submit pull requests and merge changes into. We run daily CI towards <code>dev</code> branch and generate pre-release nuget package, e.g. <code>1.0.1-alpha-9-abcdefsd</code>.</li>
+</ul>
+<h3 id="solution-and-project-folder-structure-and-naming">Solution and project folder structure and naming</h3>
+<p>Solution files go in the repo root. The default entry point is <code>All.sln</code>.</p>
+<p>Every project also needs a <code>project.json</code> and a matching <code>.xproj</code> file. This <code>project.json</code> is the source of truth for a project&#39;s dependencies and configuration options.</p>
+<p>The solution needs to contain solution folders that match the physical folder (<code>src</code>, <code>test</code>, <code>tools</code>, etc.).</p>
+<h3 id="assembly-naming-pattern">Assembly naming pattern</h3>
+<p>The general naming pattern is <code>Microsoft.DocAsCode.&lt;area&gt;.&lt;subarea&gt;</code>.</p>
+<h3 id="unit-tests">Unit tests</h3>
+<p>We use <em>xUnit.net</em> for all unit testing.</p>
+<h2 id="coding-standards">Coding Standards</h2>
+<p>Please refer to <a href="csharp_coding_standards.html">C# Coding standards</a> for detailed guideline for C# coding standards.</p>
+<p><strong>TODO</strong> Template Coding standards</p>
+<p><strong>TODO</strong> Template Preprocess JS Coding standards</p>
+
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/guideline/engineering_guidelines.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Copyright © 2015-2017 Microsoft<br>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
