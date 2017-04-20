@@ -8,7 +8,7 @@
     <title>Table-Of-Content (TOC) Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Table-Of-Content (TOC) Files | DocFX website ">
-    <meta name="generator" content="docfx 2.16.2.2">
+    <meta name="generator" content="docfx 2.16.2.5">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -128,7 +128,7 @@
 <tr>
 <td><em>href</em></td>
 <td>string</td>
-<td>Specifies the hyperlink of the <em>TOC Item</em>.</td>
+<td>Specifies the hyperlink of the <em>TOC Item</em>. When its value is another TOC file, it is a TOC include, and all the items inside the included toc are considered as the child of current <em>TOC Item</em></td>
 </tr>
 <tr>
 <td><em>items</em></td>
@@ -147,11 +147,6 @@
 </tr>
 </thead>
 <tbody>
-<tr>
-<td><em>tocHref</em></td>
-<td>string</td>
-<td>Specifies another TOC file, whose items are considered as the child of the currrent <em>TOC Item</em>.</td>
-</tr>
 <tr>
 <td><em>topicHref</em></td>
 <td>string</td>
@@ -193,7 +188,7 @@
 <p>If <code>homepage</code> <strong>or</strong> <code>topicHref</code> is set for this <em>TOC Item</em>, it will be considered as the <code>href</code> of the expanded <em>TOC Item</em>.</p>
 <p>For example, one <code>toc.yml</code> file is like below:</p>
 <pre><code class="lang-yml">- name: How-to tutorials
-  tocHref: howto/toc.yml
+  href: howto/toc.yml
   topicHref: howto/overview.md
 </code></pre><p>It references to the <code>toc.yml</code> file under folder <code>howto</code>, with the following content:</p>
 <pre><code class="lang-yaml">- name: &quot;How-to1&quot;
