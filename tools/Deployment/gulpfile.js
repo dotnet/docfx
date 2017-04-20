@@ -179,5 +179,5 @@ gulp.task("publish:chocolatey", () => {
 gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
 gulp.task("stable", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
-gulp.task("master", gulp.series("clean", "build", "e2eTest", "updateGhPage", "publish:gh-release", "publish:chocolatey", "publish:myget-master"));
+gulp.task("master", gulp.series("clean", "build", "e2eTest", "updateGhPage", "publish:myget-master", "publish:chocolatey", "publish:gh-release"));
 gulp.task("default", gulp.series("dev"));
