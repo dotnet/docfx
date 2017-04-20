@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.16.2)
+﻿Version Notes (Current Version: v2.16.3)
 =======================================
+v2.16.3
+-----------
+1. Bug fix for build script.
+
 v2.16.2
 -----------
 1.  Bug fix for build script.
