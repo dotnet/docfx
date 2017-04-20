@@ -129,11 +129,16 @@ gulp.task("publish:myget-master", () => {
 gulp.task("updateGhPage", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.repoUrl, "config.docfx.repoUrl", "Can't find docfx repo url in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.siteFolder, "config.docfx.siteFolder", "Can't find docfx site folder in configuration.");
+    Guard.argumentNotNullOrEmpty(config.docfx.exe, "config.docfx.exe", "Can't find docfx exe in configuration.");
+    Guard.argumentNotNullOrEmpty(config.docfx.docfxJson, "config.docfx.docfxJson", "Can't find docfx.json in configuration.");
     Guard.argumentNotNullOrEmpty(config.git.name, "config.git.name", "Can't find git user name in configuration");
     Guard.argumentNotNullOrEmpty(config.git.email, "config.git.email", "Can't find git user email in configuration");
     Guard.argumentNotNullOrEmpty(config.git.message, "config.git.message", "Can't find git commit message in configuration");
 
-    return Github.updateGhPagesAsync(config.docfx.repoUrl, config.docfx.siteFolder, config.git.name, config.git.email, config.git.message);
+    let docfxExe = path.resolve(config.docfx.exe);
+    let docfxJson = path.resolve(config.docfx.docfxJson);
+
+    return Github.updateGhPagesAsync(config.docfx.repoUrl, config.docfx.siteFolder, docfxExe, docfxJson, config.git.name, config.git.email, config.git.message);
 });
 
 gulp.task("publish:gh-release", () => {
