@@ -35,6 +35,17 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string TopicHref = "topicHref";
             public const string TopicUid = "topicUid";
             public const string Platform = "platform";
+            public const string Parent = "parent";
+            public const string Children = "children";
+            public const string Namespace = "namespace";
+            public const string Assemblies = "assemblies";
+            public const string Overridden = "overridden";
+            public const string Exceptions = "exceptions";
+            public const string Inheritance = "inheritance";
+            public const string DerivedClasses = "derivedClasses";
+            public const string Implements = "implements";
+            public const string InheritedMembers = "inheritedMembers";
+            public const string ExtensionMethods = "extensionMethods";
 
             public const string SystemKeys = "_systemKeys";
 
