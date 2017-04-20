@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public void Handle(List<HostService> hostServices, int maxParallelism)
         {
             PreHandle(hostServices);
-            _inner.Postbuild(hostServices, maxParallelism);
+            _inner.PostbuildAndSave(hostServices, maxParallelism);
             using (new LoggerPhaseScope("SaveExternalXRefSpec", LogLevel.Verbose))
             {
                 SaveExternalXRefSpec();

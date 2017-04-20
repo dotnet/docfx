@@ -3987,7 +3987,7 @@ tagRules : [
                     "items:",
                     "- uid: A.C",
                     "  commentId: T:A.C",
-                    "  id: A.C",                    
+                    "  id: A.C",
                     "  parent: A",
                     "  name: C",
                     "  nameWithType: C",
@@ -3995,13 +3995,39 @@ tagRules : [
                     "  type: Class",
                     "  syntax:",
                     "    content: public class C",
-                    "  summary: \"This is class A.C\"",                    
+                    "  summary: \"This is class A.C\"",
                     "references: []",
                 },
                 inputFolder);
+            var referenceFile3 = CreateFile("a.d.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A.D",
+                    "  commentId: T:A.D",
+                    "  id: A.D",
+                    "  parent: A",
+                    "  name: D",
+                    "  nameWithType: D",
+                    "  fullName: A.D",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class D",
+                    "  summary: \"This is class A.D\"",
+                    "references:",
+                    "- uid: someuid",
+                    "  commentId: someuid",
+                    "  isExternal: true",
+                    "  href: http://docfx",
+                    "  name: some uid",
+                    "  nameWithType: some uid",
+                    "  fullName: some uid",
+               },
+                inputFolder);
 
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2 }, inputFolder, null);
+            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2, referenceFile3 }, inputFolder, null);
 
             #endregion
 
@@ -4024,7 +4050,6 @@ tagRules : [
                         templateFolder: templateFolder,
                         intermediateFolder: intermediateFolder,
                         enableSplit: true);
-
                 }
 
                 ClearListener();
@@ -4045,7 +4070,7 @@ tagRules : [
                         "  type: Class",
                         "  syntax:",
                         "    content: public class C",
-                        "  summary: \"This is class A.C [Updated]\"",
+                        "  summary: \"This is class A.C [update] @someuid\"",
                         "references: []",
                     },
                     inputFolder);
@@ -4083,7 +4108,7 @@ tagRules : [
                     var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
-                    Assert.Equal(4, manifest.Files.Count);
+                    Assert.Equal(5, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
                     Assert.Equal(2, incrementalInfo.Count);
