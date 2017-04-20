@@ -12,6 +12,7 @@
   },
   "homepage": "https://github.com/dotnet/docfx",
   "scripts": {
+    "gulp": "node ./node_modules/gulp/bin/gulp.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Microsoft",
@@ -25,13 +26,12 @@
     "commander": "^2.9.0",
     "del": "^2.2.2",
     "fs-extra": "^0.26.7",
+    "gulp": "github:gulpjs/gulp#4.0",
     "jszip": "^2.5.0",
     "moment-timezone": "^0.5.10",
     "nconf": "^0.8.4",
     "request": "^2.69.0",
-    "sha1": "^1.1.1"
-  },
-  "devDependencies": {
-    "gulp": "^3.9.1"
+    "sha1": "^1.1.1",
+    "typescript": "^2.2.2"
   }
 }
