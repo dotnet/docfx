@@ -7423,6 +7423,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.ExpandedDependencyMap.ConstructFromDependencyGraph
   fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.ExpandedDependencyMap.ConstructFromDependencyGraph
   nameWithType: ExpandedDependencyMap.ConstructFromDependencyGraph
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.ExpandedDependencyMap.Empty
+  name: Empty
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.ExpandedDependencyMap.html#Microsoft_DocAsCode_Build_Engine_Incrementals_Outputs_ExpandedDependencyMap_Empty
+  commentId: P:Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.ExpandedDependencyMap.Empty
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.ExpandedDependencyMap.Empty
+  nameWithType: ExpandedDependencyMap.Empty
+- uid: Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.ExpandedDependencyMap.Empty*
+  name: Empty
+  href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.ExpandedDependencyMap.html#Microsoft_DocAsCode_Build_Engine_Incrementals_Outputs_ExpandedDependencyMap_Empty_
+  commentId: Overload:Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.ExpandedDependencyMap.Empty
+  fullName: Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.ExpandedDependencyMap.Empty
+  nameWithType: ExpandedDependencyMap.Empty
 - uid: Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.ExpandedDependencyMap.GetDependencyFrom(System.String)
   name: GetDependencyFrom(String)
   href: api/Microsoft.DocAsCode.Build.Engine.Incrementals.Outputs.ExpandedDependencyMap.html#Microsoft_DocAsCode_Build_Engine_Incrementals_Outputs_ExpandedDependencyMap_GetDependencyFrom_System_String_
