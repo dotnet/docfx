@@ -10,7 +10,8 @@
     "releaseNotePath": "../../RELEASENOTE.md",
     "releaseFolder": "../../target/Release/docfx",
     "assetZipPath": "../../Documentation/_site/tutorial/artifacts/docfx.zip",
-    "siteFolder": "../../Documentation/_site"
+    "siteFolder": "../../Documentation/_site",
+    "docfxJson": "../../Documentation/docfx.json"
   },
   "myget": {
     "exe": "C:/nuget.exe",

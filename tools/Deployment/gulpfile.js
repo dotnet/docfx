@@ -96,6 +96,7 @@ gulp.task("publish:myget-dev", () => {
 
     let mygetToken = process.env.MGAPIKEY;
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
+
     return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], mygetToken, config.myget["devUrl"]);
 });
 
@@ -107,6 +108,7 @@ gulp.task("publish:myget-test", () => {
 
     let mygetToken = process.env.MGAPIKEY;
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
+
     return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], mygetToken, config.myget["testUrl"]);
 });
 
@@ -120,23 +122,23 @@ gulp.task("publish:myget-master", () => {
     let mygetToken = process.env.MGAPIKEY;
     let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
     let artifactsFolder = path.resolve(config.docfx["artifactsFolder"]);
+
     return Myget.publishToMygetAsync(artifactsFolder, config.myget["exe"], mygetToken, config.myget["masterUrl"], releaseNotePath);
 });
 
 gulp.task("updateGhPage", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.repoUrl, "config.docfx.repoUrl", "Can't find docfx repo url in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.siteFolder, "config.docfx.siteFolder", "Can't find docfx site folder in configuration.");
+    Guard.argumentNotNullOrEmpty(config.docfx.exe, "config.docfx.exe", "Can't find docfx exe in configuration.");
+    Guard.argumentNotNullOrEmpty(config.docfx.docfxJson, "config.docfx.docfxJson", "Can't find docfx.json in configuration.");
     Guard.argumentNotNullOrEmpty(config.git.name, "config.git.name", "Can't find git user name in configuration");
     Guard.argumentNotNullOrEmpty(config.git.email, "config.git.email", "Can't find git user email in configuration");
     Guard.argumentNotNullOrEmpty(config.git.message, "config.git.message", "Can't find git commit message in configuration");
 
-    let promise = Github.updateGhPagesAsync(config.docfx.repoUrl, config.docfx.siteFolder, config.git.name, config.git.email, config.git.message);
-    promise.then(() => {
-        console.log("Update github pages successfully.");
-    }).catch(err => {
-        console.log(`Failed to update github pages, ${err}`);
-        process.exit(1);
-    })
+    let docfxExe = path.resolve(config.docfx.exe);
+    let docfxJson = path.resolve(config.docfx.docfxJson);
+
+    return Github.updateGhPagesAsync(config.docfx.repoUrl, config.docfx.siteFolder, docfxExe, docfxJson, config.git.name, config.git.email, config.git.message);
 });
 
 gulp.task("publish:gh-release", () => {
@@ -151,13 +153,7 @@ gulp.task("publish:gh-release", () => {
     let releaseFolder = path.resolve(config.docfx["releaseFolder"]);
     let assetZipPath = path.resolve(config.docfx["assetZipPath"]);
 
-    let promise = Github.updateGithubReleaseAsync(config.docfx["repoUrl"], releaseNotePath, releaseFolder, assetZipPath, githubToken);
-    promise.then(() => {
-        console.log("Update github release and assets successfully.");
-    }).catch(err => {
-        console.log(`Failed to update github release and assets, ${err}`);
-        process.exit(1);
-    });
+    return Github.updateGithubReleaseAsync(config.docfx["repoUrl"], releaseNotePath, releaseFolder, assetZipPath, githubToken);
 });
 
 gulp.task("publish:chocolatey", () => {
@@ -177,13 +173,7 @@ gulp.task("publish:chocolatey", () => {
     let nuspec = path.resolve(config.choco["nuspec"]);
     let homeDir = path.resolve(config.choco["homeDir"]);
 
-    let promise = Chocolatey.publishToChocolateyAsync(releaseNotePath, assetZipPath, chocoScript, nuspec, homeDir, chocoToken);
-    promise.then(() => {
-        console.log("Publish to chocolatey successfully.");
-    }).catch(err => {
-        console.log(`Failed to publish to chocolatey, ${err}`);
-        process.exit(1);
-    });
+    return Chocolatey.publishToChocolateyAsync(releaseNotePath, assetZipPath, chocoScript, nuspec, homeDir, chocoToken);
 });
 
 gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
