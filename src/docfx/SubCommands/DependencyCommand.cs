@@ -38,12 +38,12 @@ namespace Microsoft.DocAsCode.SubCommands
             var dg = buildInfo.Versions.FirstOrDefault(v => v.VersionName == versionName)?.Dependency;
             if (dg == null)
             {
-                LogErrorAndThrow($"Cache files for version {versionName} is not found!", null);
+                Logger.LogInfo($"Cache files for version {versionName} is not found!", null);
             }
             Logger.LogInfo($"Exporting dependency file...");
             try
             {
-                var edg = ExpandedDependencyMap.ConstructFromDependencyGraph(dg);
+                var edg = dg == null ? ExpandedDependencyMap.Empty : ExpandedDependencyMap.ConstructFromDependencyGraph(dg);
                 using (var fs = File.Create(dependencyFile))
                 using (var writer = new StreamWriter(fs))
                 {
