@@ -127,7 +127,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (ExternalXRefSpec.Count > 0)
             {
-                throw new InvalidOperationException("Cannot load after report external xref spec.");
+                throw new InvalidOperationException("Cannot load after reporting external xref spec.");
             }
             var dict = JsonUtility.Deserialize<Dictionary<string, XRefSpec>>(reader);
             foreach (var pair in dict)

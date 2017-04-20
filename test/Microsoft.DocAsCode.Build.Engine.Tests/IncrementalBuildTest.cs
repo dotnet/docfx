@@ -4023,7 +4023,7 @@ tagRules : [
                     "  name: some uid",
                     "  nameWithType: some uid",
                     "  fullName: some uid",
-               },
+                },
                 inputFolder);
 
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
