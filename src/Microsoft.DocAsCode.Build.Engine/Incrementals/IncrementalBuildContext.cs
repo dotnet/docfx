@@ -81,8 +81,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             var lastBuildStartTime = lb?.BuildStartTime;
             var buildInfoIncrementalStatus = GetBuildInfoIncrementalStatus(cb, lb);
             var lbv = lb?.Versions?.SingleOrDefault(v => v.VersionName == parameters.VersionName);
-            var cbv = new BuildVersionInfo
+            var cbv = new BuildVersionInfo()
             {
+                BaseDir = Path.GetFullPath(Environment.ExpandEnvironmentVariables(baseDir)),
                 VersionName = parameters.VersionName,
                 ConfigHash = ComputeConfigHash(parameters, markdownServiceContextHash),
                 AttributesFile = IncrementalUtility.CreateRandomFileName(baseDir),
