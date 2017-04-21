@@ -19,35 +19,29 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     [Serializable]
     public class ItemViewModel : IOverwriteDocumentViewModel
     {
+        /// <summary>
+        /// item's unique identifier
+        /// </summary>
         [YamlMember(Alias = Constants.PropertyName.Uid)]
         [JsonProperty(Constants.PropertyName.Uid)]
         [MergeOption(MergeOption.MergeKey)]
         public string Uid { get; set; }
 
-        [YamlMember(Alias = Constants.PropertyName.CommentId)]
-        [JsonProperty(Constants.PropertyName.CommentId)]
-        public string CommentId { get; set; }
-
+        /// <summary>
+        /// item's identifier
+        /// </summary>
         [YamlMember(Alias = Constants.PropertyName.Id)]
         [JsonProperty(Constants.PropertyName.Id)]
         public string Id { get; set; }
 
-        [YamlMember(Alias = "isEii")]
-        [JsonProperty("isEii")]
-        public bool IsExplicitInterfaceImplementation { get; set; }
-
-        [YamlMember(Alias = "isExtensionMethod")]
-        [JsonProperty("isExtensionMethod")]
-        public bool IsExtensionMethod { get; set; }
-
         [YamlMember(Alias = Constants.PropertyName.Parent)]
         [JsonProperty(Constants.PropertyName.Parent)]
         [UniqueIdentityReference]
-        public string Parent { get; set; }
+        public List<string> Parent { get; set; }
 
         [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Parent)]
         [JsonIgnore]
-        public SortedList<string, string> ParentInDevLangs { get; set; } = new SortedList<string, string>();
+        public SortedList<string, List<string>> ParentInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
         [YamlMember(Alias = Constants.PropertyName.Children)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
@@ -59,6 +53,10 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonIgnore]
         public SortedList<string, List<string>> ChildrenInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
+        /// <summary>
+        /// item's link URL
+        /// As an item(uid) can be resolved to only one link in cross reference, HrefInDevLangs is not supported
+        /// </summary>
         [YamlMember(Alias = Constants.PropertyName.Href)]
         [JsonProperty(Constants.PropertyName.Href)]
         public string Href { get; set; }
@@ -93,16 +91,23 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
         [YamlMember(Alias = Constants.PropertyName.Type)]
         [JsonProperty(Constants.PropertyName.Type)]
-        public MemberType? Type { get; set; }
+        public string Type { get; set; }
 
         [YamlMember(Alias = Constants.PropertyName.Source)]
         [JsonProperty(Constants.PropertyName.Source)]
         public SourceDetail Source { get; set; }
 
+        /// <summary>
+        /// item's source code's source detail in different dev langs
+        /// </summary>
         [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Source)]
         [JsonIgnore]
         public SortedList<string, SourceDetail> SourceInDevLangs { get; set; } = new SortedList<string, SourceDetail>();
 
+        /// <summary>
+        /// item's documentation's source detail
+        /// as ovwrite document targets uid, DocumentationInDevLangs is not supported
+        /// </summary>
         [YamlMember(Alias = Constants.PropertyName.Documentation)]
         [JsonProperty(Constants.PropertyName.Documentation)]
         public SourceDetail Documentation { get; set; }
@@ -125,22 +130,38 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonIgnore]
         public SortedList<string, string> NamespaceNameInDevLangs { get; set; } = new SortedList<string, string>();
 
+        /// <summary>
+        /// item's summary
+        /// content in different dev langs can be put in this property all together
+        /// </summary>
         [YamlMember(Alias = "summary")]
         [JsonProperty("summary")]
         [MarkdownContent]
         public string Summary { get; set; }
 
+        /// <summary>
+        /// item's remarks
+        /// content in different dev langs can be put in this property all together
+        /// </summary>
         [YamlMember(Alias = "remarks")]
         [JsonProperty("remarks")]
         [MarkdownContent]
         public string Remarks { get; set; }
 
+        /// <summary>
+        /// item's examples
+        /// content in different dev langs can be put in this property all together
+        /// </summary>
         [YamlMember(Alias = "example")]
         [JsonProperty("example")]
         [MergeOption(MergeOption.Replace)]
         [MarkdownContent]
         public List<string> Examples { get; set; }
 
+        /// <summary>
+        /// item's syntax
+        /// as <see cref="SyntaxDetailViewModel"/> support different dev langs, SyntaxInDevLangs is not necessary
+        /// </summary>
         [YamlMember(Alias = "syntax")]
         [JsonProperty("syntax")]
         public SyntaxDetailViewModel Syntax { get; set; }
@@ -154,10 +175,14 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonIgnore]
         public SortedList<string, string> OverriddenInDevLangs { get; set; } = new SortedList<string, string>();
 
-        [YamlMember(Alias = "overload")]
-        [JsonProperty("overload")]
+        [YamlMember(Alias = Constants.PropertyName.Overload)]
+        [JsonProperty(Constants.PropertyName.Overload)]
         [UniqueIdentityReference]
         public string Overload { get; set; }
+
+        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Overload)]
+        [JsonIgnore]
+        public SortedList<string, string> OverloadInDevLangs { get; set; } = new SortedList<string, string>();
 
         [YamlMember(Alias = "exceptions")]
         [JsonProperty("exceptions")]
@@ -187,17 +212,17 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
         /// <summary>
         /// item's inheritance
-        /// multiple inheritance is allowed in languages like Python
+        /// use tree as multiple inheritance is allowed in languages like Python
         /// </summary>
         [YamlMember(Alias = Constants.PropertyName.Inheritance)]
         [MergeOption(MergeOption.Ignore)]
         [JsonProperty(Constants.PropertyName.Inheritance)]
         [UniqueIdentityReference]
-        public InheritanceTree Inheritance { get; set; }
+        public List<InheritanceTree> Inheritance { get; set; }
 
         [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Inheritance)]
         [JsonIgnore]
-        public SortedList<string, InheritanceTree> InheritanceInDevLangs { get; set; } = new SortedList<string, InheritanceTree>();
+        public SortedList<string, List<InheritanceTree>> InheritanceInDevLangs { get; set; } = new SortedList<string, List<InheritanceTree>>();
 
         [YamlMember(Alias = Constants.PropertyName.DerivedClasses)]
         [MergeOption(MergeOption.Ignore)]
@@ -244,6 +269,10 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonIgnore]
         public SortedList<string, List<string>> Modifiers { get; set; } = new SortedList<string, List<string>>();
 
+        /// <summary>
+        /// item's conceptual
+        /// content in different dev langs can be put in this property all together
+        /// </summary>
         [YamlMember(Alias = Constants.PropertyName.Conceptual)]
         [JsonProperty(Constants.PropertyName.Conceptual)]
         [MarkdownContent]
@@ -275,14 +304,14 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         public CompositeDictionary ExtensionData =>
             CompositeDictionary
                 .CreateBuilder()
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Parent, ParentInDevLangs, JTokenConverter.Convert<string>)
+                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Parent, ParentInDevLangs, JTokenConverter.Convert<List<string>>)
                 .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Children, ChildrenInDevLangs, JTokenConverter.Convert<List<string>>)
                 .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Source, SourceInDevLangs, JTokenConverter.Convert<SourceDetail>)
                 .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Namespace, NamespaceNameInDevLangs, JTokenConverter.Convert<string>)
                 .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Assemblies, AssemblyNameListInDevLangs, JTokenConverter.Convert<List<string>>)
                 .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Overridden, OverriddenInDevLangs, JTokenConverter.Convert<string>)
                 .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Exceptions, ExceptionsInDevLangs, JTokenConverter.Convert<List<ExceptionInfo>>)
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Inheritance, InheritanceInDevLangs, JTokenConverter.Convert<InheritanceTree>)
+                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Inheritance, InheritanceInDevLangs, JTokenConverter.Convert<List<InheritanceTree>>)
                 .Add(UniversalReferenceConstants.ExtensionMemberPrefix.DerivedClasses, DerivedClassesInDevLangs, JTokenConverter.Convert<List<string>>)
                 .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Implements, ImplementsInDevLangs, JTokenConverter.Convert<List<string>>)
                 .Add(UniversalReferenceConstants.ExtensionMemberPrefix.InheritedMembers, InheritedMembersInDevLangs, JTokenConverter.Convert<List<string>>)

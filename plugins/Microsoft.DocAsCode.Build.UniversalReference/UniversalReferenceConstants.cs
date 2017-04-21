@@ -32,6 +32,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             public const string ExtensionMethods = Constants.PropertyName.ExtensionMethods + Constants.PrefixSeparator;
             public const string Platform = Constants.PropertyName.Platform + Constants.PrefixSeparator;
             public const string Returns = PropertyName.Returns + Constants.PrefixSeparator;
+            public const string Overload = Constants.PropertyName.Overload + Constants.PrefixSeparator;
         }
     }
 }

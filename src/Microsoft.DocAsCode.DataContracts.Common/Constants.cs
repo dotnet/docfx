@@ -46,6 +46,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Implements = "implements";
             public const string InheritedMembers = "inheritedMembers";
             public const string ExtensionMethods = "extensionMethods";
+            public const string Overload = "overload";
 
             public const string SystemKeys = "_systemKeys";
 
