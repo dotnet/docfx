@@ -4,14 +4,17 @@
 namespace DfmHttpService
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
+    using Microsoft.DocAsCode.Build.ConceptualDocuments;
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
 
     using CsQuery;
+    using Newtonsoft.Json;
 
     internal class DfmPreviewHandler : IHttpHandler
     {
@@ -29,9 +32,11 @@ namespace DfmHttpService
                 try
                 {
                     var content = Preview(context.Message.WorkspacePath, context.Message.RelativePath,
-                        context.Message.MarkdownContent, context.Message.WriteTempPreviewFile, context.Message.PreviewFilePath,
-                        context.Message.PageRefreshJsFilePath, context.Message.BuiltHtmlPath);
-                    Utility.ReplySuccessfulResponse(context.HttpContext, content, ContentType.Html);
+                        context.Message.MarkdownContent, context.Message.IfSeparateMarkupResult,
+                        context.Message.IfWriteTempPreviewFile, context.Message.TempPreviewFilePath,
+                        context.Message.PageRefreshJsFilePath, context.Message.OriginalHtmlPath);
+                    Utility.ReplySuccessfulResponse(context.HttpContext, content,
+                        context.Message.IfSeparateMarkupResult ? ContentType.Json : ContentType.Html);
                 }
                 catch(HandlerClientException ex)
                 {
@@ -44,9 +49,9 @@ namespace DfmHttpService
             });
         }
 
-        private string Preview(string workspacePath, string relativePath, string markdownContent,
-            bool isFirstTime = false, string previewFilePath = null, string pageUpdateJsFilePath = null,
-            string builtHtmlPath = null)
+        private string Preview(string workspacePath, string relativePath, string markdownContent, bool ifSeparateMarkupResult = false,
+            bool ifWriteTempPreviewFile = false, string tempPreviewFilePath = null, string pageUpdateJsFilePath = null,
+            string originalHtmlPath = null)
         {
             if (string.IsNullOrEmpty(workspacePath))
             {
@@ -56,13 +61,21 @@ namespace DfmHttpService
             {
                 throw new HandlerClientException("Relative path should not be null or empty");
             }
-            var markupResult = DfmMarkup(workspacePath, relativePath, markdownContent);
-            if (!isFirstTime)
+            string result = DfmMarkup(workspacePath, relativePath, markdownContent);
+            if (ifSeparateMarkupResult)
             {
-                return markupResult;
+                var separatedMarkupResult = new Dictionary<string, string>();
+                var htmlInfo = BuildConceptualUtility.SeparateHtml(result);
+                separatedMarkupResult["rawTitle"] = htmlInfo.RawTitle;
+                separatedMarkupResult["content"] = htmlInfo.Content;
+                result = JsonConvert.SerializeObject(separatedMarkupResult);
+            }
+            if (!ifWriteTempPreviewFile)
+            {
+                return result;
             }
 
-            if (string.IsNullOrEmpty(builtHtmlPath))
+            if (string.IsNullOrEmpty(originalHtmlPath))
             {
                 throw new HandlerClientException("Built Html path should not be null or empty");
             }
@@ -73,11 +86,11 @@ namespace DfmHttpService
 
             PreviewJsonConfig config = PreviewCommand.ParsePreviewCommand(workspacePath);
 
-            builtHtmlPath = new Uri(builtHtmlPath).LocalPath;
+            originalHtmlPath = new Uri(originalHtmlPath).LocalPath;
             pageUpdateJsFilePath = new Uri(pageUpdateJsFilePath).LocalPath;
-            previewFilePath = new Uri(previewFilePath).LocalPath;
+            tempPreviewFilePath = new Uri(tempPreviewFilePath).LocalPath;
 
-            string htmlString = File.ReadAllText(builtHtmlPath);
+            string htmlString = File.ReadAllText(originalHtmlPath);
 
             CQ dom = htmlString;
 
@@ -120,7 +133,7 @@ namespace DfmHttpService
                     }
                     else
                     {
-                        e.SetAttribute(item.Value, GetAbsolutePath(builtHtmlPath, path));
+                        e.SetAttribute(item.Value, GetAbsolutePath(originalHtmlPath, path));
                     }
                 });
             }
@@ -133,12 +146,12 @@ namespace DfmHttpService
                 var metaName = e.GetAttribute("name");
                 if (metaName == config.TocMetadataName)
                 {
-                    e.SetAttribute("content", GetAbsolutePath(builtHtmlPath, e.GetAttribute("content")));
+                    e.SetAttribute("content", GetAbsolutePath(originalHtmlPath, e.GetAttribute("content")));
                 }
             });
 
-            File.WriteAllText(previewFilePath, dom.Render());
-            return markupResult;
+            File.WriteAllText(tempPreviewFilePath, dom.Render());
+            return result;
         }
 
         private string DfmMarkup(string workspacePath, string relativePath, string markdownContent)

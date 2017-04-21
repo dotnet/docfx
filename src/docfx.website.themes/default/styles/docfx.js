@@ -20,7 +20,10 @@ $(function () {
   renderFooter();
   renderLogo();
 
-  window.refresh = function () {
+  window.refresh = function (rawTitle, content) {
+    // Update markup result
+    $("article.content").html(rawTitle + content);
+
     highlight();
     renderTables();
     renderAlerts();
