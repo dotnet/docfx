@@ -1,13 +1,9 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-var port = document.body.childNodes[0].data;
-
+var port = $("meta[name='port']")[0].content;
+var filePath = $("meta[name='fileName']")[0].content;
 var lastLocation = 0;
-
-var filePath = document.body.childNodes[1].data;
-
 var filePathEscape = filePath.replace(/\\/g, "\\\\");
-
 var rightClick = false;
 
 // Communication with extension to get the selection range of activeEditor

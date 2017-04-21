@@ -14,11 +14,13 @@ export class MarkdownDocumentContentProvider extends ContentProvider {
                 "<html>",
                 "<head>",
                 `<meta http-equiv="Content-type" content="text/html;charset=UTF-8">`,
+                `<meta name="port" content="${ContentProvider.port.toString()}">`,
+                `<meta name="fileName" content="${this.fileName}">`,
                 `<link rel="stylesheet" type="text/css" href="${this.getNodeModulesPath(path.join("highlightjs", "styles", "tomorrow-night-bright.css"))}" >`,
                 `<link rel="stylesheet" type="text/css" href="${this.getMediaCssPath("markdown.css")}" >`,
                 `<base href="${document.uri.toString(true)}">`,
                 "</head>",
-                `<body><!--` + this.port.toString() + `--><!--` + this.fileName + `-->`].join("\n");
+                `<body>`].join("\n");
 
             const body = this._content || "";
 
@@ -31,9 +33,7 @@ export class MarkdownDocumentContentProvider extends ContentProvider {
                 "</html>"
             ].join("\n");
 
-            // TODO: return different value which depends on the result of DfmProcess
-            // return head + body + tail;
-            return body;
+            return head + body + tail;
         });
     }
 }

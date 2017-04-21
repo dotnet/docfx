@@ -4,7 +4,7 @@ import { workspace, ExtensionContext, TextDocumentContentProvider, EventEmitter,
 import * as path from "path";
 
 export class ContentProvider implements TextDocumentContentProvider {
-    public port;
+    public static port = "4001";
 
     protected _content: string;
 

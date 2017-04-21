@@ -3,28 +3,26 @@
 import { AxiosError } from 'axios';
 
 import { DfmHttpClient } from './dfmHttpClient';
-import { DfmServiceResult } from './dfmServiceResult';
+import { Command } from './constVariables/command';
 
 export class DfmService {
-    private static client = new DfmHttpClient();
-
-    static async previewAsync(content: String): Promise<DfmServiceResult> {
+    static async previewAsync(docfxServicePort, content, workspacePath, relativePath, writeTempPreviewFile = false, previewFilePath = null, pageRefreshJsFilePath = null, builtHtmlPath = null) {
         if (!content) {
             return null;
         }
 
-        return await DfmService.client.sendPostRequestAsync("preview", content);
+        return await DfmHttpClient.sendPostRequestAsync(docfxServicePort, Command.previewCommand, content, workspacePath, relativePath, writeTempPreviewFile, previewFilePath, pageRefreshJsFilePath, builtHtmlPath);
     }
 
-    static async getTokenTreeAsync(content: String): Promise<DfmServiceResult> {
+    static async getTokenTreeAsync(docfxServicePort, content, workspacePath, relativePath) {
         if (!content) {
             return null;
         }
 
-        return await DfmService.client.sendPostRequestAsync("generateTokenTree", content);
+        return await DfmHttpClient.sendPostRequestAsync(docfxServicePort, Command.tokenTreeCommand, content, workspacePath, relativePath);
     }
 
-    static async exitAsync() {
-        await DfmService.client.sendPostRequestAsync("exit", null);
+    static async exitAsync(docfxServicePort) {
+        await DfmHttpClient.sendPostRequestAsync(docfxServicePort, Command.exitCommand);
     }
 }

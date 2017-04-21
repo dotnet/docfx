@@ -6,6 +6,6 @@ src/**
 **/*.map
 .gitignore
 tsconfig.json
-img/**
+images/*.gif
 build.cmd
 build.ps1

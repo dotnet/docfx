@@ -1,10 +1,11 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Uri, ExtensionContext } from "vscode";
+import { ExtensionContext, window } from "vscode";
 import { TokenTreeContentProvider } from "./tokenTreeContentProvider";
-import { ChildProcessHost } from "./childProcessHost"
+import { ChildProcessHost } from "./childProcessHost";
+import * as ConstVariable from "./constVariables/commonVariables";
+import { DfmService } from "./dfmService";
 
-// Create a child process(DfmRender) by "_spawn" to render a html
 export class TokenTreeCore extends ChildProcessHost {
     public provider: TokenTreeContentProvider;
 
@@ -12,11 +13,19 @@ export class TokenTreeCore extends ChildProcessHost {
         this.provider = new TokenTreeContentProvider(context);
     }
 
-    protected writeToStdin(rootPath, filePath, numOfRow, docContent) {
-        this._spawn.stdin.write(this.appendWrap("jsonmarkup"));
-        // this._spawn.stdin.write(this.appendWrap(rootPath));
-        // this._spawn.stdin.write(this.appendWrap(filePath));
-        this._spawn.stdin.write(this.appendWrap(numOfRow));
-        this._spawn.stdin.write(this.appendWrap(docContent));
+    protected async sendHttpRequestCoreAsync(rootPath: string, relativePath: string, docContent: string) {
+        let that = this;
+        try {
+            let res = await DfmService.getTokenTreeAsync(ChildProcessHost._serverPort, docContent, rootPath, relativePath);
+            that._isChildProcessStarting = false;
+            that.provider.update(that._documentUri, res.data);
+        }
+        catch (err) {
+            if (err.message == ConstVariable.noServiceErrorMessage) {
+                that.newHttpServerAndStartPreview(that._activeEditor);
+            } else {
+                window.showErrorMessage(`[Server Error]: ${err}`);
+            }
+        }
     }
 }
