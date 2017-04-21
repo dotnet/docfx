@@ -71,22 +71,28 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 ReloadModelsPerChanges(hostServices);
             }
-
-            using (new LoggerPhaseScope("RegisterUnloadedXRefSpec", LogLevel.Verbose))
-            {
-                RegisterUnloadedXRefSpec(hostServices);
-            }
-
-            using (new LoggerPhaseScope("RegisterUnloadedFileMap", LogLevel.Verbose))
-            {
-                RegisterUnloadedFileMap(hostServices);
-            }
-
-            using (new LoggerPhaseScope("LoadExternalXRefSpec", LogLevel.Verbose))
-            {
-                LoadExternalXRefSpec();
-            }
-
+            Parallel.Invoke(
+                new Action(() =>
+                {
+                    using (new LoggerPhaseScope("RegisterUnloadedXRefSpec", LogLevel.Verbose))
+                    {
+                        RegisterUnloadedXRefSpec(hostServices);
+                    }
+                }),
+                new Action(() =>
+                {
+                    using (new LoggerPhaseScope("RegisterUnloadedFileMap", LogLevel.Verbose))
+                    {
+                        RegisterUnloadedFileMap(hostServices);
+                    }
+                }),
+                new Action(() =>
+                {
+                    using (new LoggerPhaseScope("LoadExternalXRefSpec", LogLevel.Verbose))
+                    {
+                        LoadExternalXRefSpec();
+                    }
+                }));
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
@@ -101,21 +107,28 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 UpdateManifest();
             }
-
-            using (new LoggerPhaseScope("UpdateFileMap", LogLevel.Verbose))
-            {
-                UpdateFileMap(hostServices);
-            }
-
-            using (new LoggerPhaseScope("UpdateXrefMap", LogLevel.Verbose))
-            {
-                UpdateXrefMap(hostServices);
-            }
-
-            using (new LoggerPhaseScope("SaveContextInfo", LogLevel.Verbose))
-            {
-                SaveContextInfo(hostServices);
-            }
+            Parallel.Invoke(
+                new Action(() =>
+                {
+                    using (new LoggerPhaseScope("UpdateFileMap", LogLevel.Verbose))
+                    {
+                        UpdateFileMap(hostServices);
+                    }
+                }),
+                new Action(() =>
+                {
+                    using (new LoggerPhaseScope("UpdateXrefMap", LogLevel.Verbose))
+                    {
+                        UpdateXrefMap(hostServices);
+                    }
+                }),
+                new Action(() =>
+                {
+                    using (new LoggerPhaseScope("SaveContextInfo", LogLevel.Verbose))
+                    {
+                        SaveContextInfo(hostServices);
+                    }
+                }));
 
             using (new LoggerPhaseScope("RelayBuildMessage", LogLevel.Verbose))
             {

@@ -21,13 +21,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public DocumentBuildContext Context { get; }
 
-        public List<TreeItemRestructure> Restructions
-        {
-            get
-            {
-                return _restructions;
-            }
-        }
+        public List<TreeItemRestructure> Restructions => _restructions;
 
         public CompilePhaseHandler(DocumentBuildContext context)
         {
@@ -36,8 +30,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void Handle(List<HostService> hostServices, int maxParallelism)
         {
-            Prepare(hostServices);
-            foreach (var hostService in hostServices)
+            Prepare(hostServices, maxParallelism);
+            hostServices.RunAll(hostService =>
             {
                 using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
                 {
@@ -52,10 +46,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     // Register all the delegates to handler
                     if (hostService.TableOfContentRestructions != null)
                     {
-                        _restructions.AddRange(hostService.TableOfContentRestructions);
+                        lock (_restructions)
+                        {
+                            _restructions.AddRange(hostService.TableOfContentRestructions);
+                        }
                     }
                 }
-            }
+            }, maxParallelism);
 
             DistributeTocRestructions(hostServices);
 
@@ -74,7 +71,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Private Methods
 
-        private void Prepare(List<HostService> hostServices)
+        private void Prepare(List<HostService> hostServices, int maxParallelism)
         {
             if (Context == null)
             {
@@ -83,13 +80,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var hostService in hostServices)
             {
                 hostService.SourceFiles = Context.AllSourceFiles;
-                foreach (var m in hostService.Models)
-                {
-                    if (m.LocalPathFromRoot == null)
+                hostService.Models.RunAll(
+                    m =>
                     {
-                        m.LocalPathFromRoot = StringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
-                    }
-                }
+                        if (m.LocalPathFromRoot == null)
+                        {
+                            m.LocalPathFromRoot = StringExtension.ToDisplayPath(Path.Combine(m.BaseDir, m.File));
+                        }
+                    },
+                    maxParallelism);
             }
         }
 
