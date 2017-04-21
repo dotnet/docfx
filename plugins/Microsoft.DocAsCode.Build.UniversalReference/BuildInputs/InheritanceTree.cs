@@ -6,8 +6,9 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     using System;
     using System.Collections.Generic;
 
-    using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Common.EntityMergers;
+    using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.YamlSerialization;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
@@ -29,5 +30,8 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonProperty(Constants.PropertyName.Inheritance)]
         public List<InheritanceTree> Inheritance { get; set; }
 
+        [ExtensibleMember]
+        [JsonExtensionData]
+        public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }
 }
