@@ -269,13 +269,13 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [UniqueIdentityReference]
         public string Overridden { get; set; }
 
-        [YamlMember(Alias = Constants.PropertyName.Exceptions)]
-        [JsonProperty(Constants.PropertyName.Exceptions)]
+        [YamlMember(Alias = Constants.PropertyName.Overload)]
+        [JsonProperty(Constants.PropertyName.Overload)]
         [UniqueIdentityReference]
         public string Overload { get; set; }
 
-        [YamlMember(Alias = "exceptions")]
-        [JsonProperty("exceptions")]
+        [YamlMember(Alias = Constants.PropertyName.Exceptions)]
+        [JsonProperty(Constants.PropertyName.Exceptions)]
         public List<ExceptionInfo> Exceptions { get; set; }
 
         [YamlMember(Alias = "seealso")]
