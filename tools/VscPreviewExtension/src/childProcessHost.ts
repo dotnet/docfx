@@ -38,25 +38,29 @@ export class ChildProcessHost {
         if (!this.initialized) {
             // In the first time, if wait for the timeout, activeTextEditor will be the preview window.
             this.initialized = true;
-            this.updateContentCore(uri);
+            this.updateContentCoreAsync(uri);
         } else if (!this._waiting) {
             this._waiting = true;
             setTimeout(() => {
                 this._waiting = false;
-                this.updateContentCore(uri);
+                this.updateContentCoreAsync(uri);
             }, 300);
         }
     }
 
-    private updateContentCore(uri: Uri) {
+    private async updateContentCoreAsync(uri: Uri) {
         this._documentUri = uri;
         this._activeEditor = window.activeTextEditor;
-        this.sendHttpRequest(this._activeEditor);
+        try {
+            await this.sendHttpRequestAsync(this._activeEditor);
+        } catch (err) {
+            window.showErrorMessage(`[Extension Error]: ${err}`);
+        }
     }
 
     protected initializeProvider(context: ExtensionContext) { }
 
-    protected sendHttpRequest(editor) {
+    protected async sendHttpRequestAsync(editor) {
         if (!editor) {
             return;
         }
@@ -75,7 +79,7 @@ export class ChildProcessHost {
             relativePath = fileName.substr(rootPathLength + 1, fileName.length - rootPathLength);
         }
         if (doc.languageId === "markdown") {
-            this.sendHttpRequestCoreAsync(rootPath, relativePath, docContent);
+            await this.sendHttpRequestCoreAsync(rootPath, relativePath, docContent);
         }
     }
 
@@ -117,7 +121,7 @@ export class ChildProcessHost {
             return;
         }
         ChildProcessHost._spawn.stdout.on("data", function (data) {
-            that.sendHttpRequest(activeTextEditor);
+            that.sendHttpRequestAsync(activeTextEditor);
         });
         ChildProcessHost._spawn.stderr.on("data", function (data) {
             window.showErrorMessage(`[Child process Error]: ${data.toString()}`);
