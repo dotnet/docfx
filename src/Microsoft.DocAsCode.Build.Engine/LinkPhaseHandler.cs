@@ -54,17 +54,19 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void Postbuild(List<HostService> hostServices, int maxParallelism)
         {
-            foreach (var hostService in hostServices)
-            {
-                using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
+            hostServices.RunAll(
+                hostService =>
                 {
-                    Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postbuilding...");
-                    using (new LoggerPhaseScope("Postbuild", LogLevel.Verbose))
+                    using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
                     {
-                        Postbuild(hostService);
+                        Logger.LogVerbose($"Processor {hostService.Processor.Name}: Postbuilding...");
+                        using (new LoggerPhaseScope("Postbuild", LogLevel.Verbose))
+                        {
+                            Postbuild(hostService);
+                        }
                     }
-                }
-            }
+                },
+                maxParallelism);
         }
 
         private void Save(List<HostService> hostServices, int maxParallelism)
