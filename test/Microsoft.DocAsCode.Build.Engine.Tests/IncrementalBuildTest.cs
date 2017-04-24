@@ -3366,6 +3366,183 @@ tagRules : [
         }
 
         [Fact]
+        public void TestManagedReferenceWithExternalXrefSpec()
+        {
+            // a.c.yml has a link to an external xrefspec registered by a.d.yml
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+
+            CreateFile("ManagedReference.html.primary.tmpl",
+                new[]
+                {
+                    "<div class=\"markdown level1 summary\">{{{summary}}}</div>",
+                    "Show children:",
+                    "{{#children}}",
+                    "  {{#children}}",
+                    "  <h4><xref uid=\"{{uid}}\" altProperty=\"fullName\" displayProperty=\"name\"/></h4>",
+                    "  <section>{{{summary}}}</section>",
+                    "  {{#syntax}}",
+                    "  <pre><code>{{syntax.content.0.value}}</code></pre>",
+                    "  {{/syntax}}",
+                    "  {{/children}}",
+                    "{{/children}}",
+                },
+                templateFolder);
+
+            var referenceFile = CreateFile("a.c.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A.C",
+                    "  commentId: T:A.C",
+                    "  id: A.C",
+                    "  parent: A",
+                    "  name: C",
+                    "  nameWithType: C",
+                    "  fullName: A.C",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class C",
+                    "  summary: \"This is class A.C\"",
+                    "references: []",
+                },
+                inputFolder);
+            var referenceFile2 = CreateFile("a.d.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A.D",
+                    "  commentId: T:A.D",
+                    "  id: A.D",
+                    "  parent: A",
+                    "  name: D",
+                    "  nameWithType: D",
+                    "  fullName: A.D",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class D",
+                    "  summary: \"This is class A.D\"",
+                    "references:",
+                    "- uid: someuid",
+                    "  commentId: someuid",
+                    "  isExternal: true",
+                    "  href: http://docfx",
+                    "  name: some uid",
+                    "  nameWithType: some uid",
+                    "  fullName: some uid",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2 }, inputFolder, null);
+
+            #endregion
+
+            Init("IncrementalBuild.TestManagedReferenceWithExternalXrefSpec");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithExternalXrefSpec");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithExternalXrefSpec.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceWithExternalXrefSpec.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithExternalXrefSpec-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+                }
+
+                ClearListener();
+
+                // update a.c.yml: update A.C summary
+                UpdateFile("a.c.yml",
+                    new[]
+                    {
+                        "### YamlMime:ManagedReference",
+                        "items:",
+                        "- uid: A.C",
+                        "  commentId: T:A.C",
+                        "  id: A.C",
+                        "  parent: A",
+                        "  name: C",
+                        "  nameWithType: C",
+                        "  fullName: A.C",
+                        "  type: Class",
+                        "  syntax:",
+                        "    content: public class C",
+                        "  summary: \"This is class A.C [Updated] @someuid\"",
+                        "references: []",
+                    },
+                    inputFolder);
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithExternalXrefSpec-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceWithExternalXrefSpec-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(2, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestManagedReferenceWithExternalXrefSpec-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestManagedReferenceWithExternalXrefSpec-second", "IncrementalBuild.TestManagedReferenceWithExternalXrefSpec-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact]
         public void TestManagedReferenceEnableSplit()
         {
             // a.yml references a.b.yml
@@ -3999,35 +4176,9 @@ tagRules : [
                     "references: []",
                 },
                 inputFolder);
-            var referenceFile3 = CreateFile("a.d.yml",
-                new[]
-                {
-                    "### YamlMime:ManagedReference",
-                    "items:",
-                    "- uid: A.D",
-                    "  commentId: T:A.D",
-                    "  id: A.D",
-                    "  parent: A",
-                    "  name: D",
-                    "  nameWithType: D",
-                    "  fullName: A.D",
-                    "  type: Class",
-                    "  syntax:",
-                    "    content: public class D",
-                    "  summary: \"This is class A.D\"",
-                    "references:",
-                    "- uid: someuid",
-                    "  commentId: someuid",
-                    "  isExternal: true",
-                    "  href: http://docfx",
-                    "  name: some uid",
-                    "  nameWithType: some uid",
-                    "  fullName: some uid",
-                },
-                inputFolder);
 
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2, referenceFile3 }, inputFolder, null);
+            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2 }, inputFolder, null);
 
             #endregion
 
@@ -4070,7 +4221,7 @@ tagRules : [
                         "  type: Class",
                         "  syntax:",
                         "    content: public class C",
-                        "  summary: \"This is class A.C [Updated] @someuid\"",
+                        "  summary: \"This is class A.C [Updated]\"",
                         "references: []",
                     },
                     inputFolder);
@@ -4108,7 +4259,7 @@ tagRules : [
                     var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
                     Assert.True(File.Exists(manifestOutputPath));
                     var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
-                    Assert.Equal(5, manifest.Files.Count);
+                    Assert.Equal(4, manifest.Files.Count);
                     var incrementalInfo = manifest.IncrementalInfo;
                     Assert.NotNull(incrementalInfo);
                     Assert.Equal(2, incrementalInfo.Count);
