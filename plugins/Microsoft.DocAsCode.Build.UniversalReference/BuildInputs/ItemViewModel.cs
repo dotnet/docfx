@@ -27,6 +27,10 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [MergeOption(MergeOption.MergeKey)]
         public string Uid { get; set; }
 
+        [YamlMember(Alias = Constants.PropertyName.CommentId)]
+        [JsonProperty(Constants.PropertyName.CommentId)]
+        public string CommentId { get; set; }
+
         /// <summary>
         /// item's identifier
         /// </summary>

@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [YamlMember(Alias = Constants.PropertyName.Uid)]
         [JsonProperty(Constants.PropertyName.Uid)]
         [UniqueIdentityReference]
-        public string Uid { get; set; }
+        public string Type { get; set; }
 
         /// <summary>
         /// item's inheritance
