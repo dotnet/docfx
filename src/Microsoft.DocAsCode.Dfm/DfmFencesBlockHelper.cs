@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Dfm
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
 
+    [Obsolete]
     public static class DfmFencesBlockHelper
     {
         [Obsolete]
@@ -15,6 +16,7 @@ namespace Microsoft.DocAsCode.Dfm
             string errorMessage, string[] codeLines = null)
             => GetRenderedFencesBlockString((DfmFencesToken)token, options, errorMessage, codeLines);
 
+        [Obsolete]
         public static string GetRenderedFencesBlockString(DfmFencesToken token, Options options, string errorMessage, string[] codeLines = null)
         {
             string renderedErrorMessage = string.Empty;
@@ -43,6 +45,7 @@ namespace Microsoft.DocAsCode.Dfm
         public static string GenerateReferenceNotFoundErrorMessage(IMarkdownRenderer renderer, DfmFencesBlockToken token)
             => GenerateReferenceNotFoundErrorMessage(renderer, (DfmFencesToken)token);
 
+        [Obsolete]
         public static string GenerateReferenceNotFoundErrorMessage(IMarkdownRenderer renderer, DfmFencesToken token)
         {
             var errorMessageInMarkdown = $"Can not find reference {token.Path}";
