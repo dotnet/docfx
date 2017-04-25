@@ -23,21 +23,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public ManifestProcessor(List<ManifestItemWithContext> manifestWithContext, DocumentBuildContext context, TemplateProcessor templateProcessor)
         {
-            if (manifestWithContext == null)
-            {
-                throw new ArgumentNullException(nameof(manifestWithContext));
-            }
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-            if (templateProcessor == null)
-            {
-                throw new ArgumentNullException(nameof(templateProcessor));
-            }
-            _context = context;
-            _templateProcessor = templateProcessor;
-            _manifestWithContext = manifestWithContext;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _templateProcessor = templateProcessor ?? throw new ArgumentNullException(nameof(templateProcessor));
+            _manifestWithContext = manifestWithContext ?? throw new ArgumentNullException(nameof(manifestWithContext));
         }
 
         public void Process()

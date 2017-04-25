@@ -106,8 +106,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             lock (_syncRoot)
             {
-                List<FileModel> result;
-                if (_uidIndex.TryGetValue(uid, out result))
+                if (_uidIndex.TryGetValue(uid, out List<FileModel> result))
                 {
                     return result.ToImmutableList();
                 }
@@ -254,8 +253,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         link.Value = file.UrlEncode().ToString() + anchorInHref;
                     }
 
-                    List<LinkSourceInfo> sources;
-                    if (!fileLinkSources.TryGetValue(file, out sources))
+                    if (!fileLinkSources.TryGetValue(file, out List<LinkSourceInfo> sources))
                     {
                         sources = new List<LinkSourceInfo>();
                         fileLinkSources[file] = sources;
@@ -524,8 +522,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             throw new BuildCacheException($"Full build hasn't loaded model {pair.Key}");
                         }
-                        List<ModelManifestItem> lfn;
-                        if (!lmm.Models.TryGetValue(pair.Key, out lfn))
+                        if (!lmm.Models.TryGetValue(pair.Key, out List<ModelManifestItem> lfn))
                         {
                             throw new BuildCacheException($"Last build hasn't loaded model {pair.Key}");
                         }
@@ -569,8 +566,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             var processor = (ISupportIncrementalDocumentProcessor)Processor;
             var cmm = incrementalContext.GetCurrentIntermediateModelManifest(this);
-            List<ModelManifestItem> cfn;
-            if (!cmm.Models.TryGetValue(fileName, out cfn))
+            if (!cmm.Models.TryGetValue(fileName, out List<ModelManifestItem> cfn))
             {
                 throw new BuildCacheException($"Last build hasn't loaded model {fileName}");
             }
@@ -627,8 +623,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 m.ContentAccessed += contentAccessedHandler;
                 foreach (var uid in m.Uids)
                 {
-                    List<FileModel> list;
-                    if (!_uidIndex.TryGetValue(uid.Name, out list))
+                    if (!_uidIndex.TryGetValue(uid.Name, out List<FileModel> list))
                     {
                         list = new List<FileModel>();
                         _uidIndex.Add(uid.Name, list);
@@ -672,8 +667,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var common = e.Original.Select(s => s.Name).Intersect(e.Current.Select(s => s.Name)).ToList();
                 foreach (var added in e.Current.Select(s => s.Name).Except(common))
                 {
-                    List<FileModel> list;
-                    if (!_uidIndex.TryGetValue(added, out list))
+                    if (!_uidIndex.TryGetValue(added, out List<FileModel> list))
                     {
                         list = new List<FileModel>();
                         _uidIndex.Add(added, list);
@@ -682,8 +676,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 foreach (var removed in e.Original.Select(s => s.Name).Except(common))
                 {
-                    List<FileModel> list;
-                    if (_uidIndex.TryGetValue(removed, out list))
+                    if (_uidIndex.TryGetValue(removed, out List<FileModel> list))
                     {
                         list.Remove(m);
                         if (list.Count == 0)
