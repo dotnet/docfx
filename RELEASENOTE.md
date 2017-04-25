@@ -1,8 +1,8 @@
-﻿Version Notes (Current Version: v2.16.4)
+﻿Version Notes (Current Version: v2.16.5)
 =======================================
-v2.16.4
+v2.16.5
 -----------
-
+1. Bug fix for toc: When b/toc.md is included by toc.md, invalid link in b/toc.md should be resolved to the path relative to toc.md
 
 v2.16.3
 -----------
