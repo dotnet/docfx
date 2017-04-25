@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Uri, ExtensionContext } from "vscode";
+import { Uri } from "vscode";
 import { PreviewType } from "../constVariables/previewType";
 
 export class ProxyRequest {

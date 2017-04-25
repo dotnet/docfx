@@ -3,6 +3,7 @@
 import { ProxyRequest } from "./proxyRequest";
 
 export class RequestArray {
+    private requests: { [id: string]: ProxyRequest } = {};
     private _keys: string[] = [];
 
     public add(request: ProxyRequest) {
@@ -19,29 +20,27 @@ export class RequestArray {
         } else {
             let key = this._keys[0];
             this._keys.splice(0, 1);
-            let request = this[key];
-            delete this[key];
+            let request = this.requests[key];
+            delete this.requests[key];
             return request;
         }
     }
 
     private push(request: ProxyRequest) {
         let key = request.getKeyString();
-        this[key] = request;
+        this.requests[key] = request;
         this._keys.push(key);
     }
 
     private update(request: ProxyRequest) {
         let key = request.getKeyString();
-        this[key] = request;
+        if (this.exist(request)) {
+            this.requests[key] = request;
+        }
     }
 
     private exist(request: ProxyRequest) {
         let key = request.getKeyString();
-        if (typeof this[key] === "undefined") {
-            return false;
-        } else {
-            return true;
-        }
+        return typeof this.requests[key] !== "undefined";
     }
 }

@@ -21,7 +21,11 @@ export class Proxy {
     private _serverPort = "4002";
 
     constructor() {
-        throw new Error("Error: Instantiation failed: Use Proxy.getInstance() instead of new.");
+        if (Proxy._instance) {
+            throw new Error("Error: Instantiation failed: Use Proxy.getInstance() instead of new.");
+        } else {
+            Proxy._instance = this;
+        }
     }
 
     public static getInstance(): Proxy {
