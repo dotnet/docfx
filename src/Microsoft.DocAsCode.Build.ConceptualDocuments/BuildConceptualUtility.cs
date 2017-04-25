@@ -36,15 +36,6 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             return content;
         }
 
-        public class HtmlInfo
-        {
-            public string Title { get; set; }
-
-            public string RawTitle { get; set; }
-
-            public string Content { get; set; }
-        }
-
         private static HtmlNode GetFirstNoneCommentChild(HtmlNode node)
         {
             var result = node.FirstChild;

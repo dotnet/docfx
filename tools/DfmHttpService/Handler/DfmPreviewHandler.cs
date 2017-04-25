@@ -31,12 +31,9 @@ namespace DfmHttpService
             {
                 try
                 {
-                    var content = Preview(context.Message.WorkspacePath, context.Message.RelativePath,
-                        context.Message.MarkdownContent, context.Message.IfSeparateMarkupResult,
-                        context.Message.IfWriteTempPreviewFile, context.Message.TempPreviewFilePath,
-                        context.Message.PageRefreshJsFilePath, context.Message.OriginalHtmlPath);
+                    var content = Preview(context.Message);
                     Utility.ReplySuccessfulResponse(context.HttpContext, content,
-                        context.Message.IfSeparateMarkupResult ? ContentType.Json : ContentType.Html);
+                        context.Message.ShouldSeparateMarkupResult ? ContentType.Json : ContentType.Html);
                 }
                 catch(HandlerClientException ex)
                 {
@@ -49,20 +46,18 @@ namespace DfmHttpService
             });
         }
 
-        private string Preview(string workspacePath, string relativePath, string markdownContent, bool ifSeparateMarkupResult = false,
-            bool ifWriteTempPreviewFile = false, string tempPreviewFilePath = null, string pageUpdateJsFilePath = null,
-            string originalHtmlPath = null)
+        private string Preview(CommandMessage contextMessage)
         {
-            if (string.IsNullOrEmpty(workspacePath))
+            if (string.IsNullOrEmpty(contextMessage.WorkspacePath))
             {
                 throw new HandlerClientException("Base directory should not be null or empty");
             }
-            if (string.IsNullOrEmpty(relativePath))
+            if (string.IsNullOrEmpty(contextMessage.RelativePath))
             {
                 throw new HandlerClientException("Relative path should not be null or empty");
             }
-            string result = DfmMarkup(workspacePath, relativePath, markdownContent);
-            if (ifSeparateMarkupResult)
+            string result = DfmMarkup(contextMessage.WorkspacePath, contextMessage.RelativePath, contextMessage.MarkdownContent);
+            if (contextMessage.ShouldSeparateMarkupResult)
             {
                 var separatedMarkupResult = new Dictionary<string, string>();
                 var htmlInfo = BuildConceptualUtility.SeparateHtml(result);
@@ -70,34 +65,34 @@ namespace DfmHttpService
                 separatedMarkupResult["content"] = htmlInfo.Content;
                 result = JsonConvert.SerializeObject(separatedMarkupResult);
             }
-            if (!ifWriteTempPreviewFile)
+            if (!contextMessage.ShouldWriteTempPreviewFile)
             {
                 return result;
             }
 
-            if (string.IsNullOrEmpty(originalHtmlPath))
+            if (string.IsNullOrEmpty(contextMessage.OriginalHtmlPath))
             {
                 throw new HandlerClientException("Built Html path should not be null or empty");
             }
-            if (string.IsNullOrEmpty(pageUpdateJsFilePath))
+            if (string.IsNullOrEmpty(contextMessage.PageRefreshJsFilePath))
             {
                 throw new HandlerClientException("Page update js file path should not be null or empty");
             }
 
-            PreviewJsonConfig config = PreviewCommand.ParsePreviewCommand(workspacePath);
+            PreviewJsonConfig config = PreviewCommand.ParsePreviewCommand(contextMessage.WorkspacePath);
 
-            originalHtmlPath = new Uri(originalHtmlPath).LocalPath;
-            pageUpdateJsFilePath = new Uri(pageUpdateJsFilePath).LocalPath;
-            tempPreviewFilePath = new Uri(tempPreviewFilePath).LocalPath;
+            var originalHtmlPath = new Uri(contextMessage.OriginalHtmlPath).LocalPath;
+            var pageRefreshJsFilePath = new Uri(contextMessage.PageRefreshJsFilePath).LocalPath;
+            var tempPreviewFilePath = new Uri(contextMessage.TempPreviewFilePath).LocalPath;
 
             string htmlString = File.ReadAllText(originalHtmlPath);
 
             CQ dom = htmlString;
 
-            CQ addElements = $"<script type='text/javascript' src='{pageUpdateJsFilePath}'></script>" +
+            CQ addElements = $"<script type='text/javascript' src='{pageRefreshJsFilePath}'></script>" +
                              $"<meta name='pageRefreshFunctionName' content ='{config.PageRefreshFunctionName}'>" +
                              $"<meta name='port' content='{config.NavigationPort}'>" +
-                             $"<meta name='filePath' content='{relativePath}'>" +
+                             $"<meta name='filePath' content='{contextMessage.RelativePath}'>" +
                              $"<meta name='markupTagType' content='{config.MarkupTagType}'>" +
                              $"<meta name='markupClassName' content='{config.MarkupClassName}'>";
 
