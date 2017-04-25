@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Uri } from "vscode";
+import { Uri, ExtensionContext } from "vscode";
 import { PreviewType } from "../constVariables/previewType";
 
 export class ProxyRequest {
@@ -10,19 +10,21 @@ export class ProxyRequest {
     oldPid: number;
     relativePath: string;
     workspacePath: string;
+    context: ExtensionContext;
     callback;
 
-    constructor(documentUri: Uri, previewType: number, oldPid: number, content: string, relativePath: string, workspacePath: string, callback) {
+    constructor(documentUri: Uri, previewType: number, oldPid: number, content: string, relativePath: string, workspacePath: string, context: ExtensionContext, callback) {
         this.documentUri = documentUri;
         this.previewType = previewType;
         this.oldPid = oldPid;
         this.content = content;
         this.relativePath = relativePath;
         this.workspacePath = workspacePath;
+        this.context = context;
         this.callback = callback;
     }
 
-    public getKeyString(){
+    public getKeyString() {
         return this.documentUri.toString();
     }
 }

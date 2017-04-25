@@ -10,7 +10,7 @@ export class DfmPreviewProcessor extends PreviewProcessor {
     provider: MarkdownDocumentContentProvider;
 
     constructor(context: ExtensionContext) {
-        super();
+        super(context);
         this.provider = new MarkdownDocumentContentProvider(context);
     }
 

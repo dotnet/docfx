@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Uri, window } from "vscode";
+import { Uri, window, ExtensionContext } from "vscode";
 
 import { PreviewType } from "../constVariables/previewType";
 import { Proxy } from "../Proxy/proxy";
@@ -10,8 +10,13 @@ export class PreviewProcessor {
     public static previewType = PreviewType.dfmPreview;
     public initialized;
 
+    private static _context: ExtensionContext;
     private static proxy = Proxy.getInstance();
     private _waiting = false;
+
+    constructor(context: ExtensionContext){
+        PreviewProcessor._context = context;
+    }
 
     public static stopPreview() {
         this.proxy.stopProxy();
@@ -33,7 +38,7 @@ export class PreviewProcessor {
 
     private updateContentCoreAsync(uri: Uri) {
         let that = this;
-        PreviewProcessor.proxy.newRequest(uri, PreviewProcessor.previewType, function (err,response) {
+        PreviewProcessor.proxy.newRequest(uri, PreviewProcessor.previewType, PreviewProcessor._context, function (err,response) {
             if (err) {
                 window.showErrorMessage(`[Proxy Error]: ${err}`);
             } else {

@@ -14,7 +14,6 @@ import { RequestArray } from "./RequestArray";
 export class Proxy {
     private static _instance: Proxy = new Proxy();
 
-    private _context: ExtensionContext;
     private _isChildProcessStarting: boolean = false;
     private _requestArray = new RequestArray();
     private _spawn: childProcess.ChildProcess;
@@ -32,12 +31,8 @@ export class Proxy {
         return Proxy._instance;
     }
 
-    public initialContext(context: ExtensionContext) {
-        this._context = context;
-    }
-
-    public newRequest(documentUri: Uri, previewType: number, callback) {
-        let request = this.prepareRequestData(documentUri, previewType, callback);
+    public newRequest(documentUri: Uri, previewType: number, context:ExtensionContext, callback) {
+        let request = this.prepareRequestData(documentUri, previewType, context, callback);
         this._requestArray.add(request);
         this.requestProcess();
     }
@@ -50,7 +45,7 @@ export class Proxy {
         }
     }
 
-    private prepareRequestData(documentUri: Uri, previewType: number, callback): ProxyRequest {
+    private prepareRequestData(documentUri: Uri, previewType: number, context, callback): ProxyRequest {
         let editor = window.activeTextEditor;
         if (!editor) {
             window.showErrorMessage(`[Extension Error]: No ActiveEditor`);
@@ -70,7 +65,7 @@ export class Proxy {
             relativePath = fileName.substr(rootPathLength + 1, fileName.length - rootPathLength);
         }
 
-        return new ProxyRequest(documentUri, previewType, this._spawn ? this._spawn.pid : 0, docContent, relativePath, rootPath, callback);
+        return new ProxyRequest(documentUri, previewType, this._spawn ? this._spawn.pid : 0, docContent, relativePath, rootPath, context, callback);
     }
 
     private requestProcess() {
@@ -102,7 +97,7 @@ export class Proxy {
                 this._requestArray.add(request);
                 let currentPid = this._spawn ? this._spawn.pid : 0;
                 if (currentPid === request.oldPid) {
-                    this.newHttpServerAndStartPreview();
+                    this.newHttpServerAndStartPreview(request.context);
                 } else {
                     this.requestProcess();
                 }
@@ -112,12 +107,12 @@ export class Proxy {
         }
     }
 
-    private newHttpServerAndStartPreview() {
+    private newHttpServerAndStartPreview(context: ExtensionContext) {
         if (this._isChildProcessStarting)
             return;
         this._isChildProcessStarting = true;
         window.showInformationMessage("Environment initializing, please wait several seconds!");
-        this.getFreePort(port => this.newHttpServerAndStartPreviewCore(port));
+        this.getFreePort(port => this.newHttpServerAndStartPreviewCore(port, context));
     }
 
     private getFreePort(callback) {
@@ -131,10 +126,10 @@ export class Proxy {
         })
     }
 
-    private newHttpServerAndStartPreviewCore(port) {
+    private newHttpServerAndStartPreviewCore(port, context: ExtensionContext) {
         let that = this;
         this._serverPort = port.toString();
-        let exePath = that._context.asAbsolutePath("./DfmHttpService/DfmHttpService.exe");
+        let exePath = context.asAbsolutePath("./DfmHttpService/DfmHttpService.exe");
         try {
             this._spawn = Common.spawn(exePath + " " + this._serverPort, {});
         }

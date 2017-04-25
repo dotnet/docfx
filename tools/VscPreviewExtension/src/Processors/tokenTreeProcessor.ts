@@ -10,7 +10,7 @@ export class TokenTreeProcessor extends PreviewProcessor {
     provider: TokenTreeContentProvider;
 
     constructor(context: ExtensionContext) {
-        super();
+        super(context);
         this.provider = new TokenTreeContentProvider(context);
     }
 

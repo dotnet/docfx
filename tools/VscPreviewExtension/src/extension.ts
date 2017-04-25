@@ -11,11 +11,8 @@ import { PreviewProcessor } from "./Processors/previewProcessor";
 import { ContentProvider } from "./ContentProvider/contentProvider";
 import * as ConstVariable from "./constVariables/commonVariables";
 import { PreviewType } from "./constVariables/previewType";
-import { Proxy } from "./Proxy/proxy";
 
 export function activate(context: ExtensionContext) {
-    let proxy = Proxy.getInstance();
-    proxy.initialContext(context);
     let dfmPreviewProcessor = new DfmPreviewProcessor(context);
     let tokenTreeProcessor = new TokenTreeProcessor(context);
     let previewProviderRegistration = workspace.registerTextDocumentContentProvider(ConstVariable.markdownScheme, dfmPreviewProcessor.provider);
