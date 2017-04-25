@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.Build.TableOfContents
 {
-    using System;
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.Common;
@@ -200,7 +199,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 case HrefType.MarkdownTocFile:
                 case HrefType.YamlTocFile:
                     {
-                        var tocFilePath = (RelativePath)file.File + (RelativePath)item.Href;
+                        var href = (RelativePath)item.Href;
+                        var tocFilePath = (RelativePath)file.File + href;
                         var tocFile = file.ChangeFile(tocFilePath);
                         TocItemInfo referencedTocFileModel;
                         TocItemViewModel referencedToc;
@@ -227,7 +227,10 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         // For referenced toc, content from referenced toc is expanded as the items of current toc item,
                         // Href is reset to the homepage of current toc item
                         item.Href = item.TopicHref;
-                        item.Items = referencedToc.Items;
+                        var referencedTocClone = referencedToc.Items?.Clone();
+
+                        // For [reference](a/toc.md), and toc.md contains not-exist.md, the included not-exist.md should be resolved to a/not-exist.md
+                        item.Items = UpdateOriginalHref(referencedTocClone, href);
                     }
                     break;
                 default:
@@ -255,6 +258,35 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
 
             return wrapper;
+        }
+        
+        private TocViewModel UpdateOriginalHref(TocViewModel toc, RelativePath relativePath)
+        {
+            if (toc == null || relativePath.SubdirectoryCount == 0)
+            {
+                return toc;
+            }
+
+            foreach(var item in toc)
+            {
+                item.OriginalHomepage = GetRelativePath(item.OriginalHomepage, relativePath);
+                item.OriginalHref = GetRelativePath(item.OriginalHref, relativePath);
+                item.OriginalTocHref = GetRelativePath(item.OriginalTocHref, relativePath);
+                item.OriginalTopicHref = GetRelativePath(item.OriginalTopicHref, relativePath);
+                item.Items = UpdateOriginalHref(item.Items, relativePath);
+            }
+
+            return toc;
+        }
+
+        private string GetRelativePath(string href, RelativePath rel)
+        {
+            var type = Utility.GetHrefType(href);
+            if (type == HrefType.RelativeFile)
+            {
+                return rel + (RelativePath)href;
+            }
+            return href;
         }
 
         private string NormalizeHref(string href, RelativePath relativeToFile)

@@ -292,38 +292,45 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             var file1 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent);
             var file2 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, "sub1");
             var file3 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, "sub1/sub2");
-            var referencedToc = _fileCreator.CreateFile($@"
+            var sub1sub2tocyaml = _fileCreator.CreateFile($@"
 - name: Topic
   href: {Path.GetFileName(file3)}
+- name: NotExistTopic
+  href: a/b/c.md
 ", FileType.YamlToc, "sub1/sub2");
-            var subToc = _fileCreator.CreateFile($@"
+            var sub1sub3tocmd = _fileCreator.CreateFile($@"
+#[Not-existed-md](sub2/notexist.md)
+", FileType.MarkdownToc, "sub1/sub3");
+            var sub1tocmd = _fileCreator.CreateFile($@"
 #[Topic]({Path.GetFileName(file2)})
-#[ReferencedToc](sub2/{Path.GetFileName(referencedToc)})
+#[ReferencedToc](sub2/toc.yml)
+#[ReferencedToc2](sub3/toc.md)
+#[Not-existed-md](sub2/notexist.md)
 ", FileType.MarkdownToc, "sub1");
             var content = $@"
 - name: Topic1
   href: {file1}
   items:
     - name: Topic1.1
-      href: {subToc}
+      href: sub1/toc.md
       items:
         - name: Topic1.1.1
         - name: Topic1.1.2
     - name: Topic1.2
-      href: {subToc}
+      href: sub1/toc.md
       homepage: {file1}
 - name: Topic2
-  href: {referencedToc}
+  href: sub1/sub2/toc.yml
 ";
             // Test for OS sensitive file path
             if (PathUtility.IsPathCaseInsensitive())
             {
-                subToc = subToc.ToUpperInvariant();
+                sub1tocmd = sub1tocmd.ToUpperInvariant();
             }
 
             var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
             FileCollection files = new FileCollection(_inputFolder);
-            files.Add(DocumentType.Article, new[] { file1, file2, file3, toc, subToc });
+            files.Add(DocumentType.Article, new[] { file1, file2, file3, toc, sub1tocmd, sub1sub3tocmd });
             BuildDocument(files);
             var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
 
@@ -363,8 +370,34 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                                                 Name = "Topic",
                                                 Href = file3,
                                                 TopicHref = file3,
+                                            },
+                                            new TocItemViewModel
+                                            {
+                                                Name = "NotExistTopic",
+                                                Href = "sub1/sub2/a/b/c.md",
+                                                TopicHref = "sub1/sub2/a/b/c.md",
                                             }
                                         }
+                                    },
+
+                                    new TocItemViewModel
+                                    {
+                                        Name = "ReferencedToc2",
+                                        Items = new TocViewModel
+                                        {
+                                            new TocItemViewModel
+                                            {
+                                                Name = "Not-existed-md",
+                                                Href = "sub1/sub3/sub2/notexist.md",
+                                                TopicHref = "sub1/sub3/sub2/notexist.md",
+                                            },
+                                        }
+                                    },
+                                    new TocItemViewModel
+                                    {
+                                        Name = "Not-existed-md",
+                                        Href = "sub1/sub2/notexist.md",
+                                        TopicHref = "sub1/sub2/notexist.md",
                                     }
                                 }
                             },
@@ -392,8 +425,33 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                                                 Name = "Topic",
                                                 Href = file3,
                                                 TopicHref = file3,
+                                            },
+                                            new TocItemViewModel
+                                            {
+                                                Name = "NotExistTopic",
+                                                Href = "sub1/sub2/a/b/c.md",
+                                                TopicHref = "sub1/sub2/a/b/c.md",
                                             }
                                         }
+                                    },
+                                    new TocItemViewModel
+                                    {
+                                        Name = "ReferencedToc2",
+                                        Items = new TocViewModel
+                                        {
+                                            new TocItemViewModel
+                                            {
+                                                Name = "Not-existed-md",
+                                                Href = "sub1/sub3/sub2/notexist.md",
+                                                TopicHref = "sub1/sub3/sub2/notexist.md",
+                                            }
+                                        }
+                                    },
+                                    new TocItemViewModel
+                                    {
+                                        Name = "Not-existed-md",
+                                        Href = "sub1/sub2/notexist.md",
+                                        TopicHref = "sub1/sub2/notexist.md",
                                     }
                                 }
                             }
@@ -410,6 +468,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                                 Name = "Topic",
                                 Href = file3,
                                 TopicHref = file3,
+                            },
+                            new TocItemViewModel
+                            {
+                                Name = "NotExistTopic",
+                                Href = "sub1/sub2/a/b/c.md",
+                                TopicHref = "sub1/sub2/a/b/c.md",
                             }
                         }
                     }
@@ -419,7 +483,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
             AssertTocEqual(expectedModel, model);
 
             // Referenced TOC File should not exist
-            var referencedTocPath = Path.Combine(_outputFolder, Path.ChangeExtension(subToc, RawModelFileExtension));
+            var referencedTocPath = Path.Combine(_outputFolder, Path.ChangeExtension(sub1tocmd, RawModelFileExtension));
             Assert.False(File.Exists(referencedTocPath));
         }
 

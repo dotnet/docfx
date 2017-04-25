@@ -12,5 +12,10 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     {
         public TocViewModel(IEnumerable<TocItemViewModel> items) : base(items) { }
         public TocViewModel() : base() { }
+
+        public TocViewModel Clone()
+        {
+            return new TocViewModel(ConvertAll(s => s.Clone()));
+        }
     }
 }
