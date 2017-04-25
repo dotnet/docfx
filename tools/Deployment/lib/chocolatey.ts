@@ -8,6 +8,7 @@ import { Common, Guard } from "./common";
 export class Chocolatey {
     public static async publishToChocolateyAsync(
         releaseNotePath: string,
+        releaseFolder: string,
         assetZipPath: string,
         chocoScriptPath: string,
         chocoNuspecPath: string,
@@ -26,6 +27,10 @@ export class Chocolatey {
         if (!isUpdated) {
             console.log(`${releaseNotePath} hasn't been changed. Ignore to publish package to chocolatey.`);
             return Promise.resolve();
+        }
+
+        if (!fs.existsSync(assetZipPath)) {
+            Common.zipAssests(releaseFolder, assetZipPath);
         }
 
         let version = Common.getVersionFromReleaseNote(releaseNotePath);

@@ -27,7 +27,10 @@ export class Github {
             return Promise.resolve();
         }
 
-        Common.zipAssests(releaseFolder, assetZipPath);
+        if (!fs.existsSync(assetZipPath)) {
+            Common.zipAssests(releaseFolder, assetZipPath);
+        }
+
         let githubApi = new GithubApi(repoUrl, githubToken);
         let releaseDescription = this.getReleaseDescription(releaseNotePath);
 
