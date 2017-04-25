@@ -11,13 +11,11 @@ export class Github {
     static async updateGithubReleaseAsync(
         repoUrl: string,
         releaseNotePath: string,
-        releaseFolder: string,
         assetZipPath: string,
         githubToken: string): Promise<void> {
 
         Guard.argumentNotNullOrEmpty(repoUrl, "repoUrl");
         Guard.argumentNotNullOrEmpty(releaseNotePath, "releaseNotePath");
-        Guard.argumentNotNullOrEmpty(releaseFolder, "releaseFolder");
         Guard.argumentNotNullOrEmpty(assetZipPath, "assetZipPath");
         Guard.argumentNotNullOrEmpty(githubToken, "githubToken");
 
@@ -25,10 +23,6 @@ export class Github {
         if (!isUpdated) {
             console.log(`${releaseNotePath} hasn't been changed. Ignored to update github release package.`);
             return Promise.resolve();
-        }
-
-        if (!fs.existsSync(assetZipPath)) {
-            Common.zipAssests(releaseFolder, assetZipPath);
         }
 
         let githubApi = new GithubApi(repoUrl, githubToken);

@@ -141,33 +141,39 @@ gulp.task("updateGhPage", () => {
     return Github.updateGhPagesAsync(config.docfx.repoUrl, config.docfx.siteFolder, docfxExe, docfxJson, config.git.name, config.git.email, config.git.message);
 });
 
+gulp.task("packAssetZip", () => {
+    Guard.argumentNotNullOrEmpty(config.docfx.releaseFolder, "config.docfx.releaseFolder", "Can't find zip source folder in configuration.");
+    Guard.argumentNotNullOrEmpty(config.docfx.assetZipPath, "config.docfx.assetZipPath", "Can't find asset zip destination folder in configuration.");
+
+    let releaseFolder = path.resolve(config.docfx["releaseFolder"]);
+    let assetZipPath = path.resolve(config.docfx["assetZipPath"]);
+
+    Common.zipAssests(releaseFolder, assetZipPath);
+});
+
 gulp.task("publish:gh-release", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.releaseNotePath, "config.docfx.releaseNotePath", "Can't find RELEASENOTE.md in configuartion.");
-    Guard.argumentNotNullOrEmpty(config.docfx.releaseFolder, "config.docfx.releaseFolder", "Can't find zip source folder in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.assetZipPath, "config.docfx.assetZipPath", "Can't find asset zip destination folder in configuration.");
     Guard.argumentNotNullOrEmpty(process.env.TOKEN, "process.env.TOKEN", "No github account token in the environment.");
 
     let githubToken = process.env.TOKEN;
 
     let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
-    let releaseFolder = path.resolve(config.docfx["releaseFolder"]);
     let assetZipPath = path.resolve(config.docfx["assetZipPath"]);
 
-    return Github.updateGithubReleaseAsync(config.docfx["repoUrl"], releaseNotePath, releaseFolder, assetZipPath, githubToken);
+    return Github.updateGithubReleaseAsync(config.docfx["repoUrl"], releaseNotePath, assetZipPath, githubToken);
 });
 
 gulp.task("publish:chocolatey", () => {
     Guard.argumentNotNullOrEmpty(config.choco.homeDir, "config.choco.homeDir", "Can't find homedir for chocolatey in configuration.");
     Guard.argumentNotNullOrEmpty(config.choco.nuspec, "config.choco.nuspec", "Can't find nuspec for chocolatey in configuration.");
     Guard.argumentNotNullOrEmpty(config.choco.chocoScript, "config.choco.chocoScript", "Can't find script for chocolatey in configuration.");
-    Guard.argumentNotNullOrEmpty(config.docfx.releaseFolder, "config.docfx.releaseFolder", "Can't find zip source folder in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.releaseNotePath, "config.docfx.releaseNotePath", "Can't find RELEASENOTE path in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.assetZipPath, "config.docfx.assetZipPath", "Can't find released zip path in configuration.");
     Guard.argumentNotNullOrEmpty(process.env.CHOCO_TOKEN, "process.env.CHOCO_TOKEN", "No chocolatey.org account token in the environment.");
 
     let chocoToken = process.env.CHOCO_TOKEN;
 
-    let releaseFolder = path.resolve(config.docfx["releaseFolder"]);
     let releaseNotePath = path.resolve(config.docfx["releaseNotePath"]);
     let assetZipPath = path.resolve(config.docfx["assetZipPath"]);
 
@@ -175,11 +181,11 @@ gulp.task("publish:chocolatey", () => {
     let nuspec = path.resolve(config.choco["nuspec"]);
     let homeDir = path.resolve(config.choco["homeDir"]);
 
-    return Chocolatey.publishToChocolateyAsync(releaseNotePath, releaseFolder, assetZipPath, chocoScript, nuspec, homeDir, chocoToken);
+    return Chocolatey.publishToChocolateyAsync(releaseNotePath, assetZipPath, chocoScript, nuspec, homeDir, chocoToken);
 });
 
 gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
 gulp.task("stable", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
-gulp.task("master", gulp.series("clean", "build", "e2eTest", "updateGhPage", "publish:myget-master", "publish:chocolatey", "publish:gh-release"));
+gulp.task("master", gulp.series("clean", "build", "e2eTest", "packAssetZip" ,"updateGhPage", "publish:myget-master", "publish:chocolatey", "publish:gh-release"));
 gulp.task("default", gulp.series("dev"));
