@@ -38,14 +38,14 @@ namespace Microsoft.DocAsCode.Dfm
                     return new DfmExtractCodeResult
                     {
                         IsSuccessful = true,
-                        FencesCodeLines = Dedent(fencesCode),
+                        CodeLines = Dedent(fencesCode),
                     };
                 }
 
                 if (!token.PathQueryOption.ValidateAndPrepare(fencesCode, token))
                 {
                     Logger.LogError(GenerateErrorMessage(token), line: token.SourceInfo.LineNumber.ToString());
-                    return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = token.PathQueryOption.ErrorMessage, FencesCodeLines = fencesCode };
+                    return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = token.PathQueryOption.ErrorMessage, CodeLines = fencesCode };
                 }
                 if (!string.IsNullOrEmpty(token.PathQueryOption.ErrorMessage))
                 {
@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.Dfm
                 {
                     IsSuccessful = true,
                     ErrorMessage = token.PathQueryOption.ErrorMessage,
-                    FencesCodeLines = Dedent(includedLines, token.PathQueryOption.DedentLength)
+                    CodeLines = Dedent(includedLines, token.PathQueryOption.DedentLength)
                 };
             }
         }

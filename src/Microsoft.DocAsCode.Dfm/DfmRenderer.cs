@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Dfm
     {
         private readonly DfmInclusionLoader _inlineInclusionHelper = new DfmInlineInclusionLoader(true);
         private readonly DfmInclusionLoader _blockInclusionHelper = new DfmInclusionLoader();
-        private readonly DfmCodeExtractor _dfmCodeExtractor = new DfmCodeExtractor();
+        private readonly DfmCodeRenderer _codeRenderer = new DfmCodeRenderer();
 
         public ImmutableDictionary<string, string> Tokens { get; set; }
 
@@ -153,30 +153,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmFencesToken token, IMarkdownContext context)
         {
-            if (!PathUtility.IsRelativePath(token.Path))
-            {
-                string errorMessage = $"Code absolute path: {token.Path} is not supported in file {context.GetFilePathStack().Peek()}";
-                Logger.LogError(errorMessage);
-                return DfmFencesBlockHelper.GetRenderedFencesBlockString(token, renderer.Options, errorMessage);
-            }
-
-            try
-            {
-                // Always report original dependency
-                context.ReportDependency(token.Path);
-                var filePathWithStatus = DfmFallbackHelper.GetFilePathWithFallback(token.Path, context);
-                var extractResult = _dfmCodeExtractor.ExtractFencesCode(token, filePathWithStatus.Item1);
-                var result = DfmFencesBlockHelper.GetRenderedFencesBlockString(token, renderer.Options, extractResult.ErrorMessage, extractResult.FencesCodeLines);
-                return result;
-            }
-            catch (DirectoryNotFoundException)
-            {
-                return DfmFencesBlockHelper.GenerateReferenceNotFoundErrorMessage(renderer, token);
-            }
-            catch (FileNotFoundException)
-            {
-                return DfmFencesBlockHelper.GenerateReferenceNotFoundErrorMessage(renderer, token);
-            }
+            return _codeRenderer.Render(renderer, token, context);
         }
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmFencesBlockToken token, MarkdownBlockContext context)
