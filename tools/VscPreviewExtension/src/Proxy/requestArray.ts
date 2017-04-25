@@ -26,18 +26,18 @@ export class RequestArray {
     }
 
     private push(request: ProxyRequest) {
-        let key = request.documentUri.toString();
+        let key = request.getKeyString();
         this[key] = request;
         this._keys.push(key);
     }
 
     private update(request: ProxyRequest) {
-        let key = request.documentUri.toString();
+        let key = request.getKeyString();
         this[key] = request;
     }
 
     private exist(request: ProxyRequest) {
-        let key = request.documentUri.toString();
+        let key = request.getKeyString();
         if (typeof this[key] === "undefined") {
             return false;
         } else {

@@ -9,26 +9,36 @@ import { DfmService } from "../dfmService";
 import { PreviewType } from "../constVariables/previewType";
 import { ProxyRequest } from "./proxyRequest";
 import { ProxyResponse } from "./proxyResponse";
-import { RequestArray } from "./RequestDictionary";
+import { RequestArray } from "./RequestArray";
 
 export class Proxy {
-    private static _context: ExtensionContext;
-    private static _isChildProcessStarting: boolean = false;
-    private static _requestArray = new RequestArray();
-    private static _spawn: childProcess.ChildProcess;
-    private static _serverPort = "4002";
+    private static _instance: Proxy = new Proxy();
 
-    public static initialContext(context: ExtensionContext) {
-        Proxy._context = context;
+    private _context: ExtensionContext;
+    private _isChildProcessStarting: boolean = false;
+    private _requestArray = new RequestArray();
+    private _spawn: childProcess.ChildProcess;
+    private _serverPort = "4002";
+
+    constructor() {
+        throw new Error("Error: Instantiation failed: Use Proxy.getInstance() instead of new.");
     }
 
-    public static newRequest(documentUri: Uri, previewType: number, callback) {
+    public static getInstance(): Proxy {
+        return Proxy._instance;
+    }
+
+    public initialContext(context: ExtensionContext) {
+        this._context = context;
+    }
+
+    public newRequest(documentUri: Uri, previewType: number, callback) {
         let request = this.prepareRequestData(documentUri, previewType, callback);
         this._requestArray.add(request);
         this.requestProcess();
     }
 
-    public static async stopProxy() {
+    public async stopProxy() {
         try {
             await DfmService.exitAsync(this._serverPort);
         } catch (err) {
@@ -36,7 +46,7 @@ export class Proxy {
         }
     }
 
-    private static prepareRequestData(documentUri: Uri, previewType: number, callback): ProxyRequest {
+    private prepareRequestData(documentUri: Uri, previewType: number, callback): ProxyRequest {
         let editor = window.activeTextEditor;
         if (!editor) {
             window.showErrorMessage(`[Extension Error]: No ActiveEditor`);
@@ -59,7 +69,7 @@ export class Proxy {
         return new ProxyRequest(documentUri, previewType, this._spawn ? this._spawn.pid : 0, docContent, relativePath, rootPath, callback);
     }
 
-    private static requestProcess() {
+    private requestProcess() {
         let request;
         while ((request = this._requestArray.pop()) != null) {
             if (this._isChildProcessStarting) {
@@ -71,7 +81,7 @@ export class Proxy {
         }
     }
 
-    private static async requestProcessCore(request: ProxyRequest) {
+    private async requestProcessCore(request: ProxyRequest) {
         try {
             let res;
             switch (request.previewType) {
@@ -98,7 +108,7 @@ export class Proxy {
         }
     }
 
-    private static newHttpServerAndStartPreview() {
+    private newHttpServerAndStartPreview() {
         if (this._isChildProcessStarting)
             return;
         this._isChildProcessStarting = true;
@@ -106,7 +116,7 @@ export class Proxy {
         this.getFreePort(port => this.newHttpServerAndStartPreviewCore(port));
     }
 
-    private static getFreePort(callback) {
+    private getFreePort(callback) {
         let http = require("http");
         let server = http.createServer();
         server.listen(0);
@@ -117,7 +127,7 @@ export class Proxy {
         })
     }
 
-    private static newHttpServerAndStartPreviewCore(port) {
+    private newHttpServerAndStartPreviewCore(port) {
         let that = this;
         this._serverPort = port.toString();
         let exePath = that._context.asAbsolutePath("./DfmHttpService/DfmHttpService.exe");

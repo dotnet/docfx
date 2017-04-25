@@ -5,18 +5,19 @@
 import { workspace, window, ExtensionContext, commands, Event, Uri, ViewColumn, TextDocument, Selection } from "vscode";
 import * as path from "path";
 
-import { DfmPreviewProcesser } from "./Processors/dfmPreviewProcesser";
-import { TokenTreeProcesser } from "./Processors/tokenTreeProcesser";
-import { PreviewProcesser } from "./Processors/previewProcesser";
+import { DfmPreviewProcessor } from "./Processors/dfmPreviewProcessor";
+import { TokenTreeProcessor } from "./Processors/tokenTreeProcessor";
+import { PreviewProcessor } from "./Processors/previewProcessor";
 import { ContentProvider } from "./ContentProvider/contentProvider";
 import * as ConstVariable from "./constVariables/commonVariables";
 import { PreviewType } from "./constVariables/previewType";
 import { Proxy } from "./Proxy/proxy";
 
 export function activate(context: ExtensionContext) {
-    Proxy.initialContext(context);
-    let dfmPreviewProcessor = new DfmPreviewProcesser(context);
-    let tokenTreeProcessor = new TokenTreeProcesser(context);
+    let proxy = Proxy.getInstance();
+    proxy.initialContext(context);
+    let dfmPreviewProcessor = new DfmPreviewProcessor(context);
+    let tokenTreeProcessor = new TokenTreeProcessor(context);
     let previewProviderRegistration = workspace.registerTextDocumentContentProvider(ConstVariable.markdownScheme, dfmPreviewProcessor.provider);
     let tokenTreeProviderRegistration = workspace.registerTextDocumentContentProvider(ConstVariable.tokenTreeScheme, tokenTreeProcessor.provider);
 
@@ -32,7 +33,7 @@ export function activate(context: ExtensionContext) {
     workspace.onDidSaveTextDocument(document => {
         if (isMarkdownFile(document)) {
             const uri = getMarkdownUri(document.uri);
-            switch (PreviewProcesser.previewType) {
+            switch (PreviewProcessor.previewType) {
                 case PreviewType.dfmPreview:
                     dfmPreviewProcessor.updateContent(uri);
                     break;
@@ -46,7 +47,7 @@ export function activate(context: ExtensionContext) {
     workspace.onDidChangeTextDocument(event => {
         if (isMarkdownFile(event.document)) {
             const uri = getMarkdownUri(event.document.uri);
-            switch (PreviewProcesser.previewType) {
+            switch (PreviewProcessor.previewType) {
                 case PreviewType.dfmPreview:
                     dfmPreviewProcessor.updateContent(uri);
                     break;
@@ -101,7 +102,7 @@ export function activate(context: ExtensionContext) {
 
 // This method is called when your extension is deactivated
 export function deactivate() {
-    PreviewProcesser.stopPreview();
+    PreviewProcessor.stopPreview();
 }
 
 function mapToSelection(startLineNumber: number, endLineNumber: number) {
@@ -160,7 +161,7 @@ function showSource() {
     return commands.executeCommand("workbench.action.navigateBack");
 }
 
-function showPreview(dfmPreviewProcessor: DfmPreviewProcesser, uri?: Uri, sideBySide: boolean = false) {
+function showPreview(dfmPreviewProcessor: DfmPreviewProcessor, uri?: Uri, sideBySide: boolean = false) {
     dfmPreviewProcessor.initialized = false;
     let resource = uri;
     if (!(resource instanceof Uri)) {
@@ -172,7 +173,7 @@ function showPreview(dfmPreviewProcessor: DfmPreviewProcesser, uri?: Uri, sideBy
         }
     }
 
-    PreviewProcesser.previewType = PreviewType.dfmPreview;
+    PreviewProcessor.previewType = PreviewType.dfmPreview;
 
     let thenable = commands.executeCommand("vscode.previewHtml",
         getMarkdownUri(resource),
@@ -183,7 +184,7 @@ function showPreview(dfmPreviewProcessor: DfmPreviewProcesser, uri?: Uri, sideBy
     return thenable;
 }
 
-function showTokenTree(tokenTreeProcessor: TokenTreeProcesser, uri?: Uri) {
+function showTokenTree(tokenTreeProcessor: TokenTreeProcessor, uri?: Uri) {
     let resource = uri;
     tokenTreeProcessor.initialized = false;
     if (!(resource instanceof Uri)) {
@@ -195,7 +196,7 @@ function showTokenTree(tokenTreeProcessor: TokenTreeProcesser, uri?: Uri) {
         }
     }
 
-    PreviewProcesser.previewType = PreviewType.tokenTreePreview;
+    PreviewProcessor.previewType = PreviewType.tokenTreePreview;
 
     let thenable = commands.executeCommand("vscode.previewHtml",
         getTokenTreeUri(resource),

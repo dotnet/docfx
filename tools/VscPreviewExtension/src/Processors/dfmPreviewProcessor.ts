@@ -2,19 +2,20 @@
 
 import { ExtensionContext, window } from "vscode";
 
-import { PreviewProcesser } from "./previewProcesser";
+import { MarkdownDocumentContentProvider } from "../ContentProvider/markdownDocumentContentProvider";
+import { PreviewProcessor } from "./previewProcessor";
 import { ProxyResponse } from "../Proxy/proxyResponse";
-import { TokenTreeContentProvider } from "../ContentProvider/tokenTreeContentProvider";
 
-export class TokenTreeProcesser extends PreviewProcesser {
-    provider: TokenTreeContentProvider;
+export class DfmPreviewProcessor extends PreviewProcessor {
+    provider: MarkdownDocumentContentProvider;
 
     constructor(context: ExtensionContext) {
         super();
-        this.provider = new TokenTreeContentProvider(context);
+        this.provider = new MarkdownDocumentContentProvider(context);
     }
 
     protected pageRefresh(response: ProxyResponse){
+        this.provider.fileName = response.fileName;
         this.provider.update(response.documentUri, response.markupResult);
     }
 }

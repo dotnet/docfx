@@ -6,14 +6,15 @@ import { PreviewType } from "../constVariables/previewType";
 import { Proxy } from "../Proxy/proxy";
 import { ProxyResponse } from "../Proxy/proxyResponse";
 
-export class PreviewProcesser {
+export class PreviewProcessor {
     public static previewType = PreviewType.dfmPreview;
     public initialized;
 
+    private static proxy = Proxy.getInstance();
     private _waiting = false;
 
     public static stopPreview() {
-        Proxy.stopProxy();
+        this.proxy.stopProxy();
     }
 
     public updateContent(uri: Uri) {
@@ -32,7 +33,7 @@ export class PreviewProcesser {
 
     private updateContentCoreAsync(uri: Uri) {
         let that = this;
-        Proxy.newRequest(uri, PreviewProcesser.previewType, function (err,response) {
+        PreviewProcessor.proxy.newRequest(uri, PreviewProcessor.previewType, function (err,response) {
             if (err) {
                 window.showErrorMessage(`[Proxy Error]: ${err}`);
             } else {

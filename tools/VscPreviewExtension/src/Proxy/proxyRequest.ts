@@ -21,4 +21,8 @@ export class ProxyRequest {
         this.workspacePath = workspacePath;
         this.callback = callback;
     }
+
+    public getKeyString(){
+        return this.documentUri.toString();
+    }
 }
