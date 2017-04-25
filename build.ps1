@@ -100,8 +100,12 @@ if ($prod -eq $true) {
     $commitInfo = (& $gitCommand describe --tags) -split '-'
 
     ProcessLastExitCode $lastexitcode "Get GIT commit information $commitInfo"
-
-    $revision = $commitInfo[1].PadLeft(4, '0')
+    if ($commitInfo.length > 1) {
+        $revision = $commitInfo[1].PadLeft(4, '0')
+    } else {
+        $revision = '0000'
+    }
+    
     $assemblyVersion = (($version + $revision) -join '.').Substring(1)
 
     if ($branch -ne $releaseBranch) {
