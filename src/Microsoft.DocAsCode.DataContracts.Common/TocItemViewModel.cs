@@ -128,5 +128,15 @@ namespace Microsoft.DocAsCode.DataContracts.Common
                 .Add(Constants.ExtensionMemberPrefix.Name, NameInDevLangs, JTokenConverter.Convert<string>)
                 .Add(string.Empty, Metadata)
                 .Create();
+
+        public TocItemViewModel Clone()
+        {
+            var cloned = (TocItemViewModel)this.MemberwiseClone();
+            if (cloned.Items != null)
+            {
+                cloned.Items = Items.Clone();
+            }
+            return cloned;
+        }
     }
 }
