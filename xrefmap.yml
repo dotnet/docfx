@@ -21849,6 +21849,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.AggregatedUid
   fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.AggregatedUid
   nameWithType: TocItemViewModel.AggregatedUid
+- uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.Clone
+  name: Clone()
+  href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_Clone
+  commentId: M:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.Clone
+  fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.Clone()
+  nameWithType: TocItemViewModel.Clone()
+- uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.Clone*
+  name: Clone
+  href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_Clone_
+  commentId: Overload:Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.Clone
+  fullName: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.Clone
+  nameWithType: TocItemViewModel.Clone
 - uid: Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.DisplayName
   name: DisplayName
   href: api/Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_DisplayName
@@ -22104,6 +22116,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.DataContracts.Common.TocViewModel.#ctor
   fullName: Microsoft.DocAsCode.DataContracts.Common.TocViewModel.TocViewModel
   nameWithType: TocViewModel.TocViewModel
+- uid: Microsoft.DocAsCode.DataContracts.Common.TocViewModel.Clone
+  name: Clone()
+  href: api/Microsoft.DocAsCode.DataContracts.Common.TocViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocViewModel_Clone
+  commentId: M:Microsoft.DocAsCode.DataContracts.Common.TocViewModel.Clone
+  fullName: Microsoft.DocAsCode.DataContracts.Common.TocViewModel.Clone()
+  nameWithType: TocViewModel.Clone()
+- uid: Microsoft.DocAsCode.DataContracts.Common.TocViewModel.Clone*
+  name: Clone
+  href: api/Microsoft.DocAsCode.DataContracts.Common.TocViewModel.html#Microsoft_DocAsCode_DataContracts_Common_TocViewModel_Clone_
+  commentId: Overload:Microsoft.DocAsCode.DataContracts.Common.TocViewModel.Clone
+  fullName: Microsoft.DocAsCode.DataContracts.Common.TocViewModel.Clone
+  nameWithType: TocViewModel.Clone
 - uid: Microsoft.DocAsCode.DataContracts.Common.UniqueIdentityReferenceAttribute
   name: UniqueIdentityReferenceAttribute
   href: api/Microsoft.DocAsCode.DataContracts.Common.UniqueIdentityReferenceAttribute.html
