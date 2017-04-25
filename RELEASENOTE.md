@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.16.5)
+﻿Version Notes (Current Version: v2.16.6)
 =======================================
+v2.16.6
+----------
+1. Bug fix for `docfx metadata` for assemblies, to exclude null assembly symbols.
+
 v2.16.5
 -----------
 1. Bug fix for toc: When b/toc.md is included by toc.md, invalid link in b/toc.md should be resolved to the path relative to toc.md
