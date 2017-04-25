@@ -1011,7 +1011,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
     {
         static void Main(string[] args)
         {
-            string s = &quot;test&quot;;
+            string s = &quot;\ntest&quot;;
             int i = 100;
         }
     }
@@ -1031,13 +1031,13 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
 </code></pre>")]
         [InlineData(@"[!code[Main](Program.cs#L12-L16 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">static void Main(string[] args)
 {
-    string s = &quot;test&quot;;
+    string s = &quot;\ntest&quot;;
     int i = 100;
 }
 </code></pre>")]
         [InlineData(@"[!code[Main](Program.cs#L12-L100 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">        static void Main(string[] args)
         {
-            string s = &quot;test&quot;;
+            string s = &quot;\ntest&quot;;
             int i = 100;
         }
     }
@@ -1067,7 +1067,7 @@ using System.IO;
 {
     static void Main(string[] args)
     {
-        string s = &quot;test&quot;;
+        string s = &quot;\ntest&quot;;
         int i = 100;
     }
 }
@@ -1076,7 +1076,7 @@ using System.IO;
 {
     static void Main(string[] args)
     {
-        string s = &quot;test&quot;;
+        string s = &quot;\ntest&quot;;
         int i = 100;
     }
 }
@@ -1119,7 +1119,7 @@ namespace ConsoleApplication1
     class Program
         static void Main(string[] args)
         {
-            string s = &quot;test&quot;;
+            string s = &quot;\ntest&quot;;
             int i = 100;
         }
 </code></pre>")]
@@ -1136,7 +1136,7 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            string s = &quot;test&quot;;
+            string s = &quot;\ntest&quot;;
             int i = 100;
         }
     }
@@ -1184,7 +1184,7 @@ namespace ConsoleApplication1
     class Program
         static void Main(string[] args)
         {
-            string s = &quot;test&quot;;
+            string s = &quot;\ntest&quot;;
             int i = 100;
         }
 </code></pre>")]
@@ -1201,7 +1201,7 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            string s = &quot;test&quot;;
+            string s = &quot;\ntest&quot;;
             int i = 100;
         }
     }
@@ -1258,7 +1258,7 @@ public static void Foo()
     {
         static void Main(string[] args)
         {
-            string s = ""test"";
+            string s = ""\ntest"";
             int i = 100;
         }
     }
