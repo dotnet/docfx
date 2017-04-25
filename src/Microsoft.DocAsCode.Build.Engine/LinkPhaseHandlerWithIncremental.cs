@@ -37,11 +37,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public LinkPhaseHandlerWithIncremental(LinkPhaseHandler inner)
         {
-            if (inner == null)
-            {
-                throw new ArgumentNullException(nameof(inner));
-            }
-            _inner = inner;
+            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
             Context = _inner.Context;
             TemplateProcessor = _inner.TemplateProcessor;
             IncrementalContext = Context.IncrementalBuildContext;
@@ -178,8 +174,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         throw new BuildCacheException($"Full build hasn't loaded XRefMap.");
                     }
-                    List<XRefSpec> specs;
-                    if (!lastXrefMap.TryGetValue(file, out specs))
+                    if (!lastXrefMap.TryGetValue(file, out List<XRefSpec> specs))
                     {
                         throw new BuildCacheException($"Last build hasn't loaded xrefspec for file: ({file}).");
                     }
@@ -204,10 +199,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         throw new BuildCacheException($"Full build hasn't loaded File Map.");
                     }
-                    FileMapItem item;
 
                     // for overwrite files, it don't exist in filemap
-                    if (lastFileMap.TryGetValue(file, out item))
+                    if (lastFileMap.TryGetValue(file, out FileMapItem item))
                     {
                         foreach (var pair in item)
                         {
@@ -258,8 +252,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var path = Context.GetFilePath(f.Key);
                     if (path != null)
                     {
-                        FileMapItem item;
-                        if (!map.TryGetValue(f.OriginalFileAndType.File, out item))
+                        if (!map.TryGetValue(f.OriginalFileAndType.File, out FileMapItem item))
                         {
                             map[f.OriginalFileAndType.File] = item = new FileMapItem();
                         }
@@ -282,8 +275,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     else
                     {
-                        List<XRefSpec> specs;
-                        if (!map.TryGetValue(f.OriginalFileAndType.File, out specs))
+                        if (!map.TryGetValue(f.OriginalFileAndType.File, out List<XRefSpec> specs))
                         {
                             map[f.OriginalFileAndType.File] = specs = new List<XRefSpec>();
                         }

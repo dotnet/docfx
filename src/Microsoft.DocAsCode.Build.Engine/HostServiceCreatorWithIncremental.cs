@@ -63,9 +63,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (CanProcessorIncremental(processor))
                 {
-                    ChangeKindWithDependency ck;
                     string fileKey = ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
-                    if (IncrementalContext.ChangeDict.TryGetValue(fileKey, out ck))
+                    if (IncrementalContext.ChangeDict.TryGetValue(fileKey, out ChangeKindWithDependency ck))
                     {
                         Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}, ChangeType {ck}.");
                         if (ck == ChangeKindWithDependency.Deleted)

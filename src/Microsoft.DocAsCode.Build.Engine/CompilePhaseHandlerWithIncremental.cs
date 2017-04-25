@@ -35,11 +35,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public CompilePhaseHandlerWithIncremental(CompilePhaseHandler inner)
         {
-            if (inner == null)
-            {
-                throw new ArgumentNullException(nameof(inner));
-            }
-            _inner = inner;
+            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
             Context = _inner.Context;
             IncrementalContext = Context.IncrementalBuildContext;
             LastBuildVersionInfo = IncrementalContext.LastBuildVersionInfo;
@@ -230,8 +226,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             string fromNode = ((RelativePath)model.OriginalFileAndType.File).GetPathFromWorkingFolder().ToString();
             foreach (var f in model.LinkToFiles)
             {
-                ImmutableList<LinkSourceInfo> list;
-                if (model.FileLinkSources.TryGetValue(f, out list))
+                if (model.FileLinkSources.TryGetValue(f, out ImmutableList<LinkSourceInfo> list))
                 {
                     foreach (var fileLinkSourceFile in list)
                     {
@@ -286,8 +281,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var uid in model.LinkToUids)
             {
                 var item = new DependencyItemSourceInfo(DependencyItemSourceType.Uid, uid);
-                ImmutableList<LinkSourceInfo> list;
-                if (model.UidLinkSources.TryGetValue(uid, out list))
+                if (model.UidLinkSources.TryGetValue(uid, out ImmutableList<LinkSourceInfo> list))
                 {
                     foreach (var uidLinkSourceFile in list)
                     {

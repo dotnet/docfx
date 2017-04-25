@@ -144,8 +144,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (!hostService.SourceFiles.ContainsKey(fileLink))
                 {
-                    ImmutableList<LinkSourceInfo> list;
-                    if (result.FileLinkSources.TryGetValue(fileLink, out list))
+                    if (result.FileLinkSources.TryGetValue(fileLink, out ImmutableList<LinkSourceInfo> list))
                     {
                         foreach (var fileLinkSourceFile in list)
                         {
@@ -195,8 +194,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (!string.IsNullOrWhiteSpace(spec?.Uid))
                 {
-                    XRefSpec xref;
-                    if (Context.XRefSpecMap.TryGetValue(spec.Uid, out xref))
+                    if (Context.XRefSpecMap.TryGetValue(spec.Uid, out XRefSpec xref))
                     {
                         Logger.LogWarning(
                             $"Uid({spec.Uid}) has already been defined in {((RelativePath)xref.Href).RemoveWorkingFolder()}.",
