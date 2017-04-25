@@ -182,7 +182,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 Type = firstMember.Type,
                 AssemblyNameList = firstMember.AssemblyNameList,
                 NamespaceName = firstMember.NamespaceName,
-                Metadata = new Dictionary<string, object>
+                Metadata = new Dictionary<string, object>(firstMember.Metadata)
                 {
                     [IsOverloadPropertyName] = true,
                     [SplitReferencePropertyName] = true
