@@ -61,26 +61,31 @@ namespace Microsoft.DocAsCode.Dfm
 
             if (codeLines != null)
             {
-                result = RenderPreTag(result, token, options);
-                result = RenderCodeTag(result, token, options);
+                result = RenderOpenPreTag(result, token, options);
+                result = RenderOpenCodeTag(result, token, options);
                 foreach (var line in codeLines)
                 {
                     result += StringHelper.HtmlEncode(line);
                     result += "\n";
                 }
-                result += "</code></pre>";
+                result = RenderCloseCodeTag(result, token, options);
+                result = RenderClosePreTag(result, token, options);
             }
 
             return result;
         }
 
-        public virtual StringBuffer RenderPreTag(StringBuffer result, DfmFencesToken token, Options options)
+        public virtual StringBuffer RenderOpenPreTag(StringBuffer result, DfmFencesToken token, Options options)
         {
-            result += "<pre>";
-            return result;
+            return result + "<pre>";
         }
 
-        public virtual StringBuffer RenderCodeTag(StringBuffer result, DfmFencesToken token, Options options)
+        public virtual StringBuffer RenderClosePreTag(StringBuffer result, DfmFencesToken token, Options options)
+        {
+            return result + "</pre>";
+        }
+
+        public virtual StringBuffer RenderOpenCodeTag(StringBuffer result, DfmFencesToken token, Options options)
         {
             result += "<code";
             if (!string.IsNullOrEmpty(token.Lang))
@@ -101,6 +106,11 @@ namespace Microsoft.DocAsCode.Dfm
             }
             result += ">";
             return result;
+        }
+
+        public virtual StringBuffer RenderCloseCodeTag(StringBuffer result, DfmFencesToken token, Options options)
+        {
+            return result + "</code>";
         }
 
         public virtual StringBuffer RenderReferenceNotFoundErrorMessage(IMarkdownRenderer renderer, DfmFencesToken token)
