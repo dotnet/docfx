@@ -78,8 +78,8 @@ else {
 }
 
 # Pack docfx.console
-Copy-Item -Path "src\nuspec\docfx.console\build" -Destination "target\$configuration\docfx" -Force -Recurse
-Copy-Item -Path "src\nuspec\docfx.console\content" -Destination "target\$configuration\docfx" -Force -Recurse
+Copy-Item -Path "src\nuspec\docfx.console\build" -Destination "target\$configuration\docfx" -Force -Recurse -Container
+Copy-Item -Path "src\nuspec\docfx.console\content" -Destination "target\$configuration\docfx" -Force -Recurse -Container
 
 if ($prod -eq $true) {
     Write-Host "Updating version from ReleaseNote.md and GIT commit info"
