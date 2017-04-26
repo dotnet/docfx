@@ -27,11 +27,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonProperty("description")]
         public string Description { get; set; }
 
-        [YamlMember(Alias = "attributes")]
-        [JsonProperty("attributes")]
-        [MergeOption(MergeOption.Ignore)]
-        public List<AttributeInfo> Attributes { get; set; }
-
         [YamlMember(Alias = "optional")]
         [JsonProperty("optional")]
         public bool Optional { get; set; }

@@ -6,11 +6,11 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     using System;
     using System.Collections.Generic;
 
-    using Newtonsoft.Json;
-    using YamlDotNet.Serialization;
-
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.YamlSerialization;
+
+    using Newtonsoft.Json;
+    using YamlDotNet.Serialization;
 
     [Serializable]
     public class ApiBuildOutput
