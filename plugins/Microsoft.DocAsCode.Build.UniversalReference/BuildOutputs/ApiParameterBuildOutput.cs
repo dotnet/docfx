@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
         [YamlMember(Alias = "type")]
         [JsonProperty("type")]
-        public ApiNames Type { get; set; }
+        public List<ApiNames> Type { get; set; }
 
         [YamlMember(Alias = "description")]
         [JsonProperty("description")]
