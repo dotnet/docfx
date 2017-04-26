@@ -25,7 +25,8 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 // Always report original dependency
                 context.ReportDependency(token.Path);
-                var code = ExtractCode(token, context);
+                var filePath = FindFile(token, context);
+                var code = ExtractCode(token, filePath);
                 return RenderFencesCode(token, renderer.Options, code.ErrorMessage, code.CodeLines);
             }
             catch (DirectoryNotFoundException)
@@ -38,10 +39,14 @@ namespace Microsoft.DocAsCode.Dfm
             }
         }
 
-        public virtual DfmExtractCodeResult ExtractCode(DfmFencesToken token, IMarkdownContext context)
+        public virtual string FindFile(DfmFencesToken token, IMarkdownContext context)
         {
-            var filePathWithStatus = DfmFallbackHelper.GetFilePathWithFallback(token.Path, context);
-            return _dfmCodeExtractor.ExtractFencesCode(token, filePathWithStatus.Item1);
+            return DfmFallbackHelper.GetFilePathWithFallback(token.Path, context).Item1;
+        }
+
+        public virtual DfmExtractCodeResult ExtractCode(DfmFencesToken token, string filePath)
+        {
+            return _dfmCodeExtractor.ExtractFencesCode(token, filePath);
         }
 
         public virtual StringBuffer RenderFencesCode(DfmFencesToken token, Options options, string errorMessage, string[] codeLines = null)
