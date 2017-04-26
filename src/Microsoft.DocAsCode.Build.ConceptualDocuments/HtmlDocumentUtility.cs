@@ -9,9 +9,9 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 
     public static class HtmlDocumentUtility
     {
-        public static separatedHtmlInfo SeparateHtml(string contentHtml)
+        public static SeparatedHtmlInfo SeparateHtml(string contentHtml)
         {
-            var content = new separatedHtmlInfo();
+            var content = new SeparatedHtmlInfo();
 
             var document = new HtmlDocument();
             document.LoadHtml(contentHtml);
