@@ -16,6 +16,5 @@
   </metadata>
   <files>
     <file src="*" target="content\plugins\" exclude="**\*.pdb"/>
-    <file src="resources\**" target="content\"/>
   </files>
 </package>
