@@ -22,7 +22,7 @@ $(function () {
 
   window.refresh = function (article) {
     // Update markup result
-    if (typeof article != 'undefined' || typeof article.content != 'undefined')
+    if (typeof article == 'undefined' || typeof article.content == 'undefined')
       return;
     $("article.content").html(article.content);
 
