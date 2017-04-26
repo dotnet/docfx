@@ -100,7 +100,7 @@ if ($prod -eq $true) {
     $commitInfo = (& $gitCommand describe --tags) -split '-'
 
     ProcessLastExitCode $lastexitcode "Get GIT commit information $commitInfo"
-    if ($commitInfo.length > 1) {
+    if ($commitInfo.length -gt 1) {
         $revision = $commitInfo[1].PadLeft(4, '0')
     } else {
         $revision = '0000'
