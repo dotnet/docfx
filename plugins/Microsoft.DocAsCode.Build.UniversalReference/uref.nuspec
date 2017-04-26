@@ -9,7 +9,7 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <licenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</licenseUrl>
     <projectUrl>https://github.com/dotnet/docfx</projectUrl>
-    <description>This is a plugin for DocFX to generate API documentation for projects in various languages. This package contains both plugin DLLs and template.</description>
+    <description>This is a plugin for DocFX to generate API documentation for projects in various languages. This package contains both plugin DLLs and templates.</description>
     <releaseNotes>Support generating projects in various languages.</releaseNotes>
     <copyright>Copyright 2015-2017</copyright>
     <tags>Documentation API Metadata docascode docfx JavaScript plugin</tags>
