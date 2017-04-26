@@ -8,6 +8,8 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     internal static class UniversalReferenceConstants
     {
         public const string UniversalReference = "UniversalReference";
+        public const string PythonReference = "PythonReference";
         public const string UniversalReferenceYamlMime = YamlMime.YamlMimePrefix + UniversalReference;
+        public const string PythonReferenceYamlMime = YamlMime.YamlMimePrefix + PythonReference;
     }
 }

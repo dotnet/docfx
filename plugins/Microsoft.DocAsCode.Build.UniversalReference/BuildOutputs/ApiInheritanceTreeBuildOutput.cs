@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.BuildOutputs
     public class ApiInheritanceTreeBuildOutput
     {
         [YamlMember(Alias = Constants.PropertyName.Type)]
-        [JsonProperty(Constants.PropertyName.Type]
+        [JsonProperty(Constants.PropertyName.Type)]
         public ApiNames Type { get; set; }
 
         [YamlMember(Alias = Constants.PropertyName.Inheritance)]
