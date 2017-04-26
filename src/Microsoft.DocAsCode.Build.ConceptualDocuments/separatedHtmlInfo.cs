@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 {
-    public class HtmlInfo
+    public class separatedHtmlInfo
     {
         public string Title { get; set; }
 

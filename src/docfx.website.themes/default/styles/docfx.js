@@ -22,7 +22,7 @@ $(function () {
 
   window.refresh = function (article) {
     // Update markup result
-    $("article.content").html(article.article);
+    $("article.content").html(article.content);
 
     highlight();
     renderTables();
