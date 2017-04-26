@@ -47,6 +47,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string InheritedMembers = "inheritedMembers";
             public const string ExtensionMethods = "extensionMethods";
             public const string Overload = "overload";
+            public const string Returns = "returns";
 
             public const string SystemKeys = "_systemKeys";
 
@@ -66,6 +67,21 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Modifiers = "modifiers" + PrefixSeparator;
             public const string Spec = "spec" + PrefixSeparator;
             public const string Content = PropertyName.Content + PrefixSeparator;
+            public const string Parent = PropertyName.Parent + PrefixSeparator;
+            public const string Children = PropertyName.Children + PrefixSeparator;
+            public const string Source = PropertyName.Source + PrefixSeparator;
+            public const string Namespace = PropertyName.Namespace + PrefixSeparator;
+            public const string Assemblies = PropertyName.Assemblies + PrefixSeparator;
+            public const string Overridden = PropertyName.Overridden + PrefixSeparator;
+            public const string Exceptions = PropertyName.Exceptions + PrefixSeparator;
+            public const string Inheritance = PropertyName.Inheritance + PrefixSeparator;
+            public const string DerivedClasses = PropertyName.DerivedClasses + PrefixSeparator;
+            public const string Implements = PropertyName.Implements + PrefixSeparator;
+            public const string InheritedMembers = PropertyName.InheritedMembers + PrefixSeparator;
+            public const string ExtensionMethods = PropertyName.ExtensionMethods + PrefixSeparator;
+            public const string Platform = PropertyName.Platform + PrefixSeparator;
+            public const string Returns = PropertyName.Returns + PrefixSeparator;
+            public const string Overload = PropertyName.Overload + PrefixSeparator;
         }
 
         public static class DevLang

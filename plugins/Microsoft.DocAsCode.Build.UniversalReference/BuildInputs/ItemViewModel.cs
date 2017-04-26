@@ -41,11 +41,11 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [YamlMember(Alias = Constants.PropertyName.Parent)]
         [JsonProperty(Constants.PropertyName.Parent)]
         [UniqueIdentityReference]
-        public List<string> Parent { get; set; }
+        public string Parent { get; set; }
 
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Parent)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Parent)]
         [JsonIgnore]
-        public SortedList<string, List<string>> ParentInDevLangs { get; set; } = new SortedList<string, List<string>>();
+        public SortedList<string, string> ParentInDevLangs { get; set; } = new SortedList<string, string>();
 
         [YamlMember(Alias = Constants.PropertyName.Children)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [UniqueIdentityReference]
         public List<string> Children { get; set; }
 
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Children)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Children)]
         [JsonIgnore]
         public SortedList<string, List<string>> ChildrenInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
@@ -104,7 +104,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         /// <summary>
         /// item's source code's source detail in different dev langs
         /// </summary>
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Source)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Source)]
         [JsonIgnore]
         public SortedList<string, SourceDetail> SourceInDevLangs { get; set; } = new SortedList<string, SourceDetail>();
 
@@ -116,12 +116,12 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonProperty(Constants.PropertyName.Documentation)]
         public SourceDetail Documentation { get; set; }
 
-        [YamlMember(Alias = UniversalReferenceConstants.ExtensionMemberPrefix.Assemblies)]
+        [YamlMember(Alias = Constants.ExtensionMemberPrefix.Assemblies)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
-        [JsonProperty(UniversalReferenceConstants.ExtensionMemberPrefix.Assemblies)]
+        [JsonProperty(Constants.ExtensionMemberPrefix.Assemblies)]
         public List<string> AssemblyNameList { get; set; }
 
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Assemblies)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Assemblies)]
         [JsonIgnore]
         public SortedList<string, List<string>> AssemblyNameListInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
@@ -130,7 +130,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [UniqueIdentityReference]
         public string NamespaceName { get; set; }
 
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Namespace)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Namespace)]
         [JsonIgnore]
         public SortedList<string, string> NamespaceNameInDevLangs { get; set; } = new SortedList<string, string>();
 
@@ -175,7 +175,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [UniqueIdentityReference]
         public string Overridden { get; set; }
 
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Overridden)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Overridden)]
         [JsonIgnore]
         public SortedList<string, string> OverriddenInDevLangs { get; set; } = new SortedList<string, string>();
 
@@ -184,7 +184,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [UniqueIdentityReference]
         public string Overload { get; set; }
 
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Overload)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Overload)]
         [JsonIgnore]
         public SortedList<string, string> OverloadInDevLangs { get; set; } = new SortedList<string, string>();
 
@@ -192,7 +192,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonProperty("exceptions")]
         public List<ExceptionInfo> Exceptions { get; set; }
 
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Exceptions)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Exceptions)]
         [JsonIgnore]
         public SortedList<string, List<ExceptionInfo>> ExceptionsInDevLangs { get; set; } = new SortedList<string, List<ExceptionInfo>>();
 
@@ -224,7 +224,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [UniqueIdentityReference]
         public List<InheritanceTree> Inheritance { get; set; }
 
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Inheritance)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Inheritance)]
         [JsonIgnore]
         public SortedList<string, List<InheritanceTree>> InheritanceInDevLangs { get; set; } = new SortedList<string, List<InheritanceTree>>();
 
@@ -234,7 +234,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [UniqueIdentityReference]
         public List<string> DerivedClasses { get; set; }
 
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.DerivedClasses)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.DerivedClasses)]
         [JsonIgnore]
         public SortedList<string, List<string>> DerivedClassesInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
@@ -244,7 +244,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [UniqueIdentityReference]
         public List<string> Implements { get; set; }
 
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Implements)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Implements)]
         [JsonIgnore]
         public SortedList<string, List<string>> ImplementsInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
@@ -254,7 +254,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [UniqueIdentityReference]
         public List<string> InheritedMembers { get; set; }
 
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.InheritedMembers)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.InheritedMembers)]
         [JsonIgnore]
         public SortedList<string, List<string>> InheritedMembersInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
@@ -264,7 +264,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [UniqueIdentityReference]
         public List<string> ExtensionMethods { get; set; }
 
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.ExtensionMethods)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.ExtensionMethods)]
         [JsonIgnore]
         public SortedList<string, List<string>> ExtensionMethodsInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
@@ -287,7 +287,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [MergeOption(MergeOption.Replace)]
         public List<string> Platform { get; set; }
 
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Platform)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Platform)]
         [JsonIgnore]
         public SortedList<string, List<string>> PlatformInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
@@ -308,19 +308,19 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         public CompositeDictionary ExtensionData =>
             CompositeDictionary
                 .CreateBuilder()
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Parent, ParentInDevLangs, JTokenConverter.Convert<List<string>>)
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Children, ChildrenInDevLangs, JTokenConverter.Convert<List<string>>)
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Source, SourceInDevLangs, JTokenConverter.Convert<SourceDetail>)
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Namespace, NamespaceNameInDevLangs, JTokenConverter.Convert<string>)
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Assemblies, AssemblyNameListInDevLangs, JTokenConverter.Convert<List<string>>)
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Overridden, OverriddenInDevLangs, JTokenConverter.Convert<string>)
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Exceptions, ExceptionsInDevLangs, JTokenConverter.Convert<List<ExceptionInfo>>)
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Inheritance, InheritanceInDevLangs, JTokenConverter.Convert<List<InheritanceTree>>)
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.DerivedClasses, DerivedClassesInDevLangs, JTokenConverter.Convert<List<string>>)
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Implements, ImplementsInDevLangs, JTokenConverter.Convert<List<string>>)
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.InheritedMembers, InheritedMembersInDevLangs, JTokenConverter.Convert<List<string>>)
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.ExtensionMethods, ExtensionMethodsInDevLangs, JTokenConverter.Convert<List<string>>)
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Platform, PlatformInDevLangs, JTokenConverter.Convert<List<string>>)
+                .Add(Constants.ExtensionMemberPrefix.Parent, ParentInDevLangs, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.Children, ChildrenInDevLangs, JTokenConverter.Convert<List<string>>)
+                .Add(Constants.ExtensionMemberPrefix.Source, SourceInDevLangs, JTokenConverter.Convert<SourceDetail>)
+                .Add(Constants.ExtensionMemberPrefix.Namespace, NamespaceNameInDevLangs, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.Assemblies, AssemblyNameListInDevLangs, JTokenConverter.Convert<List<string>>)
+                .Add(Constants.ExtensionMemberPrefix.Overridden, OverriddenInDevLangs, JTokenConverter.Convert<string>)
+                .Add(Constants.ExtensionMemberPrefix.Exceptions, ExceptionsInDevLangs, JTokenConverter.Convert<List<ExceptionInfo>>)
+                .Add(Constants.ExtensionMemberPrefix.Inheritance, InheritanceInDevLangs, JTokenConverter.Convert<List<InheritanceTree>>)
+                .Add(Constants.ExtensionMemberPrefix.DerivedClasses, DerivedClassesInDevLangs, JTokenConverter.Convert<List<string>>)
+                .Add(Constants.ExtensionMemberPrefix.Implements, ImplementsInDevLangs, JTokenConverter.Convert<List<string>>)
+                .Add(Constants.ExtensionMemberPrefix.InheritedMembers, InheritedMembersInDevLangs, JTokenConverter.Convert<List<string>>)
+                .Add(Constants.ExtensionMemberPrefix.ExtensionMethods, ExtensionMethodsInDevLangs, JTokenConverter.Convert<List<string>>)
+                .Add(Constants.ExtensionMemberPrefix.Platform, PlatformInDevLangs, JTokenConverter.Convert<List<string>>)
                 .Add(Constants.ExtensionMemberPrefix.Name, Names, JTokenConverter.Convert<string>)
                 .Add(Constants.ExtensionMemberPrefix.NameWithType, NamesWithType, JTokenConverter.Convert<string>)
                 .Add(Constants.ExtensionMemberPrefix.FullName, FullNames, JTokenConverter.Convert<string>)

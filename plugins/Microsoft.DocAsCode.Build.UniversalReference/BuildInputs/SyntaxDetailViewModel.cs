@@ -37,11 +37,11 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         /// syntax's returns
         /// multiple return type is allowed in languages like JavaScript, Python
         /// </summary>
-        [YamlMember(Alias = UniversalReferenceConstants.PropertyName.Returns)]
-        [JsonProperty(UniversalReferenceConstants.PropertyName.Returns)]
+        [YamlMember(Alias = Constants.PropertyName.Returns)]
+        [JsonProperty(Constants.PropertyName.Returns)]
         public List<ApiParameter> Returns { get; set; }
 
-        [ExtensibleMember(UniversalReferenceConstants.ExtensionMemberPrefix.Returns)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Returns)]
         [JsonIgnore]
         public SortedList<string, List<ApiParameter>> ReturnsInDevLangs { get; set; } = new SortedList<string, List<ApiParameter>>();
 
@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             CompositeDictionary
                 .CreateBuilder()
                 .Add(Constants.ExtensionMemberPrefix.Content, Contents, JTokenConverter.Convert<string>)
-                .Add(UniversalReferenceConstants.ExtensionMemberPrefix.Returns, ReturnsInDevLangs, JTokenConverter.Convert<List<ApiParameter>>)
+                .Add(Constants.ExtensionMemberPrefix.Returns, ReturnsInDevLangs, JTokenConverter.Convert<List<ApiParameter>>)
                 .Add(string.Empty, Metadata)
                 .Create();
     }

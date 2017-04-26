@@ -73,8 +73,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                         {
                             case UniversalReferenceConstants.UniversalReferenceYamlMime:
                                 return ProcessingPriority.Normal;
-                            case null:
-                                return ProcessingPriority.BelowNormal;
                             default:
                                 return ProcessingPriority.NotSupported;
                         }
