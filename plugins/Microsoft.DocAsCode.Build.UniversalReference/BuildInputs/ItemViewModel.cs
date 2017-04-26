@@ -291,11 +291,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonIgnore]
         public SortedList<string, List<string>> PlatformInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
-        [YamlMember(Alias = "attributes")]
-        [JsonProperty("attributes")]
-        [MergeOption(MergeOption.Ignore)]
-        public List<AttributeInfo> Attributes { get; set; }
-
         [ExtensibleMember]
         [JsonIgnore]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();

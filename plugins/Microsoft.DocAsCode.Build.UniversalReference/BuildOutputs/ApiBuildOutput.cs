@@ -10,7 +10,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     using YamlDotNet.Serialization;
 
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.YamlSerialization;
 
     [Serializable]
@@ -109,12 +108,10 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         public List<ApiLinkInfoBuildOutput> Sees { get; set; }
 
         [YamlMember(Alias = Constants.PropertyName.Inheritance)]
-        [MergeOption(MergeOption.Ignore)]
         [JsonProperty(Constants.PropertyName.Inheritance)]
         public ApiListInDevlangs<List<InheritanceTree>> Inheritance { get; set; }
 
         [YamlMember(Alias = Constants.PropertyName.DerivedClasses)]
-        [MergeOption(MergeOption.Ignore)]
         [JsonProperty(Constants.PropertyName.DerivedClasses)]
         public ApiListInDevlangs<List<ApiNames>> DerivedClasses { get; set; }
 
@@ -137,10 +134,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [YamlMember(Alias = Constants.PropertyName.Platform)]
         [JsonProperty(Constants.PropertyName.Platform)]
         public ApiListInDevlangs<List<string>> Platform { get; set; }
-
-        [YamlMember(Alias = "attributes")]
-        [JsonProperty("attributes")]
-        public List<AttributeInfo> Attributes { get; set; }
 
         [ExtensibleMember]
         [JsonExtensionData]
