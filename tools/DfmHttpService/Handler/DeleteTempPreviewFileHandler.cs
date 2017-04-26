@@ -20,7 +20,7 @@ namespace DfmHttpService
             {
                 try
                 {
-                    string previewFilePath = new Uri(context.Message.PreviewFilePath).LocalPath;
+                    string previewFilePath = new Uri(context.Message.TempPreviewFilePath).LocalPath;
                     File.Delete(previewFilePath);
                     Utility.ReplyNoContentResponse(context.HttpContext, "Delete temp preview file successfully");
                 }

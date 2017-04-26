@@ -19,16 +19,16 @@ namespace DfmHttpService
         [JsonProperty("markdownContent")]
         public string MarkdownContent { get; set; }
 
-        [JsonProperty("writeTempPreviewFile")]
-        public bool WriteTempPreviewFile { get; set; }
+        [JsonProperty("shouldSeparateMarkupResult")]
+        public bool ShouldSeparateMarkupResult { get; set; }
 
-        [JsonProperty("previewFilePath")]
-        public string PreviewFilePath { get; set; }
+        [JsonProperty("tempPreviewFilePath")]
+        public string TempPreviewFilePath { get; set; }
 
         [JsonProperty("pageRefreshJsFilePath")]
         public string PageRefreshJsFilePath { get; set; }
 
-        [JsonProperty("builtHtmlPath")]
-        public string BuiltHtmlPath { get; set; }
+        [JsonProperty("originalHtmlPath")]
+        public string OriginalHtmlPath { get; set; }
     }
 }
