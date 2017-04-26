@@ -11,13 +11,11 @@ export class Github {
     static async updateGithubReleaseAsync(
         repoUrl: string,
         releaseNotePath: string,
-        releaseFolder: string,
         assetZipPath: string,
         githubToken: string): Promise<void> {
 
         Guard.argumentNotNullOrEmpty(repoUrl, "repoUrl");
         Guard.argumentNotNullOrEmpty(releaseNotePath, "releaseNotePath");
-        Guard.argumentNotNullOrEmpty(releaseFolder, "releaseFolder");
         Guard.argumentNotNullOrEmpty(assetZipPath, "assetZipPath");
         Guard.argumentNotNullOrEmpty(githubToken, "githubToken");
 
@@ -27,7 +25,6 @@ export class Github {
             return Promise.resolve();
         }
 
-        Common.zipAssests(releaseFolder, assetZipPath);
         let githubApi = new GithubApi(repoUrl, githubToken);
         let releaseDescription = this.getReleaseDescription(releaseNotePath);
 
