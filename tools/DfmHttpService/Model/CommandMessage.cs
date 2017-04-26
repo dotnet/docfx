@@ -19,9 +19,6 @@ namespace DfmHttpService
         [JsonProperty("markdownContent")]
         public string MarkdownContent { get; set; }
 
-        [JsonProperty("shouldWriteTempPreviewFile")]
-        public bool ShouldWriteTempPreviewFile { get; set; }
-
         [JsonProperty("shouldSeparateMarkupResult")]
         public bool ShouldSeparateMarkupResult { get; set; }
 

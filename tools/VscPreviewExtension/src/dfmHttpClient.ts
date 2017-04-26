@@ -7,7 +7,7 @@ import * as ConstVariable from "./constVariables/commonVariables";
 export class DfmHttpClient {
     private static urlPrefix = "http://localhost:";
 
-    static async sendPostRequestAsync(port: string, command: string, content = null, workspacePath = null, relativePath = null, shouldSeparateMarkupResult = false, shouldWriteTempPreviewFile = false, tempPreviewFilePath = null, pageRefreshJsFilePath = null, originalHtmlPath = null): Promise<AxiosResponse> {
+    static async sendPostRequestAsync(port: string, command: string, content = null, workspacePath = null, relativePath = null, shouldSeparateMarkupResult = false, tempPreviewFilePath = null, pageRefreshJsFilePath = null, originalHtmlPath = null): Promise<AxiosResponse> {
         let promise = Axios.post(this.urlPrefix + port, {
             name: command,
             markdownContent: content,
@@ -15,7 +15,6 @@ export class DfmHttpClient {
             workspacePath: workspacePath,
             relativePath: relativePath,
             shouldSeparateMarkupResult: shouldSeparateMarkupResult,
-            shouldWriteTempPreviewFile: shouldWriteTempPreviewFile,
             originalHtmlPath: originalHtmlPath,
             pageRefreshJsFilePath: pageRefreshJsFilePath
         });

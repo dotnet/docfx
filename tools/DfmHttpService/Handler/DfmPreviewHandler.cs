@@ -60,16 +60,17 @@ namespace DfmHttpService
             if (contextMessage.ShouldSeparateMarkupResult)
             {
                 var separatedMarkupResult = new Dictionary<string, string>();
-                var htmlInfo = BuildConceptualUtility.SeparateHtml(result);
+                var htmlInfo = HtmlDocumentUtility.SeparateHtml(result);
                 separatedMarkupResult["rawTitle"] = htmlInfo.RawTitle;
                 separatedMarkupResult["content"] = htmlInfo.Content;
                 result = JsonConvert.SerializeObject(separatedMarkupResult);
             }
-            if (!contextMessage.ShouldWriteTempPreviewFile)
+            if (string.IsNullOrEmpty(contextMessage.TempPreviewFilePath))
             {
                 return result;
             }
 
+            // TODO: move this part to client
             if (string.IsNullOrEmpty(contextMessage.OriginalHtmlPath))
             {
                 throw new HandlerClientException("Built Html path should not be null or empty");

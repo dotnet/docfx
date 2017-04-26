@@ -6,12 +6,12 @@ import { DfmHttpClient } from './dfmHttpClient';
 import { Command } from './constVariables/command';
 
 export class DfmService {
-    static async previewAsync(docfxServicePort, content, workspacePath, relativePath, shouldSeparateMarkupResult = false, shouldWriteTempPreviewFile = false, tempPreviewFilePath = null, pageRefreshJsFilePath = null, originalHtmlPath = null) {
+    static async previewAsync(docfxServicePort, content, workspacePath, relativePath, shouldSeparateMarkupResult = false, tempPreviewFilePath = null, pageRefreshJsFilePath = null, originalHtmlPath = null) {
         if (!content) {
             return null;
         }
 
-        return await DfmHttpClient.sendPostRequestAsync(docfxServicePort, Command.previewCommand, content, workspacePath, relativePath, shouldSeparateMarkupResult, shouldWriteTempPreviewFile, tempPreviewFilePath, pageRefreshJsFilePath, originalHtmlPath);
+        return await DfmHttpClient.sendPostRequestAsync(docfxServicePort, Command.previewCommand, content, workspacePath, relativePath, shouldSeparateMarkupResult, tempPreviewFilePath, pageRefreshJsFilePath, originalHtmlPath);
     }
 
     static async getTokenTreeAsync(docfxServicePort, content, workspacePath, relativePath) {

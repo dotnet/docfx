@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
             var markdown = (string)content[ConceptualKey];
             var result = host.Markup(markdown, model.OriginalFileAndType);
 
-            var htmlInfo = BuildConceptualUtility.SeparateHtml(result.Html);
+            var htmlInfo = HtmlDocumentUtility.SeparateHtml(result.Html);
             model.Properties.IsUserDefinedTitle = false;
             content[Constants.PropertyName.Title] = htmlInfo.Title;
             content["rawTitle"] = htmlInfo.RawTitle;

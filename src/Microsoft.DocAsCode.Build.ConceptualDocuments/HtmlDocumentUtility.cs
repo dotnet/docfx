@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 
     using HtmlAgilityPack;
 
-    public static class BuildConceptualUtility
+    public static class HtmlDocumentUtility
     {
         public static HtmlInfo SeparateHtml(string contentHtml)
         {
