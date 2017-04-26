@@ -59,10 +59,9 @@ namespace DfmHttpService
             string result = DfmMarkup(contextMessage.WorkspacePath, contextMessage.RelativePath, contextMessage.MarkdownContent);
             if (contextMessage.ShouldSeparateMarkupResult)
             {
-                var separatedMarkupResult = new Dictionary<string, string>();
                 var htmlInfo = HtmlDocumentUtility.SeparateHtml(result);
-                separatedMarkupResult["rawTitle"] = htmlInfo.RawTitle;
-                separatedMarkupResult["content"] = htmlInfo.Content;
+                var separatedMarkupResult =
+                    new {rawTitle = htmlInfo.RawTitle, contentWithoutRawTitle = htmlInfo.Content};
                 result = JsonConvert.SerializeObject(separatedMarkupResult);
             }
             if (string.IsNullOrEmpty(contextMessage.TempPreviewFilePath))

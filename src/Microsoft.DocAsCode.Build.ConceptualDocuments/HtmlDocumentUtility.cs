@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.Build.ConceptualDocuments
 {
+    using System;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
     using HtmlAgilityPack;
@@ -11,6 +13,10 @@ namespace Microsoft.DocAsCode.Build.ConceptualDocuments
     {
         public static SeparatedHtmlInfo SeparateHtml(string contentHtml)
         {
+            if (contentHtml == null)
+            {
+                throw new ArgumentNullException();
+            }
             var content = new SeparatedHtmlInfo();
 
             var document = new HtmlDocument();
