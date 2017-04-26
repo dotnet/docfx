@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+VisualStudioVersion = 15.0.26403.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6A65A769-DAC3-4E99-96F9-991F4CE8D164}"
 EndProject
@@ -157,6 +157,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests", "test\Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests\Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests.csproj", "{958DF90F-0528-4C53-9AC2-E86C60971B7D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docfx", "src\docfx\docfx.csproj", "{EF53214F-BA98-4026-BEED-CF771865C312}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UniversalReference", "UniversalReference", "{560E7D4D-3319-44B3-8E40-604F71866DFD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.UniversalReference", "plugins\Microsoft.DocAsCode.Build.UniversalReference\Microsoft.DocAsCode.Build.UniversalReference.csproj", "{872F14B2-441D-467A-A8BA-7B8AD605AEAC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -526,6 +530,14 @@ Global
 		{EF53214F-BA98-4026-BEED-CF771865C312}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EF53214F-BA98-4026-BEED-CF771865C312}.Release|x86.ActiveCfg = Release|Any CPU
 		{EF53214F-BA98-4026-BEED-CF771865C312}.Release|x86.Build.0 = Release|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Debug|x86.Build.0 = Debug|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Release|x86.ActiveCfg = Release|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -600,5 +612,7 @@ Global
 		{BC834D62-F7F1-4227-9D5F-3DF45197B335} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 		{958DF90F-0528-4C53-9AC2-E86C60971B7D} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 		{EF53214F-BA98-4026-BEED-CF771865C312} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
+		{560E7D4D-3319-44B3-8E40-604F71866DFD} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC} = {560E7D4D-3319-44B3-8E40-604F71866DFD}
 	EndGlobalSection
 EndGlobal
