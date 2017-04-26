@@ -149,6 +149,7 @@ gulp.task("packAssetZip", () => {
     let assetZipPath = path.resolve(config.docfx["assetZipPath"]);
 
     Common.zipAssests(releaseFolder, assetZipPath);
+    return Promise.resolve();
 });
 
 gulp.task("publish:gh-release", () => {
