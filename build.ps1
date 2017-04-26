@@ -77,10 +77,6 @@ else {
     Write-Host "Skip updating template"
 }
 
-# Pack docfx.console
-Copy-Item -Path "src\nuspec\docfx.console\build" -Destination "target\$configuration\docfx" -Force -Recurse -Container
-Copy-Item -Path "src\nuspec\docfx.console\content" -Destination "target\$configuration\docfx" -Force -Recurse -Container
-
 if ($prod -eq $true) {
     Write-Host "Updating version from ReleaseNote.md and GIT commit info"
 
@@ -157,6 +153,15 @@ foreach ($proj in (Get-ChildItem -Path ("src","plugins") -Include *.csproj -Excl
     & dotnet pack $proj.FullName -c $configuration -o $scriptHome\artifacts\$configuration --no-build /p:Version=$packageVersion
     ProcessLastExitCode $lastexitcode "dotnet pack $($proj.FullName) -c $configuration -o $scriptHome\artifacts\$configuration --no-build /p:Version=$packageVersion"
 }
+
+# Pack docfx.console
+$docfxTarget = "target\$configuration\docfx";
+if (-not(Test-Path -path $docfxTarget)) {
+  New-Item $docfxTarget -Type Directory
+}
+
+Copy-Item -Path "src\nuspec\docfx.console\build" -Destination $docfxTarget -Force -Recurse
+Copy-Item -Path "src\nuspec\docfx.console\content" -Destination $docfxTarget -Force -Recurse
 
 $packages = @{
     "docfx" = @{
