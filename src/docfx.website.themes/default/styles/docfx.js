@@ -23,7 +23,7 @@ $(function () {
   window.refresh = function (article) {
     // Update markup result
     if (typeof article == 'undefined' || typeof article.content == 'undefined')
-      return;
+      console.error("Null Argument");
     $("article.content").html(article.content);
 
     highlight();
