@@ -3,7 +3,7 @@
 import { Uri, window, ExtensionContext } from "vscode";
 
 import { PreviewType } from "../constVariables/previewType";
-import { Proxy } from "../Proxy/proxy";
+import { requestProxy } from "../Proxy/requestProxy";
 import { ProxyResponse } from "../Proxy/proxyResponse";
 
 export class PreviewProcessor {
@@ -11,7 +11,7 @@ export class PreviewProcessor {
     public initialized;
 
     private static _context: ExtensionContext;
-    private static proxy = Proxy.getInstance();
+    private static proxy = requestProxy.getInstance();
     private _waiting = false;
 
     constructor(context: ExtensionContext){

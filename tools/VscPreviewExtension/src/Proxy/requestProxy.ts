@@ -11,29 +11,21 @@ import { ProxyRequest } from "./proxyRequest";
 import { ProxyResponse } from "./proxyResponse";
 import { RequestArray } from "./RequestArray";
 
-export class Proxy {
-    private static _instance: Proxy = new Proxy();
+export class requestProxy {
+    private static _instance: requestProxy = new requestProxy();
 
     private _isChildProcessStarting: boolean = false;
     private _requestArray = new RequestArray();
     private _spawn: childProcess.ChildProcess;
     private _serverPort = "4002";
 
-    constructor() {
-        if (Proxy._instance) {
-            throw new Error("Error: Instantiation failed: Use Proxy.getInstance() instead of new.");
-        } else {
-            Proxy._instance = this;
-        }
-    }
-
-    public static getInstance(): Proxy {
-        return Proxy._instance;
+    public static getInstance(): requestProxy {
+        return requestProxy._instance;
     }
 
     public newRequest(documentUri: Uri, previewType: number, context:ExtensionContext, callback) {
         let request = this.prepareRequestData(documentUri, previewType, context, callback);
-        this._requestArray.add(request);
+        this._requestArray.push(request);
         this.requestProcess();
     }
 
@@ -72,7 +64,7 @@ export class Proxy {
         let request;
         while ((request = this._requestArray.pop()) != null) {
             if (this._isChildProcessStarting) {
-                this._requestArray.add(request);
+                this._requestArray.push(request);
                 return;
             } else {
                 this.requestProcessCore(request);
@@ -94,7 +86,7 @@ export class Proxy {
             request.callback(null, new ProxyResponse(res ? res.data : "", request.relativePath, request.documentUri));
         } catch (err) {
             if (err.message == ConstVariable.noServiceErrorMessage) {
-                this._requestArray.add(request);
+                this._requestArray.push(request);
                 let currentPid = this._spawn ? this._spawn.pid : 0;
                 if (currentPid === request.oldPid) {
                     this.newHttpServerAndStartPreview(request.context);

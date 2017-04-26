@@ -3,44 +3,24 @@
 import { ProxyRequest } from "./proxyRequest";
 
 export class RequestArray {
-    private requests: { [id: string]: ProxyRequest } = {};
-    private _keys: string[] = [];
+    private requests: ProxyRequest[] = [];
 
-    public add(request: ProxyRequest) {
-        if (this.exist(request)) {
-            this.update(request);
-        } else {
-            this.push(request);
+    public push(request: ProxyRequest) {
+        let key = request.getKeyString();
+        if (this.requests !== undefined && this.requests.length != 0) {
+            this.requests.forEach(item => {
+                if (item.getKeyString() === key) {
+                    item = request;
+                    return;
+                }
+            })
         }
+        this.requests.push(request);
     }
 
     public pop() {
-        if (this._keys.length == 0) {
-            return null;
-        } else {
-            let key = this._keys[0];
-            this._keys.splice(0, 1);
-            let request = this.requests[key];
-            delete this.requests[key];
-            return request;
+        if (this.requests.length != 0) {
+            return this.requests.pop();
         }
-    }
-
-    private push(request: ProxyRequest) {
-        let key = request.getKeyString();
-        this.requests[key] = request;
-        this._keys.push(key);
-    }
-
-    private update(request: ProxyRequest) {
-        let key = request.getKeyString();
-        if (this.exist(request)) {
-            this.requests[key] = request;
-        }
-    }
-
-    private exist(request: ProxyRequest) {
-        let key = request.getKeyString();
-        return typeof this.requests[key] !== "undefined";
     }
 }
