@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            Dependencies = ExtractDependencyResourceNames(info.Content).ToList();
+            Dependencies = ExtractDependencyResourceNames(processedTemplate).ToList();
         }
 
         public IEnumerable<string> Dependencies { get; }

@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                     liquidTemplate.Registers.Add("file_system", new ResourceFileSystem(resourceProvider));
 
-                    return new LiquidTemplateRenderer(liquidTemplate, info.Content, info.TemplateName, resourceProvider, dependencies);
+                    return new LiquidTemplateRenderer(liquidTemplate, processedTemplate, info.TemplateName, resourceProvider, dependencies);
                 }
                 catch (DotLiquid.Exceptions.SyntaxException e)
                 {

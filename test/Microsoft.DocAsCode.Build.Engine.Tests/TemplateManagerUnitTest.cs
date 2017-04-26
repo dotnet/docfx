@@ -195,6 +195,7 @@ test2
 ";
 
             string master = @"
+{{ !include('reference1.html') }}
 Hello Master
 {{!body}}
 Hello Body
@@ -225,10 +226,12 @@ Hello Body
                 _outputFolder,
                 Tuple.Create("default.tmpl", template),
                 Tuple.Create("_layout/master.html", master),
+                Tuple.Create("reference1.html", string.Empty),
                 Tuple.Create("partial1.tmpl.partial", partial1),
                 Tuple.Create("partial2.tmpl.partial", partial2));
 
             var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
+            Assert.True(File.Exists(Path.Combine(_outputFolder, "reference1.html")));
             Assert.True(File.Exists(outputFile));
             AssertEqualIgnoreCrlf(@"
 Hello Master
@@ -674,6 +677,7 @@ test2
 ";
 
             string master = @"
+{% ref reference1.html -%}
 Hello Master
 {% include partial1 -%}
 {%- body %}
@@ -703,10 +707,12 @@ Hello Master
                 _outputFolder,
                 Tuple.Create("default.liquid", template),
                 Tuple.Create("_layout/master.html", master),
+                Tuple.Create("reference1.html", string.Empty),
                 Tuple.Create("_partial1.liquid", partial1),
                 Tuple.Create("_partial2.liquid", partial2));
 
             var outputFile = Path.Combine(_outputFolder, Path.ChangeExtension(modelFileName, string.Empty));
+            Assert.True(File.Exists(Path.Combine(_outputFolder, "reference1.html")));
             Assert.True(File.Exists(outputFile));
             AssertEqualIgnoreCrlf(@"
 Hello Master
