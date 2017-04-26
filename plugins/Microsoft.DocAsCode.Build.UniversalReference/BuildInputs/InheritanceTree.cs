@@ -16,8 +16,8 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     [Serializable]
     public class InheritanceTree
     {
-        [YamlMember(Alias = Constants.PropertyName.Uid)]
-        [JsonProperty(Constants.PropertyName.Uid)]
+        [YamlMember(Alias = Constants.PropertyName.Type)]
+        [JsonProperty(Constants.PropertyName.Type)]
         [UniqueIdentityReference]
         public string Type { get; set; }
 
