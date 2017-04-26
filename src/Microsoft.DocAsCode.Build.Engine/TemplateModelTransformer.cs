@@ -330,7 +330,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             var xrefExceptions = new List<CrossReferenceNotResolvedException>();
             var xrefNodes = html.DocumentNode.SelectNodes("//xref")?
-                .Where(s => s.GetAttributeValue("href", null) != null || s.GetAttributeValue("uid", null) != null).ToList();
+                .Where(s => !string.IsNullOrEmpty(s.GetAttributeValue("href", null)) || !string.IsNullOrEmpty(s.GetAttributeValue("uid", null))).ToList();
             if (xrefNodes != null)
             {
                 foreach (var xref in xrefNodes)
