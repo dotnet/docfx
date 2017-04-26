@@ -103,7 +103,7 @@ export class requestProxy {
         if (this._isChildProcessStarting)
             return;
         this._isChildProcessStarting = true;
-        window.showInformationMessage("Environment initializing, please wait several seconds!");
+        window.showInformationMessage("Environment initializing, please wait for several seconds!");
         this.getFreePort(port => this.newHttpServerAndStartPreviewCore(port, context));
     }
 
