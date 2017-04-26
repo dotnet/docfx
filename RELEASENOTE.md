@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.16.6)
+﻿Version Notes (Current Version: v2.16.7)
 =======================================
+v2.16.7
+----------
+1. Bug fix: Null exception when `<xref href=''/>` exists
+
 v2.16.6
 ----------
 1. Bug fix for `docfx metadata` for assemblies, to exclude null assembly symbols.
