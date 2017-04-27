@@ -370,16 +370,33 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public static StringBuffer AppendSourceInfo(StringBuffer result, Options options, IMarkdownToken token)
         {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
             if (options.ShouldExportSourceInfo)
             {
-                result = result + " sourceFile=\"" + StringHelper.HtmlEncode(token.SourceInfo.File) + "\" sourceStartLineNumber=\"" + token.SourceInfo.LineNumber.ToString() + "\" sourceEndLineNumber=\"" + (token.SourceInfo.LineNumber + token.SourceInfo.ValidLineCount - 1).ToString() + "\"";
+                result = AppendSourceInfoCore(result, token);
             }
             return result;
         }
 
+        private static StringBuffer AppendSourceInfoCore(StringBuffer result, IMarkdownToken token)
+        {
+            return result + " sourceFile=\"" + StringHelper.HtmlEncode(token.SourceInfo.File) + "\" sourceStartLineNumber=\"" + token.SourceInfo.LineNumber.ToString() + "\" sourceEndLineNumber=\"" + (token.SourceInfo.LineNumber + token.SourceInfo.ValidLineCount - 1).ToString() + "\"";
+        }
+
         protected static StringBuffer AppendSourceInfo(StringBuffer result, IMarkdownRenderer renderer, IMarkdownToken token)
         {
-            return AppendSourceInfo(result, renderer.Options, token);
+            if (renderer.Options.ShouldExportSourceInfo)
+            {
+                result = AppendSourceInfoCore(result, token);
+            }
+            return result;
         }
 
         protected static StringBuffer AppendAttribute(StringBuffer buffer, string attributeName, string value)
