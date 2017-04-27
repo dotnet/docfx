@@ -16,7 +16,7 @@ let Guard = require("./out/common").Guard;
 let Myget = require("./out/myget").Myget;
 let Github = require("./out/github").Github;
 let Chocolatey = require("./out/chocolatey").Chocolatey;
-let SyncBranch = require("./out/sync").SyncBranch;
+let SyncBranch = require("./out/syncBranch").SyncBranch;
 
 let configFile = path.resolve("config_gulp.json");
 
@@ -187,7 +187,7 @@ gulp.task("publish:chocolatey", () => {
     return Chocolatey.publishToChocolateyAsync(releaseNotePath, assetZipPath, chocoScript, nuspec, homeDir, chocoToken);
 });
 
-gulp.task("sync", () => {
+gulp.task("syncBranch", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.repoUrl, "config.docfx.repoUrl", "Can't find docfx repo url in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find docfx home directory in configuration.");
     Guard.argumentNotNullOrEmpty(config.sync.fromBranch, "config.sync.fromBranch", "Can't find source branch in sync configuration.");
