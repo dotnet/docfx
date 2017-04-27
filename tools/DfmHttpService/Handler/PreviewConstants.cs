@@ -8,18 +8,9 @@ namespace DfmHttpService
 
     public static class PreviewConstants
     {
-        public const string ConfigFilename = "preview.json";
-        public const string BuildSourceFolder = "articles";
-        public const string BuildOutputSubfolder = "articles";
-        public const string MarkupTagType = "article";
-        public const string MarkupClassName = "content";
-        public const string OutputFolder = "_site";
-        public const string PageRefreshFunctionName = "refresh";
         public const string ServerPort = "4002";
-        public const string NavigationPort = "4001";
         public const string TocMetadataName = "toc_rel";
         public const string PathPrefix = @"file:///";
-        public const string DocfxTempPreviewFile = "docfxpreview.html";
 
         public static readonly ImmutableDictionary<string, string> References = new Dictionary<string, string>()
         {

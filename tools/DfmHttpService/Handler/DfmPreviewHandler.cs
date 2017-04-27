@@ -90,11 +90,8 @@ namespace DfmHttpService
             CQ dom = htmlString;
 
             CQ addElements = $"<script type='text/javascript' src='{pageRefreshJsFilePath}'></script>" +
-                             $"<meta name='pageRefreshFunctionName' content ='{config.PageRefreshFunctionName}'>" +
-                             $"<meta name='port' content='{config.NavigationPort}'>" +
-                             $"<meta name='filePath' content='{contextMessage.RelativePath}'>" +
-                             $"<meta name='markupTagType' content='{config.MarkupTagType}'>" +
-                             $"<meta name='markupClassName' content='{config.MarkupClassName}'>";
+                             $"<meta name='port' content='{contextMessage.NavigationPort}'>" +
+                             $"<meta name='filePath' content='{contextMessage.RelativePath}'>";
 
             foreach (var addElement in addElements)
             {
