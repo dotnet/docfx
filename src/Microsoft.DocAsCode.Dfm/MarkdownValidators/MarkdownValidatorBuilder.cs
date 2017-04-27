@@ -41,10 +41,6 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 
         public MarkdownValidatorBuilder(ICompositionContainer container)
         {
-            if (container == null)
-            {
-                throw new ArgumentNullException(nameof(container));
-            }
             Container = container;
         }
 
@@ -234,7 +230,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                 }
             }
             return from name in enabledContractName
-                   from IInputMetadataValidator mv in Container.GetExports<IInputMetadataValidator>(name)
+                   from IInputMetadataValidator mv in Container?.GetExports<IInputMetadataValidator>(name)
                    select mv;
         }
 
@@ -310,7 +306,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                 }
             }
             return from name in enabledContractName
-                   from IMarkdownTokenValidatorProvider vp in Container.GetExports<IMarkdownTokenValidatorProvider>(name)
+                   from IMarkdownTokenValidatorProvider vp in Container?.GetExports<IMarkdownTokenValidatorProvider>(name)
                    from v in vp.GetValidators()
                    select v;
         }
@@ -449,7 +445,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             private List<ICustomMarkdownTagValidator> GetCustomMarkdownTagValidators(MarkdownTagValidationRule validator)
             {
                 return Container
-                    .GetExports<ICustomMarkdownTagValidator>(validator.CustomValidatorContractName)
+                    ?.GetExports<ICustomMarkdownTagValidator>(validator.CustomValidatorContractName)
                     .Cast<ICustomMarkdownTagValidator>()
                     .ToList();
             }

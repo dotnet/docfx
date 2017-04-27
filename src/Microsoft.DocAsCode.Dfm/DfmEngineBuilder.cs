@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Dfm
         {
         }
 
-        public DfmEngineBuilder(Options options, string baseDir = null, string templateDir = null, IReadOnlyList<string> fallbackFolders = null, ICompositionContainer container = null) : base(options)
+        public DfmEngineBuilder(Options options, string baseDir, string templateDir, IReadOnlyList<string> fallbackFolders, ICompositionContainer container) : base(options)
         {
             _baseDir = baseDir ?? string.Empty;
             _fallbackFolders = fallbackFolders ?? new List<string>();
