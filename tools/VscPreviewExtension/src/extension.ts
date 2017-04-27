@@ -6,6 +6,7 @@ import { workspace, window, ExtensionContext, commands, Event, Uri, ViewColumn, 
 import * as path from "path";
 
 import { DfmPreviewProcessor } from "./Processors/dfmPreviewProcessor";
+import { DocFXPreviewProcessor } from "./Processors/docfxPreviewProcessor";
 import { TokenTreeProcessor } from "./Processors/tokenTreeProcessor";
 import { PreviewProcessor } from "./Processors/previewProcessor";
 import { ContentProvider } from "./ContentProvider/contentProvider";
@@ -15,16 +16,18 @@ import { PreviewType } from "./constVariables/previewType";
 export function activate(context: ExtensionContext) {
     let dfmPreviewProcessor = new DfmPreviewProcessor(context);
     let tokenTreeProcessor = new TokenTreeProcessor(context);
+    let docFXPreviewProcessor = new DocFXPreviewProcessor(context);
     let previewProviderRegistration = workspace.registerTextDocumentContentProvider(ConstVariable.markdownScheme, dfmPreviewProcessor.provider);
     let tokenTreeProviderRegistration = workspace.registerTextDocumentContentProvider(ConstVariable.tokenTreeScheme, tokenTreeProcessor.provider);
 
     // Event register
     let showPreviewRegistration = commands.registerCommand("DocFX.showDfmPreview", uri => showPreview(dfmPreviewProcessor));
     let showPreviewToSideRegistration = commands.registerCommand("DocFX.showDfmPreviewToSide", uri => showPreview(dfmPreviewProcessor, uri, true));
+    let showDocFXPreviewToSideRegistration = commands.registerCommand("DocFX.showDocFXPreviewToSide", uri => showDocFXPreview(docFXPreviewProcessor, uri, true));
     let showSourceRegistration = commands.registerCommand("DocFX.showSource", showSource);
     let showTokenTreeToSideRegistration = commands.registerCommand("DocFX.showTokenTreeToSide", uri => showTokenTree(tokenTreeProcessor));
 
-    context.subscriptions.push(showPreviewRegistration, showPreviewToSideRegistration, showSourceRegistration, showTokenTreeToSideRegistration);
+    context.subscriptions.push(showPreviewRegistration, showPreviewToSideRegistration, showDocFXPreviewToSideRegistration, showSourceRegistration, showTokenTreeToSideRegistration);
     context.subscriptions.push(previewProviderRegistration, tokenTreeProviderRegistration);
 
     workspace.onDidSaveTextDocument(document => {
@@ -33,6 +36,9 @@ export function activate(context: ExtensionContext) {
             switch (PreviewProcessor.previewType) {
                 case PreviewType.dfmPreview:
                     dfmPreviewProcessor.updateContent(uri);
+                    break;
+                case PreviewType.docFXPreview:
+                    docFXPreviewProcessor.updateContent(uri);
                     break;
                 case PreviewType.tokenTreePreview:
                     // TODO: make token tree change synchronous
@@ -47,6 +53,9 @@ export function activate(context: ExtensionContext) {
             switch (PreviewProcessor.previewType) {
                 case PreviewType.dfmPreview:
                     dfmPreviewProcessor.updateContent(uri);
+                    break;
+                case PreviewType.docFXPreview:
+                    docFXPreviewProcessor.updateContent(uri);
                     break;
                 case PreviewType.tokenTreePreview:
                     // TODO: make token tree change synchronous
@@ -79,6 +88,23 @@ export function activate(context: ExtensionContext) {
     server.on("request", function (req, res) {
         let requestInfo = req.url.split("/");
         switch (requestInfo[1]) {
+            case ConstVariable.previewContent:
+                let response;
+                res.writeHead(200, { "Content-Type": "text/json" });
+                if (!docFXPreviewProcessor.isMarkdownFileChanged) {
+                    response = JSON.stringify({
+                        "isMarkdownFileChanged": false
+                    });
+                } else {
+                    response = JSON.stringify({
+                        "isMarkdownFileChanged": true,
+                        "markupResult": docFXPreviewProcessor.markupResult
+                    });
+                    docFXPreviewProcessor.isMarkdownFileChanged = false;
+                }
+                res.write(response);
+                res.end();
+                break;
             case ConstVariable.matchFromR2L:
                 if (!mapToSelection(parseInt(requestInfo[2]), parseInt(requestInfo[3])))
                     window.showErrorMessage("Selection Range Error");
@@ -93,6 +119,7 @@ export function activate(context: ExtensionContext) {
 
     server.listen(0);
     server.on('listening', function () {
+        docFXPreviewProcessor.navigationPort = server.address().port;
         ContentProvider.port = server.address().port;
     })
 }
@@ -160,14 +187,9 @@ function showSource() {
 
 function showPreview(dfmPreviewProcessor: DfmPreviewProcessor, uri?: Uri, sideBySide: boolean = false) {
     dfmPreviewProcessor.initialized = false;
-    let resource = uri;
-    if (!(resource instanceof Uri)) {
-        if (window.activeTextEditor) {
-            resource = window.activeTextEditor.document.uri;
-        } else {
-            // This is most likely toggling the preview
-            return commands.executeCommand("DocFX.showSource");
-        }
+    let resource = checkUri(uri)
+    if (!resource) {
+        return commands.executeCommand("DocFX.showSource");
     }
 
     PreviewProcessor.previewType = PreviewType.dfmPreview;
@@ -181,16 +203,26 @@ function showPreview(dfmPreviewProcessor: DfmPreviewProcessor, uri?: Uri, sideBy
     return thenable;
 }
 
+function showDocFXPreview(docFXPreviewProcessor: DocFXPreviewProcessor, uri?: Uri, sideBySide: boolean = false) {
+    PreviewProcessor.previewType = PreviewType.docFXPreview;
+    let resource = checkUri(uri)
+    if (!resource) {
+        return commands.executeCommand("DocFX.showSource");
+    }
+
+    docFXPreviewProcessor.startPreview(resource, function (tempPreviewFilePath) {
+        let thenable = commands.executeCommand("vscode.previewHtml",
+            tempPreviewFilePath,
+            getViewColumn(sideBySide),
+            `DocFXPreview "${path.basename(resource.fsPath)}"`);
+    });
+}
+
 function showTokenTree(tokenTreeProcessor: TokenTreeProcessor, uri?: Uri) {
-    let resource = uri;
     tokenTreeProcessor.initialized = false;
-    if (!(resource instanceof Uri)) {
-        if (window.activeTextEditor) {
-            resource = window.activeTextEditor.document.uri;
-        } else {
-            // This is most likely toggling the preview
-            return commands.executeCommand("DocFX.showSource");
-        }
+    let resource = checkUri(uri)
+    if (!resource) {
+        return commands.executeCommand("DocFX.showSource");
     }
 
     PreviewProcessor.previewType = PreviewType.tokenTreePreview;
@@ -202,4 +234,17 @@ function showTokenTree(tokenTreeProcessor: TokenTreeProcessor, uri?: Uri) {
 
     tokenTreeProcessor.updateContent(getTokenTreeUri(resource));
     return thenable;
+}
+
+function checkUri(uri: Uri): Uri {
+    let resource = uri;
+    if (!(resource instanceof Uri)) {
+        if (window.activeTextEditor) {
+            resource = window.activeTextEditor.document.uri;
+        } else {
+            // This is most likely toggling the preview
+            return null;
+        }
+    }
+    return resource;
 }

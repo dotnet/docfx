@@ -3,11 +3,11 @@
 import { Uri } from "vscode";
 
 export class ProxyResponse{
-    markupResult: string;
+    markupResult;
     fileName: string;
     documentUri: Uri;
 
-    constructor(markupResult:string, fileName: string, documentUri){
+    constructor(markupResult, fileName: string, documentUri: Uri){
         this.markupResult = markupResult;
         this.fileName = fileName;
         this.documentUri = documentUri;

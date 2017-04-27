@@ -6,12 +6,12 @@ import { DfmHttpClient } from './dfmHttpClient';
 import { Command } from './constVariables/command';
 
 export class DfmService {
-    static async previewAsync(docfxServicePort, content, workspacePath, relativePath, shouldSeparateMarkupResult = false, tempPreviewFilePath = null, pageRefreshJsFilePath = null, originalHtmlPath = null) {
+    static async previewAsync(docfxServicePort, content, workspacePath, relativePath, shouldSeparateMarkupResult = false, tempPreviewFilePath = null, pageRefreshJsFilePath = null, originalHtmlPath = null, navigationPort = null) {
         if (!content) {
             return null;
         }
 
-        return await DfmHttpClient.sendPostRequestAsync(docfxServicePort, Command.previewCommand, content, workspacePath, relativePath, shouldSeparateMarkupResult, tempPreviewFilePath, pageRefreshJsFilePath, originalHtmlPath);
+        return await DfmHttpClient.sendPostRequestAsync(docfxServicePort, Command.previewCommand, content, workspacePath, relativePath, shouldSeparateMarkupResult, tempPreviewFilePath, pageRefreshJsFilePath, originalHtmlPath, navigationPort);
     }
 
     static async getTokenTreeAsync(docfxServicePort, content, workspacePath, relativePath) {
@@ -25,4 +25,6 @@ export class DfmService {
     static async exitAsync(docfxServicePort) {
         await DfmHttpClient.sendPostRequestAsync(docfxServicePort, Command.exitCommand);
     }
+
+    // TODO: Implement delete temp previewFile
 }
