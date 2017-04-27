@@ -9,6 +9,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Linq;
     using System.Text.RegularExpressions;
 
+    using Microsoft.DocAsCode.Exceptions;
+
     internal class MustacheTemplateRenderer : ITemplateRenderer
     {
         private static readonly Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -46,10 +48,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             var processedTemplate = ParseTemplateHelper.ExpandMasterPage(resourceProvider, info, MasterPageRegex, MasterPageBodyRegex);
             using (var reader = new StringReader(processedTemplate))
             {
-                _template.Load(reader);
+                try
+                {
+                    _template.Load(reader);
+                }
+                catch (Nustache.Core.NustacheException e)
+                {
+                    throw new DocfxException($"Error in mustache template {info.TemplateName}: {e.Message}", e);
+                }
             }
 
-            Dependencies = ExtractDependencyResourceNames(info.Content).ToList();
+            Dependencies = ExtractDependencyResourceNames(processedTemplate).ToList();
         }
 
         public IEnumerable<string> Dependencies { get; }
