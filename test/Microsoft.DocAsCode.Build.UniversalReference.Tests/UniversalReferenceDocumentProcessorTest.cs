@@ -44,9 +44,10 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
         [Fact]
         public void ProcessPythonReferencesShouldSucceed()
         {
+            // TODO: inheritance tree is removed from data, wait for the design decision
             var fileNames = Directory.EnumerateFiles(YmlDataDirectory).Select(Path.GetFileName).ToList();
             var files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, fileNames.Select(f => $"{YmlDataDirectory}/{f}"), "TestData/");
+            files.Add(DocumentType.Article, fileNames.Select(f => $"{YmlDataDirectory}/{f}"), TestDataDirectory);
 
             BuildDocument(files);
 
