@@ -100,6 +100,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string RootTocPath { get; }
 
+        public IMarkdownService MarkdownService { get; set; }
+
         internal IncrementalBuildContext IncrementalBuildContext { get; set; }
 
         internal ConcurrentBag<ManifestItem> ManifestItems { get; } = new ConcurrentBag<ManifestItem>();

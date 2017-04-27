@@ -3,7 +3,11 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
+
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Exceptions;
 
     public class TemplateUtility
     {
@@ -53,6 +57,34 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return originalHref;
             }
             return file.UrlEncode().ToString() + UriUtility.GetQueryStringAndFragment(originalHref);
+        }
+
+        public string Markup(string markdown, string sourceFileKey)
+        {
+            if (string.IsNullOrEmpty(sourceFileKey) || string.IsNullOrEmpty(markdown) || !RelativePath.IsRelativePath(markdown))
+            {
+                return markdown;
+            }
+            if (_context.MarkdownService == null)
+            {
+                var message = $"Markup failed: {nameof(_context.MarkdownService)} should not be null";
+                Logger.LogError(message);
+                throw new DocfxException(message);
+            }
+            MarkupResult result;
+            try
+            {
+                result = _context.MarkdownService.Markup(markdown, sourceFileKey);
+                // TODO: Add HostService.Parse(markupResult)
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.Fail("Markup failed!");
+                var message = $"Markup failed: {ex.Message}.";
+                Logger.LogError(message);
+                throw new DocumentException(message, ex);
+            }
+            return result.Html;
         }
     }
 }
