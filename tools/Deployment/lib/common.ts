@@ -7,9 +7,10 @@ import * as path from "path";
 import * as cp from "child-process-promise";
 import * as jszip from "jszip";
 import * as sha1 from "sha1";
+import * as moment from "moment-timezone";
 
 export class Common {
-    static async execAsync(command: string, args: Array<string>, workDir = null):Promise<void> {
+    static async execAsync(command: string, args: Array<string>, workDir = null): Promise<void> {
         Guard.argumentNotNullOrEmpty(command, "command");
         Guard.argumentNotNull(args, "args");
 
@@ -126,6 +127,12 @@ export class Common {
         }
 
         return content;
+    }
+
+    static isThirdWeekInSprint(): boolean {
+        let baseMoment = moment("2016-12-12").tz("Asia/Shanghai");
+        let gap = moment().tz("Asia/Shanghai").diff(baseMoment, "weeks");
+        return gap % 3 === 2;
     }
 }
 
