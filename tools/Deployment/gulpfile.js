@@ -16,6 +16,7 @@ let Guard = require("./out/common").Guard;
 let Myget = require("./out/myget").Myget;
 let Github = require("./out/github").Github;
 let Chocolatey = require("./out/chocolatey").Chocolatey;
+let SyncBranch = require("./out/syncBranch").SyncBranch;
 
 let configFile = path.resolve("config_gulp.json");
 
@@ -30,7 +31,8 @@ let config = {
     "firefox": nconf.get("firefox"),
     "myget": nconf.get("myget"),
     "git": nconf.get("git"),
-    "choco": nconf.get("choco")
+    "choco": nconf.get("choco"),
+    "sync": nconf.get("sync")
 };
 
 Guard.argumentNotNull(config.docfx, "config.docfx", "Can't find docfx configuration.");
@@ -185,6 +187,20 @@ gulp.task("publish:chocolatey", () => {
     return Chocolatey.publishToChocolateyAsync(releaseNotePath, assetZipPath, chocoScript, nuspec, homeDir, chocoToken);
 });
 
+gulp.task("syncBranch", () => {
+    Guard.argumentNotNullOrEmpty(config.docfx.repoUrl, "config.docfx.repoUrl", "Can't find docfx repo url in configuration.");
+    Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find docfx home directory in configuration.");
+    Guard.argumentNotNullOrEmpty(config.sync.fromBranch, "config.sync.fromBranch", "Can't find source branch in sync configuration.");
+    Guard.argumentNotNullOrEmpty(config.sync.targetBranch, "config.sync.targetBranch", "Can't find target branch in sync configuration.");
+
+    if (Common.isThirdWeekInSprint()) {
+        console.log("Ignore to sync in the third week of a sprint");
+        process.exit(0);
+    }
+
+    let docfxHome = path.resolve(config.docfx.home);
+    return SyncBranch.runAsync(config.docfx.repoUrl, docfxHome, config.sync.fromBranch, config.sync.targetBranch);
+});
 gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test"));
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
 gulp.task("stable", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
