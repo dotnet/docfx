@@ -6,8 +6,6 @@ v2.17(Pre-Release)
     1. Mustache: `{{!master('<master_page_name>')}}`
     2. Liquid: `{% master <master_page_name> %}`
 
-2. [Breaking Change] View model for `ManagedReference.html.primary.tmpl` is updated from `{item: model}` to `model`, if you overwrites `ManagedReference.html.primary.tmpl` in your own template, make sure to re-export the template file.
-
 v2.16
 -----------
 1.  Support the latest csproj format `<Project Sdk="Microsoft.NET.Sdk">`
