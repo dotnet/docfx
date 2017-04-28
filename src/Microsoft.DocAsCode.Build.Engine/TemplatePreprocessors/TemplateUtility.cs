@@ -59,6 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return file.UrlEncode().ToString() + UriUtility.GetQueryStringAndFragment(originalHref);
         }
 
+        // TODO: remove this function as it breaks incremental build's design.
         public string Markup(string markdown, string sourceFileKey)
         {
             if (string.IsNullOrEmpty(sourceFileKey) || string.IsNullOrEmpty(markdown) || !RelativePath.IsRelativePath(markdown))
