@@ -6,8 +6,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.DocAsCode.Plugins;
 
     public class TemplateUtility
     {
