@@ -4406,10 +4406,141 @@ tagRules : [
             }
         }
 
+        [Fact(Skip = "wait for fix")]
+        public void TestDestinationFolderUpdate()
+        {
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
+
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "# Hello World",
+                    "Test link: [link text](test/test.md)",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { conceptualFile });
+            #endregion
+
+            Init("IncrementalBuild.TestDestinationFolderUpdate");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestDestinationFolderUpdate");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestDestinationFolderUpdate.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestDestinationFolderUpdate.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestDestinationFolderUpdate-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // update destination folder
+                FileCollection newfiles = new FileCollection(Directory.GetCurrentDirectory());
+                newfiles.Add(DocumentType.Article, new[] { conceptualFile }, destinationDir: "sub");
+                using (new LoggerPhaseScope("IncrementalBuild.TestDestinationFolderUpdate-second"))
+                {
+                    BuildDocument(
+                        newfiles,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestDestinationFolderUpdate-forcebuild-second"))
+                {
+                    BuildDocument(
+                        newfiles,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.GetFullPath(Path.Combine(outputFolderForIncremental, "manifest.json"));
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(1, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestDestinationFolderUpdate-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestDestinationFolderUpdate-second", "IncrementalBuild.TestDestinationFolderUpdate-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
         private static bool CompareDir(string path1, string path2)
         {
-            var files1 = new DirectoryInfo(path1).GetFiles("*.*", SearchOption.AllDirectories).Where(f => f.Name != "xrefmap.yml" && f.Name != "manifest.json").OrderBy(f => f.FullName).ToList();
-            var files2 = new DirectoryInfo(path2).GetFiles("*.*", SearchOption.AllDirectories).Where(f => f.Name != "xrefmap.yml" && f.Name != "manifest.json").OrderBy(f => f.FullName).ToList();
+            return CompareDir(new DirectoryInfo(path1), new DirectoryInfo(path2));
+        }
+
+        private static bool CompareDir(DirectoryInfo path1, DirectoryInfo path2)
+        {
+            var dirs1 = path1.GetDirectories("*.*", SearchOption.TopDirectoryOnly).OrderBy(d => d.Name).ToList();
+            var dirs2 = path2.GetDirectories("*.*", SearchOption.TopDirectoryOnly).OrderBy(d => d.Name).ToList();
+            if (dirs1.Count != dirs2.Count)
+            {
+                Console.WriteLine($"Directory count in two directories don't match! path: ({path1}): {string.Join(";", dirs1)}. ({path2}): {string.Join(";", dirs2)}");
+                return false;
+            }
+            for (int i = 0; i < dirs1.Count; i++)
+            {
+                if (!string.Equals(dirs1[i].Name, dirs2[i].Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+                if (!CompareDir(dirs1[i], dirs2[i]))
+                {
+                    return false;
+                }
+            }
+            return CompareFile(path1, path2);
+        }
+
+        private static bool CompareFile(DirectoryInfo path1, DirectoryInfo path2)
+        {
+            var files1 = path1.GetFiles("*.*", SearchOption.TopDirectoryOnly).Where(f => f.Name != "xrefmap.yml" && f.Name != "manifest.json").OrderBy(f => f.Name).ToList();
+            var files2 = path2.GetFiles("*.*", SearchOption.TopDirectoryOnly).Where(f => f.Name != "xrefmap.yml" && f.Name != "manifest.json").OrderBy(f => f.Name).ToList();
             if (files1.Count != files2.Count)
             {
                 Console.WriteLine($"File count in two directories don't match! path: ({path1}): {string.Join(";", files1)}. ({path2}): {string.Join(";", files2)}");
@@ -4417,6 +4548,10 @@ tagRules : [
             }
             for (int i = 0; i < files1.Count; i++)
             {
+                if (!string.Equals(files1[i].Name, files2[i].Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
                 string c1 = File.ReadAllText(files1[i].FullName);
                 string c2 = File.ReadAllText(files2[i].FullName);
                 if (c1 != c2)
