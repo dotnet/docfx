@@ -5,13 +5,31 @@ namespace Microsoft.DocAsCode.Common
 {
     using System;
     using System.Collections.Generic;
+    using System.Composition;
     using System.Composition.Hosting;
     using System.Linq;
     using System.Reflection;
 
-    public static class CompositionUtility
+    using Microsoft.DocAsCode.Plugins;
+
+    [Export(typeof(ICompositionContainer))]
+    public class CompositionContainer : ICompositionContainer
     {
-        public static T GetExport<T>(CompositionHost container, string name) where T : class =>
+        public static CompositionHost DefaultContainer { get; private set; }
+
+        public CompositionHost Container { get; }
+
+        public CompositionContainer()
+            : this(null)
+        {
+        }
+
+        public CompositionContainer(CompositionHost container)
+        {
+            Container = container;
+        }
+
+        public static T GetExport<T>(CompositionHost container, string name) =>
             (T)GetExport(container, typeof(T), name);
 
         public static object GetExport(CompositionHost container, Type type, string name)
@@ -59,7 +77,8 @@ namespace Microsoft.DocAsCode.Common
 
             try
             {
-                return configuration.CreateContainer();
+                DefaultContainer = configuration.CreateContainer();
+                return DefaultContainer;
             }
             catch (ReflectionTypeLoadException ex)
             {
@@ -67,5 +86,13 @@ namespace Microsoft.DocAsCode.Common
                 throw;
             }
         }
+
+        public T GetExport<T>() => (Container ?? DefaultContainer).GetExport<T>();
+
+        public T GetExport<T>(string name) => (Container ?? DefaultContainer).GetExport<T>(name);
+
+        public IEnumerable<T> GetExports<T>() => (Container ?? DefaultContainer).GetExports<T>();
+
+        public IEnumerable<T> GetExports<T>(string name) => (Container ?? DefaultContainer).GetExports<T>(name);
     }
 }

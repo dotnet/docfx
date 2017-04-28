@@ -40,6 +40,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 this,
                 parameters.BasePath,
                 parameters.TemplateDir,
+                Container,
                 parameters.Tokens,
                 fallbackFolders,
                 parameters.Extensions);
@@ -56,6 +57,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         [ImportMany]
         public IEnumerable<IDfmEngineCustomizer> DfmEngineCustomizers { get; set; } = Enumerable.Empty<IDfmEngineCustomizer>();
 
+        [Import]
+        public ICompositionContainer Container { get; set; }
+
         private sealed class DfmService : IMarkdownService, IHasIncrementalContext, IDisposable
         {
             private readonly DfmEngineBuilder _builder;
@@ -70,6 +74,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 DfmServiceProvider provider,
                 string baseDir,
                 string templateDir,
+                ICompositionContainer container,
                 ImmutableDictionary<string, string> tokens,
                 IReadOnlyList<string> fallbackFolders,
                 IReadOnlyDictionary<string, object> parameters)
@@ -77,7 +82,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var options = DocfxFlavoredMarked.CreateDefaultOptions();
                 options.LegacyMode = provider.LegacyMode;
                 options.ShouldExportSourceInfo = true;
-                _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, templateDir, options, fallbackFolders);
+                _builder = new DfmEngineBuilder(
+                    options,
+                    baseDir,
+                    templateDir,
+                    fallbackFolders,
+                    container);
                 _builder.TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(provider.TokenTreeValidator);
                 _tokens = tokens;
                 _renderer = CustomizedRendererCreator.CreateRenderer(new DfmRenderer { Tokens = _tokens }, provider.DfmRendererPartProviders, parameters);

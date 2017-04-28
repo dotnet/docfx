@@ -6,19 +6,24 @@ namespace Microsoft.DocAsCode.Dfm
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Composition.Hosting;
     using System.Linq;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Plugins;
 
     public class DfmEngineBuilder : GfmEngineBuilder
     {
         private readonly string _baseDir;
         private IReadOnlyList<string> _fallbackFolders;
 
-        public DfmEngineBuilder(Options options, string baseDir = null, string templateDir = null, IReadOnlyList<string> fallbackFolders = null) : base(options)
+        public DfmEngineBuilder(Options options, string baseDir = null, string templateDir = null, IReadOnlyList<string> fallbackFolders = null)
+            : this(options, baseDir, templateDir, fallbackFolders, null)
+        {
+        }
+
+        public DfmEngineBuilder(Options options, string baseDir, string templateDir, IReadOnlyList<string> fallbackFolders, ICompositionContainer container) : base(options)
         {
             _baseDir = baseDir ?? string.Empty;
             _fallbackFolders = fallbackFolders ?? new List<string>();
@@ -80,25 +85,14 @@ namespace Microsoft.DocAsCode.Dfm
             InlineRules = inlineRules.ToImmutableList();
             BlockRules = blockRules.ToImmutableList();
 
-            Rewriter = InitMarkdownStyle(GetContainer(), baseDir, templateDir);
+            Rewriter = InitMarkdownStyle(container, baseDir, templateDir);
         }
 
-        private CompositionHost GetContainer()
-        {
-            return new ContainerConfiguration()
-                .WithAssemblies(
-                    from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                    where !assembly.IsDynamic && !assembly.ReflectionOnly
-                    where !assembly.GetName().Name.StartsWith("xunit")
-                    select assembly)
-                .CreateContainer();
-        }
-
-        private static IMarkdownTokenRewriter InitMarkdownStyle(CompositionHost host, string baseDir, string templateDir)
+        private static IMarkdownTokenRewriter InitMarkdownStyle(ICompositionContainer container, string baseDir, string templateDir)
         {
             try
             {
-                return MarkdownValidatorBuilder.Create(host, baseDir, templateDir).CreateRewriter();
+                return MarkdownValidatorBuilder.Create(container, baseDir, templateDir).CreateRewriter();
             }
             catch (Exception ex)
             {

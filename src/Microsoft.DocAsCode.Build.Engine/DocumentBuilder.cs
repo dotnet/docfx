@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 var assemblyList = assemblies?.ToList() ?? new List<Assembly>();
                 assemblyList.Add(typeof(DocumentBuilder).Assembly);
-                _container = CompositionUtility.GetContainer(assemblyList);
+                _container = CompositionContainer.GetContainer(assemblyList);
                 _container.SatisfyImports(this);
                 _currentBuildInfo.CommitFromSHA = commitFromSHA;
                 _currentBuildInfo.CommitToSHA = commitToSHA;
@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentException("Parameters are empty.", nameof(parameters));
             }
 
-            var markdownServiceProvider = CompositionUtility.GetExport<IMarkdownServiceProvider>(_container, parameters[0].MarkdownEngineName);
+            var markdownServiceProvider = CompositionContainer.GetExport<IMarkdownServiceProvider>(_container, parameters[0].MarkdownEngineName);
             if (markdownServiceProvider == null)
             {
                 Logger.LogError($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
@@ -242,7 +242,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             try
             {
-                var mvb = MarkdownValidatorBuilder.Create(_container, parameter.Files.DefaultBaseDir, parameter.TemplateDir);
+                var mvb = MarkdownValidatorBuilder.Create(new CompositionContainer(), parameter.Files.DefaultBaseDir, parameter.TemplateDir);
                 return mvb.GetEnabledMetadataRules().ToList();
             }
             catch (Exception ex)

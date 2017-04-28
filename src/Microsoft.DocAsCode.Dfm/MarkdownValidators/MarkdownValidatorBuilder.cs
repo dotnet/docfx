@@ -39,26 +39,22 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 
         #region Ctors
 
-        public MarkdownValidatorBuilder(CompositionHost host)
+        public MarkdownValidatorBuilder(ICompositionContainer container)
         {
-            if (host == null)
-            {
-                throw new ArgumentNullException(nameof(host));
-            }
-            CompositionHost = host;
+            Container = container;
         }
 
         #endregion
 
         #region Properties
-        public CompositionHost CompositionHost { get; }
+        public ICompositionContainer Container { get; }
         #endregion
 
         #region Public Methods
 
-        public static MarkdownValidatorBuilder Create(CompositionHost host, string baseDir, string templateDir)
+        public static MarkdownValidatorBuilder Create(ICompositionContainer container, string baseDir, string templateDir)
         {
-            var builder = new MarkdownValidatorBuilder(host);
+            var builder = new MarkdownValidatorBuilder(container);
             LoadValidatorConfig(baseDir, templateDir, builder);
             return builder;
         }
@@ -196,7 +192,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 
         public IMarkdownTokenRewriter CreateRewriter()
         {
-            var context = new MarkdownRewriterContext(CompositionHost, GetEnabledTagRules().ToImmutableList());
+            var context = new MarkdownRewriterContext(Container, GetEnabledTagRules().ToImmutableList());
             return new MarkdownTokenRewriteWithScope(
                 MarkdownTokenRewriterFactory.FromValidators(
                     MarkdownValidatePhaseName,
@@ -234,7 +230,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                 }
             }
             return from name in enabledContractName
-                   from IInputMetadataValidator mv in CompositionHost.GetExports(typeof(IInputMetadataValidator), name)
+                   from IInputMetadataValidator mv in Container?.GetExports<IInputMetadataValidator>(name)
                    select mv;
         }
 
@@ -310,7 +306,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                 }
             }
             return from name in enabledContractName
-                   from IMarkdownTokenValidatorProvider vp in CompositionHost.GetExports(typeof(IMarkdownTokenValidatorProvider), name)
+                   from IMarkdownTokenValidatorProvider vp in Container?.GetExports<IMarkdownTokenValidatorProvider>(name)
                    from v in vp.GetValidators()
                    select v;
         }
@@ -361,13 +357,13 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             private static readonly Regex ClosingTag = new Regex(@"^\</(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>$", RegexOptions.Compiled);
             private static readonly Regex OpeningTagMatcher = new Regex(@"^\<(\w+)((?:""[^""]*""|'[^']*'|[^'"">])*?)\>", RegexOptions.Compiled);
 
-            public MarkdownRewriterContext(CompositionHost host, ImmutableList<MarkdownTagValidationRule> validators)
+            public MarkdownRewriterContext(ICompositionContainer container, ImmutableList<MarkdownTagValidationRule> validators)
             {
-                CompositionHost = host;
+                Container = container;
                 Validators = validators;
             }
 
-            public CompositionHost CompositionHost { get; }
+            public ICompositionContainer Container { get; }
 
             public ImmutableList<MarkdownTagValidationRule> Validators { get; }
 
@@ -427,7 +423,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
             {
                 if (!string.IsNullOrEmpty(validator.CustomValidatorContractName))
                 {
-                    if (CompositionHost == null)
+                    if (Container == null)
                     {
                         Logger.LogWarning($"Unable to validate tag by contract({validator.CustomValidatorContractName}): CompositionHost is null.");
                         return;
@@ -448,8 +444,8 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 
             private List<ICustomMarkdownTagValidator> GetCustomMarkdownTagValidators(MarkdownTagValidationRule validator)
             {
-                return CompositionHost
-                    .GetExports(typeof(ICustomMarkdownTagValidator), validator.CustomValidatorContractName)
+                return Container
+                    ?.GetExports<ICustomMarkdownTagValidator>(validator.CustomValidatorContractName)
                     .Cast<ICustomMarkdownTagValidator>()
                     .ToList();
             }

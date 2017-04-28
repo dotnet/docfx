@@ -752,9 +752,10 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
         {
             var builder = new DfmEngineBuilder(new Options() { Mangle = false });
             var mrb = new MarkdownValidatorBuilder(
-                new ContainerConfiguration()
-                    .WithAssembly(typeof(DocfxFlavoredMarkdownTest).Assembly)
-                    .CreateContainer());
+                new CompositionContainer(
+                    new ContainerConfiguration()
+                        .WithAssembly(typeof(DocfxFlavoredMarkdownTest).Assembly)
+                        .CreateContainer()));
             mrb.AddTagValidators(new[]
             {
                 new MarkdownTagValidationRule
