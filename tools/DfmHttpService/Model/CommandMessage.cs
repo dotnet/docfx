@@ -30,5 +30,8 @@ namespace DfmHttpService
 
         [JsonProperty("originalHtmlPath")]
         public string OriginalHtmlPath { get; set; }
+
+        [JsonProperty("navigationPort")]
+        public string NavigationPort { get; set; }
     }
 }
