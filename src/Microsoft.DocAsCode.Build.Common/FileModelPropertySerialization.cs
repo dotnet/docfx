@@ -58,7 +58,8 @@ namespace Microsoft.DocAsCode.Build.Common
                 JsonUtility.Deserialize<FileAndType>(new StringReader((string)basicProperties[nameof(FileModel.FileAndType)])),
                 content,
                 JsonUtility.Deserialize<FileAndType>(new StringReader((string)basicProperties[nameof(FileModel.OriginalFileAndType)])),
-                formatter);
+                formatter,
+                (string)basicProperties[nameof(FileModel.Key)]);
 
             // Deserialize basic properties.
             result.LocalPathFromRoot = (string)basicProperties[nameof(FileModel.LocalPathFromRoot)];
@@ -118,12 +119,13 @@ namespace Microsoft.DocAsCode.Build.Common
                 Model = model;
             }
 
-            public int Count => 9;
+            public int Count => 10;
 
             public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
             {
                 yield return new KeyValuePair<string, object>(nameof(Model.FileAndType), JsonUtility.ToJsonString(Model.FileAndType));
                 yield return new KeyValuePair<string, object>(nameof(Model.OriginalFileAndType), JsonUtility.ToJsonString(Model.OriginalFileAndType));
+                yield return new KeyValuePair<string, object>(nameof(Model.Key), Model.Key);
                 yield return new KeyValuePair<string, object>(nameof(Model.LocalPathFromRoot), Model.LocalPathFromRoot);
                 yield return new KeyValuePair<string, object>(nameof(Model.LinkToFiles), Model.LinkToFiles);
                 yield return new KeyValuePair<string, object>(nameof(Model.LinkToUids), Model.LinkToUids);

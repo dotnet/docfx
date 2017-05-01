@@ -11,12 +11,23 @@ namespace Microsoft.DocAsCode.Dfm
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.MarkdownLite.Matchers;
 
     public class DfmSectionBlockRule : IMarkdownRule
     {
-        public string Name => "DfmSection";
-
+        private static readonly Matcher _SectionMatcher =
+            Matcher.WhiteSpacesOrEmpty + Matcher.CaseInsensitiveString("[!div") +
+            (
+                Matcher.WhiteSpaces +
+                (
+                    (Matcher.Char('`') + Matcher.AnyCharNotIn('`', '\n').RepeatAtLeast(0).ToGroup("attributes") + '`') |
+                    Matcher.AnyCharNotIn(']', '\n').RepeatAtLeast(0).ToGroup("attributes")
+                )
+            ).Maybe() +
+            ']' + Matcher.WhiteSpacesOrEmpty + Matcher.NewLine.RepeatAtLeast(0);
         private static readonly Regex _sectionRegex = new Regex(@"^(?<rawmarkdown> *\[\!div( +(?<quote>`?)(?<attributes>.*?)(\k<quote>))?\]\s*\n?)(?<text>.*)(?:\n|$)", RegexOptions.Compiled, TimeSpan.FromSeconds(10));
+
+        public string Name => "DfmSection";
 
         private const string SectionReplacementHtmlTag = "div";
 
@@ -26,6 +37,22 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return null;
             }
+            if (parser.Options.LegacyMode)
+            {
+                return TryMatchOld(parser, context);
+            }
+            var match = context.Match(_SectionMatcher);
+            if (match?.Length > 0)
+            {
+                var sourceInfo = context.Consume(match.Length);
+                var attributes = ExtractAttibutes(match.GetGroup("attributes")?.GetValue() ?? string.Empty);
+                return new DfmSectionBlockToken(this, parser.Context, attributes, sourceInfo);
+            }
+            return null;
+        }
+
+        private IMarkdownToken TryMatchOld(IMarkdownParser parser, IMarkdownParsingContext context)
+        {
             var match = _sectionRegex.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {

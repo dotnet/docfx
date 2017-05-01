@@ -119,11 +119,11 @@ namespace Microsoft.DocAsCode.Build.Common
 
         private static bool CheckRequiredProperties(ImmutableDictionary<string, object> properties, IEnumerable<string> requiredKeys, out string message)
         {
-            var notExistsKeys = requiredKeys.Where(k => !properties.Keys.Contains(k, StringComparer.OrdinalIgnoreCase));
+            var notExistsKeys = requiredKeys.Where(k => !properties.Keys.Contains(k));
             if (notExistsKeys.Any())
             {
                 message =
-                    $"Required properties {{{{{string.Join(",", notExistsKeys)}}}}} are not set. Note that keys are case insensitive.";
+                    $"Required properties {{{{{string.Join(",", notExistsKeys)}}}}} are not set. Note that keys are case sensitive.";
                 return false;
             }
 

@@ -79,7 +79,7 @@ namespace DfmHttpService
             ReplyResponse(context, HttpStatusCode.InternalServerError, message);
         }
 
-        public static void ReplyExitResponse(HttpListenerContext context, string message)
+        public static void ReplyNoContentResponse(HttpListenerContext context, string message)
         {
             ReplyResponse(context, HttpStatusCode.NoContent, message);
         }

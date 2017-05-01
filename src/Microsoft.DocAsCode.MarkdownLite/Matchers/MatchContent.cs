@@ -5,19 +5,19 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
+    using System.Runtime.CompilerServices;
 
     public struct MatchContent
     {
         public readonly string Text;
         public readonly int StartIndex;
-        public readonly ScanDirection Direction;
+        public readonly MatchDirection Direction;
         private readonly Dictionary<string, KeyValuePair<int, int>> _group;
 
-        public MatchContent(string text, int startIndex, ScanDirection direction = ScanDirection.Forward)
+        public MatchContent(string text, int startIndex, MatchDirection direction = MatchDirection.Forward)
             : this(text, startIndex, direction, new Dictionary<string, KeyValuePair<int, int>>()) { }
 
-        private MatchContent(string text, int startIndex, ScanDirection direction, Dictionary<string, KeyValuePair<int, int>> group)
+        private MatchContent(string text, int startIndex, MatchDirection direction, Dictionary<string, KeyValuePair<int, int>> group)
         {
             if (text == null)
             {
@@ -33,27 +33,222 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             _group = group;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public char GetCurrentChar() => this[0];
 
-        public char this[int offset] => Text[GetCharIndex(offset)];
-
-        public bool BeginOfString() => Direction == ScanDirection.Forward ? StartIndex == 0 : StartIndex == Text.Length;
-
-        public bool EndOfString() => Direction == ScanDirection.Forward ? StartIndex == Text.Length : StartIndex == 0;
-
-        public bool TestLength(int length)
+        public char this[int offset]
         {
-            int result = GetIndexNoThrow(length);
-            return result >= 0 && result <= Text.Length;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Text[GetCharIndex(offset)]; }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool BeginOfString() => Direction == MatchDirection.Forward ? StartIndex == 0 : StartIndex == Text.Length;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool EndOfString() => Direction == MatchDirection.Forward ? StartIndex == Text.Length : StartIndex == 0;
+
+        public int Length
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return Direction == MatchDirection.Forward ? Text.Length - StartIndex : StartIndex; }
         }
 
         public MatchContent Offset(int offset) => new MatchContent(Text, GetIndex(offset), Direction, _group);
 
-        public MatchContent Reverse() => new MatchContent(Text, StartIndex, Direction ^ ScanDirection.Backward, _group);
+        public MatchContent Reverse() => new MatchContent(Text, StartIndex, Direction ^ MatchDirection.Backward, _group);
+
+        public int CountUntil(char ch, int maxCount)
+        {
+            if (EndOfString())
+            {
+                return 0;
+            }
+            int index;
+            int length = Math.Min(maxCount, Length);
+            if (Direction == MatchDirection.Forward)
+            {
+                index = Text.IndexOf(ch, StartIndex, length);
+                if (index == -1)
+                {
+                    return length;
+                }
+                return index - StartIndex;
+            }
+            else
+            {
+                index = Text.LastIndexOf(ch, StartIndex - 1, length);
+                if (index == -1)
+                {
+                    return length;
+                }
+                return StartIndex - 1 - index;
+            }
+        }
+
+        public int CountUntilAny(char[] ch, int maxCount)
+        {
+            if (ch == null)
+            {
+                throw new ArgumentNullException(nameof(ch));
+            }
+            if (EndOfString())
+            {
+                return 0;
+            }
+            int index;
+            int length = Math.Min(maxCount, Length);
+            if (Direction == MatchDirection.Forward)
+            {
+                index = Text.IndexOfAny(ch, StartIndex, length);
+                if (index == -1)
+                {
+                    return length;
+                }
+                return index - StartIndex;
+            }
+            else
+            {
+                index = Text.LastIndexOfAny(ch, StartIndex - 1, length);
+                if (index == -1)
+                {
+                    return length;
+                }
+                return StartIndex - 1 - index;
+            }
+        }
+
+        public int CountUntilInRange(char start, char end, int maxCount)
+        {
+            if (EndOfString())
+            {
+                return 0;
+            }
+            var length = Math.Min(maxCount, Length);
+            if (Direction == MatchDirection.Forward)
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    var ch = Text[StartIndex + i];
+                    if (start <= ch && ch <= end)
+                    {
+                        return i;
+                    }
+                }
+                return length;
+            }
+            else
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    var ch = Text[StartIndex - 1 - i];
+                    if (start <= ch && ch <= end)
+                    {
+                        return i;
+                    }
+                }
+                return length;
+            }
+        }
+
+        public int CountWhile(char ch, int maxCount)
+        {
+            if (EndOfString())
+            {
+                return 0;
+            }
+            var length = Math.Min(maxCount, Length);
+            if (Direction == MatchDirection.Forward)
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    if (Text[StartIndex + i] != ch)
+                    {
+                        return i;
+                    }
+                }
+                return length;
+            }
+            else
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    if (Text[StartIndex - 1 - i] != ch)
+                    {
+                        return i;
+                    }
+                }
+                return length;
+            }
+        }
+
+        internal int CountWhileAny(char[] ch, int maxCount)
+        {
+            if (EndOfString())
+            {
+                return 0;
+            }
+            var length = Math.Min(maxCount, Length);
+            if (Direction == MatchDirection.Forward)
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    if (Array.BinarySearch(ch, Text[StartIndex + i]) < 0)
+                    {
+                        return i;
+                    }
+                }
+                return length;
+            }
+            else
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    if (Array.BinarySearch(ch, Text[StartIndex - 1 - i]) < 0)
+                    {
+                        return i;
+                    }
+                }
+                return length;
+            }
+        }
+
+        public int CountWhileInRange(char start, char end, int maxCount)
+        {
+            if (EndOfString())
+            {
+                return 0;
+            }
+            var length = Math.Min(maxCount, Length);
+            if (Direction == MatchDirection.Forward)
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    var ch = Text[StartIndex + i];
+                    if (ch < start || end < ch)
+                    {
+                        return i;
+                    }
+                }
+                return length;
+            }
+            else
+            {
+                for (int i = 0; i < length; i++)
+                {
+                    var ch = Text[StartIndex - 1 - i];
+                    if (ch < start || end < ch)
+                    {
+                        return i;
+                    }
+                }
+                return length;
+            }
+        }
 
         public void AddGroup(string name, int startIndex, int count)
         {
-            if (Direction == ScanDirection.Forward)
+            if (Direction == MatchDirection.Forward)
             {
                 _group[name] = new KeyValuePair<int, int>(startIndex, count);
             }
@@ -81,6 +276,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetIndex(int offset)
         {
             int result = GetIndexNoThrow(offset);
@@ -91,10 +287,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return result;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetCharIndex(int offset)
         {
             int result = GetIndexNoThrow(offset);
-            if (Direction == ScanDirection.Backward)
+            if (Direction == MatchDirection.Backward)
             {
                 result--;
             }
@@ -105,7 +302,8 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
             return result;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private int GetIndexNoThrow(int offset) =>
-            Direction == ScanDirection.Forward ? StartIndex + offset : StartIndex - offset;
+            Direction == MatchDirection.Forward ? StartIndex + offset : StartIndex - offset;
     }
 }

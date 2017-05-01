@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Plugins
     {
         public string BasePath { get; set; }
         public string TemplateDir { get; set; }
-        public IReadOnlyDictionary<string, object> Extensions { get; set; }
-        public ImmutableDictionary<string, string> Tokens { get; set; }
+        public IReadOnlyDictionary<string, object> Extensions { get; set; } = ImmutableDictionary<string, object>.Empty;
+        public ImmutableDictionary<string, string> Tokens { get; set; } = ImmutableDictionary<string, string>.Empty;
     }
 }

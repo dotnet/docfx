@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode
 {
+    using System.Collections.Generic;
+
     using Newtonsoft.Json;
 
     public class MetadataJsonItemConfig
@@ -25,8 +27,19 @@ namespace Microsoft.DocAsCode
         [JsonProperty("filter")]
         public string FilterConfigFile { get; set; }
 
+        [JsonProperty("globalNamespaceId")]
+        public string GlobalNamespaceId { get; set; }
+
         [JsonProperty("useCompatibilityFileName")]
         public bool? UseCompatibilityFileName { get; set; }
+
+        /// <summary>
+        /// An optional set of MSBuild properties used when interpreting project files. These
+        ///  are the same properties that are passed to msbuild via the /property:<n>=<v>
+        ///  command line argument.
+        /// </summary>
+        [JsonProperty("properties")]
+        public Dictionary<string, string> MSBuildProperties { get; set; }
     }
 
 }

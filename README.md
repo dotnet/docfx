@@ -8,6 +8,14 @@
 | **master** |[![masterstatus](https://img.shields.io/teamcity/http/docfx-ci-0.cloudapp.net/s/DocfxCiWithScripts_DocfxCiForMasterBranch.svg?label=master)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCiWithScripts_DocfxCiForMasterBranch) |[![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/) |[![Chocolatey](https://img.shields.io/chocolatey/v/docfx.svg)](https://chocolatey.org/packages/docfx)
 |  **dev**   |[![devstatus](https://img.shields.io/teamcity/http/docfx-ci-0.cloudapp.net/s/DocfxCiWithScripts_DocfxCiForDevBranch.svg?label=dev)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCiWithScripts_DocfxCiForDevBranch) |[![MyGet](https://img.shields.io/myget/docfx-dev/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-dev)
 
+## Collecting feedbacks and proposals for DocFX
+
+Let's make DocFX better together!
+
+**Vote** for the proposals you like, and **add** yours:
+
+[![Feature Requests](http://feathub.com/docascode/docfx-feature-proposals?format=svg)](http://feathub.com/docascode/docfx-feature-proposals)
+
 ## What is it?
 *DocFX* makes it extremely easy to generate your developer hub with API reference, landing page, and how-to.
 
@@ -15,19 +23,12 @@ We currently support C# and VB projects.
 
 ## How to build?
 #### Prerequisites
-1. [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159)
-2. .NET Core 1.0.0 SDK 1.0.0-preview2-003121 [x86](https://go.microsoft.com/fwlink/?LinkID=809123) | [x64](https://go.microsoft.com/fwlink/?LinkID=809122)
-3. [Node.js](https://nodejs.org)
+1. [Visual Studio 2017](https://www.visualstudio.com/downloads/) with *.NET Core cross-platform development* toolset installed
+2. [Node.js](https://nodejs.org)
 
 #### Steps
 1. Option 1: Run `build.cmd` under *DocFX* code repo.
 2. Option 2: Open `All.sln` under *DocFX* code repo in Visual Studio and build All.sln.
-  - need [Visual Studio 2015 Update 3.3 or later](https://docs.microsoft.com/en-us/dotnet/articles/core/windows-prerequisites#visual-studio)
-  - need [.NET Core Tools for Visual Studio 2015](https://docs.microsoft.com/en-us/dotnet/articles/core/windows-prerequisites#net-core-tools-for-visual-studio-2015)
-
-> Possible build issues
-  1. *Test failure with message `\r\n` not equal to `\n` for Windows*
-  Set `git config --global core.autocrlf true`
 
 ## How do I play with *DocFX*?
 Please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).

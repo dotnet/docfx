@@ -63,7 +63,9 @@ namespace Microsoft.DocAsCode.Common
                 {
                     Directory.CreateDirectory(
                         Path.Combine(ManifestFolder, file.RemoveWorkingFolder().GetDirectoryPath()));
-                    return File.Create(Path.Combine(ManifestFolder, file.RemoveWorkingFolder()));
+                    var result = File.Create(Path.Combine(ManifestFolder, file.RemoveWorkingFolder()));
+                    entry.LinkToPath = null;
+                    return result;
                 }
                 else
                 {

@@ -90,6 +90,12 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var type = token.Ordered ? "ol" : "ul";
             StringBuffer result = "<";
             result += type;
+            if (token.Ordered && token.Start != 1)
+            {
+                result += " start=\"";
+                result += token.Start.ToString();
+                result += "\"";
+            }
             result = AppendSourceInfo(result, renderer, token);
             result += ">\n";
             foreach (var t in token.Tokens)
@@ -360,13 +366,35 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         #endregion
 
-        #region Protected Methods
+        #region Static Methods
+
+        public static StringBuffer AppendSourceInfo(StringBuffer result, Options options, IMarkdownToken token)
+        {
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
+            if (options.ShouldExportSourceInfo)
+            {
+                result = AppendSourceInfoCore(result, token);
+            }
+            return result;
+        }
+
+        private static StringBuffer AppendSourceInfoCore(StringBuffer result, IMarkdownToken token)
+        {
+            return result + " sourceFile=\"" + StringHelper.HtmlEncode(token.SourceInfo.File) + "\" sourceStartLineNumber=\"" + token.SourceInfo.LineNumber.ToString() + "\" sourceEndLineNumber=\"" + (token.SourceInfo.LineNumber + token.SourceInfo.ValidLineCount - 1).ToString() + "\"";
+        }
 
         protected static StringBuffer AppendSourceInfo(StringBuffer result, IMarkdownRenderer renderer, IMarkdownToken token)
         {
             if (renderer.Options.ShouldExportSourceInfo)
             {
-                result = result + " sourceFile=\"" + StringHelper.HtmlEncode(token.SourceInfo.File) + "\" sourceStartLineNumber=\"" + token.SourceInfo.LineNumber.ToString() + "\" sourceEndLineNumber=\"" + (token.SourceInfo.LineNumber + token.SourceInfo.ValidLineCount - 1).ToString() + "\"";
+                result = AppendSourceInfoCore(result, token);
             }
             return result;
         }

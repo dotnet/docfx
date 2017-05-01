@@ -31,9 +31,12 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void Exec(SubCommandRunningContext context)
         {
+            string originalGlobalNamespaceId = VisitorHelper.GlobalNamespaceId;
             EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Directory.GetCurrentDirectory() : Config.BaseDirectory));
             foreach (var inputModel in InputModels)
             {
+                VisitorHelper.GlobalNamespaceId = inputModel.GlobalNamespaceId;
+
                 // TODO: Use plugin to generate metadata for files with different extension?
                 using (var worker = new ExtractMetadataWorker(inputModel, inputModel.ForceRebuild, inputModel.UseCompatibilityFileName))
                 {
@@ -43,40 +46,63 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
             EnvironmentContext.Clean();
+            VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
         }
 
         private MetadataJsonConfig ParseOptions(MetadataCommandOptions options)
         {
+            MetadataJsonConfig config;
+
             string configFile;
             if (TryGetJsonConfig(options.Projects, out configFile))
             {
-                var config = CommandUtility.GetConfig<MetadataConfig>(configFile).Item;
+                config = CommandUtility.GetConfig<MetadataConfig>(configFile).Item;
                 if (config == null) throw new DocumentException($"Unable to find metadata subcommand config in file '{configFile}'.");
                 config.BaseDirectory = Path.GetDirectoryName(configFile);
-                config.OutputFolder = options.OutputFolder;
-                foreach (var item in config)
-                {
-                    item.Raw |= options.PreserveRawInlineComments;
-                    item.Force |= options.ForceRebuild;
-                    item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
-                    item.FilterConfigFile = string.IsNullOrEmpty(options.FilterConfigFile) ? item.FilterConfigFile : Path.GetFullPath(options.FilterConfigFile);
-                }
-                return config;
             }
             else
             {
-                var config = new MetadataJsonConfig();
+                config = new MetadataJsonConfig();
                 config.Add(new MetadataJsonItemConfig
                 {
-                    Force = options.ForceRebuild,
-                    ShouldSkipMarkup = options.ShouldSkipMarkup,
                     Destination = options.OutputFolder,
-                    Raw = options.PreserveRawInlineComments,
-                    Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = true },
-                    FilterConfigFile = string.IsNullOrEmpty(options.FilterConfigFile) ? null : Path.GetFullPath(options.FilterConfigFile)
+                    Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = true }
                 });
-                return config;
             }
+
+            var msbuildProperties = ResolveMSBuildProperties(options);
+            foreach (var item in config)
+            {
+                item.Force |= options.ForceRebuild;
+                item.Raw |= options.PreserveRawInlineComments;
+                item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
+                if (!string.IsNullOrEmpty(options.FilterConfigFile))
+                {
+                    item.FilterConfigFile = Path.GetFullPath(options.FilterConfigFile);
+                }
+
+                if (!string.IsNullOrEmpty(options.GlobalNamespaceId))
+                {
+                    item.GlobalNamespaceId = options.GlobalNamespaceId;
+                }
+
+                if (item.MSBuildProperties == null)
+                {
+                    item.MSBuildProperties = msbuildProperties;
+                }
+                else
+                {
+                    // Command line properties overwrites the one defined in docfx.json
+                    foreach (var pair in msbuildProperties)
+                    {
+                        item.MSBuildProperties[pair.Key] = pair.Value;
+                    }
+                }
+            }
+
+            config.OutputFolder = options.OutputFolder;
+
+            return config;
         }
 
         private IEnumerable<ExtractMetadataInputModel> GetInputModels(MetadataJsonConfig configs)
@@ -102,7 +128,9 @@ namespace Microsoft.DocAsCode.SubCommands
                 ShouldSkipMarkup = configModel?.ShouldSkipMarkup ?? false,
                 ApiFolderName = string.Empty,
                 FilterConfigFile = configModel?.FilterConfigFile,
+                GlobalNamespaceId = configModel?.GlobalNamespaceId,
                 UseCompatibilityFileName = configModel?.UseCompatibilityFileName ?? false,
+                MSBuildProperties = configModel?.MSBuildProperties
             };
 
             var expandedFileMapping = GlobUtility.ExpandFileMapping(Config.BaseDirectory, projects);
@@ -112,6 +140,30 @@ namespace Microsoft.DocAsCode.SubCommands
             };
 
             return inputModel;
+        }
+
+        /// <summary>
+        /// <n1>=<v1>;<n2>=<v2>
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        private static Dictionary<string, string> ResolveMSBuildProperties(MetadataCommandOptions options)
+        {
+            var properties = new Dictionary<string, string>();
+            if (!string.IsNullOrEmpty(options.MSBuildProperties))
+            {
+                foreach (var pair in options.MSBuildProperties.Split(';'))
+                {
+                    var index = pair.IndexOf('=');
+                    if (index > -1)
+                    {
+                        // Latter one overwrites former one
+                        properties[pair.Substring(0, index)] = pair.Substring(index + 1, pair.Length - index - 1);
+                    }
+                }
+            }
+
+            return properties;
         }
 
         private static bool TryGetJsonConfig(List<string> projects, out string jsonConfig)
@@ -140,13 +192,13 @@ namespace Microsoft.DocAsCode.SubCommands
                 jsonConfig = configFiles[0];
                 if (configFiles.Count > 1)
                 {
-                    Logger.Log(LogLevel.Warning, $"Multiple {DocAsCode.Constants.ConfigFileName} files are found! The first one \"{jsonConfig}\" is selected, and others are ignored.");
+                    Logger.Log(LogLevel.Warning, $"Multiple {DocAsCode.Constants.ConfigFileName} files are found! The first one \"{jsonConfig}\" is selected, and others \"{string.Join(", ", configFiles.Skip(1))}\" are ignored.");
                 }
                 else
                 {
                     if (otherFiles.Count > 0)
                     {
-                        Logger.Log(LogLevel.Warning, $"Config file \"{jsonConfig}\" is found in command line! This file and ONLY this file will be used in generating metadata, other command line parameters will be ignored.");
+                        Logger.Log(LogLevel.Warning, $"Config file \"{jsonConfig}\" is found in command line! This file and ONLY this file will be used in generating metadata, other command line parameters \"{string.Join(", ", otherFiles)}\" will be ignored.");
                     }
                     else Logger.Log(LogLevel.Verbose, $"Config file \"{jsonConfig}\" is used.");
                 }

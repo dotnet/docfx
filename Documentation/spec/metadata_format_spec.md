@@ -173,7 +173,7 @@ Reference section also contains a list of *items*. These *items* serve as the re
 In metadata file, all *items* **MUST** be referenced by *UID*.
 
 > It's **RECOMMENDED** to include all referenced *items* in reference section. This makes the file self-contained and easy to render at runtime.
-
+>
 > Many programming languages have the concept of "template instantiation". For example, in C#, you can create a new type `List<int>` from `List<T>` with argument `int`. You can create a reference for "template instances". For example, for a class inherited from `List<int>`:
 
 ```yaml

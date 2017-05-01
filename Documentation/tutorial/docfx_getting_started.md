@@ -24,7 +24,7 @@ For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored
 -----------------------
 
 > [!Note]
-> Please make sure [Visual Studio 2015](https://www.visualstudio.com/vs/) or [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159) is installed before running DocFX.
+> Please make sure [.NET Core](https://www.microsoft.com/net/core) and [.NET Framework 4.6](https://www.microsoft.com/en-us/download/details.aspx?id=48130) are installed.
 
 *Step1.* DocFX ships as a [chocolatey package](https://chocolatey.org/packages/docfx).
 Install docfx through [Chocolatey](https://chocolatey.org/install) by calling `cinst docfx -y`.
@@ -44,30 +44,7 @@ docfx docfx_project\docfx.json --serve
 ```
 
 Now you can view the generated website on http://localhost:8080.
-
-3. Use *DocFX* in Visual Studio
----------------
-
-As a prerequisite, you need [Visual Studio 2015](https://www.visualstudio.com/downloads/download-visual-studio-vs) to use *DocFX* in IDE.
-
-*Step1.* Open Visual Studio and create a C# project as your documentation project. You can create an empty *ASP.NET Web Application* since it has a built-in *preview* feature that can be used to preview the generated website easily.
-
-*Step2.* Right click on the website project, and choose *Manage NuGet Packages...* to open the NuGet Package Manager. Search and install *docfx.console* package.
-
-*Step3.* Create a `.cs` class in the website project, make sure the class is `public`, for example:
-
-```csharp
-namespace WebApplication1
-{
-    public class Class1
-    {
-    }
-}
-```
-
-*Step4.* Right click on the website project, and click *View* -> *View in Browser*, navigate to `/_site` sub URL to view your website!
-
-4. Use *DocFX* with a Build Server
+3. Use *DocFX* with a Build Server
 ---------------
 
 *DocFX* can be used in a Continuous Integration environment.
@@ -80,7 +57,7 @@ Setting the environment variable `DOCFX_SOURCE_BRANCH_NAME` tells DocFX which br
 Many build systems set an environment variable with the branch name.  DocFX uses the following:
 
 - `APPVEYOR_REPO_BRANCH` - [AppVeyor](https://www.appveyor.com/)
-- `BUILD_SOURCEBRANCHNAME` - [Visual Studio Online](https://www.visualstudio.com/vso/)
+- `BUILD_SOURCEBRANCHNAME` - [Visual Studio Team Services](https://www.visualstudio.com/team-services/)
 - `CI_BUILD_REF_NAME` - [GitLab CI](https://about.gitlab.com/gitlab-ci/)
 - `Git_Branch` - [TeamCity](https://www.jetbrains.com/teamcity/)
 - `GIT_BRANCH` - [Jenkins](https://jenkins.io/)
@@ -89,11 +66,10 @@ Many build systems set an environment variable with the branch name.  DocFX uses
 > [!NOTE]
 > *Known issue in AppVeyor*: Currently `platform: Any CPU` in *appveyor.yml* causes `docfx metadata` failure. https://github.com/dotnet/docfx/issues/1078
 
-5. Build from source code
+4. Build from source code
 ----------------
 As a prerequisite, you need:
-- [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159)
-- [.NET Core SDK](https://go.microsoft.com/fwlink/?LinkID=809122)
+- [Visual Studio 2017](https://www.visualstudio.com/vs/) with *.NET Core cross-platform development* toolset
 - [Node.js](https://nodejs.org)
 
 *Step1.* `git clone https://github.com/dotnet/docfx.git` to get the latest code.

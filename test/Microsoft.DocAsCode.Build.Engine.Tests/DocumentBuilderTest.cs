@@ -222,7 +222,7 @@ tagRules : [
                             "Test invalid xref with attribute: <xref href=\"invalid\" alt=\"Foo&lt;T&gt;\"></xref>",
                             "Test invalid xref with attribute: <xref href=\"invalid\" fullname=\"Foo&lt;T&gt;\"></xref>",
                             "<p>",
-                            "test</p>",
+                            @"test</p>",
                             ""),
                         model[Constants.PropertyName.Conceptual]);
                     Assert.Equal(
@@ -270,7 +270,7 @@ tagRules : [
                     Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile)));
                     Assert.True(File.Exists(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension)));
                     var meta = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, resourceFile + RawModelFileExtension));
-                    Assert.Equal(7, meta.Count);
+                    Assert.Equal(4, meta.Count);
                     Assert.True(meta.ContainsKey("meta"));
                     Assert.Equal("Hello world!", meta["meta"]);
                     Assert.True(meta.ContainsKey("abc"));
@@ -500,6 +500,7 @@ exports.getOptions = function (){
                     ["_tocPath"] = $"{_inputFolder}/toc",
                     ["_rel"] = "../",
                     ["_path"] = $"{_inputFolder}/toc",
+                    ["_key"] = $"{_inputFolder}/toc.md",
                     ["_tocRel"] = "toc",
                     ["_tocKey"] = $"~/{_inputFolder}/toc.md",
                     ["items"] = new object[]
@@ -520,6 +521,7 @@ exports.getOptions = function (){
                                 ["_tocPath"] = $"{_inputFolder}/toc",
                                 ["_rel"] = "../",
                                 ["_path"] = $"{_inputFolder}/toc",
+                                ["_key"] = $"{_inputFolder}/toc.md",
                                 ["_tocRel"] = "toc",
                                 ["_tocKey"] = $"~/{_inputFolder}/toc.md",
                                 ["items"] = new object[]
@@ -537,6 +539,7 @@ exports.getOptions = function (){
                                 ["_tocPath"] = $"{_inputFolder}/test/toc",
                                 ["_rel"] = "../../",
                                 ["_path"] = $"{_inputFolder}/test/toc",
+                                ["_key"] = $"{_inputFolder}/test/toc.md",
                                 ["_tocRel"] = "toc",
                                 ["_tocKey"] = $"~/{_inputFolder}/test/toc.md",
                                 ["items"] = new object[]
@@ -566,6 +569,7 @@ exports.getOptions = function (){
                     ["_tocPath"] = $"{_inputFolder}/toc",
                     ["_rel"] = "../",
                     ["_path"] = $"{_inputFolder}/test.html",
+                    ["_key"] = $"{_inputFolder}/test.md",
                     ["_tocRel"] = "toc",
                     ["_tocKey"] = $"~/{_inputFolder}/toc.md",
                     ["_systemKeys"] = new[] {
@@ -598,6 +602,7 @@ exports.getOptions = function (){
                                 ["_tocPath"] = $"{_inputFolder}/toc",
                                 ["_rel"] = "../",
                                 ["_path"] = $"{_inputFolder}/toc",
+                                ["_key"] = $"{_inputFolder}/toc.md",
                                 ["_tocRel"] = "toc",
                                 ["_tocKey"] = $"~/{_inputFolder}/toc.md",
                                 ["items"] = new object[]
@@ -615,6 +620,7 @@ exports.getOptions = function (){
                                 ["_tocPath"] = $"{_inputFolder}/test/toc",
                                 ["_rel"] = "../../",
                                 ["_path"] = $"{_inputFolder}/test/toc",
+                                ["_key"] = $"{_inputFolder}/test/toc.md",
                                 ["_tocRel"] = "toc",
                                 ["_tocKey"] = $"~/{_inputFolder}/test/toc.md",
                                 ["items"] = new object[]

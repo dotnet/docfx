@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 var assemblyList = assemblies?.ToList() ?? new List<Assembly>();
                 assemblyList.Add(typeof(DocumentBuilder).Assembly);
-                _container = CompositionUtility.GetContainer(assemblyList);
+                _container = CompositionContainer.GetContainer(assemblyList);
                 _container.SatisfyImports(this);
                 _currentBuildInfo.CommitFromSHA = commitFromSHA;
                 _currentBuildInfo.CommitToSHA = commitToSHA;
@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentException("Parameters are empty.", nameof(parameters));
             }
 
-            var markdownServiceProvider = CompositionUtility.GetExport<IMarkdownServiceProvider>(_container, parameters[0].MarkdownEngineName);
+            var markdownServiceProvider = CompositionContainer.GetExport<IMarkdownServiceProvider>(_container, parameters[0].MarkdownEngineName);
             if (markdownServiceProvider == null)
             {
                 Logger.LogError($"Unable to find markdown engine: {parameters[0].MarkdownEngineName}");
@@ -96,105 +96,116 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             Logger.LogInfo($"Markdown engine is {parameters[0].MarkdownEngineName}");
 
-            _postProcessorsManager.IncrementalInitialize(_intermediateFolder, _currentBuildInfo, _lastBuildInfo, parameters[0].ForcePostProcess);
-
-            var manifests = new List<Manifest>();
-            bool transformDocument = false;
-            foreach (var parameter in parameters)
+            try
             {
-                if (parameter.CustomLinkResolver != null)
+                _postProcessorsManager.IncrementalInitialize(_intermediateFolder, _currentBuildInfo, _lastBuildInfo, parameters[0].ForcePostProcess, parameters[0].MaxParallelism);
+
+                var manifests = new List<Manifest>();
+                bool transformDocument = false;
+                foreach (var parameter in parameters)
                 {
-                    ICustomHrefGenerator chg;
-                    if (_container.TryGetExport(parameter.CustomLinkResolver, out chg))
+                    if (parameter.CustomLinkResolver != null)
                     {
-                        parameter.ApplyTemplateSettings.HrefGenerator = chg;
+                        ICustomHrefGenerator chg;
+                        if (_container.TryGetExport(parameter.CustomLinkResolver, out chg))
+                        {
+                            parameter.ApplyTemplateSettings.HrefGenerator = chg;
+                        }
+                        else
+                        {
+                            Logger.LogWarning($"Custom href generator({parameter.CustomLinkResolver}) is not found.");
+                        }
+                    }
+                    if (_intermediateFolder == null)
+                    {
+                        EnvironmentContext.FileAbstractLayerImpl =
+                            FileAbstractLayerBuilder.Default
+                            .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
+                            .WriteToRealFileSystem(parameter.OutputBaseDir)
+                            .Create();
                     }
                     else
                     {
-                        Logger.LogWarning($"Custom href generator({parameter.CustomLinkResolver}) is not found.");
+                        EnvironmentContext.FileAbstractLayerImpl =
+                            FileAbstractLayerBuilder.Default
+                            .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
+                            .WriteToLink(Path.Combine(_intermediateFolder, _currentBuildInfo.DirectoryName))
+                            .Create();
                     }
-                }
-                if (_intermediateFolder == null)
-                {
-                    EnvironmentContext.FileAbstractLayerImpl =
-                        FileAbstractLayerBuilder.Default
-                        .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                        .WriteToRealFileSystem(parameter.OutputBaseDir)
-                        .Create();
-                }
-                else
-                {
-                    EnvironmentContext.FileAbstractLayerImpl =
-                        FileAbstractLayerBuilder.Default
-                        .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                        .WriteToLink(Path.Combine(_intermediateFolder, _currentBuildInfo.DirectoryName))
-                        .Create();
-                }
-                if (parameter.Files.Count == 0)
-                {
-                    Logger.LogWarning(string.IsNullOrEmpty(parameter.VersionName)
-                        ? "No files found, nothing is generated in default version."
-                        : $"No files found, nothing is generated in version \"{parameter.VersionName}\".");
-                    manifests.Add(new Manifest());
-                    continue;
-                }
-                if (parameter.ApplyTemplateSettings.TransformDocument)
-                {
-                    transformDocument = true;
-                }
-                parameter.Metadata = _postProcessorsManager.PrepareMetadata(parameter.Metadata);
-                if (!string.IsNullOrEmpty(parameter.VersionName))
-                {
-                    Logger.LogInfo($"Start building for version: {parameter.VersionName}");
-                }
-                manifests.Add(BuildCore(parameter, markdownServiceProvider));
-            }
-
-            using (new LoggerPhaseScope("Postprocess", LogLevel.Verbose))
-            {
-                var generatedManifest = ManifestUtility.MergeManifest(manifests);
-                ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
-
-                EnvironmentContext.FileAbstractLayerImpl =
-                    FileAbstractLayerBuilder.Default
-                    .ReadFromManifest(generatedManifest, parameters[0].OutputBaseDir)
-                    .WriteToManifest(generatedManifest, parameters[0].OutputBaseDir)
-                    .Create();
-                using (new PerformanceScope("Process"))
-                {
-                    _postProcessorsManager.Process(generatedManifest, outputDirectory);
-                }
-                
-                using (new PerformanceScope("Dereference"))
-                {
-                    generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
-                }
-
-                using (new PerformanceScope("SaveManifest"))
-                {
-                    // Save to manifest.json
-                    EnvironmentContext.FileAbstractLayerImpl =
-                        FileAbstractLayerBuilder.Default
-                        .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
-                        .WriteToRealFileSystem(parameters[0].OutputBaseDir)
-                        .Create();
-                    SaveManifest(generatedManifest);
-                }
-
-                using (new PerformanceScope("Cleanup"))
-                {
-                    EnvironmentContext.FileAbstractLayerImpl = null;
-
-                    // overwrite intermediate cache files
-                    if (_intermediateFolder != null && transformDocument)
+                    if (parameter.ApplyTemplateSettings.TransformDocument)
                     {
-                        _currentBuildInfo.Save(_intermediateFolder);
-                        if (_lastBuildInfo != null)
+                        transformDocument = true;
+                    }
+                    if (parameter.Files.Count == 0)
+                    {
+                        Logger.LogWarning(string.IsNullOrEmpty(parameter.VersionName)
+                            ? "No files found, nothing is generated in default version."
+                            : $"No files found, nothing is generated in version \"{parameter.VersionName}\".");
+                        manifests.Add(new Manifest());
+                        continue;
+                    }
+                    parameter.Metadata = _postProcessorsManager.PrepareMetadata(parameter.Metadata);
+                    if (!string.IsNullOrEmpty(parameter.VersionName))
+                    {
+                        Logger.LogInfo($"Start building for version: {parameter.VersionName}");
+                    }
+                    manifests.Add(BuildCore(parameter, markdownServiceProvider));
+                }
+
+                using (new LoggerPhaseScope("Postprocess", LogLevel.Verbose))
+                {
+                    var generatedManifest = ManifestUtility.MergeManifest(manifests);
+                    ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
+
+                    EnvironmentContext.FileAbstractLayerImpl =
+                        FileAbstractLayerBuilder.Default
+                        .ReadFromManifest(generatedManifest, parameters[0].OutputBaseDir)
+                        .WriteToManifest(generatedManifest, parameters[0].OutputBaseDir)
+                        .Create();
+                    using (new PerformanceScope("Process"))
+                    {
+                        _postProcessorsManager.Process(generatedManifest, outputDirectory);
+                    }
+
+                    using (new PerformanceScope("Dereference"))
+                    {
+                        generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
+                    }
+
+                    using (new PerformanceScope("SaveManifest"))
+                    {
+                        // Save to manifest.json
+                        EnvironmentContext.FileAbstractLayerImpl =
+                            FileAbstractLayerBuilder.Default
+                            .ReadFromRealFileSystem(parameters[0].OutputBaseDir)
+                            .WriteToRealFileSystem(parameters[0].OutputBaseDir)
+                            .Create();
+                        SaveManifest(generatedManifest);
+                    }
+
+                    using (new PerformanceScope("Cleanup"))
+                    {
+                        EnvironmentContext.FileAbstractLayerImpl = null;
+
+                        // overwrite intermediate cache files
+                        if (_intermediateFolder != null && transformDocument)
                         {
-                            Directory.Delete(Path.Combine(Environment.ExpandEnvironmentVariables(_intermediateFolder), _lastBuildInfo.DirectoryName), true);
+                            _currentBuildInfo.Save(_intermediateFolder);
+                            if (_lastBuildInfo != null)
+                            {
+                                ClearCacheWithNoThrow(_lastBuildInfo.DirectoryName, true);
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception)
+            {
+                if (_intermediateFolder != null)
+                {
+                    ClearCacheWithNoThrow(_currentBuildInfo.DirectoryName, true);
+                }
+                throw;
             }
         }
 
@@ -214,11 +225,24 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
+        private void ClearCacheWithNoThrow(string subFolder, bool recursive)
+        {
+            try
+            {
+                string fullPath = Path.Combine(Environment.ExpandEnvironmentVariables(_intermediateFolder), subFolder);
+                Directory.Delete(fullPath, recursive);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning($"Failed to delete cache files in path: {subFolder}. Details: {ex.Message}.");
+            }
+        }
+
         private IEnumerable<IInputMetadataValidator> GetMetadataRules(DocumentBuildParameters parameter)
         {
             try
             {
-                var mvb = MarkdownValidatorBuilder.Create(_container, parameter.Files.DefaultBaseDir, parameter.TemplateDir);
+                var mvb = MarkdownValidatorBuilder.Create(new CompositionContainer(), parameter.Files.DefaultBaseDir, parameter.TemplateDir);
                 return mvb.GetEnabledMetadataRules().ToList();
             }
             catch (Exception ex)

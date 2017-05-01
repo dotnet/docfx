@@ -28,12 +28,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
             if (Options.Gfm)
             {
                 builder.Add(new GfmFencesBlockRule());
-                builder.Add(new GfmHeadingBlockRule());
             }
-            else
-            {
-                builder.Add(new MarkdownHeadingBlockRule());
-            }
+            builder.Add(new MarkdownHeadingBlockRule());
             if (Options.Tables)
             {
                 builder.Add(new MarkdownNpTableBlockRule());

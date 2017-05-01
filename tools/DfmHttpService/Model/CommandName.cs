@@ -6,8 +6,10 @@ namespace DfmHttpService
     internal enum CommandName
     {
         NotDefined,
+        TestServerAvailable,
         Preview,
         GenerateTokenTree,
+        DeleteTempPreviewFile,
         Exit
     }
 }

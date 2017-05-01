@@ -10,5 +10,6 @@ namespace Microsoft.DocAsCode.Common
         string Phase { get; }
         string File { get; }
         string Line { get; }
+        string Code { get; }
     }
 }

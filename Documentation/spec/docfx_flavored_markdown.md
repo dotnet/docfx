@@ -45,6 +45,12 @@ All will render to:
 
 If `link_text` is not specified, DocFX will extract the title from the target topic and use it as the link text.
 
+> [!Note]
+> Hashtag in `xref` is always treated as separator between file name and anchor name. That means if you have `#` in UID, it has
+> to be [encoded](https://en.wikipedia.org/wiki/Percent-encoding) to `%23`.
+>
+> Actually `xref` format follows URI standard so all [reserved characters](https://tools.ietf.org/html/rfc3986#section-2.2) should be encoded.
+
 For more information, see [cross reference](../tutorial/links_and_cross_references.md#using-cross-reference).
 
 
@@ -63,6 +69,7 @@ Inline file inclusion is in the following syntax, in which `<title>` stands for 
 > For inline file inclusion, the file included will be considered as containing only inline tags, for example,
 > `###header` inside the file will not transfer since `<h3>` is a block tag, while `[a](b)` will transform to
 > `<a href='b'>a</a>` since `<a>` is an inline tag.
+> Also, ending white spaces will be **trimmed**, considering ending white spaces in inline inclusion in most cases are typos.
 
 ```md
 ...Other inline contents... [!include[<title>](<filepath>)]
@@ -167,16 +174,16 @@ Here are all the supported note types with the styling of the default theme appl
 
 > [!NOTE]
 > This is a note which needs your attention, but it's not super important.
-
+>
 > [!TIP]
 > This is a note which needs your attention, but it's not super important.
-
+>
 > [!WARNING]
 > This is a warning containing some important message.
-
+>
 > [!IMPORTANT]
 > This is a warning containing some important message.
-
+>
 > [!CAUTION]
 > This is a warning containing some important message.
 

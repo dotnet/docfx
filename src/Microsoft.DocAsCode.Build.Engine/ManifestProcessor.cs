@@ -21,23 +21,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         private DocumentBuildContext _context;
         private TemplateProcessor _templateProcessor;
 
-        public ManifestProcessor(List<HostService> hostServices, DocumentBuildContext context, TemplateProcessor templateProcessor)
+        public ManifestProcessor(List<ManifestItemWithContext> manifestWithContext, DocumentBuildContext context, TemplateProcessor templateProcessor)
         {
-            if (hostServices == null)
-            {
-                throw new ArgumentNullException(nameof(hostServices));
-            }
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-            if (templateProcessor == null)
-            {
-                throw new ArgumentNullException(nameof(templateProcessor));
-            }
-            _context = context;
-            _templateProcessor = templateProcessor;
-            Init(hostServices);
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _templateProcessor = templateProcessor ?? throw new ArgumentNullException(nameof(templateProcessor));
+            _manifestWithContext = manifestWithContext ?? throw new ArgumentNullException(nameof(manifestWithContext));
         }
 
         public void Process()
@@ -77,168 +65,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         #region Private
-
-        private void Init(List<HostService> hostServices)
-        {
-            _manifestWithContext = new List<ManifestItemWithContext>();
-            foreach (var hostService in hostServices)
-            {
-                using (new LoggerPhaseScope(hostService.Processor.Name, LogLevel.Verbose))
-                {
-                    _manifestWithContext.AddRange(ExportManifest(hostService, _context));
-                }
-            }
-        }
-
-        private static IEnumerable<ManifestItemWithContext> ExportManifest(HostService hostService, DocumentBuildContext context)
-        {
-            var manifestItems = new List<ManifestItemWithContext>();
-            using (new LoggerPhaseScope("Save", LogLevel.Verbose))
-            {
-                hostService.Models.RunAll(m =>
-                {
-                    if (m.Type != DocumentType.Overwrite)
-                    {
-                        using (new LoggerFileScope(m.LocalPathFromRoot))
-                        {
-                            Logger.LogDiagnostic($"Processor {hostService.Processor.Name}: Saving...");
-                            m.BaseDir = context.BuildOutputFolder;
-                            if (m.FileAndType.SourceDir != m.FileAndType.DestinationDir)
-                            {
-                                m.File = (RelativePath)m.FileAndType.DestinationDir + (((RelativePath)m.File) - (RelativePath)m.FileAndType.SourceDir);
-                            }
-                            m.File = Path.Combine(context.VersionFolder ?? string.Empty, m.File);
-                            var result = hostService.Processor.Save(m);
-                            if (result != null)
-                            {
-                                string extension = string.Empty;
-                                if (hostService.Template != null)
-                                {
-                                    if (hostService.Template.TryGetFileExtension(result.DocumentType, out extension))
-                                    {
-                                        m.File = result.FileWithoutExtension + extension;
-                                    }
-                                }
-
-                                var item = HandleSaveResult(context, hostService, m, result);
-                                item.Extension = extension;
-
-                                manifestItems.Add(new ManifestItemWithContext(item, m, hostService.Processor, hostService.Template?.GetTemplateBundle(result.DocumentType)));
-                            }
-                        }
-                    }
-                });
-            }
-            return manifestItems;
-        }
-
-        private static InternalManifestItem HandleSaveResult(
-            DocumentBuildContext context,
-            HostService hostService,
-            FileModel model,
-            SaveResult result)
-        {
-            context.SetFilePath(model.Key, ((RelativePath)model.File).GetPathFromWorkingFolder());
-            DocumentException.RunAll(
-                () => CheckFileLink(hostService, result),
-                () => HandleUids(context, result),
-                () => HandleToc(context, result),
-                () => RegisterXRefSpec(context, result));
-
-            return GetManifestItem(context, model, result);
-        }
-
-        private static void CheckFileLink(HostService hostService, SaveResult result)
-        {
-            result.LinkToFiles.RunAll(fileLink =>
-            {
-                if (!hostService.SourceFiles.ContainsKey(fileLink))
-                {
-                    ImmutableList<LinkSourceInfo> list;
-                    if (result.FileLinkSources.TryGetValue(fileLink, out list))
-                    {
-                        foreach (var fileLinkSourceFile in list)
-                        {
-                            Logger.LogWarning($"Invalid file link:({fileLinkSourceFile.Target}{fileLinkSourceFile.Anchor}).", null, fileLinkSourceFile.SourceFile, fileLinkSourceFile.LineNumber.ToString());
-                        }
-                    }
-                    else
-                    {
-                        Logger.LogWarning($"Invalid file link:({fileLink}).");
-                    }
-                }
-            });
-        }
-
-        private static void HandleUids(DocumentBuildContext context, SaveResult result)
-        {
-            if (result.LinkToUids.Count > 0)
-            {
-                context.XRef.UnionWith(result.LinkToUids.Where(s => s != null));
-            }
-        }
-
-        private static void HandleToc(DocumentBuildContext context, SaveResult result)
-        {
-            if (result.TocMap?.Count > 0)
-            {
-                foreach (var toc in result.TocMap)
-                {
-                    context.TocMap.AddOrUpdate(
-                        toc.Key,
-                        toc.Value,
-                        (k, v) =>
-                        {
-                            foreach (var item in toc.Value)
-                            {
-                                v.Add(item);
-                            }
-                            return v;
-                        });
-                }
-            }
-        }
-
-        private static void RegisterXRefSpec(DocumentBuildContext context, SaveResult result)
-        {
-            foreach (var spec in result.XRefSpecs)
-            {
-                if (!string.IsNullOrWhiteSpace(spec?.Uid))
-                {
-                    XRefSpec xref;
-                    if (context.XRefSpecMap.TryGetValue(spec.Uid, out xref))
-                    {
-                        Logger.LogWarning($"Uid({spec.Uid}) has already been defined in {((RelativePath)xref.Href).RemoveWorkingFolder()}.");
-                    }
-                    else
-                    {
-                        context.RegisterInternalXrefSpec(spec);
-                    }
-                }
-            }
-            foreach (var spec in result.ExternalXRefSpecs)
-            {
-                if (!string.IsNullOrWhiteSpace(spec?.Uid))
-                {
-                    context.ReportExternalXRefSpec(spec);
-                }
-            }
-        }
-
-        private static InternalManifestItem GetManifestItem(DocumentBuildContext context, FileModel model, SaveResult result)
-        {
-            return new InternalManifestItem
-            {
-                DocumentType = result.DocumentType,
-                FileWithoutExtension = result.FileWithoutExtension,
-                ResourceFile = result.ResourceFile,
-                Key = model.Key,
-                LocalPathFromRoot = model.LocalPathFromRoot,
-                Model = model.ModelWithCache,
-                InputFolder = model.OriginalFileAndType.BaseDir,
-                Metadata = new Dictionary<string, object>((IDictionary<string, object>)model.ManifestProperties),
-            };
-        }
 
         private void UpdateContext()
         {
@@ -313,6 +139,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             _manifestWithContext.RunAll(m =>
             {
+                if (m.FileModel.Type == DocumentType.Resource)
+                {
+                    return;
+                }
                 using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
                 {
                     Logger.LogDiagnostic("Generating system metadata...");
@@ -392,22 +222,5 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         #endregion
-
-        private sealed class ManifestItemWithContext
-        {
-            public InternalManifestItem Item { get; }
-            public FileModel FileModel { get; }
-            public IDocumentProcessor Processor { get; }
-            public TemplateBundle TemplateBundle { get; }
-
-            public TransformModelOptions Options { get; set; }
-            public ManifestItemWithContext(InternalManifestItem item, FileModel model, IDocumentProcessor processor, TemplateBundle bundle)
-            {
-                Item = item;
-                FileModel = model;
-                Processor = processor;
-                TemplateBundle = bundle;
-            }
-        }
     }
 }

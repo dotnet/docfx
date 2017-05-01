@@ -3,7 +3,7 @@
     {
       "src": [
         {
-          "files": [ "**/project.json" ],
+          "files": [ "**.csproj" ],
           "exclude": [ "**/bin/**", "**/obj/**" ],
           "src": "../src"
         }
@@ -23,7 +23,7 @@
         "src": ".."
       },
       {
-        "files": [ "tutorial/**/*.{md,yml}", "spec/**/*.{md,yml}", "*.{md,yml}", "guideline/**/*.{md,yml}" ]
+        "files": [ "tutorial/**/*.{md,yml}", "spec/**/*.{md,yml}", "*.{md,yml}", "guideline/**/*.{md,yml}", "templates-and-plugins/**/*.{md,yml}" ]
       }
     ],
     "resource": [
@@ -57,6 +57,7 @@
       }
     },
     "dest": "_site",
+    "markdownEngineName": "dfm-latest",
     "template": [
       "default",
       "template"

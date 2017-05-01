@@ -7,32 +7,73 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
+    using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Exceptions;
 
     internal class LiquidTemplateRenderer : ITemplateRenderer
     {
-        private static object _locker = new object();
-        private readonly DotLiquid.Template _template = null;
-        public static LiquidTemplateRenderer Create(ResourceCollection resourceProvider, string template)
+        private static readonly object _locker = new object();
+        private static readonly Regex MasterPageRegex = new Regex(@"{%\-?\s*master\s*:?(:?['""]?)\s*(?<file>(.+?))\1\s*\-?%}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex MasterPageBodyRegex = new Regex(@"{%\-?\s*body\s*\-?%}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private readonly DotLiquid.Template _template;
+
+        public static LiquidTemplateRenderer Create(ResourceCollection resourceProvider, TemplateRendererResource info)
         {
-            if (template == null) throw new ArgumentNullException(nameof(template));
+            if (info == null)
+            {
+                throw new ArgumentNullException(nameof(info));
+            }
+
+            if (info.Content == null)
+            {
+                throw new ArgumentNullException(nameof(info.Content));
+            }
+
+            if (info.TemplateName == null)
+            {
+                throw new ArgumentNullException(nameof(info.TemplateName));
+            }
+
+            var processedTemplate = ParseTemplateHelper.ExpandMasterPage(resourceProvider, info, MasterPageRegex, MasterPageBodyRegex);
+
+            // Guarantee that each time returns a new renderer
+            // As Dependency is a globally shared object, allow one entry at a time
             lock (_locker)
             {
-                DotLiquid.Template.RegisterTag<Dependency>("ref");
-                Dependency.PopDependencies();
-                var liquidTemplate = DotLiquid.Template.Parse(template);
-                liquidTemplate.Registers.Add("file_system", new ResourceFileSystem(resourceProvider));
-                var dependencies = Dependency.PopDependencies();
-                return new LiquidTemplateRenderer(liquidTemplate, template, dependencies);
+                try
+                {
+                    DotLiquid.Template.RegisterTag<Dependency>("ref");
+                    Dependency.PopDependencies();
+                    var liquidTemplate = DotLiquid.Template.Parse(processedTemplate);
+                    var dependencies = Dependency.PopDependencies();
+
+                    liquidTemplate.Registers.Add("file_system", new ResourceFileSystem(resourceProvider));
+
+                    return new LiquidTemplateRenderer(liquidTemplate, processedTemplate, info.TemplateName, resourceProvider, dependencies);
+                }
+                catch (DotLiquid.Exceptions.SyntaxException e)
+                {
+                    throw new DocfxException($"Syntax error for template {info.TemplateName}: {e.Message}", e);
+                }
             }
         }
 
-        private LiquidTemplateRenderer(DotLiquid.Template liquidTemplate, string template, IEnumerable<string> dependencies)
+        private LiquidTemplateRenderer(DotLiquid.Template liquidTemplate, string template, string templateName, ResourceCollection resource, IEnumerable<string> dependencies)
         {
             _template = liquidTemplate;
             Raw = template;
-            Dependencies = dependencies;
+            Dependencies = ParseDependencies(templateName, resource, dependencies).ToList();
+        }
+
+        private IEnumerable<string> ParseDependencies(string templateName, ResourceCollection resource, IEnumerable<string> raw)
+        {
+            return from item in raw
+                   from name in ParseTemplateHelper.GetResourceName(item, templateName, resource)
+                   select name;
         }
 
         public string Raw { get; }
@@ -54,7 +95,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         private sealed class Dependency : DotLiquid.Tag
         {
             private static readonly HashSet<string> SharedDependencies = new HashSet<string>();
-            private static object _locker = new object();
             public override void Initialize(string tagName, string markup, List<string> tokens)
             {
                 base.Initialize(tagName, markup, tokens);

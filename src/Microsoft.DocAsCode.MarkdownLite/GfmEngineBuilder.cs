@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             builder.Add(new MarkdownNewLineBlockRule());
             builder.Add(new MarkdownCodeBlockRule());
             builder.Add(new GfmFencesBlockRule());
-            builder.Add(new GfmHeadingBlockRule());
+            builder.Add(new MarkdownHeadingBlockRule());
             builder.Add(new MarkdownNpTableBlockRule());
             builder.Add(new MarkdownLHeadingBlockRule());
             builder.Add(new MarkdownHrBlockRule());

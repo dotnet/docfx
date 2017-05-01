@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Shared\test.base.props" />
+
+  <ItemGroup>
+    <Compile Include="..\Shared\TestBase.cs" />
+    <None Update="TestData\overwrite\rest.overwrite.tags.md;TestData\overwrite\rest.overwrite.unmergable.md;TestData\overwrite\rest.overwrite.multi.uid.md;TestData\overwrite\rest.overwrite.not.predefined.md;TestData\overwrite\rest.overwrite.parameters.md;TestData\overwrite\rest.overwrite.simple.md;TestData\overwrite\rest.overwrite.default.md;TestData\overwrite\rest.overwrite.invalid.md;TestData\overwrite\rest.overwrite.invalid.links.first.md;TestData\overwrite\rest.overwrite.invalid.links.second.md;TestData\overwrite\rest.overwrite.remarks.md;TestData\contacts-operations.md;TestData\swagger\contacts.json;TestData\swagger\contactsForExternalRef.json;TestData\swagger\externalLoopRef_A.json;TestData\swagger\externalLoopRef_B.json;TestData\swagger\externalRefNotExist.json;TestData\swagger\externalRefWithDefinition.json;TestData\swagger\externalRefWithRefInside.json;TestData\swagger\refWithRefInside.json;TestData\swagger\ref.json;TestData\swagger\loopref_swagger2.json;TestData\swagger\ref_swagger2.json;TestData\swagger\pathParameters_swagger2.json;TestData\swagger\tag_swagger2.json;TestData\swagger\simple_swagger2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.4.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="YamlDotNet.Signed" Version="4.1.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
+    <PackageReference Include="Microsoft.Composition" Version="1.0.27" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.RestApi\Microsoft.DocAsCode.Build.RestApi.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Engine\Microsoft.DocAsCode.Build.Engine.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.ManagedReference\Microsoft.DocAsCode.Build.ManagedReference.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+</Project>

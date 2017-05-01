@@ -26,6 +26,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         private const string SplitReferencePropertyName = "_splitReference";
         private const string IsOverloadPropertyName = "_isOverload";
         private const int MaximumFileNameLength = 180;
+        private static readonly List<string> EmptyList = new List<string>();
+        private static readonly string[] EmptyArray = new string[0];
 
         public override string Name => nameof(SplitClassPageToMemberLevel);
 
@@ -42,7 +44,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var collection = new List<FileModel>(models);
 
             // Separate items into different models if the PageViewModel contains more than one item
-            var treeMapping = new Dictionary<string, IEnumerable<TreeItem>>();
+            var treeMapping = new Dictionary<string, Tuple<FileAndType, IEnumerable<TreeItem>>>();
             foreach (var model in models)
             {
                 var result = SplitModelToOverloadLevel(model);
@@ -54,7 +56,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     }
                     else
                     {
-                        treeMapping.Add(result.Uid, result.TreeItems);
+                        treeMapping.Add(result.Uid, Tuple.Create(model.OriginalFileAndType, result.TreeItems));
                         collection.AddRange(result.Models);
                     }
                 }
@@ -67,7 +69,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                      ActionType = TreeItemActionType.AppendChild,
                      Key = item.Key,
                      TypeOfKey = TreeItemKeyType.TopicUid,
-                     RestructuredItems = item.Value.ToImmutableList(),
+                     RestructuredItems = item.Value.Item2.ToImmutableList(),
+                     SourceFiles = new FileAndType[] { item.Value.Item1 }.ToImmutableList(),
                  }).ToImmutableList();
 
             return collection;
@@ -102,32 +105,18 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             var primaryItem = page.Items[0];
             var itemsToSplit = page.Items.Skip(1);
-
             var children = new List<TreeItem>();
             var splittedModels = new List<FileModel>();
-
-            var group = (from item in itemsToSplit group item by item.Overload).ToList();
-
-            // Per Overload per page
-            foreach (var overload in group)
+            foreach (var newPage in GetNewPages(page))
             {
-                if (overload.Key == null)
-                {
-                    foreach (var i in overload)
-                    {
-                        var m = GenerateNonOverloadPage(page, model, i, newFileNames);
-                        splittedModels.Add(m.FileModel);
+                var newPrimaryItem = newPage.Items[0];
 
-                        // Order toc by display name
-                        children.Add(m.TreeItem);
-                    }
-                }
-                else
-                {
-                    var m = GenerateOverloadPage(page, model, overload, newFileNames);
-                    splittedModels.Add(m.FileModel);
-                    children.Add(m.TreeItem);
-                }
+                var newFileName = GetNewFileName(primaryItem.Uid, newPrimaryItem);
+                var newModel = GenerateNewFileModel(model, newPage, newFileName, newFileNames);
+
+                newPrimaryItem.Metadata[SplitReferencePropertyName] = true;
+                splittedModels.Add(newModel);
+                AddToTree(newPrimaryItem, children);
             }
 
             // Convert children to references
@@ -143,16 +132,42 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return new SplittedResult(primaryItem.Uid, children.OrderBy(s => GetDisplayName(s)), splittedModels);
         }
 
-        private ModelWrapper GenerateNonOverloadPage(PageViewModel page, FileModel model, ItemViewModel item, Dictionary<string, int> existingFileNames)
+        private IEnumerable<PageViewModel> GetNewPages(PageViewModel page)
         {
-            item.Metadata[SplitReferencePropertyName] = true;
-            var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { item });
-            var newModel = GenerateNewFileModel(model, newPage, item.Uid, existingFileNames);
-            var tree = ConvertToTreeItem(item);
-            return new ModelWrapper(newPage, newModel, tree);
+            var primaryItem = page.Items[0];
+            var itemsToSplit = page.Items.Skip(1);
+            var group = (from item in itemsToSplit group item by item.Overload).ToList();
+
+            // Per Overload per page
+            foreach (var overload in group)
+            {
+                if (overload.Key == null)
+                {
+                    foreach (var item in overload)
+                    {
+                        yield return ExtractPageViewModel(page, new List <ItemViewModel> { item });
+                    }
+                }
+                else
+                {
+                    var m = GenerateOverloadPage(page, overload);
+                    var result = new List<ItemViewModel> { m };
+                    result.AddRange(overload);
+                    yield return ExtractPageViewModel(page, result);
+                }
+            }
         }
 
-        private ModelWrapper GenerateOverloadPage(PageViewModel page, FileModel model, IGrouping<string, ItemViewModel> overload, Dictionary<string, int> existingFileNames)
+        private void AddToTree(ItemViewModel item, List<TreeItem> tree)
+        {
+            if (!item.IsExplicitInterfaceImplementation)
+            {
+                var treeItem = ConvertToTreeItem(item);
+                tree.Add(treeItem);
+            }
+        }
+
+        private ItemViewModel GenerateOverloadPage(PageViewModel page, IGrouping<string, ItemViewModel> overload)
         {
             var primaryItem = page.Items[0];
 
@@ -172,19 +187,32 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     [IsOverloadPropertyName] = true,
                     [SplitReferencePropertyName] = true
                 },
-                Platform = MergePlatform(overload),
+                Platform = MergeList(overload, s => s.Platform ?? EmptyList),
+                SupportedLanguages = MergeList(overload, s => s.SupportedLanguages ?? EmptyArray).ToArray(),
                 IsExplicitInterfaceImplementation = firstMember.IsExplicitInterfaceImplementation,
+                Source = firstMember.Source,
+                Documentation = firstMember.Documentation
             };
 
-            var mergeVersion = MergeVersion(overload);
+            var mergeVersion = MergeList(overload, s =>
+            {
+                List<string> versionList = null;
+                object versionObj;
+                if (s.Metadata.TryGetValue(Constants.MetadataName.Version, out versionObj))
+                {
+                    versionList = GetVersionFromMetadata(versionObj);
+                }
+                return versionList ?? EmptyList;
+            });
             if (mergeVersion != null)
             {
-                newPrimaryItem.Metadata[Constants.MetadataName.Version] = MergeVersion(overload);
+                newPrimaryItem.Metadata[Constants.MetadataName.Version] = mergeVersion;
             }
 
             var referenceItem = page.References.FirstOrDefault(s => s.Uid == key);
             if (referenceItem != null)
             {
+                // The properties defined in reference section overwrites the pre-defined values
                 MergeWithReference(newPrimaryItem, referenceItem);
             }
 
@@ -193,44 +221,18 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 newPrimaryItem.Name = GetOverloadItemName(key, primaryItem.Uid, firstMember.Type == MemberType.Constructor);
             }
 
-            var newPage = ExtractPageViewModel(page, new List<ItemViewModel> { newPrimaryItem }.Concat(overload).ToList());
-            var newFileName = GetNewFileName(primaryItem.Uid, newPrimaryItem);
-            var newModel = GenerateNewFileModel(model, newPage, newFileName, existingFileNames);
-            var tree = ConvertToTreeItem(newPrimaryItem);
-            return new ModelWrapper(newPage, newModel, tree);
+            return newPrimaryItem;
         }
 
-        private List<string> MergePlatform(IEnumerable<ItemViewModel> children)
+        private List<string> MergeList(IEnumerable<ItemViewModel> children, Func<ItemViewModel, IEnumerable<string>> selector)
         {
-            var platforms = children.Where(s => s.Platform != null).SelectMany(s => s.Platform).Distinct().ToList();
-            if (platforms.Count == 0)
+            var items = children.SelectMany(selector).Distinct().OrderBy(s => s).ToList();
+            if (items.Count == 0)
             {
                 return null;
             }
 
-            platforms.Sort();
-            return platforms;
-        }
-
-        private List<string> MergeVersion(IEnumerable<ItemViewModel> children)
-        {
-            var versions = new SortedSet<string>();
-            foreach (var child in children)
-            {
-                object versionObj;
-                if (child.Metadata.TryGetValue(Constants.MetadataName.Version, out versionObj))
-                {
-                    var versionList = GetVersionFromMetadata(versionObj);
-                    versions.UnionWith(versionList);
-                }
-            }
-
-            if (versions.Count == 0)
-            {
-                return null;
-            }
-
-            return versions.ToList();
+            return items;
         }
 
         private List<string> GetVersionFromMetadata(object value)
@@ -241,26 +243,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 return new List<string> { text };
             }
 
-            var collection = value as IEnumerable<object>;
-            if (collection != null)
-            {
-                return collection.OfType<string>().ToList();
-            }
-
-            var jarray = value as JArray;
-            if (jarray != null)
-            {
-                try
-                {
-                    return jarray.ToObject<List<string>>();
-                }
-                catch (Exception)
-                {
-                    Logger.LogWarning($"Unknown version metadata: {jarray.ToString()}");
-                }
-            }
-
-            return null;
+            return GetListFromObject(value);
         }
 
         private string GetOverloadItemName(string overload, string parent, bool isCtor)
@@ -355,6 +338,62 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 foreach (var pair in reference.NameWithTypeInDevLangs)
                 {
                     item.NamesWithType[pair.Key] = pair.Value;
+                }
+            }
+
+            // SHOULD sync with ItemViewModel & ReferenceViewModel
+            // Make sure key inside Additional dictionary does not contain the same key value as ItemViewModel
+            foreach (var pair in reference.Additional)
+            {
+                switch (pair.Key)
+                {
+                    case "summary":
+                        {
+                            var summary = pair.Value as string;
+                            if (summary != null)
+                            {
+                                item.Summary = summary;
+                            }
+                            break;
+                        }
+                    case "remarks":
+                        {
+                            var remarks = pair.Value as string;
+                            if (remarks != null)
+                            {
+                                item.Remarks = remarks;
+                            }
+                            break;
+                        }
+                    case "example":
+                        {
+                            var examples = GetListFromObject(pair.Value);
+                            if (examples != null)
+                            {
+                                item.Examples = examples;
+                            }
+                            break;
+                        }
+                    case Constants.PropertyName.Id:
+                    case Constants.PropertyName.Type:
+                    case Constants.PropertyName.Source:
+                    case Constants.PropertyName.Documentation:
+                    case "isEii":
+                    case "isExtensionMethod":
+                    case "children":
+                    case "assemblies":
+                    case "namespace":
+                    case "langs":
+                    case "syntax":
+                    case "overridden":
+                    case "overload":
+                    case "exceptions":
+                    case "seealso":
+                    case "see":
+                        break;
+                    default:
+                        item.Metadata[pair.Key] = pair.Value;
+                        break;
                 }
             }
         }
@@ -492,6 +531,30 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             return (from item in page.Items select new UidDefinition(item.Uid, file)).ToImmutableArray();
         }
 
+        private List<string> GetListFromObject(object value)
+        {
+            var collection = value as IEnumerable<object>;
+            if (collection != null)
+            {
+                return collection.OfType<string>().ToList();
+            }
+
+            var jarray = value as JArray;
+            if (jarray != null)
+            {
+                try
+                {
+                    return jarray.ToObject<List<string>>();
+                }
+                catch (Exception)
+                {
+                    Logger.LogWarning($"Unknown version metadata: {jarray.ToString()}");
+                }
+            }
+
+            return null;
+        }
+
         private T GetPropertyValue<T>(Dictionary<string, object> metadata, string key) where T : class
         {
             object result;
@@ -519,15 +582,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private sealed class ModelWrapper
         {
-            public PageViewModel PageViewModel { get; }
+            public ItemViewModel PrimaryItem { get; }
             public FileModel FileModel { get; }
-            public TreeItem TreeItem { get; }
 
-            public ModelWrapper(PageViewModel page, FileModel fileModel, TreeItem tree)
+            public ModelWrapper(ItemViewModel item, FileModel fileModel)
             {
-                PageViewModel = page;
+                PrimaryItem = item;
                 FileModel = fileModel;
-                TreeItem = tree;
             }
         }
     }

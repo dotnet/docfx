@@ -16,7 +16,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
-    [Export("dfm", typeof(IMarkdownServiceProvider))]
+    [Export("dfm-latest", typeof(IMarkdownServiceProvider))]
+    [Export("dfm-2.15", typeof(IMarkdownServiceProvider))]
     public class DfmServiceProvider : IMarkdownServiceProvider
     {
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
@@ -36,15 +37,28 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             return new DfmService(
+                this,
                 parameters.BasePath,
                 parameters.TemplateDir,
+                Container,
                 parameters.Tokens,
-                TokenTreeValidator,
-                fallbackFolders);
+                fallbackFolders,
+                parameters.Extensions);
         }
 
+        protected virtual bool LegacyMode => false;
+
         [ImportMany]
-        public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; }
+        public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; } = Enumerable.Empty<IMarkdownTokenTreeValidator>();
+
+        [ImportMany]
+        public IEnumerable<IDfmCustomizedRendererPartProvider> DfmRendererPartProviders { get; set; } = Enumerable.Empty<IDfmCustomizedRendererPartProvider>();
+
+        [ImportMany]
+        public IEnumerable<IDfmEngineCustomizer> DfmEngineCustomizers { get; set; } = Enumerable.Empty<IDfmEngineCustomizer>();
+
+        [Import]
+        public ICompositionContainer Container { get; set; }
 
         private sealed class DfmService : IMarkdownService, IHasIncrementalContext, IDisposable
         {
@@ -52,22 +66,39 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             private readonly ImmutableDictionary<string, string> _tokens;
 
-            private readonly DfmRenderer _renderer;
+            private readonly object _renderer;
 
             private readonly string _incrementalContextHash;
 
-            public DfmService(string baseDir, string templateDir, ImmutableDictionary<string, string> tokens, IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator, IReadOnlyList<string> fallbackFolders = null)
+            public DfmService(
+                DfmServiceProvider provider,
+                string baseDir,
+                string templateDir,
+                ICompositionContainer container,
+                ImmutableDictionary<string, string> tokens,
+                IReadOnlyList<string> fallbackFolders,
+                IReadOnlyDictionary<string, object> parameters)
             {
                 var options = DocfxFlavoredMarked.CreateDefaultOptions();
+                options.LegacyMode = provider.LegacyMode;
                 options.ShouldExportSourceInfo = true;
-                _builder = DocfxFlavoredMarked.CreateBuilder(baseDir, templateDir, options, fallbackFolders);
-                _builder.TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(tokenTreeValidator);
+                _builder = new DfmEngineBuilder(
+                    options,
+                    baseDir,
+                    templateDir,
+                    fallbackFolders,
+                    container);
+                _builder.TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(provider.TokenTreeValidator);
                 _tokens = tokens;
-                _renderer = new DfmRenderer { Tokens = _tokens };
-                _incrementalContextHash = ComputeIncrementalContextHash(baseDir, templateDir, tokenTreeValidator);
+                _renderer = CustomizedRendererCreator.CreateRenderer(new DfmRenderer { Tokens = _tokens }, provider.DfmRendererPartProviders, parameters);
+                foreach (var c in provider.DfmEngineCustomizers)
+                {
+                    c.Customize(_builder, parameters);
+                }
+                _incrementalContextHash = ComputeIncrementalContextHash(baseDir, templateDir, provider.TokenTreeValidator, parameters);
             }
 
-            private static string ComputeIncrementalContextHash(string baseDir, string templateDir, IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator)
+            private static string ComputeIncrementalContextHash(string baseDir, string templateDir, IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator, IReadOnlyDictionary<string, object> parameters)
             {
                 var content = (StringBuffer)"dfm";
                 if (baseDir != null)
@@ -92,7 +123,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
                     }
                 }
-
+                if (parameters.Count > 0)
+                {
+                    content += "::" + nameof(parameters) + "::";
+                    content += JsonUtility.Serialize(
+                        parameters
+                        .Where(p => p.Key != "fallbackFolders")
+                        .ToDictionary(p => p.Key, p => p.Value));
+                }
                 var contentText = content.ToString();
                 Logger.LogVerbose($"Dfm config content: {content}");
                 return contentText.GetMd5String();
@@ -117,7 +155,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             public void Dispose()
             {
-                _renderer.Dispose();
+                (_renderer as IDisposable)?.Dispose();
             }
         }
     }

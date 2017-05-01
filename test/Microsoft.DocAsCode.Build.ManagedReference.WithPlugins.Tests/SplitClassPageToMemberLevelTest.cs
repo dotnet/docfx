@@ -105,6 +105,18 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.Equal(MemberType.Constructor, model.Type);
                 Assert.Equal(3, model.Children.Count);
                 Assert.Equal(new List<string> { "net2", "net46" }, model.Platform);
+                Assert.Equal("<p sourcefile=\"TestData/mref/CatLibrary.Cat`2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Overload summary</p>\n", model.Summary);
+                Assert.Equal("<p sourcefile=\"TestData/mref/CatLibrary.Cat`2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Overload <em>remarks</em></p>\n", model.Remarks);
+                Assert.Equal(new List<string>
+                {
+                    "<p sourcefile=\"TestData/mref/CatLibrary.Cat`2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Overload example 1</p>\n",
+                    "<p sourcefile=\"TestData/mref/CatLibrary.Cat`2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Overload <strong>example 2</strong></p>\n"
+                }, model.Examples);
+                Assert.Equal("Not defined Property", model.Metadata["not-defined"]);
+                Assert.NotNull(model.Source);
+
+                Assert.Equal("net46", JArray.FromObject(model.Children[0].Metadata[Constants.MetadataName.Version])[0].ToString());
+                Assert.Equal("net2", JArray.FromObject(model.Children[1].Metadata[Constants.MetadataName.Version])[0].ToString());
             }
             {
                 var outputRawModelPath = GetRawModelFilePath("toc.yml");
@@ -113,11 +125,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.NotNull(model);
                 Assert.Equal(1, model.Items.Count);
                 Assert.Equal("CatLibrary.Cat%602.html", model.Items[0].TopicHref);
-                Assert.Equal(16, model.Items[0].Items.Count);
+                Assert.Equal(13, model.Items[0].Items.Count);
                 Assert.Equal("CatLibrary.Cat-2.op_Addition.html", model.Items[0].Items[0].TopicHref);
                 Assert.Equal("Addition", model.Items[0].Items[0].Name);
-                Assert.Equal("CatLibrary.Cat-2.op_Subtraction.html", model.Items[0].Items[15].TopicHref);
-                Assert.Equal("Subtraction", model.Items[0].Items[15].Name);
+                Assert.Equal("CatLibrary.Cat-2.op_Subtraction.html", model.Items[0].Items[12].TopicHref);
+                Assert.Equal("Subtraction", model.Items[0].Items[12].Name);
 
                 var ctor = model.Items[0].Items.FirstOrDefault(s => s.Name == "Cat");
                 Assert.NotNull(ctor);
@@ -183,21 +195,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.NotNull(model);
                 Assert.Equal(1, model.Items.Count);
                 Assert.Equal("../System.Activities.Presentation.Model.ModelItemDictionary.html", model.Items[0].TopicHref);
-                Assert.Equal(38, model.Items[0].Items.Count);
+                Assert.Equal(19, model.Items[0].Items.Count);
 
                 Assert.Equal("../System.Activities.Presentation.Model.ModelItemDictionary.Add.html", model.Items[0].Items[0].TopicHref);
                 Assert.Equal("Add", model.Items[0].Items[0].Name);
-
-                var eiiAddWithLongName = model.Items[0].Items[17];
-                Assert.Equal("../System.Activities.Presentation.Model.ModelItemDictionary.Add_1.html", eiiAddWithLongName.TopicHref);
-                Assert.Equal("System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<System.Activities.Presentation.Model.ModelItem,System.Activities.Presentation.Model.ModelItem>>.Add", eiiAddWithLongName.Name);
-                Assert.Equal("System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#Generic#ICollection<System#Collections#Generic#KeyValuePair<System#Activities#Presentation#Model#ModelItem,System#Activities#Presentation#Model#ModelItem>>#Add*", eiiAddWithLongName.TopicUid);
-
-                var eiiAdd = model.Items[0].Items[25];
-
-                Assert.Equal("../System.Activities.Presentation.Model.ModelItemDictionary.System-Collections-IDictionary-Add.html", eiiAdd.TopicHref);
-                Assert.Equal("System.Collections.IDictionary.Add", eiiAdd.Name);
-                Assert.Equal("System.Activities.Presentation.Model.ModelItemDictionary.System#Collections#IDictionary#Add*", eiiAdd.TopicUid);
             }
         }
 

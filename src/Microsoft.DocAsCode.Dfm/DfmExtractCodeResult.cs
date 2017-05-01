@@ -3,11 +3,11 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
-    internal class DfmExtractCodeResult
+    public class DfmExtractCodeResult
     {
         public bool IsSuccessful { get; set; }
 
-        public string[] FencesCodeLines { get; set; }
+        public string[] CodeLines { get; set; }
 
         public string ErrorMessage { get; set; }
     }

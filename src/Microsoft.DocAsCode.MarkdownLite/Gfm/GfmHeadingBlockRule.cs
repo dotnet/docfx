@@ -3,10 +3,10 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
-    using System.Text.RegularExpressions;
+    using System;
 
+    [Obsolete]
     public class GfmHeadingBlockRule : MarkdownHeadingBlockRule
     {
-        public override Regex Heading => Regexes.Block.Gfm.Heading;
     }
 }

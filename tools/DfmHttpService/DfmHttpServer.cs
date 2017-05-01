@@ -9,18 +9,18 @@ namespace DfmHttpService
 
     internal class DfmHttpServer
     {
-        private const int DefaultPort = 4001;
-        private const string UrlPrefixTemplate = "http://localhost:{0}/";
         private readonly HttpListener _listener = new HttpListener();
         private ManualResetEvent _processing = new ManualResetEvent(true);
         private readonly IHttpHandler _handler;
         private int _status;
 
-        // TODO: make UrlPrefix configurable
-        private static string UrlPrefix => string.Format(UrlPrefixTemplate, DefaultPort);
-
-        public DfmHttpServer(IHttpHandler handler)
+        public DfmHttpServer(IHttpHandler handler, string port)
         {
+            if (string.IsNullOrEmpty(port))
+            {
+                port = PreviewConstants.ServerPort;
+            }
+            string UrlPrefix = $"http://localhost:{port}/";
             _listener.Prefixes.Add(UrlPrefix);
             _handler = handler;
         }
@@ -35,6 +35,8 @@ namespace DfmHttpService
 
             _listener.Start();
             _processing.Reset();
+            // Inform extension that server is ready to handle request
+            Console.WriteLine("Ready");
             RunServerCore();
         }
 

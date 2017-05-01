@@ -18,6 +18,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     public static class VisitorHelper
     {
+        public static string GlobalNamespaceId { get; set; }
         private static readonly Regex GenericMethodPostFix = new Regex(@"``\d+$", RegexOptions.Compiled);
 
         public static void FeedComments(MetadataItem item, ITripleSlashCommentParserContext context)
@@ -44,6 +45,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return null;
             }
 
+            var namespaceSymbol = symbol as INamespaceSymbol;
+            if (namespaceSymbol != null && namespaceSymbol.IsGlobalNamespace)
+            {
+                return GlobalNamespaceId;
+            }
+
             var assemblySymbol = symbol as IAssemblySymbol;
             if (assemblySymbol != null)
             {
@@ -54,13 +61,32 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return typeof(object).FullName;
             }
+
+            return GetDocumentationCommentId(symbol)?.Substring(2);
+        }
+
+        private static string GetDocumentationCommentId(ISymbol symbol)
+        {
             string str = symbol.GetDocumentationCommentId();
             if (string.IsNullOrEmpty(str))
             {
                 return null;
             }
 
-            return str.Substring(2);
+            bool inGlobalNamespace = 
+                symbol.ContainingNamespace == null || 
+                symbol.ContainingNamespace.IsGlobalNamespace;
+
+            if (inGlobalNamespace && !string.IsNullOrEmpty(GlobalNamespaceId))
+            {
+                bool isNamespace = (symbol is INamespaceSymbol);
+                bool isTypeParameter = (symbol is ITypeParameterSymbol);
+                if (!isNamespace && !isTypeParameter)
+                {
+                    str = str.Insert(2, GlobalNamespaceId + ".");
+                }
+            }
+            return str;
         }
 
         public static string GetCommentId(ISymbol symbol)
@@ -74,7 +100,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return "T:" + typeof(object).FullName;
             }
-            return symbol.GetDocumentationCommentId();
+
+            return GetDocumentationCommentId(symbol);
         }
 
         public static string GetOverloadId(ISymbol symbol)

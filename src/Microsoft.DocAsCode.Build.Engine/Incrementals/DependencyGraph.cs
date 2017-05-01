@@ -247,6 +247,19 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return ReadDependency(GetAllDependentNodesNoLock);
         }
 
+        public HashSet<string> GetAllIncludeDependencyFrom(string from)
+        {
+            var files = new HashSet<string>();
+            foreach (var item in GetAllDependencyFrom(from))
+            {
+                if (item.Type == DependencyTypeName.Include)
+                {
+                    files.Add(item.To.Value);
+                }
+            }
+            return files;
+        }
+
         public HashSet<ReferenceItem> GetReferenceReportedBy(string reportedBy)
         {
             return ReadReference(() => GetReferenceReportedByNoLock(reportedBy));
@@ -346,30 +359,48 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                            group r by r.Reference into g
                            select g).ToDictionary(gr => gr.Key, gr => gr.Select(i => i.File).First());
 
+            var unresolved = new HashSet<DependencyItemSourceInfo>();
+
             foreach (var item in _dependencyItems.Where(i => !CanReadDependency(i)).ToList())
             {
                 var updated = item;
                 var from = TryResolveReference(indexer, item.From);
                 var to = TryResolveReference(indexer, item.To);
                 var reportedBy = TryResolveReference(indexer, item.ReportedBy);
+
                 if (from != null)
                 {
                     updated = updated.ChangeFrom(from);
                 }
+                else
+                {
+                    unresolved.Add(item.From);
+                }
+
                 if (to != null)
                 {
                     updated = updated.ChangeTo(to);
                 }
+                else
+                {
+                    unresolved.Add(item.To);
+                }
+
                 if (reportedBy != null)
                 {
                     updated = updated.ChangeReportedBy(reportedBy);
                 }
+                else
+                {
+                    unresolved.Add(item.ReportedBy);
+                }
+
                 if (updated != item)
                 {
                     _dependencyItems.Remove(item);
                     if (from != null && from == to)
                     {
-                        Logger.LogDiagnostic($"Dependency item is ignored because it is a self-dependency after the resolution: {JsonUtility.Serialize(item)}.");
+                        Logger.LogDiagnostic($"Dependency item is ignored because it is a self-dependency after the resolution: {item}.");
                     }
                     else
                     {
@@ -385,6 +416,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     CreateOrUpdate(_indexOnTo, updated.To.Value, updated);
                 }
             }
+
+            if (unresolved.Count > 0)
+            {
+                Logger.LogVerbose($"Dependency graph failed to resolve {unresolved.Count} references: {string.Join(Environment.NewLine, unresolved)}.");
+            }
         }
 
         private DependencyItemSourceInfo TryResolveReference(Dictionary<DependencyItemSourceInfo, string> indexer, DependencyItemSourceInfo source)
@@ -396,7 +432,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             string file;
             if (!indexer.TryGetValue(source, out file))
             {
-                Logger.LogInfo($"Dependency graph Failed to resolve reference: {JsonUtility.Serialize(source)}.");
                 return null;
             }
             return source.ChangeSourceType(DependencyItemSourceType.File).ChangeValue(file);

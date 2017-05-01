@@ -9,5 +9,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
         {
             return content.EndOfString() ? 0 : NotMatch;
         }
+
+        public override string ToString()
+        {
+            return "$";
+        }
     }
 }

@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
@@ -58,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     _innerHandler.Handle(postProcessors, manifest, outputFolder);
                     CheckNoIncrementalItems(manifest, "After processing");
                 }
-                PostHandle(manifest, increItems, outputFolder);
+                PostHandle(manifest, increItems);
             }
         }
 
@@ -66,7 +67,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void PreHandle(Manifest manifest, List<PostProcessor> postProcessors, string outputFolder, List<ManifestItem> increItems, List<ManifestItem> nonIncreItems)
         {
-            using (new PerformanceScope("Pre-handle in incremental post processing"))
+            using (new LoggerPhaseScope("PreHandle", LogLevel.Verbose))
             {
                 if (_increContext.ShouldTraceIncrementalInfo)
                 {
@@ -113,15 +114,18 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void PostHandle(Manifest manifest, List<ManifestItem> increItems, string outputFolder)
+        private void PostHandle(Manifest manifest, List<ManifestItem> increItems)
         {
-            using (new PerformanceScope("Post-handle in incremental post processing"))
+            using (new LoggerPhaseScope("PostHandle", LogLevel.Verbose))
             {
                 if (_increContext.IsIncremental)
                 {
-                    foreach (var increItem in increItems)
+                    using (new LoggerPhaseScope("ReplayMessages", LogLevel.Verbose))
                     {
-                        _increContext.LastInfo.MessageInfo.Replay(increItem.SourceRelativePath);
+                        foreach (var file in GetFilesToReplayMessages(increItems))
+                        {
+                            _increContext.LastInfo.MessageInfo.Replay(file);
+                        }
                     }
 
                     // Add back incremental items
@@ -132,9 +136,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     Logger.UnregisterListener(_increContext.CurrentInfo.MessageInfo.GetListener());
 
-                    TraceIntermediateInfo(outputFolder, manifest);
-
                     manifest.Shrink(_increContext.CurrentBaseDir);
+
+                    TraceIntermediateInfo(manifest);
 
                     // Update manifest items in current post processing info
                     _increContext.CurrentInfo.ManifestItems.AddRange(manifest.Files);
@@ -153,18 +157,21 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Trace intermediate info
 
-        private void TraceIntermediateInfo(string outputFolder, Manifest manifest)
+        private void TraceIntermediateInfo(Manifest manifest)
         {
             if (_increContext.ShouldTraceIncrementalInfo)
             {
-                using (new PerformanceScope("Trace intermediate info in incremental post processing"))
+                using (new LoggerPhaseScope("TraceIntermediateInfo", LogLevel.Verbose))
                 {
                     foreach (var oi in from mi in manifest.Files
                                        from oi in mi.OutputFiles.Values
                                        select oi)
                     {
                         if (oi.LinkToPath != null &&
-                            oi.LinkToPath.StartsWith(_increContext.CurrentBaseDir))
+                            oi.LinkToPath.Length > _increContext.CurrentBaseDir.Length &&
+                            oi.LinkToPath.StartsWith(_increContext.CurrentBaseDir) &&
+                            (oi.LinkToPath[_increContext.CurrentBaseDir.Length] == '\\' ||
+                            oi.LinkToPath[_increContext.CurrentBaseDir.Length] == '/'))
                         {
                             var cachedFileName = oi.LinkToPath.Substring(_increContext.CurrentBaseDir.Length).TrimStart('\\', '/');
                             _increContext.CurrentInfo.PostProcessOutputs[oi.RelativePath] = cachedFileName;
@@ -178,28 +185,55 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Private methods
 
+        private HashSet<string> GetFilesToReplayMessages(List<ManifestItem> increItems)
+        {
+            var files = new HashSet<string>();
+            var sourcePaths = (from increItem in increItems
+                               select increItem.SourceRelativePath).Distinct();
+            foreach (var sourceRelativePath in sourcePaths)
+            {
+                files.Add(sourceRelativePath);
+                var pathFromWorkingFolder = ((RelativePath)sourceRelativePath).GetPathFromWorkingFolder();
+                foreach (var currentVersionInfo in _increContext.CurrentBuildInfo.Versions)
+                {
+                    foreach (var dep in currentVersionInfo.Dependency.GetAllIncludeDependencyFrom(pathFromWorkingFolder))
+                    {
+                        files.Add(((RelativePath)dep).RemoveWorkingFolder());
+                    }
+                }
+            }
+            return files;
+        }
+
         private void CopyToCurrentCache(List<ManifestItem> increItems)
         {
-            foreach (var item in from mi in increItems
-                                 from oi in mi.OutputFiles.Values
-                                 where oi.LinkToPath != null && oi.LinkToPath.StartsWith(_increContext.LastBaseDir)
-                                 select oi)
+            using (new LoggerPhaseScope("CopyToCurrentCache", LogLevel.Verbose))
             {
-                string cachedFileName;
-                if (!_increContext.LastInfo.PostProcessOutputs.TryGetValue(item.RelativePath, out cachedFileName))
-                {
-                    throw new BuildCacheException($"Last incremental post processor outputs should contain {item.RelativePath}.");
-                }
+                var itemsToBeCopied = from mi in increItems
+                                      from oi in mi.OutputFiles.Values
+                                      where oi.LinkToPath != null && oi.LinkToPath.StartsWith(_increContext.LastBaseDir)
+                                      select oi;
+                Parallel.ForEach(
+                    itemsToBeCopied,
+                    new ParallelOptions { MaxDegreeOfParallelism = _increContext.MaxParallelism },
+                    item =>
+                    {
+                        string cachedFileName;
+                        if (!_increContext.LastInfo.PostProcessOutputs.TryGetValue(item.RelativePath, out cachedFileName))
+                        {
+                            throw new BuildCacheException($"Last incremental post processor outputs should contain {item.RelativePath}.");
+                        }
 
-                IncrementalUtility.RetryIO(() =>
-                {
-                    // Copy last cached file to current cache.
-                    var newFileName = IncrementalUtility.GetRandomEntry(_increContext.CurrentBaseDir);
-                    var currentCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.CurrentBaseDir), newFileName);
-                    var lastCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.LastBaseDir), cachedFileName);
-                    File.Copy(lastCachedFile, currentCachedFile);
-                    item.LinkToPath = Path.Combine(_increContext.CurrentBaseDir, newFileName);
-                });
+                        IncrementalUtility.RetryIO(() =>
+                        {
+                            // Copy last cached file to current cache.
+                            var newFileName = IncrementalUtility.GetRandomEntry(_increContext.CurrentBaseDir);
+                            var currentCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.CurrentBaseDir), newFileName);
+                            var lastCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.LastBaseDir), cachedFileName);
+                            File.Copy(lastCachedFile, currentCachedFile);
+                            item.LinkToPath = Path.Combine(_increContext.CurrentBaseDir, newFileName);
+                        });
+                    });
             }
         }
 
@@ -213,32 +247,60 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private List<ManifestItem> RestoreIncrementalManifestItems(Manifest manifest)
         {
-            var increItems = manifest.Files.Where(i => i.IsIncremental).ToList();
-
-            if (_increContext.IsIncremental)
+            using (new LoggerPhaseScope("RestoreIncrementalManifestItems", LogLevel.Verbose))
             {
-                var restoredIncreItems = new List<ManifestItem>();
-                foreach (var increItem in increItems)
+                var increItems = manifest.Files.Where(i => i.IsIncremental).ToList();
+
+                if (_increContext.IsIncremental)
                 {
-                    var cachedItem = _increContext.LastInfo.ManifestItems.FirstOrDefault(i => i.SourceRelativePath == increItem.SourceRelativePath);
-                    if (cachedItem == null)
+                    var restoredIncreItems = new List<ManifestItem>();
+                    Dictionary<string, List<ManifestItem>> increItemsGroup;
+                    Dictionary<string, List<ManifestItem>> lastItemsGroup;
+                    using (new LoggerPhaseScope("Group", LogLevel.Verbose))
                     {
-                        throw new BuildCacheException($"Last manifest items doesn't contain the item with source relative path '{increItem.SourceRelativePath}'.");
+                        increItemsGroup = GroupBySourceRelativePath(increItems);
+                        lastItemsGroup = GroupBySourceRelativePath(_increContext.LastInfo.ManifestItems);
                     }
+                    using (new LoggerPhaseScope("Restore", LogLevel.Verbose))
+                    {
+                        foreach (var pair in increItemsGroup)
+                        {
+                            List<ManifestItem> cachedItems;
+                            if (!lastItemsGroup.TryGetValue(pair.Key, out cachedItems))
+                            {
+                                throw new BuildCacheException($"Last manifest items doesn't contain the item with source relative path '{pair.Key}.'");
+                            }
+                            if (cachedItems.Count != pair.Value.Count)
+                            {
+                                throw new BuildCacheException($"The count of items with source relative path '{pair.Key}' in last manifest doesn't match: last is {cachedItems.Count}, current is {pair.Value.Count}.");
+                            }
 
-                    // Update IsIncremental flag
-                    cachedItem.IsIncremental = true;
-
-                    restoredIncreItems.Add(cachedItem);
+                            // Update IsIncremental flag
+                            cachedItems.ForEach(c => c.IsIncremental = true);
+                            restoredIncreItems.AddRange(cachedItems);
+                        }
+                    }
+                    using (new LoggerPhaseScope("RemoveIncrementalItems", LogLevel.Verbose))
+                    {
+                        // Update incremental items in manifest
+                        manifest.Files.RemoveAll(m => m.IsIncremental);
+                    }
+                    using (new LoggerPhaseScope("AddRestoredItems", LogLevel.Verbose))
+                    {
+                        manifest.Files.AddRange(restoredIncreItems);
+                    }
+                        
+                    return restoredIncreItems;
                 }
 
-                // Update incremental items in manifest
-                manifest.Files.RemoveAll(m => increItems.Contains(m));
-                manifest.Files.AddRange(restoredIncreItems);
-                return restoredIncreItems;
+                return increItems;
             }
+        }
 
-            return increItems;
+        private static Dictionary<string, List<ManifestItem>> GroupBySourceRelativePath(IEnumerable<ManifestItem> items)
+        {
+            return (from f in items
+                    group f by f.SourceRelativePath).ToDictionary(g => g.Key, g => g.ToList());
         }
 
         #endregion

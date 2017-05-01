@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -78,6 +79,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             // RFC 3986: relative-ref = relative-part [ "?" query ] [ "#" fragment ]
             _linksWithBookmark[outputFile] =
                 (from node in GetNodesWithAttribute(document, "href")
+                 let nocheck = node.GetAttributeValue("nocheck", null)
+                 where !"bookmark".Equals(nocheck, StringComparison.OrdinalIgnoreCase)
                  let link = node.GetAttributeValue("href", null)
                  let bookmark = UriUtility.GetFragment(link).TrimStart('#')
                  let decodedLink = RelativePath.TryParse(HttpUtility.UrlDecode(UriUtility.GetPath(link)))
@@ -105,23 +108,30 @@ namespace Microsoft.DocAsCode.Build.Engine
                 foreach (var linkItem in pair.Value)
                 {
                     string title = linkItem.Title;
-                    string linkedToFile = linkItem.Href == string.Empty ? currentFile : linkItem.Href;
+                    string linkedToFile = linkItem.Href;
                     string bookmark = linkItem.Bookmark;
                     HashSet<string> bookmarks;
                     if (_registeredBookmarks.TryGetValue(linkedToFile, out bookmarks) && !bookmarks.Contains(bookmark))
                     {
                         string currentFileSrc = linkItem.SourceFile ?? _fileMapping[currentFile];
                         string linkedToFileSrc = _fileMapping[linkedToFile];
-                        string link = linkItem.Href == string.Empty ? $"#{bookmark}" : $"{linkedToFileSrc}#{bookmark}";
+
+                        bool internalBookmark = FilePathComparer.OSPlatformSensitiveStringComparer.Equals(linkedToFileSrc, _fileMapping[currentFile]);
+
+                        string link = internalBookmark ? $"#{bookmark}" : $"{linkedToFileSrc}#{bookmark}";
                         string content = linkItem.SourceFragment;
                         if (string.IsNullOrEmpty(content))
                         {
                             // Invalid bookmarks introduced from templates is a corner case, ignored.
                             content = $"<a href=\"{link}\">{title}</a>";
                         }
+
+                        string errorCode = internalBookmark ? ErrorCode.InvalidInternalBookmark : ErrorCode.InvalidExternalBookmark;
                         Logger.LogWarning($"Illegal link: `{content}` -- missing bookmark. The file {linkedToFileSrc} doesn't contain a bookmark named {bookmark}.",
-                            file: currentFileSrc,
-                            line: linkItem.SourceLineNumber != 0 ? linkItem.SourceLineNumber.ToString() : null);
+                            null,
+                            currentFileSrc,
+                            linkItem.SourceLineNumber != 0 ? linkItem.SourceLineNumber.ToString() : null,
+                            code: errorCode);
                     }
                 }
             }
@@ -150,6 +160,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string TransformPath(string basePathFromRoot, RelativePath relativePath)
         {
+            // Special logic for `RelativePath.Empty`: "C/d.html" + "" -> "C" rather than "C/d.html"
+            if (relativePath == RelativePath.Empty)
+            {
+                return ((RelativePath)basePathFromRoot).RemoveWorkingFolder();
+            }
             return ((RelativePath)basePathFromRoot + relativePath).RemoveWorkingFolder();
         }
 

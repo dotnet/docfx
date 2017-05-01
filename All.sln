@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6A65A769-DAC3-4E99-96F9-991F4CE8D164}"
 EndProject
@@ -11,7 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExternalPackageGenerators",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{718078B4-D34C-4697-AAD1-5844CBF60997}"
 	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
 		NuGet.Config = NuGet.Config
 	EndProjectSection
 EndProject
@@ -51,114 +50,123 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RestApi", "RestApi", "{3CEC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ManagedReference", "ManagedReference", "{3A6BE380-986B-40E9-A048-C9A9AE424D90}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "docfx", "src\docfx\docfx.xproj", "{E4C4CC30-A1CE-4EF8-B4B9-FE94F89636B1}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Glob", "src\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.xproj", "{7E877810-DC13-4A6C-8DFC-184C00A20B7C}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.MarkdownLite", "src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.xproj", "{F154B568-9083-49F8-84B7-5F9E91CAB2DF}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Plugins", "src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.xproj", "{B6B96738-C338-4904-B932-4C05DB7D4DDE}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.YamlSerialization", "src\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.xproj", "{59CF2F0F-4D4D-4096-8D22-595856CCCF72}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Common", "src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.xproj", "{E1E085F6-67CD-4257-815C-F1DABF091BA4}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Dfm", "src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.xproj", "{EBB5D0ED-2453-49F4-9F05-B07310A24C5E}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.Common", "src\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.xproj", "{1A6D574B-5CA8-4976-B0F1-9CF338A3A930}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ConceptualDocuments", "src\Microsoft.DocAsCode.Build.ConceptualDocuments\Microsoft.DocAsCode.Build.ConceptualDocuments.xproj", "{26428F7A-2BF3-4E4A-8161-C30EB0922CD8}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.Engine", "src\Microsoft.DocAsCode.Build.Engine\Microsoft.DocAsCode.Build.Engine.xproj", "{A98C8639-61A5-444C-AAFB-B2CFBA66A550}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ManagedReference", "src\Microsoft.DocAsCode.Build.ManagedReference\Microsoft.DocAsCode.Build.ManagedReference.xproj", "{C6459834-F6DE-4309-80AF-0E3CDB1FC14E}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ResourceFiles", "src\Microsoft.DocAsCode.Build.ResourceFiles\Microsoft.DocAsCode.Build.ResourceFiles.xproj", "{E43A398A-89B9-40E3-9BDD-F30E54EAA25A}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.RestApi", "src\Microsoft.DocAsCode.Build.RestApi\Microsoft.DocAsCode.Build.RestApi.xproj", "{234FA4D1-75EF-48C6-8FB1-3D838173FD8C}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.TableOfContents", "src\Microsoft.DocAsCode.Build.TableOfContents\Microsoft.DocAsCode.Build.TableOfContents.xproj", "{2F1EC9E3-4D01-4FF8-8891-FE2C44097FB8}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.DataContracts.Common", "src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.xproj", "{13E2771C-5C73-4B82-8911-55E1A70A3076}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Metadata.ManagedReference", "src\Microsoft.DocAsCode.Metadata.ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.xproj", "{B06BD0FD-5276-4929-87F4-48C302245C02}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.DataContracts.ManagedReference", "src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.xproj", "{2E5C8660-A883-4D32-BF67-CF5907AB1F1F}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.DataContracts.RestApi", "src\Microsoft.DocAsCode.DataContracts.RestApi\Microsoft.DocAsCode.DataContracts.RestApi.xproj", "{05D9D594-E6F6-4887-8ECD-0FFFF7C92E68}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.AzureMarkdownRewriters", "src\Microsoft.DocAsCode.AzureMarkdownRewriters\Microsoft.DocAsCode.AzureMarkdownRewriters.xproj", "{727F15D4-87B3-4442-BAA2-585406207576}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{926A0726-B806-4215-82EF-AF8E22D0FACF}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "docfx.Tests", "test\docfx.Tests\docfx.Tests.xproj", "{D1CF2A6C-AEB1-4A03-BE64-8A96FA5DEFE4}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.Common.Tests", "test\Microsoft.DocAsCode.Build.Common.Tests\Microsoft.DocAsCode.Build.Common.Tests.xproj", "{7F6019A6-C1AB-4B5C-BD3C-E8D271F3469D}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ConceptualDocuments.Tests", "test\Microsoft.DocAsCode.Build.ConceptualDocuments.Tests\Microsoft.DocAsCode.Build.ConceptualDocuments.Tests.xproj", "{727C0798-F079-4CA5-85C8-289598EE9EEE}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.Engine.Tests", "test\Microsoft.DocAsCode.Build.Engine.Tests\Microsoft.DocAsCode.Build.Engine.Tests.xproj", "{56BE5194-7881-4F22-9018-A79C3C4B958A}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.RestApi.Tests", "test\Microsoft.DocAsCode.Build.RestApi.Tests\Microsoft.DocAsCode.Build.RestApi.Tests.xproj", "{DCD65A24-D8C0-4DD3-B42C-A1D878AF4DE4}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.TableOfContents.Tests", "test\Microsoft.DocAsCode.Build.TableOfContents.Tests\Microsoft.DocAsCode.Build.TableOfContents.Tests.xproj", "{05A49D39-97F0-46AF-9EDC-76D1E19FE3AC}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Common.Tests", "test\Microsoft.DocAsCode.Common.Tests\Microsoft.DocAsCode.Common.Tests.xproj", "{B2EEB5FE-CF39-4CC7-9650-5709E71D2BA9}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Dfm.Tests", "test\Microsoft.DocAsCode.Dfm.Tests\Microsoft.DocAsCode.Dfm.Tests.xproj", "{F50B1AF2-B971-4B01-962B-0BB14E6CB209}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Glob.Tests", "test\Microsoft.DocAsCode.Glob.Tests\Microsoft.DocAsCode.Glob.Tests.xproj", "{A95C5BAE-1D0D-44FD-A984-7CBF055A62E2}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.MarkdownLite.Tests", "test\Microsoft.DocAsCode.MarkdownLite.Tests\Microsoft.DocAsCode.MarkdownLite.Tests.xproj", "{4E26923D-9F35-4668-AB5A-BDC5D56D70CC}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.MarkdownRewriters.Tests", "test\Microsoft.DocAsCode.MarkdownRewriters.Tests\Microsoft.DocAsCode.MarkdownRewriters.Tests.xproj", "{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Metadata.ManagedReference.Tests", "test\Microsoft.DocAsCode.Metadata.ManagedReference.Tests\Microsoft.DocAsCode.Metadata.ManagedReference.Tests.xproj", "{3076A12F-C423-4D5E-9B6F-543B683820F9}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AzureMarkdownRewriterTool", "tools\AzureMarkdownRewriterTool\AzureMarkdownRewriterTool.xproj", "{74E13283-C24B-49A1-910B-502505995565}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GEmojiCodeGenerators", "tools\GEmojiCodeGenerators\GEmojiCodeGenerators.xproj", "{BC0F523B-FA7B-4BC8-82B0-34C050F787EE}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.ExternalPackageGenerators.Msdn", "tools\ExternalPackageGenerators\Microsoft.DocAsCode.ExternalPackageGenerators.Msdn\Microsoft.DocAsCode.ExternalPackageGenerators.Msdn.xproj", "{C2EB1D0E-0CD7-43F9-A4BC-374D8148ECAD}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MergeDeveloperComments", "tools\MergeDeveloperComments\MergeDeveloperComments.xproj", "{320876F3-E87A-4C12-A9B5-1F9BB130394D}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MergeSourceInfo", "tools\MergeSourceInfo\MergeSourceInfo.xproj", "{817E7CD2-3419-4443-B9D2-5880B3A62E0F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{94B87FB5-632A-4C6F-A2C6-5058C84ADEBB}"
 	ProjectSection(SolutionItems) = preProject
+		test\Shared\test.base.props = test\Shared\test.base.props
 		test\Shared\TestBase.cs = test\Shared\TestBase.cs
 	EndProjectSection
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Dfm.VscPreview", "src\VscPreviewExtension\Microsoft.DocAsCode.Dfm.VscPreview\Microsoft.DocAsCode.Dfm.VscPreview.xproj", "{9029C48C-F8D1-41DF-8F93-B70B51A5B1A4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{DF2BA00B-1742-4F84-A469-08D7F019498E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "JavaScriptReference", "JavaScriptReference", "{792E929C-A9E5-415E-93A8-69FBBEAFD1D0}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.JavaScriptReference.Tests", "test\Microsoft.DocAsCode.Build.JavaScriptReference.Tests\Microsoft.DocAsCode.Build.JavaScriptReference.Tests.xproj", "{51DBCB76-D102-46B0-99F3-EA7BD823B5C3}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.JavaScriptReference", "plugins\Microsoft.DocAsCode.Build.JavaScriptReference\Microsoft.DocAsCode.Build.JavaScriptReference.xproj", "{D609EB39-0CBD-41C1-8F4D-46720491BE40}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MemberLevelManagedReference", "MemberLevelManagedReference", "{1D6213AE-4FD9-4155-987B-29FE16F56E18}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.MemberLevelManagedReference", "plugins\Microsoft.DocAsCode.Build.MemberLevelManagedReference\Microsoft.DocAsCode.Build.MemberLevelManagedReference.xproj", "{2746DA6E-D310-4F07-B41B-929BB3D6E14B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DfmHttpService", "DfmHttpService", "{E45253E7-60E1-4643-85D5-6B095A954FF3}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DfmHttpService", "tools\DfmHttpService\DfmHttpService.xproj", "{083B3870-4B3F-4841-AFC2-F3B6FF95F776}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Plugins.Tests", "test\Microsoft.DocAsCode.Plugins.Tests\Microsoft.DocAsCode.Plugins.Tests.xproj", "{B3EEB5FE-CF39-4CC7-9650-5709E71D2BA9}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ManagedReference.Tests", "test\Microsoft.DocAsCode.Build.ManagedReference.Tests\Microsoft.DocAsCode.Build.ManagedReference.Tests.xproj", "{958DF90F-0528-4C50-9AC2-E86C60971B7D}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MergeOverwrite", "MergeOverwrite", "{1C46FAD9-9D99-4102-8E57-82AF959A4B40}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.MergeOverwrite", "plugins\Microsoft.DocAsCode.Build.MergeOverwrite\Microsoft.DocAsCode.Build.MergeOverwrite.xproj", "{8C50AA79-A360-43A3-BCC2-658633B099EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Glob", "src\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj", "{7E877810-DC13-4A6C-8DFC-184C00A20B7C}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.MergeOverwrite.Tests", "test\Microsoft.DocAsCode.Build.MergeOverwrite.Tests\Microsoft.DocAsCode.Build.MergeOverwrite.Tests.xproj", "{BC834D62-F7F1-4227-9D5F-3DF45197B335}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdownLite", "src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj", "{F154B568-9083-49F8-84B7-5F9E91CAB2DF}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests", "test\Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests\Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests.xproj", "{958DF90F-0528-4C53-9AC2-E86C60971B7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Plugins", "src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj", "{B6B96738-C338-4904-B932-4C05DB7D4DDE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.YamlSerialization", "src\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj", "{59CF2F0F-4D4D-4096-8D22-595856CCCF72}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Common", "src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj", "{E1E085F6-67CD-4257-815C-F1DABF091BA4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Dfm", "src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj", "{EBB5D0ED-2453-49F4-9F05-B07310A24C5E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.Common", "src\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj", "{1A6D574B-5CA8-4976-B0F1-9CF338A3A930}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.ConceptualDocuments", "src\Microsoft.DocAsCode.Build.ConceptualDocuments\Microsoft.DocAsCode.Build.ConceptualDocuments.csproj", "{26428F7A-2BF3-4E4A-8161-C30EB0922CD8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.Engine", "src\Microsoft.DocAsCode.Build.Engine\Microsoft.DocAsCode.Build.Engine.csproj", "{A98C8639-61A5-444C-AAFB-B2CFBA66A550}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.ManagedReference", "src\Microsoft.DocAsCode.Build.ManagedReference\Microsoft.DocAsCode.Build.ManagedReference.csproj", "{C6459834-F6DE-4309-80AF-0E3CDB1FC14E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.ResourceFiles", "src\Microsoft.DocAsCode.Build.ResourceFiles\Microsoft.DocAsCode.Build.ResourceFiles.csproj", "{E43A398A-89B9-40E3-9BDD-F30E54EAA25A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.RestApi", "src\Microsoft.DocAsCode.Build.RestApi\Microsoft.DocAsCode.Build.RestApi.csproj", "{234FA4D1-75EF-48C6-8FB1-3D838173FD8C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.TableOfContents", "src\Microsoft.DocAsCode.Build.TableOfContents\Microsoft.DocAsCode.Build.TableOfContents.csproj", "{2F1EC9E3-4D01-4FF8-8891-FE2C44097FB8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.DataContracts.Common", "src\Microsoft.DocAsCode.DataContracts.Common\Microsoft.DocAsCode.DataContracts.Common.csproj", "{13E2771C-5C73-4B82-8911-55E1A70A3076}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Metadata.ManagedReference", "src\Microsoft.DocAsCode.Metadata.ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.csproj", "{B06BD0FD-5276-4929-87F4-48C302245C02}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.DataContracts.ManagedReference", "src\Microsoft.DocAsCode.DataContracts.ManagedReference\Microsoft.DocAsCode.DataContracts.ManagedReference.csproj", "{2E5C8660-A883-4D32-BF67-CF5907AB1F1F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.DataContracts.RestApi", "src\Microsoft.DocAsCode.DataContracts.RestApi\Microsoft.DocAsCode.DataContracts.RestApi.csproj", "{05D9D594-E6F6-4887-8ECD-0FFFF7C92E68}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.AzureMarkdownRewriters", "src\Microsoft.DocAsCode.AzureMarkdownRewriters\Microsoft.DocAsCode.AzureMarkdownRewriters.csproj", "{727F15D4-87B3-4442-BAA2-585406207576}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docfx.Tests", "test\docfx.Tests\docfx.Tests.csproj", "{D1CF2A6C-AEB1-4A03-BE64-8A96FA5DEFE4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.Common.Tests", "test\Microsoft.DocAsCode.Build.Common.Tests\Microsoft.DocAsCode.Build.Common.Tests.csproj", "{7F6019A6-C1AB-4B5C-BD3C-E8D271F3469D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.ConceptualDocuments.Tests", "test\Microsoft.DocAsCode.Build.ConceptualDocuments.Tests\Microsoft.DocAsCode.Build.ConceptualDocuments.Tests.csproj", "{727C0798-F079-4CA5-85C8-289598EE9EEE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.Engine.Tests", "test\Microsoft.DocAsCode.Build.Engine.Tests\Microsoft.DocAsCode.Build.Engine.Tests.csproj", "{56BE5194-7881-4F22-9018-A79C3C4B958A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.RestApi.Tests", "test\Microsoft.DocAsCode.Build.RestApi.Tests\Microsoft.DocAsCode.Build.RestApi.Tests.csproj", "{DCD65A24-D8C0-4DD3-B42C-A1D878AF4DE4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.TableOfContents.Tests", "test\Microsoft.DocAsCode.Build.TableOfContents.Tests\Microsoft.DocAsCode.Build.TableOfContents.Tests.csproj", "{05A49D39-97F0-46AF-9EDC-76D1E19FE3AC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Common.Tests", "test\Microsoft.DocAsCode.Common.Tests\Microsoft.DocAsCode.Common.Tests.csproj", "{B2EEB5FE-CF39-4CC7-9650-5709E71D2BA9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Dfm.Tests", "test\Microsoft.DocAsCode.Dfm.Tests\Microsoft.DocAsCode.Dfm.Tests.csproj", "{F50B1AF2-B971-4B01-962B-0BB14E6CB209}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Glob.Tests", "test\Microsoft.DocAsCode.Glob.Tests\Microsoft.DocAsCode.Glob.Tests.csproj", "{A95C5BAE-1D0D-44FD-A984-7CBF055A62E2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdownLite.Tests", "test\Microsoft.DocAsCode.MarkdownLite.Tests\Microsoft.DocAsCode.MarkdownLite.Tests.csproj", "{4E26923D-9F35-4668-AB5A-BDC5D56D70CC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdownRewriters.Tests", "test\Microsoft.DocAsCode.MarkdownRewriters.Tests\Microsoft.DocAsCode.MarkdownRewriters.Tests.csproj", "{FE512CCA-E21D-41DA-BD89-34C7DEF3CC48}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Metadata.ManagedReference.Tests", "test\Microsoft.DocAsCode.Metadata.ManagedReference.Tests\Microsoft.DocAsCode.Metadata.ManagedReference.Tests.csproj", "{3076A12F-C423-4D5E-9B6F-543B683820F9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureMarkdownRewriterTool", "tools\AzureMarkdownRewriterTool\AzureMarkdownRewriterTool.csproj", "{74E13283-C24B-49A1-910B-502505995565}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GEmojiCodeGenerators", "tools\GEmojiCodeGenerators\GEmojiCodeGenerators.csproj", "{BC0F523B-FA7B-4BC8-82B0-34C050F787EE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.ExternalPackageGenerators.Msdn", "tools\ExternalPackageGenerators\Microsoft.DocAsCode.ExternalPackageGenerators.Msdn\Microsoft.DocAsCode.ExternalPackageGenerators.Msdn.csproj", "{C2EB1D0E-0CD7-43F9-A4BC-374D8148ECAD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MergeDeveloperComments", "tools\MergeDeveloperComments\MergeDeveloperComments.csproj", "{320876F3-E87A-4C12-A9B5-1F9BB130394D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MergeSourceInfo", "tools\MergeSourceInfo\MergeSourceInfo.csproj", "{817E7CD2-3419-4443-B9D2-5880B3A62E0F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.JavaScriptReference.Tests", "test\Microsoft.DocAsCode.Build.JavaScriptReference.Tests\Microsoft.DocAsCode.Build.JavaScriptReference.Tests.csproj", "{51DBCB76-D102-46B0-99F3-EA7BD823B5C3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.JavaScriptReference", "plugins\Microsoft.DocAsCode.Build.JavaScriptReference\Microsoft.DocAsCode.Build.JavaScriptReference.csproj", "{D609EB39-0CBD-41C1-8F4D-46720491BE40}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.MemberLevelManagedReference", "plugins\Microsoft.DocAsCode.Build.MemberLevelManagedReference\Microsoft.DocAsCode.Build.MemberLevelManagedReference.csproj", "{2746DA6E-D310-4F07-B41B-929BB3D6E14B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DfmHttpService", "tools\DfmHttpService\DfmHttpService.csproj", "{083B3870-4B3F-4841-AFC2-F3B6FF95F776}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Plugins.Tests", "test\Microsoft.DocAsCode.Plugins.Tests\Microsoft.DocAsCode.Plugins.Tests.csproj", "{B3EEB5FE-CF39-4CC7-9650-5709E71D2BA9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.ManagedReference.Tests", "test\Microsoft.DocAsCode.Build.ManagedReference.Tests\Microsoft.DocAsCode.Build.ManagedReference.Tests.csproj", "{958DF90F-0528-4C50-9AC2-E86C60971B7D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.MergeOverwrite", "plugins\Microsoft.DocAsCode.Build.MergeOverwrite\Microsoft.DocAsCode.Build.MergeOverwrite.csproj", "{8C50AA79-A360-43A3-BCC2-658633B099EC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.MergeOverwrite.Tests", "test\Microsoft.DocAsCode.Build.MergeOverwrite.Tests\Microsoft.DocAsCode.Build.MergeOverwrite.Tests.csproj", "{BC834D62-F7F1-4227-9D5F-3DF45197B335}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests", "test\Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests\Microsoft.DocAsCode.Build.ManagedReference.WithPlugins.Tests.csproj", "{958DF90F-0528-4C53-9AC2-E86C60971B7D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docfx", "src\docfx\docfx.csproj", "{EF53214F-BA98-4026-BEED-CF771865C312}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UniversalReference", "UniversalReference", "{560E7D4D-3319-44B3-8E40-604F71866DFD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.UniversalReference", "plugins\Microsoft.DocAsCode.Build.UniversalReference\Microsoft.DocAsCode.Build.UniversalReference.csproj", "{872F14B2-441D-467A-A8BA-7B8AD605AEAC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.UniversalReference.Tests", "test\Microsoft.DocAsCode.Build.UniversalReference.Tests\Microsoft.DocAsCode.Build.UniversalReference.Tests.csproj", "{E9795C9A-1F98-4716-A0FC-843C6B000BE5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PdfConverter", "PdfConverter", "{AEA6127F-787E-4CCD-9B8C-39B42DB79341}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.PdfConverter", "plugins\Microsoft.DocAsCode.Build.PdfConverter\Microsoft.DocAsCode.Build.PdfConverter.csproj", "{5269B290-9E2F-41F5-89E4-2FE1A5BBCBB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -168,14 +176,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E4C4CC30-A1CE-4EF8-B4B9-FE94F89636B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E4C4CC30-A1CE-4EF8-B4B9-FE94F89636B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E4C4CC30-A1CE-4EF8-B4B9-FE94F89636B1}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{E4C4CC30-A1CE-4EF8-B4B9-FE94F89636B1}.Debug|x86.Build.0 = Debug|Any CPU
-		{E4C4CC30-A1CE-4EF8-B4B9-FE94F89636B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E4C4CC30-A1CE-4EF8-B4B9-FE94F89636B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E4C4CC30-A1CE-4EF8-B4B9-FE94F89636B1}.Release|x86.ActiveCfg = Release|Any CPU
-		{E4C4CC30-A1CE-4EF8-B4B9-FE94F89636B1}.Release|x86.Build.0 = Release|Any CPU
 		{7E877810-DC13-4A6C-8DFC-184C00A20B7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7E877810-DC13-4A6C-8DFC-184C00A20B7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E877810-DC13-4A6C-8DFC-184C00A20B7C}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -456,14 +456,6 @@ Global
 		{817E7CD2-3419-4443-B9D2-5880B3A62E0F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{817E7CD2-3419-4443-B9D2-5880B3A62E0F}.Release|x86.ActiveCfg = Release|Any CPU
 		{817E7CD2-3419-4443-B9D2-5880B3A62E0F}.Release|x86.Build.0 = Release|Any CPU
-		{9029C48C-F8D1-41DF-8F93-B70B51A5B1A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9029C48C-F8D1-41DF-8F93-B70B51A5B1A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9029C48C-F8D1-41DF-8F93-B70B51A5B1A4}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9029C48C-F8D1-41DF-8F93-B70B51A5B1A4}.Debug|x86.Build.0 = Debug|Any CPU
-		{9029C48C-F8D1-41DF-8F93-B70B51A5B1A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9029C48C-F8D1-41DF-8F93-B70B51A5B1A4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9029C48C-F8D1-41DF-8F93-B70B51A5B1A4}.Release|x86.ActiveCfg = Release|Any CPU
-		{9029C48C-F8D1-41DF-8F93-B70B51A5B1A4}.Release|x86.Build.0 = Release|Any CPU
 		{51DBCB76-D102-46B0-99F3-EA7BD823B5C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{51DBCB76-D102-46B0-99F3-EA7BD823B5C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51DBCB76-D102-46B0-99F3-EA7BD823B5C3}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -536,6 +528,38 @@ Global
 		{958DF90F-0528-4C53-9AC2-E86C60971B7D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{958DF90F-0528-4C53-9AC2-E86C60971B7D}.Release|x86.ActiveCfg = Release|Any CPU
 		{958DF90F-0528-4C53-9AC2-E86C60971B7D}.Release|x86.Build.0 = Release|Any CPU
+		{EF53214F-BA98-4026-BEED-CF771865C312}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF53214F-BA98-4026-BEED-CF771865C312}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF53214F-BA98-4026-BEED-CF771865C312}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EF53214F-BA98-4026-BEED-CF771865C312}.Debug|x86.Build.0 = Debug|Any CPU
+		{EF53214F-BA98-4026-BEED-CF771865C312}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF53214F-BA98-4026-BEED-CF771865C312}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF53214F-BA98-4026-BEED-CF771865C312}.Release|x86.ActiveCfg = Release|Any CPU
+		{EF53214F-BA98-4026-BEED-CF771865C312}.Release|x86.Build.0 = Release|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Debug|x86.Build.0 = Debug|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Release|x86.ActiveCfg = Release|Any CPU
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC}.Release|x86.Build.0 = Release|Any CPU
+		{E9795C9A-1F98-4716-A0FC-843C6B000BE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9795C9A-1F98-4716-A0FC-843C6B000BE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9795C9A-1F98-4716-A0FC-843C6B000BE5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E9795C9A-1F98-4716-A0FC-843C6B000BE5}.Debug|x86.Build.0 = Debug|Any CPU
+		{E9795C9A-1F98-4716-A0FC-843C6B000BE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9795C9A-1F98-4716-A0FC-843C6B000BE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9795C9A-1F98-4716-A0FC-843C6B000BE5}.Release|x86.ActiveCfg = Release|Any CPU
+		{E9795C9A-1F98-4716-A0FC-843C6B000BE5}.Release|x86.Build.0 = Release|Any CPU
+		{5269B290-9E2F-41F5-89E4-2FE1A5BBCBB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5269B290-9E2F-41F5-89E4-2FE1A5BBCBB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5269B290-9E2F-41F5-89E4-2FE1A5BBCBB5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5269B290-9E2F-41F5-89E4-2FE1A5BBCBB5}.Debug|x86.Build.0 = Debug|Any CPU
+		{5269B290-9E2F-41F5-89E4-2FE1A5BBCBB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5269B290-9E2F-41F5-89E4-2FE1A5BBCBB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5269B290-9E2F-41F5-89E4-2FE1A5BBCBB5}.Release|x86.ActiveCfg = Release|Any CPU
+		{5269B290-9E2F-41F5-89E4-2FE1A5BBCBB5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -560,7 +584,11 @@ Global
 		{6B3AA2D5-235F-4926-8AA1-2B3430BAC71F} = {C3023E7B-AA8B-469E-8333-5737093A9D60}
 		{3CECA58B-4CBC-4025-A863-A7F1103F62A6} = {C3023E7B-AA8B-469E-8333-5737093A9D60}
 		{3A6BE380-986B-40E9-A048-C9A9AE424D90} = {07111648-9EDB-4F87-83F8-97B1EA4FCEEF}
-		{E4C4CC30-A1CE-4EF8-B4B9-FE94F89636B1} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
+		{94B87FB5-632A-4C6F-A2C6-5058C84ADEBB} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
+		{792E929C-A9E5-415E-93A8-69FBBEAFD1D0} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
+		{1D6213AE-4FD9-4155-987B-29FE16F56E18} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
+		{E45253E7-60E1-4643-85D5-6B095A954FF3} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
+		{1C46FAD9-9D99-4102-8E57-82AF959A4B40} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
 		{7E877810-DC13-4A6C-8DFC-184C00A20B7C} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{F154B568-9083-49F8-84B7-5F9E91CAB2DF} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{B6B96738-C338-4904-B932-4C05DB7D4DDE} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
@@ -596,20 +624,20 @@ Global
 		{C2EB1D0E-0CD7-43F9-A4BC-374D8148ECAD} = {416A17AC-FFD4-4722-A990-598EF44F8D90}
 		{320876F3-E87A-4C12-A9B5-1F9BB130394D} = {54945137-EB1C-4944-AACE-72AF532FBAFB}
 		{817E7CD2-3419-4443-B9D2-5880B3A62E0F} = {66205F25-858E-4399-B331-0316D37B9A48}
-		{94B87FB5-632A-4C6F-A2C6-5058C84ADEBB} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
-		{9029C48C-F8D1-41DF-8F93-B70B51A5B1A4} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
-		{792E929C-A9E5-415E-93A8-69FBBEAFD1D0} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
 		{51DBCB76-D102-46B0-99F3-EA7BD823B5C3} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 		{D609EB39-0CBD-41C1-8F4D-46720491BE40} = {792E929C-A9E5-415E-93A8-69FBBEAFD1D0}
-		{1D6213AE-4FD9-4155-987B-29FE16F56E18} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
 		{2746DA6E-D310-4F07-B41B-929BB3D6E14B} = {1D6213AE-4FD9-4155-987B-29FE16F56E18}
-		{E45253E7-60E1-4643-85D5-6B095A954FF3} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
 		{083B3870-4B3F-4841-AFC2-F3B6FF95F776} = {E45253E7-60E1-4643-85D5-6B095A954FF3}
 		{B3EEB5FE-CF39-4CC7-9650-5709E71D2BA9} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 		{958DF90F-0528-4C50-9AC2-E86C60971B7D} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
-		{1C46FAD9-9D99-4102-8E57-82AF959A4B40} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
 		{8C50AA79-A360-43A3-BCC2-658633B099EC} = {1C46FAD9-9D99-4102-8E57-82AF959A4B40}
 		{BC834D62-F7F1-4227-9D5F-3DF45197B335} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 		{958DF90F-0528-4C53-9AC2-E86C60971B7D} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
+		{EF53214F-BA98-4026-BEED-CF771865C312} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
+		{560E7D4D-3319-44B3-8E40-604F71866DFD} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
+		{872F14B2-441D-467A-A8BA-7B8AD605AEAC} = {560E7D4D-3319-44B3-8E40-604F71866DFD}
+		{E9795C9A-1F98-4716-A0FC-843C6B000BE5} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
+		{AEA6127F-787E-4CCD-9B8C-39B42DB79341} = {DF2BA00B-1742-4F84-A469-08D7F019498E}
+		{5269B290-9E2F-41F5-89E4-2FE1A5BBCBB5} = {AEA6127F-787E-4CCD-9B8C-39B42DB79341}
 	EndGlobalSection
 EndGlobal

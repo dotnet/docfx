@@ -6,15 +6,73 @@ namespace Microsoft.DocAsCode.Dfm
     using System;
     using System.Text.RegularExpressions;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.MarkdownLite.Matchers;
 
     public class DfmFencesBlockRule : DfmFencesRule
     {
-        public override string Name => "DfmFences";
+        private static readonly Matcher _DfmFencesMatcher =
+            Matcher.WhiteSpacesOrEmpty + "[!" + Matcher.CaseInsensitiveString("code") +
+            (Matcher.Char('-') + (Matcher.AnyWordCharacter | Matcher.Char('-')).RepeatAtLeast(1).ToGroup("lang")).Maybe() +
+            Matcher.WhiteSpacesOrEmpty + '[' +
+            (
+                Matcher.AnyCharNot(']').RepeatAtLeast(1) |
+                (Matcher.ReverseTest(Matcher.Char('\\')) + Matcher.Char(']'))
+            ).RepeatAtLeast(0).ToGroup("name") +
+            ']' +
+            Matcher.WhiteSpacesOrEmpty +
+            '(' +
+            (
+                (Matcher.AnyCharNotIn(')', '\n', ' ').RepeatAtLeast(1) | (Matcher.ReverseTest(Matcher.Char('\\')) + Matcher.Char(')'))).RepeatAtLeast(1).ToGroup("href") |
+                (Matcher.Char('<') + (Matcher.AnyCharNotIn(')', '>', '\n', ' ').RepeatAtLeast(1) | (Matcher.ReverseTest(Matcher.Char('\\')) + Matcher.AnyCharIn(')', '>'))).RepeatAtLeast(1).ToGroup("href") + '>')
+            ) +
+            Matcher.WhiteSpacesOrEmpty +
+            (
+                (Matcher.Char('\'') + (Matcher.AnyCharNot('\'').RepeatAtLeast(1) | (Matcher.ReverseTest(Matcher.Char('\\')) + '\'')).RepeatAtLeast(0).ToGroup("title") + '\'') |
+                (Matcher.Char('"') + (Matcher.AnyCharNot('"').RepeatAtLeast(1) | (Matcher.ReverseTest(Matcher.Char('\\')) + '"')).RepeatAtLeast(0).ToGroup("title") + '"')
+            ).Maybe() +
+            Matcher.WhiteSpacesOrEmpty +
+            ')' +
+            Matcher.WhiteSpacesOrEmpty +
+            ']' +
+            Matcher.WhiteSpacesOrEmpty +
+            (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
 
         private static readonly Regex _dfmFencesRegex = new Regex(@"^ *\[\!((?i)code(\-(?<lang>[\w|\-]+))?)\s*\[(?<name>(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?(?<path>[^\n]*?)((?<option>[\#|\?])(?<optionValue>\S+))?>?(?:\s+(?<quote>['""])(?<title>[\s\S]*?)\k<quote>)?\s*\)\]\s*(\n|$)", RegexOptions.Compiled, TimeSpan.FromSeconds(10));
 
+        public override string Name => "DfmFences";
+
+        public virtual Matcher DfmFencesMatcher => _DfmFencesMatcher;
+
         public override IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
+        {
+            if (parser.Options.LegacyMode)
+            {
+                return TryMatchOld(parser, context);
+            }
+            var match = context.Match(DfmFencesMatcher);
+            if (match?.Length > 0)
+            {
+                var sourceInfo = context.Consume(match.Length);
+
+                // [!code-lang[name](href "optionalTitle")]
+                var name = StringHelper.UnescapeMarkdown(match["name"].GetValue());
+                var href = StringHelper.UnescapeMarkdown(match["href"].GetValue());
+                var lang = match.GetGroup("lang")?.GetValue() ?? string.Empty;
+                var title = StringHelper.UnescapeMarkdown(match.GetGroup("title")?.GetValue() ?? string.Empty);
+                var queryStringAndFragment = UriUtility.GetQueryStringAndFragment(href);
+                var path = UriUtility.GetPath(href);
+                var pathQueryOption =
+                    !string.IsNullOrEmpty(queryStringAndFragment) ?
+                    ParsePathQueryString(queryStringAndFragment.Remove(1), queryStringAndFragment.Substring(1)) :
+                    null;
+                return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption);
+            }
+            return null;
+        }
+
+        private IMarkdownToken TryMatchOld(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             var match = _dfmFencesRegex.Match(context.CurrentMarkdown);
             if (match.Length == 0)
@@ -32,5 +90,6 @@ namespace Microsoft.DocAsCode.Dfm
 
             return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption);
         }
+
     }
 }

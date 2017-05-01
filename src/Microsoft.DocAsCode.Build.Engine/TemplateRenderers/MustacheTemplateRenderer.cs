@@ -6,24 +6,63 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Text.RegularExpressions;
+
+    using Microsoft.DocAsCode.Exceptions;
 
     internal class MustacheTemplateRenderer : ITemplateRenderer
     {
         private static readonly Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex MasterPageRegex = new Regex(@"{{\s*!\s*master\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex MasterPageBodyRegex = new Regex(@"{{\s*!\s*body\s*}}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         private readonly ResourceTemplateLocator _resourceTemplateLocator;
-        private readonly Nustache.Core.Template _template = null;
-        public MustacheTemplateRenderer(ResourceCollection resourceProvider, string template)
+        private readonly ResourceCollection _resource;
+        private readonly Nustache.Core.Template _template;
+        private readonly string _templateName;
+
+        public MustacheTemplateRenderer(ResourceCollection resourceProvider, TemplateRendererResource info)
         {
-            if (template == null) throw new ArgumentNullException(nameof(template));
+            if (info == null)
+            {
+                throw new ArgumentNullException(nameof(info));
+            }
+
+            if (info.Content == null)
+            {
+                throw new ArgumentNullException(nameof(info.Content));
+            }
+
+            if (info.TemplateName == null)
+            {
+                throw new ArgumentNullException(nameof(info.TemplateName));
+            }
+
+            _templateName = info.TemplateName;
+
+            _resource = resourceProvider;
             _resourceTemplateLocator = new ResourceTemplateLocator(resourceProvider);
+
             _template = new Nustache.Core.Template();
-            using (var reader = new StringReader(template))
-                _template.Load(reader);
-            Dependencies = ExtractDependentFilePaths(template);
+            var processedTemplate = ParseTemplateHelper.ExpandMasterPage(resourceProvider, info, MasterPageRegex, MasterPageBodyRegex);
+            using (var reader = new StringReader(processedTemplate))
+            {
+                try
+                {
+                    _template.Load(reader);
+                }
+                catch (Nustache.Core.NustacheException e)
+                {
+                    throw new DocfxException($"Error in mustache template {info.TemplateName}: {e.Message}", e);
+                }
+            }
+
+            Dependencies = ExtractDependencyResourceNames(processedTemplate).ToList();
         }
 
         public IEnumerable<string> Dependencies { get; }
+
         public string Raw { get; }
 
         public string Render(object model)
@@ -41,13 +80,15 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// file path can be wrapped by quote ' or double quote " or none
         /// </summary>
         /// <param name="template"></param>
-        private IEnumerable<string> ExtractDependentFilePaths(string template)
+        private IEnumerable<string> ExtractDependencyResourceNames(string template)
         {
             foreach (Match match in IncludeRegex.Matches(template))
             {
                 var filePath = match.Groups["file"].Value;
-                if (string.IsNullOrWhiteSpace(filePath)) continue;
-                yield return filePath;
+                foreach (var name in ParseTemplateHelper.GetResourceName(filePath, _templateName, _resource))
+                {
+                    yield return name;
+                }
             }
         }
     }

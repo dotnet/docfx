@@ -146,6 +146,39 @@ content);
             }
         }
 
+        [Fact]
+        public void ProcessMarkdownFileWithRenameOutputFileName()
+        {
+            var fileName1 = "a.md";
+            var fileName2 = "b.md";
+            var renameFile1 = "x.html";
+            var renameFile2 = "y.html";
+            var file1 = _fileCreator.CreateFile($@"---
+outputFileName: {renameFile1}
+---
+
+[Main]({HttpUtility.UrlEncode(fileName2)})
+", fileName1);
+            var file2 = _fileCreator.CreateFile($@"---
+outputFileName: {renameFile2}
+---
+
+[Constructor]({HttpUtility.UrlEncode(fileName1)})
+", fileName2);
+            var files = new FileCollection(_defaultFiles);
+            files.Add(DocumentType.Article, new[] { file1, file2 });
+            BuildDocument(files);
+            {
+                var outputRawModelPath = GetRawModelFilePath(renameFile2);
+                Assert.True(File.Exists(outputRawModelPath));
+                var outputHtml = GetOutputFilePath(renameFile2);
+                Assert.True(File.Exists(outputHtml));
+                var content = File.ReadAllText(outputHtml);
+                Assert.Equal($"<p><a href=\"{renameFile1}\">Constructor</a></p>\n",
+content);
+            }
+        }
+
         #region Private Helpers
         private string GetRawModelFilePath(string fileName)
         {

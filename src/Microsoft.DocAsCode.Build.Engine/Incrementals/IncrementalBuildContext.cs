@@ -5,8 +5,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
+    using System.Security.Cryptography;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -79,8 +81,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             var lastBuildStartTime = lb?.BuildStartTime;
             var buildInfoIncrementalStatus = GetBuildInfoIncrementalStatus(cb, lb);
             var lbv = lb?.Versions?.SingleOrDefault(v => v.VersionName == parameters.VersionName);
-            var cbv = new BuildVersionInfo
+            var cbv = new BuildVersionInfo()
             {
+                BaseDir = Path.GetFullPath(Environment.ExpandEnvironmentVariables(baseDir)),
                 VersionName = parameters.VersionName,
                 ConfigHash = ComputeConfigHash(parameters, markdownServiceContextHash),
                 AttributesFile = IncrementalUtility.CreateRandomFileName(baseDir),
@@ -90,6 +93,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 XRefSpecMapFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 FileMapFile = IncrementalUtility.CreateRandomFileName(baseDir),
                 BuildMessageFile = IncrementalUtility.CreateRandomFileName(baseDir),
+                TocRestructionsFile = IncrementalUtility.CreateRandomFileName(baseDir),
             };
             cb.Versions.Add(cbv);
             var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, buildInfoIncrementalStatus, parameters, cbv, lbv);
@@ -162,6 +166,27 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 return mi;
             }
             return new OSPlatformSensitiveDictionary<BuildPhase?>();
+        }
+
+        public ImmutableDictionary<string, FileIncrementalInfo> GetModelIncrementalInfo(HostService hostService, BuildPhase phase)
+        {
+            if (hostService == null)
+            {
+                throw new ArgumentNullException(nameof(hostService));
+            }
+            if (!hostService.ShouldTraceIncrementalInfo)
+            {
+                throw new InvalidOperationException($"HostService: {hostService.Processor.Name} doesn't record incremental info, cannot call the method to get model incremental info.");
+            }
+            var increInfo = (from pair in GetModelLoadInfo(hostService)
+                             let incr = pair.Value == null ? true : false
+                             select new FileIncrementalInfo
+                             {
+                                 SourceFile = pair.Key,
+                                 IsIncremental = incr,
+                             }).ToImmutableDictionary(f => f.SourceFile, f => f, FilePathComparer.OSPlatformSensitiveStringComparer);
+
+            return increInfo;
         }
 
         #endregion
@@ -259,6 +284,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 foreach (var change in (from c in _changeDict
                                         where c.Value != ChangeKindWithDependency.None
+                                        where c.Value != ChangeKindWithDependency.DependencyUpdated
                                         select c).ToList())
                 {
                     foreach (var dt in dg.GetAllDependencyTo(change.Key))
@@ -307,11 +333,16 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     FileAttributeItem item;
                     if (!TryGetFileAttributeFromLast(key, out item))
                     {
+                        string md5;
+                        using (var fs = File.OpenRead(f.FullPath))
+                        {
+                            md5 = Convert.ToBase64String(MD5.Create().ComputeHash(fs));
+                        }
                         fileAttributes[key] = new FileAttributeItem
                         {
                             File = key,
                             LastModifiedTime = File.GetLastWriteTimeUtc(f.FullPath),
-                            MD5 = StringExtension.GetMd5String(File.ReadAllText(f.FullPath)),
+                            MD5 = md5,
                             IsFromSource = f.IsFromSource,
                         };
                     }
@@ -370,6 +401,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 {
                     Name = step.Name,
                     IncrementalContextHash = ((ISupportIncrementalBuildStep)step).GetIncrementalContextHash(),
+                    ContextInfoFile = (step is ICanTraceContextInfoBuildStep) ? IncrementalUtility.CreateRandomFileName(BaseDir) : null,
                 });
             }
             lock (_sync)
@@ -449,6 +481,70 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             IncrementalInfo.ReportProcessorStatus(processor.Name, true);
             Logger.LogVerbose($"Processor {processor.Name} enable incremental build.");
             return true;
+        }
+
+        #endregion
+
+        #region Plugin Context info
+
+        public void LoadContextInfo(HostService hostService)
+        {
+            if (hostService == null)
+            {
+                throw new ArgumentNullException(nameof(hostService));
+            }
+            if (!hostService.CanIncrementalBuild)
+            {
+                return;
+            }
+            var lpi = LastBuildVersionInfo.Processors.Find(p => p.Name == hostService.Processor.Name);
+            if (lpi == null)
+            {
+                return;
+            }
+
+            foreach (var step in hostService.Processor.BuildSteps.OfType<ICanTraceContextInfoBuildStep>())
+            {
+                var stepInfo = lpi.Steps.Find(s => s.Name == step.Name);
+                if (stepInfo == null || stepInfo.ContextInfoFile == null)
+                {
+                    continue;
+                }
+                using (var stream = File.OpenRead(Path.Combine(Environment.ExpandEnvironmentVariables(LastBaseDir), stepInfo.ContextInfoFile)))
+                {
+                    step.LoadContext(stream);
+                }
+            }
+        }
+
+        public void SaveContextInfo(HostService hostService)
+        {
+            if (hostService == null)
+            {
+                throw new ArgumentNullException(nameof(hostService));
+            }
+            if (!hostService.ShouldTraceIncrementalInfo)
+            {
+                return;
+            }
+            var lpi = CurrentBuildVersionInfo.Processors.Find(p => p.Name == hostService.Processor.Name);
+            if (lpi == null)
+            {
+                return;
+            }
+
+            foreach (var step in hostService.Processor.BuildSteps.OfType<ICanTraceContextInfoBuildStep>())
+            {
+                var stepInfo = lpi.Steps.Find(s => s.Name == step.Name);
+                if (stepInfo == null || stepInfo.ContextInfoFile == null)
+                {
+                    continue;
+                }
+                using (var stream = File.Create(Path.Combine(Environment.ExpandEnvironmentVariables(BaseDir), stepInfo.ContextInfoFile)))
+                {
+                    step.SaveContext(stream);
+                }
+            }
         }
 
         #endregion

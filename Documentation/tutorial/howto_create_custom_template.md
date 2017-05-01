@@ -47,7 +47,7 @@ Update the file `conceptual.html.primary.tmpl` with the following content:
 
 ```mustache
 <h1>{{_extra_property}}</h1>
-{{{conceptual}}}    
+{{{conceptual}}}
 ```
 
 In the documentation project, run `docfx build docfx.json -t c:/docfx_howto/simple_template --serve`.
@@ -89,7 +89,7 @@ Open http://localhost:8080/toc.html and you can see a toc web page.
 
 > [!Tip]
 > Run `docfx template export default` to view what's inside the default template.
-
+>
 > [!Note]
 > It is possible that DocFX updates its embedded templates when a new version is released.
 > So please make sure to re-export the template if you overwrite or are dependent on it in your custom template.

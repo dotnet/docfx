@@ -39,22 +39,24 @@ exports.transform = function (model)  {
   return model;
 }
 
-exports.getBookmarks = function (model)  {
+exports.getBookmarks = function (model, ignoreChildren)  {
   if (!model || !model.type || model.type.toLowerCase() === "namespace") return null;
 
   var bookmarks = {};
-  // Reference's first level bookmark should have no anchor
-  bookmarks[model.uid] = "";
 
-  if (model.children) {
-    model.children.forEach(function (item) {
-      bookmarks[item.uid] = common.getHtmlId(item.uid);
-      if (item.overload && item.overload.uid) {
-        bookmarks[item.overload.uid] = common.getHtmlId(item.overload.uid);
-      }
-    });
+  if (typeof ignoreChildren == 'undefined' || ignoreChildren === false) {
+    if (model.children) {
+      model.children.forEach(function (item) {
+        bookmarks[item.uid] = common.getHtmlId(item.uid);
+        if (item.overload && item.overload.uid) {
+          bookmarks[item.overload.uid] = common.getHtmlId(item.overload.uid);
+        }
+      });
+    }
   }
 
+  // Reference's first level bookmark should have no anchor
+  bookmarks[model.uid] = "";
   return bookmarks;
 }
 
@@ -68,7 +70,7 @@ function groupChildren(model, category) {
   }
   var typeChildrenItems = getDefinitions(category);
   var grouped = {};
-  
+
   model.children.forEach(function (c) {
     if (c.isEii) {
       var type = "eii";

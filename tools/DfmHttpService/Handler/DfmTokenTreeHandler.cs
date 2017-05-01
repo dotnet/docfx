@@ -24,7 +24,7 @@ namespace DfmHttpService
             {
                 try
                 {
-                    var tokenTree = GenerateTokenTree(context.Message.Documentation, context.Message.FilePath, context.Message.WorkspacePath);
+                    var tokenTree = GenerateTokenTree(context.Message.MarkdownContent, context.Message.RelativePath, context.Message.WorkspacePath);
                     Utility.ReplySuccessfulResponse(context.HttpContext, tokenTree, ContentType.Json);
                 }
                 catch (Exception ex)

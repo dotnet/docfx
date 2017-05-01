@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return (from reference in assemblyCompilation.References
                     let assembly = (IAssemblySymbol)assemblyCompilation.GetAssemblyOrModuleSymbol(reference)
                     //TODO: "mscorlib" shouldn't be ignored while extracting metadata from .NET Core/.NET Framework
-                    where assembly?.Identity?.Name != "mscorlib"
+                    where assembly != null && assembly.Identity?.Name != "mscorlib"
                     select assembly).ToList();
         }
 

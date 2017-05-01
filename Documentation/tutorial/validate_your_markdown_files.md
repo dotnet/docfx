@@ -117,7 +117,7 @@ And update your `md.style` with following content:
    |- md.style
    \- rules
       \- plugins
-         \- <your_rule>.dll 
+         \- <your_rule>.dll
    ```
 3. Update your `docfx.json` with following content:
 

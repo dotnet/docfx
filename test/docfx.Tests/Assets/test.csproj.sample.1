@@ -34,6 +34,16 @@
   <ItemGroup>
     <Compile Include="test.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="ref.csproj">
+      <Project>{0e297145-b43f-451a-a553-9ac9aec884f3}</Project>
+      <Name>ClassLibrary1</Name>
+    </ProjectReference>
+    <ProjectReference Include="ref.csproj">
+      <Project>{0e297145-b43f-451a-a553-9ac9aec884f3}</Project>
+      <Name>ClassLibrary1</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

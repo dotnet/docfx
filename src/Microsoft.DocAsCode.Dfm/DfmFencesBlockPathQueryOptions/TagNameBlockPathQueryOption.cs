@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace Microsoft.DocAsCode.Dfm
@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Dfm
         private static readonly Regex CSharpCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // C# code snippet region block: start -> #region snippetname, end -> #endregion
-        private static readonly Regex CSharpCodeSnippetRegionStartLineRegex = new Regex(@"^\s*#\s*region\s+(?<name>.+?)\s*$", RegexOptions.Compiled);
+        private static readonly Regex CSharpCodeSnippetRegionStartLineRegex = new Regex(@"^\s*#\s*region(?:\s+(?<name>.+?))?\s*$", RegexOptions.Compiled);
         private static readonly Regex CSharpCodeSnippetRegionEndLineRegex = new Regex(@"^\s*#\s*endregion(?:\s.*)?$", RegexOptions.Compiled);
 
         // VB code snippet comment block: ' <[/]snippetname>
@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Dfm
         private static readonly Regex VBCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\'\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // VB code snippet Region block: start -> # Region "snippetname", end -> # End Region
-        private static readonly Regex VBCodeSnippetRegionRegionStartLineRegex = new Regex(@"^\s*#\s*Region\s*(?<name>.+?)\s*$", RegexOptions.Compiled);
+        private static readonly Regex VBCodeSnippetRegionRegionStartLineRegex = new Regex(@"^\s*#\s*Region(?:\s+(?<name>.+?))?\s*$", RegexOptions.Compiled);
         private static readonly Regex VBCodeSnippetRegionRegionEndLineRegex = new Regex(@"^\s*#\s*End\s+Region(?:\s.*)?$", RegexOptions.Compiled);
 
         // C++ code snippet block: // <[/]snippetname>
@@ -57,6 +57,14 @@ namespace Microsoft.DocAsCode.Dfm
         // Javascript code snippet block: <!-- <[/]snippetname> -->
         private static readonly Regex JavaScriptSnippetCommentStartLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex JavaScriptSnippetCommentEndLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        // Java code snippet comment block: // <[/]snippetname>
+        private static readonly Regex JavaCodeSnippetCommentStartLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex JavaCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\/{2}\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        // Python code snippet comment block: # <[/]snippetname>
+        private static readonly Regex PythonCodeSnippetCommentStartLineRegex = new Regex(@"^\s*#\s*\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex PythonCodeSnippetCommentEndLineRegex = new Regex(@"^\s*#\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // Language names and aliases fllow http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html#language-names-and-aliases
         // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
@@ -190,6 +198,22 @@ namespace Microsoft.DocAsCode.Dfm
                 ["javascript"] = new List<ICodeSnippetExtractor>
                 {
                     new FlatNameCodeSnippetExtractor(JavaScriptSnippetCommentStartLineRegex, JavaScriptSnippetCommentEndLineRegex)
+                },
+                [".java"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(JavaCodeSnippetCommentStartLineRegex, JavaCodeSnippetCommentEndLineRegex)
+                },
+                ["java"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(JavaCodeSnippetCommentStartLineRegex, JavaCodeSnippetCommentEndLineRegex)
+                },
+                [".py"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(PythonCodeSnippetCommentStartLineRegex, PythonCodeSnippetCommentEndLineRegex)
+                },
+                ["python"] = new List<ICodeSnippetExtractor>
+                {
+                    new FlatNameCodeSnippetExtractor(PythonCodeSnippetCommentStartLineRegex, PythonCodeSnippetCommentEndLineRegex)
                 }
             };
 
@@ -242,7 +266,15 @@ namespace Microsoft.DocAsCode.Dfm
                             }));
 
             List<DfmTagNameResolveResult> results;
-            var tagNamesDictionary = lazyResolveResults.Value;
+            ConcurrentDictionary<string, List<DfmTagNameResolveResult>> tagNamesDictionary;
+            try
+            {
+                tagNamesDictionary = lazyResolveResults.Value;
+            }
+            catch (Exception e)
+            {
+                return new DfmTagNameResolveResult { IsSuccessful = false, ErrorMessage = $"error resolve tag names from {fencesPath}: {e.Message}" };
+            }
             if (!tagNamesDictionary.TryGetValue(tagName, out results) && !tagNamesDictionary.TryGetValue($"snippet{tagName}", out results))
             {
                 return new DfmTagNameResolveResult { IsSuccessful = false, ErrorMessage = $"Tag name {tagName} is not found" };

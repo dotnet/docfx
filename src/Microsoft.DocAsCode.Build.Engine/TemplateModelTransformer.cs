@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Web;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -329,7 +330,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             var xrefExceptions = new List<CrossReferenceNotResolvedException>();
             var xrefNodes = html.DocumentNode.SelectNodes("//xref")?
-                .Where(s => s.GetAttributeValue("href", null) != null || s.GetAttributeValue("uid", null) != null).ToList();
+                .Where(s => !string.IsNullOrEmpty(s.GetAttributeValue("href", null)) || !string.IsNullOrEmpty(s.GetAttributeValue("uid", null))).ToList();
             if (xrefNodes != null)
             {
                 foreach (var xref in xrefNodes)
@@ -376,7 +377,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             // Resolve external xref map first, and then internal xref map.
             // Internal one overrides external one
-            var xrefSpec = context.GetXrefSpec(xref.Uid);
+            var xrefSpec = context.GetXrefSpec(HttpUtility.HtmlDecode(xref.Uid));
             xref.ApplyXrefSpec(xrefSpec);
 
             var convertedNode = xref.ConvertToHtmlNode(language);

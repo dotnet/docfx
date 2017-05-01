@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Text.RegularExpressions;
 
     /// <summary>
@@ -52,6 +51,10 @@ namespace Microsoft.DocAsCode.Dfm
                 var endLineMatch = _endLineRegex.Match(lines[i]);
                 if (endLineMatch.Success)
                 {
+                    if (snippetStack.Count == 0)
+                    {
+                        throw new Exception($"line {i} contains an end line that can't match a start line");
+                    }
                     var codeSnippetTag = snippetStack.Pop();
                     snippetList.Add(codeSnippetTag);
                     snippetList.Add(new CodeSnippetTag(codeSnippetTag.Name, i + 1, CodeSnippetTagType.End));

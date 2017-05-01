@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
@@ -36,11 +37,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public LinkPhaseHandlerWithIncremental(LinkPhaseHandler inner)
         {
-            if (inner == null)
-            {
-                throw new ArgumentNullException(nameof(inner));
-            }
-            _inner = inner;
+            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
             Context = _inner.Context;
             TemplateProcessor = _inner.TemplateProcessor;
             IncrementalContext = Context.IncrementalBuildContext;
@@ -53,7 +50,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         public void Handle(List<HostService> hostServices, int maxParallelism)
         {
             PreHandle(hostServices);
-            _inner.Handle(hostServices, maxParallelism);
+            _inner.PostbuildAndSave(hostServices, maxParallelism);
+            using (new LoggerPhaseScope("SaveExternalXRefSpec", LogLevel.Verbose))
+            {
+                SaveExternalXRefSpec();
+            }
+            _inner.ProcessManifest(hostServices, maxParallelism);
             PostHandle(hostServices);
         }
 
@@ -61,20 +63,83 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void PreHandle(List<HostService> hostServices)
         {
-            ReloadModelsPerChanges(hostServices);
-            RegisterUnloadedXRefSpec(hostServices);
-            RegisterUnloadedFileMap(hostServices);
+            using (new LoggerPhaseScope("ReloadModelsPerChanges", LogLevel.Verbose))
+            {
+                ReloadModelsPerChanges(hostServices);
+            }
+            Parallel.Invoke(
+                new Action(() =>
+                {
+                    using (new LoggerPhaseScope("RegisterUnloadedXRefSpec", LogLevel.Verbose))
+                    {
+                        RegisterUnloadedXRefSpec(hostServices);
+                    }
+                }),
+                new Action(() =>
+                {
+                    using (new LoggerPhaseScope("RegisterUnloadedFileMap", LogLevel.Verbose))
+                    {
+                        RegisterUnloadedFileMap(hostServices);
+                    }
+                }),
+                new Action(() =>
+                {
+                    using (new LoggerPhaseScope("LoadExternalXRefSpec", LogLevel.Verbose))
+                    {
+                        LoadExternalXRefSpec();
+                    }
+                }));
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
         private void PostHandle(List<HostService> hostServices)
         {
-            ProcessUnloadedTemplateDependency(hostServices);
-            UpdateManifest();
-            UpdateFileMap(hostServices);
-            UpdateXrefMap(hostServices);
-            RelayBuildMessage(hostServices);
+            using (new LoggerPhaseScope("ProcessUnloadedTemplateDependency", LogLevel.Verbose))
+            {
+                ProcessUnloadedTemplateDependency(hostServices);
+            }
+
+            using (new LoggerPhaseScope("UpdateManifest", LogLevel.Verbose))
+            {
+                UpdateManifest();
+            }
+            Parallel.Invoke(
+                new Action(() =>
+                {
+                    using (new LoggerPhaseScope("UpdateFileMap", LogLevel.Verbose))
+                    {
+                        UpdateFileMap(hostServices);
+                    }
+                }),
+                new Action(() =>
+                {
+                    using (new LoggerPhaseScope("UpdateXrefMap", LogLevel.Verbose))
+                    {
+                        UpdateXrefMap(hostServices);
+                    }
+                }),
+                new Action(() =>
+                {
+                    using (new LoggerPhaseScope("SaveContextInfo", LogLevel.Verbose))
+                    {
+                        SaveContextInfo(hostServices);
+                    }
+                }));
+
+            using (new LoggerPhaseScope("RelayBuildMessage", LogLevel.Verbose))
+            {
+                BuildPhaseUtility.RelayBuildMessage(IncrementalContext, hostServices, Phase);
+            }
+
             Logger.UnregisterListener(CurrentBuildMessageInfo.GetListener());
+        }
+
+        private void SaveContextInfo(List<HostService> hostServices)
+        {
+            foreach (var h in hostServices)
+            {
+                IncrementalContext.SaveContextInfo(h);
+            }
         }
 
         private void ReloadModels(IEnumerable<HostService> hostServices)
@@ -94,6 +159,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var hostService in hostServices.Where(h => h.CanIncrementalBuild))
             {
                 hostService.ReloadModelsPerIncrementalChanges(IncrementalContext, newChanges, Phase);
+                hostService.IncrementalInfos = IncrementalContext.GetModelIncrementalInfo(hostService, Phase);
             }
         }
 
@@ -108,8 +174,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         throw new BuildCacheException($"Full build hasn't loaded XRefMap.");
                     }
-                    List<XRefSpec> specs;
-                    if (!lastXrefMap.TryGetValue(file, out specs))
+                    if (!lastXrefMap.TryGetValue(file, out List<XRefSpec> specs))
                     {
                         throw new BuildCacheException($"Last build hasn't loaded xrefspec for file: ({file}).");
                     }
@@ -134,10 +199,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         throw new BuildCacheException($"Full build hasn't loaded File Map.");
                     }
-                    FileMapItem item;
 
                     // for overwrite files, it don't exist in filemap
-                    if (lastFileMap.TryGetValue(file, out item))
+                    if (lastFileMap.TryGetValue(file, out FileMapItem item))
                     {
                         foreach (var pair in item)
                         {
@@ -152,11 +216,18 @@ namespace Microsoft.DocAsCode.Build.Engine
         private void ProcessUnloadedTemplateDependency(IEnumerable<HostService> hostServices)
         {
             var loaded = Context.ManifestItems;
-            var unloaded = GetUnloadedManifestItems(hostServices);
+            IEnumerable<ManifestItem> unloaded;
+            using (new LoggerPhaseScope("GetUnloadedManifestItems", LogLevel.Verbose))
+            {
+                unloaded = GetUnloadedManifestItems(hostServices);
+            }
             var types = new HashSet<string>(unloaded.Select(m => m.DocumentType).Except(loaded.Select(m => m.DocumentType)));
             if (types.Count > 0)
             {
-                TemplateProcessor.ProcessDependencies(types, Context.ApplyTemplateSettings);
+                using (new LoggerPhaseScope("ProcessDependencies", LogLevel.Verbose))
+                {
+                    TemplateProcessor.ProcessDependencies(types, Context.ApplyTemplateSettings);
+                }
             }
             foreach (var m in unloaded)
             {
@@ -168,7 +239,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             Context.ManifestItems.Shrink(IncrementalContext.BaseDir);
             CurrentBuildVersionInfo.Manifest = Context.ManifestItems;
-            CurrentBuildVersionInfo.SaveManifest(IncrementalContext.BaseDir);
+            CurrentBuildVersionInfo.SaveManifest();
         }
 
         private void UpdateFileMap(IEnumerable<HostService> hostServices)
@@ -181,8 +252,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var path = Context.GetFilePath(f.Key);
                     if (path != null)
                     {
-                        FileMapItem item;
-                        if (!map.TryGetValue(f.OriginalFileAndType.File, out item))
+                        if (!map.TryGetValue(f.OriginalFileAndType.File, out FileMapItem item))
                         {
                             map[f.OriginalFileAndType.File] = item = new FileMapItem();
                         }
@@ -205,8 +275,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     else
                     {
-                        List<XRefSpec> specs;
-                        if (!map.TryGetValue(f.OriginalFileAndType.File, out specs))
+                        if (!map.TryGetValue(f.OriginalFileAndType.File, out List<XRefSpec> specs))
                         {
                             map[f.OriginalFileAndType.File] = specs = new List<XRefSpec>();
                         }
@@ -219,50 +288,24 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void RelayBuildMessage(IEnumerable<HostService> hostServices)
-        {
-            foreach (var h in hostServices.Where(h => h.CanIncrementalBuild))
-            {
-                foreach (var file in GetFilesToRelayMessages(h))
-                {
-                    LastBuildMessageInfo.Replay(file);
-                }
-            }
-        }
-
-        private IEnumerable<string> GetFilesToRelayMessages(HostService hs)
-        {
-            var files = new HashSet<string>();
-            foreach (var f in hs.GetUnloadedModelFiles(IncrementalContext))
-            {
-                files.Add(f);
-
-                // warnings from token file won't be delegated to article, so we need to add it manually
-                var key = ((RelativePath)f).GetPathFromWorkingFolder();
-                foreach (var item in CurrentBuildVersionInfo.Dependency.GetAllDependencyFrom(key))
-                {
-                    if (item.Type == DependencyTypeName.Include)
-                    {
-                        files.Add(((RelativePath)item.To.Value).RemoveWorkingFolder());
-                    }
-                }
-            }
-            return files;
-        }
-
         private List<ManifestItem> GetUnloadedManifestItems(IEnumerable<HostService> hostServices)
         {
             if (LastBuildVersionInfo == null)
             {
                 return new List<ManifestItem>();
             }
-            return (from h in hostServices
-                    where h.CanIncrementalBuild
-                    from f in h.GetUnloadedModelFiles(IncrementalContext)
-                    from mani in LastBuildVersionInfo.Manifest
-                    where FilePathComparer.OSPlatformSensitiveStringComparer.Equals(f, mani.SourceRelativePath)
-                    let copied = UpdateItem(mani, f)
-                    select copied).ToList();
+            var unloadedFiles = (from h in hostServices
+                                 where h.CanIncrementalBuild
+                                 from f in h.GetUnloadedModelFiles(IncrementalContext)
+                                 select f).ToDictionary(f => f, f => f, FilePathComparer.OSPlatformSensitiveStringComparer);
+
+            using (new LoggerPhaseScope("UpdateItems", LogLevel.Verbose))
+            {
+                return (from mani in LastBuildVersionInfo.Manifest
+                        where unloadedFiles.ContainsKey(mani.SourceRelativePath)
+                        let copied = UpdateItem(mani, unloadedFiles[mani.SourceRelativePath])
+                        select copied).ToList();
+            }
         }
 
         private ManifestItem UpdateItem(ManifestItem item, string sourceRelativePath)
@@ -270,12 +313,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             var result = item.Clone();
             result.IsIncremental = true;
             result.SourceRelativePath = sourceRelativePath;
-            foreach (var ofi in result.OutputFiles.Values)
-            {
-                if (ofi.LinkToPath != null &&
-                    ofi.LinkToPath.Length > IncrementalContext.LastBaseDir.Length &&
-                    ofi.LinkToPath.StartsWith(IncrementalContext.LastBaseDir) &&
-                    (ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '\\' || ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '/'))
+            Parallel.ForEach(
+                from ofi in result.OutputFiles.Values
+                where ofi.LinkToPath != null
+                where ofi.LinkToPath.Length > IncrementalContext.LastBaseDir.Length
+                where ofi.LinkToPath.StartsWith(IncrementalContext.LastBaseDir)
+                where (ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '\\' || ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '/')
+                select ofi,
+                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
+                ofi =>
                 {
                     IncrementalUtility.RetryIO(() =>
                     {
@@ -283,9 +329,29 @@ namespace Microsoft.DocAsCode.Build.Engine
                         File.Copy(Environment.ExpandEnvironmentVariables(ofi.LinkToPath), Environment.ExpandEnvironmentVariables(path));
                         ofi.LinkToPath = path;
                     });
+                });
+
+            return result;
+        }
+
+        private void LoadExternalXRefSpec()
+        {
+            if (LastBuildVersionInfo?.ExternalXRefSpecFile != null)
+            {
+                using (var reader = File.OpenText(Path.Combine(LastBuildVersionInfo.BaseDir, LastBuildVersionInfo.ExternalXRefSpecFile)))
+                {
+                    Context.LoadExternalXRefSpec(reader);
                 }
             }
-            return result;
+        }
+
+        private void SaveExternalXRefSpec()
+        {
+            CurrentBuildVersionInfo.ExternalXRefSpecFile = IncrementalUtility.CreateRandomFileName(CurrentBuildVersionInfo.BaseDir);
+            using (var writer = File.CreateText(Path.Combine(CurrentBuildVersionInfo.BaseDir, CurrentBuildVersionInfo.ExternalXRefSpecFile)))
+            {
+                Context.SaveExternalXRefSpec(writer);
+            }
         }
 
         #endregion

@@ -187,6 +187,8 @@ code
 <li><p>X</p>
 <blockquote>
 <p>a</p>
+</blockquote>
+<blockquote>
 <p>b</p>
 </blockquote>
 </li>
@@ -229,9 +231,9 @@ c
 ")]
         [InlineData(@"1. First
 
-  |  | Header1 | Header2 |
-  ------- | ------- | --------
-  | Row1 | Cell11 | Cell12 |
+   |  | Header1 | Header2 |
+   ------- | ------- | --------
+   | Row1 | Cell11 | Cell12 |
 2. Second", @"<ol>
 <li><p>First</p>
 <table>
@@ -340,9 +342,9 @@ break list!
 ")]
         [InlineData(@"1. some text
 
-  ```
-  --
-  ```",
+   ```
+   --
+   ```",
             @"<ol>
 <li><p>some text</p>
 <pre><code>--
@@ -354,9 +356,18 @@ break list!
  --
  ```",
             @"<ol>
-<li>some text
-<code>--</code></li>
+<li>some text</li>
 </ol>
+<pre><code>--
+</code></pre>")]
+        [InlineData(@"1. some text
+ > 1",
+            @"<ol>
+<li>some text</li>
+</ol>
+<blockquote>
+<p>1</p>
+</blockquote>
 ")]
         [InlineData(
             @"a\<b <span>c</span>",
@@ -454,7 +465,7 @@ aaa",
         [InlineData(
             @"<!--a-->[b](c)<!--d-->e
 <!--f-->",
-            @"<p><!--a--><a href=""c"" data-raw-source=""[b](c)"">b</a><!--d-->e</p>
+            @"<!--a-->[b](c)<!--d-->e
 <!--f-->")]
         [InlineData(
             @"aabbcc:smile:ddee",
@@ -531,10 +542,8 @@ aaa",
 
   [c]: c",
             @"<ul>
-<li><p>[a]: a</p>
-</li>
-<li><p>[b]: b</p>
-</li>
+<li></li>
+<li></li>
 </ul>
 ")]
         [InlineData(
@@ -573,6 +582,85 @@ aaa",
 [b]: myimage.png",
             @"<p><a href=""targetfile.md"" data-raw-source=""[![image][b]Some description][a]""><img src=""myimage.png"" alt=""image"">Some description</a></p>
 ")]
+        [InlineData(
+            @"> a
+>
+> b
+
+>
+c
+
+>
+> d
+>
+e",
+            @"<blockquote>
+<p>a</p>
+<p>b</p>
+</blockquote>
+<blockquote>
+</blockquote>
+<p>c</p>
+<blockquote>
+<p>d</p>
+</blockquote>
+<p>e</p>
+")]
+        [InlineData(
+            @"* Unordered list item 1
+* Unordered list item 2
+  ## This Is Heading (in list).
+",
+            @"<ul>
+<li>Unordered list item 1</li>
+<li>Unordered list item 2<h2 id=""this-is-heading-in-list"">This Is Heading (in list).</h2>
+</li>
+</ul>
+")]
+        [InlineData(@"+ a
++ b",
+            @"<ul>
+<li>a</li>
+<li>b</li>
+</ul>
+")]
+        [InlineData(
+            @"```md
+in code a.
+    ```
+in code b.
+   ````
+not in code c.
+",
+            @"<pre><code class=""lang-md"">in code a.
+    ```
+in code b.
+</code></pre><p>not in code c.</p>
+")]
+        [InlineData(@"<div>a</div>", @"<div>a</div>")]
+        [InlineData(
+            @"<div>a</div>
+",
+            @"<div>a</div>
+")]
+        [InlineData(
+            @"<div>a</div>
+
+b",
+            @"<div>a</div>
+
+<p>b</p>
+")]
+        [InlineData(@"<input class=""a>"">", @"<input class=""a>"">")]
+        [InlineData(@"<input class=""a>""
+>", @"<input class=""a>""
+>")]
+        [InlineData(@"6. a
+1. b", @"<ol start=""6"">
+<li>a</li>
+<li>b</li>
+</ol>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
@@ -580,6 +668,165 @@ aaa",
             var engine = builder.CreateEngine(new HtmlRenderer());
             var result = engine.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        public void TestLegacyGfmInGeneral(string source, string expected)
+        {
+            var builder = new GfmEngineBuilder(new Options { LegacyMode = true });
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestListWithTab()
+        {
+            // 1. Prepare data
+            var source = @"
+0.	a
+
+0.	b
+
+	c
+
+	d
+
+0.	e
+";
+            var expected = @"<ol start=""0"">
+<li><p>a</p>
+</li>
+<li><p>b</p>
+<p>c</p>
+<p>d</p>
+</li>
+<li><p>e</p>
+</li>
+</ol>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Theory]
+        [Trait("Related", "Markdown")]
+        [InlineData("\ta")]
+        [InlineData(" \ta")]
+        [InlineData("  \ta")]
+        [InlineData("   \ta")]
+        [InlineData("    a")]
+        public void TestTab(string md)
+        {
+            TestGfmInGeneral(md, @"<pre><code>a
+</code></pre>");
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestTable_PipesInTableCell()
+        {
+            var source = @"
+| column 1 | column 2|
+| ---- | ---- |
+| test 1 - fenced pipe | `dotnet test --filter ""FullyQualifiedName~TestClass1|Category=Nightly""`|
+| test 2 - non-fenced, escaped pipe | dotnet test --filter ""FullyQualifiedName~TestClass1\|Category=Nightly"" |
+| test 3 - non-fenced, HTML coded pipe | dotnet test --filter ""FullyQualifiedName~TestClass1&#124;Category=Nightly"" |
+| test 4 - ""fenced"" with HTML `<code>` tag (the **workaround**) | <code>dotnet test --filter ""FullyQualifiedName~TestClass1&#124;Category=Nightly""</code> |
+";
+            var expected = @"<table>
+<thead>
+<tr>
+<th>column 1</th>
+<th>column 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>test 1 - fenced pipe</td>
+<td>`dotnet test --filter &quot;FullyQualifiedName~TestClass1</td>
+</tr>
+<tr>
+<td>test 2 - non-fenced, escaped pipe</td>
+<td>dotnet test --filter &quot;FullyQualifiedName~TestClass1|Category=Nightly&quot;</td>
+</tr>
+<tr>
+<td>test 3 - non-fenced, HTML coded pipe</td>
+<td>dotnet test --filter &quot;FullyQualifiedName~TestClass1&#124;Category=Nightly&quot;</td>
+</tr>
+<tr>
+<td>test 4 - &quot;fenced&quot; with HTML <code>&lt;code&gt;</code> tag (the <strong>workaround</strong>)</td>
+<td><code>dotnet test --filter &quot;FullyQualifiedName~TestClass1&#124;Category=Nightly&quot;</code></td>
+</tr>
+</tbody>
+</table>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestHtml()
+        {
+            // 1. Prepare data
+            var source = @"
+<p>Here's example of how to create an instance of **Cat** class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>
+<pre><code class=""c#"">    var a = new Cat(object, int)();
+    int catNumber = new int();
+    unsafe
+    {
+        a.GetFeetLength(catNumber);
+    }</code></pre>
+<p>As you see, here we bring in <strong>pointer</strong> so we need to add <span class=""languagekeyword"">unsafe</span> keyword.</p>
+";
+            var expected = @"<p>Here&#39;s example of how to create an instance of <strong>Cat</strong> class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>
+<pre><code class=""c#"">    var a = new Cat(object, int)();
+    int catNumber = new int();
+    unsafe
+    {
+        a.GetFeetLength(catNumber);
+    }</code></pre>
+<p>As you see, here we bring in <strong>pointer</strong> so we need to add <span class=""languagekeyword"">unsafe</span> keyword.</p>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestHtml_Div()
+        {
+            // 1. Prepare data
+            var source = @"
+<div>
+    <div>
+        <div>aaa</div>
+    </div>
+</div>
+";
+            var expected = @"<div>
+    <div>
+        <div>aaa</div>
+    </div>
+</div>
+";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestInlineHtml_Span()
+        {
+            // 1. Prepare data
+            var source = @"
+<span>a</span>
+
+<span id=""a"" class=""x"">a</span>
+<span>b</span>
+";
+            var expected = @"<p><span>a</span></p>
+<p><span id=""a"" class=""x"">a</span>
+<span>b</span></p>
+";
+            TestGfmInGeneral(source, expected);
         }
 
         [Fact]
@@ -794,6 +1041,21 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
 
             var expected = @"<p><a href=""girl.png"" title=""title is &quot;hello&quot; world."" data-raw-source=""[This is link text with quotation &#39; and double quotation &quot;hello&quot; world](girl.png &quot;title is &quot;hello&quot; world.&quot;)"">This is link text with quotation &#39; and double quotation &quot;hello&quot; world</a></p>
 ";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestGfmHeading_WithSharpAtTheEndInTitle()
+        {
+            var source = @"# Language C#
+# Language C# #";
+
+            var expected = @"<h1 id=""language-c"">Language C#</h1>
+<h1 id=""language-c-1"">Language C#</h1>
+";
+
+            TestLegacyGfmInGeneral(source, expected);
             TestGfmInGeneral(source, expected);
         }
     }

@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         protected virtual IMarkdownToken GenerateToken(IMarkdownParser parser, string href, string title, string text, bool isImage, SourceInfo sourceInfo, MarkdownLinkType linkType, string refId)
         {
-            var escapedHref = Regexes.Helper.MarkdownEscape.Replace(href, m => m.Groups[1].Value);
+            var escapedHref = StringHelper.UnescapeMarkdown(href);
             var c = parser.SwitchContext(MarkdownInlineContext.IsInLink, BoxedTrue);
             IMarkdownToken result;
             if (isImage)

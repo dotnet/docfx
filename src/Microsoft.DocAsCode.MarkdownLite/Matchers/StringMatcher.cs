@@ -14,18 +14,36 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public override int Match(MatchContent content)
         {
-            if (!content.TestLength(_text.Length))
+            if (content.Length < _text.Length)
             {
                 return NotMatch;
             }
-            for (int i = 0; i < _text.Length; i++)
+            if (content.Direction == MatchDirection.Forward)
             {
-                if (content[i] != _text[i])
+                for (int i = 0; i < _text.Length; i++)
                 {
-                    return NotMatch;
+                    if (content[i] != _text[i])
+                    {
+                        return NotMatch;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < _text.Length; i++)
+                {
+                    if (content[i] != _text[_text.Length - 1 - i])
+                    {
+                        return NotMatch;
+                    }
                 }
             }
             return _text.Length;
+        }
+
+        public override string ToString()
+        {
+            return EscapeText(_text);
         }
     }
 }

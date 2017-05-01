@@ -5,17 +5,17 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
     internal sealed class AnyMatcher : Matcher
     {
-        private readonly Matcher[] _inner;
+        private readonly Matcher[] _inners;
 
-        public AnyMatcher(Matcher[] inner)
+        public AnyMatcher(Matcher[] inners)
         {
-            _inner = inner;
+            _inners = inners;
         }
 
         public override int Match(MatchContent content)
         {
             bool matchSuccess = false;
-            foreach (var m in _inner)
+            foreach (var m in _inners)
             {
                 var c = m.Match(content);
                 if (c > 0)
@@ -28,6 +28,13 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                 }
             }
             return matchSuccess ? 0 : NotMatch;
+        }
+
+        internal Matcher[] Inners => _inners;
+
+        public override string ToString()
+        {
+            return "(" + string.Join<Matcher>("|", _inners) + ")";
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 {
     using System;
 
-    internal sealed class AnyCharNotInMatcher : Matcher
+    internal sealed class AnyCharNotInMatcher : Matcher, IRepeatable
     {
         private readonly char[] _ch;
 
@@ -21,6 +21,16 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                 return NotMatch;
             }
             return Array.BinarySearch(_ch, content.GetCurrentChar()) >= 0 ? NotMatch : 1;
+        }
+
+        public Matcher Repeat(int minOccur, int maxOccur)
+        {
+            return new AnyCharNotInRepeatMatcher(_ch, minOccur, maxOccur);
+        }
+
+        public override string ToString()
+        {
+            return "[^" + EscapeText(string.Join(string.Empty, _ch)) + "]";
         }
     }
 }

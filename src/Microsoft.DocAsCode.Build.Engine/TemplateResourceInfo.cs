@@ -6,14 +6,30 @@ namespace Microsoft.DocAsCode.Build.Engine
     public sealed class TemplateResourceInfo
     {
         public string ResourceKey { get; }
-        public string FilePath { get; }
-        public bool IsRegexPattern { get; }
-
-        public TemplateResourceInfo(string resourceKey, string filePath, bool isRegexPattern)
+        public TemplateResourceInfo(string resourceKey)
         {
             ResourceKey = resourceKey;
-            FilePath = filePath;
-            IsRegexPattern = isRegexPattern;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var target = obj as TemplateResourceInfo;
+            if (target == null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, target))
+            {
+                return true;
+            }
+
+            return Equals(ResourceKey, target.ResourceKey);
+        }
+
+        public override int GetHashCode()
+        {
+            return ResourceKey.GetHashCode();
         }
     }
 }

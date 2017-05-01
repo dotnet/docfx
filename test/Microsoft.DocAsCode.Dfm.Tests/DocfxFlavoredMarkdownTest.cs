@@ -40,11 +40,6 @@ b:
             "<h1 id=\"hello-crosslink1-crosslink2dummy\">Hello <xref href=\"CrossLink1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@CrossLink1\"></xref> <xref href=\"CrossLink2\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@&#39;CrossLink2&#39;\"></xref>dummy</h1>\n<p><xref href=\"World\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@World\"></xref></p>\n")]
         [InlineData("a\n```\nc\n```",
             "<p>a</p>\n<pre><code>c\n</code></pre>")]
-        [InlineData(@"* Unordered list item 1
-* Unordered list item 2
-1. This Is Heading, Not Ordered List
--------------------------------------
-", "<ul>\n<li>Unordered list item 1</li>\n<li>Unordered list item 2</li>\n</ul>\n<h2 id=\"1-this-is-heading-not-ordered-list\">1. This Is Heading, Not Ordered List</h2>\n")]
         [InlineData(@" *hello* abc @api__1",
             "<p> <em>hello</em> abc <xref href=\"api__1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@api__1\"></xref></p>\n")]
         [InlineData("@1abc", "<p>@1abc</p>\n")]
@@ -218,7 +213,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 
             var ref1 = @"[!include[ref2](ref2.md ""This is root"")]";
             var ref2 = @"## Inline inclusion do not parse header [!include[root](root.md ""This is root"")]";
-            var ref3 = @"**Hello**";
+            var ref3 = @"**Hello**  ";
             File.WriteAllText("root.md", root);
             File.WriteAllText("ref1.md", ref1);
             File.WriteAllText("ref2.md", ref2);
@@ -554,7 +549,7 @@ This is also note<br/>This is also note with br</p>
         [Theory]
         [Trait("Related", "DfmMarkdown")]
         [InlineData(@"> [!div class=""tabbedCodeSnippets"" data-resources=""OutlookServices.Calendar""]
-
+>
 >```cs-i
     var outlookClient = await CreateOutlookClientAsync(""Calendar"");
     var events = await outlookClient.Me.Events.Take(10).ExecuteAsync();
@@ -563,7 +558,7 @@ This is also note<br/>This is also note with br</p>
                 System.Diagnostics.Debug.WriteLine(""Event '{0}'."", calendarEvent.Subject);
             }
 ```
-
+> 
 >```javascript-i
 outlookClient.me.events.getEvents().fetch().then(function(result) {
         result.currentPage.forEach(function(event) {
@@ -757,9 +752,10 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
         {
             var builder = new DfmEngineBuilder(new Options() { Mangle = false });
             var mrb = new MarkdownValidatorBuilder(
-                new ContainerConfiguration()
-                    .WithAssembly(typeof(DocfxFlavoredMarkdownTest).Assembly)
-                    .CreateContainer());
+                new CompositionContainer(
+                    new ContainerConfiguration()
+                        .WithAssembly(typeof(DocfxFlavoredMarkdownTest).Assembly)
+                        .CreateContainer()));
             mrb.AddTagValidators(new[]
             {
                 new MarkdownTagValidationRule
@@ -1016,7 +1012,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
     {
         static void Main(string[] args)
         {
-            string s = &quot;test&quot;;
+            string s = &quot;\ntest&quot;;
             int i = 100;
         }
     }
@@ -1036,13 +1032,13 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
 </code></pre>")]
         [InlineData(@"[!code[Main](Program.cs#L12-L16 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">static void Main(string[] args)
 {
-    string s = &quot;test&quot;;
+    string s = &quot;\ntest&quot;;
     int i = 100;
 }
 </code></pre>")]
         [InlineData(@"[!code[Main](Program.cs#L12-L100 ""This is root"")]", @"<pre><code name=""Main"" title=""This is root"">        static void Main(string[] args)
         {
-            string s = &quot;test&quot;;
+            string s = &quot;\ntest&quot;;
             int i = 100;
         }
     }
@@ -1072,7 +1068,7 @@ using System.IO;
 {
     static void Main(string[] args)
     {
-        string s = &quot;test&quot;;
+        string s = &quot;\ntest&quot;;
         int i = 100;
     }
 }
@@ -1081,7 +1077,7 @@ using System.IO;
 {
     static void Main(string[] args)
     {
-        string s = &quot;test&quot;;
+        string s = &quot;\ntest&quot;;
         int i = 100;
     }
 }
@@ -1124,7 +1120,7 @@ namespace ConsoleApplication1
     class Program
         static void Main(string[] args)
         {
-            string s = &quot;test&quot;;
+            string s = &quot;\ntest&quot;;
             int i = 100;
         }
 </code></pre>")]
@@ -1141,7 +1137,7 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            string s = &quot;test&quot;;
+            string s = &quot;\ntest&quot;;
             int i = 100;
         }
     }
@@ -1189,7 +1185,7 @@ namespace ConsoleApplication1
     class Program
         static void Main(string[] args)
         {
-            string s = &quot;test&quot;;
+            string s = &quot;\ntest&quot;;
             int i = 100;
         }
 </code></pre>")]
@@ -1206,7 +1202,7 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            string s = &quot;test&quot;;
+            string s = &quot;\ntest&quot;;
             int i = 100;
         }
     }
@@ -1263,7 +1259,7 @@ public static void Foo()
     {
         static void Main(string[] args)
         {
-            string s = ""test"";
+            string s = ""\ntest"";
             int i = 100;
         }
     }
@@ -1367,6 +1363,35 @@ line4
             // assert
             Assert.Equal(1, listener.Items.Count(i => i.LogLevel == LogLevel.Warning));
             var expected = "<pre><code name=\"tag1\">line2\n</code></pre>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        public void CodeSnippetTagsShouldSucceedWhenReferencedFileContainsRegionWithoutName()
+        {
+            // arrange
+            var content = @"#region
+public class MyClass
+#region
+{
+    #region main
+    static void Main()
+    {
+    }
+    #endregion
+}
+#endregion
+#endregion";
+            File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
+
+            // act
+            var marked = DocfxFlavoredMarked.Markup("[!code[MyClass](Program.cs#main)]", "Program.cs");
+
+            // assert
+            var expected = @"<pre><code name=""MyClass"">static void Main()
+{
+}
+</code></pre>";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
         }
 

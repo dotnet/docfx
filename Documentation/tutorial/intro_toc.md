@@ -61,14 +61,13 @@ The data model for `toc.yml` is an **array** of *TOC Item Object*s.
 Property Name | Type              | Description
 ------------- | ----------------- | ---------------------------
 *name*        | string            | Specifies the title of the *TOC Item*.
-*href*        | string            | Specifies the hyperlink of the *TOC Item*.
+*href*        | string            | Specifies the hyperlink of the *TOC Item*. When its value is another TOC file, it is a TOC include, and all the items inside the included toc are considered as the child of current *TOC Item*
 *items*       | *TOC Item Object* | Specifies the children *TOC Items* of current *TOC Item*.
 
 **Advanced**: These properties are useful when a TOC links another TOC, or links to a uid.
 
 Property Name                     | Type              | Description
 --------------------------------- | ----------------- | ---------------------------
-*tocHref*                         | string            | Specifies another TOC file, whose items are considered as the child of the currrent *TOC Item*.
 *topicHref*                       | string            | Specifies the topic href of the *TOC Item*. It is useful when *href* is linking to a folder or *tocHref* is used.
 *topicUid*                        | string            | Specifies the `uid` of the *topicHref* file. If the value is set, it overwrites the value of *topicHref*.
 ~~*homepage*~~ **Deprecated**     | string            | ~~Specifies the homepage of the *TOC Item*. It is useful when *href* is linking to a folder.~~ Use *topicHref* instead.
@@ -96,7 +95,7 @@ For example, one `toc.yml` file is like below:
 
 ```yml
 - name: How-to tutorials
-  tocHref: howto/toc.yml
+  href: howto/toc.yml
   topicHref: howto/overview.md
 ```
 

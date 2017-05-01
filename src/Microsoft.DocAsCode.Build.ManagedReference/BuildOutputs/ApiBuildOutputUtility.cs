@@ -90,7 +90,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             var result = $"<xref uid=\"{HttpUtility.HtmlEncode(uid)}\"";
             if (!string.IsNullOrEmpty(text))
             {
-                result += $" text=\"{text}\"";
+                result += $" text=\"{HttpUtility.HtmlEncode(text)}\"";
             }
             else
             {
@@ -98,7 +98,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
             }
             if (!string.IsNullOrEmpty(alt))
             {
-                result += $" alt=\"{alt}\"";
+                result += $" alt=\"{HttpUtility.HtmlEncode(alt)}\"";
             }
             else
             {

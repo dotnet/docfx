@@ -113,6 +113,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 using (new LoggerPhaseScope("CreateMarkdownService", LogLevel.Verbose))
                                 {
                                     MarkdownService = CreateMarkdownService(parameters, templateProcessor.Tokens.ToImmutableDictionary());
+                                    context.MarkdownService = MarkdownService;
                                 }
                             }
                             Prepare(

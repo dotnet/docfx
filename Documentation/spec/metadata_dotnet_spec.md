@@ -441,7 +441,7 @@ The *UID* in reference can be a *Spec Id*, then it contains one more member: spe
 The *spec* in reference is very like a list of lightweight references, it describes how to compose the generic type in some special language.
 
 > Example 7 *spec* for references
-
+>
 > YAML:
 > ```yaml
 > references:

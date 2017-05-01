@@ -1,9 +1,14 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 var mrefCommon = require('./ManagedReference.common.js');
-var extension = require('./ManagedReference.extension.js')
+var extension = require('./ManagedReference.extension.js');
+var overwrite = require('./ManagedReference.overwrite.js');
 
 exports.transform = function (model) {
+  if (overwrite && overwrite.transform) {
+    return overwrite.transform(model);
+  }
+
   if (extension && extension.preTransform) {
     model = extension.preTransform(model);
   }
@@ -20,12 +25,15 @@ exports.transform = function (model) {
   if (extension && extension.postTransform) {
     model = extension.postTransform(model);
   }
-  return {
-    item: model
-  };
+
+  return model;
 }
 
 exports.getOptions = function (model) {
+  if (overwrite && overwrite.getOptions) {
+    return overwrite.getOptions(model);
+  }
+
   return {
     "bookmarks": mrefCommon.getBookmarks(model)
   };

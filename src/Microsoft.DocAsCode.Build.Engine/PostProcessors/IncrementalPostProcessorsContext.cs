@@ -18,6 +18,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #region Properties
 
+        public BuildInfo CurrentBuildInfo { get; }
+
         public PostProcessInfo CurrentInfo { get; }
 
         public PostProcessInfo LastInfo { get; }
@@ -27,6 +29,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string CurrentBaseDir { get; }
 
         public string LastBaseDir { get; }
+
+        public int MaxParallelism { get; }
 
         public IncrementalInfo IncrementalInfo { get; } = new IncrementalInfo();
 
@@ -49,7 +53,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             BuildInfo currentBuildInfo,
             BuildInfo lastBuildInfo,
             List<PostProcessor> postProcessors,
-            bool enableIncremental)
+            bool enableIncremental,
+            int maxParallelism)
         {
             if (intermediateFolder == null)
             {
@@ -63,6 +68,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(postProcessors));
             }
+            if (maxParallelism <= 0)
+            {
+                maxParallelism = Environment.ProcessorCount;
+            }
 
             _postProcessors = postProcessors;
 
@@ -71,12 +80,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 currentBuildInfo.PostProcessInfo = GeneratePostProcessInfo();
             }
+            CurrentBuildInfo = currentBuildInfo;
             CurrentInfo = currentBuildInfo.PostProcessInfo;
             LastInfo = lastBuildInfo?.PostProcessInfo;
             CurrentBaseDir = Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName);
             LastBaseDir = lastBuildInfo == null ? null : Path.Combine(intermediateFolder, lastBuildInfo.DirectoryName);
             EnableIncremental = enableIncremental;
             IsIncremental = GetIsIncremental();
+            MaxParallelism = maxParallelism;
         }
 
         #endregion

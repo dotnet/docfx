@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         private const string MetaAppendContent = "-meta";
         private const string PrependIncrementalPhaseName = "TestIncrementalPostProcessing";
         private static readonly PostProcessorsHandler PostProcessorsHandler = new PostProcessorsHandler();
+        private static readonly int MaxParallelism = Environment.ProcessorCount;
 
         [Fact]
         public void TestBasicScenario()
@@ -67,7 +68,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 PrepareCachedOutput(intermediateFolderVariable, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "a", "b");
 
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolderVariable, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolderVariable, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -144,7 +145,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                             {
                                 DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder)
                             };
-                            increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, null, postProcessors, true);
+                            increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, null, postProcessors, true, MaxParallelism);
 
                             // Check context
                             Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -197,12 +198,22 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                             {
                                 DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolder)
                             };
+                            var dg = new DependencyGraph();
+                            dg.ReportDependency(new[] {
+                                new DependencyItem("~/a.md", "~/include.md", "~/a.md", DependencyTypeName.Include)
+                            });
+                            secondBuildInfo.Versions.Add(new BuildVersionInfo
+                            {
+                                Dependency = dg
+                            });
                             var lastBuildInfo = new BuildInfo
                             {
                                 DirectoryName = Path.GetFileName(increContext.CurrentBaseDir),
                                 PostProcessInfo = increContext.CurrentInfo
                             };
-                            increContext = new IncrementalPostProcessorsContext(intermediateFolder, secondBuildInfo, lastBuildInfo, postProcessors, true);
+                            // Add warning from include dependency.
+                            lastBuildInfo.PostProcessInfo.MessageInfo.GetListener().WriteLine(new LogItem { File = "include.md", LogLevel = LogLevel.Warning, Message = "Invalid bookmark from include file.", Phase = phaseName });
+                            increContext = new IncrementalPostProcessorsContext(intermediateFolder, secondBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                             // Check context
                             Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -250,8 +261,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                             // Check log messages
                             var logs = Listener.Items.Where(i => i.Phase.StartsWith(phaseName)).ToList();
-                            Assert.Equal(3, logs.Count);
-                            Assert.True(logs.All(l => l.Message.Contains("is not in html format.")));
+                            Assert.Equal(4, logs.Count);
+                            Assert.Equal(3, logs.Count(l => l.Message.Contains("is not in html format.")));
+                            Assert.Equal(1, logs.Count(l => l.Message.Contains("Invalid bookmark from include file."))); // Replay warning from include dependency.
                         }
                     });
             }
@@ -293,7 +305,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
                 var appendString = $"{AppendStringPostProcessor.AppendString}";
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -355,7 +367,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     DirectoryName = Path.GetFileName(increContext.CurrentBaseDir),
                     PostProcessInfo = increContext.CurrentInfo
                 };
-                increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, enableIncremental);
+                increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, enableIncremental, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -437,7 +449,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
                 var appendString = $"{AppendStringPostProcessor.AppendString}";
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -490,7 +502,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 // Add post processor which not supports incremental
                 postProcessors.AddRange(GetPostProcessors(typeof(NonIncrementalPostProcessor)));
-                increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.False(increContext.ShouldTraceIncrementalInfo);
@@ -543,7 +555,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 PrepareCachedOutput(intermediateFolder, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "a/b");
 
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -609,7 +621,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 // Add post processor which has changed context hash
                 var postProcessors = GetPostProcessors(typeof(AppendIntegerPostProcessor));
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -677,7 +689,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 // Set enable incremental post process flag to false
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, false);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, false, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -736,7 +748,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 // Pass null as last build info
                 var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, null, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, null, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.True(increContext.ShouldTraceIncrementalInfo);
@@ -803,7 +815,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 // Add not post processor which not support incremental
                 var postProcessors = GetPostProcessors(typeof(NonIncrementalPostProcessor));
-                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true);
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
 
                 // Check context
                 Assert.False(increContext.ShouldTraceIncrementalInfo);
@@ -833,6 +845,98 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             }
             finally
             {
+                EnvironmentContext.Clean();
+            }
+        }
+
+        [Fact]
+        public void TestIncrementalSplitScenario()
+        {
+            try
+            {
+                const string intermediateFolderVariable = "%cache%";
+                var intermediateFolder = GetRandomFolder();
+                Environment.SetEnvironmentVariable("cache", intermediateFolder);
+                string phaseName = "TestIncrementalSplitScenario";
+                var currentBuildInfo = new BuildInfo
+                {
+                    DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolderVariable)
+                };
+                var lastBuildInfo = new BuildInfo
+                {
+                    DirectoryName = IncrementalUtility.CreateRandomDirectory(intermediateFolderVariable),
+                    PostProcessInfo = new PostProcessInfo()
+                };
+                lastBuildInfo.PostProcessInfo.PostProcessorInfos.Add(new PostProcessorInfo
+                {
+                    Name = typeof(AppendStringPostProcessor).Name
+                });
+                lastBuildInfo.PostProcessInfo.MessageInfo.GetListener().WriteLine(new LogItem { File = "CatLibrary.Cat-2.yml", LogLevel = LogLevel.Warning, Message = "Invalid bookmark.", Phase = phaseName });
+
+                // Exclude c, which is not incremental
+                var preparedManifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental_split_case.json"));
+                PrepareCachedOutput(intermediateFolderVariable, lastBuildInfo, AppendStringPostProcessor.AppendString, preparedManifest.Files, AppendStringPostProcessor.AdditionalExtensionString, "CatLibrary.Cat-2", "CatLibrary.Cat-2.Name");
+
+                var postProcessors = GetPostProcessors(typeof(AppendStringPostProcessor));
+                var increContext = new IncrementalPostProcessorsContext(intermediateFolderVariable, currentBuildInfo, lastBuildInfo, postProcessors, true, MaxParallelism);
+
+                // Check context
+                Assert.True(increContext.ShouldTraceIncrementalInfo);
+                Assert.True(increContext.IsIncremental);
+
+                var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
+                var manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental_split_case.json"));
+                var outputFolder = GetRandomFolder();
+                PrepareOutput(outputFolder, "CatLibrary.Cat-2", "CatLibrary.Cat-2.Name", "c");
+                SetDefaultFAL(manifest, outputFolder);
+                IncrementalActions
+                    (phaseName, () =>
+                    {
+                        using (new LoggerPhaseScope(phaseName))
+                        {
+                            increPostProcessorHandler.Handle(postProcessors, manifest, outputFolder);
+                        }
+
+                        // Check incremental flag
+                        Assert.Equal(3, manifest.Files.Count);
+                        Assert.True(manifest.Files.Single(i => i.OutputFiles[".html"].RelativePath == "CatLibrary.Cat-2.html").IsIncremental);
+                        Assert.True(manifest.Files.Single(i => i.OutputFiles[".html"].RelativePath == "CatLibrary.Cat-2.Name.html").IsIncremental);
+                        Assert.False(manifest.Files.Single(i => i.SourceRelativePath == "c.md").IsIncremental);
+                        foreach (var file in manifest.Files)
+                        {
+                            Assert.True(file.OutputFiles.ContainsKey(AppendStringPostProcessor.AdditionalExtensionString));
+                        }
+
+                        // Check output content
+                        VerifyOutput(outputFolder, AppendStringPostProcessor.AppendString, "CatLibrary.Cat-2", "CatLibrary.Cat-2.Name", "c");
+
+                        // Check cached PostProcessInfo
+                        Assert.NotNull(currentBuildInfo.PostProcessInfo);
+
+                        var postProcessorInfos = currentBuildInfo.PostProcessInfo.PostProcessorInfos;
+                        Assert.Equal(1, currentBuildInfo.PostProcessInfo.PostProcessorInfos.Count);
+                        Assert.Equal($"{typeof(AppendStringPostProcessor).Name}", postProcessorInfos[0].Name);
+                        Assert.Null(postProcessorInfos[0].IncrementalContextHash);
+
+                        var postProcessOutputs = currentBuildInfo.PostProcessInfo.PostProcessOutputs;
+                        Assert.Equal(6, postProcessOutputs.Count); // no change for *.mta.json, so not in cache.
+                        VerifyCachedOutput(Path.Combine(intermediateFolder, currentBuildInfo.DirectoryName), postProcessOutputs, AppendStringPostProcessor.AppendString, AppendStringPostProcessor.AdditionalExtensionString, "CatLibrary.Cat-2", "CatLibrary.Cat-2.Name", "c");
+
+                        // Check incremental info
+                        Assert.Equal(1, manifest.IncrementalInfo.Count);
+                        Assert.Equal(true, manifest.IncrementalInfo[0].Status.CanIncremental);
+                        Assert.Equal(IncrementalPhase.PostProcessing, manifest.IncrementalInfo[0].Status.IncrementalPhase);
+                        Assert.Equal("Can support incremental post processing.", manifest.IncrementalInfo[0].Status.Details);
+
+                        // Check log messages
+                        var logs = Listener.Items.Where(i => i.Phase.StartsWith(phaseName)).ToList();
+                        Assert.Equal(2, logs.Count);
+                        Assert.True(logs.Count(l => l.Message.Contains("Invalid bookmark.")) == 1);
+                    });
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("cache", null);
                 EnvironmentContext.Clean();
             }
         }
@@ -873,7 +977,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 var htmlContent = $"{fileName}{appendContent}";
                 CreateFile($"{cachedHtmlName}", htmlContent, baseFolder);
                 postProcessOutputs.Add($"{fileName}.html", cachedHtmlName);
-                manifestItems.First(i => Path.ChangeExtension(i.SourceRelativePath, null) == fileName).OutputFiles[".html"].LinkToPath = $@"{intermediateFolder}\{lastBuildInfo.DirectoryName}\test";
+                manifestItems.First(i => Path.ChangeExtension(i.OutputFiles[".html"].RelativePath, null) == fileName).OutputFiles[".html"].LinkToPath = $@"{intermediateFolder}\{lastBuildInfo.DirectoryName}\test";
 
                 var cachedMetaName = IncrementalUtility.CreateRandomFileName(baseFolder);
                 CreateFile($"{cachedMetaName}", $"{fileName}{MetaAppendContent}", baseFolder);
@@ -886,7 +990,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     CreateFile($"{cachedManifestItemsFileName}", htmlContent, baseFolder);
                     postProcessOutputs.Add(relativePath, cachedManifestItemsFileName);
 
-                    var item = manifestItems.FirstOrDefault(i => Path.ChangeExtension(i.SourceRelativePath, null) == fileName);
+                    var item = manifestItems.FirstOrDefault(i => Path.ChangeExtension(i.OutputFiles[".html"].RelativePath, null) == fileName);
                     if (item != null)
                     {
                         item.OutputFiles.Add($"{additionalFileExtension}", new OutputFileInfo { RelativePath = relativePath, LinkToPath = $@"{intermediateFolder}\{lastBuildInfo.DirectoryName}\test" });
@@ -940,5 +1044,20 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 .Create();
         }
         #endregion
+
+        private class LogItem : ILogItem
+        {
+            public string File { get; set; }
+
+            public string Line { get; set; }
+
+            public LogLevel LogLevel { get; set; }
+
+            public string Message { get; set; }
+
+            public string Phase { get; set; }
+
+            public string Code { get; set; }
+        }
     }
 }

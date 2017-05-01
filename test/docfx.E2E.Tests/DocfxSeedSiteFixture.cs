@@ -28,6 +28,7 @@ namespace Microsoft.DocAsCode.E2E.Tests
             JObject token = JObject.Parse(File.ReadAllText(ConfigFile));
             var folder = (string)token.SelectToken("site");
             var port = (int)token.SelectToken("port");
+            Url = $"{RootUrl}:{port}";
 
             Driver = new FirefoxDriver();
             Driver.Manage().Timeouts().ImplicitlyWait(TimeSpan.FromSeconds(10));
@@ -48,14 +49,16 @@ namespace Microsoft.DocAsCode.E2E.Tests
                         ContentTypeProvider = contentTypeProvider
                     }
                 };
-                Url = $"{RootUrl}:{port}";
                 WebApp.Start(Url, builder => builder.UseFileServer(fileServerOptions));
             }
             catch (System.Reflection.TargetInvocationException)
             {
                 Console.WriteLine($"Error serving \"{folder}\" on \"{Url}\", check if the port is already being in use.");
             }
-
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error serving \"{folder}\" on \"{Url}\": {e}");
+            }
         }
 
         public void Dispose()

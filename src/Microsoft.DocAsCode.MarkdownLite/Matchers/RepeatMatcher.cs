@@ -33,11 +33,21 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
                 {
                     return totalCharCount;
                 }
-                if (content.EndOfString())
+                if (content.Length == totalCharCount)
                 {
-                    return totalCharCount;
+                    return count >= _minOccur ? totalCharCount : NotMatch;
                 }
             }
+        }
+
+        public override string ToString()
+        {
+            return _inner.ToString() +
+                "{" +
+                _minOccur.ToString() +
+                "," +
+                (_maxOccur == int.MaxValue ? string.Empty : _maxOccur.ToString()) +
+                "}";
         }
     }
 }

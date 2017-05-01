@@ -2087,7 +2087,7 @@ namespace Test1
     }
 }
 ";
-            var referencedAssembly = CreateAssemblyFromCSharpCode(referenceCode, "reference.dll");
+            var referencedAssembly = CreateAssemblyFromCSharpCode(referenceCode, "reference");
             var compilation = CreateCompilationFromCSharpCode(code, MetadataReference.CreateFromFile(referencedAssembly.Location));
             Assert.Equal("test.dll", compilation.AssemblyName);
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));

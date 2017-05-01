@@ -16,7 +16,7 @@ namespace DfmHttpService
         {
             return Task.Run(() =>
             {
-                Utility.ReplyExitResponse(context.HttpContext, "Dfm service exits");
+                Utility.ReplyNoContentResponse(context.HttpContext, "Dfm service exits");
                 context.Server.Terminate();
             });
         }

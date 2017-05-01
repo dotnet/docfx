@@ -98,6 +98,11 @@ namespace Microsoft.DocAsCode.Common
 
         public static void Log(LogLevel level, string message, string phase = null, string file = null, string line = null)
         {
+            Log(level, message, phase, file, line, null);
+        }
+
+        public static void Log(LogLevel level, string message, string phase, string file, string line, string code)
+        {
             Log(new LogItem
             {
 #if NetCore
@@ -108,6 +113,7 @@ namespace Microsoft.DocAsCode.Common
                 Line = line,
                 LogLevel = level,
                 Message = message,
+                Code = code,
 #if NetCore
                 Phase = phase,
 #else
@@ -118,27 +124,52 @@ namespace Microsoft.DocAsCode.Common
 
         public static void LogDiagnostic(string message, string phase = null, string file = null, string line = null)
         {
-            Log(LogLevel.Diagnostic, message, phase, file, line);
+            LogDiagnostic(message, phase, file, line, null);
+        }
+
+        public static void LogDiagnostic(string message, string phase, string file, string line, string code)
+        {
+            Log(LogLevel.Diagnostic, message, phase, file, line, code);
         }
 
         public static void LogVerbose(string message, string phase = null, string file = null, string line = null)
         {
-            Log(LogLevel.Verbose, message, phase, file, line);
+            LogVerbose(message, phase, file, line, null);
+        }
+
+        public static void LogVerbose(string message, string phase, string file, string line, string code)
+        {
+            Log(LogLevel.Verbose, message, phase, file, line, code);
         }
 
         public static void LogInfo(string message, string phase = null, string file = null, string line = null)
         {
-            Log(LogLevel.Info, message, phase, file, line);
+            LogInfo(message, phase, file, line, null);
+        }
+
+        public static void LogInfo(string message, string phase, string file, string line, string code)
+        {
+            Log(LogLevel.Info, message, phase, file, line, code);
         }
 
         public static void LogWarning(string message, string phase = null, string file = null, string line = null)
         {
-            Log(LogLevel.Warning, message, phase, file, line);
+            LogWarning(message, phase, file, line, null);
+        }
+
+        public static void LogWarning(string message, string phase, string file, string line, string code)
+        {
+            Log(LogLevel.Warning, message, phase, file, line, code);
         }
 
         public static void LogError(string message, string phase = null, string file = null, string line = null)
         {
-            Log(LogLevel.Error, message, phase, file, line);
+            LogError(message, phase, file, line, null);
+        }
+
+        public static void LogError(string message, string phase, string file, string line, string code)
+        {
+            Log(LogLevel.Error, message, phase, file, line, code);
         }
 
         public static void Log(object result)
@@ -170,6 +201,8 @@ namespace Microsoft.DocAsCode.Common
             public string Message { get; set; }
 
             public string Phase { get; set; }
+
+            public string Code { get; set; }
         }
     }
 }

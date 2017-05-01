@@ -1,7 +1,84 @@
-﻿Version Notes (Current Version: v2.14)
+﻿Version Notes (Current Version: v2.17)
 =======================================
-v2.14(Pre-Release)
+v2.17(Pre-Release)
 -----------
+1. Introduce [Master page syntax](~/tutorial/intro_template.md#extended-syntax-for-master-page) into Template System:
+    1. Mustache: `{{!master('<master_page_name>')}}`
+    2. Liquid: `{% master <master_page_name> %}`
+
+2. [Breaking Change] View model for `ManagedReference.html.primary.tmpl` is updated from `{item: model}` to `model`, if you overwrites `ManagedReference.html.primary.tmpl` in your own template, make sure to re-export the template file.
+
+v2.16
+-----------
+1.  Support the latest csproj format `<Project Sdk="Microsoft.NET.Sdk">`
+    1. The latest csproj introduces in a new property `TargetFrameworks`, docfx does not support it for now. To make docfx work, please specify `TargetFramework` when calling docfx. A sample `docfx.json` would be as follows. The `merge` command is to merge YAML files generated with different `TargetFramework` into one YAML file.
+    ```json
+    {
+        "metadata": [
+            {
+                "src": "*.csproj",
+                "dest": "temp/api/netstandard1.4",
+                "properties": {
+                    "TargetFramework": "netstandard1.4"
+                }
+            },
+            {
+                "src": "*.csproj",
+                "dest": "temp/api/net46",
+                "properties": {
+                    "TargetFramework": "net46"
+                }
+            }
+        ],
+        "merge": {
+            "content": [
+                {
+                    "files": "*.yml",
+                    "src": "temp/api/netstandard1.4"
+                },
+                {
+                    "files": "*.yml",
+                    "src": "temp/api/net46"
+                }
+            ],
+            "fileMetadata": {
+                "platform": {
+                    "temp/api/netstandard1.4/*.yml": [
+                        "netstandard1.4"
+                    ],
+                    "temp/api/net46/*.yml": [
+                        "net46"
+                    ]
+                }
+            },
+            "dest": "api"
+        },
+        "build": {
+            "content": [
+                {
+                    "files": [
+                        "api/*.yml",
+                        "**.md",
+                        "**/toc.yml"
+                    ]
+                }
+            ],
+            "dest": "_site"
+        }
+    }
+    ```
+
+v2.15
+-----------
+1.  Bug fixes:
+    1. Auto dedent the included code snippet, both when including the whole file and file sections.
+    2. [Breaking Change]For inline inclusion, trim ending white spaces, considering ending white spaces in inline inclusion in most cases are typos.
+2.  Following GitHub markdown behavior changes.
+
+v2.14
+-----------
+1.  Bug fixes:
+    1. Fix duplicate project references fail GetCompilationAsync. https://github.com/dotnet/docfx/issues/1414
 
 v2.13
 -----------

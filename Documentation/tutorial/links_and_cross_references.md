@@ -99,7 +99,7 @@ All links in `file2.md` are relative to the `file2.md` itself, even when it's in
 > Please note that the file path in include syntax is handled differently than Markdown link.
 > You can only use relative path to specify location of the included file.
 > And DocFX doesn't require included file to be included in `docfx.json`.
-
+>
 > [!Tip]
 > Each file in `docfx.json` will build into an output file. But included files usually don't need to build into individual
 > topics. So it's not recommended to include them in `docfx.json`.
@@ -180,9 +180,9 @@ You can also use `@uid_to_another_file` to quickly reference another file. There
 
 1. The string after `@` must start with `[A-Za-z]`, and end with:
 
-  - Whitespace or line end
-  - Punctuation (``[.,;:!?`~]``) followed by whitespace or line end
-  - Two or more punctuations (``[.,;:!?`~]``)
+   - Whitespace or line end
+   - Punctuation (``[.,;:!?`~]``) followed by whitespace or line end
+   - Two or more punctuations (``[.,;:!?`~]``)
 
 2. A string enclosed by a pair of quotes (`'` or `"`)
 
@@ -254,10 +254,10 @@ references:
 It's a YAML object that contains following properties:
 
 1. `references`: a list of topic information, each item contains following properties:
-  - `uid`: UID to a conceptual topic or API reference
-  - `name`: title of the topic
-  - `href`: url to the topic, which is an absolute url or relative path to current file (`xrefmap.yml`)
-  - `fullName`: doesn't apply to conceptual, means the fully qualified name of API. For example, for String class, its name is `String` and fully qualified name is `System.String`. This property is not used in link title resolve for now but reserved for future use.
+   - `uid`: UID to a conceptual topic or API reference
+   - `name`: title of the topic
+   - `href`: url to the topic, which is an absolute url or relative path to current file (`xrefmap.yml`)
+   - `fullName`: doesn't apply to conceptual, means the fully qualified name of API. For example, for String class, its name is `String` and fully qualified name is `System.String`. This property is not used in link title resolve for now but reserved for future use.
 
 > [!Tip]
 > Topic is not necessarily to be a file, it can also be a section inside a file. For example, a method in a class. 

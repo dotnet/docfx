@@ -55,7 +55,7 @@ docfx metadata [<projects>]
       |     |-- <namespace>.yml
       |     |-- <class>.yml
       |-- toc.yml
-      |-- index.yml     
+      |-- index.yml
 ```
 
 ####2.2.1 Optional `<projects>` argument
@@ -101,8 +101,8 @@ If `toc.yml` or `toc.md` is found in current folder, it will be rendered as the 
 
 Property | Description
 ---------|----------------------------- 
-name     | **Requried**. The title of the navigation page.
-href     | **Required**. Can be a folder or a file *UNDER* current folder. Folder must be end with `/`. If is a folder, TOC.md inside the folder will be rendered as second level TABLE-OF-CONTENT. As in website, it will be rendered as sidebar.
+name     | **Required**. The title of the navigation page.
+href     | **Required**. Can be a folder or a file *UNDER* current folder. A folder must end with `/`. In case of a folder, TOC.md inside the folder will be rendered as second level TABLE-OF-CONTENT. As in website, it will be rendered as a sidebar.
 homepage | The default content shown when no article is selected.
 
 **TOC.yml Sample**
@@ -257,7 +257,7 @@ To use a custom template, one way is to specify template path with `--template` 
 
 > [!Note]
 > The template path could either be a zip file called `<template>.zip` or a folder called `<template>`.
-
+>
 > [!Warning]
 > DocFX has embedded templates: `default`, `iframe.html`, `statictoc` and `common`.
 > Please avoid using these as template folder name.

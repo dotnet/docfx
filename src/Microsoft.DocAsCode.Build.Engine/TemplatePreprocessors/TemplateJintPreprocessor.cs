@@ -53,14 +53,16 @@ namespace Microsoft.DocAsCode.Build.Engine
         private const string RequireFuncVariableName = "require";
         private const string RequireRelativePathPrefix = "./";
 
+        private const string NullString = "null";
+
         private object _utilityObject;
         private static readonly object ConsoleObject = new
         {
-            log = new Action<object>(s => Logger.Log(s)),
-            info = new Action<object>(s => Logger.LogInfo(s.ToString())),
-            warn = new Action<object>(s => Logger.LogWarning(s.ToString())),
-            err = new Action<object>(s => Logger.LogError(s.ToString())),
-            error = new Action<object>(s => Logger.LogError(s.ToString())),
+            log = new Action<object>(s => Logger.Log(s ?? NullString)),
+            info = new Action<object>(s => Logger.LogInfo((s ?? NullString).ToString())),
+            warn = new Action<object>(s => Logger.LogWarning((s ?? NullString).ToString())),
+            err = new Action<object>(s => Logger.LogError((s ?? NullString).ToString())),
+            error = new Action<object>(s => Logger.LogError((s ?? NullString).ToString())),
         };
 
         private readonly Engine _engine;
@@ -89,7 +91,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             var utility = new TemplateUtility(context);
             _utilityObject = new
             {
-                resolveSourceRelativePath = new Func<string, string, string>(utility.ResolveSourceRelativePath)
+                resolveSourceRelativePath = new Func<string, string, string>(utility.ResolveSourceRelativePath),
+                getHrefFromRoot = new Func<string, string, string>(utility.GetHrefFromRoot),
+                markup = new Func<string, string, string>(utility.Markup),
             };
 
             var engine = CreateDefaultEngine();

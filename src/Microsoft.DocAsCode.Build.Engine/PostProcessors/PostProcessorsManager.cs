@@ -33,11 +33,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             _postProcessorsHandler = new PostProcessorsHandler();
         }
 
-        public void IncrementalInitialize(string intermediateFolder, BuildInfo currentBuildInfo, BuildInfo lastBuildInfo, bool forcePostProcess)
+        public void IncrementalInitialize(string intermediateFolder, BuildInfo currentBuildInfo, BuildInfo lastBuildInfo, bool forcePostProcess, int maxParallelism)
         {
             if (intermediateFolder != null)
             {
-                var increPostProcessorsContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, _postProcessors, !forcePostProcess);
+                var increPostProcessorsContext = new IncrementalPostProcessorsContext(intermediateFolder, currentBuildInfo, lastBuildInfo, _postProcessors, !forcePostProcess, maxParallelism);
                 _postProcessorsHandler = new PostProcessorsHandlerWithIncremental(_postProcessorsHandler, increPostProcessorsContext);
             }
         }
@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             AddBuildInPostProcessor(processorList);
             foreach (var processor in processors)
             {
-                var p = CompositionUtility.GetExport<IPostProcessor>(container, processor);
+                var p = CompositionContainer.GetExport<IPostProcessor>(container, processor);
                 if (p != null)
                 {
                     processorList.Add(new PostProcessor

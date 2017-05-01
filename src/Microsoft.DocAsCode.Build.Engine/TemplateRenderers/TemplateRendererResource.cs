@@ -17,9 +17,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string Content { get; }
         public string ResourceName { get; }
+        public string TemplateName { get; }
         public TemplateRendererType Type { get; }
 
-        public TemplateRendererResource(string resourceName, string content)
+        public TemplateRendererResource(string resourceName, string content, string templateName)
         {
             var extension = Path.GetExtension(resourceName);
             TemplateRendererType type;
@@ -28,6 +29,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new NotSupportedException($"The template extension {extension} is not supported.");
             }
             Type = type;
+            TemplateName = templateName;
             ResourceName = resourceName;
             Content = content;
         }

@@ -41,14 +41,14 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty("isExtensionMethod")]
         public bool IsExtensionMethod { get; set; }
 
-        [YamlMember(Alias = "parent")]
-        [JsonProperty("parent")]
+        [YamlMember(Alias = Constants.PropertyName.Parent)]
+        [JsonProperty(Constants.PropertyName.Parent)]
         [UniqueIdentityReference]
         public string Parent { get; set; }
 
-        [YamlMember(Alias = "children")]
+        [YamlMember(Alias = Constants.PropertyName.Children)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
-        [JsonProperty("children")]
+        [JsonProperty(Constants.PropertyName.Children)]
         [UniqueIdentityReference]
         public List<string> Children { get; set; }
 
@@ -234,13 +234,13 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty(Constants.PropertyName.Documentation)]
         public SourceDetail Documentation { get; set; }
 
-        [YamlMember(Alias = "assemblies")]
+        [YamlMember(Alias = Constants.PropertyName.Assemblies)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
-        [JsonProperty("assemblies")]
+        [JsonProperty(Constants.PropertyName.Assemblies)]
         public List<string> AssemblyNameList { get; set; }
 
-        [YamlMember(Alias = "namespace")]
-        [JsonProperty("namespace")]
+        [YamlMember(Alias = Constants.PropertyName.Namespace)]
+        [JsonProperty(Constants.PropertyName.Namespace)]
         [UniqueIdentityReference]
         public string NamespaceName { get; set; }
 
@@ -264,18 +264,18 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [JsonProperty("syntax")]
         public SyntaxDetailViewModel Syntax { get; set; }
 
-        [YamlMember(Alias = "overridden")]
-        [JsonProperty("overridden")]
+        [YamlMember(Alias = Constants.PropertyName.Overridden)]
+        [JsonProperty(Constants.PropertyName.Overridden)]
         [UniqueIdentityReference]
         public string Overridden { get; set; }
 
-        [YamlMember(Alias = "overload")]
-        [JsonProperty("overload")]
+        [YamlMember(Alias = Constants.PropertyName.Overload)]
+        [JsonProperty(Constants.PropertyName.Overload)]
         [UniqueIdentityReference]
         public string Overload { get; set; }
 
-        [YamlMember(Alias = "exceptions")]
-        [JsonProperty("exceptions")]
+        [YamlMember(Alias = Constants.PropertyName.Exceptions)]
+        [JsonProperty(Constants.PropertyName.Exceptions)]
         public List<ExceptionInfo> Exceptions { get; set; }
 
         [YamlMember(Alias = "seealso")]
@@ -296,33 +296,33 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [UniqueIdentityReference]
         public List<string> SeesUidReference => Sees?.Where(s => s.LinkType == LinkType.CRef)?.Select(s => s.LinkId).ToList();
 
-        [YamlMember(Alias = "inheritance")]
+        [YamlMember(Alias = Constants.PropertyName.Inheritance)]
         [MergeOption(MergeOption.Ignore)]
-        [JsonProperty("inheritance")]
+        [JsonProperty(Constants.PropertyName.Inheritance)]
         [UniqueIdentityReference]
         public List<string> Inheritance { get; set; }
 
-        [YamlMember(Alias = "derivedClasses")]
+        [YamlMember(Alias = Constants.PropertyName.DerivedClasses)]
         [MergeOption(MergeOption.Ignore)]
-        [JsonProperty("derivedClasses")]
+        [JsonProperty(Constants.PropertyName.DerivedClasses)]
         [UniqueIdentityReference]
         public List<string> DerivedClasses { get; set; }
 
-        [YamlMember(Alias = "implements")]
+        [YamlMember(Alias = Constants.PropertyName.Implements)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
-        [JsonProperty("implements")]
+        [JsonProperty(Constants.PropertyName.Implements)]
         [UniqueIdentityReference]
         public List<string> Implements { get; set; }
 
-        [YamlMember(Alias = "inheritedMembers")]
+        [YamlMember(Alias = Constants.PropertyName.InheritedMembers)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
-        [JsonProperty("inheritedMembers")]
+        [JsonProperty(Constants.PropertyName.InheritedMembers)]
         [UniqueIdentityReference]
         public List<string> InheritedMembers { get; set; }
 
-        [YamlMember(Alias = "extensionMethods")]
+        [YamlMember(Alias = Constants.PropertyName.ExtensionMethods)]
         [MergeOption(MergeOption.Ignore)] // todo : merge more children
-        [JsonProperty("extensionMethods")]
+        [JsonProperty(Constants.PropertyName.ExtensionMethods)]
         [UniqueIdentityReference]
         public List<string> ExtensionMethods { get; set; }
 

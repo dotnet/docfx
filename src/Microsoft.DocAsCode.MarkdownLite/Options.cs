@@ -37,6 +37,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public bool ShouldExportSourceInfo { get; set; }
 
+        public bool LegacyMode { get; set; }
+
         #endregion
 
         #region Constructors

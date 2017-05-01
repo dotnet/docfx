@@ -13,20 +13,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.MSBuild;
+    using Microsoft.DotNet.ProjectModel.Workspaces;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DotNet.ProjectModel.Workspaces;
 
     public sealed class ExtractMetadataWorker : IDisposable
     {
-        private readonly Lazy<MSBuildWorkspace> _workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create(new Dictionary<string, string>
-        {
-            { "Configuration", "Release" }
-        }));
         private static readonly string[] SupportedSolutionExtensions = { ".sln" };
         private static readonly string[] SupportedProjectName = { "project.json" };
         private static readonly string[] SupportedProjectExtensions = { ".csproj", ".vbproj" };
@@ -44,6 +40,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private readonly string _filterConfigFile;
         private readonly bool _useCompatibilityFileName;
 
+        // TODO: refactor incremental logic
+        private readonly Dictionary<string, string> _msbuildProperties;
+        private readonly Lazy<MSBuildWorkspace> _workspace;
         static ExtractMetadataWorker()
         {
             SupportedExtensions.AddRange(SupportedSolutionExtensions);
@@ -64,6 +63,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 _filterConfigFile = Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, input.FilterConfigFile)).Normalize();
             }
             _useCompatibilityFileName = useCompatibilityFileName;
+
+            _msbuildProperties = input.MSBuildProperties ?? new Dictionary<string, string>();
+            if (!_msbuildProperties.ContainsKey("Configuration"))
+            {
+                _msbuildProperties["Configuration"] = "Release";
+            }
+
+            _workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create(_msbuildProperties));
         }
 
         public async Task ExtractMetadataAsync()
@@ -342,6 +349,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     .Where(s => s is PortableExecutableReference)
                     .Select(s => ((PortableExecutableReference)s).FilePath));
                 FillProjectDependencyGraph(projectCache, projectDependencyGraph, project);
+                // duplicate project references will fail Project.GetCompilationAsync
+                var groups = project.ProjectReferences.GroupBy(r => r);
+                if (groups.Any(g => g.Count() > 1))
+                {
+                    projectCache[path] = project.WithProjectReferences(groups.Select(g => g.Key));
+                }
             }
 
             documentCache.AddDocuments(sourceFiles);
@@ -355,7 +368,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     IncrementalCheck check = new IncrementalCheck(buildInfo);
                     // 1. Check if sln files/ project files and its contained documents/ source files are modified
-                    var projectModified = check.AreFilesModified(documentCache.Documents);
+                    var projectModified = check.AreFilesModified(documentCache.Documents) || check.MSBuildPropertiesUpdated(_msbuildProperties);
 
                     if (!projectModified)
                     {
@@ -470,14 +483,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 var value = StringExtension.ToDelimitedString(projectMetadataList.Select(s => s.Name));
                 Logger.Log(LogLevel.Warning, $"No metadata is generated for {value}.");
-                applicationCache.SaveToCache(inputs, null, triggeredTime, outputFolder, null, _shouldSkipMarkup);
+                applicationCache.SaveToCache(inputs, null, triggeredTime, outputFolder, null, _shouldSkipMarkup, _msbuildProperties);
             }
             else
             {
                 // TODO: need an intermediate folder? when to clean it up?
                 // Save output to output folder
                 var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, _validInput.IndexFileName, _validInput.TocFileName, _validInput.ApiFolderName, _preserveRawInlineComments, _shouldSkipMarkup, _rawInput.ExternalReferences, _useCompatibilityFileName);
-                applicationCache.SaveToCache(inputs, documentCache.Cache, triggeredTime, outputFolder, outputFiles, _shouldSkipMarkup);
+                applicationCache.SaveToCache(inputs, documentCache.Cache, triggeredTime, outputFolder, outputFiles, _shouldSkipMarkup, _msbuildProperties);
             }
         }
 
@@ -575,14 +588,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             PathUtility.CopyFilesToFolder(relativeFiles.Select(s => Path.Combine(outputFolderSource, s)), outputFolderSource, outputFolder, true, s => Logger.Log(LogLevel.Info, s), null);
         }
 
-        private static Task<Tuple<MetadataItem, bool>> GetProjectMetadataFromCacheAsync(Project project, Compilation compilation, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild, bool shouldSkipMarkup, bool preserveRawInlineComments, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods, bool isReferencedProjectRebuilt)
+        private Task<Tuple<MetadataItem, bool>> GetProjectMetadataFromCacheAsync(Project project, Compilation compilation, string outputFolder, ProjectDocumentCache documentCache, bool forceRebuild, bool shouldSkipMarkup, bool preserveRawInlineComments, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods, bool isReferencedProjectRebuilt)
         {
             var projectFilePath = project.FilePath;
             var k = documentCache.GetDocuments(projectFilePath);
             return GetMetadataFromProjectLevelCacheAsync(
                 project,
                 new[] { projectFilePath, filterConfigFile },
-                s => Task.FromResult(forceRebuild || s.AreFilesModified(k.Concat(new string[] { filterConfigFile })) || isReferencedProjectRebuilt),
+                s => Task.FromResult(forceRebuild || s.AreFilesModified(k.Concat(new string[] { filterConfigFile })) || isReferencedProjectRebuilt || s.MSBuildPropertiesUpdated(_msbuildProperties)),
                 s => Task.FromResult(compilation),
                 s => Task.FromResult(compilation.Assembly),
                 s =>
@@ -596,7 +609,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 extensionMethods);
         }
 
-        private static Task<Tuple<MetadataItem, bool>> GetAssemblyMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, IAssemblySymbol assembly, string outputFolder, bool forceRebuild, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods)
+        private Task<Tuple<MetadataItem, bool>> GetAssemblyMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, IAssemblySymbol assembly, string outputFolder, bool forceRebuild, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods)
         {
             if (files == null || !files.Any()) return null;
             return GetMetadataFromProjectLevelCacheAsync(
@@ -612,12 +625,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 extensionMethods);
         }
 
-        private static Task<Tuple<MetadataItem, bool>> GetFileMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, string outputFolder, bool forceRebuild, bool shouldSkipMarkup, bool preserveRawInlineComments, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods)
+        private Task<Tuple<MetadataItem, bool>> GetFileMetadataFromCacheAsync(IEnumerable<string> files, Compilation compilation, string outputFolder, bool forceRebuild, bool shouldSkipMarkup, bool preserveRawInlineComments, string filterConfigFile, IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> extensionMethods)
         {
             if (files == null || !files.Any()) return null;
             return GetMetadataFromProjectLevelCacheAsync(
                 files,
-                files.Concat(new string[] { filterConfigFile }), s => Task.FromResult(forceRebuild || s.AreFilesModified(files.Concat(new string[] { filterConfigFile }))),
+                files.Concat(new string[] { filterConfigFile }), s => Task.FromResult(forceRebuild || s.AreFilesModified(files.Concat(new string[] { filterConfigFile })) || s.MSBuildPropertiesUpdated(_msbuildProperties)),
                 s => Task.FromResult(compilation),
                 s => Task.FromResult(compilation.Assembly),
                 s => null,
@@ -628,7 +641,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 extensionMethods);
         }
 
-        private static async Task<Tuple<MetadataItem, bool>> GetMetadataFromProjectLevelCacheAsync<T>(
+        private async Task<Tuple<MetadataItem, bool>> GetMetadataFromProjectLevelCacheAsync<T>(
             T input,
             IEnumerable<string> inputKey,
             Func<IncrementalCheck, Task<bool>> rebuildChecker,
@@ -685,7 +698,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             // Save to cache
-            projectLevelCache.SaveToCache(inputKey, containedFiles, triggeredTime, cacheOutputFolder, new List<string>() { file }, shouldSkipMarkup);
+            projectLevelCache.SaveToCache(inputKey, containedFiles, triggeredTime, cacheOutputFolder, new List<string>() { file }, shouldSkipMarkup, _msbuildProperties);
 
             return Tuple.Create(projectMetadata, rebuildProject);
         }
@@ -919,13 +932,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             try
             {
                 string name = Path.GetFileName(path);
-#if NETCore
+
                 if (name.Equals("project.json", StringComparison.OrdinalIgnoreCase))
                 {
                     var workspace = new ProjectJsonWorkspace(path);
                     return workspace.CurrentSolution.Projects.FirstOrDefault(p => p.FilePath == Path.GetFullPath(path));
                 }
-#endif
 
                 return await _workspace.Value.OpenProjectAsync(path);
             }
