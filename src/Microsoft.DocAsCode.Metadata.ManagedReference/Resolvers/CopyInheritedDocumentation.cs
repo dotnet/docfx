@@ -3,10 +3,10 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
+    using System.Diagnostics;
+
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
-    using System.Collections.Generic;
-    using System.Diagnostics;
 
     /// <summary>
     /// Copies doc comments to items marked with 'inheritdoc' from interfaces and base classes.
@@ -15,17 +15,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         public void Run(MetadataModel yaml, ResolverContext context)
         {
-            TreeIterator.Preorder(yaml.TocYamlViewModel, null,
+            TreeIterator.Preorder(
+                yaml.TocYamlViewModel,
+                null,
                 s => s.IsInvalid ? null : s.Items,
                 (current, parent) =>
                 {
                     if (current.IsInheritDoc)
+                    {
                         InheritDoc(current, context);
+                    }
                     return true;
                 });
         }
 
-        static void InheritDoc(MetadataItem dest, ResolverContext context)
+        private static void InheritDoc(MetadataItem dest, ResolverContext context)
         {
             dest.IsInheritDoc = false;
 
@@ -33,27 +37,41 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 case MemberType.Constructor:
                     if (dest.Parent == null || dest.Syntax == null || dest.Syntax.Parameters == null)
+                    {
                         return;
+                    }
                     Debug.Assert(dest.Parent.Type == MemberType.Class);
 
                     //try to find the base class
                     if (dest.Parent.Inheritance?.Count == 0)
+                    {
                         return;
+                    }
                     MetadataItem baseClass;
                     if (!context.Members.TryGetValue(dest.Parent.Inheritance[dest.Parent.Inheritance.Count - 1], out baseClass))
+                    {
                         return;
+                    }
                     if (baseClass.Items == null)
+                    {
                         return;
+                    }
 
                     //look a constructor in the base class which has a matching signature
                     foreach (var ctor in baseClass.Items)
                     {
                         if (ctor.Type != MemberType.Constructor)
+                        {
                             continue;
+                        }
                         if (ctor.Syntax == null || ctor.Syntax.Parameters == null)
+                        {
                             continue;
+                        }
                         if (ctor.Syntax.Parameters.Count != dest.Syntax.Parameters.Count)
+                        {
                             continue;
+                        }
 
                         bool parametersMatch = true;
                         for (int ndx = 0; ndx < dest.Syntax.Parameters.Count; ndx++)
@@ -61,9 +79,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             var myParam = dest.Syntax.Parameters[ndx];
                             var baseParam = ctor.Syntax.Parameters[ndx];
                             if (myParam.Name != baseParam.Name)
+                            {
                                 parametersMatch = false;
+                            }
                             if (myParam.Type != baseParam.Type)
+                            {
                                 parametersMatch = false;
+                            }
                         }
 
                         if (parametersMatch)
@@ -103,16 +125,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        static void Copy(MetadataItem dest, string srcName, ResolverContext context)
+        private static void Copy(MetadataItem dest, string srcName, ResolverContext context)
         {
-            MetadataItem src;
-            if (string.IsNullOrEmpty(srcName) || !context.Members.TryGetValue(srcName, out src))
+            if (string.IsNullOrEmpty(srcName) || !context.Members.TryGetValue(srcName, out MetadataItem src))
+            {
                 return;
+            }
 
             Copy(dest, src, context);
         }
 
-        static void Copy(MetadataItem dest, MetadataItem src, ResolverContext context)
+        private static void Copy(MetadataItem dest, MetadataItem src, ResolverContext context)
         {
             if (src.IsInheritDoc)
             {
