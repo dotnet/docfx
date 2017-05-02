@@ -24,6 +24,5 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                     dest.FullName = ModelConverter.ToApiListInDevLangs(src.FullName, src.FullNameInDevLangs, supportedLanguages);
                 });
         }
-
     }
 }

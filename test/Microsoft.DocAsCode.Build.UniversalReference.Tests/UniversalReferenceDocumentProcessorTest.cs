@@ -57,7 +57,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
             {
                 var outputRawModelPath = GetRawModelFilePath(fileName);
                 Assert.True(File.Exists(outputRawModelPath));
-                var rawModel = File.ReadAllText(outputRawModelPath);
             }
         }
 
@@ -101,6 +100,10 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
             Assert.Equal("create", model.Children[0].Value[0].Name[0].Value);
             Assert.Equal("cntk.core.Value.create", model.Children[0].Value[0].FullName[0].Value);
             Assert.Equal("Creates a `Value` object.", model.Children[0].Value[0].Summary);
+            Assert.Equal("`Value` object.", model.Children[0].Value[0].Syntax.Return[0].Value.Description);
+            Assert.Equal("type1", model.Children[0].Value[0].Syntax.Return[0].Value.Type[0].Uid);
+            Assert.Equal("type2", model.Children[0].Value[0].Syntax.Return[0].Value.Type[1].Uid);
+            Assert.Equal("type3", model.Children[0].Value[0].Syntax.Return[0].Value.Type[2].Uid);
         }
 
         private void BuildDocument(FileCollection files)

@@ -24,7 +24,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                 .ForMember(dest => dest.Source, opt => opt.Ignore())
                 .ForMember(dest => dest.AssemblyNameList, opt => opt.Ignore())
                 .ForMember(dest => dest.Platform, opt => opt.Ignore())
-                .ForMember(dest => dest.DerivedClasses, opt => opt.Ignore())
                 .ForMember(dest => dest.Implements, opt => opt.Ignore())
                 .ForMember(dest => dest.InheritedMembers, opt => opt.Ignore())
                 .ForMember(dest => dest.ExtensionMethods, opt => opt.Ignore())
@@ -118,7 +117,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                     opt.Condition(src => src.LinkType == LinkType.HRef);
                     opt.ResolveUsing(new ApiHrefLinkInfoBuildOutputUrlResolver());
                 });
-            CreateMap<ApiParameter, ApiParameterBuildOutput>();
             CreateMap<InheritanceTree, ApiInheritanceTreeBuildOutput>();
         }
     }

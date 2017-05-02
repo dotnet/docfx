@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     {
         public string Resolve(LinkInfo source, ApiLinkInfoBuildOutput destination, string destMember, ResolutionContext context)
         {
-            var href = $"<span><a href=\"{source.LinkId}\">";
+            var href = $"<span><a href=\"{HttpUtility.HtmlEncode(source.LinkId)}\">";
             if (!string.IsNullOrEmpty(source.AltText))
             {
                 href += HttpUtility.HtmlEncode(source.AltText);

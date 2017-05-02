@@ -81,12 +81,12 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             if (model.Items[0].Children != null || model.Items[0].ChildrenInDevLangs.Count > 0)
             {
                 result.Children = ToApiListInDevLangs(model.Items[0].Children, model.Items[0].ChildrenInDevLangs, supportedLanguages)
-                    .Select(pair =>
+                    ?.Select(pair =>
                     {
                         return new ApiLanguageValuePair<List<ApiBuildOutput>>
                         {
                             Language = pair.Language,
-                            Value = pair.Value.Select(item => ResolveApiBuildOutput(item, supportedLanguages, children)).ToList()
+                            Value = pair.Value.Select(item => ResolveApiBuildOutput(item, children)).ToList()
                         };
                     }).ToList();
             }
@@ -96,12 +96,12 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
         public static List<ApiLanguageValuePair<ApiNames>> ToApiListInDevLangsResolvingApiNames(string defaultValue, SortedList<string, string> values, string[] supportedLanguages, IReadOnlyDictionary<string, ApiNames> references)
         {
-            if (defaultValue == null || supportedLanguages == null || supportedLanguages.Length == 0 || references == null)
+            if (defaultValue == null || supportedLanguages == null || supportedLanguages.Length == 0)
             {
                 return null;
             }
             return ToApiListInDevLangs(defaultValue, values, supportedLanguages)
-                .Select(pair =>
+                ?.Select(pair =>
                 {
                     return new ApiLanguageValuePair<ApiNames>
                     {
@@ -113,12 +113,12 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
         public static List<ApiLanguageValuePair<List<ApiInheritanceTreeBuildOutput>>> ToApiListInDevlangsResolvingApiNames(List<InheritanceTree> defaultValue, SortedList<string, List<InheritanceTree>> values, string[] supportedLanguages, IReadOnlyDictionary<string, ApiNames> references)
         {
-            if (defaultValue == null || supportedLanguages == null || supportedLanguages.Length == 0 || references == null)
+            if (defaultValue == null || supportedLanguages == null || supportedLanguages.Length == 0)
             {
                 return null;
             }
             return ToApiListInDevLangs(defaultValue, values, supportedLanguages)
-                .Select(pair =>
+                ?.Select(pair =>
                 {
                     return new ApiLanguageValuePair<List<ApiInheritanceTreeBuildOutput>>
                     {
@@ -135,7 +135,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                 return null;
             }
             return ToApiListInDevLangs(defaultValue, values, supportedLanguages)
-                .Select(pair =>
+                ?.Select(pair =>
                 {
                     return new ApiLanguageValuePair<List<ApiExceptionInfoBuildOutput>>
                     {
@@ -155,12 +155,12 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
         public static List<ApiLanguageValuePair<ApiParameterBuildOutput>> ToApiListInDevLangsResolvingApiNames(ApiParameter defaultValue, SortedList<string, ApiParameter> values, string[] supportedLanguages, IReadOnlyDictionary<string, ApiNames> references)
         {
-            if (defaultValue == null || supportedLanguages == null || supportedLanguages.Length == 0 || references == null)
+            if (defaultValue == null || supportedLanguages == null || supportedLanguages.Length == 0)
             {
                 return null;
             }
-            return (List<ApiLanguageValuePair<ApiParameterBuildOutput>>)ToApiListInDevLangs(defaultValue, values, supportedLanguages)
-                .Select(pair =>
+            return ToApiListInDevLangs(defaultValue, values, supportedLanguages)
+                ?.Select(pair =>
                 {
                     return new ApiLanguageValuePair<ApiParameterBuildOutput>
                     {
@@ -168,7 +168,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                         Value = new ApiParameterBuildOutput
                         {
                             Name = pair.Value.Name,
-                            Type = pair.Value.Type.Select(item => ResolveApiNames(item, supportedLanguages, references)).ToList(),
+                            Type = pair.Value.Type?.Select(item => ResolveApiNames(item, supportedLanguages, references)).ToList(),
                             Description = pair.Value.Description,
                             Optional = pair.Value.Optional,
                             DefaultValue = pair.Value.DefaultValue,
@@ -185,7 +185,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                 return null;
             }
             return ToApiListInDevLangs(defaultValue, values, supportedLanguages)
-                .Select(pair =>
+                ?.Select(pair =>
                 {
                     return new ApiLanguageValuePair<List<ApiNames>>
                     {
@@ -197,7 +197,10 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
         public static List<ApiLanguageValuePair<T>> ToApiListInDevLangs<T>(T defaultValue, SortedList<string, T> values, string[] supportedLanguages)
         {
-            if (defaultValue == null || supportedLanguages == null || supportedLanguages.Length == 0) return null;
+            if (defaultValue == null || supportedLanguages == null || supportedLanguages.Length == 0)
+            {
+                return null;
+            }
 
             var result = new List<ApiLanguageValuePair<T>>();
             foreach (var language in supportedLanguages)
@@ -215,7 +218,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         public static ApiNames ResolveApiNames(string uid, string[] supportedLanguages, IReadOnlyDictionary<string, ApiNames> references)
         {
             ApiNames result;
-            if (references.TryGetValue(uid, out result))
+            if (references != null && references.TryGetValue(uid, out result))
             {
                 return result;
             }
@@ -230,29 +233,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             };
         }
 
-        private static ApiInheritanceTreeBuildOutput ResolveInheritanceTree(InheritanceTree tree, string[] supportedLanguages, IReadOnlyDictionary<string, ApiNames> references)
-        {
-            return new ApiInheritanceTreeBuildOutput
-            {
-                Type = ResolveApiNames(tree.Type, supportedLanguages, references),
-                Inheritance = tree.Inheritance.Select(item => ResolveInheritanceTree(item, supportedLanguages, references)).ToList(),
-                Metadata = tree.Metadata
-            };
-        }
-
-        private static ApiBuildOutput ResolveApiBuildOutput(string uid, string[] supportedLanguages, IReadOnlyDictionary<string, ApiBuildOutput> children)
-        {
-            ApiBuildOutput result;
-            if (!children.TryGetValue(uid, out result))
-            {
-                var message = $"Can't find {uid} in items or references";
-                Logger.LogError(message);
-                throw new DocumentException(message);
-            }
-            return result;
-        }
-
-        private static string GetXref(string uid, string text = null, string alt = null)
+        public static string GetXref(string uid, string text = null, string alt = null)
         {
             var result = $"<xref uid=\"{HttpUtility.HtmlEncode(uid)}\"";
             if (!string.IsNullOrEmpty(text))
@@ -272,6 +253,28 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                 result += " altProperty=\"fullName\"";
             }
             result += "/>";
+            return result;
+        }
+
+        private static ApiInheritanceTreeBuildOutput ResolveInheritanceTree(InheritanceTree tree, string[] supportedLanguages, IReadOnlyDictionary<string, ApiNames> references)
+        {
+            return new ApiInheritanceTreeBuildOutput
+            {
+                Type = ResolveApiNames(tree.Type, supportedLanguages, references),
+                Inheritance = tree.Inheritance?.Select(item => ResolveInheritanceTree(item, supportedLanguages, references)).ToList(),
+                Metadata = tree.Metadata
+            };
+        }
+
+        private static ApiBuildOutput ResolveApiBuildOutput(string uid, IReadOnlyDictionary<string, ApiBuildOutput> children)
+        {
+            ApiBuildOutput result;
+            if (!children.TryGetValue(uid, out result))
+            {
+                var message = $"Can't find {uid} in items or references";
+                Logger.LogError(message);
+                throw new DocumentException(message);
+            }
             return result;
         }
     }
