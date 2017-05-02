@@ -101,7 +101,7 @@ namespace Microsoft.DocAsCode.Dfm
                 {
                     if (!splitToken.Token.SourceInfo.Markdown.EndsWith("\n"))
                     {
-                        Logger.LogWarning("The content part of NOTE/WARNING/CAUTION/IMPORTANT syntax is suggested to start in a new line.", file: splitToken.Token.SourceInfo.File, line: splitToken.Token.SourceInfo.LineNumber.ToString());
+                        Logger.LogWarning("The content part of NOTE/WARNING/CAUTION/IMPORTANT/NEXT syntax is suggested to start in a new line.", file: splitToken.Token.SourceInfo.File, line: splitToken.Token.SourceInfo.LineNumber.ToString());
                     }
                     var noteToken = (DfmNoteBlockToken)splitToken.Token;
                     content += "<div class=\"";
