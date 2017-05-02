@@ -19,13 +19,14 @@ namespace Microsoft.DocAsCode.Dfm
                 Matcher.CaseInsensitiveString("warning") |
                 Matcher.CaseInsensitiveString("tip") |
                 Matcher.CaseInsensitiveString("important") |
-                Matcher.CaseInsensitiveString("caution")
+                Matcher.CaseInsensitiveString("caution") | 
+                Matcher.CaseInsensitiveString("next")
             ).ToGroup("notetype") +
             ']' +
             Matcher.WhiteSpacesOrEmpty +
             Matcher.NewLine.RepeatAtLeast(0);
 
-        private static readonly Regex _dfmNoteRegex = new Regex(@"^(?<rawmarkdown> *\[\!(?<notetype>(NOTE|WARNING|TIP|IMPORTANT|CAUTION))\] *\n?)(?<text>.*)(?:\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
+        private static readonly Regex _dfmNoteRegex = new Regex(@"^(?<rawmarkdown> *\[\!(?<notetype>(NOTE|WARNING|TIP|IMPORTANT|CAUTION|NEXT))\] *\n?)(?<text>.*)(?:\n|$)", RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
 
         public virtual string Name => "DfmNote";
 
