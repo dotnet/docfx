@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Composition;
     using System.IO;
     using System.Linq;
-    using System.Web;
 
     using HtmlAgilityPack;
 
@@ -22,7 +21,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     internal sealed class HostService : IHostService, IDisposable
     {
         #region Fields
-        private static readonly char[] UriFragmentOrQueryString = new char[] { '#', '?' };
         private readonly object _syncRoot = new object();
         private readonly object _tocSyncRoot = new object();
         private readonly Dictionary<string, List<FileModel>> _uidIndex = new Dictionary<string, List<FileModel>>();
@@ -140,6 +138,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             return MarkupCore(markdown, ft, omitParse);
         }
 
+        public MarkupResult Parse(MarkupResult markupResult, FileAndType ft)
+        {
+            return MarkupResultUtility.Parse(markupResult, ft.File, SourceFiles);
+        }
+
         private MarkupResult MarkupCore(string markdown, FileAndType ft, bool omitParse)
         {
             try
@@ -158,145 +161,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogError(message);
                 throw new DocumentException(message, ex);
             }
-        }
-
-        public MarkupResult Parse(MarkupResult markupResult, FileAndType ft)
-        {
-            if (markupResult == null)
-            {
-                throw new ArgumentNullException(nameof(markupResult));
-            }
-            if (ft == null)
-            {
-                throw new ArgumentNullException(nameof(ft));
-            }
-            return ParseCore(markupResult, ft);
-        }
-
-        private MarkupResult ParseCore(MarkupResult markupResult, FileAndType ft)
-        {
-            var doc = new HtmlDocument();
-            doc.LoadHtml(markupResult.Html);
-            var result = markupResult.Clone();
-
-            var node = doc.DocumentNode.SelectSingleNode("//yamlheader");
-            if (node != null)
-            {
-                using (var sr = new StringReader(StringHelper.HtmlDecode(node.InnerHtml)))
-                {
-                    result.YamlHeader = YamlUtility.Deserialize<Dictionary<string, object>>(sr).ToImmutableDictionary();
-                }
-                node.Remove();
-            }
-
-            result.FileLinkSources = GetFileLinkSource(ft, doc);
-            result.LinkToFiles = result.FileLinkSources.Keys.ToImmutableArray();
-
-            result.UidLinkSources = GetUidLinkSources(doc);
-            result.LinkToUids = result.UidLinkSources.Keys.ToImmutableHashSet();
-
-            if (result.Dependency.Length > 0)
-            {
-                result.Dependency =
-                    (from d in result.Dependency
-                     select
-                        ((RelativePath)ft.File + (RelativePath)d)
-                            .GetPathFromWorkingFolder()
-                            .ToString()
-                    ).ToImmutableArray();
-            }
-            using (var sw = new StringWriter())
-            {
-                doc.Save(sw);
-                result.Html = sw.ToString();
-            }
-            return result;
-        }
-
-        private ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> GetFileLinkSource(FileAndType ft, HtmlDocument doc)
-        {
-            var fileLinkSources = new Dictionary<string, List<LinkSourceInfo>>();
-            foreach (var pair in (from n in doc.DocumentNode.Descendants()
-                                  where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
-                                  from attr in n.Attributes
-                                  where string.Equals(attr.Name, "src", StringComparison.OrdinalIgnoreCase) ||
-                                        string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase)
-                                  where !string.IsNullOrWhiteSpace(attr.Value)
-                                  select new { Node = n, Attr = attr }).ToList())
-            {
-                string anchor = null;
-                var link = pair.Attr;
-                string linkFile = link.Value;
-                var index = linkFile.IndexOfAny(UriFragmentOrQueryString);
-                if (index != -1)
-                {
-                    anchor = linkFile.Substring(index);
-                    linkFile = linkFile.Remove(index);
-                }
-                if (RelativePath.IsRelativePath(linkFile))
-                {
-                    var path = (RelativePath)ft.File + (RelativePath)linkFile;
-                    var file = path.GetPathFromWorkingFolder().UrlDecode();
-                    if (SourceFiles.ContainsKey(file))
-                    {
-                        string anchorInHref;
-                        if (!string.IsNullOrEmpty(anchor) &&
-                            string.Equals(link.Name, "href", StringComparison.OrdinalIgnoreCase))
-                        {
-                            anchorInHref = anchor;
-                        }
-                        else
-                        {
-                            anchorInHref = null;
-                        }
-
-                        link.Value = file.UrlEncode().ToString() + anchorInHref;
-                    }
-
-                    if (!fileLinkSources.TryGetValue(file, out List<LinkSourceInfo> sources))
-                    {
-                        sources = new List<LinkSourceInfo>();
-                        fileLinkSources[file] = sources;
-                    }
-                    sources.Add(new LinkSourceInfo
-                    {
-                        Target = file,
-                        Anchor = anchor,
-                        SourceFile = pair.Node.GetAttributeValue("sourceFile", null),
-                        LineNumber = pair.Node.GetAttributeValue("sourceStartLineNumber", 0),
-                    });
-                }
-            }
-            return fileLinkSources.ToImmutableDictionary(x => x.Key, x => x.Value.ToImmutableList());
-        }
-
-        private static ImmutableDictionary<string, ImmutableList<LinkSourceInfo>> GetUidLinkSources(HtmlDocument doc)
-        {
-            var uidInXref =
-                from n in doc.DocumentNode.Descendants()
-                where string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
-                from attr in n.Attributes
-                where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
-                select Tuple.Create(n, attr.Value);
-            var uidInHref =
-                from n in doc.DocumentNode.Descendants()
-                where !string.Equals(n.Name, "xref", StringComparison.OrdinalIgnoreCase)
-                from attr in n.Attributes
-                where string.Equals(attr.Name, "href", StringComparison.OrdinalIgnoreCase) || string.Equals(attr.Name, "uid", StringComparison.OrdinalIgnoreCase)
-                where attr.Value.StartsWith("xref:", StringComparison.OrdinalIgnoreCase)
-                select Tuple.Create(n, attr.Value.Substring("xref:".Length));
-            return (from pair in uidInXref.Concat(uidInHref)
-                    where !string.IsNullOrWhiteSpace(pair.Item2)
-                    let queryIndex = pair.Item2.IndexOfAny(UriFragmentOrQueryString)
-                    let targetUid = queryIndex == -1 ? pair.Item2 : pair.Item2.Remove(queryIndex)
-                    select new LinkSourceInfo
-                    {
-                        Target = Uri.UnescapeDataString(targetUid),
-                        SourceFile = pair.Item1.GetAttributeValue("sourceFile", null),
-                        LineNumber = pair.Item1.GetAttributeValue("sourceStartLineNumber", 0),
-                    } into lsi
-                    group lsi by lsi.Target into g
-                    select new KeyValuePair<string, ImmutableList<LinkSourceInfo>>(g.Key, g.ToImmutableList())).ToImmutableDictionary();
         }
 
         public void ReportDependencyTo(FileModel currentFileModel, string to, string type)
