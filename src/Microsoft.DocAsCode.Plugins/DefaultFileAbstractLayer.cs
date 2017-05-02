@@ -58,11 +58,11 @@ namespace Microsoft.DocAsCode.Plugins
         public string GetPhysicalPath(string file) =>
             Path.Combine(
                 Environment.ExpandEnvironmentVariables(EnvironmentContext.BaseDirectory),
-                file);
+                Environment.ExpandEnvironmentVariables(file));
 
         public string GetOutputPhysicalPath(string file) =>
             Path.Combine(
                 Environment.ExpandEnvironmentVariables(EnvironmentContext.OutputDirectory),
-                file);
+                Environment.ExpandEnvironmentVariables(file));
     }
 }

@@ -19,14 +19,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public FileCollection(string defaultBaseDir)
         {
-            if (string.IsNullOrEmpty(defaultBaseDir))
-            {
-                DefaultBaseDir = Directory.GetCurrentDirectory();
-            }
-            else
-            {
-                DefaultBaseDir = Path.Combine(Directory.GetCurrentDirectory(), defaultBaseDir);
-            }
+            DefaultBaseDir = defaultBaseDir ?? string.Empty;
         }
 
         public FileCollection(FileCollection collection) : this(collection.DefaultBaseDir)
@@ -44,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public void Add(DocumentType type, string baseDir, IEnumerable<string> files, string sourceDir = null, string destinationDir = null)
         {
             var rootedBaseDir = Path.Combine(DefaultBaseDir, baseDir ?? string.Empty);
-            if (sourceDir != null && Path.IsPathRooted(sourceDir))
+            if (sourceDir != null)
             {
                 if (sourceDir.StartsWith(rootedBaseDir))
                 {
@@ -55,15 +48,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     throw new ArgumentException("SourceDir must start with BaseDir, or relative path.", nameof(sourceDir));
                 }
             }
-            if (destinationDir != null && Path.IsPathRooted(destinationDir))
+            if (destinationDir != null)
             {
                 if (destinationDir.StartsWith(rootedBaseDir))
                 {
                     destinationDir = sourceDir.Substring(rootedBaseDir.Length).TrimStart('/', '\\');
-                }
-                else
-                {
-                    throw new ArgumentException("DestinationDir must start with BaseDir, or relative path.", nameof(destinationDir));
                 }
             }
             if (!string.IsNullOrEmpty(sourceDir) && !sourceDir.EndsWith("/"))
@@ -85,16 +74,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private string ToRelative(string file, string rootedBaseDir)
         {
-            if (!Path.IsPathRooted(file))
-            {
-                return file;
-            }
-            var result = PathUtility.MakeRelativePath(rootedBaseDir, file);
-            if (Path.IsPathRooted(result))
-            {
-                throw new ArgumentException($"Cannot get relative path for {file} from {rootedBaseDir}.", nameof(file));
-            }
-            return result;
+            return PathUtility.MakeRelativePath(rootedBaseDir, file);
         }
 
         public IEnumerable<FileAndType> EnumerateFiles()
