@@ -129,5 +129,8 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("lruSize")]
         public int? LruSize { get; set; }
+
+        [JsonProperty("skipBookmarkValidation")]
+        public bool? SkipBookmarkValidation { get; set; }
     }
 }

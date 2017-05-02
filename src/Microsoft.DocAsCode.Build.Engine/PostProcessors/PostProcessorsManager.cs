@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly List<PostProcessor> _postProcessors;
         private IPostProcessorsHandler _postProcessorsHandler;
 
-        public PostProcessorsManager(CompositionHost container, ImmutableArray<string> postProcessorNames)
+        public PostProcessorsManager(CompositionHost container, ImmutableArray<string> postProcessorNames, bool skipBookmarkValidation)
         {
             if (container == null)
             {
@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException(nameof(postProcessorNames));
             }
-            _postProcessors = GetPostProcessor(container, postProcessorNames);
+            _postProcessors = GetPostProcessor(container, postProcessorNames, skipBookmarkValidation);
             _postProcessorsHandler = new PostProcessorsHandler();
         }
 
@@ -64,10 +64,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             _postProcessorsHandler.Handle(_postProcessors, manifest, outputFolder);
         }
 
-        private static List<PostProcessor> GetPostProcessor(CompositionHost container, ImmutableArray<string> processors)
+        private static List<PostProcessor> GetPostProcessor(CompositionHost container, ImmutableArray<string> processors, bool skipBookmarkValidation)
         {
             var processorList = new List<PostProcessor>();
-            AddBuildInPostProcessor(processorList);
+            AddBuildInPostProcessor(processorList, skipBookmarkValidation);
             foreach (var processor in processors)
             {
                 var p = CompositionContainer.GetExport<IPostProcessor>(container, processor);
@@ -88,20 +88,23 @@ namespace Microsoft.DocAsCode.Build.Engine
             return processorList;
         }
 
-        private static void AddBuildInPostProcessor(List<PostProcessor> processorList)
+        private static void AddBuildInPostProcessor(List<PostProcessor> processorList, bool skipBookmarkValidation)
         {
+            var processor = new HtmlPostProcessor
+            {
+                Handlers = { new RemoveDebugInfo() },
+            };
+            if (!skipBookmarkValidation)
+            {
+                processor.Handlers.Add(
+                    new ValidateBookmark()
+                );
+            }
             processorList.Add(
                 new PostProcessor
                 {
                     ContractName = "html",
-                    Processor = new HtmlPostProcessor
-                    {
-                        Handlers =
-                        {
-                            new ValidateBookmark(),
-                            new RemoveDebugInfo(),
-                        },
-                    }
+                    Processor = processor,
                 });
         }
 
