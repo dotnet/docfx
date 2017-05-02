@@ -46,6 +46,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public Dictionary<string, string> Parameters { get; private set; }
 
         public Dictionary<string, string> TypeParameters { get; private set; }
+
         public bool IsInheritDoc { get; private set; }
 
         private TripleSlashCommentModel(string xml, SyntaxLanguage language, ITripleSlashCommentParserContext context)
