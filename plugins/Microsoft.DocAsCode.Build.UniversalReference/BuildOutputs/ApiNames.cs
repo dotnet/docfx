@@ -25,19 +25,19 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
         [YamlMember(Alias = Constants.PropertyName.Name)]
         [JsonProperty(Constants.PropertyName.Name)]
-        public ApiListInDevlangs<string> Name { get; set; }
+        public List<ApiLanguageValuePair<string>> Name { get; set; }
 
         [YamlMember(Alias = Constants.PropertyName.NameWithType)]
         [JsonProperty(Constants.PropertyName.NameWithType)]
-        public ApiListInDevlangs<string> NameWithType { get; set; }
+        public List<ApiLanguageValuePair<string>> NameWithType { get; set; }
 
         [YamlMember(Alias = Constants.PropertyName.FullName)]
         [JsonProperty(Constants.PropertyName.FullName)]
-        public ApiListInDevlangs<string> FullName { get; set; }
+        public List<ApiLanguageValuePair<string>> FullName { get; set; }
 
         [YamlMember(Alias = "specName")]
         [JsonProperty("specName")]
-        public ApiListInDevlangs<string> Spec { get; set; }
+        public List<ApiLanguageValuePair<string>> Spec { get; set; }
 
         [ExtensibleMember]
         [JsonExtensionData]

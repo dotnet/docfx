@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     {
         [YamlMember(Alias = Constants.PropertyName.Content)]
         [JsonProperty(Constants.PropertyName.Content)]
-        public ApiListInDevlangs<string> Content { get; set; }
+        public List<ApiLanguageValuePair<string>> Content { get; set; }
 
         [YamlMember(Alias = "parameters")]
         [JsonProperty("parameters")]
@@ -27,9 +27,9 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonProperty("typeParameters")]
         public List<ApiParameterBuildOutput> TypeParameters { get; set; }
 
-        [YamlMember(Alias = Constants.PropertyName.Returns)]
-        [JsonProperty(Constants.PropertyName.Returns)]
-        public ApiListInDevlangs<List<ApiParameterBuildOutput>> Returns { get; set; }
+        [YamlMember(Alias = Constants.PropertyName.Return)]
+        [JsonProperty(Constants.PropertyName.Return)]
+        public List<ApiLanguageValuePair<ApiParameterBuildOutput>> Return { get; set; }
 
         [ExtensibleMember]
         [JsonExtensionData]
