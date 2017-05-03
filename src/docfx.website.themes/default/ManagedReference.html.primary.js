@@ -26,7 +26,9 @@ exports.transform = function (model) {
     model = extension.postTransform(model);
   }
 
-  return model;
+  return {
+    item: model
+  };
 }
 
 exports.getOptions = function (model) {
