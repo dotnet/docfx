@@ -140,7 +140,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public MarkupResult Parse(MarkupResult markupResult, FileAndType ft)
         {
-            return MarkupResultUtility.Parse(markupResult, ft.File, SourceFiles);
+            return MarkupUtility.Parse(markupResult, ft.File, SourceFiles);
         }
 
         private MarkupResult MarkupCore(string markdown, FileAndType ft, bool omitParse)

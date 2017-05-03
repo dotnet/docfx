@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using HtmlAgilityPack;
 
-    public static class MarkupResultUtility
+    public static class MarkupUtility
     {
         private static readonly char[] UriFragmentOrQueryString = new char[] { '#', '?' };
 

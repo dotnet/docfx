@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             try
             {
                 mr = _context.MarkdownService.Markup(markdown, sourceFileKey);
-                mr = MarkupResultUtility.Parse(mr, sourceFileKey, _context.AllSourceFiles);
+                mr = MarkupUtility.Parse(mr, sourceFileKey, _context.AllSourceFiles);
             }
             catch (Exception ex)
             {
