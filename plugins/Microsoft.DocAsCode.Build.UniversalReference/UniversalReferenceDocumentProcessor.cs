@@ -113,7 +113,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
         protected virtual void UpdateModelContent(FileModel model)
         {
-            // to be implemented
+            model.Content = ModelConverter.ToApiBuildOutput((PageViewModel)model.Content);
         }
 
         private IEnumerable<XRefSpec> GetXRefFromReference(PageViewModel vm)

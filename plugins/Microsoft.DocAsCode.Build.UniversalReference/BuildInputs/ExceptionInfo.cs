@@ -22,11 +22,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [UniqueIdentityReference]
         public string Type { get; set; }
 
-        [YamlMember(Alias = Constants.PropertyName.CommentId)]
-        [JsonProperty(Constants.PropertyName.CommentId)]
-        [MergeOption(MergeOption.Ignore)]
-        public string CommentId { get; set; }
-
         [YamlMember(Alias = "description")]
         [JsonProperty("description")]
         [MarkdownContent]

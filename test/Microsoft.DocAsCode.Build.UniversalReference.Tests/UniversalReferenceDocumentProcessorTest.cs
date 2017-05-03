@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Engine;
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
@@ -26,6 +27,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
         private const string RawModelFileExtension = ".raw.json";
         private const string TestDataDirectory = "TestData";
         private const string YmlDirectoryName = "yml";
+        private const string RawModelDirectoryName = "raw";
         private static readonly string YmlDataDirectory = Path.Combine(TestDataDirectory, YmlDirectoryName);
 
         public UniversalReferenceDocumentProcessorTest()
@@ -56,6 +58,52 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
                 var outputRawModelPath = GetRawModelFilePath(fileName);
                 Assert.True(File.Exists(outputRawModelPath));
             }
+        }
+
+        [Fact]
+        public void ProcessModelShouldSucceed()
+        {
+            var fileName = "cntk.core.Value.yml";
+            var files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { $"{YmlDataDirectory}/{fileName}" }, TestDataDirectory);
+
+            BuildDocument(files);
+
+            var outputRawModelPath = GetRawModelFilePath(fileName);
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+            Assert.NotNull(model);
+
+            Assert.Equal(1, model.SupportedLanguages.Count());
+            Assert.Equal("python", model.SupportedLanguages[0]);
+
+            Assert.Equal("Class", model.Type);
+
+            Assert.Equal("Value", model.Name[0].Value);
+            Assert.Equal("cntk.core.Value", model.FullName[0].Value);
+
+            Assert.Equal("https://github.com/Microsoft/CNTK", model.Source[0].Value.Remote.RemoteRepositoryUrl);
+            Assert.Equal("cntk/core.py", model.Source[0].Value.Remote.RelativePath);
+            Assert.Equal(182, model.Source[0].Value.StartLine);
+
+            Assert.Equal(6, model.Syntax.Parameters.Count);
+            Assert.Equal("shape", model.Syntax.Parameters[0].Name);
+            Assert.Equal("tuple", model.Syntax.Parameters[0].Type[0].Uid);
+            Assert.Equal("shape of the value", model.Syntax.Parameters[0].Description);
+
+            Assert.Equal(1, model.Children.Count);
+            Assert.Equal("python", model.Children[0].Language);
+            Assert.Equal(5, model.Children[0].Value.Count);
+
+            Assert.Equal("Method", model.Children[0].Value[0].Type);
+            Assert.Equal("cntk.core.Value.create", model.Children[0].Value[0].Uid);
+            Assert.Equal("create", model.Children[0].Value[0].Name[0].Value);
+            Assert.Equal("cntk.core.Value.create", model.Children[0].Value[0].FullName[0].Value);
+            Assert.Equal("Creates a `Value` object.", model.Children[0].Value[0].Summary);
+            Assert.Equal("`Value` object.", model.Children[0].Value[0].Syntax.Return[0].Value.Description);
+            Assert.Equal("type1", model.Children[0].Value[0].Syntax.Return[0].Value.Type[0].Uid);
+            Assert.Equal("type2", model.Children[0].Value[0].Syntax.Return[0].Value.Type[1].Uid);
+            Assert.Equal("type3", model.Children[0].Value[0].Syntax.Return[0].Value.Type[2].Uid);
         }
 
         private void BuildDocument(FileCollection files)
