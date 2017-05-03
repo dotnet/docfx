@@ -23034,6 +23034,12 @@ references:
   commentId: F:Microsoft.DocAsCode.DataContracts.ManagedReference.MemberType.Constructor
   fullName: Microsoft.DocAsCode.DataContracts.ManagedReference.MemberType.Constructor
   nameWithType: MemberType.Constructor
+- uid: Microsoft.DocAsCode.DataContracts.ManagedReference.MemberType.Container
+  name: Container
+  href: api/Microsoft.DocAsCode.DataContracts.ManagedReference.MemberType.html#Microsoft_DocAsCode_DataContracts_ManagedReference_MemberType_Container
+  commentId: F:Microsoft.DocAsCode.DataContracts.ManagedReference.MemberType.Container
+  fullName: Microsoft.DocAsCode.DataContracts.ManagedReference.MemberType.Container
+  nameWithType: MemberType.Container
 - uid: Microsoft.DocAsCode.DataContracts.ManagedReference.MemberType.Default
   name: Default
   href: api/Microsoft.DocAsCode.DataContracts.ManagedReference.MemberType.html#Microsoft_DocAsCode_DataContracts_ManagedReference_MemberType_Default
