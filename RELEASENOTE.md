@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.16.7)
+﻿Version Notes (Current Version: v2.16.8)
 =======================================
+v2.16.8
+----------
+1. Add a Container enum to MemberType
+
 v2.16.7
 ----------
 1. Bug fix: Null exception when `<xref href=''/>` exists
