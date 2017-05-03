@@ -3,15 +3,10 @@
 
 namespace Microsoft.DocAsCode.Build.ManagedReference
 {
-    using System;
     using System.Collections.Generic;
     using System.Composition;
-    using System.Linq;
-    using System.IO;
-    using System.Collections.Immutable;
 
     using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
@@ -22,20 +17,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             new CompositeModelAttributeHandler(
                 new UniqueIdentityReferenceHandler(),
                 new MarkdownContentHandler()
-                );
+            );
 
         public override string Name => nameof(BuildManagedReferenceDocument);
 
         #region BuildReferenceDocumentBase
 
-        /// <summary>
-        /// TODO: move to Base and share with other DocumentBuilder
-        /// </summary>
-        /// <param name="host"></param>
-        /// <param name="model"></param>
         protected override void BuildArticle(IHostService host, FileModel model)
         {
             var pageViewModel = (PageViewModel)model.Content;
+
             var context = new HandleModelAttributesContext
             {
                 EnableContentPlaceholder = false,
@@ -43,17 +34,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 FileAndType = model.OriginalFileAndType,
                 SkipMarkup = pageViewModel?.ShouldSkipMarkup ?? false,
             };
+            HandleAttributes<PageViewModel>(model, _handler, context);
 
-            _handler.Handle(pageViewModel, context);
-
-            model.LinkToUids = model.LinkToUids.Union(context.LinkToUids);
-            model.LinkToFiles = model.LinkToFiles.Union(context.LinkToFiles);
-            model.FileLinkSources = model.FileLinkSources.ToDictionary(v => v.Key, v => v.Value.ToList())
-                .Merge(context.FileLinkSources.Select(i => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(i.Key, i.Value)))
-                .ToImmutableDictionary(v => v.Key, v => v.Value.ToImmutableList());
-            model.UidLinkSources = model.UidLinkSources.ToDictionary(v => v.Key, v => v.Value.ToList())
-                .Merge(context.UidLinkSources.Select(i => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(i.Key, i.Value)))
-                .ToImmutableDictionary(v => v.Key, v => v.Value.ToImmutableList());
             foreach (var r in pageViewModel.References)
             {
                 if (r.IsExternal == false)

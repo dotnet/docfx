@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.Common
     using System.Collections.Immutable;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     /// <summary>
@@ -47,6 +48,35 @@ namespace Microsoft.DocAsCode.Build.Common
                               item.Uid,
                               model.LocalPathFromRoot,
                               item.Documentation.StartLine + 1)).ToImmutableArray();
+        }
+
+        protected virtual void HandleAttributes<T>(FileModel model, IModelAttributeHandler handlers, HandleModelAttributesContext handlerContext)
+        {
+            if (handlers == null)
+            {
+                throw new ArgumentNullException(nameof(handlers));
+            }
+            if (handlerContext == null)
+            {
+                throw new ArgumentNullException(nameof(handlerContext));
+            }
+            if (!(model.Content is T))
+            {
+                throw new InvalidCastException($"Content of the model '{model.LocalPathFromRoot}' should be type of {typeof(T)}.");
+            }
+
+            var modelContent = (T)model.Content;
+
+            handlers.Handle(modelContent, handlerContext);
+
+            model.LinkToUids = model.LinkToUids.Union(handlerContext.LinkToUids);
+            model.LinkToFiles = model.LinkToFiles.Union(handlerContext.LinkToFiles);
+            model.FileLinkSources = model.FileLinkSources.ToDictionary(v => v.Key, v => v.Value.ToList())
+                .Merge(handlerContext.FileLinkSources.Select(i => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(i.Key, i.Value)))
+                .ToImmutableDictionary(v => v.Key, v => v.Value.ToImmutableList());
+            model.UidLinkSources = model.UidLinkSources.ToDictionary(v => v.Key, v => v.Value.ToList())
+                .Merge(handlerContext.UidLinkSources.Select(i => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(i.Key, i.Value)))
+                .ToImmutableDictionary(v => v.Key, v => v.Value.ToImmutableList());
         }
     }
 }
