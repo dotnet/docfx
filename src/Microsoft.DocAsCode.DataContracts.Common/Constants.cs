@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string InheritedMembers = "inheritedMembers";
             public const string ExtensionMethods = "extensionMethods";
             public const string Overload = "overload";
-            public const string Returns = "returns";
+            public const string Return = "return";
 
             public const string SystemKeys = "_systemKeys";
 
@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string InheritedMembers = PropertyName.InheritedMembers + PrefixSeparator;
             public const string ExtensionMethods = PropertyName.ExtensionMethods + PrefixSeparator;
             public const string Platform = PropertyName.Platform + PrefixSeparator;
-            public const string Returns = PropertyName.Returns + PrefixSeparator;
+            public const string Return = PropertyName.Return + PrefixSeparator;
             public const string Overload = PropertyName.Overload + PrefixSeparator;
         }
 

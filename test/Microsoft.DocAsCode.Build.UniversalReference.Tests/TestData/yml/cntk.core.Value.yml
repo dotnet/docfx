@@ -102,6 +102,10 @@ items:
       type:
       - bool, default False
     return:
+      type:
+      - type1
+      - type2
+      - type3
       description: '`Value` object.'
   type: Method
   uid: cntk.core.Value.create

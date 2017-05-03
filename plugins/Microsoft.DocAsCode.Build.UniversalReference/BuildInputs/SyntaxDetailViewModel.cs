@@ -36,14 +36,15 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         /// <summary>
         /// syntax's returns
         /// multiple return type is allowed in languages like JavaScript, Python
+        /// ApiParameter supports multiple types
         /// </summary>
-        [YamlMember(Alias = Constants.PropertyName.Returns)]
-        [JsonProperty(Constants.PropertyName.Returns)]
-        public List<ApiParameter> Returns { get; set; }
+        [YamlMember(Alias = Constants.PropertyName.Return)]
+        [JsonProperty(Constants.PropertyName.Return)]
+        public ApiParameter Return { get; set; }
 
-        [ExtensibleMember(Constants.ExtensionMemberPrefix.Returns)]
+        [ExtensibleMember(Constants.ExtensionMemberPrefix.Return)]
         [JsonIgnore]
-        public SortedList<string, List<ApiParameter>> ReturnsInDevLangs { get; set; } = new SortedList<string, List<ApiParameter>>();
+        public SortedList<string, ApiParameter> ReturnInDevLangs { get; set; } = new SortedList<string, ApiParameter>();
 
         [ExtensibleMember]
         [JsonIgnore]
@@ -58,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             CompositeDictionary
                 .CreateBuilder()
                 .Add(Constants.ExtensionMemberPrefix.Content, Contents, JTokenConverter.Convert<string>)
-                .Add(Constants.ExtensionMemberPrefix.Returns, ReturnsInDevLangs, JTokenConverter.Convert<List<ApiParameter>>)
+                .Add(Constants.ExtensionMemberPrefix.Return, ReturnInDevLangs, JTokenConverter.Convert<ApiParameter>)
                 .Add(string.Empty, Metadata)
                 .Create();
     }

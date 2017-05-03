@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
             var result = $"<xref href=\"{HttpUtility.HtmlEncode(uid)}\"";
             if (!string.IsNullOrEmpty(text))
             {
-                result += $" text=\"{text}\"";
+                result += $" text=\"{HttpUtility.HtmlEncode(text)}\"";
             }
             else
             {
@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
             }
             if (!string.IsNullOrEmpty(alt))
             {
-                result += $" alt=\"{alt}\"";
+                result += $" alt=\"{HttpUtility.HtmlEncode(alt)}\"";
             }
             else
             {

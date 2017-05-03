@@ -268,11 +268,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonIgnore]
         public SortedList<string, List<string>> ExtensionMethodsInDevLangs { get; set; } = new SortedList<string, List<string>>();
 
-        [ExtensibleMember(Constants.ExtensionMemberPrefix.Modifiers)]
-        [MergeOption(MergeOption.Ignore)] // todo : merge more children
-        [JsonIgnore]
-        public SortedList<string, List<string>> Modifiers { get; set; } = new SortedList<string, List<string>>();
-
         /// <summary>
         /// item's conceptual
         /// content in different dev langs can be put in this property all together
@@ -319,7 +314,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                 .Add(Constants.ExtensionMemberPrefix.Name, Names, JTokenConverter.Convert<string>)
                 .Add(Constants.ExtensionMemberPrefix.NameWithType, NamesWithType, JTokenConverter.Convert<string>)
                 .Add(Constants.ExtensionMemberPrefix.FullName, FullNames, JTokenConverter.Convert<string>)
-                .Add(Constants.ExtensionMemberPrefix.Modifiers, Modifiers, JTokenConverter.Convert<List<string>>)
                 .Add(string.Empty, Metadata)
                 .Create();
     }
