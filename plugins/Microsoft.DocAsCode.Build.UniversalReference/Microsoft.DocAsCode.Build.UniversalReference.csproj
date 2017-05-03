@@ -1,5 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\src\Shared\base.props" />
+
+  <ItemGroup>
+    <None Update="docfx.plugins.config;resources\**\*">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="5.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />

@@ -46,7 +46,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                     dest.AssemblyNameList = ModelConverter.ToApiListInDevLangs(src.AssemblyNameList, src.AssemblyNameListInDevLangs, supportedLanguages);
                     dest.Platform = ModelConverter.ToApiListInDevLangs(src.Platform, src.PlatformInDevLangs, supportedLanguages);
 
-                    dest.DerivedClasses = ModelConverter.ToApiListInDevLangsResolvingApiNames(src.DerivedClasses, src.DerivedClassesInDevLangs, supportedLanguages, references);
                     dest.Implements = ModelConverter.ToApiListInDevLangsResolvingApiNames(src.Implements, src.ImplementsInDevLangs, supportedLanguages, references);
                     dest.InheritedMembers = ModelConverter.ToApiListInDevLangsResolvingApiNames(src.InheritedMembers, src.InheritedMembersInDevLangs, supportedLanguages, references);
                     dest.ExtensionMethods = ModelConverter.ToApiListInDevLangsResolvingApiNames(src.ExtensionMethods, src.ExtensionMethodsInDevLangs, supportedLanguages, references);
