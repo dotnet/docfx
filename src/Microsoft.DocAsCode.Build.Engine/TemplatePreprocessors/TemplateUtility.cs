@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         // TODO: remove this function as it breaks incremental build's design.
         public string Markup(string markdown, string sourceFileKey)
         {
-            if (string.IsNullOrEmpty(sourceFileKey) || string.IsNullOrEmpty(markdown) || !RelativePath.IsRelativePath(markdown))
+            if (string.IsNullOrEmpty(sourceFileKey) || string.IsNullOrEmpty(markdown))
             {
                 return markdown;
             }
@@ -72,11 +72,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogError(message);
                 throw new DocfxException(message);
             }
-            MarkupResult result;
+            MarkupResult mr;
             try
             {
-                result = _context.MarkdownService.Markup(markdown, sourceFileKey);
-                // TODO: Add HostService.Parse(markupResult)
+                mr = _context.MarkdownService.Markup(markdown, sourceFileKey);
+                mr = MarkupUtility.Parse(mr, sourceFileKey, _context.AllSourceFiles);
             }
             catch (Exception ex)
             {
@@ -85,7 +85,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogError(message);
                 throw new DocumentException(message, ex);
             }
-            return result.Html;
+            return mr.Html;
         }
     }
 }
