@@ -16,6 +16,12 @@ namespace Microsoft.DocAsCode.Build.Common
     /// </summary>
     public abstract class BuildReferenceDocumentBase : BaseDocumentBuildStep
     {
+        private readonly IModelAttributeHandler _defaultHandler =
+            new CompositeModelAttributeHandler(
+                new UniqueIdentityReferenceHandler(),
+                new MarkdownContentHandler()
+            );
+
         public override int BuildOrder => 0;
 
         public override void Build(FileModel model, IHostService host)
@@ -50,24 +56,24 @@ namespace Microsoft.DocAsCode.Build.Common
                               item.Documentation.StartLine + 1)).ToImmutableArray();
         }
 
-        protected virtual void HandleAttributes<T>(FileModel model, IModelAttributeHandler handlers, HandleModelAttributesContext handlerContext)
+        protected virtual void HandleAttributes(IHostService host, FileModel model, IModelAttributeHandler handlers = null, HandleModelAttributesContext handlerContext = null, bool shouldSkipMarkup = false)
         {
             if (handlers == null)
             {
-                throw new ArgumentNullException(nameof(handlers));
+                handlers = _defaultHandler;
             }
             if (handlerContext == null)
             {
-                throw new ArgumentNullException(nameof(handlerContext));
-            }
-            if (!(model.Content is T))
-            {
-                throw new InvalidCastException($"Content of the model '{model.LocalPathFromRoot}' should be type of {typeof(T)}.");
+                handlerContext = new HandleModelAttributesContext
+                {
+                    EnableContentPlaceholder = false,
+                    Host = host,
+                    FileAndType = model.OriginalFileAndType,
+                    SkipMarkup = shouldSkipMarkup,
+                };
             }
 
-            var modelContent = (T)model.Content;
-
-            handlers.Handle(modelContent, handlerContext);
+            handlers.Handle(model.Content, handlerContext);
 
             model.LinkToUids = model.LinkToUids.Union(handlerContext.LinkToUids);
             model.LinkToFiles = model.LinkToFiles.Union(handlerContext.LinkToFiles);

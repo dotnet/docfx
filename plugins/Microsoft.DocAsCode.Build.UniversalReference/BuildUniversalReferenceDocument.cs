@@ -11,12 +11,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     [Export(nameof(UniversalReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
     public class BuildUniversalReferenceDocument : BuildReferenceDocumentBase
     {
-        private readonly IModelAttributeHandler _handler =
-            new CompositeModelAttributeHandler(
-                new UniqueIdentityReferenceHandler(),
-                new MarkdownContentHandler()
-            );
-
         public override string Name => nameof(BuildUniversalReferenceDocument);
 
         #region BuildReferenceDocumentBase
@@ -25,23 +19,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         {
             var pageViewModel = (PageViewModel)model.Content;
 
-            var context = new HandleModelAttributesContext
-            {
-                EnableContentPlaceholder = false,
-                Host = host,
-                FileAndType = model.OriginalFileAndType,
-                SkipMarkup = pageViewModel?.ShouldSkipMarkup ?? false,
-            };
-
-            HandleAttributes<PageViewModel>(model, _handler, context);
-
-            foreach (var reference in pageViewModel.References)
-            {
-                if (reference.IsExternal == false)
-                {
-                    host.ReportDependencyTo(model, reference.Uid, DependencyItemSourceType.Uid, DependencyTypeName.Reference);
-                }
-            }
+            HandleAttributes(host, model, shouldSkipMarkup: pageViewModel?.ShouldSkipMarkup ?? false);
         }
 
         #endregion

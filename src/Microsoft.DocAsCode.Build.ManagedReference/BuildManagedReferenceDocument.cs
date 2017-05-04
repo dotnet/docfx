@@ -13,12 +13,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
     public class BuildManagedReferenceDocument : BuildReferenceDocumentBase, ISupportIncrementalBuildStep
     {
-        private readonly IModelAttributeHandler _handler =
-            new CompositeModelAttributeHandler(
-                new UniqueIdentityReferenceHandler(),
-                new MarkdownContentHandler()
-            );
-
         public override string Name => nameof(BuildManagedReferenceDocument);
 
         #region BuildReferenceDocumentBase
@@ -27,14 +21,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         {
             var pageViewModel = (PageViewModel)model.Content;
 
-            var context = new HandleModelAttributesContext
-            {
-                EnableContentPlaceholder = false,
-                Host = host,
-                FileAndType = model.OriginalFileAndType,
-                SkipMarkup = pageViewModel?.ShouldSkipMarkup ?? false,
-            };
-            HandleAttributes<PageViewModel>(model, _handler, context);
+            HandleAttributes(host, model, shouldSkipMarkup:pageViewModel?.ShouldSkipMarkup ?? false);
 
             foreach (var r in pageViewModel.References)
             {
