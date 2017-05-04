@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         {
             var pageViewModel = (PageViewModel)model.Content;
 
-            HandleAttributes(host, model, shouldSkipMarkup: pageViewModel?.ShouldSkipMarkup ?? false);
+            BuildArticleCore(host, model, shouldSkipMarkup: pageViewModel?.ShouldSkipMarkup ?? false);
         }
 
         #endregion

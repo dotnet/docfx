@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.Build.Common
                               item.Documentation.StartLine + 1)).ToImmutableArray();
         }
 
-        protected virtual void HandleAttributes(IHostService host, FileModel model, IModelAttributeHandler handlers = null, HandleModelAttributesContext handlerContext = null, bool shouldSkipMarkup = false)
+        protected virtual void BuildArticleCore(IHostService host, FileModel model, IModelAttributeHandler handlers = null, HandleModelAttributesContext handlerContext = null, bool shouldSkipMarkup = false)
         {
             if (handlers == null)
             {
