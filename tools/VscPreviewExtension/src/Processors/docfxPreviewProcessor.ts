@@ -14,7 +14,7 @@ import { TempPreviewFileInformation } from "../Common/tempPreviewFileInformation
 
 export class DocFXPreviewProcessor extends PreviewProcessor {
     public navigationPort: string;
-    public isMarkdownFileChanged: boolean = false;
+    public shouldRefreshPreviewPage: boolean = false;
     public markupResult: MarkupResult = new MarkupResult();
 
     private _isFirstTime: boolean = false;
@@ -89,7 +89,7 @@ export class DocFXPreviewProcessor extends PreviewProcessor {
             this._isFirstTime = false;
             this._openPreviewPageCallback(this._tempPreviewFileInformation.tempPreviewFilePath);
         }
-        this.isMarkdownFileChanged = true;
+        this.shouldRefreshPreviewPage = true;
         this.markupResult.rawTitle = response.markupResult.rawTitle;
         this.markupResult.contentWithoutRawTitle = response.markupResult.contentWithoutRawTitle;
         this.markupResult.content = response.markupResult.rawTitle + response.markupResult.contentWithoutRawTitle;

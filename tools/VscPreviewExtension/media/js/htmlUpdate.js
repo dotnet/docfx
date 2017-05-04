@@ -16,28 +16,37 @@ $(function () {
         $(this).attr("href", path.replace("https", "http"));
     });
 
-    $.get("http://localhost:" + port.toString() + "/previewContent")
-      .done(function (data) {
-        if (data.isMarkdownFileChanged) {
-          window[pageRefreshFunctionName](data.markupResult);
-
-          (function () {
-            $("[sourcefile]").click(function () {
-              if ($(this).attr('sourcefile') === filePath) {
-                rightClick = true;
-                $.get("http://localhost:" + [port.toString(), "MatchFromRightToLeft", $(this).attr('sourcestartlinenumber'), $(this).attr('sourceendlinenumber')].join("/"));
-              }
-              else {
-                // TODO: add the lineNumber information of file include in Html
-              }
-            });
-          })();
+    $.get(generateRequestUrl("/previewContent"))
+      .done(function (data, status, xhr) {
+        switch (xhr.status) {
+          case 200:
+            window[pageRefreshFunctionName](data);
+            (function () {
+              $("[sourcefile]").click(function () {
+                if ($(this).attr('sourcefile') === filePath) {
+                  rightClick = true;
+                  $.get("http://localhost:" + [port.toString(), "MatchFromRightToLeft", $(this).attr('sourcestartlinenumber'), $(this).attr('sourceendlinenumber')].join("/"));
+                }
+                else {
+                  // TODO: add the lineNumber information of file include in Html
+                }
+              });
+            })();
+            break;
+          case 304:
+            break;
+          default:
+            consolo.log(xhr.statusText);
+            break;
         }
+      })
+      .fail(function (err) {
+        console.log(err);
       })
 
     // TODO: Merge this with previewMatch.js
     // Communication with extension to get the selection range of activeEditor
-    $.get("http://localhost:" + port.toString() + "/MatchFromLeftToRight")
+    $.get(generateRequestUrl("/MatchFromLeftToRight"))
       .done(function (data) {
         var editorSelectionRange = data.split(" ");
         var currentLocation = parseInt(editorSelectionRange[0]);
@@ -51,9 +60,8 @@ $(function () {
           var centerLocation = currentLocation;
           var selectItem = $("[sourcefile='" + filePathEscape + "']").filter(function (index) { return $(this).attr('sourcestartlinenumber') <= centerLocation && $(this).attr('sourceendlinenumber') >= centerLocation }).last();
           // If result of selection is empty selection, focus on the end of last node
-          while (selectItem.length === 0) {
-            centerLocation--;
-            selectItem = $("[sourcefile='" + filePathEscape + "']").filter(function (index) { return $(this).attr('sourcestartlinenumber') <= centerLocation && $(this).attr('sourceendlinenumber') >= centerLocation }).last();
+          if (selectItem.length === 0) {
+            selectItem = $("[sourcefile='" + filePathEscape + "']").filter(function (index) { return $(this).attr('sourcestartlinenumber') <= centerLocation }).last();
           }
           $("body,html").animate({
             scrollTop: selectItem.offset().top
@@ -62,4 +70,8 @@ $(function () {
         }
       })
   }, 500);
+
+  function generateRequestUrl(requestType) {
+    return "http://localhost:" + port.toString() + requestType;
+  }
 })

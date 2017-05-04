@@ -89,21 +89,15 @@ export function activate(context: ExtensionContext) {
         let requestInfo = req.url.split("/");
         switch (requestInfo[1]) {
             case ConstVariable.previewContent:
-                let response;
-                res.writeHead(200, { "Content-Type": "text/json" });
-                if (!docFXPreviewProcessor.isMarkdownFileChanged) {
-                    response = JSON.stringify({
-                        "isMarkdownFileChanged": false
-                    });
+                if (!docFXPreviewProcessor.shouldRefreshPreviewPage) {
+                    res.writeHead(304);
+                    res.end();
                 } else {
-                    response = JSON.stringify({
-                        "isMarkdownFileChanged": true,
-                        "markupResult": docFXPreviewProcessor.markupResult
-                    });
-                    docFXPreviewProcessor.isMarkdownFileChanged = false;
+                    res.writeHead(200, { "Content-Type": "text/json" });
+                    res.write(JSON.stringify(docFXPreviewProcessor.markupResult));
+                    res.end();
+                    docFXPreviewProcessor.shouldRefreshPreviewPage = false;
                 }
-                res.write(response);
-                res.end();
                 break;
             case ConstVariable.matchFromR2L:
                 if (!mapToSelection(parseInt(requestInfo[2]), parseInt(requestInfo[3])))
@@ -236,7 +230,7 @@ function showTokenTree(tokenTreeProcessor: TokenTreeProcessor, uri?: Uri) {
     return thenable;
 }
 
-function checkUri(uri: Uri): Uri {
+function checkUri(uri): Uri {
     let resource = uri;
     if (!(resource instanceof Uri)) {
         if (window.activeTextEditor) {

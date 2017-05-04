@@ -1,27 +1,23 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { ExtensionContext, window, workspace } from "vscode";
+import { ExtensionContext } from "vscode";
 import * as path from "path";
 import * as fs from "fs";
 
 import * as ConstVariables from "../ConstVariables/commonVariables";
 import { TempPreviewFileInformation } from "./tempPreviewFileInformation";
+import { Utility } from "./utility";
 
 export class TempPreviewFileProcessor {
     // TODO: Write\Delete temp preview file at client side instead of server side.
     public static initializeTempFileInformation(context: ExtensionContext, navigationPort: string, config) {
-        let workspacePath = workspace.rootPath;
-        let editor = window.activeTextEditor;
-        let doc = editor.document;
-        let fileName = doc.fileName;
-        let rootPathLength = workspacePath.length;
-        let relativePath = fileName.substr(rootPathLength + 1, fileName.length - rootPathLength);
+        let environmentVariables = Utility.getEnvironmentVariables();
 
-        let filename = path.basename(relativePath);
-        let filenameWithoutExt = filename.substr(0, filename.length - path.extname(relativePath).length);
+        let basename = path.basename(environmentVariables.relativePath);
+        let filenameWithoutExt = basename.substr(0, basename.length - path.extname(environmentVariables.relativePath).length);
         // TODO: Use manifest file to calculate those path
-        let originalHtmlPath = path.join(workspacePath, config.outputFolder, path.dirname(relativePath), filenameWithoutExt + ".html");
-        let tempPreviewFilePath = ConstVariables.filePathPrefix + path.join(workspacePath, config.outputFolder, path.dirname(relativePath), ConstVariables.docfxTempPreviewFile);
+        let originalHtmlPath = path.join(environmentVariables.workspacePath, config.outputFolder, path.dirname(environmentVariables.relativePath), filenameWithoutExt + ".html");
+        let tempPreviewFilePath = ConstVariables.filePathPrefix + path.join(environmentVariables.workspacePath, config.outputFolder, path.dirname(environmentVariables.relativePath), ConstVariables.docfxTempPreviewFile);
 
         let pageRefreshJsFilePath = context.asAbsolutePath(path.join("media", "js", "htmlUpdate.js"));
         if (!fs.existsSync(originalHtmlPath)) {
