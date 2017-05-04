@@ -19,10 +19,9 @@ namespace Microsoft.DocAsCode.Common
 
         public PathMapping? FindFile(RelativePath file)
         {
-            PathMapping mp;
             lock (_mappings)
             {
-                if (_mappings.TryGetValue(file, out mp))
+                if (_mappings.TryGetValue(file, out PathMapping mp))
                 {
                     return mp;
                 }

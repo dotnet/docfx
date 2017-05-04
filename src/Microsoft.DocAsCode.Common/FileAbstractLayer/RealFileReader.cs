@@ -19,10 +19,8 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentNullException(nameof(inputFolder));
             }
-            if (properties == null)
-            {
-                throw new ArgumentNullException(nameof(properties));
-            }
+            Properties = properties ?? throw new ArgumentNullException(nameof(properties));
+
             _expandedInputFolder = Path.GetFullPath(Environment.ExpandEnvironmentVariables(inputFolder));
             if (!Directory.Exists(_expandedInputFolder))
             {
@@ -35,7 +33,6 @@ namespace Microsoft.DocAsCode.Common
                 inputFolder += "/";
             }
             InputFolder = inputFolder;
-            Properties = properties;
         }
 
         public string InputFolder { get; }

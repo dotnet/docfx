@@ -58,8 +58,7 @@ namespace Microsoft.DocAsCode.Common
         public static string GetProperty(this FileAbstractLayer fal, RelativePath file, string propertyName)
         {
             var dict = fal.GetProperties(file);
-            string result;
-            dict.TryGetValue(propertyName, out result);
+            dict.TryGetValue(propertyName, out string result);
             return result;
         }
 

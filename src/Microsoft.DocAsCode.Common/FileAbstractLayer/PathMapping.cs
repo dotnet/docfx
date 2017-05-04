@@ -14,12 +14,8 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentNullException(nameof(logicalPath));
             }
-            if (physicalPath == null)
-            {
-                throw new ArgumentNullException(nameof(physicalPath));
-            }
             LogicalPath = logicalPath.GetPathFromWorkingFolder();
-            PhysicalPath = physicalPath;
+            PhysicalPath = physicalPath ?? throw new ArgumentNullException(nameof(physicalPath));
             AllowMoveOut = false;
             Properties = ImmutableDictionary<string, string>.Empty;
         }

@@ -174,8 +174,7 @@ namespace Microsoft.DocAsCode.Common
         private static IFileReader CreateFallbackReader(IFileReader first, IFileReader second)
         {
             ImmutableArray<IFileReader> readers;
-            var fallbackReader = first as FallbackFileReader;
-            if (fallbackReader != null)
+            if (first is FallbackFileReader fallbackReader)
             {
                 readers = fallbackReader.Readers;
             }
