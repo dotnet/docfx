@@ -333,12 +333,12 @@ $(function () {
 
     function loadNavbar() {
       var navbarPath = $("meta[property='docfx\\:navrel']").attr("content");
-      if (typeof (navbarPath) === 'undefined') {
+      if (!navbarPath) {
         return;
       }
+      navbarPath = navbarPath.replace(/\\/g, '/');
       var tocPath = $("meta[property='docfx\\:tocrel']").attr("content") || '';
       if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
-      if (navbarPath) navbarPath = navbarPath.replace(/\\/g, '/');
       $.get(navbarPath, function (data) {
         $(data).find("#toc>ul").appendTo("#navbar");
         if ($('#search-results').length !== 0) {
@@ -467,10 +467,10 @@ $(function () {
 
     function loadToc() {
       var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
-      if (typeof (tocPath) === 'undefined') {
+      if (!tocPath) {
         return;
       }
-      if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
+      tocPath = tocPath.replace(/\\/g, '/');
       $('#sidetoc').load(tocPath + " #sidetoggle > div", function () {
         var index = tocPath.lastIndexOf('/');
         var tocrel = '';
