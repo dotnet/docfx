@@ -24,7 +24,7 @@ For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored
 -----------------------
 
 > [!Note]
-> Please make sure [.NET Core](https://www.microsoft.com/net/core) and [.NET Framework 4.6](https://www.microsoft.com/en-us/download/details.aspx?id=48130) are installed.
+> Prerequisites: [.NET Core](https://www.microsoft.com/net/core), [.NET Framework 4.6](https://www.microsoft.com/en-us/download/details.aspx?id=48130), and [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159)(No need if you install VS 2015)
 
 *Step1.* DocFX ships as a [chocolatey package](https://chocolatey.org/packages/docfx).
 Install docfx through [Chocolatey](https://chocolatey.org/install) by calling `cinst docfx -y`.
