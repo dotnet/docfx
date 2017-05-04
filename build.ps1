@@ -106,8 +106,8 @@ if ($prod -eq $true) {
         $revision = '0000'
     }
 
-    $assemblyVersion = (($version + $revision) -join '.').Substring(1)
-
+    $assemblyVersion = (($version + '0') -join '.').Substring(1)
+    $assemblyFileVersion = (($version + $revision) -join '.').Substring(1)
     if ($branch -ne $releaseBranch) {
         $abbrev = $commitInfo[2]
         $packageVersion = ((($version -join '.'), "alpha", $revision, $abbrev) -join '-').Substring(1)
@@ -121,13 +121,13 @@ if ($prod -eq $true) {
     }
     "
 [assembly: System.Reflection.AssemblyVersionAttribute(""$assemblyVersion"")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute(""$assemblyVersion"")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute(""$assemblyVersion"")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute(""$assemblyFileVersion"")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute(""$assemblyFileVersion"")]
     " | Out-File -FilePath $versionCsFilePath
     Write-Host "Version file saved to $versionCsFilePath" -ForegroundColor Green
 }
 
-Write-Host "Using package version $packageVersion, and assembly version $assemblyVersion"
+Write-Host "Using package version $packageVersion, and assembly version $assemblyVersion, assembly file version $assemblyFileVersion"
 
 foreach ($sln in (Get-ChildItem *.sln)) {
     Write-Host "Start building $($sln.FullName)"
