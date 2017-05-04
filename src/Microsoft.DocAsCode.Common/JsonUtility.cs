@@ -7,20 +7,22 @@ namespace Microsoft.DocAsCode.Common
     using System.Threading;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
 
     using Microsoft.DocAsCode.Plugins;
 
     public static class JsonUtility
     {
         public static readonly ThreadLocal<JsonSerializer> DefaultSerializer = new ThreadLocal<JsonSerializer>(
-            () =>
+            () => new JsonSerializer
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+                Converters =
                 {
-                    var jsonSerializer = new JsonSerializer();
-                    jsonSerializer.NullValueHandling = NullValueHandling.Ignore;
-                    jsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
-                    jsonSerializer.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter { CamelCaseText = true });
-                    return jsonSerializer;
-                });
+                    new StringEnumConverter { CamelCaseText = true },
+                }
+            });
 
         public static void Serialize(TextWriter writer, object graph, Formatting formatting = Formatting.None, JsonSerializer serializer = null)
         {

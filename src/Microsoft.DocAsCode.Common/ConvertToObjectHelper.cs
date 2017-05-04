@@ -8,10 +8,7 @@ namespace Microsoft.DocAsCode.Common
 {
     using System.Collections.Generic;
     using System.Dynamic;
-    using System.IO;
     using System.Linq;
-
-    using Microsoft.DocAsCode.Common;
 
     using Newtonsoft.Json.Linq;
 
@@ -23,24 +20,24 @@ namespace Microsoft.DocAsCode.Common
             {
                 return ((IDictionary<string, object>)raw).ToDictionary(s => s.Key, s => ConvertExpandoObjectToObject(s.Value));
             }
-            if (raw is IEnumerable<object>)
+            if (raw is IEnumerable<object> enumerable)
             {
-                return ((IEnumerable<object>)raw).Select(s => ConvertExpandoObjectToObject(s)).ToArray();
+                return enumerable.Select(s => ConvertExpandoObjectToObject(s)).ToArray();
             }
             return raw;
         }
 
         public static object ConvertJObjectToObject(object raw)
         {
-            var jValue = raw as JValue;
-            if (jValue != null) { return jValue.Value; }
-            var jArray = raw as JArray;
-            if (jArray != null)
+            if (raw is JValue jValue)
+            {
+                return jValue.Value;
+            }
+            if (raw is JArray jArray)
             {
                 return jArray.Select(s => ConvertJObjectToObject(s)).ToArray();
             }
-            var jObject = raw as JObject;
-            if (jObject != null)
+            if (raw is JObject jObject)
             {
                 return jObject.ToObject<Dictionary<string, object>>().ToDictionary(p => p.Key, p => ConvertJObjectToObject(p.Value));
             }
