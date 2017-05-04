@@ -21,8 +21,7 @@ namespace Microsoft.DocAsCode.Common
             }
             foreach (var pair in right)
             {
-                List<T> list;
-                if (result.TryGetValue(pair.Key, out list))
+                if (result.TryGetValue(pair.Key, out List<T> list))
                 {
                     list.AddRange(pair.Value);
                 }

@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Common
 
         public AsyncConcurrentCache(IEqualityComparer<TKey> comparer = null)
         {
-            this._cache = comparer == null
+            _cache = comparer == null
                 ? new ConcurrentDictionary<TKey, Lazy<Task<TValue>>>()
                 : new ConcurrentDictionary<TKey, Lazy<Task<TValue>>>(comparer);
         }
@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode.Common
         /// <returns>The task to generate value for the key</returns>
         public Task<TValue> GetOrAdd(TKey key, Func<TKey, Task<TValue>> valueFactory, bool removeKeyOnFaulted = true)
         {
-            return this._cache.GetOrAdd(key, k => new Lazy<Task<TValue>>(() =>
+            return _cache.GetOrAdd(key, k => new Lazy<Task<TValue>>(() =>
             {
                 Task<TValue> task = valueFactory(k);
 
@@ -43,8 +43,7 @@ namespace Microsoft.DocAsCode.Common
                 {
                     task.ContinueWith(task1 =>
                     {
-                        Lazy<Task<TValue>> useless;
-                        this._cache.TryRemove(key, out useless);
+                        _cache.TryRemove(key, out Lazy<Task<TValue>> useless);
                     }, TaskContinuationOptions.OnlyOnFaulted);
                 }
 
@@ -60,8 +59,7 @@ namespace Microsoft.DocAsCode.Common
         /// <returns>true if the task was found; otherwise, false.</returns>
         public bool TryGetValue(TKey key, out Task<TValue> value)
         {
-            Lazy<Task<TValue>> lazyValue;
-            var result = this._cache.TryGetValue(key, out lazyValue);
+            var result = _cache.TryGetValue(key, out Lazy<Task<TValue>> lazyValue);
 
             value = null;
             if (lazyValue != null)
@@ -75,12 +73,6 @@ namespace Microsoft.DocAsCode.Common
         /// <summary>
         /// Gets a list of tasks in cache.
         /// </summary>
-        public List<Task<TValue>> Values
-        {
-            get
-            {
-                return this._cache.Values.Select(x => x.Value).ToList();
-            }
-        }
+        public List<Task<TValue>> Values => _cache.Values.Select(x => x.Value).ToList();
     }
 }

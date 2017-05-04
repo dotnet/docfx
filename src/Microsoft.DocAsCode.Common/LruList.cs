@@ -38,8 +38,7 @@
 
         protected virtual void AccessNoCheck(T item)
         {
-            LinkedListNode<T> node;
-            if (_index.TryGetValue(item, out node))
+            if (_index.TryGetValue(item, out LinkedListNode<T> node))
             {
                 // reorder
                 _cache.Remove(node);

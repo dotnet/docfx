@@ -104,8 +104,7 @@ namespace Microsoft.DocAsCode.Common
 
         bool ICollection<KeyValuePair<string, object>>.Contains(KeyValuePair<string, object> item)
         {
-            object value;
-            return TryGetValue(item.Key, out value) && object.Equals(item.Value, value);
+            return TryGetValue(item.Key, out object value) && object.Equals(item.Value, value);
         }
 
         public bool ContainsKey(string key)
@@ -114,7 +113,6 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentNullException(nameof(key));
             }
-            object _;
             return TryGetValue(key, out _);
         }
 
@@ -242,9 +240,8 @@ namespace Microsoft.DocAsCode.Common
                     TryGetValue =
                         key =>
                         {
-                            TValue value;
-                            var getted = dict.TryGetValue(key, out value);
-                            return new KeyValuePair<bool, object>(getted, (object)value);
+                            var getted = dict.TryGetValue(key, out TValue value);
+                            return new KeyValuePair<bool, object>(getted, value);
                         },
                     Remove = key => dict.Remove(key),
                     Clear = () => dict.Clear(),
