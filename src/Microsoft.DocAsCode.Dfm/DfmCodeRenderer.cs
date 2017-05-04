@@ -82,7 +82,9 @@ namespace Microsoft.DocAsCode.Dfm
 
         public virtual StringBuffer RenderOpenPreTag(StringBuffer result, DfmFencesToken token, Options options)
         {
-            return result + "<pre>";
+            result += "<pre";
+            result = HtmlRenderer.AppendSourceInfo(result, options, token);
+            return result + ">";
         }
 
         public virtual StringBuffer RenderClosePreTag(StringBuffer result, DfmFencesToken token, Options options)
