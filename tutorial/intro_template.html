@@ -8,7 +8,7 @@
     <title>Introduction to DocFX Template System | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to DocFX Template System | DocFX website ">
-    <meta name="generator" content="docfx 2.16.8.3">
+    <meta name="generator" content="docfx 2.17.0.572">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -74,8 +74,8 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <h1 id="introduction-to-docfx-template-system">Introduction to <em>DocFX Template System</em></h1>
-              
+<h1 id="introduction-to-docfx-template-system">Introduction to <em>DocFX Template System</em></h1>
+
 <p><em>DocFX Template System</em> provides a flexible way of defining and using templates.</p>
 <p>As the following DocFX workflow shows,</p>
 <p><img src="../spec/images/docfx_workflow_highlevel.png" alt="DocFX workflow"></p>
@@ -134,12 +134,63 @@ Inside Partial
 <div class="TIP"><h5>Tip</h5><p>Mustache is logic-less, and for a specific <code>{{name}}</code> tag, Mustache searches its context and its parent context recursively.
 So most of the time <a href="#preprocessor"><em>Preprocessor File</em></a> is used to re-define the data model used by the Mustache <em>Renderer</em>.</p>
 </div>
-<h3 id="renderer-in-liquid-syntax"><em>Renderer</em> in Liquid syntax</h3>
+<h4 id="extended-syntax-for-master-page">Extended syntax for Master page</h4>
+<p>In most cases templates with different document types share the same layout and style, for example, most of the pages can share navbar, header, or footer. </p>
+<p>DocFX introduces the following syntax to use a master page:</p>
+<pre><code class="lang-mustache">{{!master(&#39;&lt;master_page_name&gt;&#39;)}}
+</code></pre><p>Inside the master page, the following syntax is used for pages to place their content body:</p>
+<pre><code class="lang-mustache">{{!body}}
+</code></pre><p>For example, with the following master page <code>_master.html</code>:
+```html with mustache
+<html>
+    <head></head>
+    <body>
+        {{!body}}
+    <body>
+</body></body></html></p>
+<pre><code>
+A template `conceptual.html.tmpl` as follows:
+```mustache
+{{!master(&#39;_master.html&#39;)}}
+Hello World
+</code></pre><p>renders as the same as:</p>
+<pre><code class="lang-mustache">&lt;html&gt;
+    &lt;head&gt;&lt;/head&gt;
+    &lt;body&gt;
+        Hello World
+    &lt;body&gt;
+&lt;/html&gt;
+</code></pre><h3 id="renderer-in-liquid-syntax"><em>Renderer</em> in Liquid syntax</h3>
 <h4 id="naming-rule-1">Naming rule</h4>
 <p><em>Renderer</em>s in <a href="https://github.com/Shopify/liquid">Liquid</a> syntax <strong>MUST</strong> end with <code>.liquid</code> extension. Liquid contains <a href="https://help.shopify.com/themes/liquid/tags/theme-tags#include">include</a> tag to support partials, we follow the ruby partials naming convention to have <code>_&lt;partialName&gt;.liquid</code> as partial template. </p>
 <h4 id="extended-syntax-for-dependencies-1">Extended syntax for Dependencies</h4>
 <p>DocFX introduces a custom tag <code>ref</code>, e.g. <code>{% ref file1 %}</code>, to specify the resource files that current template depends on.</p>
-<h2 id="preprocessor"><em>Preprocessor</em></h2>
+<h4 id="extended-syntax-for-master-page-1">Extended syntax for Master page</h4>
+<p>DocFX introduces custom tags <code>master</code> and <code>body</code> to use master page:</p>
+<pre><code class="lang-liquid">{% master &lt;master_page_name&gt; %}
+</code></pre><p>Inside the master page, the following syntax is used for pages to place their content body:</p>
+<pre><code class="lang-liquid">{% body %}
+</code></pre><p>For example, with the following master page <code>_master.html</code>:
+```html with liquid
+<html>
+    <head></head>
+    <body>
+        {% body %}
+    <body>
+</body></body></html></p>
+<pre><code>
+A template `conceptual.html.liquid` as follows:
+```liqud
+{% master _master.html %}
+Hello World
+</code></pre><p>renders as the same as:</p>
+<pre><code class="lang-liqud">&lt;html&gt;
+    &lt;head&gt;&lt;/head&gt;
+    &lt;body&gt;
+        Hello World
+    &lt;body&gt;
+&lt;/html&gt;
+</code></pre><h2 id="preprocessor"><em>Preprocessor</em></h2>
 <p><em>Renderer</em>s take the input data model produced by document processor and render them into output files. Sometimes the input data model is not exactly what <em>Renderer</em>s want. <em>DocFX Template System</em> introduces the concept of <em>Preprocessor</em> to transform the input data model into what <em>Renderer</em>s exactly want. We call the data model <em>Preprocessor</em> returns the <em>View Model</em>. <em>View Model</em> is the data model to apply <em>Renderer</em>.</p>
 <h3 id="naming-rule-for-preprocessor">Naming rule for <em>Preprocessor</em></h3>
 <p>The naming of <em>Preprocessor</em> follows the naming of <em>Renderer</em> with file extension changes to <code>.js</code>: <code>&lt;renderer_file_name_without_extension&gt;.js</code>.</p>
@@ -257,8 +308,7 @@ And the returned <em>View Model</em> can be exported to a JSON file by calling <
 <h3 id="globally-shared-properties">Globally Shared Properties</h3>
 <p>Globally shared properties are stored in <code>__global</code> key for every data model. Its initial value is read from <code>global.json</code> inside the <em>Template</em> if the file exists.
 If a data model has <code>isShared</code> equal to <code>true</code> with the above <code>getOptions</code> function property, it is stored in <code>__global._shared</code> with the original path starting with <code>~/</code> as the key.</p>
-
-            </article>
+</article>
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">

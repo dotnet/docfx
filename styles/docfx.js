@@ -20,7 +20,12 @@ $(function () {
   renderFooter();
   renderLogo();
 
-  window.refresh = function () {
+  window.refresh = function (article) {
+    // Update markup result
+    if (typeof article == 'undefined' || typeof article.content == 'undefined')
+      console.error("Null Argument");
+    $("article.content").html(article.content);
+
     highlight();
     renderTables();
     renderAlerts();
@@ -328,12 +333,12 @@ $(function () {
 
     function loadNavbar() {
       var navbarPath = $("meta[property='docfx\\:navrel']").attr("content");
-      if (typeof (navbarPath) === 'undefined') {
+      if (!navbarPath) {
         return;
       }
+      navbarPath = navbarPath.replace(/\\/g, '/');
       var tocPath = $("meta[property='docfx\\:tocrel']").attr("content") || '';
       if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
-      if (navbarPath) navbarPath = navbarPath.replace(/\\/g, '/');
       $.get(navbarPath, function (data) {
         $(data).find("#toc>ul").appendTo("#navbar");
         if ($('#search-results').length !== 0) {
@@ -422,11 +427,11 @@ $(function () {
         $('#toc li>a').filter(function (i, e) {
           return $(e).siblings().length === 0
         }).each(function (i, anchor) {
-          var text = $(anchor).text();
+          var text = $(anchor).attr('title');
           var parent = $(anchor).parent();
           var parentNodes = parent.parents('ul>li');
           for (var i = 0; i < parentNodes.length; i++) {
-            var parentText = $(parentNodes[i]).children('a').text();
+            var parentText = $(parentNodes[i]).children('a').attr('title');
             if (parentText) text = parentText + '.' + text;
           };
           if (filterNavItem(text, val)) {
@@ -462,10 +467,10 @@ $(function () {
 
     function loadToc() {
       var tocPath = $("meta[property='docfx\\:tocrel']").attr("content");
-      if (typeof (tocPath) === 'undefined') {
+      if (!tocPath) {
         return;
       }
-      if (tocPath) tocPath = tocPath.replace(/\\/g, '/');
+      tocPath = tocPath.replace(/\\/g, '/');
       $('#sidetoc').load(tocPath + " #sidetoggle > div", function () {
         var index = tocPath.lastIndexOf('/');
         var tocrel = '';
@@ -483,6 +488,10 @@ $(function () {
           if (util.getAbsolutePath(e.href) === currentHref) {
             $(e).addClass(active);
           }
+
+          $(e).text(function(index, text) {
+            return util.breakText(text);
+          })
         });
 
         renderSidebar();
@@ -701,6 +710,8 @@ $(function () {
     this.isAbsolutePath = isAbsolutePath;
     this.getDirectory = getDirectory;
     this.formList = formList;
+    this.breakText = breakText;
+
     function getAbsolutePath(href) {
       // Use anchor to normalize href
       var anchor = $('<a href="' + href + '"></a>')[0];
@@ -752,6 +763,11 @@ $(function () {
         html += '</ul>';
         return html;
       }
+    }
+
+    function breakText(text) {
+      if (!text) return text;
+      return text.replace(/([a-z])([A-Z])|(\.)(\w)/g, '$1$3\u200B$2$4')
     }
   }
 })

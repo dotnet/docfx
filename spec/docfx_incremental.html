@@ -8,7 +8,7 @@
     <title>Doc-as-code: DocFx.exe Incremental Build Specification | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Doc-as-code: DocFx.exe Incremental Build Specification | DocFX website ">
-    <meta name="generator" content="docfx 2.16.8.3">
+    <meta name="generator" content="docfx 2.17.0.572">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -74,8 +74,8 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-              <h1 id="doc-as-code-docfxexe-incremental-build-specification">Doc-as-code: DocFx.exe Incremental Build Specification</h1>
-              
+<h1 id="doc-as-code-docfxexe-incremental-build-specification">Doc-as-code: DocFx.exe Incremental Build Specification</h1>
+
 <p>This documentation describes the implementation of incrementally extracting metadata from source. Currently we are using <em>Roslyn</em> to compile and analyse source code on the fly. When input sources are large, it may take minutes to load and process the files. To speed up the extraction, previous extracted details are saved to cache for further reference. </p>
 <p>There are two level caches in current implementation. First one is called <em>Application</em> Level cache, and the other one is <em>Project</em> level cache.</p>
 <p><em>Application</em> level cache is saved in file <code>%LocalAppData%/xdoc/cache</code>.</p>
@@ -133,8 +133,7 @@
 <li><p>Save result, and update <em>*Application</em> level cache.</p>
 </li>
 </ol>
-
-            </article>
+</article>
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">

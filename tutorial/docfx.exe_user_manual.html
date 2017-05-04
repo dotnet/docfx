@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.16.8.3">
+    <meta name="generator" content="docfx 2.17.0.572">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -74,8 +74,8 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="user_manual">
-              <h1 id="doc-as-code-docfxexe-user-manual">Doc-as-code: <code>docfx.exe</code> User Manual</h1>
-              
+<h1 id="doc-as-code-docfxexe-user-manual">Doc-as-code: <code>docfx.exe</code> User Manual</h1>
+
 <h2 id="0-introduction">0. Introduction</h2>
 <p><code>docfx.exe</code> is used to generate documentation for programs. It has the ability to:</p>
 <ol>
@@ -149,11 +149,11 @@ And if <code>href</code> is referencing to a <strong>folder</strong>, it must en
 <tbody>
 <tr>
 <td>name</td>
-<td><strong>Requried</strong>. The title of the navigation page.</td>
+<td><strong>Required</strong>. The title of the navigation page.</td>
 </tr>
 <tr>
 <td>href</td>
-<td><strong>Required</strong>. Can be a folder or a file <em>UNDER</em> current folder. Folder must be end with <code>/</code>. If is a folder, TOC.md inside the folder will be rendered as second level TABLE-OF-CONTENT. As in website, it will be rendered as sidebar.</td>
+<td><strong>Required</strong>. Can be a folder or a file <em>UNDER</em> current folder. A folder must end with <code>/</code>. In case of a folder, TOC.md inside the folder will be rendered as second level TABLE-OF-CONTENT. As in website, it will be rendered as a sidebar.</td>
 </tr>
 <tr>
 <td>homepage</td>
@@ -508,41 +508,41 @@ Reserved metadatas:</p>
 <p>There&#39;re some metadata file examples:</p>
 <ul>
 <li><p>globalMetadata file example </p>
-<pre><code class="lang-json">  {
-      &quot;_appTitle&quot;: &quot;DocFX website&quot;,
-      &quot;_enableSearch&quot;: &quot;true&quot;
-  }
+<pre><code class="lang-json">{
+    &quot;_appTitle&quot;: &quot;DocFX website&quot;,
+    &quot;_enableSearch&quot;: &quot;true&quot;
+}
 </code></pre></li>
 <li><p>fileMetadata file example</p>
-<pre><code class="lang-json">  {
-      &quot;priority&quot;: {
-          &quot;**.md&quot;: 2.5,
-          &quot;spec/**.md&quot;: 3
-      },
-      &quot;keywords&quot;: {
-          &quot;obj/docfx/**&quot;: [&quot;API&quot;, &quot;Reference&quot;],
-          &quot;spec/**.md&quot;: [&quot;Spec&quot;, &quot;Conceptual&quot;]
-      }
-  }
+<pre><code class="lang-json">{
+    &quot;priority&quot;: {
+        &quot;**.md&quot;: 2.5,
+        &quot;spec/**.md&quot;: 3
+    },
+    &quot;keywords&quot;: {
+        &quot;obj/docfx/**&quot;: [&quot;API&quot;, &quot;Reference&quot;],
+        &quot;spec/**.md&quot;: [&quot;Spec&quot;, &quot;Conceptual&quot;]
+    }
+}
 </code></pre></li>
 </ul>
 <p>There&#39;re some examples about how to use separated metadata files.</p>
 <ul>
 <li><p>use <code>globalMetadataFiles</code> in <code>docfx.json</code></p>
-<pre><code class="lang-json">  ...
-  &quot;globalMetadataFiles&quot;: [&quot;global1.json&quot;, &quot;global2.json&quot;],
-  ...
+<pre><code class="lang-json">...
+&quot;globalMetadataFiles&quot;: [&quot;global1.json&quot;, &quot;global2.json&quot;],
+...
 </code></pre></li>
 <li><p>use <code>--globalMetadataFiles</code> in build command line</p>
-<pre><code>  docfx build --globalMetadataFiles global1.json,global2.json
+<pre><code>docfx build --globalMetadataFiles global1.json,global2.json
 </code></pre></li>
 <li><p>use <code>fileMetadataFiles</code> in <code>docfx.json</code></p>
-<pre><code class="lang-json">  ...
-  &quot;fileMetadataFiles&quot;: [&quot;file1.json&quot;, &quot;file2.json&quot;],
-  ...
+<pre><code class="lang-json">...
+&quot;fileMetadataFiles&quot;: [&quot;file1.json&quot;, &quot;file2.json&quot;],
+...
 </code></pre></li>
 <li><p>use <code>--fileMetadataFiles</code> in build command line</p>
-<pre><code>  docfx build --fileMetadataFiles file1.json,file2.json
+<pre><code>docfx build --fileMetadataFiles file1.json,file2.json
 </code></pre></li>
 </ul>
 <p>Note that, metadata set in command line will merge with metadata set in <code>docfx.json</code>. </p>
@@ -651,8 +651,7 @@ A: YES.</li>
 <li>Do we support <strong>referencing</strong> files outside of current project folder(the folder when <code>docfx.json</code> exists)?
 A: NO.</li>
 </ol>
-
-            </article>
+</article>
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">

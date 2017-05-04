@@ -8,7 +8,7 @@
     <title>Table-Of-Content (TOC) Files | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Table-Of-Content (TOC) Files | DocFX website ">
-    <meta name="generator" content="docfx 2.16.8.3">
+    <meta name="generator" content="docfx 2.17.0.572">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -74,8 +74,8 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="intro_toc">
-              <h1 id="table-of-content-toc-files">Table-Of-Content (TOC) Files</h1>
-              
+<h1 id="table-of-content-toc-files">Table-Of-Content (TOC) Files</h1>
+
 <h2 id="introduction">Introduction</h2>
 <p>DocFX supports processing Markdown files, which we call <em>Conceptual File</em>s, as well as structured data model in YAML or JSON format, which we call <em>Metadata File</em>s. Besides that, DocFX introduces a way to organize these files using <em>Table-Of-Content File</em>s, which we also call <em>TOC File</em>s, so that users can navigate through <em>Metadata File</em>s and <em>Conceptual File</em>s.</p>
 <p><em>TOC File</em>s must have file name <code>toc.md</code> or <code>toc.yml</code>, notice that file name is case-insensitive.</p>
@@ -213,8 +213,8 @@
 <ol>
 <li>If <del><code>homepage</code></del> <code>topicHref</code> or <del><code>homepageUid</code></del> <code>topicUid</code> is set, the link value is resolved to the relative path to <del><code>homepage</code></del> <code>topicHref</code></li>
 <li><p>If <del><code>homepage</code></del> <code>topicHref</code> or <del><code>homepageUid</code></del> <code>topicUid</code> is not set, DocFX searches for <em>Toc File</em> under the folder, and get the first <a href="#link-to-local-file">relative link to local file</a> as the link value for current <em>Toc Item</em>. For example, if the <em>Toc Item</em> is <code>href: article/</code>, and the content of <code>article/toc.yml</code> is as follows:</p>
-<pre><code class="lang-yaml"> - name: Topic1
-   href: topic1.md
+<pre><code class="lang-yaml">- name: Topic1
+  href: topic1.md
 </code></pre><p> The link value for the <em>Toc Item</em> is resolved to <code>article/topic1.md</code>.</p>
 </li>
 <li><p>If there is no <em>Toc File</em> under the folder, the link value keeps unchanged.</p>
@@ -224,8 +224,7 @@
 <p>If the <em>Toc Item</em> is linking to a local file, we call this local file <em>In-Toc File</em>. Make sure the file is included in <code>docfx.json</code>.</p>
 <h2 id="not-in-toc-files">Not-In-Toc Files</h2>
 <p>When a local file is not referenced by any <em>Toc Item</em>, we call this local file <em>Not-In-Toc File</em>. Its <em>TOC File</em> is the nearest <em>TOC File</em> in output folder from the same folder as the local file to the root output folder.</p>
-
-            </article>
+</article>
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">

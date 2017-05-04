@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class DfmServiceProvider
    | DocFX website ">
-    <meta name="generator" content="docfx 2.16.8.3">
+    <meta name="generator" content="docfx 2.17.0.572">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -57,7 +57,7 @@
           </div>
         </div>
       </header>
-      <div role="main" class="container body-content">
+      <div class="container body-content">
         
         <div id="search-results">
           <div class="search-list"></div>
@@ -75,139 +75,263 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content">
-              
-              
-              <h1 id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider">Class DfmServiceProvider
-              </h1>
-              <div class="markdown level0 summary"></div>
-              <div class="markdown level0 conceptual"></div>
-              <div class="inheritance">
-                <h5>Inheritance</h5>
-                  <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
-                  <div class="level1"><span class="xref">DfmServiceProvider</span></div>
-              </div>
-              <div class="inheritedMembers">
-                <h5>Inherited Members</h5>
-                <div>
-                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">Object.ToString()</a>
-                </div>
-                <div>
-                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Object.Equals(Object)</a>
-                </div>
-                <div>
-                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Object.Equals(Object, Object)</a>
-                </div>
-                <div>
-                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">Object.ReferenceEquals(Object, Object)</a>
-                </div>
-                <div>
-                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">Object.GetHashCode()</a>
-                </div>
-                <div>
-                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">Object.GetType()</a>
-                </div>
-                <div>
-                  <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">Object.MemberwiseClone()</a>
-                </div>
-              </div>
-              <h6><strong>Namespace</strong>:Microsoft.DocAsCode.Build.Engine</h6>
-              <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Build.Engine.dll</h6>
-              <h5 id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_syntax">Syntax</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[Export(&quot;dfm-latest&quot;, typeof (IMarkdownServiceProvider))]
+            <article class="content wrap" id="_content" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider">
+  
+  
+  <h1 id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider">Class DfmServiceProvider
+  </h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+      <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
+      <div class="level"><span class="xref"></span></div>
+      <div class="level2"><a class="xref" href="Microsoft.DocAsCode.Build.Engine.DfmLegacyServiceProvider.html">DfmLegacyServiceProvider</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">Object.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Object.Equals(Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Object.Equals(Object, Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">Object.ReferenceEquals(Object, Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">Object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">Object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">Object.MemberwiseClone()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>:Microsoft.DocAsCode.Build.Engine</h6>
+  <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Build.Engine.dll</h6>
+  <h5 id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Export(&quot;dfm-latest&quot;, typeof (IMarkdownServiceProvider))]
 [Export(&quot;dfm-2.15&quot;, typeof (IMarkdownServiceProvider))]
 public class DfmServiceProvider : IMarkdownServiceProvider</code></pre>
-              </div>
-              <h3 id="properties">Properties
-              </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_TokenTreeValidator.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.TokenTreeValidator%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/MarkdownProviders/DfmServiceProvider.cs/#L47">View Source</a>
-              </span>
-              <a id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_TokenTreeValidator_" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.TokenTreeValidator*"></a>
-              <h4 id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_TokenTreeValidator" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.TokenTreeValidator">TokenTreeValidator</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">[ImportMany]
+  </div>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_Container.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.Container%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/MarkdownProviders/DfmServiceProvider.cs/#L60">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_Container_" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.Container*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_Container" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.Container">Container</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Import]
+public ICompositionContainer Container { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.ICompositionContainer.html">ICompositionContainer</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_DfmEngineCustomizers.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmEngineCustomizers%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/MarkdownProviders/DfmServiceProvider.cs/#L57">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_DfmEngineCustomizers_" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmEngineCustomizers*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_DfmEngineCustomizers" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmEngineCustomizers">DfmEngineCustomizers</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[ImportMany]
+public IEnumerable&lt;IDfmEngineCustomizer&gt; DfmEngineCustomizers { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Dfm.IDfmEngineCustomizer.html">IDfmEngineCustomizer</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_DfmRendererPartProviders.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmRendererPartProviders%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/MarkdownProviders/DfmServiceProvider.cs/#L54">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_DfmRendererPartProviders_" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmRendererPartProviders*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_DfmRendererPartProviders" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.DfmRendererPartProviders">DfmRendererPartProviders</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[ImportMany]
+public IEnumerable&lt;IDfmCustomizedRendererPartProvider&gt; DfmRendererPartProviders { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPartProvider.html">IDfmCustomizedRendererPartProvider</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_LegacyMode.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.LegacyMode%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/MarkdownProviders/DfmServiceProvider.cs/#L49">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_LegacyMode_" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.LegacyMode*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_LegacyMode" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.LegacyMode">LegacyMode</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected virtual bool LegacyMode { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_TokenTreeValidator.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.TokenTreeValidator%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/MarkdownProviders/DfmServiceProvider.cs/#L51">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_TokenTreeValidator_" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.TokenTreeValidator*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_TokenTreeValidator" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.TokenTreeValidator">TokenTreeValidator</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[ImportMany]
 public IEnumerable&lt;IMarkdownTokenTreeValidator&gt; TokenTreeValidator { get; set; }</code></pre>
-              </div>
-              <h5 class="propertyValue">Property Value</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenTreeValidator.html">IMarkdownTokenTreeValidator</a>&gt;</td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h3 id="methods">Methods
-              </h3>
-              <span class="small pull-right mobile-hide">
-                <span class="divider">|</span>
-                <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_CreateMarkdownService_Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-              </span>
-              <span class="small pull-right mobile-hide">
-                <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/MarkdownProviders/DfmServiceProvider.cs/#L23">View Source</a>
-              </span>
-              <a id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_CreateMarkdownService_" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.CreateMarkdownService*"></a>
-              <h4 id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_CreateMarkdownService_Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)">CreateMarkdownService(MarkdownServiceParameters)</h4>
-              <div class="markdown level1 summary"></div>
-              <div class="markdown level1 conceptual"></div>
-              <h5 class="decalaration">Declaration</h5>
-              <div class="codewrapper">
-                <pre><code class="lang-csharp hljs">public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)</code></pre>
-              </div>
-              <h5 class="parameters">Parameters</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.html">MarkdownServiceParameters</a></td>
-                    <td><span class="parametername">parameters</span></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="returns">Returns</h5>
-              <table class="table table-bordered table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><a class="xref" href="Microsoft.DocAsCode.Plugins.IMarkdownService.html">IMarkdownService</a></td>
-                    <td></td>
-                  </tr>
-                </tbody>
-              </table>
-              <h5 class="implements">Implements</h5>
-                  <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IMarkdownServiceProvider.html#Microsoft_DocAsCode_Plugins_IMarkdownServiceProvider_CreateMarkdownService_Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_">IMarkdownServiceProvider.CreateMarkdownService(MarkdownServiceParameters)</a></div>
-              <h3 id="extensionmethods">Extension Methods</h3>
-              <div>
-                  <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
-              </div>
-                        </article>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownTokenTreeValidator.html">IMarkdownTokenTreeValidator</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_CreateMarkdownService_Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/MarkdownProviders/DfmServiceProvider.cs/#L23">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_CreateMarkdownService_" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.CreateMarkdownService*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_Engine_DfmServiceProvider_CreateMarkdownService_Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_" data-uid="Microsoft.DocAsCode.Build.Engine.DfmServiceProvider.CreateMarkdownService(Microsoft.DocAsCode.Plugins.MarkdownServiceParameters)">CreateMarkdownService(MarkdownServiceParameters)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.MarkdownServiceParameters.html">MarkdownServiceParameters</a></td>
+        <td><span class="parametername">parameters</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.IMarkdownService.html">IMarkdownService</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IMarkdownServiceProvider.html#Microsoft_DocAsCode_Plugins_IMarkdownServiceProvider_CreateMarkdownService_Microsoft_DocAsCode_Plugins_MarkdownServiceParameters_">IMarkdownServiceProvider.CreateMarkdownService(MarkdownServiceParameters)</a></div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
+  </div>
+</article>
           </div>
           
           <div class="hidden-sm col-md-2" role="complementary">

@@ -1,0 +1,571 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class DfmCustomizedRendererPartBase&lt;TRenderer, TToken, TContext&gt;
+   | DocFX website </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class DfmCustomizedRendererPartBase&lt;TRenderer, TToken, TContext&gt;
+   | DocFX website ">
+    <meta name="generator" content="docfx 2.17.0.572">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3">
+  
+  
+  <h1 id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3">Class DfmCustomizedRendererPartBase&lt;TRenderer, TToken, TContext&gt;
+  </h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+      <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
+      <div class="level"><span class="xref"></span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">Object.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Object.Equals(Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Object.Equals(Object, Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">Object.ReferenceEquals(Object, Object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">Object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">Object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">Object.MemberwiseClone()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>:Microsoft.DocAsCode.Dfm</h6>
+  <h6><strong>Assembly</strong>:Microsoft.DocAsCode.Dfm.dll</h6>
+  <h5 id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class DfmCustomizedRendererPartBase&lt;TRenderer, TToken, TContext&gt; : IDfmCustomizedRendererPart where TRenderer : IMarkdownRenderer where TToken : IMarkdownToken where TContext : IMarkdownContext</code></pre>
+  </div>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">TRenderer</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="parametername">TToken</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="parametername">TContext</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3__ctor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase%603.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmCustomizedRendererPartBase.cs/#L15">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3__ctor_" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.#ctor*"></a>
+  <h4 id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3__ctor" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.#ctor">DfmCustomizedRendererPartBase()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected DfmCustomizedRendererPartBase()</code></pre>
+  </div>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_MarkdownContextType.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase%603.MarkdownContextType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmCustomizedRendererPartBase.cs/#L20">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_MarkdownContextType_" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.MarkdownContextType*"></a>
+  <h4 id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_MarkdownContextType" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.MarkdownContextType">MarkdownContextType</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Type MarkdownContextType { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPart.html#Microsoft_DocAsCode_Dfm_IDfmCustomizedRendererPart_MarkdownContextType">IDfmCustomizedRendererPart.MarkdownContextType</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_MarkdownRendererType.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase%603.MarkdownRendererType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmCustomizedRendererPartBase.cs/#L18">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_MarkdownRendererType_" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.MarkdownRendererType*"></a>
+  <h4 id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_MarkdownRendererType" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.MarkdownRendererType">MarkdownRendererType</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Type MarkdownRendererType { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPart.html#Microsoft_DocAsCode_Dfm_IDfmCustomizedRendererPart_MarkdownRendererType">IDfmCustomizedRendererPart.MarkdownRendererType</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_MarkdownTokenType.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase%603.MarkdownTokenType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmCustomizedRendererPartBase.cs/#L19">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_MarkdownTokenType_" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.MarkdownTokenType*"></a>
+  <h4 id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_MarkdownTokenType" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.MarkdownTokenType">MarkdownTokenType</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Type MarkdownTokenType { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.type(v=vs.110).aspx">Type</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPart.html#Microsoft_DocAsCode_Dfm_IDfmCustomizedRendererPart_MarkdownTokenType">IDfmCustomizedRendererPart.MarkdownTokenType</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase%603.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmCustomizedRendererPartBase.cs/#L17">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Name_" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.Name*"></a>
+  <h4 id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Name" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.Name">Name</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract string Name { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPart.html#Microsoft_DocAsCode_Dfm_IDfmCustomizedRendererPart_Name">IDfmCustomizedRendererPart.Name</a></div>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Match__0__1__2_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase%603.Match(%600%2C%601%2C%602)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmCustomizedRendererPartBase.cs/#L32">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Match_" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.Match*"></a>
+  <h4 id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Match__0__1__2_" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.Match(`0,`1,`2)">Match(TRenderer, TToken, TContext)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract bool Match(TRenderer renderer, TToken token, TContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TRenderer</span></td>
+        <td><span class="parametername">renderer</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">TToken</span></td>
+        <td><span class="parametername">token</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">TContext</span></td>
+        <td><span class="parametername">context</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Render__0__1__2_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase%603.Render(%600%2C%601%2C%602)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmCustomizedRendererPartBase.cs/#L34">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Render_" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.Render*"></a>
+  <h4 id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Render__0__1__2_" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.Render(`0,`1,`2)">Render(TRenderer, TToken, TContext)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract StringBuffer Render(TRenderer renderer, TToken token, TContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">TRenderer</span></td>
+        <td><span class="parametername">renderer</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">TToken</span></td>
+        <td><span class="parametername">token</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">TContext</span></td>
+        <td><span class="parametername">context</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.StringBuffer.html">StringBuffer</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="eii">Explicit Interface Implementations
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Microsoft_DocAsCode_Dfm_IDfmCustomizedRendererPart_Match_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_IMarkdownToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase%603.Microsoft%23DocAsCode%23Dfm%23IDfmCustomizedRendererPart%23Match(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer%2CMicrosoft.DocAsCode.MarkdownLite.IMarkdownToken%2CMicrosoft.DocAsCode.MarkdownLite.IMarkdownContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmCustomizedRendererPartBase.cs/#L22">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Microsoft_DocAsCode_Dfm_IDfmCustomizedRendererPart_Match_" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.Microsoft#DocAsCode#Dfm#IDfmCustomizedRendererPart#Match*"></a>
+  <h4 id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Microsoft_DocAsCode_Dfm_IDfmCustomizedRendererPart_Match_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_IMarkdownToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.Microsoft#DocAsCode#Dfm#IDfmCustomizedRendererPart#Match(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.IMarkdownToken,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)">IDfmCustomizedRendererPart.Match(IMarkdownRenderer, IMarkdownToken, IMarkdownContext)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">bool IDfmCustomizedRendererPart.Match(IMarkdownRenderer renderer, IMarkdownToken token, IMarkdownContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html">IMarkdownRenderer</a></td>
+        <td><span class="parametername">renderer</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html">IMarkdownToken</a></td>
+        <td><span class="parametername">token</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html">IMarkdownContext</a></td>
+        <td><span class="parametername">context</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPart.html#Microsoft_DocAsCode_Dfm_IDfmCustomizedRendererPart_Match_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_IMarkdownToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_">IDfmCustomizedRendererPart.Match(IMarkdownRenderer, IMarkdownToken, IMarkdownContext)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Microsoft_DocAsCode_Dfm_IDfmCustomizedRendererPart_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_IMarkdownToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase%603.Microsoft%23DocAsCode%23Dfm%23IDfmCustomizedRendererPart%23Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer%2CMicrosoft.DocAsCode.MarkdownLite.IMarkdownToken%2CMicrosoft.DocAsCode.MarkdownLite.IMarkdownContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmCustomizedRendererPartBase.cs/#L27">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Microsoft_DocAsCode_Dfm_IDfmCustomizedRendererPart_Render_" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.Microsoft#DocAsCode#Dfm#IDfmCustomizedRendererPart#Render*"></a>
+  <h4 id="Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3_Microsoft_DocAsCode_Dfm_IDfmCustomizedRendererPart_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_IMarkdownToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_" data-uid="Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase`3.Microsoft#DocAsCode#Dfm#IDfmCustomizedRendererPart#Render(Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer,Microsoft.DocAsCode.MarkdownLite.IMarkdownToken,Microsoft.DocAsCode.MarkdownLite.IMarkdownContext)">IDfmCustomizedRendererPart.Render(IMarkdownRenderer, IMarkdownToken, IMarkdownContext)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">StringBuffer IDfmCustomizedRendererPart.Render(IMarkdownRenderer renderer, IMarkdownToken token, IMarkdownContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRenderer.html">IMarkdownRenderer</a></td>
+        <td><span class="parametername">renderer</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html">IMarkdownToken</a></td>
+        <td><span class="parametername">token</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html">IMarkdownContext</a></td>
+        <td><span class="parametername">context</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.StringBuffer.html">StringBuffer</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPart.html#Microsoft_DocAsCode_Dfm_IDfmCustomizedRendererPart_Render_Microsoft_DocAsCode_MarkdownLite_IMarkdownRenderer_Microsoft_DocAsCode_MarkdownLite_IMarkdownToken_Microsoft_DocAsCode_MarkdownLite_IMarkdownContext_">IDfmCustomizedRendererPart.Render(IMarkdownRenderer, IMarkdownToken, IMarkdownContext)</a></div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_DfmCustomizedRendererPartBase_3.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase%603%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/DfmCustomizedRendererPartBase.cs/#L10" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Copyright © 2015-2017 Microsoft<br>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
