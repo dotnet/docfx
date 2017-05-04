@@ -65,7 +65,7 @@ if (-not(ValidateCommand($nugetCommand))) {
     mkdir -Path "$env:LOCALAPPDATA\Nuget" -Force
     $ProgressPreference = 'SilentlyContinue'
     [Net.WebRequest]::DefaultWebProxy.Credentials = [Net.CredentialCache]::DefaultCredentials
-    Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/latest/nuget.exe' -OutFile $nuget
+    Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/latest/nuget.exe' -OutFile $nugetCommand 
     ProcessLastExitCode $lastexitcode "Download nuget.exe"
 }
 
