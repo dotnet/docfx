@@ -1,13 +1,29 @@
-﻿Version Notes (Current Version: v2.17)
+﻿Version Notes (Current Version: v2.18)
 =======================================
-v2.17(Pre-Release)
+v2.18 (Pre-release)
+-----------
+
+v2.17
 -----------
 1. Introduce [Master page syntax](~/tutorial/intro_template.md#extended-syntax-for-master-page) into Template System:
     1. Mustache: `{{!master('<master_page_name>')}}`
     2. Liquid: `{% master <master_page_name> %}`
 
-2. [Breaking Change] View model for `ManagedReference.html.primary.tmpl` is updated from `{item: model}` to `model`, if you overwrites `ManagedReference.html.primary.tmpl` in your own template, make sure to re-export the template file.
+2. [**Breaking Change**] View model for `ManagedReference.html.primary.tmpl` is updated from `{item: model}` to `model`, if you overwrites `ManagedReference.html.primary.tmpl` in your own template, make sure to re-export the template file.
 
+3. Simplify `default` template: now you only need to overwrite *_master.tmpl* to redesign the layout for the website.
+
+4. Frontend improvement
+    1. Long namespace name in TOC will be word-wrapped now
+    2. Bug fix for docfx.js when navbarPath or tocPath is empty.
+
+v2.16.8
+-----------
+1. Bug fixes:
+    1. Bug fix for Null exception when `<xref href=''/>` exists
+    2. Bug fix for `docfx metadata` for assemblies, to exclude null assembly symbols.
+    3. Bug fix for toc: When b/toc.md is included by toc.md, invalid link in b/toc.md should be resolved to the path relative to toc.md
+    
 v2.16
 -----------
 1.  Support the latest csproj format `<Project Sdk="Microsoft.NET.Sdk">`
