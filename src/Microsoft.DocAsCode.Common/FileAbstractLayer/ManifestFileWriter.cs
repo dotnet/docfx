@@ -4,9 +4,7 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Collections.Immutable;
     using System.IO;
-    using System.Linq;
 
     using Microsoft.DocAsCode.Plugins;
 
@@ -21,16 +19,8 @@ namespace Microsoft.DocAsCode.Common
         public ManifestFileWriter(Manifest manifest, string manifestFolder, string outputFolder)
             : base(outputFolder ?? manifestFolder)
         {
-            if (manifest == null)
-            {
-                throw new ArgumentNullException(nameof(manifest));
-            }
-            if (manifestFolder == null)
-            {
-                throw new ArgumentNullException(nameof(manifestFolder));
-            }
-            Manifest = manifest;
-            ManifestFolder = manifestFolder;
+            Manifest = manifest ?? throw new ArgumentNullException(nameof(manifest));
+            ManifestFolder = manifestFolder ?? throw new ArgumentNullException(nameof(manifestFolder));
             _noRandomFile = outputFolder == null;
         }
 

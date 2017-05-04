@@ -18,11 +18,7 @@ namespace Microsoft.DocAsCode.Common
 
         public ManifestFileReader(Manifest manifest, string manifestFolder)
         {
-            if (manifest == null)
-            {
-                throw new ArgumentNullException(nameof(manifest));
-            }
-            Manifest = manifest;
+            Manifest = manifest ?? throw new ArgumentNullException(nameof(manifest));
             ManifestFolder = manifestFolder;
         }
 
