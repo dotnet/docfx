@@ -75,6 +75,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                 .ForMember(dest => dest.Overload, opt => opt.Ignore())
                 .ForMember(dest => dest.Exceptions, opt => opt.Ignore())
                 .ForMember(dest => dest.SeeAlsos, opt => opt.Ignore())
+                .ForMember(dest => dest.SeeAlsoContent, opt => opt.Ignore())
                 .ForMember(dest => dest.Sees, opt => opt.Ignore())
                 .ForMember(dest => dest.Inheritance, opt => opt.Ignore())
                 .ForMember(dest => dest.DerivedClasses, opt => opt.Ignore())
