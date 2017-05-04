@@ -103,6 +103,10 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonProperty("seealso")]
         public List<ApiLinkInfoBuildOutput> SeeAlsos { get; set; }
 
+        [YamlMember(Alias = Constants.PropertyName.SeeAlsoContent)]
+        [JsonProperty(Constants.PropertyName.SeeAlsoContent)]
+        public string SeeAlsoContent { get; set; }
+
         [YamlMember(Alias = "see")]
         [JsonProperty("see")]
         public List<ApiLinkInfoBuildOutput> Sees { get; set; }
