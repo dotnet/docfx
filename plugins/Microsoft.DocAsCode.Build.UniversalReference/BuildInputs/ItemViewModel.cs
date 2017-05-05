@@ -200,6 +200,11 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonProperty("seealso")]
         public List<LinkInfo> SeeAlsos { get; set; }
 
+        [YamlMember(Alias = Constants.PropertyName.SeeAlsoContent)]
+        [JsonProperty(Constants.PropertyName.SeeAlsoContent)]
+        [MarkdownContent]
+        public string SeeAlsoContent { get; set; }
+
         [YamlMember(Alias = "see")]
         [JsonProperty("see")]
         public List<LinkInfo> Sees { get; set; }
