@@ -27,14 +27,14 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 throw new ArgumentNullException(key);
             }
-
+            var content = value ?? throw new ArgumentNullException(value);
             if (!_cache.TryGetValue(key, out FileCacheModel fm))
             {
                 fm = new FileCacheModel();
                 _cache[key] = fm;
             }
 
-            fm.Content = value ?? throw new ArgumentNullException(value);
+            fm.Content = content;
         }
 
         public string Get(string key)
