@@ -22,8 +22,7 @@
                 {
                     return null;
                 }
-                object result;
-                Data.TryGetValue(key, out result);
+                Data.TryGetValue(key, out object result);
                 return result;
             }
         }

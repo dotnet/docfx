@@ -11,11 +11,7 @@ namespace Microsoft.DocAsCode.Common.EntityMergers
 
         protected MergerDecorator(IMerger inner)
         {
-            if (inner == null)
-            {
-                throw new ArgumentNullException(nameof(inner));
-            }
-            _inner = inner;
+            _inner = inner ?? throw new ArgumentNullException(nameof(inner));
         }
 
         public virtual void Merge(ref object source, object overrides, Type type, IMergeContext context)
