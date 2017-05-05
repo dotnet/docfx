@@ -48,6 +48,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string ExtensionMethods = "extensionMethods";
             public const string Overload = "overload";
             public const string Return = "return";
+            public const string SeeAlsoContent = "seealsoContent";
 
             public const string SystemKeys = "_systemKeys";
 
