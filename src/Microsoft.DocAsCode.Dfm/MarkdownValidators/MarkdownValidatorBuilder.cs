@@ -3,10 +3,8 @@
 
 namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Composition.Hosting;
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;

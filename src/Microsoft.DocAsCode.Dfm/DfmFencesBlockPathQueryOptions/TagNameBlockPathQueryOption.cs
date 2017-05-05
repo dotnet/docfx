@@ -219,15 +219,14 @@ namespace Microsoft.DocAsCode.Dfm
 
         private DfmTagNameResolveResult _resolveResult;
 
-        private readonly ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>> _dfmTagNameLineRangeCache
-            = new ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>>(StringComparer.OrdinalIgnoreCase);
+        private readonly ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>> _dfmTagNameLineRangeCache =
+            new ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>>(StringComparer.OrdinalIgnoreCase);
 
         public override bool ValidateAndPrepare(string[] lines, DfmFencesToken token)
         {
             // NOTE: Parsing language and removing comment lines only do for tag name representation
             var lang = GetCodeLanguageOrExtension(token);
-            List<ICodeSnippetExtractor> extractors;
-            if (!CodeLanguageExtractors.TryGetValue(lang, out extractors))
+            if (!CodeLanguageExtractors.TryGetValue(lang, out List<ICodeSnippetExtractor> extractors))
             {
                 ErrorMessage = $"{lang} is not supported languaging name, alias or extension for parsing code snippet with tag name, you can use line numbers instead";
                 return false;
@@ -265,7 +264,6 @@ namespace Microsoft.DocAsCode.Dfm
                                      .ToDictionary(g => g.Key, g => g.Select(p => p.Value).ToList()), StringComparer.OrdinalIgnoreCase);
                             }));
 
-            List<DfmTagNameResolveResult> results;
             ConcurrentDictionary<string, List<DfmTagNameResolveResult>> tagNamesDictionary;
             try
             {
@@ -273,11 +271,19 @@ namespace Microsoft.DocAsCode.Dfm
             }
             catch (Exception e)
             {
-                return new DfmTagNameResolveResult { IsSuccessful = false, ErrorMessage = $"error resolve tag names from {fencesPath}: {e.Message}" };
+                return new DfmTagNameResolveResult
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = $"error resolve tag names from {fencesPath}: {e.Message}",
+                };
             }
-            if (!tagNamesDictionary.TryGetValue(tagName, out results) && !tagNamesDictionary.TryGetValue($"snippet{tagName}", out results))
+            if (!tagNamesDictionary.TryGetValue(tagName, out List<DfmTagNameResolveResult> results) && !tagNamesDictionary.TryGetValue($"snippet{tagName}", out results))
             {
-                return new DfmTagNameResolveResult { IsSuccessful = false, ErrorMessage = $"Tag name {tagName} is not found" };
+                return new DfmTagNameResolveResult
+                {
+                    IsSuccessful = false,
+                    ErrorMessage = $"Tag name {tagName} is not found",
+                };
             }
             var result = results[0];
             if (results.Count > 1)

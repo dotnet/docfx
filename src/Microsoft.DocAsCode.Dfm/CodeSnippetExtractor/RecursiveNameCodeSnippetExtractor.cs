@@ -18,18 +18,8 @@ namespace Microsoft.DocAsCode.Dfm
 
         public RecursiveNameCodeSnippetExtractor(Regex startLineRegex, Regex endLineRegex)
         {
-            if (startLineRegex == null)
-            {
-                throw new ArgumentNullException(nameof(startLineRegex));
-            }
-
-            if (endLineRegex == null)
-            {
-                throw new ArgumentNullException(nameof(endLineRegex));
-            }
-
-            _startLineRegex = startLineRegex;
-            _endLineRegex = endLineRegex;
+            _startLineRegex = startLineRegex ?? throw new ArgumentNullException(nameof(startLineRegex));
+            _endLineRegex = endLineRegex ?? throw new ArgumentNullException(nameof(endLineRegex));
         }
 
         protected override List<CodeSnippetTag> ResolveCodeSnippetTags(string[] lines)
