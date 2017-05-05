@@ -74,7 +74,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
             var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
             Assert.NotNull(model);
 
-            Assert.Equal(1, model.SupportedLanguages.Count());
+            Assert.Equal(1, model.SupportedLanguages.Length);
             Assert.Equal("python", model.SupportedLanguages[0]);
 
             Assert.Equal("Class", model.Type);
@@ -89,21 +89,25 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
             Assert.Equal(6, model.Syntax.Parameters.Count);
             Assert.Equal("shape", model.Syntax.Parameters[0].Name);
             Assert.Equal("tuple", model.Syntax.Parameters[0].Type[0].Uid);
-            Assert.Equal("shape of the value", model.Syntax.Parameters[0].Description);
+            Assert.Equal("<p sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">shape of the value</p>\n",
+                model.Syntax.Parameters[0].Description);
 
             Assert.Equal(1, model.Children.Count);
             Assert.Equal("python", model.Children[0].Language);
             Assert.Equal(5, model.Children[0].Value.Count);
 
-            Assert.Equal("Method", model.Children[0].Value[0].Type);
-            Assert.Equal("cntk.core.Value.create", model.Children[0].Value[0].Uid);
-            Assert.Equal("create", model.Children[0].Value[0].Name[0].Value);
-            Assert.Equal("cntk.core.Value.create", model.Children[0].Value[0].FullName[0].Value);
-            Assert.Equal("Creates a `Value` object.", model.Children[0].Value[0].Summary);
-            Assert.Equal("`Value` object.", model.Children[0].Value[0].Syntax.Return[0].Value.Description);
-            Assert.Equal("type1", model.Children[0].Value[0].Syntax.Return[0].Value.Type[0].Uid);
-            Assert.Equal("type2", model.Children[0].Value[0].Syntax.Return[0].Value.Type[1].Uid);
-            Assert.Equal("type3", model.Children[0].Value[0].Syntax.Return[0].Value.Type[2].Uid);
+            var firstChildrenValue = model.Children[0].Value[0];
+            Assert.Equal("Method", firstChildrenValue.Type);
+            Assert.Equal("cntk.core.Value.create", firstChildrenValue.Uid);
+            Assert.Equal("create", firstChildrenValue.Name[0].Value);
+            Assert.Equal("cntk.core.Value.create", firstChildrenValue.FullName[0].Value);
+            Assert.Equal("<p sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Creates a <xref href=\"cntk.core.Value\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@cntk.core.Value\" sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"></xref> object.</p>\n",
+                firstChildrenValue.Summary);
+            Assert.Equal("<p sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><xref href=\"cntk.core.Value\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@cntk.core.Value\" sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"></xref> object.</p>\n",
+                firstChildrenValue.Syntax.Return[0].Value.Description);
+            Assert.Equal("type1", firstChildrenValue.Syntax.Return[0].Value.Type[0].Uid);
+            Assert.Equal("type2", firstChildrenValue.Syntax.Return[0].Value.Type[1].Uid);
+            Assert.Equal("type3", firstChildrenValue.Syntax.Return[0].Value.Type[2].Uid);
         }
 
         private void BuildDocument(FileCollection files)
