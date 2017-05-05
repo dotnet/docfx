@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Build.Common
     using System.Collections.Immutable;
     using System.Linq;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     /// <summary>
@@ -15,6 +16,12 @@ namespace Microsoft.DocAsCode.Build.Common
     /// </summary>
     public abstract class BuildReferenceDocumentBase : BaseDocumentBuildStep
     {
+        private readonly IModelAttributeHandler _defaultHandler =
+            new CompositeModelAttributeHandler(
+                new UniqueIdentityReferenceHandler(),
+                new MarkdownContentHandler()
+            );
+
         public override int BuildOrder => 0;
 
         public override void Build(FileModel model, IHostService host)
@@ -47,6 +54,35 @@ namespace Microsoft.DocAsCode.Build.Common
                               item.Uid,
                               model.LocalPathFromRoot,
                               item.Documentation.StartLine + 1)).ToImmutableArray();
+        }
+
+        protected virtual void BuildArticleCore(IHostService host, FileModel model, IModelAttributeHandler handlers = null, HandleModelAttributesContext handlerContext = null, bool shouldSkipMarkup = false)
+        {
+            if (handlers == null)
+            {
+                handlers = _defaultHandler;
+            }
+            if (handlerContext == null)
+            {
+                handlerContext = new HandleModelAttributesContext
+                {
+                    EnableContentPlaceholder = false,
+                    Host = host,
+                    FileAndType = model.OriginalFileAndType,
+                    SkipMarkup = shouldSkipMarkup,
+                };
+            }
+
+            handlers.Handle(model.Content, handlerContext);
+
+            model.LinkToUids = model.LinkToUids.Union(handlerContext.LinkToUids);
+            model.LinkToFiles = model.LinkToFiles.Union(handlerContext.LinkToFiles);
+            model.FileLinkSources = model.FileLinkSources.ToDictionary(v => v.Key, v => v.Value.ToList())
+                .Merge(handlerContext.FileLinkSources.Select(i => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(i.Key, i.Value)))
+                .ToImmutableDictionary(v => v.Key, v => v.Value.ToImmutableList());
+            model.UidLinkSources = model.UidLinkSources.ToDictionary(v => v.Key, v => v.Value.ToList())
+                .Merge(handlerContext.UidLinkSources.Select(i => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(i.Key, i.Value)))
+                .ToImmutableDictionary(v => v.Key, v => v.Value.ToImmutableList());
         }
     }
 }

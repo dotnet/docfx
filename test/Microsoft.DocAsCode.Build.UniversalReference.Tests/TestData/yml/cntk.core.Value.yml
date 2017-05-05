@@ -22,7 +22,7 @@ items:
       path: cntk/core.py
       repo: https://github.com/Microsoft/CNTK
     startLine: 182
-  summary: 'Bases: `cntk.cntk_py.Value`
+  summary: 'Bases: @cntk.cntk_py.Value
 
     Internal representation of minibatch data.
 
@@ -45,7 +45,7 @@ items:
       id: dtype
     - description: "batch input for *var*. It can be:\n\n   * a pure Python structure\
         \ (list of lists, ...),\n\n   * a list of NumPy arrays or SciPy sparse CSR\
-        \ matrices\n\n   * a `Value` object (e.g. returned by `one_hot()`)"
+        \ matrices\n\n   * a @cntk.core.Value object (e.g. returned by `one_hot()`)"
       id: batch
     - description: if None, every sequence is treated as a new sequence. Otherwise,
         it is interpreted as a list of Booleans that tell whether a sequence is a
@@ -75,7 +75,7 @@ items:
       path: cntk/internal/swig_helper.py
       repo: https://github.com/Microsoft/CNTK
     startLine: 272
-  summary: Creates a `Value` object.
+  summary: Creates a @cntk.core.Value object.
   syntax:
     parameters:
     - description: variable into which `data` is passed
@@ -106,7 +106,7 @@ items:
       - type1
       - type2
       - type3
-      description: '`Value` object.'
+      description: '@cntk.core.Value object.'
   type: Method
   uid: cntk.core.Value.create
 - _type: attribute
