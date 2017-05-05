@@ -1,20 +1,19 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.ManagedReference
+namespace Microsoft.DocAsCode.Build.UniversalReference
 {
     using System.Collections.Generic;
     using System.Composition;
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Plugins;
 
-    [Export(nameof(ManagedReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class ApplyOverwriteDocumentForMref : ApplyOverwriteDocument, ISupportIncrementalBuildStep
+    [Export(nameof(UniversalReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
+    public class ApplyOverwriteDocumentForUref : ApplyOverwriteDocument
     {
-        public override string Name => nameof(ApplyOverwriteDocumentForMref);
+        public override string Name => nameof(ApplyOverwriteDocumentForUref);
 
         public override int BuildOrder => 0x10;
 
@@ -35,16 +34,5 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         {
             ApplyOverwrite(host, overwrites, uid, articles, GetItemsFromOverwriteDocument, GetItemsToOverwrite);
         }
-
-        #region ISupportIncrementalBuildStep Members
-
-        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
-
-        public string GetIncrementalContextHash() => null;
-
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
-
-        #endregion
-
     }
 }

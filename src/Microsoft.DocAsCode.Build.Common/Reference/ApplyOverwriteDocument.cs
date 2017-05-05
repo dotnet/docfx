@@ -13,13 +13,21 @@ namespace Microsoft.DocAsCode.Build.Common
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Common.EntityMergers;
 
+    using YamlDotNet.Core;
+
     public abstract class ApplyOverwriteDocument : BaseDocumentBuildStep
     {
         private readonly MergerFacade _merger;
 
+        private readonly IModelAttributeHandler _handler;
+
         protected ApplyOverwriteDocument()
         {
             _merger = new MergerFacade(GetMerger());
+            _handler = new CompositeModelAttributeHandler(
+                new UniqueIdentityReferenceHandler(),
+                new MarkdownContentHandler()
+                );
         }
 
         protected virtual IMerger GetMerger()
@@ -103,6 +111,38 @@ namespace Microsoft.DocAsCode.Build.Common
                         .ToImmutableDictionary(p => p.Key, p => p.Value.ToImmutableList());
                 }
             }
+        }
+
+        protected IEnumerable<T> Transform<T>(FileModel model, string uid, IHostService host) where T : class, IOverwriteDocumentViewModel
+        {
+            var overwrites = ((List<OverwriteDocumentModel>)model.Content).Where(s => s.Uid == uid);
+            return overwrites.Select(s =>
+            {
+                try
+                {
+                    var placeholderContent = s.Conceptual;
+                    s.Conceptual = null;
+                    var item = s.ConvertTo<T>();
+                    var context = new HandleModelAttributesContext
+                    {
+                        EnableContentPlaceholder = true,
+                        Host = host,
+                        PlaceholderContent = placeholderContent,
+                        FileAndType = model.OriginalFileAndType,
+                    };
+
+                    _handler.Handle(item, context);
+                    if (!context.ContainsPlaceholder)
+                    {
+                        item.Conceptual = placeholderContent;
+                    }
+                    return item;
+                }
+                catch (YamlException ye)
+                {
+                    throw new DocumentException($"Unable to deserialize YAML header from \"{s.Documentation.Path}\" Line {s.Documentation.StartLine} to TYPE {typeof(T).Name}: {ye.Message}", ye);
+                }
+            });
         }
 
         private static List<OverwriteDocumentModel> GetOverwriteDocumentModelsByUid(FileModel overwriteFileModel, string uid)
