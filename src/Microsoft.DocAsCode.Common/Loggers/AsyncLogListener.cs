@@ -27,11 +27,7 @@ namespace Microsoft.DocAsCode.Common
 
         public AsyncLogListener(CompositeLogListener compositeLogListener)
         {
-            if (compositeLogListener == null)
-            {
-                throw new ArgumentNullException(nameof(compositeLogListener));
-            }
-            _inner = compositeLogListener;
+            _inner = compositeLogListener ?? throw new ArgumentNullException(nameof(compositeLogListener));
             _loggingTask = new Lazy<Task>(CreateLoggingTask);
         }
 

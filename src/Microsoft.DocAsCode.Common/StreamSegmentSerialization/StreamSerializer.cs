@@ -89,27 +89,23 @@ namespace Microsoft.DocAsCode.Common.StreamSegmentSerialization
             {
                 return WriteNull();
             }
-            var s = value as string;
-            if (s != null)
+            if (value is string s)
             {
                 return WriteString(s);
             }
-            var bytes = value as byte[];
-            if (bytes != null)
+            if (value is byte[] bytes)
             {
                 return WriteBytes(bytes);
             }
-            if (value is int)
+            if (value is int number)
             {
-                return Write((int)value);
+                return Write(number);
             }
-            var list = value as IReadOnlyCollection<object>;
-            if (list != null)
+            if (value is IReadOnlyCollection<object> list)
             {
                 return WriteArray(list);
             }
-            var dict = value as IReadOnlyCollection<KeyValuePair<string, object>>;
-            if (dict != null)
+            if (value is IReadOnlyCollection<KeyValuePair<string, object>> dict)
             {
                 return WriteDictionary(dict);
             }

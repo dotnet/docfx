@@ -68,8 +68,7 @@ namespace Microsoft.DocAsCode.Common
 
         public static string GetPathWithoutWorkingFolderChar(string path)
         {
-            string pathWithoutWorkingDirectory;
-            TryGetPathWithoutWorkingFolderChar(path, out pathWithoutWorkingDirectory);
+            TryGetPathWithoutWorkingFolderChar(path, out string pathWithoutWorkingDirectory);
             return pathWithoutWorkingDirectory;
         }
 
@@ -105,7 +104,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 return this;
             }
-            if (this.ParentDirectoryCount >= path.SubdirectoryCount)
+            if (ParentDirectoryCount >= path.SubdirectoryCount)
             {
                 return Create(path._isFromWorkingFolder, path.ParentDirectoryCount - path.SubdirectoryCount + this.ParentDirectoryCount, this._parts);
             }

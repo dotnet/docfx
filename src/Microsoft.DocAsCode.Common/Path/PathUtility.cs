@@ -103,7 +103,7 @@ namespace Microsoft.DocAsCode.Common
                 fi = new FileInfo(path);
             }
             catch (ArgumentException) { }
-            catch (System.IO.PathTooLongException) { }
+            catch (PathTooLongException) { }
             catch (NotSupportedException) { }
             return fi != null;
         }
@@ -119,9 +119,18 @@ namespace Microsoft.DocAsCode.Common
         /// <exception cref="InvalidOperationException"></exception>
         public static string MakeRelativePath(string basePath, string absolutePath)
         {
-            if (string.IsNullOrEmpty(basePath)) return absolutePath;
-            if (string.IsNullOrEmpty(absolutePath)) return null;
-            if (FilePathComparer.OSPlatformSensitiveComparer.Equals(basePath, absolutePath)) return string.Empty;
+            if (string.IsNullOrEmpty(basePath))
+            {
+                return absolutePath;
+            }
+            if (string.IsNullOrEmpty(absolutePath))
+            {
+                return null;
+            }
+            if (FilePathComparer.OSPlatformSensitiveComparer.Equals(basePath, absolutePath))
+            {
+                return string.Empty;
+            }
 
             // Append / to the directory
             if (basePath[basePath.Length - 1] != '/')
@@ -132,7 +141,11 @@ namespace Microsoft.DocAsCode.Common
             Uri fromUri = new Uri(Path.GetFullPath(basePath));
             Uri toUri = new Uri(Path.GetFullPath(absolutePath));
 
-            if (fromUri.Scheme != toUri.Scheme) { return absolutePath; } // path can't be made relative.
+            if (fromUri.Scheme != toUri.Scheme)
+            {
+                // path can't be made relative.
+                return absolutePath;
+            }
 
             Uri relativeUri = fromUri.MakeRelativeUri(toUri);
             string relativePath = Uri.UnescapeDataString(relativeUri.ToString());
@@ -148,7 +161,10 @@ namespace Microsoft.DocAsCode.Common
         public static IEnumerable<string> CopyFilesToFolder(this IEnumerable<string> files, string sourceFolder, string destinationFolder, bool overwrite, Action<string> messageHandler, Func<string, bool> errorHandler)
         {
             IList<string> targetFiles = new List<string>();
-            if (files == null) return null;
+            if (files == null)
+            {
+                return null;
+            }
             if (FilePathComparer.OSPlatformSensitiveComparer.Equals(sourceFolder, destinationFolder))
             {
                 return null;
@@ -163,34 +179,33 @@ namespace Microsoft.DocAsCode.Common
 
                     if (!FilePathComparer.OSPlatformSensitiveComparer.Equals(file, destinationPath))
                     {
-                        if (messageHandler != null) messageHandler(string.Format("Copying file from '{0}' to '{1}'", file, destinationPath));
+                        messageHandler?.Invoke(string.Format("Copying file from '{0}' to '{1}'", file, destinationPath));
                         var targetDirectory = Path.GetDirectoryName(destinationPath);
-                        if (!string.IsNullOrEmpty(targetDirectory)) Directory.CreateDirectory(targetDirectory);
+                        if (!string.IsNullOrEmpty(targetDirectory))
+                        {
+                            Directory.CreateDirectory(targetDirectory);
+                        }
 
                         File.Copy(file, destinationPath, overwrite);
                         targetFiles.Add(destinationPath);
                     }
                     else
                     {
-                        if (messageHandler != null) messageHandler(string.Format("{0} is already latest.", destinationPath));
+                        messageHandler?.Invoke(string.Format("{0} is already latest.", destinationPath));
                     }
                 }
                 catch (Exception e)
                 {
                     if (!overwrite)
                     {
-                        if (e is IOException) continue;
-                    }
-                    if (errorHandler != null)
-                    {
-                        if (errorHandler(e.Message))
+                        if (e is IOException)
                         {
                             continue;
                         }
-                        else
-                        {
-                            throw;
-                        }
+                    }
+                    if (errorHandler?.Invoke(e.Message) ?? false)
+                    {
+                        continue;
                     }
                     else
                     {
@@ -199,23 +214,41 @@ namespace Microsoft.DocAsCode.Common
                 }
             }
 
-            if (targetFiles.Count == 0) return null;
+            if (targetFiles.Count == 0)
+            {
+                return null;
+            }
             return targetFiles;
         }
 
         public static string GetFullPath(string folder, string href)
         {
-            if (string.IsNullOrEmpty(href)) return null;
-            if (string.IsNullOrEmpty(folder)) return href;
+            if (string.IsNullOrEmpty(href))
+            {
+                return null;
+            }
+            if (string.IsNullOrEmpty(folder))
+            {
+                return href;
+            }
             return Path.GetFullPath(Path.Combine(folder, href));
         }
 
         public static void CopyFile(string path, string targetPath, bool overwrite = false)
         {
-            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(targetPath)) return;
-            if (FilePathComparer.OSPlatformSensitiveComparer.Equals(path, targetPath)) return;
+            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(targetPath))
+            {
+                return;
+            }
+            if (FilePathComparer.OSPlatformSensitiveComparer.Equals(path, targetPath))
+            {
+                return;
+            }
             var targetFolder = Path.GetDirectoryName(targetPath);
-            if (!string.IsNullOrEmpty(targetFolder)) Directory.CreateDirectory(targetFolder);
+            if (!string.IsNullOrEmpty(targetFolder))
+            {
+                Directory.CreateDirectory(targetFolder);
+            }
 
             File.Copy(path, targetPath, overwrite);
         }
@@ -228,8 +261,7 @@ namespace Microsoft.DocAsCode.Common
             }
 
             // IsWellFormedUriString does not try to escape characters such as '\' ' ', '(', ')' and etc. first. Use TryCreate instead
-            Uri absoluteUri;
-            if (Uri.TryCreate(path, UriKind.Absolute, out absoluteUri))
+            if (Uri.TryCreate(path, UriKind.Absolute, out Uri absoluteUri))
             {
                 return false;
             }
