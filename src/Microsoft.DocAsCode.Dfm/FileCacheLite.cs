@@ -27,31 +27,25 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 throw new ArgumentNullException(key);
             }
-            if (value == null)
-            {
-                throw new ArgumentNullException(value);
-            }
-            FileCacheModel fm;
-            if (!_cache.TryGetValue(key, out fm))
+
+            if (!_cache.TryGetValue(key, out FileCacheModel fm))
             {
                 fm = new FileCacheModel();
                 _cache[key] = fm;
             }
 
-            fm.Content = value;
+            fm.Content = value ?? throw new ArgumentNullException(value);
         }
 
         public string Get(string key)
         {
-            string value;
-            TryGet(key, out value);
+            TryGet(key, out string value);
             return value;
         }
 
         public bool Remove(string key)
         {
-            FileCacheModel fm;
-            if (_cache.TryGetValue(key, out fm))
+            if (_cache.TryGetValue(key, out FileCacheModel fm))
             {
                 fm.Dispose();
                 return _cache.Remove(key);
@@ -62,8 +56,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public bool TryGet(string key, out string value)
         {
-            FileCacheModel fm;
-            if (_cache.TryGetValue(key, out fm))
+            if (_cache.TryGetValue(key, out FileCacheModel fm))
             {
                 value = fm.Content;
                 return true;
@@ -90,8 +83,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 get
                 {
-                    string content;
-                    if (!_weakReference.TryGetTarget(out content))
+                    if (!_weakReference.TryGetTarget(out string content))
                     {
                         _fs.Seek(0, SeekOrigin.Begin);
                         using (StreamReader reader = new StreamReader(_fs, Encoding.UTF8, true, 4096, true))
@@ -121,7 +113,24 @@ namespace Microsoft.DocAsCode.Dfm
 
             private FileStream CreateTempFile()
             {
-                return new FileStream(Path.GetTempFileName(), FileMode.Create, FileAccess.ReadWrite, FileShare.None, 4096, FileOptions.DeleteOnClose | FileOptions.SequentialScan);
+                const int MaxRetry = 3;
+                int retry = 0;
+                while (true)
+                {
+                    try
+                    {
+                        var file = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+                        return new FileStream(file, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.Read, 4096, FileOptions.DeleteOnClose | FileOptions.SequentialScan);
+                    }
+                    catch (IOException)
+                    {
+                        if (retry++ < MaxRetry)
+                        {
+                            continue;
+                        }
+                        throw;
+                    }
+                }
             }
 
             public void Dispose()
