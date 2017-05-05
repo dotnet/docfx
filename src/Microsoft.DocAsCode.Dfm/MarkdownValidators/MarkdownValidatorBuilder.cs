@@ -305,8 +305,12 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                     enabledContractName.Add(pair.Value.ContractName);
                 }
             }
+            if (Container == null)
+            {
+                return Enumerable.Empty<IMarkdownTokenValidator>();
+            }
             return from name in enabledContractName
-                   from IMarkdownTokenValidatorProvider vp in Container?.GetExports<IMarkdownTokenValidatorProvider>(name)
+                   from vp in Container.GetExports<IMarkdownTokenValidatorProvider>(name)
                    from v in vp.GetValidators()
                    select v;
         }
@@ -429,7 +433,7 @@ namespace Microsoft.DocAsCode.Dfm.MarkdownValidators
                         return;
                     }
                     var customValidators = GetCustomMarkdownTagValidators(validator);
-                    if (customValidators.Count == 0)
+                    if (customValidators != null && customValidators.Count == 0)
                     {
                         Logger.LogWarning($"Cannot find custom markdown tag validator by contract name: {validator.CustomValidatorContractName}.");
                         return;
