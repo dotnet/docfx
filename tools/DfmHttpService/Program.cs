@@ -19,7 +19,7 @@ namespace DfmHttpService
                     new ExitHandler()
                 });
 
-            var service = new DfmHttpServer(handler, args.Length > 0 ? args[0] : null);
+            var service = new DfmHttpServer(handler, "localhost", args.Length > 0 ? args[0] : null);
             service.Start();
             service.WaitForExit();
         }

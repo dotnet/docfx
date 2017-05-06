@@ -11,6 +11,9 @@ namespace Microsoft.DocAsCode
         [ValueOption(0)]
         public string Folder { get; set; }
 
+        [Option('n', "hostname", HelpText = "Specify the hostname of the hosted website [localhost]")]
+        public string Host { get; set; }
+
         [Option('p', "port", HelpText = "Specify the port of the hosted website [8080]")]
         public int? Port { get; set; }
 

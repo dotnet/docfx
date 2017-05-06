@@ -54,6 +54,9 @@ namespace Microsoft.DocAsCode
         [Option('s', "serve", HelpText = "Host the generated documentation to a website")]
         public bool Serve { get; set; }
 
+        [Option('n', "hostname", HelpText = "Specify the hostname of the hosted website (e.g., 'localhost' or '*')")]
+        public string Host { get; set; }
+
         [Option('p', "port", HelpText = "Specify the port of the hosted website")]
         public int? Port { get; set; }
 
