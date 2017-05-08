@@ -195,7 +195,7 @@ gulp.task("syncBranchCore", () => {
 
     if (Common.isThirdWeekInSprint()) {
         console.log("Ignore to sync in the third week of a sprint");
-        process.exit(1);
+        process.exit(2);
     }
 
     let docfxHome = path.resolve(config.docfx.home);
