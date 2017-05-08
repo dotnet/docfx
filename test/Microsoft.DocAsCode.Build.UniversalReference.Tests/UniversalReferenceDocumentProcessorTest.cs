@@ -27,8 +27,10 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
         private const string RawModelFileExtension = ".raw.json";
         private const string TestDataDirectory = "TestData";
         private const string YmlDirectoryName = "yml";
+        private const string OverwriteDirectoryName = "overwrite";
         private const string RawModelDirectoryName = "raw";
         private static readonly string YmlDataDirectory = Path.Combine(TestDataDirectory, YmlDirectoryName);
+        private static readonly string OverwriteDataDirectory = Path.Combine(TestDataDirectory, OverwriteDirectoryName);
 
         public UniversalReferenceDocumentProcessorTest()
         {
@@ -110,7 +112,27 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
             Assert.Equal("type3", firstChildrenValue.Syntax.Return[0].Value.Type[2].Uid);
         }
 
-        private void BuildDocument(FileCollection files)
+        [Fact]
+        public void ApplyOverwriteDocumentShouldSucceed()
+        {
+            var fileName = "cntk.core.Value.yml";
+            var overwriteFileName = "cntk.core.Value.md";
+            var files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { $"{YmlDataDirectory}/{fileName}" }, TestDataDirectory);
+            files.Add(DocumentType.Overwrite, new[] { $"{OverwriteDataDirectory}/{overwriteFileName}" }, TestDataDirectory);
+
+            BuildDocument(files);
+
+            var outputRawModelPath = GetRawModelFilePath(fileName);
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+            Assert.NotNull(model);
+
+            Assert.Equal("<p sourcefile=\"TestData/overwrite/cntk.core.Value.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\"><strong>conceptual</strong> of <code>cntk.core.Value</code></p>\n", model.Conceptual);
+            Assert.Equal("<p sourcefile=\"TestData/overwrite/cntk.core.Value.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">summary of cntk.core.Value</p>\n", model.Summary);
+        }
+
+            private void BuildDocument(FileCollection files)
         {
             var parameters = new DocumentBuildParameters
             {
