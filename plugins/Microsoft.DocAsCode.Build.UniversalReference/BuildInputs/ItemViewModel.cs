@@ -231,7 +231,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [JsonIgnore]
         [YamlIgnore]
         [UniqueIdentityReference]
-        public List<string> InheritanceUidReference => Inheritance?.Select(GetInheritanceUidReference).SelectMany(s => s).ToList();
+        public List<string> InheritanceUidReference => GetInheritanceUidReference(Inheritance);
 
         [ExtensibleMember(Constants.ExtensionMemberPrefix.Inheritance)]
         [JsonIgnore]
@@ -326,9 +326,18 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                 .Add(string.Empty, Metadata)
                 .Create();
 
+        private List<string> GetInheritanceUidReference(List<InheritanceTree> items)
+        {
+            return items
+                ?.Select(GetInheritanceUidReference)
+                .SelectMany(s => s)
+                .ToList()
+                ?? new List<string>();
+        }
+
         private List<string> GetInheritanceUidReference(InheritanceTree item)
         {
-            var result = item.Inheritance?.Select(GetInheritanceUidReference).SelectMany(s => s).ToList() ?? new List<string>();
+            var result = GetInheritanceUidReference(item.Inheritance);
             if (!string.IsNullOrEmpty(item.Type))
             {
                 result.Add(item.Type);
