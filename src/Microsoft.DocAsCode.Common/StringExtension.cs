@@ -98,5 +98,22 @@ namespace Microsoft.DocAsCode.Common
                 }
             }
         }
+
+        public static string TrimEnd(this string input, string suffixToRemove)
+        {
+            if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(suffixToRemove))
+            {
+                return input;
+            }
+
+            if (input.EndsWith(suffixToRemove))
+            {
+                return input.Substring(0, input.LastIndexOf(suffixToRemove));
+            }
+            else
+            {
+                return input;
+            }
+        }
     }
 }
