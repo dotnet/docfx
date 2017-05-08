@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.17)
+﻿Version Notes (Current Version: v2.17.1)
 =======================================
+v2.17.1
+-----------
+1. Bug fix for fail to init markdown style.
+
 v2.17
 -----------
 1. Introduce [Master page syntax](~/tutorial/intro_template.md#extended-syntax-for-master-page) into Template System:
