@@ -226,8 +226,12 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
         [YamlMember(Alias = Constants.PropertyName.Inheritance)]
         [MergeOption(MergeOption.Ignore)]
         [JsonProperty(Constants.PropertyName.Inheritance)]
-        [UniqueIdentityReference]
         public List<InheritanceTree> Inheritance { get; set; }
+
+        [JsonIgnore]
+        [YamlIgnore]
+        [UniqueIdentityReference]
+        public List<string> InheritanceUidReference => GetInheritanceUidReference(Inheritance)?.ToList() ?? new List<string>();
 
         [ExtensibleMember(Constants.ExtensionMemberPrefix.Inheritance)]
         [JsonIgnore]
@@ -321,5 +325,32 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                 .Add(Constants.ExtensionMemberPrefix.FullName, FullNames, JTokenConverter.Convert<string>)
                 .Add(string.Empty, Metadata)
                 .Create();
+
+        private IEnumerable<string> GetInheritanceUidReference(List<InheritanceTree> items)
+        {
+            return items
+                ?.Select(GetInheritanceUidReference)
+                .SelectMany(s => s);
+        }
+
+        private IEnumerable<string> GetInheritanceUidReference(InheritanceTree item)
+        {
+            if (item == null)
+            {
+                yield break;
+            }
+
+            if (item.Inheritance != null)
+            {
+                foreach(var i in GetInheritanceUidReference(item.Inheritance))
+                {
+                    yield return i;
+                }
+            }
+            if (!string.IsNullOrEmpty(item.Type))
+            {
+                yield return item.Type;
+            }
+        }
     }
 }
