@@ -17,11 +17,9 @@ namespace Microsoft.DocAsCode.Common.EntityMergers
 
         public override void Merge(ref object source, object overrides, Type type, IMergeContext context)
         {
-            var sourceJObj = source as JObject;
-            if (sourceJObj != null && type == typeof(object))
+            if (source is JObject sourceJObj && type == typeof(object))
             {
-                var overridesDict = overrides as Dictionary<object, object>;
-                if (overridesDict != null)
+                if (overrides is Dictionary<object, object> overridesDict)
                 {
                     Merge(sourceJObj, overridesDict, context);
 
@@ -37,12 +35,10 @@ namespace Microsoft.DocAsCode.Common.EntityMergers
         {
             foreach (var or in overridesDict)
             {
-                var overrideKey = or.Key as string;
-                if (overrideKey != null)
+                if (or.Key is string overrideKey)
                 {
                     object obj;
-                    JToken jToken;
-                    if (source.TryGetValue(overrideKey, out jToken))
+                    if (source.TryGetValue(overrideKey, out JToken jToken))
                     {
                         obj = jToken;
                         context.Merger.Merge(ref obj, or.Value, typeof(object), context);

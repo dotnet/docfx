@@ -57,8 +57,7 @@ namespace Microsoft.DocAsCode.Common.EntityMergers
             {
                 foreach (var oi in overrides)
                 {
-                    TValue value;
-                    if (source.TryGetValue(oi.Key, out value))
+                    if (source.TryGetValue(oi.Key, out TValue value))
                     {
                         object refObj = value;
                         context.Merger.Merge(ref refObj, oi.Value, typeof(TValue), context);

@@ -30,11 +30,7 @@ namespace Microsoft.DocAsCode.Common
 
         public ReportLogListener(StreamWriter writer, string repoRoot, string root)
         {
-            if (writer == null)
-            {
-                throw new ArgumentNullException(nameof(writer));
-            }
-            _writer = writer;
+            _writer = writer ?? throw new ArgumentNullException(nameof(writer));
             _repoRoot = repoRoot;
             _root = root;
         }

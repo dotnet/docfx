@@ -33,11 +33,7 @@ namespace Microsoft.DocAsCode.Common
 
         public HtmlLogListener(StreamWriter writer)
         {
-            if (writer == null)
-            {
-                throw new ArgumentNullException(nameof(writer));
-            }
-            _writer = writer;
+            _writer = writer ?? throw new ArgumentNullException(nameof(writer));
             WriteCommonHeader();
         }
 

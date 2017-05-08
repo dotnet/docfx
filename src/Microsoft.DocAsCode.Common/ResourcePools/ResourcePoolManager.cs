@@ -75,11 +75,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 foreach (var resource in _resources)
                 {
-                    var d = resource as IDisposable;
-                    if (d != null)
-                    {
-                        d.Dispose();
-                    }
+                    (resource as IDisposable)?.Dispose();
                 }
             }
         }

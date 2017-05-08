@@ -26,8 +26,7 @@ namespace Microsoft.DocAsCode.Common
         public async Task<ResourceLease<TResource>> RentAsync()
         {
             await _semaphore.WaitAsync();
-            TResource resource;
-            if (!_stack.TryPop(out resource))
+            if (!_stack.TryPop(out TResource resource))
             {
                 resource = await _creator();
                 _resources.Add(resource);
@@ -62,11 +61,7 @@ namespace Microsoft.DocAsCode.Common
                 {
                     foreach (var resource in _resources)
                     {
-                        var d = resource as IDisposable;
-                        if (d != null)
-                        {
-                            d.Dispose();
-                        }
+                        (resource as IDisposable)?.Dispose();
                     }
                 }
             }

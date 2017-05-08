@@ -19,11 +19,9 @@ namespace Microsoft.DocAsCode.Common.EntityMergers
 
         public override void Merge(ref object source, object overrides, Type type, IMergeContext context)
         {
-            var sourceJArray = source as JArray;
-            if (sourceJArray != null && type == typeof(object))
+            if (source is JArray sourceJArray && type == typeof(object))
             {
-                var overridesList = overrides as List<object>;
-                if (overridesList != null)
+                if (overrides is List<object> overridesList)
                 {
                     Merge(sourceJArray, overridesList, context);
 
