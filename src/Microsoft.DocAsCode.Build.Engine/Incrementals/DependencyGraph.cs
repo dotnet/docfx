@@ -21,42 +21,36 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             new DependencyType
             {
                 Name = DependencyTypeName.Include,
-                IsTransitive = true,
                 Phase = BuildPhase.Compile,
                 Transitivity = DependencyTransitivity.All,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.Overwrite,
-                IsTransitive = true,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.All,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.Uid,
-                IsTransitive = false,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.None,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.File,
-                IsTransitive = false,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.None,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.Bookmark,
-                IsTransitive = false,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.None,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.Metadata,
-                IsTransitive = false,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.None,
             });
@@ -287,12 +281,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 DependencyType stored;
                 if (_types.TryGetValue(dt.Name, out stored))
                 {
-                    // to-do: add check for phase/transitivity when new value overwrites old value
-                    if (stored.IsTransitive != dt.IsTransitive)
-                    {
-                        Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
-                        throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
-                    }
                     if (stored.Phase != null && stored.Transitivity != null)
                     {
                         Logger.LogVerbose($"Same dependency type with name {dt.Name} has already been registered, ignored.");
@@ -300,7 +288,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     }
                 }
                 _types = _types.SetItem(dt.Name, dt);
-                Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, IsTransitive: {dt.IsTransitive}, Phase to work on: {dt.Phase}, Transitivity: {dt.Transitivity}.");
+                Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, Phase to work on: {dt.Phase}, Transitivity: {dt.Transitivity}.");
             }
         }
 
