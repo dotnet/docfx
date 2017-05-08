@@ -63,40 +63,53 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
         [Fact]
         public void ProcessModelShouldSucceed()
         {
-            var fileName = "cntk.core.Value.yml";
+            var moduleFileName = "cntk.core.yml";
+            var classFileName = "cntk.core.Value.yml";
             var files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, new[] { $"{YmlDataDirectory}/{fileName}" }, TestDataDirectory);
+            files.Add(
+                DocumentType.Article,
+                new[] { $"{YmlDataDirectory}/{moduleFileName}", $"{YmlDataDirectory}/{classFileName}" },
+                TestDataDirectory);
 
             BuildDocument(files);
 
-            var outputRawModelPath = GetRawModelFilePath(fileName);
-            Assert.True(File.Exists(outputRawModelPath));
-            var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
-            Assert.NotNull(model);
+            var outputModuleRawModelPath = GetRawModelFilePath(moduleFileName);
+            var outputClassRawModelPath = GetRawModelFilePath(classFileName);
+            Assert.True(File.Exists(outputClassRawModelPath));
 
-            Assert.Equal(1, model.SupportedLanguages.Length);
-            Assert.Equal("python", model.SupportedLanguages[0]);
+            var moduleModel = JsonUtility.Deserialize<ApiBuildOutput>(outputModuleRawModelPath);
+            Assert.NotNull(moduleModel);
+            Assert.Equal(
+                "<p sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"2\">Bases: <xref href=\"cntk.cntk_py.Value\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@cntk.cntk_py.Value\" sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"></xref>\nInternal representation of minibatch data.</p>\n",
+                moduleModel.Children[0].Value[1].Summary);
+            Assert.Equal("Class", moduleModel.Children[0].Value[1].Type);
 
-            Assert.Equal("Class", model.Type);
+            var classModel = JsonUtility.Deserialize<ApiBuildOutput>(outputClassRawModelPath);
+            Assert.NotNull(classModel);
 
-            Assert.Equal("Value", model.Name[0].Value);
-            Assert.Equal("cntk.core.Value", model.FullName[0].Value);
+            Assert.Equal(1, classModel.SupportedLanguages.Length);
+            Assert.Equal("python", classModel.SupportedLanguages[0]);
 
-            Assert.Equal("https://github.com/Microsoft/CNTK", model.Source[0].Value.Remote.RemoteRepositoryUrl);
-            Assert.Equal("cntk/core.py", model.Source[0].Value.Remote.RelativePath);
-            Assert.Equal(182, model.Source[0].Value.StartLine);
+            Assert.Equal("Class", classModel.Type);
 
-            Assert.Equal(6, model.Syntax.Parameters.Count);
-            Assert.Equal("shape", model.Syntax.Parameters[0].Name);
-            Assert.Equal("tuple", model.Syntax.Parameters[0].Type[0].Uid);
+            Assert.Equal("Value", classModel.Name[0].Value);
+            Assert.Equal("cntk.core.Value", classModel.FullName[0].Value);
+
+            Assert.Equal("https://github.com/Microsoft/CNTK", classModel.Source[0].Value.Remote.RemoteRepositoryUrl);
+            Assert.Equal("cntk/core.py", classModel.Source[0].Value.Remote.RelativePath);
+            Assert.Equal(182, classModel.Source[0].Value.StartLine);
+
+            Assert.Equal(6, classModel.Syntax.Parameters.Count);
+            Assert.Equal("shape", classModel.Syntax.Parameters[0].Name);
+            Assert.Equal("tuple", classModel.Syntax.Parameters[0].Type[0].Uid);
             Assert.Equal("<p sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">shape of the value</p>\n",
-                model.Syntax.Parameters[0].Description);
+                classModel.Syntax.Parameters[0].Description);
 
-            Assert.Equal(1, model.Children.Count);
-            Assert.Equal("python", model.Children[0].Language);
-            Assert.Equal(5, model.Children[0].Value.Count);
+            Assert.Equal(1, classModel.Children.Count);
+            Assert.Equal("python", classModel.Children[0].Language);
+            Assert.Equal(5, classModel.Children[0].Value.Count);
 
-            var firstChildrenValue = model.Children[0].Value[0];
+            var firstChildrenValue = classModel.Children[0].Value[0];
             Assert.Equal("Method", firstChildrenValue.Type);
             Assert.Equal("cntk.core.Value.create", firstChildrenValue.Uid);
             Assert.Equal("create", firstChildrenValue.Name[0].Value);

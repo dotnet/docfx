@@ -89,6 +89,26 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                     dest.Name = ModelConverter.ToApiListInDevLangs(src.Name, src.NameInDevLangs, supportedLanguages);
                     dest.NameWithType = ModelConverter.ToApiListInDevLangs(src.NameWithType, src.NameWithTypeInDevLangs, supportedLanguages);
                     dest.FullName = ModelConverter.ToApiListInDevLangs(src.FullName, src.FullNameInDevLangs, supportedLanguages);
+                    if (dest.Metadata.TryGetValue(Constants.PropertyName.Syntax, out object syntax))
+                    {
+                        dest.Syntax = Mapper.Map<SyntaxDetailViewModel, ApiSyntaxBuildOutput>(syntax as SyntaxDetailViewModel);
+                        dest.Metadata.Remove(Constants.PropertyName.Syntax);
+                    }
+                    if (dest.Metadata.TryGetValue(Constants.PropertyName.Type, out object type))
+                    {
+                        dest.Type = type as string;
+                        dest.Metadata.Remove(Constants.PropertyName.Type);
+                    }
+                    if (dest.Metadata.TryGetValue(Constants.PropertyName.Summary, out object summary))
+                    {
+                        dest.Summary = summary as string;
+                        dest.Metadata.Remove(Constants.PropertyName.Summary);
+                    }
+                    if (dest.Metadata.TryGetValue(Constants.PropertyName.Platform, out object platform))
+                    {
+                        dest.Platform = ModelConverter.ToApiListInDevLangs(platform as List<string>, null, supportedLanguages);
+                        dest.Metadata.Remove(Constants.PropertyName.Platform);
+                    }
                 });
             CreateMap<string, List<ApiLanguageValuePair<ApiNames>>>()
                 .ConvertUsing(new ApiListInDevLangsOfApiNamesTypeConverter(supportedLanguages, references));
@@ -103,7 +123,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                     dest.Return = ModelConverter.ToApiListInDevLangsResolvingApiNames(src.Return, src.ReturnInDevLangs, supportedLanguages, references);
                 });
             CreateMap<ApiParameter, ApiParameterBuildOutput>()
-                .ForMember(dest => dest.Type, opt => opt.Condition(src => src.Type!= null));
+                .ForMember(dest => dest.Type, opt => opt.Condition(src => src.Type != null));
             CreateMap<string, ApiNames>()
                 .ConvertUsing(new ApiNamesTypeConverter(supportedLanguages, references));
             CreateMap<LinkInfo, ApiLinkInfoBuildOutput>()

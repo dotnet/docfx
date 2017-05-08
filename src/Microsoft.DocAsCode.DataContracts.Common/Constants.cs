@@ -25,6 +25,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Title = "title";
             public const string Conceptual = "conceptual";
             public const string Documentation = "documentation";
+            public const string Summary = "summary";
 
             public const string Name = "name";
             public const string DisplayName = "displayName";
@@ -49,6 +50,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Overload = "overload";
             public const string Return = "return";
             public const string SeeAlsoContent = "seealsoContent";
+            public const string Syntax = "syntax";
 
             public const string SystemKeys = "_systemKeys";
 
