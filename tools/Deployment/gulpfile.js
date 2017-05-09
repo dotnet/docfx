@@ -187,7 +187,7 @@ gulp.task("publish:chocolatey", () => {
     return Chocolatey.publishToChocolateyAsync(releaseNotePath, assetZipPath, chocoScript, nuspec, homeDir, chocoToken);
 });
 
-gulp.task("syncBranch", () => {
+gulp.task("syncBranchCore", () => {
     Guard.argumentNotNullOrEmpty(config.docfx.repoUrl, "config.docfx.repoUrl", "Can't find docfx repo url in configuration.");
     Guard.argumentNotNullOrEmpty(config.docfx.home, "config.docfx.home", "Can't find docfx home directory in configuration.");
     Guard.argumentNotNullOrEmpty(config.sync.fromBranch, "config.sync.fromBranch", "Can't find source branch in sync configuration.");
@@ -195,7 +195,7 @@ gulp.task("syncBranch", () => {
 
     if (Common.isThirdWeekInSprint()) {
         console.log("Ignore to sync in the third week of a sprint");
-        process.exit(0);
+        process.exit(2);
     }
 
     let docfxHome = path.resolve(config.docfx.home);
@@ -205,4 +205,5 @@ gulp.task("test", gulp.series("clean", "build", "e2eTest", "publish:myget-test")
 gulp.task("dev", gulp.series("clean", "build", "e2eTest"));
 gulp.task("stable", gulp.series("clean", "build", "e2eTest", "publish:myget-dev"));
 gulp.task("master", gulp.series("clean", "build", "e2eTest", "packAssetZip" ,"updateGhPage", "publish:myget-master", "publish:chocolatey", "publish:gh-release"));
+gulp.task("syncBranch", gulp.series("syncBranchCore"));
 gulp.task("default", gulp.series("dev"));
