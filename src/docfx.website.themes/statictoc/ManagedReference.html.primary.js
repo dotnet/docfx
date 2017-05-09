@@ -22,9 +22,7 @@ exports.transform = function (model) {
   if (extension && extension.postTransform) {
     model = extension.postTransform(model);
   }
-  return {
-    item: model
-  };
+  return model;
 }
 
 exports.getOptions = function (model) {

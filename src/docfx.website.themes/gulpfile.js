@@ -24,7 +24,6 @@ var files = [
     "logo.svg",
     "token.json",
     "search-stopwords.json"];
-
 var pack = {
     "common": [
         {
@@ -64,17 +63,7 @@ var pack = {
             "cwd": "common",
         },
         {
-            "files": [
-                "fonts/*",
-                "partials/*",
-                "styles/*",
-                "*.js",
-                "*.tmpl",
-                "favicon.ico",
-                "logo.svg",
-                "token.json",
-                "!toc.html.*",
-            ],
+            "files": files.concat("!toc.html.*"),
             "cwd": "default",
         },
         {
