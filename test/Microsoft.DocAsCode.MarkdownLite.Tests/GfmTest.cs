@@ -723,6 +723,16 @@ b",
 
         [Fact]
         [Trait("Related", "Markdown")]
+        public void TestNotHtml()
+        {
+            TestGfmInGeneral(@"<x:a>", @"<p>&lt;x:a&gt;</p>
+".Replace("\r\n", "\n"));
+            TestLegacyGfmInGeneral(@"<x:a>", @"<p>&lt;x:a&gt;</p>
+".Replace("\r\n", "\n"));
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
         public void TestTable_PipesInTableCell()
         {
             var source = @"
