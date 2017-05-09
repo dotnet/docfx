@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             [Obsolete]
             public static readonly Regex OrderList = new Regex(@"^( *)(\d+\.) [\s\S]+?(?:\n+(?=([^\n]+)\n(=|-){2,} *(?:\n+|$))|\n+(?=\1?(?:[-*_] *){3,}(?:\n+|$))|\n+(?=\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$))|\n{2,}(?! (?! *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])?))(?!\s*\1(\d+\.) )\n*|\s*$)", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]
-            public static readonly Regex Html = new Regex(@"^ *(?:<!--(?:[^-]|-(?!->))*-->|<((?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\b)\w+(?!:\/|[^\w\s@]*@)\b)[\s\S]+?<\/\1>|<(?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\b)\w+(?!:\/|[^\w\s@]*@)\b(?:""[^""]*""|'[^']*'|[^'"">])*?>) *(?:\n{2,}|\s*$)", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex Html = new Regex(@"^ *(?:<!--(?:[^-]|-(?!->))*-->|<((?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\b)\w+(?!:\/|[^\w\s@]*@)\b)[\s\S]+?<\/\1>|<(?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\b)\w+(?!:\/|[^\w\s@]*@)\b(?:""[^""]*""|'[^']*'|[^'"">:])*?>) *(?:\n{2,}|\s*$)", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]
             public static readonly Regex Def = new Regex(@"^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$)", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]
@@ -67,7 +67,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static readonly Regex Comment = new Regex(@"^<!--(?:[^-]|-(?!->))*-->", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex AutoLink = new Regex(@"^<([^ >]+(@|:\/)[^ >]+)>", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex PreElement = new Regex(@"^\<pre\>[\s\S]*?\</pre\>", RegexOptionCompiled | RegexOptions.IgnoreCase, RegexTimeOut);
-            public static readonly Regex Tag = new Regex(@"^<\/?([A-Z]|[a-z])\w*(?:""[^""]*""|'[^']*'|[^'"">])*?>", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex Tag = new Regex(@"^<\/?([A-Z]|[a-z])\w*(?:""[^""]*""|'[^']*'|[^'"">:])*?>", RegexOptionCompiled, RegexTimeOut);
             /// <summary>
             /// <![CDATA[
             /// ^                                           start of string
