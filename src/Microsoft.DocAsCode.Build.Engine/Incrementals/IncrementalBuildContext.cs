@@ -766,7 +766,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 Logger.LogDiagnostic($"Before expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
                 using (new LoggerPhaseScope("ExpandDependency", LogLevel.Diagnostic))
                 {
-                    ExpandDependency(LastBuildVersionInfo?.Dependency, d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.Compile || CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].TriggerBuild);
+                    ExpandDependency(LastBuildVersionInfo?.Dependency, d => CurrentBuildVersionInfo.Dependency.DependencyTypes[d.Type].Phase == BuildPhase.Compile);
                 }
                 Logger.LogDiagnostic($"After expanding dependency before build, changes: {JsonUtility.Serialize(ChangeDict, Formatting.Indented)}");
             }

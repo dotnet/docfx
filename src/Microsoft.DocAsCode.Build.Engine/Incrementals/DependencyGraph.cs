@@ -21,42 +21,36 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             new DependencyType
             {
                 Name = DependencyTypeName.Include,
-                IsTransitive = true,
                 Phase = BuildPhase.Compile,
                 Transitivity = DependencyTransitivity.All,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.Overwrite,
-                IsTransitive = true,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.All,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.Uid,
-                IsTransitive = false,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.None,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.File,
-                IsTransitive = false,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.None,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.Bookmark,
-                IsTransitive = false,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.None,
             },
             new DependencyType
             {
                 Name = DependencyTypeName.Metadata,
-                IsTransitive = false,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.None,
             });
@@ -284,23 +278,18 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         {
             lock (_typeSync)
             {
-                DependencyType stored;
-                if (_types.TryGetValue(dt.Name, out stored))
+                if (_types.TryGetValue(dt.Name, out DependencyType stored))
                 {
-                    // to-do: add check for phase/transitivity when new value overwrites old value
-                    if (stored.IsTransitive != dt.IsTransitive)
+                    if (stored.Transitivity != dt.Transitivity || stored.Phase !=  dt.Phase)
                     {
                         Logger.LogError($"Dependency type {JsonUtility.Serialize(dt)} isn't registered successfully because a different type with name {dt.Name} is already registered. Already registered one: {JsonUtility.Serialize(stored)}.");
                         throw new InvalidDataException($"A different dependency type with name {dt.Name} is already registered");
                     }
-                    if (stored.Phase != null && stored.Transitivity != null)
-                    {
-                        Logger.LogVerbose($"Same dependency type with name {dt.Name} has already been registered, ignored.");
-                        return;
-                    }
+                    Logger.LogVerbose($"Same dependency type with name {dt.Name} has already been registered, ignored.");
+                    return;
                 }
                 _types = _types.SetItem(dt.Name, dt);
-                Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, IsTransitive: {dt.IsTransitive}, Phase to work on: {dt.Phase}, Transitivity: {dt.Transitivity}.");
+                Logger.LogVerbose($"Dependency type is successfully registered. Name: {dt.Name}, Phase to work on: {dt.Phase}, Transitivity: {dt.Transitivity}.");
             }
         }
 
@@ -429,8 +418,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return source;
             }
-            string file;
-            if (!indexer.TryGetValue(source, out file))
+            if (!indexer.TryGetValue(source, out string file))
             {
                 return null;
             }
@@ -443,8 +431,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
             }
-            HashSet<DependencyItem> indice;
-            if (!_indexOnReportedBy.TryGetValue(reportedBy, out indice))
+            if (!_indexOnReportedBy.TryGetValue(reportedBy, out HashSet<DependencyItem> indice))
             {
                 return new HashSet<DependencyItem>();
             }
@@ -457,8 +444,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
             }
-            HashSet<DependencyItem> indice;
-            if (!_indexOnFrom.TryGetValue(from, out indice))
+            if (!_indexOnFrom.TryGetValue(from, out HashSet<DependencyItem> indice))
             {
                 return new HashSet<DependencyItem>();
             }
@@ -471,8 +457,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new InvalidOperationException($"Dependency graph isn't resolved, cannot call the method.");
             }
-            HashSet<DependencyItem> indice;
-            if (!_indexOnTo.TryGetValue(to, out indice))
+            if (!_indexOnTo.TryGetValue(to, out HashSet<DependencyItem> indice))
             {
                 return new HashSet<DependencyItem>();
             }
@@ -532,8 +517,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private HashSet<ReferenceItem> GetReferenceReportedByNoLock(string reportedBy)
         {
-            HashSet<ReferenceItem> indice;
-            if (!_indexOnReferenceReportedBy.TryGetValue(reportedBy, out indice))
+            if (!_indexOnReferenceReportedBy.TryGetValue(reportedBy, out HashSet<ReferenceItem> indice))
             {
                 return new HashSet<ReferenceItem>();
             }
@@ -587,8 +571,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         private static void CreateOrUpdate<T>(Dictionary<string, HashSet<T>> index, string key, T value)
         {
-            HashSet<T> items;
-            if (!index.TryGetValue(key, out items))
+            if (!index.TryGetValue(key, out HashSet<T> items))
             {
                 items = new HashSet<T>();
                 index[key] = items;

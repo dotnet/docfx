@@ -45,7 +45,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             new DependencyType()
             {
                 Name = DependencyTypeName.Reference,
-                IsTransitive = false,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.None,
             }
