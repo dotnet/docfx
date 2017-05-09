@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.17.1)
+﻿Version Notes (Current Version: v2.17.2)
 =======================================
+v2.17.2
+-----------
+1. Bug fix for template statictoc.
+
 v2.17.1
 -----------
 1. Bug fix for fail to init markdown style.
@@ -24,7 +28,7 @@ v2.16.8
     1. Bug fix for Null exception when `<xref href=''/>` exists
     2. Bug fix for `docfx metadata` for assemblies, to exclude null assembly symbols.
     3. Bug fix for toc: When b/toc.md is included by toc.md, invalid link in b/toc.md should be resolved to the path relative to toc.md
-    
+
 v2.16
 -----------
 1.  Support the latest csproj format `<Project Sdk="Microsoft.NET.Sdk">`
