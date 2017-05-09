@@ -45,15 +45,10 @@ namespace Microsoft.DocAsCode.SubCommands
             CrossAppDomainListener listener,
             string templateDirectory)
         {
-            if (config == null)
-            {
-                throw new ArgumentNullException(nameof(config));
-            }
-
+            _config = config ?? throw new ArgumentNullException(nameof(config));
             _pluginDirectory = pluginDirectory;
             _baseDirectory = baseDirectory;
             _outputDirectory = outputDirectory;
-            _config = config;
             _listener = listener;
             _manager = manager;
             _logLevel = Logger.LogLevelThreshold;
@@ -111,8 +106,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var metadata = config.GlobalMetadata?.ToImmutableDictionary();
 
             // For backward compatible, retain "_enableSearch" to globalMetadata though it's deprecated
-            object value;
-            if (metadata != null && metadata.TryGetValue("_enableSearch", out value))
+            if (metadata != null && metadata.TryGetValue("_enableSearch", out object value))
             {
                 var isSearchable = value as bool?;
                 if (isSearchable.HasValue && isSearchable.Value && !postProcessorNames.Contains("ExtractSearchIndex"))
@@ -253,8 +247,7 @@ namespace Microsoft.DocAsCode.SubCommands
             else
             {
                 parameters.MaxParallelism = config.MaxParallelism.Value;
-                int wt, cpt;
-                ThreadPool.GetMinThreads(out wt, out cpt);
+                ThreadPool.GetMinThreads(out int wt, out int cpt);
                 if (wt < parameters.MaxParallelism)
                 {
                     ThreadPool.SetMinThreads(parameters.MaxParallelism, cpt);
@@ -286,11 +279,15 @@ namespace Microsoft.DocAsCode.SubCommands
                 parameters.LruSize = Math.Max(0, config.LruSize.Value);
             }
 
+            if (config.NoDereference == true)
+            {
+                parameters.NoDereference = true;
+            }
+
             foreach (var pair in fileMappingParametersDictionary)
             {
                 var p = parameters.Clone();
-                VersionConfig vi;
-                if (config.Versions != null && config.Versions.TryGetValue(pair.Key, out vi))
+                if (config.Versions != null && config.Versions.TryGetValue(pair.Key, out VersionConfig vi))
                 {
                     if (!string.IsNullOrEmpty(vi.Destination))
                     {
@@ -338,11 +335,9 @@ namespace Microsoft.DocAsCode.SubCommands
             foreach (var item in fileMapping.Items)
             {
                 var version = item.VersionName ?? string.Empty;
-                FileMappingParameters parameters;
-                if (fileMappingsDictionary.TryGetValue(version, out parameters))
+                if (fileMappingsDictionary.TryGetValue(version, out FileMappingParameters parameters))
                 {
-                    FileMapping mapping;
-                    if (parameters.TryGetValue(type, out mapping))
+                    if (parameters.TryGetValue(type, out FileMapping mapping))
                     {
                         mapping.Add(item);
                     }
@@ -447,8 +442,7 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             public FileMapping GetFileMapping(FileMappingType type)
             {
-                FileMapping result;
-                this.TryGetValue(type, out result);
+                TryGetValue(type, out FileMapping result);
                 return result;
             }
 

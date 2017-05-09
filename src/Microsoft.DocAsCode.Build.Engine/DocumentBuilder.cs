@@ -106,8 +106,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     if (parameter.CustomLinkResolver != null)
                     {
-                        ICustomHrefGenerator chg;
-                        if (_container.TryGetExport(parameter.CustomLinkResolver, out chg))
+                        if (_container.TryGetExport(parameter.CustomLinkResolver, out ICustomHrefGenerator chg))
                         {
                             parameter.ApplyTemplateSettings.HrefGenerator = chg;
                         }
@@ -169,7 +168,22 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                     using (new PerformanceScope("Dereference"))
                     {
-                        generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
+                        if (parameters[0].NoDereference)
+                        {
+                            var count = (from f in generatedManifest.Files
+                                         from o in f.OutputFiles
+                                         select o.Value into v
+                                         where v.LinkToPath != null
+                                         select v).Count();
+                            if (count > 0)
+                            {
+                                Logger.LogInfo($"Skip dereference for {count} files.");
+                            }
+                        }
+                        else
+                        {
+                            generatedManifest.Dereference(parameters[0].OutputBaseDir, parameters[0].MaxParallelism);
+                        }
                     }
 
                     using (new PerformanceScope("SaveManifest"))
