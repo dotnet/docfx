@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 {
     using System.Collections.Generic;
     using System.Composition;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
@@ -30,6 +31,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     host.ReportDependencyTo(model, r.Uid, DependencyItemSourceType.Uid, DependencyTypeName.Reference);
                 }
             }
+
+            foreach (var child in from i in pageViewModel.Items
+                              from c in i.Children
+                              select c)
+            {
+                host.ReportDependencyTo(model, child, DependencyItemSourceType.Uid, DependencyTypeName.Children);
+            }
         }
 
         #endregion
@@ -47,6 +55,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 Name = DependencyTypeName.Reference,
                 Phase = BuildPhase.Link,
                 Transitivity = DependencyTransitivity.None,
+            },
+            new DependencyType()
+            {
+                Name = DependencyTypeName.Children,
+                Phase = BuildPhase.Link,
+                Transitivity = DependencyTransitivity.All,
             }
         };
 
