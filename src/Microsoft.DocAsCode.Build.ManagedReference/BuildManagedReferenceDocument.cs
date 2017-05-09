@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         {
             var pageViewModel = (PageViewModel)model.Content;
 
-            BuildArticleCore(host, model, shouldSkipMarkup:pageViewModel?.ShouldSkipMarkup ?? false);
+            BuildArticleCore(host, model, shouldSkipMarkup: pageViewModel?.ShouldSkipMarkup ?? false);
 
             foreach (var r in pageViewModel.References)
             {
@@ -33,8 +33,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
 
             foreach (var child in from i in pageViewModel.Items
-                              from c in i.Children
-                              select c)
+                                  from c in i.Children ?? Enumerable.Empty<string>()
+                                  select c)
             {
                 host.ReportDependencyTo(model, child, DependencyItemSourceType.Uid, DependencyTypeName.Children);
             }
