@@ -203,6 +203,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             }
 
             var result = new List<ApiLanguageValuePair<T>>();
+            values = values ?? new SortedList<string, T>();
             foreach (var language in supportedLanguages)
             {
                 result.Add(new ApiLanguageValuePair<T>
