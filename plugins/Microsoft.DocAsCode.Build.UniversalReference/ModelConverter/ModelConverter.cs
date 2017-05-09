@@ -100,7 +100,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             {
                 return null;
             }
-            values = values ?? new SortedList<string, string>();
             return ToApiListInDevLangs(defaultValue, values, supportedLanguages)
                 ?.Select(pair =>
                 {
@@ -118,7 +117,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             {
                 return null;
             }
-            values = values ?? new SortedList<string, List<InheritanceTree>>();
             return ToApiListInDevLangs(defaultValue, values, supportedLanguages)
                 ?.Select(pair =>
                 {
@@ -136,7 +134,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             {
                 return null;
             }
-            values = values ?? new SortedList<string, List<ExceptionInfo>>();
             return ToApiListInDevLangs(defaultValue, values, supportedLanguages)
                 ?.Select(pair =>
                 {
@@ -162,7 +159,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             {
                 return null;
             }
-            values = values ?? new SortedList<string, ApiParameter>();
             return ToApiListInDevLangs(defaultValue, values, supportedLanguages)
                 ?.Select(pair =>
                 {
@@ -188,7 +184,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             {
                 return null;
             }
-            values = values ?? new SortedList<string, List<string>>();
             return ToApiListInDevLangs(defaultValue, values, supportedLanguages)
                 ?.Select(pair =>
                 {
