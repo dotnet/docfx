@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             if (Config?.Serve ?? false)
             {
-                ServeCommand.Serve(outputFolder, Config.Port);
+                ServeCommand.Serve(outputFolder, Config.Host, Config.Port);
             }
             EnvironmentContext.Clean();
         }
@@ -208,6 +208,10 @@ namespace Microsoft.DocAsCode.SubCommands
             if (options.Serve)
             {
                 config.Serve = options.Serve;
+            }
+            if (options.Host != null)
+            {
+                config.Host = options.Host;
             }
             if (options.Port.HasValue)
             {

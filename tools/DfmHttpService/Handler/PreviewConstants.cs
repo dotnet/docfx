@@ -8,6 +8,7 @@ namespace DfmHttpService
 
     public static class PreviewConstants
     {
+        public const string ServerHost = "localhost";
         public const string ServerPort = "4002";
         public const string TocMetadataName = "toc_rel";
         public const string PathPrefix = @"file:///";

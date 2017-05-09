@@ -14,13 +14,17 @@ namespace DfmHttpService
         private readonly IHttpHandler _handler;
         private int _status;
 
-        public DfmHttpServer(IHttpHandler handler, string port)
+        public DfmHttpServer(IHttpHandler handler, string host, string port)
         {
+            if (string.IsNullOrEmpty(host))
+            {
+                port = PreviewConstants.ServerHost;
+            }
             if (string.IsNullOrEmpty(port))
             {
                 port = PreviewConstants.ServerPort;
             }
-            string UrlPrefix = $"http://localhost:{port}/";
+            string UrlPrefix = $"http://{host}:{port}/";
             _listener.Prefixes.Add(UrlPrefix);
             _handler = handler;
         }
