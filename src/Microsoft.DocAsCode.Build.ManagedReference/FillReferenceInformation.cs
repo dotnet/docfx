@@ -25,6 +25,20 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         public override int BuildOrder => 0x20;
 
+        public override void Build(FileModel model, IHostService host)
+        {
+            if (model.Type != DocumentType.Article)
+            {
+                return;
+            }
+            var pageViewModel = (PageViewModel)model.Content;
+
+            foreach (var child in GetChildren(pageViewModel))
+            {
+                host.ReportDependencyTo(model, child, DependencyItemSourceType.Uid, DependencyTypeName.Children);
+            }
+        }
+
         public override void Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
             ApplyLastContextInfo(host);
@@ -47,7 +61,15 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         public string GetIncrementalContextHash() => null;
 
-        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => null;
+        public IEnumerable<DependencyType> GetDependencyTypesToRegister() => new[]
+        {
+            new DependencyType()
+            {
+                Name = DependencyTypeName.Children,
+                Phase = BuildPhase.Link,
+                Transitivity = DependencyTransitivity.All,
+            }
+        };
 
         #endregion
 
@@ -89,8 +111,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 return;
             }
+            var children = new HashSet<string>(GetChildren(model));
             foreach (var r in model.References)
             {
+                if (!children.Contains(r.Uid))
+                {
+                    continue;
+                }
                 var m = host.LookupByUid(r.Uid).Find(x => x.Type == DocumentType.Article);
                 if (m == null)
                 {
@@ -172,6 +199,13 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     Metadata = item.Metadata,
                 };
             }
+        }
+
+        private IEnumerable<string> GetChildren(PageViewModel pageViewModel)
+        {
+            return from i in pageViewModel.Items
+                   from c in i.Children ?? Enumerable.Empty<string>()
+                   select c;
         }
 
         #endregion
