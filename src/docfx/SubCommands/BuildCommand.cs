@@ -286,7 +286,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             config.LruSize = options.LruSize ?? config.LruSize;
 
-            config.NoDereference = options.NoDereference ? true : config.NoDereference;
+            config.KeepFileLink |= options.KeepFileLink;
 
             config.FileMetadataFilePaths =
                 new ListWithStringFallback(config.FileMetadataFilePaths.Select(

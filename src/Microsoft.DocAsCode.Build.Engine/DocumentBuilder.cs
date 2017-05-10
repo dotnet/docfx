@@ -168,7 +168,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                     using (new PerformanceScope("Dereference"))
                     {
-                        if (parameters[0].NoDereference)
+                        if (parameters[0].KeepFileLink)
                         {
                             var count = (from f in generatedManifest.Files
                                          from o in f.OutputFiles
@@ -177,7 +177,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                          select v).Count();
                             if (count > 0)
                             {
-                                Logger.LogInfo($"Skip dereference for {count} files.");
+                                Logger.LogInfo($"Skip dereferencing {count} files.");
                             }
                         }
                         else

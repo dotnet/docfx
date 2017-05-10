@@ -279,9 +279,9 @@ namespace Microsoft.DocAsCode.SubCommands
                 parameters.LruSize = Math.Max(0, config.LruSize.Value);
             }
 
-            if (config.NoDereference == true)
+            if (config.KeepFileLink)
             {
-                parameters.NoDereference = true;
+                parameters.KeepFileLink = true;
             }
 
             foreach (var pair in fileMappingParametersDictionary)
