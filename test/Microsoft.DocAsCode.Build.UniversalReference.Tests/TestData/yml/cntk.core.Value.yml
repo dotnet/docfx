@@ -10,6 +10,10 @@ items:
   - cntk.core.Value.shape
   class: cntk.core.Value
   fullName: cntk.core.Value
+  inheritance:
+  - inheritance:
+    - type: builtins.object
+    type: cntk.cntk_py.Value
   langs:
   - python
   module: cntk.core
