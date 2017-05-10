@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 {
     using System.Collections.Generic;
     using System.Composition;
-    using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
