@@ -217,7 +217,7 @@ maxParallelism           | Set the max parallelism, 0 (default) is same as the c
 markdownEngineName       | Set the name of markdown engine, default is `dfm`, and another build-in engine is `gfm`.
 markdownEngineProperties | Set the parameters for markdown engine, value should be a JSON string.
 noLangKeyword            | Disable default lang keyword, it can be downloaded from [here](http://dotnet.github.io/docfx/langwordmapping/langwordMapping.yml).
-noDereference            | If set to true, manifest will keep link form, and files do *NOT* copy to output folder.
+keepFileLink             | If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a link_to_path property inside mainfiest.json to indicate the physical location of that file.
 
 #### 3.2.1 `Template`s and `Theme`s
 
