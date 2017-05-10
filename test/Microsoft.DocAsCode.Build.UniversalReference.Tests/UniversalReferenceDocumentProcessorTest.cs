@@ -48,7 +48,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
         [Fact]
         public void ProcessPythonReferencesShouldSucceed()
         {
-            // TODO: inheritance tree is removed from data, wait for the design decision
             var fileNames = Directory.EnumerateFiles(YmlDataDirectory).Select(Path.GetFileName).ToList();
             var files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, fileNames.Select(f => $"{YmlDataDirectory}/{f}"), TestDataDirectory);
@@ -106,6 +105,9 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
             Assert.Equal("tuple", classModel.Syntax.Parameters[0].Type[0].Uid);
             Assert.Equal("<p sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">shape of the value</p>\n",
                 classModel.Syntax.Parameters[0].Description);
+
+            Assert.Equal("cntk.cntk_py.Value", classModel.Inheritance[0].Value[0].Type.Uid);
+            Assert.Equal("builtins.object", classModel.Inheritance[0].Value[0].Inheritance[0].Type.Uid);
 
             Assert.Equal(1, classModel.Children.Count);
             Assert.Equal("python", classModel.Children[0].Language);
