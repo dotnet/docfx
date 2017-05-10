@@ -297,7 +297,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var unloadedFiles = (from h in hostServices
                                  where h.CanIncrementalBuild
                                  from f in h.GetUnloadedModelFiles(IncrementalContext)
-                                 select f).ToDictionary(f => f, f => f, FilePathComparer.OSPlatformSensitiveStringComparer);
+                                 select f).Distinct(FilePathComparer.OSPlatformSensitiveStringComparer).ToDictionary(f => f, f => f, FilePathComparer.OSPlatformSensitiveStringComparer);
 
             using (new LoggerPhaseScope("UpdateItems", LogLevel.Verbose))
             {
