@@ -459,9 +459,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     var referencedAssemblyList = CompilationUtility.GetAssemblyFromAssemblyComplation(assemblyCompilation);
                     var assemblyExtension = GetAllExtensionMethodsFromAssembly(assemblyCompilation, referencedAssemblyList);
-                    var assemblyMetadataValues = from assembly in referencedAssemblyList
+                    var assemblyMetadataValues = (from assembly in referencedAssemblyList
                                                  let metadata = GetAssemblyMetadataFromCacheAsync(assemblyFiles, assemblyCompilation, assembly, outputFolder, forceRebuild, _filterConfigFile, assemblyExtension)
-                                                 select metadata.Result.Item1;
+                                                 select metadata.Result.Item1).ToList();
                     var commentFiles = (from file in assemblyFiles
                                         select Path.ChangeExtension(file, SupportedCommentFileExtension) into xmlFile
                                         where File.Exists(xmlFile)
@@ -469,7 +469,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
                     MergeCommentsHelper.MergeComments(assemblyMetadataValues, commentFiles);
 
-                    if (assemblyMetadataValues.Any())
+                    if (assemblyMetadataValues.Count > 0)
                     {
                         projectMetadataList.AddRange(assemblyMetadataValues);
                     }
