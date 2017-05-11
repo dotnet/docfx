@@ -2706,6 +2706,170 @@ tagRules : [
         }
 
         [Fact]
+        public void TestManagedReferenceUpdateReferenceOverWrite()
+        {
+            // a.yml references a.b.yml
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+
+            CreateFile("ManagedReference.html.primary.tmpl",
+                new[]
+                {
+                    "Show children:",
+                    "{{#children}}",
+                    "  {{#children}}",
+                    "  <h4><xref uid=\"{{uid}}\" altProperty=\"fullName\" displayProperty=\"name\"/></h4>",
+                    "  <section>{{{summary}}}</section>",
+                    "  {{#syntax}}",
+                    "  <pre><code>{{syntax.content.0.value}}</code></pre>",
+                    "  {{/syntax}}",
+                    "  {{/children}}",
+                    "{{/children}}",
+                },
+                templateFolder);
+
+            var referenceFile = CreateFile("a.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A",
+                    "  commentId: N:A",
+                    "  id: A",
+                    "  children:",
+                    "  - A.B",
+                    "  name: A",
+                    "  nameWithType: A",
+                    "  fullName: A",
+                    "  type: Namespace",
+                    "references:",
+                    "- uid: A.B",
+                    "  commentId: T:A.B",
+                    "  isExternal: false",
+                    "  name: B",
+                    "  nameWithType: B",
+                    "  fullName: A.B",
+                },
+                inputFolder);
+            var referenceFile2 = CreateFile("a.b.yml",
+                new[]
+                {
+                    "### YamlMime:ManagedReference",
+                    "items:",
+                    "- uid: A.B",
+                    "  commentId: T:A.B",
+                    "  id: A.B",
+                    "  name: B",
+                    "  nameWithType: B",
+                    "  fullName: A.B",
+                    "  type: Class",
+                    "  syntax:",
+                    "    content: public class B",
+                    "  summary: \"This is class A.B\"",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { referenceFile, referenceFile2 }, inputFolder, null);
+
+            #endregion
+
+            Init("IncrementalBuild.TestManagedReferenceUpdateReferenceOverWrite");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceUpdateReferenceOverWrite");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceUpdateReferenceOverWrite.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestManagedReferenceUpdateReferenceOverWrite.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceUpdateReferenceOverWrite-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // add the overwrite for a.b.yml
+                var overwrite = CreateFile("overwrite.md",
+                new[]
+                {
+                    "---",
+                    "uid: A.B",
+                    "summary: \"This is from overwrite file: This is class A.B \"",
+                    "---",
+                    "Furthur description, please refer to.",
+                },
+                inputFolder);
+                files.Add(DocumentType.Overwrite, new[] { overwrite }, inputFolder, null);
+
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceUpdateReferenceOverWrite-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestManagedReferenceUpdateReferenceOverWrite-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(2, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                    var processorsStatus = incrementalInfo[0].Processors;
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestManagedReferenceUpdateReferenceOverWrite-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestManagedReferenceUpdateReferenceOverWrite-second", "IncrementalBuild.TestManagedReferenceUpdateReferenceOverWrite-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact]
         public void TestManagedReferenceWithOverwriteUpdateSrc()
         {
             #region Prepare test data

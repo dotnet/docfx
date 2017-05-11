@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         {
             var pageViewModel = (PageViewModel)model.Content;
 
-            BuildArticleCore(host, model, shouldSkipMarkup:pageViewModel?.ShouldSkipMarkup ?? false);
+            BuildArticleCore(host, model, shouldSkipMarkup: pageViewModel?.ShouldSkipMarkup ?? false);
 
             foreach (var r in pageViewModel.References)
             {
