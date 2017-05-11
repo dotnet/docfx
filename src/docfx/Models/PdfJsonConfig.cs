@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode
         public string Name { get; set; }
 
         [JsonProperty("host")]
-        public string Host { get; set; }
+        public new string Host { get; set; }
 
         [JsonProperty("locale")]
         public string Locale { get; set; }
@@ -23,5 +23,14 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("external")]
         public bool GeneratePdfExternalLink { get; set; }
+
+        [JsonProperty("excludeTocs")]
+        public List<string> ExcludedTocs { get; set; }
+
+        [JsonProperty("css")]
+        public string CssFilePath { get; set; }
+
+        [JsonProperty("base")]
+        public string BasePath { get; set; }
     }
 }

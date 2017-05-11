@@ -1,0 +1,96 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for
+full license information.}} {{!master(layout/_master.tmpl)}}
+<style>
+  .TocNavigationVertical {
+    margin-top: 24px;
+    font-family: 'Segoe UI';
+  }
+
+  .TocNavigationVertical ul {
+    list-style: none;
+    /* Remove list bullets */
+    padding: 0;
+    margin: 0;
+    font-size: 22px;
+  }
+
+  .TocNavigationVertical li {
+    margin-top: 10px;
+    padding-left: 16px;
+  }
+
+  .TocNavigationVertical li:before {
+    content: "";
+    /* Insert content that looks like bullets */
+    padding-right: 8px;
+    color: #0050c5;
+  }
+
+  .TocNavigationVertical a:link {
+    text-decoration: none;
+    color: #0050c5;
+  }
+
+  .TocNavigationVertical a:visited {
+    text-decoration: none;
+    color: #0050c5;
+  }
+
+  .TocHeader {
+    display: table;
+    height: 130px;
+    overflow: hidden;
+    background-color: #009ba5;
+    width: 100%;
+  }
+
+  .TocHeaderContainer {
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  h1 {
+    color: #fff;
+    font-family: 'Segoe UI Light';
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+    margin-left: 48px;
+  }
+</style>
+<div class=" TocHeader">
+  <div class="TocHeaderContainer">
+    <h1>Table of Contents</h1>
+  </div>
+</div>
+<div class="TocNavigationVertical" id="toc">
+  <ul class="tocBase tocLevel1">
+    {{#items}}
+    <li>
+      {{# href }}
+      <a class="normal" href="{{ href }}">{{ name }}</a> {{/ href }} {{^ href }}
+      <a class="normal slidedown" href="javascript:void(0)">{{ name }}</a> {{/ href }} {{# items.0 }}
+      <ul class="tocLevel{{level}}">
+        {{/ items.0 }} {{#items}}
+        <li>
+          {{# href }}
+          <a class="normal" href="{{ href }}">{{ name }}</a> {{/ href }} {{^ href }}
+          <a class="normal slidedown" href="javascript:void(0)">{{ name }}</a> {{/ href }} {{# items.0 }}
+          <ul class="tocLevel{{level}}">
+            {{/ items.0 }} {{#items}}
+            <li>
+              {{# href }}
+              <a class="normal" href="{{ href }}">{{ name }}</a> {{/ href }} {{^ href }}
+              <a class="normal slidedown" href="javascript:void(0)">{{ name }}</a> {{/ href }}
+            </li>
+            {{/items}} {{# items.0 }}
+          </ul>
+          {{/ items.0 }}
+        </li>
+        {{/items}} {{# items.0 }}
+      </ul>
+      {{/ items.0 }}
+    </li>
+    {{/items}}
+  </ul>
+</div>

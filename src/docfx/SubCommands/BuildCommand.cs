@@ -28,13 +28,19 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public bool AllowReplay => true;
 
-        public BuildCommand(BuildCommandOptions options)
+        public BuildCommand(BuildJsonConfig config)
         {
+            Config = config;
+
             var assembly = typeof(Program).Assembly;
             _version = assembly.GetName().Version.ToString();
-            Config = ParseOptions(options);
-            SetDefaultConfigValue(Config);
             _templateManager = new TemplateManager(assembly, "Template", Config.Templates, Config.Themes, Config.BaseDirectory);
+
+            SetDefaultConfigValue(Config);
+        }
+
+        public BuildCommand(BuildCommandOptions options) : this(ParseOptions(options))
+        {
         }
 
         public void Exec(SubCommandRunningContext context)
@@ -80,28 +86,13 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private static BuildJsonConfig ParseOptions(BuildCommandOptions options)
         {
-            var configFile = options.ConfigFile;
+            var configFile = GetConfigFilePath(options);
             BuildJsonConfig config;
-            if (string.IsNullOrEmpty(configFile))
+            if (configFile == null)
             {
-                if (!File.Exists(Constants.ConfigFileName))
-                {
-                    if (options.Content == null && options.Resource == null)
-                    {
-                        throw new OptionParserException("Either provide config file or specify content files to start building documentation.");
-                    }
-                    else
-                    {
-                        config = new BuildJsonConfig();
-                        MergeOptionsToConfig(options, config);
-                        return config;
-                    }
-                }
-                else
-                {
-                    Logger.Log(LogLevel.Verbose, $"Config file {Constants.ConfigFileName} is found.");
-                    configFile = Constants.ConfigFileName;
-                }
+                config = new BuildJsonConfig();
+                MergeOptionsToConfig(options, config);
+                return config;
             }
 
             config = CommandUtility.GetConfig<BuildConfig>(configFile).Item;
@@ -112,7 +103,33 @@ namespace Microsoft.DocAsCode.SubCommands
             return config;
         }
 
-        private static void MergeOptionsToConfig(BuildCommandOptions options, BuildJsonConfig config)
+        internal static string GetConfigFilePath(BuildCommandOptions options)
+        {
+            var configFile = options.ConfigFile;
+            if (string.IsNullOrEmpty(configFile))
+            {
+                if (!File.Exists(Constants.ConfigFileName))
+                {
+                    if (options.Content == null && options.Resource == null)
+                    {
+                        throw new OptionParserException("Either provide config file or specify content files to start building documentation.");
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    Logger.Log(LogLevel.Verbose, $"Config file {Constants.ConfigFileName} is found.");
+                    return Constants.ConfigFileName;
+                }
+            }
+
+            return configFile;
+        }
+
+        internal static void MergeOptionsToConfig(BuildCommandOptions options, BuildJsonConfig config)
         {
             // base directory for content from command line is current directory
             // e.g. C:\folder1>docfx build folder2\docfx.json --content "*.cs"
