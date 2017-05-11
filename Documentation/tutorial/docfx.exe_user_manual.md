@@ -32,16 +32,16 @@ docfx <command> [<args>]
 
 2. Commands
 ---------------
-###2.0 Init command `docfx init`
+### 2.0 Init command `docfx init`
 `docfx init` helps generate an `docfx.json` file.
 
-###2.1 Help command `docfx help`
+### 2.1 Help command `docfx help`
 
 `docfx help -a` list available subcommands.
 
 `docfx help <command>` to read about a specific subcommand
     
-###2.2 Extract language metadata command `docfx metadata`
+### 2.2 Extract language metadata command `docfx metadata`
 
 **Syntax**
 ```
@@ -58,18 +58,18 @@ docfx metadata [<projects>]
       |-- index.yml
 ```
 
-####2.2.1 Optional `<projects>` argument
+#### 2.2.1 Optional `<projects>` argument
 
 `<projects>` specifies the projects to have metadata extracted. There are several approaches to extract language metadata.
 
 1. From a supported project file or project file list
-Supported project file extensions include `.csproj`, `.vbproj`, `.sln`, and `project.json`.
+   Supported project file extensions include `.csproj`, `.vbproj`, `.sln`, and `project.json`.
 
-Files can be combined using `,` as separator, e.g. `docfx metadata a.csproj,b.sln`.
+   Files can be combined using `,` as separator, e.g. `docfx metadata a.csproj,b.sln`.
 
 2. From a supported source code file or source code file list
-Supported source code file extensions include `.cs` and `.vb`.
-Files can be combined using `,` as separator and *search pattern*.
+   Supported source code file extensions include `.cs` and `.vb`.
+   Files can be combined using `,` as separator and *search pattern*.
 
 3. From *docfx.json* file, as described in **Section3**.
 
@@ -77,13 +77,13 @@ Files can be combined using `,` as separator and *search pattern*.
 
 The default output folder is `_site/` folder if it is not specified in `docfx.json` under current directory.
 
-####2.2.2 Command option `--shouldSkipMarkup`
+#### 2.2.2 Command option `--shouldSkipMarkup`
 
 If adding option `--shouldSkipMarkup` in metadata command, it means that DocFX would not render triple-slash-comments in source code as markdown.
 
 e.g. `docfx metadata --shouldSkipMarkup`
 
-###2.3 Generate documentation command `docfx build`
+### 2.3 Generate documentation command `docfx build`
 **Syntax**
 ```
 docfx build [-o:<output_path>] [-t:<template folder>]
@@ -121,11 +121,11 @@ homepage | The default content shown when no article is selected.
 ## [Roslyn Wiki](roslyn_wiki/)
 ## [Roslyn API](api_roslyn/)
 ```
-####2.3.1 Optional `<output_path>` argument
+#### 2.3.1 Optional `<output_path>` argument
     
 The default output folder is `_site/` folder
 
-####2.3.2 Optional `<template folder>` argument
+#### 2.3.2 Optional `<template folder>` argument
     
 If specified, use the template from template folder
 
@@ -148,7 +148,7 @@ If specified, use the template from template folder
 ------------------------
 Top level `docfx.json` structure is key-value pair. `key` is the name of the subcommand, current supported subcommands are `metadata` and `build`. 
 
-###3.1 Properties for `metadata`
+### 3.1 Properties for `metadata`
 
 `Metadata` section defines an array of source projects and their output folder. Each item has `src` and `dest` property. `src` defines the source projects to have metadata generated, which is in `File Mapping Format`. Detailed syntax is described in **4. Supported `name-files` File Mapping Format** below. `dest` defines the output folder of the generated metadata files.
 
@@ -191,7 +191,7 @@ useCompatibilityFileName | If set to true, DocFX would keep `` ` `` in comment i
 
 ```
 
-###3.2 Properties for `build`
+### 3.2 Properties for `build`
 
 Key                      | Description
 -------------------------|-----------------------------
@@ -217,6 +217,7 @@ maxParallelism           | Set the max parallelism, 0 (default) is same as the c
 markdownEngineName       | Set the name of markdown engine, default is `dfm`, and another build-in engine is `gfm`.
 markdownEngineProperties | Set the parameters for markdown engine, value should be a JSON string.
 noLangKeyword            | Disable default lang keyword, it can be downloaded from [here](http://dotnet.github.io/docfx/langwordmapping/langwordMapping.yml).
+keepFileLink             | If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a `link_to_path` property inside `mainfiest.json` to indicate the physical location of that file. A file link will be created by incremental build and copy resouce file.
 
 #### 3.2.1 `Template`s and `Theme`s
 
@@ -452,11 +453,11 @@ In general, the *glob* pattern contains the following rules:
 
 5. Q & A
 ---------------
-1. Do we support files outside current project folder(the folder when `docfx.json` exists)? 
-A: YES. DO specify `src` and files outside of current folder will be copied to output folder keeping the same relative path to `src`.
-2. Do we support output folder outside current project folder(the folder when `docfx.json` exists)?
-A: YES.
-3. Do we support **referencing** files outside of current project folder(the folder when `docfx.json` exists)?
-A: NO.
+1. Do we support files outside current project folder(the folder when `docfx.json` exists)?  
+   A: YES. DO specify `src` and files outside of current folder will be copied to output folder keeping the same relative path to `src`.
+2. Do we support output folder outside current project folder(the folder when `docfx.json` exists)?  
+   A: YES.
+3. Do we support **referencing** files outside of current project folder(the folder when `docfx.json` exists)?  
+   A: NO.
 
 [1]: http://yaml.org/
