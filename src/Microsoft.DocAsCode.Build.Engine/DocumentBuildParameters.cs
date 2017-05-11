@@ -66,6 +66,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         [IncrementalIgnore]
         public int LruSize { get; set; }
 
+        [IncrementalIgnore]
+        public bool KeepFileLink { get; set; }
+
         public DocumentBuildParameters Clone() =>
             (DocumentBuildParameters)MemberwiseClone();
     }

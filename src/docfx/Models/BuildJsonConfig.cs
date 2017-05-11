@@ -132,5 +132,8 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("lruSize")]
         public int? LruSize { get; set; }
+
+        [JsonProperty("keepFileLink")]
+        public bool KeepFileLink { get; set; }
     }
 }

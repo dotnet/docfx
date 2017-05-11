@@ -123,7 +123,10 @@ namespace Microsoft.DocAsCode
         [OptionList("postProcessors", Separator = ',', HelpText = "Set the order of post processors in plugins")]
         public List<string> PostProcessors { get; set; }
 
-        [OptionList("lruSize", HelpText = "Set the LRU cached model count (approximately the same as the count of input files). By default, it is 8192 for 64bit and 3072 for 32bit process. With LRU cache enabled, memory usage decreases and time consumed increases. If set to 0, Lru cache is disabled.")]
+        [Option("lruSize", HelpText = "Set the LRU cached model count (approximately the same as the count of input files). By default, it is 8192 for 64bit and 3072 for 32bit process. With LRU cache enabled, memory usage decreases and time consumed increases. If set to 0, Lru cache is disabled.")]
         public int? LruSize { get; set; }
+
+        [Option("keepFileLink", HelpText = "If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a link_to_path property inside mainfiest.json to indicate the physical location of that file.")]
+        public bool KeepFileLink { get; set; }
     }
 }

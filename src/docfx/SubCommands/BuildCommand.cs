@@ -286,6 +286,8 @@ namespace Microsoft.DocAsCode.SubCommands
 
             config.LruSize = options.LruSize ?? config.LruSize;
 
+            config.KeepFileLink |= options.KeepFileLink;
+
             config.FileMetadataFilePaths =
                 new ListWithStringFallback(config.FileMetadataFilePaths.Select(
                     path => PathUtility.IsRelativePath(path) ? Path.Combine(config.BaseDirectory, path) : path).Reverse());
