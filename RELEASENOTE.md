@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.17.2)
+﻿Version Notes (Current Version: v2.17.3)
 =======================================
+v2.17.3
+-----------
+1. Bug fix for extracting metadata from assembly that XML comment is not applied.
+
 v2.17.2
 -----------
 1. Bug fix for template statictoc.
