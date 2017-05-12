@@ -3,22 +3,18 @@
 <h1 id="{{id}}" data-uid="{{uid}}">{{>partials/title}}</h1>
 <div class="markdown level0 summary">{{{summary}}}</div>
 <div class="markdown level0 conceptual">{{{conceptual}}}</div>
-{{#inheritance.0}}
+{{#inClass}}
 <div class="inheritance">
   <h5>{{__global.inheritance}}</h5>
-{{/inheritance.0}}
-{{#inheritance}}
-    <div class="level{{index}}">{{{specName.0.value}}}</div>
-{{/inheritance}}
-{{#inheritance.0}}
-    <div class="level{{item.level}}"><span class="xref">{{item.name.0.value}}</span></div>
-{{/inheritance.0}}
+  {{#inheritance}}
+  <div class="level{{index}}">{{{specName.0.value}}}</div>
+  {{/inheritance}}
+  <div class="level{{level}}"><span class="xref">{{name.0.value}}</span></div>
+</div>
+{{/inClass}}
 {{#derivedClasses}}
     <div class="level{{index}}">{{{specName.0.value}}}</div>
 {{/derivedClasses}}
-{{#inheritance.0}}
-</div>
-{{/inheritance.0}}
 {{#inheritedMembers.0}}
 <div class="inheritedMembers">
   <h5>{{__global.inheritedMembers}}</h5>
