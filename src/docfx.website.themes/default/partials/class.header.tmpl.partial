@@ -6,9 +6,9 @@
 {{#inClass}}
 <div class="inheritance">
   <h5>{{__global.inheritance}}</h5>
-{{#inheritance}}
+  {{#inheritance}}
   <div class="level{{index}}">{{{specName.0.value}}}</div>
-{{/inheritance}}
+  {{/inheritance}}
   <div class="level{{level}}"><span class="xref">{{name.0.value}}</span></div>
 </div>
 {{/inClass}}
