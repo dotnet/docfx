@@ -3,7 +3,7 @@
 <h1 id="{{id}}" data-uid="{{uid}}">{{>partials/title}}</h1>
 <div class="markdown level0 summary">{{{summary}}}</div>
 <div class="markdown level0 conceptual">{{{conceptual}}}</div>
-{{#isClass}}
+{{#inClass}}
 <div class="inheritance">
   <h5>{{__global.inheritance}}</h5>
 {{#inheritance}}
@@ -11,7 +11,7 @@
 {{/inheritance}}
   <div class="level{{level}}"><span class="xref">{{name.0.value}}</span></div>
 </div>
-{{/isClass}}
+{{/inClass}}
 {{#derivedClasses}}
     <div class="level{{index}}">{{{specName.0.value}}}</div>
 {{/derivedClasses}}
