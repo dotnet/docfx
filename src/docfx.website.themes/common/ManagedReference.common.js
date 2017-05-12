@@ -29,7 +29,6 @@ exports.transform = function (model)  {
         model.isClass = true;
         if (model.children) groupChildren(model, classCategory);
         model[getTypePropertyName(model.type)] = true;
-        handleNamespace(model);
         break;
       default:
         break;
@@ -182,15 +181,6 @@ function getDefinitions(category) {
   }
   console.err("category '" + category + "' is not valid.");
   return undefined;
-}
-
-// reserve "namespace" of string for backward compatibility
-// will replace "namespace" with "namespaceExpanded" of object
-function handleNamespace(model) {
-    model.namespaceExpanded = model.namespace;
-    if (model.namespaceExpanded) {
-        model.namespace = model.namespaceExpanded.uid;
-    }
 }
 
 function handleItem(vm, gitContribute, gitUrlPattern) {
