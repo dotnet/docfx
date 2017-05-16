@@ -84,12 +84,22 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
+        /// <summary>
+        /// TODO: refactor
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
         private static BuildJsonConfig ParseOptions(BuildCommandOptions options)
         {
             var configFile = GetConfigFilePath(options);
             BuildJsonConfig config;
             if (configFile == null)
             {
+                if (options.Content == null && options.Resource == null)
+                {
+                    throw new OptionParserException("Either provide config file or specify content files to start building documentation.");
+                }
+
                 config = new BuildJsonConfig();
                 MergeOptionsToConfig(options, config);
                 return config;
@@ -110,14 +120,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 if (!File.Exists(Constants.ConfigFileName))
                 {
-                    if (options.Content == null && options.Resource == null)
-                    {
-                        throw new OptionParserException("Either provide config file or specify content files to start building documentation.");
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    return null;
                 }
                 else
                 {

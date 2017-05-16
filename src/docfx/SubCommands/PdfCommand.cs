@@ -7,12 +7,13 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Collections.Generic;
     using System.IO;
 
+    using Newtonsoft.Json;
+
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.HtmlToPdf;
     using Microsoft.DocAsCode.Plugins;
-    using Newtonsoft.Json;
 
     internal sealed class PdfCommand : ISubCommand
     {
@@ -62,8 +63,8 @@ namespace Microsoft.DocAsCode.SubCommands
 
             // 1. call BuildCommand to generate html files first
             _innerBuildCommand.Exec(context);
+
             // 2. call html2pdf converter
-           
             var converter = new ConvertWrapper(options);
             try
             {
@@ -76,6 +77,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 throw new DocfxException(ioe.Message, ioe);
             }
+
             // 3. Should we delete generated files according to manifest
         }
 
@@ -85,6 +87,11 @@ namespace Microsoft.DocAsCode.SubCommands
             PdfJsonConfig config;
             if (configFile == null)
             {
+                if (options.Content == null && options.Resource == null)
+                {
+                    throw new OptionParserException("Either provide config file or specify content files to start building documentation.");
+                }
+
                 config = new PdfJsonConfig();
                 config.BaseDirectory = EnvironmentContext.BaseDirectory;
                 MergeOptionsToConfig(options, config);

@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
                     IDictionary<string, PdfInformation> pdfInformations = new ConcurrentDictionary<string, PdfInformation>();
 
-                    var manifestItems = manifest.Files.Where(f => IsType(f.DocumentType, ManifestItemType.Content)).ToArray();
+                    var manifestItems = manifest.Files.Where(f => IsType(f, ManifestItemType.Content)).ToArray();
                     var manifestUrlCache = new UrlCache(basePath, manifestItems);
 
                     Parallel.ForEach(
@@ -178,7 +178,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         private IList<ManifestItem> FindTocInManifest(Manifest manifest)
         {
-            return manifest.Files.Where(f => IsType(f.DocumentType, ManifestItemType.Toc)).ToList();
+            return manifest.Files.Where(f => IsType(f, ManifestItemType.Toc)).ToList();
         }
 
         private void HtmlTransformer(string fullPath)
@@ -221,7 +221,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         private IEnumerable<string> GetManifestHtmls(Manifest manifest)
         {
             return from file in manifest.Files
-                   where file != null && IsType( file.DocumentType, ManifestItemType.Content)
+                   where file != null && IsType(file, ManifestItemType.Content)
                    let outputPath = ManifestUtility.GetRelativePath(file, OutputType.Html)
                    where !string.IsNullOrEmpty(outputPath)
                    select outputPath;
@@ -278,20 +278,10 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
             converter.Save(Path.Combine(_pdfOptions.DestDirectory, pdfFileName));
         }
-        private bool IsType(string type, ManifestItemType targetType)
+
+        private bool IsType(ManifestItem item, ManifestItemType targetType)
         {
-            if (Enum.TryParse(type, out ManifestItemType actualType))
-            {
-                return true;
-            }
-
-            if (targetType == ManifestItemType.Content 
-                && actualType != ManifestItemType.Toc && actualType != ManifestItemType.Resource)
-            {
-                return true;
-            }
-
-            return false;
+            return ManifestUtility.GetDocumentType(item) == targetType;
         }
 
         #endregion
