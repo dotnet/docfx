@@ -68,8 +68,9 @@ namespace Microsoft.DocAsCode.SubCommands
             var converter = new ConvertWrapper(options);
             try
             {
-                using (new LoggerPhaseScope("Generating PDF", LogLevel.Info))
+                using (new LoggerPhaseScope("Generate PDF", LogLevel.Info))
                 {
+                    Logger.LogInfo("Start generating PDF...");
                     converter.Convert();
                 }
             }
