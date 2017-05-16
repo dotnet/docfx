@@ -69,6 +69,19 @@ var pack = {
         {
             "files": files, // Overrides the former one if file name is the same
         }
+    ],
+    "pdf.default": [
+        {
+            "files": files,
+            "cwd": "common",
+        },
+        {
+            "files": files,
+            "cwd": "default",
+        },
+        {
+            "files": files, // Overrides the former one if file name is the same
+        }
     ]
 };
 

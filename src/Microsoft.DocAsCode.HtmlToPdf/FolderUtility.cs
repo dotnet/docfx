@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogWarning($"Delete directory {directory} failed.");
+                        Logger.LogWarning($"Delete directory {directory} failed: {ex.Message}");
                     }
                 }
             }
@@ -79,7 +79,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             }
             catch (Exception ex)
             {
-                Logger.LogWarning($"Delete File {filePath} failed.");
+                Logger.LogWarning($"Delete File {filePath} failed: {ex.Message}");
             }
         }
     }

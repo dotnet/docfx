@@ -14,6 +14,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
     using iTextSharp.text.pdf;
 
+    using Microsoft.DocAsCode.Plugins;
+
     public class HtmlToPdfConverter
     {
         #region Fields
@@ -250,11 +252,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         private string GetFilePath(string htmlFilePath)
         {
-            if (File.Exists(htmlFilePath))
-            {
-                return htmlFilePath;
-            }
-            return string.IsNullOrEmpty(_htmlToPdfOptions.BasePath) ? htmlFilePath : Path.Combine(_htmlToPdfOptions.BasePath, htmlFilePath);
+            var basePath = string.IsNullOrEmpty(_htmlToPdfOptions.BasePath) ? EnvironmentContext.BaseDirectory : _htmlToPdfOptions.BasePath;
+            return Path.Combine(basePath, htmlFilePath);
         }
 
         private void SaveCore(Stream stream)

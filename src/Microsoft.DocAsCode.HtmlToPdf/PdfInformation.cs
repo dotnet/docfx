@@ -3,6 +3,9 @@
 
 namespace Microsoft.DocAsCode.HtmlToPdf
 {
+    using System;
+    using System.Collections.Generic;
+
     using Newtonsoft.Json;
 
     public class PdfInformation
@@ -15,5 +18,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         [JsonProperty("version")]
         public string Version { get; set; }
+
+        [JsonProperty("toc_files")]
+        public ICollection<string> TocFiles { get; set; }
     }
 }

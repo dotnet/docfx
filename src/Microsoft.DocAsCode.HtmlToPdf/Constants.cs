@@ -38,6 +38,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
     public static class ManifestConstants
     {
+        public const string ManifestFileName = "manifest.json";
+
         public static class BuildManifestItem
         {
             public const string Type = "type";

@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.HtmlToPdf.Transformer;
+    using Microsoft.DocAsCode.Plugins;
 
     public class ConvertWrapper
     {
@@ -36,129 +37,138 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         public void Convert()
         {
-            using (new LoggerPhaseScope("Convert PDF"))
+            var fullPathTmpFolder = Path.Combine(_pdfOptions.SourceDirectory, TmpFolder);
+            if (Directory.Exists(fullPathTmpFolder))
             {
-                var fullPathTmpFolder = Path.Combine(_pdfOptions.SourceDirectory, TmpFolder);
-                if (Directory.Exists(fullPathTmpFolder))
+                FolderUtility.ForceDeleteDirectoryWithAllSubDirectories(fullPathTmpFolder);
+            }
+
+            using (var folder = new SelfCleaningFolder(fullPathTmpFolder))
+            {
+                FolderUtility.CopyDirectoryWithAllSubDirectories(_pdfOptions.SourceDirectory, folder.FullPath);
+                HtmlTransformer(folder.FullPath);
+                var manifest = JsonUtility.Deserialize<Manifest>(Path.Combine(folder.FullPath, ManifestConstants.ManifestFileName));
+                if (manifest == null)
                 {
-                    FolderUtility.ForceDeleteDirectoryWithAllSubDirectories(fullPathTmpFolder);
+                    Logger.LogError("Manifest file is not found.");
+                    throw new FileNotFoundException("Manifest file is not found.");
                 }
-                using (var folder = new SelfCleaningFolder(fullPathTmpFolder))
+
+                if (manifest.Files == null || manifest.Files.Count == 0)
                 {
-                    FolderUtility.CopyDirectoryWithAllSubDirectories(_pdfOptions.SourceDirectory, folder.FullPath);
-                    HtmlTransformer(folder.FullPath);
-                    var manifest = JsonUtility.FromJsonString<Manifest>(folder.FullPath);
-                    if (manifest == null)
+                    Logger.LogWarning($"There is no file in manifest under {_pdfOptions.SourceDirectory}");
+                    return;
+                }
+
+                var basePath = folder.FullPath;
+                var tocFiles = FindTocInManifest(manifest);
+
+                Logger.LogVerbose($"Found {tocFiles.Count} TOC.json files, will generate pdf.");
+                var tocHtmls = new ConcurrentBag<string>();
+
+                IDictionary<string, PdfInformation> pdfInformations = new ConcurrentDictionary<string, PdfInformation>();
+
+                var manifestItems = manifest.Files.Where(f => IsType(f, ManifestItemType.Content)).ToArray();
+                var manifestUrlCache = new UrlCache(basePath, manifestItems);
+
+                Parallel.ForEach(
+                    tocFiles,
+                    new ParallelOptions { MaxDegreeOfParallelism = _pdfOptions.PdfConvertParallelism },
+                    tocFile =>
                     {
-                        Logger.LogError("Manifest file is not found.");
-                        throw new FileNotFoundException("Manifest file is not found.");
-                    }
-
-                    if (manifest.Files == null || manifest.Files.Length == 0)
-                    {
-                        Logger.LogWarning($"There is no file in manifest under {_pdfOptions.SourceDirectory}");
-                        return;
-                    }
-
-                    var basePath = folder.FullPath;
-                    var tocFiles = FindTocInManifest(manifest);
-
-                    Logger.LogVerbose($"Found {tocFiles.Count} TOC.json files, will generate pdf.");
-                    var tocHtmls = new ConcurrentBag<string>();
-
-                    IDictionary<string, PdfInformation> pdfInformations = new ConcurrentDictionary<string, PdfInformation>();
-
-                    var manifestItems = manifest.Files.Where(f => f.Type == ManifestItemType.Content).ToArray();
-                    var manifestUrlCache = new UrlCache(basePath, manifestItems);
-
-                    Parallel.ForEach(
-                        tocFiles,
-                        new ParallelOptions { MaxDegreeOfParallelism = _pdfOptions.PdfConvertParallelism },
-                        tocFile =>
+                        var tocJson = ManifestUtility.GetRelativePath(tocFile, OutputType.TocJson);
+                        var tocAssetId = ManifestUtility.GetAssetId(tocFile);
+                        try
                         {
-                            try
+                            Logger.LogVerbose($"Starting to handle {tocJson}.");
+                            var tocFilePath = NormalizeFilePath(tocJson);
+                            var tocPageFilePath = Path.Combine(basePath, Path.GetDirectoryName(tocFilePath), TocPageFileName);
+                            var tocModels = LoadTocModels(basePath, tocFile) ?? new List<TocModel>();
+
+                            var crruentTocHtmls = new ConcurrentBag<string>();
+                            var htmlModels = BuildHtmlModels(basePath, tocModels, crruentTocHtmls);
+
+                            HtmlNotInTocTransformer(basePath, manifestUrlCache, crruentTocHtmls);
+
+                            if (_pdfOptions.GenerateAppendices)
                             {
-                                Logger.LogVerbose($"Starting to handle {tocFile.Output.TocJson.RelativePath}.");
-                                var tocFilePath = NormalizeFilePath(tocFile.Output.TocJson.RelativePath);
-                                var tocPageFilePath = Path.Combine(basePath, Path.GetDirectoryName(tocFilePath), TocPageFileName);
-                                var tocModels = LoadTocModels(basePath, tocFile) ?? new List<TocModel>();
+                                crruentTocHtmls.AsParallel().ForAll(tocHtmls.Add);
+                            }
 
-                                var crruentTocHtmls = new ConcurrentBag<string>();
-                                var htmlModels = BuildHtmlModels(basePath, tocModels, crruentTocHtmls);
-
-                                HtmlNotInTocTransformer(basePath, manifestUrlCache, crruentTocHtmls);
-
-                                if (_pdfOptions.GenerateAppendices)
+                            if (File.Exists(tocPageFilePath))
+                            {
+                                RemoveQueryStringAndBookmarkTransformer(tocPageFilePath);
+                                AbsolutePathInTocPageFileTransformer(tocPageFilePath);
+                                htmlModels.Insert(0, new HtmlModel { Title = "Cover Page", HtmlFilePath = tocPageFilePath });
+                            }
+                            if (_pdfOptions.ExcludeTocs == null || _pdfOptions.ExcludeTocs.All(p => NormalizeFilePath(p) != tocFilePath))
+                            {
+                                var pdfNameFragments = new List<string> { _pdfOptions.PdfDocsetName };
+                                if (!string.IsNullOrEmpty(_pdfOptions.Locale))
                                 {
-                                    crruentTocHtmls.AsParallel().ForAll(tocHtmls.Add);
+                                    pdfNameFragments.Add(_pdfOptions.Locale);
                                 }
+                                pdfNameFragments.Add(Path.ChangeExtension(tocAssetId, FileExtensions.PdfExtension).Replace('/', '_'));
 
-                                if (File.Exists(tocPageFilePath))
+                                var pdfName = pdfNameFragments.ToDelimitedString("_");
+                                using (new LoggerPhaseScope($"Convert {tocJson} to {pdfName}"))
                                 {
-                                    RemoveQueryStringAndBookmarkTransformer(tocPageFilePath);
-                                    AbsolutePathInTocPageFileTransformer(tocPageFilePath);
-                                    htmlModels.Insert(0, new HtmlModel { Title = "Cover Page", HtmlFilePath = tocPageFilePath });
-                                }
-                                if (_pdfOptions.ExcludeTocs == null || _pdfOptions.ExcludeTocs.All(p => NormalizeFilePath(p) != tocFilePath))
-                                {
-                                    var pdfName = _pdfOptions.PdfDocsetName + "_" + _pdfOptions.Locale + "_" + Path.ChangeExtension(tocFile.AssetId, FileExtensions.PdfExtension).Replace('/', '_');
-                                    Logger.LogVerbose($"Starting to convert {tocFile.Output.TocJson.RelativePath} to {pdfName}.");
-
                                     ConvertCore(basePath, pdfName, htmlModels);
-                                    pdfInformations.Add(
-                                        pdfName,
-                                        new PdfInformation
-                                        {
-                                            DocsetName = _pdfOptions.PdfDocsetName,
-                                            AssetId = tocFile.AssetId,
-                                            Version = tocFile.Version
-                                        });
-                                    Logger.LogVerbose($"Finished to convert {tocFile.Output.TocJson.RelativePath} to {pdfName}.");
+                                    Logger.LogInfo($"{pdfName} is generated based on {tocJson}.");
                                 }
-                                else
-                                {
-                                    Logger.LogVerbose($"Skipped to convert {tocFile.Output.TocJson.RelativePath} to pdf because of custom exclude tocs.");
-                                }
-                                Logger.LogVerbose($"Finished to handle {tocFile.Output.TocJson.RelativePath}.");
+                                pdfInformations.Add(
+                                    pdfName,
+                                    new PdfInformation
+                                    {
+                                        DocsetName = _pdfOptions.PdfDocsetName,
+                                        TocFiles = new string[] { tocFile.SourceRelativePath },
+                                        Version = tocFile.Version,
+                                        AssetId = tocAssetId,
+                                    });
                             }
-                            catch (Exception ex)
+                            else
                             {
-                                Logger.LogWarning($"Error happen when converting {tocFile.Output.TocJson.RelativePath} to Pdf. Details: {ex.Message}");
+                                Logger.LogVerbose($"Skipped to convert {tocJson} to pdf because of custom exclude tocs.");
                             }
-                        });
-
-                    using (var fileStream = new FileStream(Path.Combine(_pdfOptions.DestDirectory, _pdfOptions.PdfDocsetName + FileExtensions.JsonExtension), FileMode.Create, FileAccess.Write))
-                    {
-                        using (var ws = new StreamWriter(fileStream))
-                        {
-                            JsonUtility.Serialize(ws, pdfInformations);
+                            Logger.LogVerbose($"Finished to handle {tocJson}.");
                         }
-                    }
-
-                    if (_pdfOptions.GenerateAppendices)
-                    {
-                        var otherConceptuals = ManifestHtmlsExceptTocHtmls(manifest, tocHtmls);
-                        if (otherConceptuals.Count > 0)
+                        catch (Exception ex)
                         {
-                            var htmlModels = new List<HtmlModel>();
-                            var htmlModel = new HtmlModel
+                            Logger.LogWarning($"Error happen when converting {tocJson} to Pdf. Details: {ex.Message}");
+                        }
+                    });
+
+                using (var fileStream = new FileStream(Path.Combine(_pdfOptions.DestDirectory, _pdfOptions.PdfDocsetName + FileExtensions.JsonExtension), FileMode.Create, FileAccess.Write))
+                {
+                    using (var ws = new StreamWriter(fileStream))
+                    {
+                        JsonUtility.Serialize(ws, pdfInformations);
+                    }
+                }
+
+                if (_pdfOptions.GenerateAppendices)
+                {
+                    var otherConceptuals = ManifestHtmlsExceptTocHtmls(manifest, tocHtmls);
+                    if (otherConceptuals.Count > 0)
+                    {
+                        var htmlModels = new List<HtmlModel>();
+                        var htmlModel = new HtmlModel
+                        {
+                            Title = "appendices",
+                            Children = otherConceptuals.Select((other, index) => new HtmlModel
                             {
-                                Title = "appendices",
-                                Children = otherConceptuals.Select((other, index) => new HtmlModel
-                                {
-                                    Title = $"Appendix {index + 1}",
-                                    HtmlFilePath = other
-                                }).ToList()
-                            };
-                            htmlModels.Add(htmlModel);
-                            Logger.LogVerbose("Starting to convert appendices to pdf.");
-                            ConvertCore(basePath, "appendices", htmlModels);
-                        }
+                                Title = $"Appendix {index + 1}",
+                                HtmlFilePath = other
+                            }).ToList()
+                        };
+                        htmlModels.Add(htmlModel);
+                        Logger.LogVerbose("Starting to convert appendices to pdf.");
+                        ConvertCore(basePath, "appendices", htmlModels);
                     }
-                    else
-                    {
-                        Logger.LogVerbose("Skipped to convert appendices to pdf.");
-                    }
+                }
+                else
+                {
+                    Logger.LogVerbose("Skipped to convert appendices to pdf.");
                 }
             }
         }
@@ -172,9 +182,9 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             return relativePath.Replace('/', '\\').ToLower();
         }
 
-        private IList<ManifestItemWithAssetId> FindTocInManifest(Manifest manifest)
+        private IList<ManifestItem> FindTocInManifest(Manifest manifest)
         {
-            return manifest.Files.Where(p => p.Type == ManifestItemType.Toc).ToList();
+            return manifest.Files.Where(f => IsType(f, ManifestItemType.Toc)).ToList();
         }
 
         private void HtmlTransformer(string fullPath)
@@ -209,24 +219,16 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             }
         }
 
-        private T LoadFromFilePath<T>(string filePath)
+        private IList<TocModel> LoadTocModels(string basePath, ManifestItem tocFile)
         {
-            using (var reader = new StreamReader(filePath))
-            {
-                return JsonUtility.FromJsonString<T>(reader.ReadToEnd());
-            }
-        }
-
-        private IList<TocModel> LoadTocModels(string basePath, ManifestItemWithAssetId tocFile)
-        {
-            return LoadFromFilePath<IList<TocModel>>(Path.Combine(basePath, tocFile.Output.TocJson.RelativePath));
+            return JsonUtility.Deserialize<IList<TocModel>>(Path.Combine(basePath, ManifestUtility.GetRelativePath(tocFile, OutputType.TocJson)));
         }
 
         private IEnumerable<string> GetManifestHtmls(Manifest manifest)
         {
             return from file in manifest.Files
-                   where file != null && file.Type == ManifestItemType.Content && file.Output != null && file.Output.Html != null
-                   let outputPath = file.Output.Html.RelativePath
+                   where file != null && IsType(file, ManifestItemType.Content)
+                   let outputPath = ManifestUtility.GetRelativePath(file, OutputType.Html)
                    where !string.IsNullOrEmpty(outputPath)
                    select outputPath;
         }
@@ -281,6 +283,11 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                 });
 
             converter.Save(Path.Combine(_pdfOptions.DestDirectory, pdfFileName));
+        }
+
+        private bool IsType(ManifestItem item, ManifestItemType targetType)
+        {
+            return ManifestUtility.GetDocumentType(item) == targetType;
         }
 
         #endregion

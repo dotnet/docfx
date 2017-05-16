@@ -108,6 +108,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf.Transformer
                                         if (originalString.EndsWith(BuildToolConstants.OutputFileExtensions.ContentHtmlExtension, StringComparison.OrdinalIgnoreCase) && !tocUrlCache.Contains(srcInCurrentHtml))
                                         {
                                             var conceptual = _manifestUrlCache.Query(srcInCurrentHtml);
+                                            var assetId = ManifestUtility.GetAssetId(conceptual);
                                             if (conceptual == null)
                                             {
                                                 Logger.LogWarning($"Can not find the relative path: {uri.OriginalString} in manifest. So skip to fix the invalid link.", htmlFilePath);
@@ -117,7 +118,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf.Transformer
                                             if (!string.IsNullOrEmpty(_pdfOptions.Locale) && !string.IsNullOrEmpty(_pdfOptions.Host))
                                             {
                                                 // the assetId may has '.html' extension, but we should redirect to the site which should not have '.html' extension, so trim it here.
-                                                tag.Attributes["href"].Value = string.Format(_pdfOptions.ExternalLinkFormat, conceptual.AssetId.TrimEnd(BuildToolConstants.OutputFileExtensions.ContentHtmlExtension));
+                                                tag.Attributes["href"].Value = string.Format(_pdfOptions.ExternalLinkFormat, assetId.TrimEnd(BuildToolConstants.OutputFileExtensions.ContentHtmlExtension));
                                                 isTransformed = true;
                                             }
                                             else
