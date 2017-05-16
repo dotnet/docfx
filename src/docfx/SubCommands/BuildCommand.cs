@@ -11,12 +11,10 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Common.Git;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
 
     internal sealed class BuildCommand : ISubCommand
     {
@@ -34,9 +32,11 @@ namespace Microsoft.DocAsCode.SubCommands
 
             var assembly = typeof(Program).Assembly;
             _version = assembly.GetName().Version.ToString();
-            _templateManager = new TemplateManager(assembly, "Template", Config.Templates, Config.Themes, Config.BaseDirectory);
 
             SetDefaultConfigValue(Config);
+
+            _templateManager = new TemplateManager(assembly, "Template", Config.Templates, Config.Themes, Config.BaseDirectory);
+
         }
 
         public BuildCommand(BuildCommandOptions options) : this(ParseOptions(options))

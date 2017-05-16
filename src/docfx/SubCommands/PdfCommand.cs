@@ -53,8 +53,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 DestDirectory = outputFolder,
                 Host = _config.Host,
                 Locale = _config.Locale,
-                NeedGeneratePdfExternalLink = _config.GeneratePdfExternalLink,
-                GenerateAppendices = _config.GenerateAppendices,
+                NeedGeneratePdfExternalLink = _config.GeneratesExternalLink,
+                GenerateAppendices = _config.GeneratesAppendices,
                 PdfConvertParallelism = _config.MaxParallelism == null || _config.MaxParallelism <= 0 ? Environment.ProcessorCount : _config.MaxParallelism.Value,
                 PdfDocsetName = _config.Name ?? Path.GetFileName(EnvironmentContext.BaseDirectory),
                 SourceDirectory = outputFolder,
@@ -92,14 +92,20 @@ namespace Microsoft.DocAsCode.SubCommands
                     throw new OptionParserException("Either provide config file or specify content files to start building documentation.");
                 }
 
-                config = new PdfJsonConfig();
-                config.BaseDirectory = EnvironmentContext.BaseDirectory;
+                config = new PdfJsonConfig()
+                {
+                    BaseDirectory = EnvironmentContext.BaseDirectory
+                };
                 MergeOptionsToConfig(options, config);
                 return config;
             }
 
             config = CommandUtility.GetConfig<PdfConfig>(configFile).Item;
-            if (config == null) throw new DocumentException($"Unable to find pdf subcommand config in file '{configFile}'.");
+            if (config == null)
+            {
+                throw new DocumentException($"Unable to find pdf subcommand config in file '{configFile}'.");
+            }
+                
             config.BaseDirectory = Path.GetDirectoryName(configFile);
 
             MergeOptionsToConfig(options, config);
@@ -125,9 +131,29 @@ namespace Microsoft.DocAsCode.SubCommands
                 config.Name = options.Name;
             }
 
+            if (!string.IsNullOrEmpty(options.Host))
+            {
+                config.Host = options.Host;
+            }
+
+            if (!string.IsNullOrEmpty(options.Locale))
+            {
+                config.Locale = options.Locale;
+            }
+
             if (!string.IsNullOrEmpty(options.BasePath))
             {
                 config.BasePath = options.BasePath;
+            }
+
+            if (options.GeneratesAppendices.HasValue)
+            {
+                config.GeneratesAppendices = options.GeneratesAppendices.Value;
+            }
+
+            if (options.GeneratesExternalLink.HasValue)
+            {
+                config.GeneratesExternalLink = options.GeneratesExternalLink.Value;
             }
         }
 

@@ -14,11 +14,11 @@ namespace Microsoft.DocAsCode
         [Option("css", HelpText = "Specify the path for the css to generate pdf, default value is styles/default.css")]
         public string CssFilePath { get; set; }
 
-        [Option("appendices", HelpText = "Specify whether or not generate appendices for not-in-TOC articles")]
-        public bool GenerateAppendices { get; set; }
+        [Option("generatesAppendices", HelpText = "Specify whether or not generate appendices for not-in-TOC articles")]
+        public bool? GeneratesAppendices { get; set; }
 
-        [Option("external", HelpText = "Specify whether or not generate external links for PDF")]
-        public bool GeneratePdfExternalLink { get; set; }
+        [Option("generatesExternalLink", HelpText = "Specify whether or not generate external links for PDF")]
+        public bool? GeneratesExternalLink { get; set; }
 
         [Option("host", HelpText = "Specify the hostname to link not-in-TOC articles")]
         public new string Host { get; set; }
@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode
         [Option("locale", HelpText = "Specify the locale of the pdf file")]
         public string Locale { get; set; }
 
-        [Option("excludeTocs", HelpText = "Specify the toc files to be excluded")]
+        [Option("excludedTocs", HelpText = "Specify the toc files to be excluded")]
         public ListWithStringFallback ExcludedTocs { get; set; }
 
         [Option("basePath", HelpText = "Specify the base path to generate external link, {host}/{locale}/{basePath}")]
