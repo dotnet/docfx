@@ -37,8 +37,8 @@ templates:
       license: MIT
       usage:
         init: "git clone https://github.com/MathewSachin/docfx-tmpl.git mathew"
-        command: "-t default,matchew/src"
-        config: '"template":["default","matchew/src"]'
+        command: "-t default,mathew/src"
+        config: '"template":["default","mathew/src"]'
 ---
 
 # Dashboard for Templates
