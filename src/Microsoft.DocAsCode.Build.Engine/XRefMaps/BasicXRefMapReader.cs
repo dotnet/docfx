@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
+    using System;
+
     using Microsoft.DocAsCode.Plugins;
 
     public class BasicXRefMapReader : IXRefContainerReader
@@ -11,7 +13,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public BasicXRefMapReader(XRefMap map)
         {
-            Map = map;
+            Map = map ?? throw new ArgumentNullException(nameof(map));
         }
 
         public virtual XRefSpec Find(string uid)

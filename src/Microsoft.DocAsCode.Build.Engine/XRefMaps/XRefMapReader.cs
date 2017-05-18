@@ -17,8 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         protected override IXRefContainer GetMap(string name)
         {
-            IXRefContainer result;
-            _maps.TryGetValue(name, out result);
+            _maps.TryGetValue(name, out IXRefContainer result);
             return result;
         }
     }

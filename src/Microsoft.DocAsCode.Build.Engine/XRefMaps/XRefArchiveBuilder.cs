@@ -5,8 +5,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
-    using System.Net;
-    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -122,8 +120,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static Uri GetHrefUri(Uri uri, string href)
         {
-            Uri hrefUri;
-            if (!Uri.TryCreate(href, UriKind.RelativeOrAbsolute, out hrefUri))
+            if (!Uri.TryCreate(href, UriKind.RelativeOrAbsolute, out Uri hrefUri))
             {
                 Logger.LogWarning($"Invalid redirection href: {href}.");
                 return null;

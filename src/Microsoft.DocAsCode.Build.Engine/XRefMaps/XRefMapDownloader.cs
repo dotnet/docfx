@@ -150,8 +150,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (!string.IsNullOrEmpty(map.BaseUrl))
             {
-                Uri baseUri;
-                if (!Uri.TryCreate(map.BaseUrl, UriKind.Absolute, out baseUri))
+                if (!Uri.TryCreate(map.BaseUrl, UriKind.Absolute, out Uri baseUri))
                 {
                     throw new InvalidDataException($"Xref map file (from {uri.AbsoluteUri}) has an invalid base url: {map.BaseUrl}.");
                 }

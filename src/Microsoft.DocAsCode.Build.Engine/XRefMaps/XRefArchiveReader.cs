@@ -20,11 +20,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public XRefArchiveReader(XRefArchive archive)
             : base(XRefArchive.MajorFileName, new HashSet<string>(archive.Entries))
         {
-            if (archive == null)
-            {
-                throw new ArgumentNullException(nameof(archive));
-            }
-            _archive = archive;
+            _archive = archive ?? throw new ArgumentNullException(nameof(archive));
             _lru = LruList<Tuple<string, XRefMap>>.Create(0x10, comparer: new TupleComparer());
         }
 
@@ -32,8 +28,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         protected override IXRefContainer GetMap(string name)
         {
-            Tuple<string, XRefMap> tuple;
-            if (_lru.TryFind(t => t.Item1 == name, out tuple))
+            if (_lru.TryFind(t => t.Item1 == name, out Tuple<string, XRefMap> tuple))
             {
                 return tuple.Item2;
             }
@@ -51,7 +46,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         #endregion
 
-        #region MyRegion
+        #region TupleComparer
 
         private sealed class TupleComparer : EqualityComparer<Tuple<string, XRefMap>>
         {
@@ -65,6 +60,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return obj.Item1.GetHashCode();
             }
         }
+
         #endregion
     }
 }
