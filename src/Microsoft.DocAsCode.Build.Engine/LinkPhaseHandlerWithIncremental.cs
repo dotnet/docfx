@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 SaveExternalXRefSpec();
             }
             _inner.ProcessManifest(hostServices, maxParallelism);
-            PostHandle(hostServices);
+            PostHandle(hostServices, maxParallelism);
         }
 
         #region Private Methods
@@ -92,11 +92,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
-        private void PostHandle(List<HostService> hostServices)
+        private void PostHandle(List<HostService> hostServices, int maxParallelism)
         {
             using (new LoggerPhaseScope("ProcessUnloadedTemplateDependency", LogLevel.Verbose))
             {
-                ProcessUnloadedTemplateDependency(hostServices);
+                ProcessUnloadedTemplateDependency(hostServices, maxParallelism);
             }
 
             using (new LoggerPhaseScope("UpdateManifest", LogLevel.Verbose))
@@ -213,13 +213,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void ProcessUnloadedTemplateDependency(IEnumerable<HostService> hostServices)
+        private void ProcessUnloadedTemplateDependency(IEnumerable<HostService> hostServices, int maxParallelism)
         {
             var loaded = Context.ManifestItems;
             IEnumerable<ManifestItem> unloaded;
             using (new LoggerPhaseScope("GetUnloadedManifestItems", LogLevel.Verbose))
             {
-                unloaded = GetUnloadedManifestItems(hostServices);
+                unloaded = GetUnloadedManifestItems(hostServices, maxParallelism);
             }
             var types = new HashSet<string>(unloaded.Select(m => m.DocumentType).Except(loaded.Select(m => m.DocumentType)));
             if (types.Count > 0)
@@ -288,7 +288,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private List<ManifestItem> GetUnloadedManifestItems(IEnumerable<HostService> hostServices)
+        private List<ManifestItem> GetUnloadedManifestItems(IEnumerable<HostService> hostServices, int maxParallelism)
         {
             if (LastBuildVersionInfo == null)
             {
@@ -301,7 +301,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             using (new LoggerPhaseScope("UpdateItems", LogLevel.Verbose))
             {
-                return (from mani in LastBuildVersionInfo.Manifest
+                return (from mani in LastBuildVersionInfo.Manifest.AsParallel().WithDegreeOfParallelism(maxParallelism)
                         where unloadedFiles.ContainsKey(mani.SourceRelativePath)
                         let copied = UpdateItem(mani, unloadedFiles[mani.SourceRelativePath])
                         select copied).ToList();
@@ -313,15 +313,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             var result = item.Clone();
             result.IsIncremental = true;
             result.SourceRelativePath = sourceRelativePath;
-            Parallel.ForEach(
-                from ofi in result.OutputFiles.Values
-                where ofi.LinkToPath != null
-                where ofi.LinkToPath.Length > IncrementalContext.LastBaseDir.Length
-                where ofi.LinkToPath.StartsWith(IncrementalContext.LastBaseDir)
-                where (ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '\\' || ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '/')
-                select ofi,
-                new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
-                ofi =>
+            foreach (var ofi in result.OutputFiles.Values)
+            {
+                if (ofi.LinkToPath != null &&
+                    ofi.LinkToPath.Length > IncrementalContext.LastBaseDir.Length &&
+                    ofi.LinkToPath.StartsWith(IncrementalContext.LastBaseDir) &&
+                    (ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '\\' || ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '/'))
                 {
                     IncrementalUtility.RetryIO(() =>
                     {
@@ -329,7 +326,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                         File.Copy(Environment.ExpandEnvironmentVariables(ofi.LinkToPath), Environment.ExpandEnvironmentVariables(path));
                         ofi.LinkToPath = path;
                     });
-                });
+                }
+            }
 
             return result;
         }
