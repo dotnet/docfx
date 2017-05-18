@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
 
     using Microsoft.CodeAnalysis;
@@ -523,6 +524,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static async Task<ConcurrentDictionary<string, Compilation>> GetProjectCompilationAsync(ConcurrentDictionary<string, Project> projectCache)
         {
             var compilations = new ConcurrentDictionary<string, Compilation>();
+            var sb = new StringBuilder();
             foreach (var project in projectCache)
             {
                 try
@@ -532,8 +534,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
                 catch (Exception e)
                 {
-                    throw new ExtractMetadataException($"Error extracting metadata for project \"{project.Key}\": {e.Message}", e);
+                    if (sb.Length > 0)
+                    {
+                        sb.AppendLine();
+                    }
+                    sb.Append($"Error extracting metadata for project \"{project.Key}\": {e.Message}");
                 }
+            }
+            if (sb.Length > 0)
+            {
+                throw new ExtractMetadataException(sb.ToString());
             }
             return compilations;
         }
