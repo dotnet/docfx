@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             // map references of children to ApiBuildOutput
             Mapper.Initialize(cfg =>
             {
-                cfg.AddProfile(new ApiBuildOutputProfile(supportedLanguages));
+                cfg.AddProfile(new ApiBuildOutputProfile(supportedLanguages, model.Metadata, references));
             });
             Mapper.Configuration.AssertConfigurationIsValid();
             var childUids = model.Items[0].Children.Concat(model.Items[0].ChildrenInDevLangs.SelectMany(kv => kv.Value)).Distinct();
