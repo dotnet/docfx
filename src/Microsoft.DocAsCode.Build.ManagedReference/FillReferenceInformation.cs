@@ -201,11 +201,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
         }
 
-        private IEnumerable<string> GetChildren(PageViewModel pageViewModel)
+        private List<string> GetChildren(PageViewModel pageViewModel)
         {
-            return from i in pageViewModel.Items
-                   from c in i.Children ?? Enumerable.Empty<string>()
-                   select c;
+            return (from i in pageViewModel.Items
+                    from c in i.Children ?? Enumerable.Empty<string>()
+                    select c).ToList();
         }
 
         #endregion
