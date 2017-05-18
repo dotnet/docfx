@@ -16,6 +16,10 @@ namespace Microsoft.DocAsCode.Dfm
 
         public override IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context)
         {
+            if (!parser.Context.GetIsInTable())
+            {
+                return null;
+            }
             var match = _dfmFencesRegex.Match(context.CurrentMarkdown);
             if (match.Length == 0)
             {

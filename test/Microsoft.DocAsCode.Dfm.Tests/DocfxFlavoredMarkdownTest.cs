@@ -1395,6 +1395,15 @@ public class MyClass
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
         }
 
+        [Fact]
+        public void CodeSnippetShouldNotWorkInParagragh()
+        {
+            var marked = DocfxFlavoredMarked.Markup("text [!code[test](test.md)]", "test.md");
+            var expected = @"<p>text [!code<a href=""test.md"" data-raw-source=""[test](test.md)"">test</a>]</p>
+";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
         private static void WriteToFile(string file, string content)
         {
             var dir = Path.GetDirectoryName(file);

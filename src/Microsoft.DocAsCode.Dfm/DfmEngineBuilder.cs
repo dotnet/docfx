@@ -49,12 +49,7 @@ namespace Microsoft.DocAsCode.Dfm
             // xref link inline rule must be before MarkdownLinkInlineRule
             inlineRules.Insert(index, new DfmIncludeInlineRule());
 
-            index = inlineRules.FindIndex(s => s is MarkdownTextInlineRule);
-            if (index < 0)
-            {
-                throw new ArgumentException("MarkdownTextInlineRule should exist!");
-            }
-            inlineRules[index] = new DfmTextInlineRule();
+            Replace<MarkdownTextInlineRule, DfmTextInlineRule>(inlineRules);
 
             var blockRules = BlockRules.ToList();
             index = blockRules.FindLastIndex(s => s is MarkdownCodeBlockRule);
@@ -75,17 +70,26 @@ namespace Microsoft.DocAsCode.Dfm
                     new DfmNoteBlockRule()
                 });
 
-            var markdownBlockQuoteIndex = blockRules.FindIndex(item => item is MarkdownBlockquoteBlockRule);
-            if (markdownBlockQuoteIndex < 0)
-            {
-                throw new ArgumentException("MarkdownBlockquoteBlockRule should exist!");
-            }
-            blockRules[markdownBlockQuoteIndex] = new DfmBlockquoteBlockRule();
+            Replace<MarkdownBlockquoteBlockRule, DfmBlockquoteBlockRule>(blockRules);
+            Replace<MarkdownTableBlockRule, DfmTableBlockRule>(blockRules);
+            Replace<MarkdownNpTableBlockRule, DfmNpTableBlockRule>(blockRules);
 
             InlineRules = inlineRules.ToImmutableList();
             BlockRules = blockRules.ToImmutableList();
 
             Rewriter = InitMarkdownStyle(container, baseDir, templateDir);
+        }
+
+        private static void Replace<TSource, TReplacement>(List<IMarkdownRule> blockRules)
+            where TSource : IMarkdownRule
+            where TReplacement : IMarkdownRule, new()
+        {
+            var index = blockRules.FindIndex(item => item is TSource);
+            if (index < 0)
+            {
+                throw new ArgumentException($"{typeof(TSource).Name} should exist!");
+            }
+            blockRules[index] = new TReplacement();
         }
 
         private static IMarkdownTokenRewriter InitMarkdownStyle(ICompositionContainer container, string baseDir, string templateDir)
