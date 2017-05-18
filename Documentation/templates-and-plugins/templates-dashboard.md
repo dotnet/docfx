@@ -21,20 +21,24 @@ templates:
         url: "https://github.com/dotnet/docfx/tree/dev/src/docfx.website.themes/statictoc"
       usage:
         command: "-t statictoc"
-        config: "template: statictoc"
-    - name: sideway
+        config: '"template": "statictoc"'
+    - name: mathew
       description: A simple template
-      type: Internal
-      author: DocAsCode
-      version: 0.0.1
+      type: External
+      author: MathewSachin
+      version: 1.0.0
       engines:
-        docfx: "^2.15"
-      thumbnail: ~/templates-and-plugins/images/default.screenshot.png
-      homepage: https://github.com/dotnet/docfx/tree/dev/src/docfx.website.themes/default
+        docfx: ">=2.17.4"
+      thumbnail: ~/templates-and-plugins/images/mathew.screenshot.png
+      homepage: https://github.com/MathewSachin/docfx-tmpl
       repository:
         type: git
-        url: "https://github.com/dotnet/docfx/tree/dev/src/docfx.website.themes/default"
+        url: "https://github.com/MathewSachin/docfx-tmpl.git"
       license: MIT
+      usage:
+        init: "git clone https://github.com/MathewSachin/docfx-tmpl.git mathew"
+        command: "-t default,matchew/src"
+        config: '"template":["default","matchew/src"]'
 ---
 
 # Dashboard for Templates
