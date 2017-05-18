@@ -92,8 +92,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     return null;
                 }
-                Uri uri;
-                if (!Uri.TryCreate(href, UriKind.RelativeOrAbsolute, out uri))
+                if (!Uri.TryCreate(href, UriKind.RelativeOrAbsolute, out Uri uri))
                 {
                     return null;
                 }
