@@ -80,6 +80,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
 
             var moduleModel = JsonUtility.Deserialize<ApiBuildOutput>(outputModuleRawModelPath);
             Assert.NotNull(moduleModel);
+            Assert.Equal("Test UniversalReferenceDocumentProcessor", moduleModel.Metadata["meta"]);
             Assert.Equal(
                 "<p sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"2\">Bases: <xref href=\"cntk.cntk_py.Value\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@cntk.cntk_py.Value\" sourcefile=\"TestData/yml/cntk.core.Value.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"></xref>\nInternal representation of minibatch data.</p>\n",
                 moduleModel.Children[0].Value[1].Summary);
@@ -87,6 +88,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
 
             var classModel = JsonUtility.Deserialize<ApiBuildOutput>(outputClassRawModelPath);
             Assert.NotNull(classModel);
+            Assert.Equal("Test UniversalReferenceDocumentProcessor", classModel.Metadata["meta"]);
 
             Assert.Equal(1, classModel.SupportedLanguages.Length);
             Assert.Equal("python", classModel.SupportedLanguages[0]);

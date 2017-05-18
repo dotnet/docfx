@@ -11,9 +11,13 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
     public class ApiBuildOutputProfile : Profile
     {
-        public ApiBuildOutputProfile(string[] supportedLanguages, IReadOnlyDictionary<string, ApiNames> references = null, IReadOnlyDictionary<string, ApiBuildOutput> children = null)
+        public ApiBuildOutputProfile(
+            string[] supportedLanguages,
+            IReadOnlyDictionary<string, object> metadata,
+            IReadOnlyDictionary<string, ApiNames> references)
         {
             CreateMap<ItemViewModel, ApiBuildOutput>()
+                .ForMember(dest => dest.Metadata, opt => opt.ResolveUsing(new ApiBuildOutputMetadataResolver(metadata)))
                 .ForMember(dest => dest.Children, opt => opt.Ignore())
                 .ForMember(dest => dest.Parent, opt => opt.Ignore())
                 .ForMember(dest => dest.NamespaceName, opt => opt.Ignore())
