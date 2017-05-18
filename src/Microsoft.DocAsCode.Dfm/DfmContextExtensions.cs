@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Dfm
     using System.Linq;
 
     using Microsoft.DocAsCode.MarkdownLite;
-    using Microsoft.DocAsCode.Common;
 
     public static class DfmContextExtensions
     {
@@ -17,6 +16,7 @@ namespace Microsoft.DocAsCode.Dfm
         private const string FilePathStackKey = "FilePathStack";
         private const string DependencyKey = "Dependency";
         private const string IsIncludeKey = "IsInclude";
+        private const string IsInTableKey = "IsInTable";
         private const string FallbackFoldersKey = "FallbackFolders";
 
         public static ImmutableStack<string> GetFilePathStack(this IMarkdownContext context)
@@ -133,6 +133,24 @@ namespace Microsoft.DocAsCode.Dfm
                 throw new ArgumentNullException(nameof(context));
             }
             return context.CreateContext(context.Variables.SetItem(IsIncludeKey, null));
+        }
+
+        public static bool GetIsInTable(this IMarkdownContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+            return context.Variables.ContainsKey(IsInTableKey);
+        }
+
+        public static IMarkdownContext SetIsInTable(this IMarkdownContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+            return context.CreateContext(context.Variables.SetItem(IsInTableKey, null));
         }
     }
 }

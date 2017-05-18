@@ -21,6 +21,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             _extractor = extractor;
         }
 
+        public TwoPhaseBlockToken(TwoPhaseBlockToken token, IMarkdownContext context)
+            : this(token.Rule, context, token.SourceInfo, token._extractor)
+        {
+        }
+
         public IMarkdownRule Rule { get; }
 
         public IMarkdownContext Context { get; }
