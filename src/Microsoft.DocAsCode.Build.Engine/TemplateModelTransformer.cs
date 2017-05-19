@@ -19,7 +19,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private readonly DocumentBuildContext _context;
         private readonly ApplyTemplateSettings _settings;
-        private readonly SystemMetadataGenerator _systemMetadataGenerator;
         private readonly TemplateCollection _templateCollection;
         private readonly IDictionary<string, object> _globalVariables;
 
@@ -34,7 +33,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             _templateCollection = templateCollection;
             _settings = settings;
             _globalVariables = globals;
-            _systemMetadataGenerator = new SystemMetadataGenerator(context);
         }
 
         /// <summary>
