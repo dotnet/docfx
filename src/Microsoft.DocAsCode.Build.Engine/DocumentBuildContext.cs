@@ -237,8 +237,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             try
             {
-                Uri uri;
-                if (!Uri.TryCreate(url, UriKind.Absolute, out uri) &&
+                if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri) &&
                     uri.Scheme != "http" &&
                     uri.Scheme != "https")
                 {
@@ -263,9 +262,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string GetFilePath(string key)
         {
-            if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
-            string filePath;
-            if (FileMap.TryGetValue(key, out filePath))
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+            if (key.Length == 0)
+            {
+                throw new ArgumentException("Key cannot be empty.", nameof(key));
+            }
+            if (FileMap.TryGetValue(key, out string filePath))
             {
                 return filePath;
             }
@@ -318,8 +323,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return href;
             }
-            string filePath;
-            if (!FileMap.TryGetValue(rp.UrlDecode(), out filePath))
+            if (!FileMap.TryGetValue(rp.UrlDecode(), out string filePath))
             {
                 return href;
             }
@@ -338,20 +342,41 @@ namespace Microsoft.DocAsCode.Build.Engine
         // TODO: use this method instead of directly accessing UidMap
         public void RegisterInternalXrefSpec(XRefSpec xrefSpec)
         {
-            if (xrefSpec == null) throw new ArgumentNullException(nameof(xrefSpec));
-            if (string.IsNullOrEmpty(xrefSpec.Href)) throw new ArgumentException("Href for xref spec must contain value");
-            if (!PathUtility.IsRelativePath(xrefSpec.Href)) throw new ArgumentException("Only relative href path is supported");
+            if (xrefSpec == null)
+            {
+                throw new ArgumentNullException(nameof(xrefSpec));
+            }
+            if (string.IsNullOrEmpty(xrefSpec.Href))
+            {
+                throw new ArgumentException("Href for xref spec must contain value");
+            }
+            if (!PathUtility.IsRelativePath(xrefSpec.Href))
+            {
+                throw new ArgumentException("Only relative href path is supported");
+            }
             XRefSpecMap[xrefSpec.Uid] = xrefSpec;
         }
 
         public void RegisterInternalXrefSpecBookmark(string uid, string bookmark)
         {
-            if (string.IsNullOrEmpty(uid)) throw new ArgumentNullException(nameof(uid));
-            if (bookmark == null) throw new ArgumentNullException(nameof(uid));
-            if (bookmark == string.Empty) return;
+            if (uid == null)
+            {
+                throw new ArgumentNullException(nameof(uid));
+            }
+            if (uid.Length == 0)
+            {
+                throw new ArgumentException("Uid cannot be empty", nameof(uid));
+            }
+            if (bookmark == null)
+            {
+                throw new ArgumentNullException(nameof(bookmark));
+            }
+            if (bookmark.Length == 0)
+            {
+                return;
+            }
 
-            XRefSpec xref;
-            if (XRefSpecMap.TryGetValue(uid, out xref))
+            if (XRefSpecMap.TryGetValue(uid, out XRefSpec xref))
             {
                 xref.Href = UriUtility.GetNonFragment(xref.Href) + "#" + bookmark;
             }
@@ -368,8 +393,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(uid));
             }
 
-            XRefSpec xref;
-            if (XRefSpecMap.TryGetValue(uid, out xref))
+            if (XRefSpecMap.TryGetValue(uid, out XRefSpec xref))
             {
                 return xref;
             }
@@ -411,9 +435,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public IImmutableList<string> GetTocFileKeySet(string key)
         {
-            if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));
-            HashSet<string> sets;
-            if (TocMap.TryGetValue(key, out sets))
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+            if (TocMap.TryGetValue(key, out HashSet<string> sets))
             {
                 return sets.ToImmutableArray();
             }
@@ -448,8 +474,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var item in allSourceFiles)
             {
                 var path = (string)((RelativePath)item.File).GetPathFromWorkingFolder();
-                FileAndType ft;
-                if (dict.TryGetValue(path, out ft))
+                if (dict.TryGetValue(path, out FileAndType ft))
                 {
                     if (FilePathComparer.OSPlatformSensitiveStringComparer.Equals(ft.BaseDir, item.BaseDir) &&
                         FilePathComparer.OSPlatformSensitiveStringComparer.Equals(ft.File, item.File))
@@ -484,8 +509,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static XRefSpec GetExternalReference(ExternalReferencePackageCollection externalReferences, string uid)
         {
-            ReferenceViewModel vm;
-            if (!externalReferences.TryGetReference(uid, out vm))
+            if (!externalReferences.TryGetReference(uid, out ReferenceViewModel vm))
             {
                 return null;
             }
