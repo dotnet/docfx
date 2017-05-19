@@ -271,11 +271,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var type = Utility.GetHrefType(tocHref);
             if (type == HrefType.MarkdownTocFile || type == HrefType.YamlTocFile)
             {
-                UpdateNearestTocCore(host, tocHref, toc, nearest);
+                UpdateNearestTocCore(host, UriUtility.GetPath(tocHref), toc, nearest);
             }
             else if (item.TopicUid == null && Utility.IsSupportedRelativeHref(item.Href))
             {
-                UpdateNearestTocCore(host, item.Href, toc, nearest);
+                UpdateNearestTocCore(host, UriUtility.GetPath(item.Href), toc, nearest);
             }
 
             if (item.Items != null && item.Items.Count > 0)

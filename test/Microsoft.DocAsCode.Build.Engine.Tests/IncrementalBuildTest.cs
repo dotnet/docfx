@@ -2122,6 +2122,146 @@ tagRules : [
         }
 
         [Fact]
+        public void TestTocAddItemWithAnchor()
+        {
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("partials/head.tmpl.partial",
+                new[]
+                {
+                    "<meta property=\"docfx:navrel\" content=\"{{_navRel}}\">",
+                    "<meta property=\"docfx:tocrel\" content=\"{{_tocRel}}\">"
+                },
+                templateFolder);
+            CreateFile("conceptual.html.primary.tmpl", "{{>partials/head}}{{{conceptual}}}", templateFolder);
+            CreateFile("toc.html.tmpl", "{{>partials/head}} toc", templateFolder);
+
+            var tocFile = CreateFile("toc.md",
+                new[]
+                {
+                    "# [A](a.md)",
+                    "# [SubFolder](subfolder/)",
+                },
+                inputFolder);
+            var conceptualFile = CreateFile("a.md",
+                new[]
+                {
+                    "<p/>",
+                    "a",
+                },
+                inputFolder);
+            var tocFile2 = CreateFile("subfolder/toc.md",
+                new[]
+                {
+                    "",
+                },
+                inputFolder);
+            var conceptualFile2 = CreateFile("subfolder/b.md",
+                new[]
+                {
+                    "<p/>",
+                    "b",
+                },
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { tocFile, tocFile2, conceptualFile, conceptualFile2 }, inputFolder, null);
+
+            #endregion
+
+            Init("IncrementalBuild.TestTocAddItemWithAnchor");
+            var outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestTocAddItemWithAnchor");
+            var outputFolderForIncremental = Path.Combine(outputFolder, "IncrementalBuild.TestTocAddItemWithAnchor.Second");
+            var outputFolderForCompare = Path.Combine(outputFolder, "IncrementalBuild.TestTocAddItemWithAnchor.Second.ForceBuild");
+            try
+            {
+                using (new LoggerPhaseScope("IncrementalBuild.TestTocAddItemWithAnchor-first"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderFirst,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+
+                ClearListener();
+
+                // update toc file to add a new item
+                UpdateFile(
+                    "toc.md",
+                    new[]
+                    {
+                        "# [A](a.md)",
+                        "# [B](subfolder/b.md#anchor)",
+                    },
+                    inputFolder);
+                using (new LoggerPhaseScope("IncrementalBuild.TestTocAddItemWithAnchor-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForIncremental,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+
+                }
+                using (new LoggerPhaseScope("IncrementalBuild.TestTocAddItemWithAnchor-forcebuild-second"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderForCompare,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder);
+                }
+                {
+                    // check manifest
+                    var manifestOutputPath = Path.Combine(outputFolderForIncremental, "manifest.json");
+                    Assert.True(File.Exists(manifestOutputPath));
+                    var manifest = JsonUtility.Deserialize<Manifest>(manifestOutputPath);
+                    Assert.Equal(4, manifest.Files.Count);
+                    var incrementalInfo = manifest.IncrementalInfo;
+                    Assert.NotNull(incrementalInfo);
+                    Assert.Equal(2, incrementalInfo.Count);
+                    var incrementalStatus = incrementalInfo[0].Status;
+                    Assert.True(incrementalStatus.CanIncremental);
+                }
+                {
+                    // compare with force build
+                    Assert.True(CompareDir(outputFolderForIncremental, outputFolderForCompare));
+
+                    // check tocrel
+                    string content = File.ReadAllText(Path.Combine(outputFolderForCompare, "subfolder/b.html"));
+                    Assert.True(content.Contains("<meta property=\"docfx:tocrel\" content=\"../toc.html\">"));
+                    Assert.Equal(
+                        GetLogMessages("IncrementalBuild.TestTocAddItemWithAnchor-forcebuild-second"),
+                        GetLogMessages(new[] { "IncrementalBuild.TestTocAddItemWithAnchor-second", "IncrementalBuild.TestTocAddItemWithAnchor-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact]
         public void TestDependencyFileDelete()
         {
             // conceptual1--->conceptual2(phase 2)

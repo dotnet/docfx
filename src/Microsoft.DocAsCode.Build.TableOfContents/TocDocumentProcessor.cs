@@ -159,14 +159,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var tocHrefType = Utility.GetHrefType(tocHref);
             if (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile)
             {
-                context.RegisterToc(key, tocHref);
+                context.RegisterToc(key, UriUtility.GetPath(tocHref));
             }
             else
             {
                 var href = item.Href; // Should be original href from working folder starting with ~
                 if (Utility.IsSupportedRelativeHref(href))
                 {
-                    context.RegisterToc(key, href);
+                    context.RegisterToc(key, UriUtility.GetPath(href));
                 }
             }
         }
