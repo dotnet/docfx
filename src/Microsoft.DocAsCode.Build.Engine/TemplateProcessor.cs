@@ -142,7 +142,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         private List<ManifestItem> ProcessCore(List<InternalManifestItem> items, DocumentBuildContext context, ApplyTemplateSettings settings, IDictionary<string, object> globals)
         {
             var manifest = new ConcurrentBag<ManifestItem>();
-            var systemAttributeGenerator = new SystemMetadataGenerator(context);
             var transformer = new TemplateModelTransformer(context, _templateCollection, settings, globals);
             items.RunAll(
                 item =>
