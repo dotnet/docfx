@@ -661,6 +661,8 @@ b",
 <li>b</li>
 </ol>
 ")]
+        [InlineData(@"[a]()", @"<p><a href="""" data-raw-source=""[a]()"">a</a></p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
