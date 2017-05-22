@@ -93,7 +93,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, string html, SourceInfo sourceInfo)
         {
-            Logger.LogError($"Unable to resolve \"{html}\" at line {sourceInfo.LineNumber}: " + comment);
+            Logger.LogWarning($"Unable to resolve \"{html}\" at line {sourceInfo.LineNumber}: " + comment, code: WarningCodes.Markdown.InvalidInclude);
             return GenerateNodeWithCommentWrapper("ERROR " + tag, $"Unable to resolve {html}: {comment}", html);
         }
 
