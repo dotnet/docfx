@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Common
                 // TODO: plan to change this warning to error, add error code to analyze the impact.
                 Logger.LogWarning(
                     $"Multiple input files are attempting to write to the same output file \"{duplicates.Key}\". Please rename at least {duplicates.Count() - 1} of following input files to ensure no duplicate output files: \"{string.Join(", ", duplicates.Select(duplicate => duplicate.item.SourceRelativePath))}\".",
-                    ErrorCode.DuplicateOutputFiles);
+                    WarningCodes.Build.DuplicateOutputFiles);
                 itemsToRemove.UnionWith(duplicates.Skip(1).Select(duplicate => duplicate.item.SourceRelativePath));
             }
             manifestItems.RemoveAll(m => itemsToRemove.Contains(m.SourceRelativePath));
