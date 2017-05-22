@@ -159,6 +159,10 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var tocHrefType = Utility.GetHrefType(tocHref);
             if (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile)
             {
+                if (UriUtility.HasFragment(tocHref) || UriUtility.HasQueryString(tocHref))
+                {
+                    Logger.LogWarning($"Illegal toc href: {tocHref} in {key}.");
+                }
                 context.RegisterToc(key, UriUtility.GetPath(tocHref));
             }
             else
@@ -166,6 +170,10 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 var href = item.Href; // Should be original href from working folder starting with ~
                 if (Utility.IsSupportedRelativeHref(href))
                 {
+                    if (UriUtility.HasFragment(href) || UriUtility.HasQueryString(href))
+                    {
+                        Logger.LogWarning($"Illegal href: {href} in {key}.");
+                    }
                     context.RegisterToc(key, UriUtility.GetPath(href));
                 }
             }
