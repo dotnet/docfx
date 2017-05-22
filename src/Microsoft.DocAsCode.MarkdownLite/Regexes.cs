@@ -87,7 +87,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             ///         |                                   or
             ///         \)(?<-DEPTH>)                       ')' with depth--
             ///     )                                       end non-capturing group
-            ///     +?                                      lazy 1~
+            ///     *?                                      lazy 0~
             ///     (?(DEPTH)(?!))                          require depth = 0
             /// )                                           end group 2: link
             /// >?                                          '>' 0~1
