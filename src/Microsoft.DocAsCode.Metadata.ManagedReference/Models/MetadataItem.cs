@@ -24,8 +24,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         [JsonIgnore]
         public string RawComment { get; set; }
 
-        [YamlMember(Alias = "isEii")]
-        [JsonProperty("isEii")]
+        [JsonProperty(Constants.PropertyName.IsEii)]
+        [YamlMember(Alias = Constants.PropertyName.IsEii)]
         public bool IsExplicitInterfaceImplementation { get; set; }
 
         [YamlMember(Alias = "isExtensionMethod")]

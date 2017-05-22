@@ -26,6 +26,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Conceptual = "conceptual";
             public const string Documentation = "documentation";
             public const string Summary = "summary";
+            public const string IsEii = "isEii";
 
             public const string Name = "name";
             public const string DisplayName = "displayName";
