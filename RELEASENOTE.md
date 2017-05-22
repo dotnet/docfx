@@ -2,6 +2,8 @@
 =======================================
 v2.18 (Pre-release)
 -----------
+1.  Bug fixes:
+    1. Bug fix for markdown empty link.
 
 v2.17
 -----------
