@@ -126,7 +126,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             content = $"<a href=\"{link}\">{title}</a>";
                         }
 
-                        string errorCode = internalBookmark ? ErrorCode.InvalidInternalBookmark : ErrorCode.InvalidExternalBookmark;
+                        string errorCode = internalBookmark ? WarningCodes.Build.InvalidInternalBookmark : WarningCodes.Build.InvalidExternalBookmark;
                         Logger.LogWarning($"Illegal link: `{content}` -- missing bookmark. The file {linkedToFileSrc} doesn't contain a bookmark named {bookmark}.",
                             null,
                             currentFileSrc,

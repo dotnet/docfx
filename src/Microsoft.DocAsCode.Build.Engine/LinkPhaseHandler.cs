@@ -201,7 +201,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             null,
                             null,
                             null,
-                            ErrorCode.DuplicateUids);
+                            WarningCodes.Build.DuplicateUids);
                     }
                     else
                     {
