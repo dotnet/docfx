@@ -1,8 +1,12 @@
-﻿Version Notes (Current Version: v2.17.4)
+﻿Version Notes (Current Version: v2.17.5)
 =======================================
+v2.17.5
+-----------
+1. Fix Egde crashes with web worker. https://github.com/dotnet/docfx/issues/1414
+
 v2.17.4
 -----------
-1. Bug fix for default template that inheritance is incorrect
+1. Bug fix for default template that inheritance is incorrect.
 
 v2.17.3
 -----------
