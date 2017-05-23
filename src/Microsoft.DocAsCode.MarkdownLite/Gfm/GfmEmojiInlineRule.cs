@@ -16,8 +16,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         protected virtual string GetEmoji(string shortCode)
         {
-            string result;
-            _emoji.TryGetValue(shortCode, out result);
+            _emoji.TryGetValue(shortCode, out string result);
             return result;
         }
 
