@@ -34,8 +34,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public static bool GetIsInLink(IMarkdownContext context)
         {
-            object value;
-            if (!context.Variables.TryGetValue(IsInLink, out value))
+            if (!context.Variables.TryGetValue(IsInLink, out object value))
             {
                 return false;
             }

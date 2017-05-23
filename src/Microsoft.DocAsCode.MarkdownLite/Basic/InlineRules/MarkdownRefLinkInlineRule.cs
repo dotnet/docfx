@@ -25,8 +25,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
             var linkStr = match.NotEmpty(2, 1).ReplaceRegex(Regexes.Lexers.WhiteSpaces, " ");
 
-            LinkObj link;
-            parser.Links.TryGetValue(linkStr.ToLower(), out link);
+            parser.Links.TryGetValue(linkStr.ToLower(), out LinkObj link);
 
             if (string.IsNullOrEmpty(link?.Href))
             {

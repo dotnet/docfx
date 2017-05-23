@@ -19,15 +19,11 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         private MatchContent(string text, int startIndex, MatchDirection direction, Dictionary<string, KeyValuePair<int, int>> group)
         {
-            if (text == null)
-            {
-                throw new ArgumentNullException(nameof(text));
-            }
+            Text = text ?? throw new ArgumentNullException(nameof(text));
             if (startIndex < 0 || startIndex > text.Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(startIndex), "Out of range.");
             }
-            Text = text;
             StartIndex = startIndex;
             Direction = direction;
             _group = group;
@@ -260,8 +256,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public MatchGroup? GetGroup(string name)
         {
-            KeyValuePair<int, int> pair;
-            if (!_group.TryGetValue(name, out pair))
+            if (!_group.TryGetValue(name, out KeyValuePair<int, int> pair))
             {
                 return null;
             }

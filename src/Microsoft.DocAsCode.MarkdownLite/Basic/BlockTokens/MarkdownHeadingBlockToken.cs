@@ -51,8 +51,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         private string GenerateNewId(Dictionary<string, int> idTable, string Id)
         {
-            int count;
-            if (idTable.TryGetValue(Id, out count))
+            if (idTable.TryGetValue(Id, out int count))
             {
                 var newId = Id + "-" + count.ToString();
                 idTable[Id] = count + 1;

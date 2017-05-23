@@ -42,8 +42,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     result = result.SetItem(i, rewrittenToken);
                     token = rewrittenToken;
                 }
-                var rewritable = token as IMarkdownRewritable<IMarkdownToken>;
-                if (rewritable != null)
+                if (token is IMarkdownRewritable<IMarkdownToken> rewritable)
                 {
                     _parents.Push(token);
                     rewrittenToken = rewritable.Rewrite(this);
@@ -78,8 +77,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 throw new ArgumentNullException(nameof(name));
             }
-            object value;
-            _variables.TryGetValue(name, out value);
+            _variables.TryGetValue(name, out object value);
             return value;
         }
 
@@ -116,11 +114,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 throw new ArgumentNullException(nameof(name));
             }
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
-            _postProcesses[name] = action;
+
+            _postProcesses[name] = action ?? throw new ArgumentNullException(nameof(action));
         }
 
         public virtual void RemovePostProcess(string name)
