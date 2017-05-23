@@ -1,6 +1,6 @@
-﻿Version Notes (Current Version: v2.18)
+﻿Version Notes (Current Version: v2.18.1)
 =======================================
-v2.18 (Pre-release)
+v2.18.1 (Pre-release)
 -----------
 1.  Bug fixes:
     1. Bug fix for markdown empty link.
