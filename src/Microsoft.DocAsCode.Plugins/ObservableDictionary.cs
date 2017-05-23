@@ -35,8 +35,7 @@ namespace Microsoft.DocAsCode.Plugins
             set
             {
                 NotifyCollectionChangedEventArgs e;
-                TValue oldValue;
-                if (_dictionary.TryGetValue(key, out oldValue))
+                if (_dictionary.TryGetValue(key, out TValue oldValue))
                 {
                     e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, new KeyValuePair<TKey, TValue>(key, value), new KeyValuePair<TKey, TValue>(key, oldValue));
                 }
@@ -69,8 +68,7 @@ namespace Microsoft.DocAsCode.Plugins
 
         public bool Remove(TKey key)
         {
-            TValue value;
-            if (!_dictionary.TryGetValue(key, out value))
+            if (!_dictionary.TryGetValue(key, out TValue value))
             {
                 return false;
             }
@@ -123,8 +121,7 @@ namespace Microsoft.DocAsCode.Plugins
 
         bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> item)
         {
-            TValue value;
-            if (!_dictionary.TryGetValue(item.Key, out value) ||
+            if (!_dictionary.TryGetValue(item.Key, out TValue value) ||
                 !object.Equals(item.Value, value))
             {
                 return false;
