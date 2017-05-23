@@ -1,5 +1,8 @@
-﻿Version Notes (Current Version: v2.17.5)
+﻿Version Notes (Current Version: v2.17.6)
 =======================================
+v2.17.6
+-----------
+
 v2.17.5
 -----------
 1. Fix Egde crashes with web worker. https://github.com/dotnet/docfx/issues/1414
