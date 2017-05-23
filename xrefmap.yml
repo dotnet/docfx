@@ -42063,18 +42063,6 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Plugins.DependencyType.CouldTransit
   fullName: Microsoft.DocAsCode.Plugins.DependencyType.CouldTransit
   nameWithType: DependencyType.CouldTransit
-- uid: Microsoft.DocAsCode.Plugins.DependencyType.IsTransitive
-  name: IsTransitive
-  href: api/Microsoft.DocAsCode.Plugins.DependencyType.html#Microsoft_DocAsCode_Plugins_DependencyType_IsTransitive
-  commentId: P:Microsoft.DocAsCode.Plugins.DependencyType.IsTransitive
-  fullName: Microsoft.DocAsCode.Plugins.DependencyType.IsTransitive
-  nameWithType: DependencyType.IsTransitive
-- uid: Microsoft.DocAsCode.Plugins.DependencyType.IsTransitive*
-  name: IsTransitive
-  href: api/Microsoft.DocAsCode.Plugins.DependencyType.html#Microsoft_DocAsCode_Plugins_DependencyType_IsTransitive_
-  commentId: Overload:Microsoft.DocAsCode.Plugins.DependencyType.IsTransitive
-  fullName: Microsoft.DocAsCode.Plugins.DependencyType.IsTransitive
-  nameWithType: DependencyType.IsTransitive
 - uid: Microsoft.DocAsCode.Plugins.DependencyType.Name
   name: Name
   href: api/Microsoft.DocAsCode.Plugins.DependencyType.html#Microsoft_DocAsCode_Plugins_DependencyType_Name
@@ -42111,18 +42099,6 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Plugins.DependencyType.Transitivity
   fullName: Microsoft.DocAsCode.Plugins.DependencyType.Transitivity
   nameWithType: DependencyType.Transitivity
-- uid: Microsoft.DocAsCode.Plugins.DependencyType.TriggerBuild
-  name: TriggerBuild
-  href: api/Microsoft.DocAsCode.Plugins.DependencyType.html#Microsoft_DocAsCode_Plugins_DependencyType_TriggerBuild
-  commentId: P:Microsoft.DocAsCode.Plugins.DependencyType.TriggerBuild
-  fullName: Microsoft.DocAsCode.Plugins.DependencyType.TriggerBuild
-  nameWithType: DependencyType.TriggerBuild
-- uid: Microsoft.DocAsCode.Plugins.DependencyType.TriggerBuild*
-  name: TriggerBuild
-  href: api/Microsoft.DocAsCode.Plugins.DependencyType.html#Microsoft_DocAsCode_Plugins_DependencyType_TriggerBuild_
-  commentId: Overload:Microsoft.DocAsCode.Plugins.DependencyType.TriggerBuild
-  fullName: Microsoft.DocAsCode.Plugins.DependencyType.TriggerBuild
-  nameWithType: DependencyType.TriggerBuild
 - uid: Microsoft.DocAsCode.Plugins.DependencyTypeName
   name: DependencyTypeName
   href: api/Microsoft.DocAsCode.Plugins.DependencyTypeName.html
