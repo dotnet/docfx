@@ -1591,6 +1591,21 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Postbuild
   fullName: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Postbuild
   nameWithType: ApplyOverwriteDocument.Postbuild
+- uid: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Transform*
+  name: Transform
+  href: api/Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.html#Microsoft_DocAsCode_Build_Common_ApplyOverwriteDocument_Transform_
+  commentId: Overload:Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Transform
+  fullName: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Transform
+  nameWithType: ApplyOverwriteDocument.Transform
+- uid: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Transform``1(Microsoft.DocAsCode.Plugins.FileModel,System.String,Microsoft.DocAsCode.Plugins.IHostService)
+  name: Transform<T>(FileModel, String, IHostService)
+  href: api/Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.html#Microsoft_DocAsCode_Build_Common_ApplyOverwriteDocument_Transform__1_Microsoft_DocAsCode_Plugins_FileModel_System_String_Microsoft_DocAsCode_Plugins_IHostService_
+  commentId: M:Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Transform``1(Microsoft.DocAsCode.Plugins.FileModel,System.String,Microsoft.DocAsCode.Plugins.IHostService)
+  name.vb: Transform(Of T)(FileModel, String, IHostService)
+  fullName: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Transform<T>(Microsoft.DocAsCode.Plugins.FileModel, System.String, Microsoft.DocAsCode.Plugins.IHostService)
+  fullName.vb: Microsoft.DocAsCode.Build.Common.ApplyOverwriteDocument.Transform(Of T)(Microsoft.DocAsCode.Plugins.FileModel, System.String, Microsoft.DocAsCode.Plugins.IHostService)
+  nameWithType: ApplyOverwriteDocument.Transform<T>(FileModel, String, IHostService)
+  nameWithType.vb: ApplyOverwriteDocument.Transform(Of T)(FileModel, String, IHostService)
 - uid: Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep
   name: BaseDocumentBuildStep
   href: api/Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html
@@ -1896,6 +1911,18 @@ references:
   commentId: Overload:Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildArticle
   fullName: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildArticle
   nameWithType: BuildReferenceDocumentBase.BuildArticle
+- uid: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildArticleCore(Microsoft.DocAsCode.Plugins.IHostService,Microsoft.DocAsCode.Plugins.FileModel,Microsoft.DocAsCode.Build.Common.IModelAttributeHandler,Microsoft.DocAsCode.Build.Common.HandleModelAttributesContext,System.Boolean)
+  name: BuildArticleCore(IHostService, FileModel, IModelAttributeHandler, HandleModelAttributesContext, Boolean)
+  href: api/Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildArticleCore_Microsoft_DocAsCode_Plugins_IHostService_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Build_Common_IModelAttributeHandler_Microsoft_DocAsCode_Build_Common_HandleModelAttributesContext_System_Boolean_
+  commentId: M:Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildArticleCore(Microsoft.DocAsCode.Plugins.IHostService,Microsoft.DocAsCode.Plugins.FileModel,Microsoft.DocAsCode.Build.Common.IModelAttributeHandler,Microsoft.DocAsCode.Build.Common.HandleModelAttributesContext,System.Boolean)
+  fullName: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildArticleCore(Microsoft.DocAsCode.Plugins.IHostService, Microsoft.DocAsCode.Plugins.FileModel, Microsoft.DocAsCode.Build.Common.IModelAttributeHandler, Microsoft.DocAsCode.Build.Common.HandleModelAttributesContext, System.Boolean)
+  nameWithType: BuildReferenceDocumentBase.BuildArticleCore(IHostService, FileModel, IModelAttributeHandler, HandleModelAttributesContext, Boolean)
+- uid: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildArticleCore*
+  name: BuildArticleCore
+  href: api/Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildArticleCore_
+  commentId: Overload:Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildArticleCore
+  fullName: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildArticleCore
+  nameWithType: BuildReferenceDocumentBase.BuildArticleCore
 - uid: Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.BuildOrder
   name: BuildOrder
   href: api/Microsoft.DocAsCode.Build.Common.BuildReferenceDocumentBase.html#Microsoft_DocAsCode_Build_Common_BuildReferenceDocumentBase_BuildOrder
@@ -21492,6 +21519,12 @@ references:
   commentId: F:Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.InheritedMembers
   fullName: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.InheritedMembers
   nameWithType: Constants.PropertyName.InheritedMembers
+- uid: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.IsEii
+  name: IsEii
+  href: api/Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.html#Microsoft_DocAsCode_DataContracts_Common_Constants_PropertyName_IsEii
+  commentId: F:Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.IsEii
+  fullName: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.IsEii
+  nameWithType: Constants.PropertyName.IsEii
 - uid: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Name
   name: Name
   href: api/Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.html#Microsoft_DocAsCode_DataContracts_Common_Constants_PropertyName_Name
@@ -21552,12 +21585,30 @@ references:
   commentId: F:Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Return
   fullName: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Return
   nameWithType: Constants.PropertyName.Return
+- uid: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.SeeAlsoContent
+  name: SeeAlsoContent
+  href: api/Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.html#Microsoft_DocAsCode_DataContracts_Common_Constants_PropertyName_SeeAlsoContent
+  commentId: F:Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.SeeAlsoContent
+  fullName: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.SeeAlsoContent
+  nameWithType: Constants.PropertyName.SeeAlsoContent
 - uid: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Source
   name: Source
   href: api/Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.html#Microsoft_DocAsCode_DataContracts_Common_Constants_PropertyName_Source
   commentId: F:Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Source
   fullName: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Source
   nameWithType: Constants.PropertyName.Source
+- uid: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Summary
+  name: Summary
+  href: api/Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.html#Microsoft_DocAsCode_DataContracts_Common_Constants_PropertyName_Summary
+  commentId: F:Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Summary
+  fullName: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Summary
+  nameWithType: Constants.PropertyName.Summary
+- uid: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Syntax
+  name: Syntax
+  href: api/Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.html#Microsoft_DocAsCode_DataContracts_Common_Constants_PropertyName_Syntax
+  commentId: F:Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Syntax
+  fullName: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.Syntax
+  nameWithType: Constants.PropertyName.Syntax
 - uid: Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.SystemKeys
   name: SystemKeys
   href: api/Microsoft.DocAsCode.DataContracts.Common.Constants.PropertyName.html#Microsoft_DocAsCode_DataContracts_Common_Constants_PropertyName_SystemKeys
