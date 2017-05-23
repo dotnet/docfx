@@ -54,8 +54,7 @@ namespace Microsoft.DocAsCode.Plugins
         public static string GetProperty(this IFileAbstractLayer fal, string file, string propertyName)
         {
             var dict = fal.GetProperties(file);
-            string result;
-            dict.TryGetValue(propertyName, out result);
+            dict.TryGetValue(propertyName, out string result);
             return result;
         }
 

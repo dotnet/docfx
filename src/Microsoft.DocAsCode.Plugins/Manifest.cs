@@ -166,8 +166,7 @@ namespace Microsoft.DocAsCode.Plugins
 
         private void AddItem(string relativePath, OutputFileInfo item)
         {
-            List<OutputFileInfo> list;
-            if (_index.TryGetValue(relativePath, out list))
+            if (_index.TryGetValue(relativePath, out List<OutputFileInfo> list))
             {
                 list.Add(item);
             }
@@ -179,8 +178,7 @@ namespace Microsoft.DocAsCode.Plugins
 
         private void RemoveItem(string relativePath, OutputFileInfo item)
         {
-            List<OutputFileInfo> list;
-            if (_index.TryGetValue(relativePath, out list))
+            if (_index.TryGetValue(relativePath, out List<OutputFileInfo> list))
             {
                 list.Remove(item);
             }

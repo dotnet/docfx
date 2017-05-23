@@ -32,8 +32,7 @@ namespace Microsoft.DocAsCode.Plugins
         {
             lock (_syncRoot)
             {
-                IncrementalStatus status;
-                if (!_processors.TryGetValue(processor, out status))
+                if (!_processors.TryGetValue(processor, out IncrementalStatus status))
                 {
                     _processors[processor] = status = new IncrementalStatus();
                 }

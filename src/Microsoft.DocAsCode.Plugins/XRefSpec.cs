@@ -41,8 +41,7 @@
         {
             get
             {
-                string value;
-                _dict.TryGetValue(UidKey, out value);
+                _dict.TryGetValue(UidKey, out string value);
                 return value;
             }
             set { _dict[UidKey] = value; }
@@ -52,8 +51,7 @@
         {
             get
             {
-                string value;
-                _dict.TryGetValue(NameKey, out value);
+                _dict.TryGetValue(NameKey, out string value);
                 return value;
             }
             set { _dict[NameKey] = value; }
@@ -63,8 +61,7 @@
         {
             get
             {
-                string value;
-                _dict.TryGetValue(HrefKey, out value);
+                _dict.TryGetValue(HrefKey, out string value);
                 return value;
             }
             set { _dict[HrefKey] = value; }
@@ -74,8 +71,7 @@
         {
             get
             {
-                string value;
-                _dict.TryGetValue(CommentIdKey, out value);
+                _dict.TryGetValue(CommentIdKey, out string value);
                 return value;
             }
             set
