@@ -1340,7 +1340,7 @@ tagRules : [
                         outputFolderForIncremental,
                         new Dictionary<string, object>
                         {
-                            ["meta"] = "Hello world2!",
+                            ["meta"] = "Hello world!",
                         },
                         templateHash: "1234",
                         templateFolder: templateFolder,
@@ -1355,7 +1355,7 @@ tagRules : [
                         outputFolderForCompare,
                         new Dictionary<string, object>
                         {
-                            ["meta"] = "Hello world2!",
+                            ["meta"] = "Hello world!",
                         },
                         templateHash: "1234",
                         templateFolder: templateFolder);
@@ -1370,10 +1370,10 @@ tagRules : [
                     Assert.NotNull(incrementalInfo);
                     Assert.Equal(2, incrementalInfo.Count);
                     var incrementalStatus = incrementalInfo[0].Status;
-                    Assert.False(incrementalStatus.CanIncremental);
-                    Assert.Equal(incrementalStatus.Details, "Cannot build incrementally because template changed.");
+                    Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.False(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(manifest.Files.Any(f => f.IsIncremental));
                 }
                 {
                     // check xrefmap
