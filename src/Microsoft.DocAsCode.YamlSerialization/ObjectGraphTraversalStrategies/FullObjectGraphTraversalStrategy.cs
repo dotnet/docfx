@@ -52,21 +52,8 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
             }
 
             Serializer = serializer;
-
-            if (typeDescriptor == null)
-            {
-                throw new ArgumentNullException("typeDescriptor");
-            }
-
-            _typeDescriptor = typeDescriptor;
-
-            if (typeResolver == null)
-            {
-                throw new ArgumentNullException("typeResolver");
-            }
-
-            _typeResolver = typeResolver;
-
+            _typeDescriptor = typeDescriptor ?? throw new ArgumentNullException("typeDescriptor");
+            _typeResolver = typeResolver ?? throw new ArgumentNullException("typeResolver");
             _maxRecursion = maxRecursion;
             _namingConvention = namingConvention;
         }
@@ -178,8 +165,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
         protected virtual void TraverseObject<TContext>(IObjectDescriptor value, IObjectGraphVisitor<TContext> visitor, int currentDepth, TContext context)
         {
             var key = Tuple.Create(value.Type, typeof(TContext));
-            Action<IObjectDescriptor, IObjectGraphVisitor, int, IObjectGraphVisitorContext> action;
-            if (!_behaviorCache.TryGetValue(key, out action))
+            if (!_behaviorCache.TryGetValue(key, out var action))
             {
 #if NetCore
                 if (typeof(IDictionary).GetTypeInfo().IsAssignableFrom(value.Type.GetTypeInfo()))
@@ -249,8 +235,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectGraphTraversalStrategies
             v.VisitMappingStart(dictionary, entryTypes[0], entryTypes[1], c);
 
             var key = Tuple.Create(entryTypes[0], entryTypes[1], typeof(TContext));
-            Action<FullObjectGraphTraversalStrategy, object, IObjectGraphVisitor, int, INamingConvention, IObjectGraphVisitorContext> action;
-            if (!_traverseGenericDictionaryCache.TryGetValue(key, out action))
+            if (!_traverseGenericDictionaryCache.TryGetValue(key, out var action))
             {
                 action = GetTraverseGenericDictionaryHelper(entryTypes[0], entryTypes[1], typeof(TContext));
                 _traverseGenericDictionaryCache[key] = action;

@@ -36,8 +36,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
 
         bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
         {
-            Type[] gp;
-            if (!_gpCache.TryGetValue(expectedType, out gp))
+            if (!_gpCache.TryGetValue(expectedType, out Type[] gp))
             {
                 var dictionaryType = ReflectionUtility.GetImplementedGenericInterface(expectedType, typeof(IDictionary<,>));
                 if (dictionaryType != null)
@@ -60,9 +59,8 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
             reader.Expect<MappingStart>();
 
             value = _objectFactory.Create(expectedType);
-            Action<IParser, Type, Func<IParser, Type, object>, object> action;
             var cacheKey = Tuple.Create(gp[0], gp[1]);
-            if (!_actionCache.TryGetValue(cacheKey, out action))
+            if (!_actionCache.TryGetValue(cacheKey, out var action))
             {
                 var dm = new DynamicMethod(string.Empty, typeof(void), new[] { typeof(IParser), typeof(Type), typeof(Func<IParser, Type, object>), typeof(object) });
                 var il = dm.GetILGenerator();

@@ -25,8 +25,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.ObjectFactories
 
         public object Create(Type type)
         {
-            Func<object> func;
-            if (!_cache.TryGetValue(type, out func))
+            if (!_cache.TryGetValue(type, out Func<object> func))
             {
 #if NetCore
                 var ti = type.GetTypeInfo();

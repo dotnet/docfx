@@ -13,7 +13,6 @@ namespace Microsoft.DocAsCode.YamlSerialization
     using YamlDotNet.Serialization.NamingConventions;
     using YamlDotNet.Serialization.NodeDeserializers;
     using YamlDotNet.Serialization.NodeTypeResolvers;
-    using YamlDotNet.Serialization.TypeInspectors;
     using YamlDotNet.Serialization.TypeResolvers;
     using YamlDotNet.Serialization.Utilities;
     using YamlDotNet.Serialization.ValueDeserializers;
@@ -91,25 +90,27 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 _converters.Add(yamlTypeConverter);
             }
 
-            NodeDeserializers = new List<INodeDeserializer>();
-            NodeDeserializers.Add(new TypeConverterNodeDeserializer(_converters));
-            NodeDeserializers.Add(new NullNodeDeserializer());
-            NodeDeserializers.Add(new ScalarNodeDeserializer());
-            NodeDeserializers.Add(new EmitArrayNodeDeserializer());
-            NodeDeserializers.Add(new EmitGenericDictionaryNodeDeserializer(objectFactory));
-            NodeDeserializers.Add(new DictionaryNodeDeserializer(objectFactory));
-            NodeDeserializers.Add(new EmitGenericCollectionNodeDeserializer(objectFactory));
-            NodeDeserializers.Add(new CollectionNodeDeserializer(objectFactory));
-            NodeDeserializers.Add(new EnumerableNodeDeserializer());
-            NodeDeserializers.Add(new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched));
-
+            NodeDeserializers = new List<INodeDeserializer>
+            {
+                new TypeConverterNodeDeserializer(_converters),
+                new NullNodeDeserializer(),
+                new ScalarNodeDeserializer(),
+                new EmitArrayNodeDeserializer(),
+                new EmitGenericDictionaryNodeDeserializer(objectFactory),
+                new DictionaryNodeDeserializer(objectFactory),
+                new EmitGenericCollectionNodeDeserializer(objectFactory),
+                new CollectionNodeDeserializer(objectFactory),
+                new EnumerableNodeDeserializer(),
+                new ExtensibleObjectNodeDeserializer(objectFactory, _typeDescriptor, ignoreUnmatched)
+            };
             _tagMappings = new Dictionary<string, Type>(PredefinedTagMappings);
-            TypeResolvers = new List<INodeTypeResolver>();
-            TypeResolvers.Add(new TagNodeTypeResolver(_tagMappings));
-            TypeResolvers.Add(new TypeNameInTagNodeTypeResolver());
-            TypeResolvers.Add(new DefaultContainersNodeTypeResolver());
-            TypeResolvers.Add(new ScalarYamlNodeTypeResolver());
-
+            TypeResolvers = new List<INodeTypeResolver>
+            {
+                new TagNodeTypeResolver(_tagMappings),
+                new TypeNameInTagNodeTypeResolver(),
+                new DefaultContainersNodeTypeResolver(),
+                new ScalarYamlNodeTypeResolver()
+            };
             if (ignoreNotFoundAnchor)
             {
                 _valueDeserializer =
@@ -218,12 +219,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
 
             public LooseAliasValueDeserializer(IValueDeserializer innerDeserializer)
             {
-                if (innerDeserializer == null)
-                {
-                    throw new ArgumentNullException("innerDeserializer");
-                }
-
-                _innerDeserializer = innerDeserializer;
+                _innerDeserializer = innerDeserializer ?? throw new ArgumentNullException("innerDeserializer");
             }
 
             private sealed class AliasState : Dictionary<string, ValuePromise>, IPostDeserializationCallback
@@ -281,10 +277,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
                         HasValue = true;
                         this.value = value;
 
-                        if (ValueAvailable != null)
-                        {
-                            ValueAvailable(value);
-                        }
+                        ValueAvailable?.Invoke(value);
                     }
                 }
             }
@@ -296,8 +289,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 if (alias != null)
                 {
                     var aliasState = state.Get<AliasState>();
-                    ValuePromise valuePromise;
-                    if (!aliasState.TryGetValue(alias.Value, out valuePromise))
+                    if (!aliasState.TryGetValue(alias.Value, out ValuePromise valuePromise))
                     {
                         valuePromise = new ValuePromise(alias);
                         aliasState.Add(alias.Value, valuePromise);
@@ -320,8 +312,7 @@ namespace Microsoft.DocAsCode.YamlSerialization
                 {
                     var aliasState = state.Get<AliasState>();
 
-                    ValuePromise valuePromise;
-                    if (!aliasState.TryGetValue(anchor, out valuePromise))
+                    if (!aliasState.TryGetValue(anchor, out ValuePromise valuePromise))
                     {
                         aliasState.Add(anchor, new ValuePromise(value));
                     }
