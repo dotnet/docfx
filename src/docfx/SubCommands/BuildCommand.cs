@@ -286,6 +286,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.IntermediateFolder = options.IntermediateFolder;
             }
+            config.IntermediateFolder = config.IntermediateFolder ?? Path.Combine(Path.GetTempPath(), "inter");
             if (options.ChangesFile != null)
             {
                 config.ChangesFile = options.ChangesFile;
