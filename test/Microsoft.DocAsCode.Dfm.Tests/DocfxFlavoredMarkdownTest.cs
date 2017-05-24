@@ -59,6 +59,15 @@ b:
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
+        public void TestCodeFenceWithSpaceInFileName()
+        {
+            var source = @"  [!code-csharp  [  Test Space  ] ( test space in\) link.cs#abc ""title test"" ) ]  ";
+            var result = DocfxFlavoredMarked.Markup(source, "a.md");
+            Assert.Equal("<!-- Can not find reference test space in) link.cs -->\n", result);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
         public void TestBlockLevelInclusion()
         {
             // -r
