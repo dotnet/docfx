@@ -104,27 +104,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 return null;
             }
+            
+            var options = new ExtractMetadataOptions
+            {
+                PreserveRawInlineComments = preserveRawInlineComments,
+                FilterConfigFile = filterConfigFile,
+                ExtensionMethods = extensionMethods,
+            };
 
-            object visitorContext = new object();
-            SymbolVisitorAdapter visitor;
-            if (compilation.Language == "Visual Basic")
-            {
-                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.VB, compilation, preserveRawInlineComments, filterConfigFile, extensionMethods);
-            }
-            else if (compilation.Language == "C#")
-            {
-                visitor = new SymbolVisitorAdapter(new CSYamlModelGenerator() + new VBYamlModelGenerator(), SyntaxLanguage.CSharp, compilation, preserveRawInlineComments, filterConfigFile, extensionMethods);
-            }
-            else
-            {
-                Debug.Assert(false, "Language not supported: " + compilation.Language);
-                Logger.Log(LogLevel.Error, "Language not supported: " + compilation.Language);
-                return null;
-            }
-
-            assembly = assembly ?? compilation.Assembly;
-            MetadataItem item = assembly.Accept(visitor);
-            return item;
+            return new MetadataExtractor(compilation, assembly).Extract(options);
         }
 
         internal static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethodsFromCompilation(IEnumerable<Compilation> compilations)
