@@ -3,18 +3,18 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
-    using Microsoft.CodeAnalysis;
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using System;
     using System.Diagnostics;
 
+    using Microsoft.CodeAnalysis;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.DataContracts.ManagedReference;
+
     internal class MetadataExtractor
     {
-        private Compilation _compilation;
-        private IAssemblySymbol _assembly;
-        private bool preserveRawComments;
-        private string filterConfigFile;
+        private readonly Compilation _compilation;
+        private readonly IAssemblySymbol _assembly;
+
         public MetadataExtractor(Compilation compilation, IAssemblySymbol assembly = null)
         {
             _compilation = compilation ?? throw new ArgumentNullException(nameof(compilation));
@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public MetadataItem Extract(ExtractMetadataOptions options)
         {
-            var preserveRawInlineComments = options.PreserveRawinlineComments;
+            var preserveRawInlineComments = options.PreserveRawInlineComments;
             var filterConfigFile = options.FilterConfigFile;
             var extensionMethods = options.ExtensionMethods;
 

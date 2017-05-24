@@ -107,7 +107,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             
             var options = new ExtractMetadataOptions
             {
-                PreserveRawinlineComments = preserveRawInlineComments,
+                PreserveRawInlineComments = preserveRawInlineComments,
                 FilterConfigFile = filterConfigFile,
                 ExtensionMethods = extensionMethods,
             };
