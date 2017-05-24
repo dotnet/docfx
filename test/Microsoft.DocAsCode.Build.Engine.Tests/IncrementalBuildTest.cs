@@ -502,7 +502,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -694,7 +695,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -910,7 +912,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -1115,7 +1118,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -1235,7 +1239,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world2!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -1358,7 +1363,8 @@ tagRules : [
                             ["meta"] = "Hello world2!",
                         },
                         templateHash: "1234",
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -1483,7 +1489,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -1601,7 +1608,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -1718,7 +1726,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -1829,7 +1838,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -1964,7 +1974,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -2093,7 +2104,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -2229,7 +2241,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -2360,7 +2373,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -2488,7 +2502,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -2619,7 +2634,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -2814,7 +2830,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -2978,7 +2995,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -3146,7 +3164,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -3306,7 +3325,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -3472,7 +3492,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -3638,7 +3659,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -3815,7 +3837,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -4096,7 +4119,8 @@ tagRules : [
                             ["meta"] = "Hello world!",
                         },
                         templateFolder: templateFolder,
-                        enableSplit: true);
+                        enableSplit: true,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -4331,7 +4355,8 @@ tagRules : [
                             ["meta"] = "Hello world!",
                         },
                         templateFolder: templateFolder,
-                        enableSplit: true);
+                        enableSplit: true,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -4556,7 +4581,8 @@ tagRules : [
                             ["meta"] = "Hello world!",
                         },
                         templateFolder: templateFolder,
-                        enableSplit: true);
+                        enableSplit: true,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -4679,7 +4705,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -4783,7 +4810,8 @@ tagRules : [
                         {
                             ["meta"] = "Hello world!",
                         },
-                        templateFolder: templateFolder);
+                        templateFolder: templateFolder,
+                        forceRebuild: true);
                 }
                 {
                     // check manifest
@@ -4877,7 +4905,8 @@ tagRules : [
             string templateFolder = null,
             string intermediateFolder = null,
             Dictionary<string, ChangeKindWithDependency> changes = null,
-            bool enableSplit = false)
+            bool enableSplit = false,
+            bool forceRebuild = false)
         {
             using (var builder = new DocumentBuilder(LoadAssemblies(enableSplit), ImmutableArray<string>.Empty, templateHash, intermediateFolder))
             {
@@ -4895,6 +4924,7 @@ tagRules : [
                     TemplateDir = templateFolder,
                     Changes = changes?.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveStringComparer),
                     ForcePostProcess = true,
+                    ForceRebuild = forceRebuild,
                 };
                 builder.Build(parameters);
             }
