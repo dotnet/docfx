@@ -286,7 +286,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.IntermediateFolder = options.IntermediateFolder;
             }
-            config.IntermediateFolder = config.IntermediateFolder ?? Path.Combine(Path.GetTempPath(), "docfx-inter");
+            config.IntermediateFolder = config.IntermediateFolder ?? Path.Combine(optionsBaseDirectory,"obj", "docfx", "build");
             if (options.ChangesFile != null)
             {
                 config.ChangesFile = options.ChangesFile;
