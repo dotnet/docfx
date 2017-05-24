@@ -36,6 +36,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public bool CanVersionIncremental { get; }
 
+        public bool IsTemplateUpdated { get; private set; }
+
         public string Version
         {
             get
@@ -97,6 +99,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             };
             cb.Versions.Add(cbv);
             var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, buildInfoIncrementalStatus, parameters, cbv, lbv);
+            context.IsTemplateUpdated = (cb.TemplateHash != lb?.TemplateHash);
             context.InitDependency();
             context.InitFileAttributes();
             context.InitChanges();
@@ -600,10 +603,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             if (cb.PluginHash != lb.PluginHash)
             {
                 return new IncrementalStatus { CanIncremental = false, Details = "Cannot build incrementally because plugin changed." };
-            }
-            if (cb.TemplateHash != lb.TemplateHash)
-            {
-                return new IncrementalStatus { CanIncremental = false, Details = "Cannot build incrementally because template changed." };
             }
             if (cb.CommitFromSHA != lb.CommitToSHA)
             {

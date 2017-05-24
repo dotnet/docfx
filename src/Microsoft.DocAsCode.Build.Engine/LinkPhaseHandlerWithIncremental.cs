@@ -65,7 +65,14 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (new LoggerPhaseScope("ReloadModelsPerChanges", LogLevel.Verbose))
             {
-                ReloadModelsPerChanges(hostServices);
+                if (IncrementalContext.IsTemplateUpdated)
+                {
+                    ReloadModels(hostServices);
+                }
+                else
+                {
+                    ReloadModelsPerChanges(hostServices);
+                }
             }
             Parallel.Invoke(
                 new Action(() =>
@@ -147,6 +154,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (var hostService in hostServices.Where(h => h.CanIncrementalBuild))
             {
                 hostService.ReloadUnloadedModels(IncrementalContext, Phase);
+                hostService.IncrementalInfos = IncrementalContext.GetModelIncrementalInfo(hostService, Phase);
             }
         }
 
