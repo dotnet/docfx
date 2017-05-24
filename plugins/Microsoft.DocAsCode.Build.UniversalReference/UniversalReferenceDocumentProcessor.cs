@@ -73,7 +73,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                         {
                             case UniversalReferenceConstants.UniversalReferenceYamlMime:
                             case UniversalReferenceConstants.PythonReferenceYamlMime:
-                            case UniversalReferenceConstants.JavaScriptReferenceYamlMime:
                                 return ProcessingPriority.Normal;
                             default:
                                 return ProcessingPriority.NotSupported;
