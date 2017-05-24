@@ -15,6 +15,9 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
 
     using Microsoft.DocAsCode.YamlSerialization.Helpers;
 
+    using EditorBrowsable = System.ComponentModel.EditorBrowsableAttribute;
+    using EditorBrowsableState = System.ComponentModel.EditorBrowsableState;
+
     public class EmitGenericCollectionNodeDeserializer : INodeDeserializer
     {
         private static readonly MethodInfo DeserializeHelperMethod =
@@ -36,8 +39,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
 
         bool INodeDeserializer.Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, out object value)
         {
-            Type gp;
-            if (!_gpCache.TryGetValue(expectedType, out gp))
+            if (!_gpCache.TryGetValue(expectedType, out Type gp))
             {
                 var collectionType = ReflectionUtility.GetImplementedGenericInterface(expectedType, typeof(ICollection<>));
                 if (collectionType != null)
@@ -57,8 +59,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
             }
 
             value = _objectFactory.Create(expectedType);
-            Action<IParser, Type, Func<IParser, Type, object>, object> action;
-            if (!_actionCache.TryGetValue(gp, out action))
+            if (!_actionCache.TryGetValue(gp, out var action))
             {
                 var dm = new DynamicMethod(string.Empty, typeof(void), new[] { typeof(IParser), typeof(Type), typeof(Func<IParser, Type, object>), typeof(object) });
                 var il = dm.GetILGenerator();
@@ -77,7 +78,7 @@ namespace Microsoft.DocAsCode.YamlSerialization.NodeDeserializers
             return true;
         }
 
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public static void DeserializeHelper<TItem>(IParser reader, Type expectedType, Func<IParser, Type, object> nestedObjectDeserializer, ICollection<TItem> result)
         {
             var list = result as IList<TItem>;
