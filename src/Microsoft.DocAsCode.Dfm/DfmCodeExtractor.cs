@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.Dfm
 
                 if (!token.PathQueryOption.ValidateAndPrepare(fencesCode, token))
                 {
-                    Logger.LogError(GenerateErrorMessage(token), line: token.SourceInfo.LineNumber.ToString());
+                    Logger.LogWarning(GenerateErrorMessage(token), line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidCodeSnippet);
                     return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = token.PathQueryOption.ErrorMessage, CodeLines = fencesCode };
                 }
                 if (!string.IsNullOrEmpty(token.PathQueryOption.ErrorMessage))

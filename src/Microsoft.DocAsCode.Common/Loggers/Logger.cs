@@ -96,12 +96,13 @@ namespace Microsoft.DocAsCode.Common
             _asyncListener.WriteLine(item);
         }
 
-        public static void Log(LogLevel level, string message, string phase = null, string file = null, string line = null)
+        [Obsolete]
+        public static void Log(LogLevel level, string message, string phase, string file, string line)
         {
             Log(level, message, phase, file, line, null);
         }
 
-        public static void Log(LogLevel level, string message, string phase, string file, string line, string code)
+        public static void Log(LogLevel level, string message, string phase = null, string file = null, string line = null, string code = null)
         {
             Log(new LogItem
             {
@@ -122,52 +123,57 @@ namespace Microsoft.DocAsCode.Common
             });
         }
 
-        public static void LogDiagnostic(string message, string phase = null, string file = null, string line = null)
+        [Obsolete]
+        public static void LogDiagnostic(string message, string phase, string file, string line)
         {
             LogDiagnostic(message, phase, file, line, null);
         }
 
-        public static void LogDiagnostic(string message, string phase, string file, string line, string code)
+        public static void LogDiagnostic(string message, string phase = null, string file = null, string line = null, string code = null)
         {
             Log(LogLevel.Diagnostic, message, phase, file, line, code);
         }
 
-        public static void LogVerbose(string message, string phase = null, string file = null, string line = null)
+        [Obsolete]
+        public static void LogVerbose(string message, string phase, string file, string line)
         {
             LogVerbose(message, phase, file, line, null);
         }
 
-        public static void LogVerbose(string message, string phase, string file, string line, string code)
+        public static void LogVerbose(string message, string phase = null, string file = null, string line = null, string code = null)
         {
             Log(LogLevel.Verbose, message, phase, file, line, code);
         }
 
-        public static void LogInfo(string message, string phase = null, string file = null, string line = null)
+        [Obsolete]
+        public static void LogInfo(string message, string phase, string file, string line)
         {
             LogInfo(message, phase, file, line, null);
         }
 
-        public static void LogInfo(string message, string phase, string file, string line, string code)
+        public static void LogInfo(string message, string phase = null, string file = null, string line = null, string code = null)
         {
             Log(LogLevel.Info, message, phase, file, line, code);
         }
 
-        public static void LogWarning(string message, string phase = null, string file = null, string line = null)
+        [Obsolete]
+        public static void LogWarning(string message, string phase, string file, string line)
         {
             LogWarning(message, phase, file, line, null);
         }
 
-        public static void LogWarning(string message, string phase, string file, string line, string code)
+        public static void LogWarning(string message, string phase = null, string file = null, string line = null, string code = null)
         {
             Log(LogLevel.Warning, message, phase, file, line, code);
         }
 
-        public static void LogError(string message, string phase = null, string file = null, string line = null)
+        [Obsolete]
+        public static void LogError(string message, string phase, string file, string line)
         {
             LogError(message, phase, file, line, null);
         }
 
-        public static void LogError(string message, string phase, string file, string line, string code)
+        public static void LogError(string message, string phase = null, string file = null, string line = null, string code = null)
         {
             Log(LogLevel.Error, message, phase, file, line, code);
         }
