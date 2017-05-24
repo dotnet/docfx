@@ -17,20 +17,21 @@ namespace Microsoft.DocAsCode.Dfm
             (Matcher.Char('-') + (Matcher.AnyWordCharacter | Matcher.Char('-')).RepeatAtLeast(1).ToGroup("lang")).Maybe() +
             Matcher.WhiteSpacesOrEmpty + '[' +
             (
-                Matcher.AnyCharNot(']').RepeatAtLeast(1) |
-                (Matcher.ReverseTest(Matcher.Char('\\')) + Matcher.Char(']'))
+                Matcher.AnyCharNotIn('\\', ']').RepeatAtLeast(1) |
+                (Matcher.Char('\\') + Matcher.AnyCharNot('\n'))
             ).RepeatAtLeast(0).ToGroup("name") +
             ']' +
             Matcher.WhiteSpacesOrEmpty +
             '(' +
+            Matcher.WhiteSpacesOrEmpty +
             (
-                (Matcher.AnyCharNotIn(')', '\n', ' ').RepeatAtLeast(1) | (Matcher.ReverseTest(Matcher.Char('\\')) + Matcher.Char(')'))).RepeatAtLeast(1).ToGroup("href") |
-                (Matcher.Char('<') + (Matcher.AnyCharNotIn(')', '>', '\n', ' ').RepeatAtLeast(1) | (Matcher.ReverseTest(Matcher.Char('\\')) + Matcher.AnyCharIn(')', '>'))).RepeatAtLeast(1).ToGroup("href") + '>')
+                (Matcher.AnyCharNotIn(')', '\n', '\\', ' ').RepeatAtLeast(1) | (Matcher.Char('\\') + Matcher.AnyCharNot('\n')) | Matcher.WhiteSpaces + Matcher.AnyCharIn('\'', '"').ToNegativeTest()).RepeatAtLeast(1).ToGroup("href") |
+                (Matcher.Char('<') + (Matcher.AnyCharNotIn(')', '>', '\n', '\\').RepeatAtLeast(1) | (Matcher.Char('\\') + Matcher.AnyCharNot('\n'))).RepeatAtLeast(1).ToGroup("href") + '>')
             ) +
             Matcher.WhiteSpacesOrEmpty +
             (
-                (Matcher.Char('\'') + (Matcher.AnyCharNot('\'').RepeatAtLeast(1) | (Matcher.ReverseTest(Matcher.Char('\\')) + '\'')).RepeatAtLeast(0).ToGroup("title") + '\'') |
-                (Matcher.Char('"') + (Matcher.AnyCharNot('"').RepeatAtLeast(1) | (Matcher.ReverseTest(Matcher.Char('\\')) + '"')).RepeatAtLeast(0).ToGroup("title") + '"')
+                (Matcher.Char('\'') + (Matcher.AnyCharNot('\'').RepeatAtLeast(1) | (Matcher.Char('\\') + Matcher.AnyCharNot('\n'))).RepeatAtLeast(0).ToGroup("title") + '\'') |
+                (Matcher.Char('"') + (Matcher.AnyCharNot('"').RepeatAtLeast(1) | (Matcher.Char('\\') + Matcher.AnyCharNot('\n'))).RepeatAtLeast(0).ToGroup("title") + '"')
             ).Maybe() +
             Matcher.WhiteSpacesOrEmpty +
             ')' +
