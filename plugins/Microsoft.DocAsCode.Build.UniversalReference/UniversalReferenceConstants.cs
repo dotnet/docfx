@@ -9,7 +9,9 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     {
         public const string UniversalReference = "UniversalReference";
         public const string PythonReference = "PythonReference";
+        public const string JavaScriptReference = "JavaScriptReference";
         public const string UniversalReferenceYamlMime = YamlMime.YamlMimePrefix + UniversalReference;
         public const string PythonReferenceYamlMime = YamlMime.YamlMimePrefix + PythonReference;
+        public const string JavaScriptReferenceYamlMime = YamlMime.YamlMimePrefix + JavaScriptReference;
     }
 }
