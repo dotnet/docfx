@@ -156,6 +156,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                             {
                                 var c = new MarkdownInlineContext(
                                     ImmutableList.Create<IMarkdownRule>(
+                                        new MarkdownPreElementInlineRule(),
                                         new MarkdownTagInlineRule(),
                                         new MarkdownTextInlineRule()));
                                 p.SwitchContext(c);
