@@ -37,9 +37,11 @@ $(function () {
   // Format titles to break words
   function formatTitles() {
     var headers = $("article h1, article h2, article h3, article h4");
-    for (var j = 0; j < headers.length; j++) {
-      headers[j].textContent = util.breakText(headers[j].textContent);
-    }
+    headers.each(function () {
+      $(this).text(function (index, text) {
+        return util.breakText(text);
+      })
+    });
   }
 
   // Styling for tables in conceptual documents using Bootstrap.
@@ -568,6 +570,9 @@ $(function () {
       for (var i = headers.length - 1; i >= 0; i--) {
         var header = $(selector + " " + headers[i]);
         var length = header.length;
+
+        // If contains no header in current selector, find the next one
+        if (length === 0) continue;
 
         // If the toppest header contains only one item, e.g. title, ignore
         if (length === 1 && hierarchy.length === 0 && toppestIndex < 0) {
