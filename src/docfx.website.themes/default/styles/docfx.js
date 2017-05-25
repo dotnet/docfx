@@ -8,11 +8,6 @@ $(function () {
   var hide = 'hide';
   var util = new utility();
 
-  // supported headers are h1, h2, h3, and h4
-  // The topest header is ignored
-  var articleSelector = ".article article";
-  var headers = ['h4', 'h3', 'h2', 'h1'];
-
   highlight();
   enableSearch();
 
@@ -41,11 +36,9 @@ $(function () {
 
   // Format titles to break words
   function formatTitles() {
-    for (var i = headers.length - 1; i >= 0; i--) {
-      var header = $(articleSelector + " " + headers[i]);
-      for(var j = 0; j < header.length; j++){
-        header[j].textContent = util.breakText(header[j].textContent);
-      }
+    var headers = $("article h1, article h2, article h3, article h4");
+    for (var j = 0; j < headers.length; j++) {
+      headers[j].textContent = util.breakText(headers[j].textContent);
     }
   }
 
@@ -563,17 +556,18 @@ $(function () {
     }
 
     function getHierarchy() {
+      // supported headers are h1, h2, h3, and h4
+      // The topest header is ignored
+      var selector = ".article article";
       var affixSelector = "#affix";
+      var headers = ['h4', 'h3', 'h2', 'h1'];
       var hierarchy = [];
       var toppestIndex = -1;
       var startIndex = -1;
       // 1. get header hierarchy
       for (var i = headers.length - 1; i >= 0; i--) {
-        var header = $(articleSelector + " " + headers[i]);
+        var header = $(selector + " " + headers[i]);
         var length = header.length;
-
-        // If contains no header in current selector, find the next one
-        if (length === 0) continue;
 
         // If the toppest header contains only one item, e.g. title, ignore
         if (length === 1 && hierarchy.length === 0 && toppestIndex < 0) {
