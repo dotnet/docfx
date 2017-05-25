@@ -45,10 +45,12 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
             _templateManager = new TemplateManager(null, null, new List<string> { "template" }, null, "TestData/");
         }
 
+        #region Python
+
         [Fact]
         public void ProcessPythonReferencesShouldSucceed()
         {
-            var fileNames = Directory.EnumerateFiles(YmlDataDirectory).Select(Path.GetFileName).ToList();
+            var fileNames = new string[] { "cntk.core.yml", "cntk.core.Value.yml", "cntk.debugging.yml" };
             var files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, fileNames.Select(f => $"{YmlDataDirectory}/{f}"), TestDataDirectory);
 
@@ -62,7 +64,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
         }
 
         [Fact]
-        public void ProcessModelShouldSucceed()
+        public void ProcessPythonModelShouldSucceed()
         {
             var moduleFileName = "cntk.core.yml";
             var classFileName = "cntk.core.Value.yml";
@@ -130,7 +132,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
         }
 
         [Fact]
-        public void ApplyOverwriteDocumentShouldSucceed()
+        public void ApplyOverwriteDocumentForPythonShouldSucceed()
         {
             var fileName = "cntk.core.Value.yml";
             var overwriteFileName = "cntk.core.Value.md";
@@ -149,7 +151,29 @@ namespace Microsoft.DocAsCode.Build.UniversalReference.Tests
             Assert.Equal("<p sourcefile=\"TestData/overwrite/cntk.core.Value.md\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">summary of cntk.core.Value</p>\n", model.Summary);
         }
 
-            private void BuildDocument(FileCollection files)
+        #endregion
+
+        #region JavaScript
+
+        [Fact]
+        public void ProcessJavaScriptReferencesShouldSucceed()
+        {
+            var fileNames = new string[] { "azure.ApplicationTokenCredentials.yml" };
+            var files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, fileNames.Select(f => $"{YmlDataDirectory}/{f}"), TestDataDirectory);
+
+            BuildDocument(files);
+
+            foreach (var fileName in fileNames)
+            {
+                var outputRawModelPath = GetRawModelFilePath(fileName);
+                Assert.True(File.Exists(outputRawModelPath));
+            }
+        }
+
+        #endregion
+
+        private void BuildDocument(FileCollection files)
         {
             var parameters = new DocumentBuildParameters
             {
