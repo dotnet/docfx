@@ -663,6 +663,7 @@ b",
 ")]
         [InlineData(@"[a]()", @"<p><a href="""" data-raw-source=""[a]()"">a</a></p>
 ")]
+        [InlineData(@"<p>[a](b)</p>", @"<p>[a](b)</p>")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
@@ -799,7 +800,7 @@ b",
     }</code></pre>
 <p>As you see, here we bring in <strong>pointer</strong> so we need to add <span class=""languagekeyword"">unsafe</span> keyword.</p>
 ";
-            TestGfmInGeneral(source, expected);
+            TestLegacyGfmInGeneral(source, expected);
         }
 
         [Fact]
