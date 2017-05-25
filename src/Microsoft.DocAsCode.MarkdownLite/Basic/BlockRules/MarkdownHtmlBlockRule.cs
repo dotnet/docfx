@@ -140,19 +140,35 @@ namespace Microsoft.DocAsCode.MarkdownLite
                         this,
                         parser.Context,
                         sourceInfo,
-                        (p, t) => new MarkdownHtmlBlockToken(
-                            t.Rule,
-                            t.Context,
-                            isPre ?
-                                new InlineContent(
+                        (p, t) =>
+                        {
+                            InlineContent ic;
+                            if (isPre)
+                            {
+                                ic = new InlineContent(
                                     ImmutableArray.Create<IMarkdownToken>(
                                         new MarkdownRawToken(
                                             this,
                                             parser.Context,
-                                            t.SourceInfo)))
-                            :
-                                p.TokenizeInline(t.SourceInfo),
-                            t.SourceInfo));
+                                            t.SourceInfo)));
+                            }
+                            else
+                            {
+                                var c = new MarkdownInlineContext(
+                                    ImmutableList.Create<IMarkdownRule>(
+                                        new MarkdownPreElementInlineRule(),
+                                        new MarkdownTagInlineRule(),
+                                        new MarkdownTextInlineRule()));
+                                p.SwitchContext(c);
+                                ic = new InlineContent(p.Tokenize(t.SourceInfo));
+                                p.SwitchContext(t.Context);
+                            }
+                            return new MarkdownHtmlBlockToken(
+                                t.Rule,
+                                t.Context,
+                                ic,
+                                t.SourceInfo);
+                        });
                 }
             }
             return null;

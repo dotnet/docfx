@@ -518,7 +518,7 @@ _system_
 </div>";
             var expected = @"# This is an H1
 <div>
-*system*
+_system_
 </div>";
             var result = AzureMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
