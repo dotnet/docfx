@@ -8,6 +8,11 @@ $(function () {
   var hide = 'hide';
   var util = new utility();
 
+  // supported headers are h1, h2, h3, and h4
+  // The topest header is ignored
+  var articleSelector = ".article article";
+  var headers = ['h4', 'h3', 'h2', 'h1'];
+
   highlight();
   enableSearch();
 
@@ -20,6 +25,8 @@ $(function () {
   renderFooter();
   renderLogo();
 
+  formatTitles();
+
   window.refresh = function (article) {
     // Update markup result
     if (typeof article == 'undefined' || typeof article.content == 'undefined')
@@ -30,6 +37,20 @@ $(function () {
     renderTables();
     renderAlerts();
     renderAffix();
+  }
+
+  // Format titles to break words
+  function formatTitles() {
+    for (var i = headers.length - 1; i >= 0; i--) {
+      var header = $(articleSelector + " " + headers[i]);
+      var length = header.length;
+
+      if (length === 0) continue;
+
+      for(var j = 0; j < header.length; j++){
+        header[j].textContent = util.breakText(header[j].textContent);
+      }
+    }
   }
 
   // Styling for tables in conceptual documents using Bootstrap.
@@ -546,17 +567,13 @@ $(function () {
     }
 
     function getHierarchy() {
-      // supported headers are h1, h2, h3, and h4
-      // The topest header is ignored
-      var selector = ".article article";
       var affixSelector = "#affix";
-      var headers = ['h4', 'h3', 'h2', 'h1'];
       var hierarchy = [];
       var toppestIndex = -1;
       var startIndex = -1;
       // 1. get header hierarchy
       for (var i = headers.length - 1; i >= 0; i--) {
-        var header = $(selector + " " + headers[i]);
+        var header = $(articleSelector + " " + headers[i]);
         var length = header.length;
 
         // If contains no header in current selector, find the next one

@@ -38,8 +38,7 @@ h4:before {
 }
 
 h1, h2, h3, h4, h5, h6, span.xref {
-    word-wrap: break-word;
-    word-break: break-all;
+    word-wrap: normal;
 }
 
 h1 mark,
