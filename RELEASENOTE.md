@@ -4,6 +4,7 @@ v2.18.1 (Pre-release)
 -----------
 1.  Bug fixes:
     1. Bug fix for markdown empty link.
+    2. Bug fix for html behaivor in dfm-latest.
 
 v2.17
 -----------
