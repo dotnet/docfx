@@ -43,10 +43,6 @@ $(function () {
   function formatTitles() {
     for (var i = headers.length - 1; i >= 0; i--) {
       var header = $(articleSelector + " " + headers[i]);
-      var length = header.length;
-
-      if (length === 0) continue;
-
       for(var j = 0; j < header.length; j++){
         header[j].textContent = util.breakText(header[j].textContent);
       }
