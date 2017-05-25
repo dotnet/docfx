@@ -28,15 +28,25 @@ namespace Microsoft.DocAsCode.Dfm
         private static readonly Regex SqlFamilyCodeSnippetCommentStartLineRegex = new Regex(@"^\s*\-{2}\s*\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex SqlFamilyCodeSnippetCommentEndLineRegex = new Regex(@"^\s*\-{2}\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        // Python code snippet comment block: # <[/]snippetname>
-        private static readonly Regex PythonFamilyCodeSnippetCommentStartLineRegex = new Regex(@"^\s*#\s*\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex PythonFamilyCodeSnippetCommentEndLineRegex = new Regex(@"^\s*#\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        // Script family snippet comment block: # <[/]snippetname>
+        private static readonly Regex ScriptFamilyCodeSnippetCommentStartLineRegex = new Regex(@"^\s*#\s*\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex ScriptFamilyCodeSnippetCommentEndLineRegex = new Regex(@"^\s*#\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        public string TagName { get; set; }
+        // Lisp code snippet comment block: rem <[/]snippetname>
+        private static readonly Regex BatchFileCodeSnippetRegionStartLineRegex = new Regex(@"^\s*rem\s+\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex BatchFileCodeSnippetRegionEndLineRegex = new Regex(@"^\s*rem\s+\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // C# code snippet region block: start -> #region snippetname, end -> #endregion
         private static readonly Regex CSharpCodeSnippetRegionStartLineRegex = new Regex(@"^\s*#\s*region(?:\s+(?<name>.+?))?\s*$", RegexOptions.Compiled);
         private static readonly Regex CSharpCodeSnippetRegionEndLineRegex = new Regex(@"^\s*#\s*endregion(?:\s.*)?$", RegexOptions.Compiled);
+
+        // Erlang code snippet comment block: % <[/]snippetname>
+        private static readonly Regex ErlangCodeSnippetRegionStartLineRegex = new Regex(@"^\s*%\s*\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex ErlangCodeSnippetRegionEndLineRegex = new Regex(@"^\s*%\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        // Lisp code snippet comment block: ; <[/]snippetname>
+        private static readonly Regex LispCodeSnippetRegionStartLineRegex = new Regex(@"^\s*;\s*\<\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex LispCodeSnippetRegionEndLineRegex = new Regex(@"^\s*;\s*\<\s*\/\s*(?<name>[\w\.]+)\s*\>\s*$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         // VB code snippet Region block: start -> # Region "snippetname", end -> # End Region
         private static readonly Regex VBCodeSnippetRegionRegionStartLineRegex = new Regex(@"^\s*#\s*Region(?:\s+(?<name>.+?))?\s*$", RegexOptions.Compiled);
@@ -46,184 +56,88 @@ namespace Microsoft.DocAsCode.Dfm
         // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
         // Currently only supports parts of the language names, aliases and extensions
         // Later we can move the repository's supported/custom language names, aliases, extensions and corresponding comments regexes to docfx build configuration
-        private static readonly IReadOnlyDictionary<string, List<ICodeSnippetExtractor>> CodeLanguageExtractors =
-            new Dictionary<string, List<ICodeSnippetExtractor>>(StringComparer.OrdinalIgnoreCase)
-            {
-                [".cs"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                    new RecursiveNameCodeSnippetExtractor(CSharpCodeSnippetRegionStartLineRegex, CSharpCodeSnippetRegionEndLineRegex)
-                },
-                ["cs"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                    new RecursiveNameCodeSnippetExtractor(CSharpCodeSnippetRegionStartLineRegex, CSharpCodeSnippetRegionEndLineRegex)
-                },
-                ["csharp"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                    new RecursiveNameCodeSnippetExtractor(CSharpCodeSnippetRegionStartLineRegex, CSharpCodeSnippetRegionEndLineRegex)
-                },
-                [".vb"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(BasicFamilyCodeSnippetCommentStartLineRegex, BasicFamilyCodeSnippetCommentEndLineRegex),
-                    new RecursiveNameCodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineRegex, VBCodeSnippetRegionRegionEndLineRegex)
-                },
-                ["vb"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(BasicFamilyCodeSnippetCommentStartLineRegex, BasicFamilyCodeSnippetCommentEndLineRegex),
-                    new RecursiveNameCodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineRegex, VBCodeSnippetRegionRegionEndLineRegex)
-                },
-                ["vbnet"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(BasicFamilyCodeSnippetCommentStartLineRegex, BasicFamilyCodeSnippetCommentEndLineRegex),
-                    new RecursiveNameCodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineRegex, VBCodeSnippetRegionRegionEndLineRegex)
-                },
-                [".cpp"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                [".h"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                [".hpp"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                [".c"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                [".cc"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                ["cpp"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                ["c"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                ["c++"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                ["fs"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                ["fsharp"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                [".fs"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                [".fsi"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                [".fsx"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                [".xml"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex)
-                },
-                [".csdl"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex)
-                },
-                [".edmx"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex)
-                },
-                ["xml"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex)
-                },
-                [".html"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex)
-                },
-                ["html"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex)
-                },
-                [".cshtml"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex)
-                },
-                ["cshtml"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex)
-                },
-                [".vbhtml"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex)
-                },
-                ["vbhtml"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex)
-                },
-                [".xaml"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex)
-                },
-                ["xaml"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex)
-                },
-                [".sql"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(SqlFamilyCodeSnippetCommentStartLineRegex, SqlFamilyCodeSnippetCommentEndLineRegex)
-                },
-                ["sql"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(SqlFamilyCodeSnippetCommentStartLineRegex, SqlFamilyCodeSnippetCommentEndLineRegex)
-                },
-                [".js"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex),
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                ["js"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex),
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                ["javascript"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex),
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                [".java"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                ["java"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                },
-                [".py"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(PythonFamilyCodeSnippetCommentStartLineRegex, PythonFamilyCodeSnippetCommentEndLineRegex)
-                },
-                ["python"] = new List<ICodeSnippetExtractor>
-                {
-                    new FlatNameCodeSnippetExtractor(PythonFamilyCodeSnippetCommentStartLineRegex, PythonFamilyCodeSnippetCommentEndLineRegex)
-                }
-            };
+        private static readonly IReadOnlyDictionary<string, List<ICodeSnippetExtractor>> CodeLanguageExtractors = GetCodeLanguageExtractors();
+
+        public string TagName { get; set; }
 
         private DfmTagNameResolveResult _resolveResult;
 
         private readonly ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>> _dfmTagNameLineRangeCache =
             new ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>>(StringComparer.OrdinalIgnoreCase);
+
+        private static Dictionary<string, List<ICodeSnippetExtractor>> GetCodeLanguageExtractors()
+        {
+            return new CodeLanguageExtractorsBuilder()
+                .AddAlias("actionscript", ".as")
+                .AddAlias("arduino", ".ino")
+                .AddAlias("assembly", "nasm", ".asm")
+                .AddAlias("batchfile", ".bat", ".cmd")
+                .AddAlias("cpp", "c", "c++", "objective-c", "obj-c", "objc", "objectivec", ".c", ".cpp", ".h", ".hpp", ".cc")
+                .AddAlias("csharp", "cs", ".cs")
+                .AddAlias("cuda", ".cu", ".cuh")
+                .AddAlias("d", "dlang", ".d")
+                .AddAlias("erlang", ".erl")
+                .AddAlias("fsharp", "fs", ".fs", ".fsi", ".fsx")
+                .AddAlias("go", "golang", ".go")
+                .AddAlias("haskell", ".hs")
+                .AddAlias("html", ".html", ".cshtml", "cshtml", ".vbhtml", "vbhtml", ".jsp", ".asp", ".aspx")
+                .AddAlias("java", ".java")
+                .AddAlias("javascript", "js", "node", ".js")
+                .AddAlias("lisp", ".lisp", ".lsp")
+                .AddAlias("lua", ".lua")
+                .AddAlias("matlab", ".matlab")
+                .AddAlias("pascal", ".pas")
+                .AddAlias("perl", ".pl")
+                .AddAlias("php", ".php")
+                .AddAlias("powershell", "posh", ".ps1")
+                .AddAlias("processing", ".pde")
+                .AddAlias("python", ".py")
+                .AddAlias("r", ".r")
+                .AddAlias("ruby", "ru", ".ru", ".ruby")
+                .AddAlias("rust", ".rs")
+                .AddAlias("scala", ".scala")
+                .AddAlias("shell", "sh", "bash", ".sh", ".bash")
+                .AddAlias("smalltalk", ".st")
+                .AddAlias("sql", ".sql")
+                .AddAlias("swift", ".swift")
+                .AddAlias("typescript", "ts", ".ts")
+                .AddAlias("xaml", ".xaml")
+                .AddAlias("xml", "xsl", "xslt", "xsd", "wsdl", ".xml", ".csdl", ".edmx", ".xsl", ".xslt", ".xsd", ".wsdl")
+                .AddAlias("vb", "vbnet", "vbscript", ".vb", ".bas", ".vbs", ".vba")
+                // family
+                .Add(
+                    new FlatNameCodeSnippetExtractor(BasicFamilyCodeSnippetCommentStartLineRegex, BasicFamilyCodeSnippetCommentEndLineRegex),
+                    "vb")
+                .Add(
+                    new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
+                    "actionscript", "arduino", "assembly", "cpp", "csharp", "cuda", "d", "fsharp", "go", "java", "javascript", "pascal", "php", "processing", "rust", "scala", "smalltalk", "swift", "typescript")
+                .Add(
+                    new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex),
+                    "xml", "xaml", "html")
+                .Add(
+                    new FlatNameCodeSnippetExtractor(SqlFamilyCodeSnippetCommentStartLineRegex, SqlFamilyCodeSnippetCommentEndLineRegex),
+                    "haskell", "lua", "sql")
+                .Add(
+                    new FlatNameCodeSnippetExtractor(ScriptFamilyCodeSnippetCommentStartLineRegex, ScriptFamilyCodeSnippetCommentEndLineRegex),
+                    "perl", "powershell", "python", "r", "ruby", "shell")
+                // specical language
+                .Add(
+                    new FlatNameCodeSnippetExtractor(BatchFileCodeSnippetRegionStartLineRegex, BatchFileCodeSnippetRegionEndLineRegex),
+                    "batchfile")
+                .Add(
+                    new RecursiveNameCodeSnippetExtractor(CSharpCodeSnippetRegionStartLineRegex, CSharpCodeSnippetRegionEndLineRegex),
+                    "csharp")
+                .Add(
+                    new FlatNameCodeSnippetExtractor(ErlangCodeSnippetRegionStartLineRegex, ErlangCodeSnippetRegionEndLineRegex),
+                    "erlang", "matlab")
+                .Add(
+                    new FlatNameCodeSnippetExtractor(LispCodeSnippetRegionStartLineRegex, LispCodeSnippetRegionEndLineRegex),
+                    "lisp")
+                .Add(
+                    new RecursiveNameCodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineRegex, VBCodeSnippetRegionRegionEndLineRegex),
+                    "vb")
+                .ToDictionay();
+        }
 
         public override bool ValidateAndPrepare(string[] lines, DfmFencesToken token)
         {
