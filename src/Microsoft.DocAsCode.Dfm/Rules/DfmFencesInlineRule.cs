@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Dfm
     using System;
     using System.Text.RegularExpressions;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmFencesInlineRule : DfmFencesRule
@@ -18,7 +19,10 @@ namespace Microsoft.DocAsCode.Dfm
         {
             if (!parser.Context.GetIsInTable())
             {
-                return null;
+                if (!parser.Options.LegacyMode)
+                {
+                    return null;
+                }
             }
             var match = _dfmFencesRegex.Match(context.CurrentMarkdown);
             if (match.Length == 0)
@@ -34,6 +38,10 @@ namespace Microsoft.DocAsCode.Dfm
             var title = match.Groups["title"]?.Value;
             var pathQueryOption = ParsePathQueryString(match.Groups["option"]?.Value, match.Groups["optionValue"]?.Value);
 
+            if (!parser.Context.GetIsInTable())
+            {
+                Logger.LogWarning("Invalid inline code.", line: sourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidInlineCodeSnippet);
+            }
             return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption);
         }
     }
