@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.Dfm
 
             if (!parser.Context.GetIsInTable())
             {
-                Logger.LogWarning("Inline code snippet is only allowed inside tables.", line: sourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidInlineCodeSnippet);
+                Logger.LogWarning("Inline code snippet is only allowed inside tables.", phase: null, line: sourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidInlineCodeSnippet);
             }
             return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption);
         }
