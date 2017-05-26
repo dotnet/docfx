@@ -316,7 +316,7 @@ $(function () {
                 var itemBrief = extractContentBrief(hit.keywords);
 
                 var itemNode = $('<div>').attr('class', 'sr-item');
-                var itemTitleNode = $('<div>').attr('class', 'item-title').append($('<a>').attr('href', itemHref).attr("target", "_blank").text(itemTitle));
+                var itemTitleNode = $('<div>').attr('class', 'item-title').append($('<a>').attr('href', itemHref).text(itemTitle));
                 var itemHrefNode = $('<div>').attr('class', 'item-href').text(itemRawHref);
                 var itemBriefNode = $('<div>').attr('class', 'item-brief').text(itemBrief);
                 itemNode.append(itemTitleNode).append(itemHrefNode).append(itemBriefNode);
