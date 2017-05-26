@@ -1,6 +1,8 @@
 ### YamlMime:ManagedReference
+anotherMeta: page level metadata should be overwritten by item level metadata.
 items:
 - uid: CatLibrary.Cat`2
+  anotherMeta: item level metadata should overwrite page level metadata.
   commentId: T:CatLibrary.Cat`2
   id: Cat`2
   parent: CatLibrary
