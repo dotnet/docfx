@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.Plugins
             _lock.EnterReadLock();
             try
             {
-                _index.TryGetValue(relativePath, out list);
+                _index.TryGetValue(NormalizePath(relativePath), out list);
             }
             finally
             {
@@ -87,7 +87,7 @@ namespace Microsoft.DocAsCode.Plugins
                             AddItem(ofi.RelativePath, ofi);
                             ofi.PropertyChanged += OutputFileInfoPropertyChanged;
                         }
-                        ((INotifyCollectionChanged)item.OutputFiles).CollectionChanged += ManifestItemOutputChanged;
+                        item.OutputFiles.CollectionChanged += ManifestItemOutputChanged;
                     }
                 }
                 if (e.OldItems != null)
@@ -99,7 +99,7 @@ namespace Microsoft.DocAsCode.Plugins
                             RemoveItem(ofi.RelativePath, ofi);
                             ofi.PropertyChanged -= OutputFileInfoPropertyChanged;
                         }
-                       ((INotifyCollectionChanged)item.OutputFiles).CollectionChanged -= ManifestItemOutputChanged;
+                       item.OutputFiles.CollectionChanged -= ManifestItemOutputChanged;
                     }
                 }
             }
@@ -139,24 +139,22 @@ namespace Microsoft.DocAsCode.Plugins
 
         private void OutputFileInfoPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var args = e as PropertyChangedEventArgs<string>;
-            if (args == null)
+            if (e is PropertyChangedEventArgs<string> args)
             {
-                return;
-            }
-            if (args.PropertyName != nameof(OutputFileInfo.RelativePath))
-            {
-                return;
-            }
-            _lock.EnterWriteLock();
-            try
-            {
-                RemoveItem(args.Original, (OutputFileInfo)sender);
-                AddItem(args.Current, (OutputFileInfo)sender);
-            }
-            finally
-            {
-                _lock.ExitWriteLock();
+                if (args.PropertyName != nameof(OutputFileInfo.RelativePath))
+                {
+                    return;
+                }
+                _lock.EnterWriteLock();
+                try
+                {
+                    RemoveItem(args.Original, (OutputFileInfo)sender);
+                    AddItem(args.Current, (OutputFileInfo)sender);
+                }
+                finally
+                {
+                    _lock.ExitWriteLock();
+                }
             }
         }
 
@@ -166,22 +164,28 @@ namespace Microsoft.DocAsCode.Plugins
 
         private void AddItem(string relativePath, OutputFileInfo item)
         {
-            if (_index.TryGetValue(relativePath, out List<OutputFileInfo> list))
+            var rp = NormalizePath(relativePath);
+            if (_index.TryGetValue(rp, out List<OutputFileInfo> list))
             {
                 list.Add(item);
             }
             else
             {
-                _index[relativePath] = new List<OutputFileInfo> { item };
+                _index[rp] = new List<OutputFileInfo> { item };
             }
         }
 
         private void RemoveItem(string relativePath, OutputFileInfo item)
         {
-            if (_index.TryGetValue(relativePath, out List<OutputFileInfo> list))
+            if (_index.TryGetValue(NormalizePath(relativePath), out List<OutputFileInfo> list))
             {
                 list.Remove(item);
             }
+        }
+
+        private static string NormalizePath(string relativePath)
+        {
+            return relativePath.Replace('\\', '/');
         }
 
         #endregion
