@@ -311,7 +311,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
             var systemKeys = (JArray)model[Constants.PropertyName.SystemKeys];
             Assert.NotEmpty(systemKeys);
-            foreach (var key in model.Keys.Where(key => key[0] != '_' && key != "meta"))
+            foreach (var key in model.Keys.Where(key => key[0] != '_' && key != "meta" && key != "anotherMeta"))
             {
                 Assert.Contains(key, systemKeys);
             }
