@@ -63,17 +63,22 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         public static HrefType GetHrefType(string href)
         {
-            if (!PathUtility.IsRelativePath(href))
+            if (href == null)
             {
                 return HrefType.AbsolutePath;
             }
-            var fileName = Path.GetFileName(href);
+            var hrefWithoutAnchor = UriUtility.GetPath(href);
+            if (!PathUtility.IsRelativePath(hrefWithoutAnchor))
+            {
+                return HrefType.AbsolutePath;
+            }
+            var fileName = Path.GetFileName(hrefWithoutAnchor);
             if (string.IsNullOrEmpty(fileName))
             {
                 return HrefType.RelativeFolder;
             }
 
-            var tocFileType = GetTocFileType(href);
+            var tocFileType = GetTocFileType(hrefWithoutAnchor);
 
             if (tocFileType == TocFileType.Markdown)
             {

@@ -150,6 +150,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         }
                         else
                         {
+                            CheckHref(item, file);
                             var relativeFolder = (RelativePath)file.File + (RelativePath)item.Href;
                             var tocFilePath = relativeFolder + (RelativePath)Constants.YamlTocFileName;
 
@@ -199,6 +200,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 case HrefType.MarkdownTocFile:
                 case HrefType.YamlTocFile:
                     {
+                        CheckHref(item, file);
                         var href = (RelativePath)item.Href;
                         var tocFilePath = (RelativePath)file.File + href;
                         var tocFile = file.ChangeFile(tocFilePath);
@@ -259,7 +261,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             return wrapper;
         }
-        
+
         private TocViewModel UpdateOriginalHref(TocViewModel toc, RelativePath relativePath)
         {
             if (toc == null || relativePath.SubdirectoryCount == 0)
@@ -267,7 +269,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 return toc;
             }
 
-            foreach(var item in toc)
+            foreach (var item in toc)
             {
                 item.OriginalHomepage = GetRelativePath(item.OriginalHomepage, relativePath);
                 item.OriginalHref = GetRelativePath(item.OriginalHref, relativePath);
@@ -340,6 +342,15 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
 
             return false;
+        }
+
+        private void CheckHref(TocItemViewModel item, FileAndType file)
+        {
+            if (UriUtility.HasFragment(item.Href) || UriUtility.HasQueryString(item.Href))
+            {
+                Logger.LogWarning($"Illegal href: {item.Href} in {file.File}.");
+                item.Href = UriUtility.GetPath(item.Href);
+            }
         }
     }
 }
