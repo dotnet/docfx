@@ -35,8 +35,8 @@ $(function () {
   }
 
   function breakText() {
-    $(".xref").addClass("break-text");
-    var texts = $(".break-text");
+    $(".xref").addClass("text-break");
+    var texts = $(".text-break");
     texts.each(function () {
       $(this).text(function (index, text) {
         return util.breakText(text);
