@@ -103,7 +103,7 @@ namespace Microsoft.DocAsCode.E2E.Tests
             FindElement(By.Id("classes"));
 
             // go to class page
-            FindElements(By.XPath("//h4/a[@class='xref']"))[0].Click();
+            FindElements(By.XPath("//h4/a[contains(@class, 'xref')]"))[0].Click();
 
             // make sure the class page has been loaded
             FindElement(By.Id("methods"));

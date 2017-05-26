@@ -37,9 +37,9 @@ h4:before {
     margin-top: -100px;
 }
 
-h1, h2, h3, h4, h5, h6, span.xref {
+h1, h2, h3, h4, h5, h6, span.xref, .break-text {
     word-wrap: break-word;
-    word-break: break-all;
+    word-break: break-word;
 }
 
 h1 mark,
@@ -199,8 +199,6 @@ header .navbar {
 
 article h1, article h2, article h3, article h4{
   margin-top: 25px;
-  word-wrap: normal;
-  word-break: normal;
 }
 
 article h4{

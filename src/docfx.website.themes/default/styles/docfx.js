@@ -20,7 +20,7 @@ $(function () {
   renderFooter();
   renderLogo();
 
-  formatTitles();
+  breakText();
 
   window.refresh = function (article) {
     // Update markup result
@@ -34,10 +34,10 @@ $(function () {
     renderAffix();
   }
 
-  // Format titles to break words
-  function formatTitles() {
-    var headers = $("article h1, article h2, article h3, article h4");
-    headers.each(function () {
+  function breakText() {
+    $(".xref").addClass("break-text");
+    var texts = $(".break-text");
+    texts.each(function () {
       $(this).text(function (index, text) {
         return util.breakText(text);
       })
