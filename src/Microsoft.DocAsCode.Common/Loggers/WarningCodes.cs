@@ -17,5 +17,12 @@ namespace Microsoft.DocAsCode.Common
             public const string DuplicateUids = "DuplicateUids";
             public const string DuplicateOutputFiles = "DuplicateOutputFiles";
         }
+
+        public static class Markdown
+        {
+            public const string InvalidInclude = "InvalidInclude";
+            public const string InvalidCodeSnippet = "InvalidCodeSnippet";
+            public const string InvalidInlineCodeSnippet = "InvalidInlineCodeSnippet";
+        }
     }
 }
