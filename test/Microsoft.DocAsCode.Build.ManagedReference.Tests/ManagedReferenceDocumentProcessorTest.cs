@@ -63,6 +63,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             Assert.NotNull(model);
 
             Assert.Equal("Hello world!", model.Metadata["meta"]);
+            Assert.Equal("item level metadata should overwrite page level metadata.", model.Metadata["anotherMeta"]);
             Assert.Equal(1, model.Attributes.Count);
             Assert.Equal("System.SerializableAttribute.#ctor", model.Attributes[0].Constructor);
             Assert.Equal(0, model.Attributes[0].Arguments.Count);
