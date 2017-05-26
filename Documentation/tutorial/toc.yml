@@ -38,3 +38,5 @@
     href: validate_your_markdown_files.md
   - name: Intro markdown lite
     href: intro_markdown_lite.md
+  - name: How to customize DocFX Flavored Markdown
+    href: howto_customize_docfx_flavored_markdown.md
