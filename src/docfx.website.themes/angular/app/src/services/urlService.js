@@ -72,7 +72,7 @@
       currentPath = normalizeUrl(currentPath);
 
       // separate toc and content with !
-      var index = currentPath.indexOf(docConstants.TocAndFileUrlSeperator);
+      var index = currentPath.indexOf(docConstants.TocAndFileUrlSeparator);
       if (index < 0) {
         // If it ends with .md/.yml, render it without toc
         if ((docConstants.MdOrYamlRegexExp).test(currentPath)) {
@@ -103,13 +103,13 @@
 
     this.getContentUrl = function(pathInfo) {
       if (!pathInfo) return pathInfo;
-      var path = pathInfo.tocPath ? pathInfo.tocPath + docConstants.TocAndFileUrlSeperator : '';
+      var path = pathInfo.tocPath ? pathInfo.tocPath + docConstants.TocAndFileUrlSeparator : '';
       path += pathInfo.contentPath ? pathInfo.contentPath : docConstants.TocFile;
       return path;
     };
 
     this.getContentUrlWithTocAndContentUrl = function(tocPath, contentPath) {
-      var path = tocPath ? tocPath + docConstants.TocAndFileUrlSeperator : '';
+      var path = tocPath ? tocPath + docConstants.TocAndFileUrlSeparator : '';
       path += contentPath ? contentPath : docConstants.TocFile;
       return path;
     };
