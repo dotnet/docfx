@@ -35,7 +35,7 @@ namespace Microsoft.DocAsCode
 
         /// <summary>
         /// An optional set of MSBuild properties used when interpreting project files. These
-        ///  are the same properties that are passed to msbuild via the /property:<n>=<v>
+        ///  are the same properties that are passed to msbuild via the /property:&lt;n&gt;=&lt;v&gt;
         ///  command line argument.
         /// </summary>
         [JsonProperty("properties")]

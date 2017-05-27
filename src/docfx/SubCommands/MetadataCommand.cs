@@ -18,56 +18,83 @@ namespace Microsoft.DocAsCode.SubCommands
 
     internal sealed class MetadataCommand : ISubCommand
     {
+        private readonly string _baseDirectory;
+        private readonly string _outputFolder;
+
         public bool AllowReplay => true;
 
         public MetadataJsonConfig Config { get; }
-        public IEnumerable<ExtractMetadataInputModel> InputModels { get; }
 
         public MetadataCommand(MetadataCommandOptions options)
         {
-            Config = ParseOptions(options);
-            InputModels = GetInputModels(Config);
+            Config = ParseOptions(options, out _baseDirectory, out _outputFolder);
         }
 
         public void Exec(SubCommandRunningContext context)
         {
-            string originalGlobalNamespaceId = VisitorHelper.GlobalNamespaceId;
-            EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Directory.GetCurrentDirectory() : Config.BaseDirectory));
-            foreach (var inputModel in InputModels)
+            try
             {
-                VisitorHelper.GlobalNamespaceId = inputModel.GlobalNamespaceId;
+                using (new LoggerPhaseScope("ExtractMetadata"))
+                {
+                    ExecCore();
+                }
+            }
+            finally
+            {
+                EnvironmentContext.Clean();
+            }
+        }
 
+        private void ExecCore()
+        {
+            string originalGlobalNamespaceId = VisitorHelper.GlobalNamespaceId;
+
+            EnvironmentContext.SetBaseDirectory(_baseDirectory);
+
+            // If Root Output folder is specified from command line, use it instead of the base directory
+            EnvironmentContext.SetOutputDirectory(_outputFolder ?? _baseDirectory);
+            foreach (var item in Config)
+            {
+                VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
+
+                var inputModel = ConvertToInputModel(item);
+                
                 // TODO: Use plugin to generate metadata for files with different extension?
-                using (var worker = new ExtractMetadataWorker(inputModel, inputModel.ForceRebuild, inputModel.UseCompatibilityFileName))
+                using (var worker = new ExtractMetadataWorker(inputModel))
                 {
                     // Use task.run to get rid of current context (causing deadlock in xunit)
                     var task = Task.Run(worker.ExtractMetadataAsync);
                     task.Wait();
                 }
             }
-            EnvironmentContext.Clean();
             VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
         }
 
-        private MetadataJsonConfig ParseOptions(MetadataCommandOptions options)
+        private MetadataJsonConfig ParseOptions(MetadataCommandOptions options, out string baseDirectory, out string outputFolder)
         {
             MetadataJsonConfig config;
-
             string configFile;
+            baseDirectory = null;
             if (TryGetJsonConfig(options.Projects, out configFile))
             {
                 config = CommandUtility.GetConfig<MetadataConfig>(configFile).Item;
-                if (config == null) throw new DocumentException($"Unable to find metadata subcommand config in file '{configFile}'.");
-                config.BaseDirectory = Path.GetDirectoryName(configFile);
+                if (config == null)
+                {
+                    throw new DocumentException($"Unable to find metadata subcommand config in file '{configFile}'.");
+                }
+
+                baseDirectory = Path.GetDirectoryName(configFile);
             }
             else
             {
-                config = new MetadataJsonConfig();
-                config.Add(new MetadataJsonItemConfig
+                config = new MetadataJsonConfig
                 {
-                    Destination = options.OutputFolder,
-                    Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = true }
-                });
+                    new MetadataJsonItemConfig
+                    {
+                        Destination = options.OutputFolder,
+                        Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = true }
+                    }
+                };
             }
 
             var msbuildProperties = ResolveMSBuildProperties(options);
@@ -100,44 +127,30 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
 
-            config.OutputFolder = options.OutputFolder;
+            outputFolder = options.OutputFolder;
 
             return config;
-        }
-
-        private IEnumerable<ExtractMetadataInputModel> GetInputModels(MetadataJsonConfig configs)
-        {
-            foreach (var config in configs)
-            {
-                config.Raw |= configs.Raw;
-                config.Force |= configs.Force;
-                config.ShouldSkipMarkup |= configs.ShouldSkipMarkup;
-                yield return ConvertToInputModel(config);
-            }
         }
 
         private ExtractMetadataInputModel ConvertToInputModel(MetadataJsonItemConfig configModel)
         {
             var projects = configModel.Source;
-            // If Root Output folder is specified from command line, use it instead of the base directory
-            var outputFolder = Path.Combine(Config.OutputFolder ?? Config.BaseDirectory ?? string.Empty, configModel.Destination ?? DocAsCode.Constants.DefaultMetadataOutputFolderName);
+            var outputFolder = Path.Combine(EnvironmentContext.OutputDirectory, configModel.Destination ?? Constants.DefaultMetadataOutputFolderName);
             var inputModel = new ExtractMetadataInputModel
             {
                 PreserveRawInlineComments = configModel?.Raw ?? false,
                 ForceRebuild = configModel?.Force ?? false,
                 ShouldSkipMarkup = configModel?.ShouldSkipMarkup ?? false,
-                ApiFolderName = string.Empty,
                 FilterConfigFile = configModel?.FilterConfigFile,
                 GlobalNamespaceId = configModel?.GlobalNamespaceId,
                 UseCompatibilityFileName = configModel?.UseCompatibilityFileName ?? false,
-                MSBuildProperties = configModel?.MSBuildProperties
+                MSBuildProperties = configModel?.MSBuildProperties,
+                OutputFolder = outputFolder,
             };
 
-            var expandedFileMapping = GlobUtility.ExpandFileMapping(Config.BaseDirectory, projects);
-            inputModel.Items = new Dictionary<string, List<string>>
-            {
-                [outputFolder] = expandedFileMapping.Items.SelectMany(s => s.Files).ToList(),
-            };
+            var expandedFileMapping = GlobUtility.ExpandFileMapping(EnvironmentContext.BaseDirectory, projects);
+
+            inputModel.Files = expandedFileMapping.Items.SelectMany(s => s.Files).ToList();
 
             return inputModel;
         }
@@ -170,14 +183,14 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             if (!projects.Any())
             {
-                if (!File.Exists(DocAsCode.Constants.ConfigFileName))
+                if (!File.Exists(Constants.ConfigFileName))
                 {
                     throw new ArgumentException("Either provide config file or specify project files to generate metadata.");
                 }
                 else
                 {
-                    Logger.Log(LogLevel.Info, $"Config file {DocAsCode.Constants.ConfigFileName} found, start generating metadata...");
-                    jsonConfig = DocAsCode.Constants.ConfigFileName;
+                    Logger.Log(LogLevel.Info, $"Config file {Constants.ConfigFileName} found, start generating metadata...");
+                    jsonConfig = Constants.ConfigFileName;
                     return true;
                 }
             }
@@ -192,7 +205,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 jsonConfig = configFiles[0];
                 if (configFiles.Count > 1)
                 {
-                    Logger.Log(LogLevel.Warning, $"Multiple {DocAsCode.Constants.ConfigFileName} files are found! The first one \"{jsonConfig}\" is selected, and others \"{string.Join(", ", configFiles.Skip(1))}\" are ignored.");
+                    Logger.Log(LogLevel.Warning, $"Multiple {Constants.ConfigFileName} files are found! The first one \"{jsonConfig}\" is selected, and others \"{string.Join(", ", configFiles.Skip(1))}\" are ignored.");
                 }
                 else
                 {

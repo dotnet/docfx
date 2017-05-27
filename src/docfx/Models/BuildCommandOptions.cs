@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode
     [OptionUsage("build [<config file path>]")]
     internal class BuildCommandOptions : ICanPrintHelpMessage, ILoggable
     {
-        [Option('o', "output")]
+        [Option('o', "output", HelpText = "Specify the output base directory")]
         public string OutputFolder { get; set; }
 
         [ValueOption(0)]
