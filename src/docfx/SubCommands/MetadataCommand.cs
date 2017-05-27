@@ -18,8 +18,8 @@ namespace Microsoft.DocAsCode.SubCommands
 
     internal sealed class MetadataCommand : ISubCommand
     {
-        private readonly string _baseDirectory;
-        private readonly string _outputFolder;
+        internal readonly string BaseDirectory;
+        internal readonly string OutputFolder;
 
         public bool AllowReplay => true;
 
@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public MetadataCommand(MetadataCommandOptions options)
         {
-            Config = ParseOptions(options, out _baseDirectory, out _outputFolder);
+            Config = ParseOptions(options, out BaseDirectory, out OutputFolder);
         }
 
         public void Exec(SubCommandRunningContext context)
@@ -49,10 +49,10 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             string originalGlobalNamespaceId = VisitorHelper.GlobalNamespaceId;
 
-            EnvironmentContext.SetBaseDirectory(_baseDirectory);
+            EnvironmentContext.SetBaseDirectory(BaseDirectory);
 
             // If Root Output folder is specified from command line, use it instead of the base directory
-            EnvironmentContext.SetOutputDirectory(_outputFolder ?? _baseDirectory);
+            EnvironmentContext.SetOutputDirectory(OutputFolder ?? BaseDirectory);
             foreach (var item in Config)
             {
                 VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;

@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return path;
             }
 
-            return Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, path)).ToNormalizedPath();
+            return Path.Combine(EnvironmentContext.BaseDirectory, path).ToNormalizedFullPath();
         }
 
         public static FileType GetFileType(string filePath)

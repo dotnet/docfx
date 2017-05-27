@@ -217,9 +217,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }, 60);
             }
 
-            if (_files.TryGetValue(FileType.Project, out var prj))
+            if (_files.TryGetValue(FileType.Project, out var p))
             {
-                await prj.Select(s => s.FilePath).ForEachInParallelAsync(async path =>
+                await p.Select(s => s.FilePath).ForEachInParallelAsync(async path =>
                 {
                     if (!projectCache.ContainsKey(path))
                     {
@@ -229,15 +229,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }, 60);
             }
 
-            if (_files.TryGetValue(FileType.ProjectJsonProject, out var pjprj))
+            if (_files.TryGetValue(FileType.ProjectJsonProject, out var pjp))
             {
-                await pjprj.Select(s => s.FilePath).ForEachInParallelAsync(async path =>
+                await pjp.Select(s => s.FilePath).ForEachInParallelAsync(path =>
                 {
                     if (!projectCache.ContainsKey(path))
                     {
-                        var project = await GetProjectJsonProjectAsync(path);
+                        var project = GetProjectJsonProjectAsync(path);
                         projectCache.GetOrAdd(path, project);
                     }
+                    return Task.CompletedTask;
                 }, 60);
             }
 
@@ -872,14 +873,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private async Task<Project> GetProjectJsonProjectAsync(string path)
+        private Project GetProjectJsonProjectAsync(string path)
         {
             try
             {
                 Logger.LogVerbose($"Loading project {path}", file: path);
                 var workspace = new ProjectJsonWorkspace(path);
-                var project = workspace.CurrentSolution.Projects.FirstOrDefault(p => p.FilePath == Path.GetFullPath(path));
-                return await Task.FromResult(project);
+                return workspace.CurrentSolution.Projects.FirstOrDefault(p => p.FilePath == Path.GetFullPath(path));
             }
             catch (Exception e)
             {

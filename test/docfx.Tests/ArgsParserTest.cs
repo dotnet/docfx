@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal(2, metadataCommand.Config.Count);
             Assert.Equal(true, metadataCommand.Config[0].Force);
             Assert.Equal(true, metadataCommand.Config[1].Force);
-            Assert.Equal(@"Assets\docfx.json_metadata_build", metadataCommand.Config.BaseDirectory);
+            Assert.Equal(@"Assets\docfx.json_metadata_build", metadataCommand.BaseDirectory);
             Assert.Equal(typeof(BuildCommand), commands[1].GetType());
             var buildCommand = (BuildCommand)commands[1];
             Assert.Equal(true, buildCommand.Config.Force);
@@ -91,7 +91,8 @@ namespace Microsoft.DocAsCode.Tests
             Assert.Equal(2, metadataCommand.Config.Count);
             Assert.Equal(true, metadataCommand.Config[0].Force);
             Assert.Equal(true, metadataCommand.Config[1].Force);
-            Assert.Equal(@"Assets\docfx.json_metadata_build", metadataCommand.Config.BaseDirectory);
+            Assert.Equal(@"Assets\docfx.json_metadata_build",  metadataCommand.BaseDirectory);
+            Assert.Null(metadataCommand.OutputFolder);
 
             args = new string[] { "metadata", "Assets/docfx.json_empty/docfx.json", "A.csproj" };
             controller = ArgsParser.Instance.Parse(args);
