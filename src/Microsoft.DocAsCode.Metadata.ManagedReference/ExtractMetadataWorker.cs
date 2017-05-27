@@ -54,7 +54,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return;
             }
 
-            _files = ExtractMetadataUtility.GetInputs(input.Files).GroupBy(f => f.Type).ToDictionary(s => s.Key, s => s.Distinct().ToList());
+            _files = input.Files.Select(s => new FileInfo(s))
+                .GroupBy(f => f.Type)
+                .ToDictionary(s => s.Key, s => s.Distinct().ToList());
             _rebuild = input.ForceRebuild;
             _shouldSkipMarkup = input.ShouldSkipMarkup;
             _preserveRawInlineComments = input.PreserveRawInlineComments;
@@ -63,7 +65,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (input.FilterConfigFile != null)
             {
-                _filterConfigFile = ExtractMetadataUtility.Normalize(input.FilterConfigFile);
+                _filterConfigFile = new FileInfo(input.FilterConfigFile).NormalizedPath;
             }
 
             _msbuildProperties = input.MSBuildProperties ?? new Dictionary<string, string>();
@@ -189,7 +191,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (_files.TryGetValue(FileType.Solution, out var sln))
             {
-                var solutions = sln.Select(s => s.FilePath);
+                var solutions = sln.Select(s => s.NormalizedPath);
                 // No matter is incremental or not, we have to load solutions into memory
                 await solutions.ForEachInParallelAsync(async path =>
                 {
@@ -199,18 +201,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         foreach (var project in solution.Projects)
                         {
-                            var filePath = project.FilePath;
-
-                            var type = ExtractMetadataUtility.GetFileType(filePath);
+                            var projectFile = new FileInfo(project.FilePath);
 
                             // If the project is csproj/vbproj, add to project dictionary, otherwise, ignore
-                            if (type == FileType.Project || type == FileType.ProjectJsonProject)
+                            if (projectFile.IsSupportedProject())
                             {
-                                projectCache.GetOrAdd(ExtractMetadataUtility.Normalize(project.FilePath), s => project);
+                                projectCache.GetOrAdd(projectFile.NormalizedPath, s => project);
                             }
                             else
                             {
-                                Logger.Log(LogLevel.Warning, $"Project {filePath} inside solution {path} is ignored, supported projects are csproj and vbproj.");
+                                Logger.Log(LogLevel.Warning, $"Project {projectFile.RawPath} inside solution {path} is ignored, supported projects are csproj and vbproj.");
                             }
                         }
                     }
@@ -219,7 +219,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (_files.TryGetValue(FileType.Project, out var p))
             {
-                await p.Select(s => s.FilePath).ForEachInParallelAsync(async path =>
+                await p.Select(s => s.NormalizedPath).ForEachInParallelAsync(async path =>
                 {
                     if (!projectCache.ContainsKey(path))
                     {
@@ -231,7 +231,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (_files.TryGetValue(FileType.ProjectJsonProject, out var pjp))
             {
-                await pjp.Select(s => s.FilePath).ForEachInParallelAsync(path =>
+                await pjp.Select(s => s.NormalizedPath).ForEachInParallelAsync(path =>
                 {
                     if (!projectCache.ContainsKey(path))
                     {
@@ -266,20 +266,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             if (_files.TryGetValue(FileType.CSSourceCode, out var cs))
             {
-                csFiles.AddRange(cs.Select(s => s.FilePath));
+                csFiles.AddRange(cs.Select(s => s.NormalizedPath));
                 documentCache.AddDocuments(csFiles);
             }
 
             if (_files.TryGetValue(FileType.VBSourceCode, out var vb))
             {
-                vbFiles.AddRange(vb.Select(s => s.FilePath));
+                vbFiles.AddRange(vb.Select(s => s.NormalizedPath));
 
                 documentCache.AddDocuments(vbFiles);
             }
 
             if (_files.TryGetValue(FileType.Assembly, out var asm))
             {
-                assemblyFiles.AddRange(asm.Select(s => s.FilePath));
+                assemblyFiles.AddRange(asm.Select(s => s.NormalizedPath));
 
                 documentCache.AddDocuments(assemblyFiles);
             }
@@ -917,12 +917,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static string GetPrintableFileList(IEnumerable<FileInfo> files)
         {
-            return files?.Select(s => s.RawFilePath).ToDelimitedString();
+            return files?.Select(s => s.RawPath).ToDelimitedString();
         }
 
         private static IEnumerable<string> GetCacheKey(IEnumerable<FileInfo> files)
         {
-            return files.Where(s => s.Type != FileType.NotSupported).OrderBy(s => s.Type).Select(s => s.FilePath);
+            return files.Where(s => s.Type != FileType.NotSupported).OrderBy(s => s.Type).Select(s => s.NormalizedPath);
         }
 
         #endregion
