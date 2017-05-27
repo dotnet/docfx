@@ -8,5 +8,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public FileType Type { get; set; }
         public string FilePath { get; set; }
         public string RawFilePath { get; set; }
+        public override int GetHashCode()
+        {
+            return FilePath?.GetHashCode() ?? 0;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(FilePath, (obj as FileInfo)?.FilePath);
+        }
     }
 }
