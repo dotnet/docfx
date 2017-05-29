@@ -154,6 +154,7 @@ namespace HelloDocfx
         }
     }
 }
+```
 
 Add it to the `metadata` section of our `docfx.json` as follows.
 
