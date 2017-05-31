@@ -2,7 +2,6 @@
   <Import Project="..\Shared\test.base.props" />
 
   <ItemGroup>
-    <Compile Include="..\Shared\TestBase.cs" />
     <EmbeddedResource Include="tmpl\tmpl1.zip" />
     <None Update="PostProcessors\**;TestData\**;tmpl\tmpl1\sub\file1;tmpl\tmpl1\tmpl1.dot.$">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -37,6 +36,7 @@
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Tests.Common\Microsoft.DocAsCode.Tests.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

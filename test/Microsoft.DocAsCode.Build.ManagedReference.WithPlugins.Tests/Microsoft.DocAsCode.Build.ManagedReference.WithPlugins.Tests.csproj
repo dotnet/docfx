@@ -2,7 +2,6 @@
   <Import Project="..\Shared\test.base.props" />
 
   <ItemGroup>
-    <Compile Include="..\Shared\TestBase.cs" />
     <None Update="TestData\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -18,6 +17,7 @@
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.ManagedReference\Microsoft.DocAsCode.Build.ManagedReference.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.TableOfContents\Microsoft.DocAsCode.Build.TableOfContents.csproj" />
     <ProjectReference Include="..\..\plugins\Microsoft.DocAsCode.Build.MemberLevelManagedReference\Microsoft.DocAsCode.Build.MemberLevelManagedReference.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Tests.Common\Microsoft.DocAsCode.Tests.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
