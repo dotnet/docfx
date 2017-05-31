@@ -2,10 +2,6 @@
   <Import Project="..\Shared\test.base.props" />
 
   <ItemGroup>
-    <Compile Include="..\Shared\TestBase.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
   </ItemGroup>
 
