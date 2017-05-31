@@ -6,7 +6,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -20,50 +19,54 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
-    using Microsoft.DocAsCode.Plugins;
 
     public sealed class ExtractMetadataWorker : IDisposable
     {
-        private static readonly string[] SupportedSolutionExtensions = { ".sln" };
-        private static readonly string[] SupportedProjectName = { "project.json" };
-        private static readonly string[] SupportedProjectExtensions = { ".csproj", ".vbproj" };
-        private static readonly string[] SupportedSourceFileExtensions = { ".cs", ".vb" };
-        private static readonly string[] SupportedVBSourceFileExtensions = { ".vb" };
-        private static readonly string[] SupportedCSSourceFileExtensions = { ".cs" };
-        private static readonly string[] SupportedAssemblyExtensions = { ".dll", ".exe" };
-        private static readonly string SupportedCommentFileExtension = ".xml";
-        private static readonly List<string> SupportedExtensions = new List<string>();
-        private readonly ExtractMetadataInputModel _validInput;
-        private readonly ExtractMetadataInputModel _rawInput;
+        private const string XmlCommentFileExtension = "xml";
+        private const string IndexFileName = ".manifest";
+        private readonly Dictionary<FileType, List<FileInformation>> _files;
         private readonly bool _rebuild;
         private readonly bool _shouldSkipMarkup;
         private readonly bool _preserveRawInlineComments;
-        private readonly string _filterConfigFile;
         private readonly bool _useCompatibilityFileName;
-
-        // TODO: refactor incremental logic
+        private readonly string _filterConfigFile;
+        private readonly string _outputFolder;
         private readonly Dictionary<string, string> _msbuildProperties;
-        private readonly Lazy<MSBuildWorkspace> _workspace;
-        static ExtractMetadataWorker()
-        {
-            SupportedExtensions.AddRange(SupportedSolutionExtensions);
-            SupportedExtensions.AddRange(SupportedProjectExtensions);
-            SupportedExtensions.AddRange(SupportedSourceFileExtensions);
-            SupportedExtensions.AddRange(SupportedAssemblyExtensions);
-        }
 
-        public ExtractMetadataWorker(ExtractMetadataInputModel input, bool rebuild, bool useCompatibilityFileName)
+        //Lacks UT for shared workspace
+        private readonly Lazy<MSBuildWorkspace> _workspace;
+
+        public ExtractMetadataWorker(ExtractMetadataInputModel input)
         {
-            _rawInput = input;
-            _validInput = ValidateInput(input);
-            _rebuild = rebuild;
+            if (input == null)
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
+
+            if (string.IsNullOrEmpty(input.OutputFolder))
+            {
+                throw new ArgumentNullException(nameof(input.OutputFolder), "Output folder must be specified");
+            }
+
+            if (input.Files == null || input.Files.Count == 0)
+            {
+                Logger.Log(LogLevel.Warning, "No source project or file to process, exiting...");
+                return;
+            }
+
+            _files = input.Files.Select(s => new FileInformation(s))
+                .GroupBy(f => f.Type)
+                .ToDictionary(s => s.Key, s => s.Distinct().ToList());
+            _rebuild = input.ForceRebuild;
             _shouldSkipMarkup = input.ShouldSkipMarkup;
             _preserveRawInlineComments = input.PreserveRawInlineComments;
+            _useCompatibilityFileName = input.UseCompatibilityFileName;
+            _outputFolder = input.OutputFolder;
+
             if (input.FilterConfigFile != null)
             {
-                _filterConfigFile = Path.GetFullPath(Path.Combine(EnvironmentContext.BaseDirectory, input.FilterConfigFile)).Normalize();
+                _filterConfigFile = new FileInformation(input.FilterConfigFile).NormalizedPath;
             }
-            _useCompatibilityFileName = useCompatibilityFileName;
 
             _msbuildProperties = input.MSBuildProperties ?? new Dictionary<string, string>();
             if (!_msbuildProperties.ContainsKey("Configuration"))
@@ -76,25 +79,24 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public async Task ExtractMetadataAsync()
         {
-            var validInput = _validInput;
-            if (validInput == null)
-            {
-                return;
-            }
-
             try
             {
-                foreach (var pair in validInput.Items)
+                if (_files.TryGetValue(FileType.NotSupported, out List<FileInformation> unsupportedFiles))
                 {
-                    var inputs = pair.Value;
-                    var outputFolder = pair.Key;
-                    await SaveAllMembersFromCacheAsync(inputs, outputFolder, _rebuild);
+                    Logger.LogWarning($"Projects {GetPrintableFileList(unsupportedFiles)} are not supported");
                 }
+
+                await SaveAllMembersFromCacheAsync();
             }
             catch (Exception e)
             {
-                throw new ExtractMetadataException($"Error extracting metadata for {_rawInput}: {e.Message}", e);
+                var files = GetPrintableFileList(_files.SelectMany(s => s.Value));
+                throw new ExtractMetadataException($"Error extracting metadata for {files}: {e.Message}", e);
             }
+        }
+
+        public void Dispose()
+        {
         }
 
         #region Internal For UT
@@ -164,169 +166,74 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         #endregion
 
         #region Private
-        #region Check Supportability
-        private static bool IsSupported(string filePath)
+
+        private async Task SaveAllMembersFromCacheAsync()
         {
-            return IsSupported(filePath, SupportedExtensions, SupportedProjectName);
-        }
+            var forceRebuild = _rebuild;
+            var outputFolder = _outputFolder;
 
-        private static bool IsSupportedSolution(string filePath)
-        {
-            return IsSupported(filePath, SupportedSolutionExtensions);
-        }
-
-        private static bool IsSupportedProject(string filePath)
-        {
-            return IsSupported(filePath, SupportedProjectExtensions, SupportedProjectName);
-        }
-
-        private static bool IsSupportedSourceFile(string filePath)
-        {
-            return IsSupported(filePath, SupportedSourceFileExtensions);
-        }
-
-        private static bool IsSupportedAssemblyFile(string filePath)
-        {
-            return IsSupported(filePath, SupportedAssemblyExtensions);
-        }
-
-        private static bool IsSupportedVBSourceFile(string filePath)
-        {
-            return IsSupported(filePath, SupportedVBSourceFileExtensions);
-        }
-
-        private static bool IsSupportedCSSourceFile(string filePath)
-        {
-            return IsSupported(filePath, SupportedCSSourceFileExtensions);
-        }
-
-        private static bool IsSupported(string filePath, IEnumerable<string> supportedExtension, params string[] supportedFileName)
-        {
-            var fileExtension = Path.GetExtension(filePath);
-            var fileName = Path.GetFileName(filePath);
-            return supportedExtension.Contains(fileExtension, StringComparer.OrdinalIgnoreCase) || supportedFileName.Contains(fileName, StringComparer.OrdinalIgnoreCase);
-        }
-        #endregion
-
-        private static ExtractMetadataInputModel ValidateInput(ExtractMetadataInputModel input)
-        {
-            if (input == null) return null;
-
-            if (input.Items == null || input.Items.Count == 0)
-            {
-                Logger.Log(LogLevel.Warning, "No source project or file to process, exiting...");
-                return null;
-            }
-
-            var items = new Dictionary<string, List<string>>();
-
-            // 1. Input file should exists
-            foreach (var pair in input.Items)
-            {
-                if (string.IsNullOrWhiteSpace(pair.Key))
-                {
-                    var value = string.Join(", ", pair.Value);
-                    Logger.Log(LogLevel.Warning, $"Empty folder name is found: '{pair.Key}': '{value}'. It is not supported, skipping.");
-                    continue;
-                }
-
-                // HashSet to guarantee the input file path is unique
-                HashSet<string> validFilePath = new HashSet<string>();
-                foreach (var inputFilePath in pair.Value)
-                {
-                    if (!string.IsNullOrEmpty(inputFilePath))
-                    {
-                        if (File.Exists(inputFilePath))
-                        {
-                            if (IsSupported(inputFilePath))
-                            {
-                                var path = StringExtension.ToNormalizedFullPath(inputFilePath);
-                                validFilePath.Add(path);
-                            }
-                            else
-                            {
-                                var value = string.Join(",", SupportedExtensions);
-                                Logger.Log(LogLevel.Warning, $"File {inputFilePath} is not supported, supported file extension are: {value}. The file will be ignored.");
-                            }
-                        }
-                        else
-                        {
-                            Logger.Log(LogLevel.Warning, $"File {inputFilePath} does not exist, will be ignored.");
-                        }
-                    }
-                }
-
-                if (validFilePath.Count > 0) items.Add(pair.Key, validFilePath.ToList());
-            }
-
-            if (items.Count > 0)
-            {
-                var clone = input.Clone();
-                clone.Items = items;
-                return clone;
-            }
-            else return null;
-        }
-
-        private async Task SaveAllMembersFromCacheAsync(IEnumerable<string> inputs, string outputFolder, bool forceRebuild)
-        {
             var projectCache = new ConcurrentDictionary<string, Project>();
+
             // Project<=>Documents
             var documentCache = new ProjectDocumentCache();
             var projectDependencyGraph = new ConcurrentDictionary<string, List<string>>();
             DateTime triggeredTime = DateTime.UtcNow;
-            var solutions = inputs.Where(s => IsSupportedSolution(s));
-            var projects = inputs.Where(s => IsSupportedProject(s));
-
-            var sourceFiles = inputs.Where(s => IsSupportedSourceFile(s));
-            var assemblyFiles = inputs.Where(s => IsSupportedAssemblyFile(s));
 
             // Exclude not supported files from inputs
-            inputs = solutions.Concat(projects).Concat(sourceFiles).Concat(assemblyFiles);
+            var cacheKey = GetCacheKey(_files.SelectMany(s => s.Value));
 
             // Add filter config file into inputs and cache
             if (!string.IsNullOrEmpty(_filterConfigFile))
             {
-                inputs = inputs.Concat(new string[] { _filterConfigFile });
+                cacheKey = cacheKey.Concat(new string[] { _filterConfigFile });
                 documentCache.AddDocument(_filterConfigFile, _filterConfigFile);
             }
 
-            // No matter is incremental or not, we have to load solutions into memory
-            await solutions.ForEachInParallelAsync(async path =>
+            if (_files.TryGetValue(FileType.Solution, out var sln))
             {
-                documentCache.AddDocument(path, path);
-                var solution = await GetSolutionAsync(path);
-                if (solution != null)
+                var solutions = sln.Select(s => s.NormalizedPath);
+                // No matter is incremental or not, we have to load solutions into memory
+                await solutions.ForEachInParallelAsync(async path =>
                 {
-                    foreach (var project in solution.Projects)
+                    documentCache.AddDocument(path, path);
+                    var solution = await GetSolutionAsync(path);
+                    if (solution != null)
                     {
-                        var filePath = project.FilePath;
+                        foreach (var project in solution.Projects)
+                        {
+                            var projectFile = new FileInformation(project.FilePath);
 
-                        // If the project is csproj/vbproj, add to project dictionary, otherwise, ignore
-                        if (IsSupportedProject(filePath))
-                        {
-                            projectCache.GetOrAdd(StringExtension.ToNormalizedFullPath(project.FilePath), s => project);
-                        }
-                        else
-                        {
-                            var value = string.Join(",", SupportedExtensions);
-                            Logger.Log(LogLevel.Warning, $"Project {filePath} inside solution {path} is not supported, supported file extension are: {value}. The project will be ignored.");
+                            // If the project is csproj/vbproj, add to project dictionary, otherwise, ignore
+                            if (projectFile.IsSupportedProject())
+                            {
+                                projectCache.GetOrAdd(projectFile.NormalizedPath, s => project);
+                            }
+                            else
+                            {
+                                Logger.LogWarning($"Project {projectFile.RawPath} inside solution {path} is ignored, supported projects are csproj and vbproj.");
+                            }
                         }
                     }
-                }
-            }, 60);
+                }, 60);
+            }
 
-            // Load additional projects out if it is not contained in expanded solution
-            projects = projects.Except(projectCache.Keys).Distinct();
-
-            await projects.ForEachInParallelAsync(async path =>
+            if (_files.TryGetValue(FileType.Project, out var p))
             {
-                var project = await GetProjectAsync(path);
-                if (project != null)
+                await p.Select(s => s.NormalizedPath).ForEachInParallelAsync(path =>
                 {
-                    projectCache.GetOrAdd(path, s => project);
-                }
-            }, 60);
+                    projectCache.GetOrAdd(path, s => GetProjectAsync(s).Result);
+                    return Task.CompletedTask;
+                }, 60);
+            }
+
+            if (_files.TryGetValue(FileType.ProjectJsonProject, out var pjp))
+            {
+                await pjp.Select(s => s.NormalizedPath).ForEachInParallelAsync(path =>
+                {
+                    projectCache.GetOrAdd(path, s => GetProjectJsonProject(s));
+                    return Task.CompletedTask;
+                }, 60);
+            }
 
             foreach (var item in projectCache)
             {
@@ -346,13 +253,33 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
-            documentCache.AddDocuments(sourceFiles);
+            var csFiles = new List<string>();
+            var vbFiles = new List<string>();
+            var assemblyFiles = new List<string>();
+
+            if (_files.TryGetValue(FileType.CSSourceCode, out var cs))
+            {
+                csFiles.AddRange(cs.Select(s => s.NormalizedPath));
+                documentCache.AddDocuments(csFiles);
+            }
+
+            if (_files.TryGetValue(FileType.VBSourceCode, out var vb))
+            {
+                vbFiles.AddRange(vb.Select(s => s.NormalizedPath));
+                documentCache.AddDocuments(vbFiles);
+            }
+
+            if (_files.TryGetValue(FileType.Assembly, out var asm))
+            {
+                assemblyFiles.AddRange(asm.Select(s => s.NormalizedPath));
+                documentCache.AddDocuments(assemblyFiles);
+            }
 
             // Incremental check for inputs as a whole:
-            var applicationCache = ApplicationLevelCache.Get(inputs);
+            var applicationCache = ApplicationLevelCache.Get(cacheKey);
             if (!forceRebuild)
             {
-                var buildInfo = applicationCache.GetValidConfig(inputs);
+                var buildInfo = applicationCache.GetValidConfig(cacheKey);
                 if (buildInfo != null && buildInfo.ShouldSkipMarkup == _shouldSkipMarkup)
                 {
                     IncrementalCheck check = new IncrementalCheck(buildInfo);
@@ -391,7 +318,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         // Nothing modified, use the result in cache
                         try
                         {
-                            CopyFromCachedResult(buildInfo, inputs, outputFolder);
+                            CopyFromCachedResult(buildInfo, cacheKey, outputFolder);
                             return;
                         }
                         catch (Exception e)
@@ -417,8 +344,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 projectRebuildInfo[key] = projectMetadataResult.Item2;
             }
 
-            var csFiles = sourceFiles.Where(s => IsSupportedCSSourceFile(s));
-            if (csFiles.Any())
+            if (csFiles.Count > 0)
             {
                 var csContent = string.Join(Environment.NewLine, csFiles.Select(s => File.ReadAllText(s)));
                 var csCompilation = CompilationUtility.CreateCompilationFromCsharpCode(csContent);
@@ -429,8 +355,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
-            var vbFiles = sourceFiles.Where(s => IsSupportedVBSourceFile(s));
-            if (vbFiles.Any())
+            if (vbFiles.Count > 0)
             {
                 var vbContent = string.Join(Environment.NewLine, vbFiles.Select(s => File.ReadAllText(s)));
                 var vbCompilation = CompilationUtility.CreateCompilationFromVBCode(vbContent);
@@ -441,7 +366,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
-            if (assemblyFiles.Any())
+            if (assemblyFiles.Count > 0)
             {
                 var assemblyCompilation = CompilationUtility.CreateCompilationFromAssembly(assemblyFiles);
                 if (assemblyCompilation != null)
@@ -452,7 +377,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                                                  let metadata = GetAssemblyMetadataFromCacheAsync(assemblyFiles, assemblyCompilation, assembly, outputFolder, forceRebuild, _filterConfigFile, assemblyExtension)
                                                  select metadata.Result.Item1).ToList();
                     var commentFiles = (from file in assemblyFiles
-                                        select Path.ChangeExtension(file, SupportedCommentFileExtension) into xmlFile
+                                        select Path.ChangeExtension(file, XmlCommentFileExtension) into xmlFile
                                         where File.Exists(xmlFile)
                                         select xmlFile).ToList();
 
@@ -472,14 +397,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 var value = StringExtension.ToDelimitedString(projectMetadataList.Select(s => s.Name));
                 Logger.Log(LogLevel.Warning, $"No metadata is generated for {value}.");
-                applicationCache.SaveToCache(inputs, null, triggeredTime, outputFolder, null, _shouldSkipMarkup, _msbuildProperties);
+                applicationCache.SaveToCache(cacheKey, null, triggeredTime, outputFolder, null, _shouldSkipMarkup, _msbuildProperties);
             }
             else
             {
                 // TODO: need an intermediate folder? when to clean it up?
                 // Save output to output folder
-                var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, _validInput.IndexFileName, _validInput.TocFileName, _validInput.ApiFolderName, _preserveRawInlineComments, _shouldSkipMarkup, _rawInput.ExternalReferences, _useCompatibilityFileName);
-                applicationCache.SaveToCache(inputs, documentCache.Cache, triggeredTime, outputFolder, outputFiles, _shouldSkipMarkup, _msbuildProperties);
+                var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, _preserveRawInlineComments, _shouldSkipMarkup, _useCompatibilityFileName);
+                applicationCache.SaveToCache(cacheKey, documentCache.Cache, triggeredTime, outputFolder, outputFiles, _shouldSkipMarkup, _msbuildProperties);
             }
         }
 
@@ -705,16 +630,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             Dictionary<string, MetadataItem> allMembers,
             Dictionary<string, ReferenceItem> allReferences,
             string folder,
-            string indexFileName,
-            string tocFileName,
-            string apiFolder,
             bool preserveRawInlineComments,
             bool shouldSkipMarkup,
-            IEnumerable<string> externalReferencePackages,
             bool useCompatibilityFileName)
         {
             var outputFiles = new List<string>();
-            var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, apiFolder, preserveRawInlineComments, externalReferencePackages);
+            var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, preserveRawInlineComments);
+
+            var tocFileName = Constants.TocYamlFileName;
+            // 0. TODO: load last Manifest and remove files
 
             // 1. generate toc.yml
             outputFiles.Add(tocFileName);
@@ -737,8 +661,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     outputPath = outputPath.Replace('`', '-');
                 }
-                outputFiles.Add(Path.Combine(apiFolder, outputPath));
-                string itemFilePath = Path.Combine(folder, apiFolder, outputPath);
+                outputFiles.Add(outputPath);
+                string itemFilePath = Path.Combine(folder, outputPath);
                 Directory.CreateDirectory(Path.GetDirectoryName(itemFilePath));
                 var memberViewModel = memberModel.ToPageViewModel();
                 memberViewModel.ShouldSkipMarkup = shouldSkipMarkup;
@@ -748,8 +672,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
 
             // 3. generate manifest file
-            outputFiles.Add(indexFileName);
-            string indexFilePath = Path.Combine(folder, indexFileName);
+            outputFiles.Add(IndexFileName);
+            string indexFilePath = Path.Combine(folder, IndexFileName);
 
             JsonUtility.Serialize(indexFilePath, indexer);
 
@@ -916,6 +840,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             try
             {
+                Logger.LogVerbose($"Loading solution {path}", file: path);
                 return await _workspace.Value.OpenSolutionAsync(path);
             }
             catch (Exception e)
@@ -929,15 +854,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             try
             {
-                string name = Path.GetFileName(path);
-
-                if (name.Equals("project.json", StringComparison.OrdinalIgnoreCase))
-                {
-                    var workspace = new ProjectJsonWorkspace(path);
-                    return workspace.CurrentSolution.Projects.FirstOrDefault(p => p.FilePath == Path.GetFullPath(path));
-                }
-
+                Logger.LogVerbose($"Loading project {path}", file: path);
                 return await _workspace.Value.OpenProjectAsync(path);
+            }
+            catch (Exception e)
+            {
+                Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.Message}. Ignored.");
+                return null;
+            }
+        }
+
+        private Project GetProjectJsonProject(string path)
+        {
+            try
+            {
+                Logger.LogVerbose($"Loading project {path}", file: path);
+                var workspace = new ProjectJsonWorkspace(path);
+                return workspace.CurrentSolution.Projects.FirstOrDefault(p => p.FilePath == Path.GetFullPath(path));
             }
             catch (Exception e)
             {
@@ -973,12 +906,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             result.Add(start);
         }
 
-        public void Dispose()
+        private static string GetPrintableFileList(IEnumerable<FileInformation> files)
         {
-            if (_workspace.IsValueCreated)
-            {
-                _workspace.Value.Dispose();
-            }
+            return files?.Select(s => s.RawPath).ToDelimitedString();
+        }
+
+        private static IEnumerable<string> GetCacheKey(IEnumerable<FileInformation> files)
+        {
+            return files.Where(s => s.Type != FileType.NotSupported).OrderBy(s => s.Type).Select(s => s.NormalizedPath);
         }
 
         #endregion

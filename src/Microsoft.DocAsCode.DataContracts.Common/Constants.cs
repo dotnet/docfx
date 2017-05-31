@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         public const string YamlExtension = ".yml";
         public const string ContentPlaceholder = "*content";
         public const string PrefixSeparator = ".";
+        public const string TocYamlFileName = "toc.yml";
 
         /// <summary>
         /// TODO: add other property name const
