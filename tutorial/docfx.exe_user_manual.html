@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.17.7.15">
+    <meta name="generator" content="docfx 2.18.1.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -111,11 +111,10 @@
 </code></pre><h4 id="221-optional-projects-argument">2.2.1 Optional <code>&lt;projects&gt;</code> argument</h4>
 <p><code>&lt;projects&gt;</code> specifies the projects to have metadata extracted. There are several approaches to extract language metadata.</p>
 <ol>
-<li>From a supported project file or project file list
-Supported project file extensions include <code>.csproj</code>, <code>.vbproj</code>, <code>.sln</code>, and <code>project.json</code>.</li>
-</ol>
+<li><p>From a supported project file or project file list
+Supported project file extensions include <code>.csproj</code>, <code>.vbproj</code>, <code>.sln</code>, and <code>project.json</code>.</p>
 <p>Files can be combined using <code>,</code> as separator, e.g. <code>docfx metadata a.csproj,b.sln</code>.</p>
-<ol start="2">
+</li>
 <li><p>From a supported source code file or source code file list
 Supported source code file extensions include <code>.cs</code> and <code>.vb</code>.
 Files can be combined using <code>,</code> as separator and <em>search pattern</em>.</p>
@@ -349,6 +348,10 @@ And if <code>href</code> is referencing to a <strong>folder</strong>, it must en
 <tr>
 <td>noLangKeyword</td>
 <td>Disable default lang keyword, it can be downloaded from <a href="http://dotnet.github.io/docfx/langwordmapping/langwordMapping.yml">here</a>.</td>
+</tr>
+<tr>
+<td>keepFileLink</td>
+<td>If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a <code>link_to_path</code> property inside <code>mainfiest.json</code> to indicate the physical location of that file. A file link will be created by incremental build and copy resouce file.</td>
 </tr>
 </tbody>
 </table>
@@ -644,12 +647,9 @@ It offers several options to determine how to parse the Glob pattern:</p>
 <p><strong>SAMPLES</strong></p>
 <h2 id="5-q--a">5. Q &amp; A</h2>
 <ol>
-<li>Do we support files outside current project folder(the folder when <code>docfx.json</code> exists)? 
-A: YES. DO specify <code>src</code> and files outside of current folder will be copied to output folder keeping the same relative path to <code>src</code>.</li>
-<li>Do we support output folder outside current project folder(the folder when <code>docfx.json</code> exists)?
-A: YES.</li>
-<li>Do we support <strong>referencing</strong> files outside of current project folder(the folder when <code>docfx.json</code> exists)?
-A: NO.</li>
+<li>Do we support files outside current project folder(the folder when <code>docfx.json</code> exists)?<br>A: YES. DO specify <code>src</code> and files outside of current folder will be copied to output folder keeping the same relative path to <code>src</code>.</li>
+<li>Do we support output folder outside current project folder(the folder when <code>docfx.json</code> exists)?<br>A: YES.</li>
+<li>Do we support <strong>referencing</strong> files outside of current project folder(the folder when <code>docfx.json</code> exists)?<br>A: NO.</li>
 </ol>
 <div id="disqus_thread"></div>
                 <script>
