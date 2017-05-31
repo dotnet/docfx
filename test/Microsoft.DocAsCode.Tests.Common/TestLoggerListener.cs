@@ -24,11 +24,9 @@ namespace Microsoft.DocAsCode.Tests.Common
         {
             Phase = phase;
             LogLevelThreshold = logLevelThreshold;
-            if (phaseMatcher == null)
-            {
-                // Set default phase matcher to start with current phase
-                PhaseMatcher = iLogItem => iLogItem?.Phase != null && iLogItem.Phase.StartsWith(Phase);
-            }
+
+            // Set default phase matcher to start with current phase
+            PhaseMatcher = phaseMatcher ?? (iLogItem => iLogItem?.Phase != null && iLogItem.Phase.StartsWith(Phase));
         }
 
         public void WriteLine(ILogItem item)
