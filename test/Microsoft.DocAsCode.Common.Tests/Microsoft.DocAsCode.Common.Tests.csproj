@@ -2,10 +2,6 @@
   <Import Project="..\Shared\test.base.props" />
 
   <ItemGroup>
-    <Compile Include="..\Shared\TestBase.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageReference Include="YamlDotNet.Signed" Version="4.1.0" />
     <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
@@ -20,6 +16,7 @@
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.YamlSerialization\Microsoft.DocAsCode.YamlSerialization.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Tests.Common\Microsoft.DocAsCode.Tests.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>
