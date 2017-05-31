@@ -1,10 +1,34 @@
 ﻿Version Notes (Current Version: v2.18.1)
 =======================================
-v2.18.1 (Pre-release)
+
+v2.19 (Pre-release)
+-----------
+
+v2.18.1
 -----------
 1.  Bug fixes:
     1. Bug fix for markdown empty link.
     2. Bug fix for html behaivor in dfm-latest.
+
+v2.17.5
+-----------
+1. Fix Egde crashes with web worker. https://github.com/dotnet/docfx/issues/1414
+
+v2.17.4
+-----------
+1. Bug fix for default template that inheritance is incorrect.
+
+v2.17.3
+-----------
+1. Bug fix for extracting metadata from assembly that XML comment is not applied.
+
+v2.17.2
+-----------
+1. Bug fix for template statictoc.
+
+v2.17.1
+-----------
+1. Bug fix for fail to init markdown style.
 
 v2.17
 -----------
