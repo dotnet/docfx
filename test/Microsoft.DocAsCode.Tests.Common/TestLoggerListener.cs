@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Tests.Common
 {
+    using System;
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.Common;
@@ -15,17 +16,19 @@ namespace Microsoft.DocAsCode.Tests.Common
 
         public LogLevel LogLevelThreshold { get; set; }
 
-        public bool EnablePhaseEndWith { get; set; }
+        public Func<ILogItem, bool> PhaseMatcher { get; set; }
 
-        public TestLoggerListener()
-        {
-        }
-
-        public TestLoggerListener(string phase, LogLevel logLevelThreshold = LogLevel.Warning, bool enablePhaseEndWith = false)
+        public TestLoggerListener(string phase = null,
+            LogLevel logLevelThreshold = LogLevel.Warning,
+            Func<ILogItem, bool> phaseMatcher = null)
         {
             Phase = phase;
             LogLevelThreshold = logLevelThreshold;
-            EnablePhaseEndWith = enablePhaseEndWith;
+            if (phaseMatcher == null)
+            {
+                // Set default phase matcher to start with current phase
+                PhaseMatcher = iLogItem => iLogItem?.Phase != null && iLogItem.Phase.StartsWith(Phase);
+            }
         }
 
         public void WriteLine(ILogItem item)
@@ -35,9 +38,8 @@ namespace Microsoft.DocAsCode.Tests.Common
                 return;
             }
             if (Phase == null ||
-                item.Phase == Phase ||
-                !EnablePhaseEndWith && item.Phase.StartsWith(Phase) ||
-                EnablePhaseEndWith && item.Phase.EndsWith(Phase))
+                Phase.Equals(item.Phase, StringComparison.OrdinalIgnoreCase) ||
+                PhaseMatcher(item))
             {
                 Items.Add(item);
             }
