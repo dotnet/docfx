@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Tests.Common;
 
     public class DocfxFlavoredMarkdownTest
     {

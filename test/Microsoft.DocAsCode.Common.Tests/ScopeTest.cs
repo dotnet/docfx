@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Common.Tests
     using Xunit;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Tests.Common;
 
     [Trait("Owner", "vwxyzh")]
     [Collection("docfx STA")]
@@ -89,7 +90,7 @@ namespace Microsoft.DocAsCode.Common.Tests
         [Fact]
         public void TestFileScope()
         {
-            var listener = new TestLoggerListener("TestFileScope");
+            var listener = new TestLoggerListener("TestFileScope", LogLevel.Info);
             try
             {
                 Logger.RegisterListener(listener);

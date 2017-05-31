@@ -878,7 +878,7 @@ exports.getOptions = function (){
 
         private void Init(string phaseName)
         {
-            Listener = new TestLoggerListener(phaseName);
+            Listener = new TestLoggerListener(phaseName, enablePhaseEndWith: true);
             Logger.RegisterListener(Listener);
         }
 

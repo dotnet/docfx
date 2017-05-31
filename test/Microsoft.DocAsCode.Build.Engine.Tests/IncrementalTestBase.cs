@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     public class IncrementalTestBase : TestBase
     {
-        protected LogListener Listener { get; private set; }
+        protected TestLoggerListener Listener { get; private set; }
 
         protected void IncrementalActions(string phaseName, params Action[] actions)
         {
@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
         protected void Init(string phaseName)
         {
-            Listener = new LogListener(phaseName) { LogLevelThreshold = LogLevel.Warning };
+            Listener = new TestLoggerListener(phaseName);
             Logger.RegisterListener(Listener);
         }
 
@@ -55,44 +55,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     where i.Phase.StartsWith(p)
                     orderby i.Message
                     select i.Message).ToList();
-        }
-
-        protected class LogListener : ILoggerListener
-        {
-            public string Phase { get; }
-
-            public List<ILogItem> Items { get; } = new List<ILogItem>();
-
-            public LogLevel LogLevelThreshold { get; set; }
-
-            public LogListener(string phase)
-            {
-                Phase = phase;
-            }
-
-            public void Dispose()
-            {
-            }
-
-            public void Flush()
-            {
-            }
-
-            public void WriteLine(ILogItem item)
-            {
-                if (item.LogLevel < LogLevelThreshold)
-                {
-                    return;
-                }
-                if (item.Phase == Phase)
-                {
-                    Items.Add(item);
-                }
-                else if (item.Phase != null && item.Phase.StartsWith(Phase))
-                {
-                    Items.Add(item);
-                }
-            }
         }
     }
 }
