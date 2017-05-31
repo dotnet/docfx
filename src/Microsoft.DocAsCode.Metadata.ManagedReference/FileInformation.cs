@@ -9,13 +9,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    internal class FileInfo
+    internal class FileInformation
     {
         public FileType Type { get; }
         public string NormalizedPath { get; }
         public string RawPath { get; }
 
-        public FileInfo(string raw)
+        public FileInformation(string raw)
         {
             RawPath = raw;
             NormalizedPath = Normalize(raw);
@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public override bool Equals(object obj)
         {
-            return Equals(NormalizedPath, (obj as FileInfo)?.NormalizedPath);
+            return Equals(NormalizedPath, (obj as FileInformation)?.NormalizedPath);
         }
 
         private static string Normalize(string path)

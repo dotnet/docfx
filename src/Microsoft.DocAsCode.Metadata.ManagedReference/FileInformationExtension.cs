@@ -9,9 +9,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    internal static class FileInfoExtension
+    internal static class FileInformationExtension
     {
-        public static bool IsSupportedProject(this FileInfo file)
+        public static bool IsSupportedProject(this FileInformation file)
         {
             return file.Type == FileType.Project || file.Type == FileType.ProjectJsonProject;
         }
