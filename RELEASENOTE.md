@@ -4,6 +4,8 @@ v2.18.2
 -----------
 1. PDF is now supported. Refer to [Walkthrough: Generate PDF](~/tutorial/walkthrough/walkthrough_generate_pdf.md) to get start with generating PDF files.
 
+2. Fix default template performance bug that local search is always used.
+
 v2.18.1
 -----------
 1.  Bug fixes:
@@ -50,7 +52,7 @@ v2.16.8
     1. Bug fix for Null exception when `<xref href=''/>` exists
     2. Bug fix for `docfx metadata` for assemblies, to exclude null assembly symbols.
     3. Bug fix for toc: When b/toc.md is included by toc.md, invalid link in b/toc.md should be resolved to the path relative to toc.md
-    
+
 v2.16
 -----------
 1.  Support the latest csproj format `<Project Sdk="Microsoft.NET.Sdk">`
