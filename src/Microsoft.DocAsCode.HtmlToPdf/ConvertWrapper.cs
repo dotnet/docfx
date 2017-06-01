@@ -62,8 +62,16 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
                 var basePath = folder.FullPath;
                 var tocFiles = FindTocInManifest(manifest);
+                if (tocFiles.Count > 0)
+                {
+                    Logger.LogVerbose($"Found {tocFiles.Count} TOC.json files, will generate pdf.");
+                }
+                else
+                {
+                    Logger.LogWarning($"No TOC file is included, no PDF file will be generated.");
+                    return;
+                }
 
-                Logger.LogVerbose($"Found {tocFiles.Count} TOC.json files, will generate pdf.");
                 var tocHtmls = new ConcurrentBag<string>();
 
                 IDictionary<string, PdfInformation> pdfInformations = new ConcurrentDictionary<string, PdfInformation>();
@@ -108,14 +116,21 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                                 {
                                     pdfNameFragments.Add(_pdfOptions.Locale);
                                 }
-                                pdfNameFragments.Add(Path.ChangeExtension(tocAssetId, FileExtensions.PdfExtension).Replace('/', '_'));
 
-                                var pdfName = pdfNameFragments.ToDelimitedString("_");
-                                using (new LoggerPhaseScope($"Convert {tocJson} to {pdfName}"))
+                                // TODO: not consistent with OPS logic Path.ChangeExtension(tocAssetId, FileExtensions.PdfExtension).Replace('/', '_')
+                                // TODO: need to update the logic in OPS when merging with OPS
+                                if (!string.IsNullOrWhiteSpace(tocAssetId))
                                 {
-                                    ConvertCore(basePath, pdfName, htmlModels);
-                                    Logger.LogInfo($"{pdfName} is generated based on {tocJson}.");
+                                    var subFolder = Path.GetDirectoryName(tocAssetId);
+                                    if (!string.IsNullOrEmpty(subFolder))
+                                    {
+                                        pdfNameFragments.Add(subFolder.Replace('/', '_'));
+                                    }
                                 }
+
+                                var pdfName = pdfNameFragments.ToDelimitedString("_") + FileExtensions.PdfExtension;
+                                ConvertCore(basePath, pdfName, htmlModels);
+                                Logger.LogInfo($"{pdfName} is generated based on {tocJson} under folder {_pdfOptions.DestDirectory}");
                                 pdfInformations.Add(
                                     pdfName,
                                     new PdfInformation

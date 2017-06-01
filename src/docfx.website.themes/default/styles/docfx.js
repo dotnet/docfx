@@ -126,7 +126,7 @@ $(function () {
     }
     try {
       var worker = new Worker(relHref + 'styles/search-worker.js');
-      if (!worker || !window.worker) {
+      if (!worker && !window.worker) {
         localSearch();
       } else {
         webWorkerSearch();
