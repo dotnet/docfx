@@ -15,7 +15,7 @@ After completing walkthrough part II, our `D:\docfx_walkthrough\docfx_project` f
 |- docfx.json
 ```
 
-Step1. Add a toc.yml specific for PDF 
+Step1. Add a toc.yml specific for PDF
 ---------------------------
 Current design is that each TOC file generates a corresponding PDF file, TOC is also used as the cover page of the PDF, so we create a `toc.yml` file specific for PDF under a new folder `pdf`, using [TOC Include](http://dotnet.github.io/docfx/tutorial/intro_toc.html?q=toc%20inclu#link-to-another-toc-file) to include content from other TOC files.
 ```yml
@@ -37,7 +37,6 @@ Parameters are similar to `build` section, definitely it is using a different te
       {
         "files": [
           "api/**.yml",
-          "api/index.md",
           "api-vb/**.yml"
         ],
         "exclude": [
