@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.18.1)
+﻿Version Notes (Current Version: v2.18.2)
 =======================================
+v2.18.2
+-----------
+1. PDF is now supported. Refer to [Walkthrough: Generate PDF](~/tutorial/walkthrough/walkthrough_generate_pdf.md) to get start with generating PDF files.
+
 v2.18.1
 -----------
 1.  Bug fixes:
