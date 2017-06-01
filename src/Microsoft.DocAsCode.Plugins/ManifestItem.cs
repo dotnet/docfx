@@ -24,6 +24,9 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("version")]
         public string Version { get; set; }
 
+        [JsonProperty("log_codes")]
+        public ICollection<string> LogCodes;
+
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
 

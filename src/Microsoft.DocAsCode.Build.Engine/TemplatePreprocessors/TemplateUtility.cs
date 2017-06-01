@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var file = path.GetPathFromWorkingFolder().UrlDecode();
             if (!_context.AllSourceFiles.ContainsKey(file))
             {
-                Logger.LogWarning($"Invalid file link: ({originalHref})", file:sourceFileKey);
+                Logger.LogWarning($"Invalid file link: ({originalHref})", file:sourceFileKey, code:WarningCodes.Build.InvalidFileLink);
                 return originalHref;
             }
             return file.UrlEncode().ToString() + UriUtility.GetQueryStringAndFragment(originalHref);
