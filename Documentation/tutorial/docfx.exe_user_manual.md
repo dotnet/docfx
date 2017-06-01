@@ -20,8 +20,7 @@ Doc-as-code: `docfx.exe` User Manual
 
 Currently generating documentations to a *client only* **website** is supported. The generated **website** can be easily published to whatever platform such as *Github Pages* and *Azure Website* with no extra effort.
 
-Offline documentations such as **pdf** are planned to be supported in the future.
-
+Generating offline documentation such as **PDF** is also supported now.
 
 1. Syntax
 ---------------
@@ -143,6 +142,18 @@ If specified, use the template from template folder
       |-- favicon.ico
       |-- logo.ico
 ```
+
+### 2.4 Generate PDF documentation command `docfx pdf`
+**Syntax**
+```
+docfx pdf [<config_file_path>] [-o:<output_path>]
+```
+`docfx pdf` generates PDF for the files defined in config file, if config file is not specified, `docfx` tries to find and use `docfx.json` file under current folder.
+
+> [!NOTE]
+> Prerequisite: We leverage [wkhtmltopdf](https://wkhtmltopdf.org/) to generate PDF. [Download wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) and save the executable folder path to **%PATH%**
+
+Current design is that each TOC file generates a corresponding PDF file. Walk through [Walkthrough: Generate PDF Files](walkthrough/walkthrough_generate_pdf.md) to get start.
 
 3. `docfx.json` Format
 ------------------------
@@ -396,6 +407,14 @@ Note that, metadata set in command line will merge with metadata set in `docfx.j
     2. file metadata from file metadata files
 
 Given multiple metadata files, the behavior would be **undetermined**, if same key is set in these files.
+
+###3.3 Properties for `pdf`
+`pdf` supports **ALL** the [properties for `build`](#32-properties-for-build), besides that, the following table lists additional properties specified for `pdf` only.
+
+Key                      | Description
+-------------------------|-----------------------------
+name                     | Specifies the prefix of the generated PDF files, e.g. PDF generated from `testproject\toc.yml` is named as `{name}.pdf`, `testproject\api\toc.yml` is named as `{name}_api.pdf`. If not specified, the value of `name` is the folder name `testproject`.
+generatesAppendices      | If specified, an `appendices.pdf` file is generated containing all the not-in-TOC articles.
 
 4. Supported File Mapping Format
 ---------------------------------------------
