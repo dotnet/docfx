@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.18.1.0">
+    <meta name="generator" content="docfx 2.18.2.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -89,7 +89,7 @@
 </li>
 </ol>
 <p>Currently generating documentations to a <em>client only</em> <strong>website</strong> is supported. The generated <strong>website</strong> can be easily published to whatever platform such as <em>Github Pages</em> and <em>Azure Website</em> with no extra effort.</p>
-<p>Offline documentations such as <strong>pdf</strong> are planned to be supported in the future.</p>
+<p>Generating offline documentation such as <strong>PDF</strong> is also supported now.</p>
 <h2 id="1-syntax">1. Syntax</h2>
 <pre><code>docfx &lt;command&gt; [&lt;args&gt;]
 </code></pre><h2 id="2-commands">2. Commands</h2>
@@ -188,7 +188,14 @@ And if <code>href</code> is referencing to a <strong>folder</strong>, it must en
       |     |-- yamlContent.html
       |-- favicon.ico
       |-- logo.ico
-</code></pre><h2 id="3-docfxjson-format">3. <code>docfx.json</code> Format</h2>
+</code></pre><h3 id="24-generate-pdf-documentation-command-docfx-pdf">2.4 Generate PDF documentation command <code>docfx pdf</code></h3>
+<p><strong>Syntax</strong></p>
+<pre><code>docfx pdf [&lt;config_file_path&gt;] [-o:&lt;output_path&gt;]
+</code></pre><p><code>docfx pdf</code> generates PDF for the files defined in config file, if config file is not specified, <code>docfx</code> tries to find and use <code>docfx.json</code> file under current folder.</p>
+<div class="NOTE"><h5>Note</h5><p>Prerequisite: We leverage <a href="https://wkhtmltopdf.org/">wkhtmltopdf</a> to generate PDF. <a href="https://wkhtmltopdf.org/downloads.html">Download wkhtmltopdf</a> and save the executable folder path to <strong>%PATH%</strong></p>
+</div>
+<p>Current design is that each TOC file generates a corresponding PDF file. Walk through <a href="walkthrough/walkthrough_generate_pdf.html">Walkthrough: Generate PDF Files</a> to get start.</p>
+<h2 id="3-docfxjson-format">3. <code>docfx.json</code> Format</h2>
 <p>Top level <code>docfx.json</code> structure is key-value pair. <code>key</code> is the name of the subcommand, current supported subcommands are <code>metadata</code> and <code>build</code>. </p>
 <h3 id="31-properties-for-metadata">3.1 Properties for <code>metadata</code></h3>
 <p><code>Metadata</code> section defines an array of source projects and their output folder. Each item has <code>src</code> and <code>dest</code> property. <code>src</code> defines the source projects to have metadata generated, which is in <code>File Mapping Format</code>. Detailed syntax is described in <strong>4. Supported <code>name-files</code> File Mapping Format</strong> below. <code>dest</code> defines the output folder of the generated metadata files.</p>
@@ -565,6 +572,26 @@ Reserved metadatas:</p>
 </li>
 </ul>
 <p>Given multiple metadata files, the behavior would be <strong>undetermined</strong>, if same key is set in these files.</p>
+<h3 id="33-properties-for-pdf">3.3 Properties for <code>pdf</code></h3>
+<p><code>pdf</code> supports <strong>ALL</strong> the <a href="#32-properties-for-build">properties for <code>build</code></a>, besides that, the following table lists additional properties specified for <code>pdf</code> only.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>Specifies the prefix of the generated PDF files, e.g. PDF generated from <code>testproject\toc.yml</code> is named as <code>{name}.pdf</code>, <code>testproject\api\toc.yml</code> is named as <code>{name}_api.pdf</code>. If not specified, the value of <code>name</code> is the folder name <code>testproject</code>.</td>
+</tr>
+<tr>
+<td>generatesAppendices</td>
+<td>If specified, an <code>appendices.pdf</code> file is generated containing all the not-in-TOC articles.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="4-supported-file-mapping-format">4. Supported File Mapping Format</h2>
 <p>There are several ways to define file mapping.</p>
 <h3 id="41-array-format">4.1 Array Format</h3>
