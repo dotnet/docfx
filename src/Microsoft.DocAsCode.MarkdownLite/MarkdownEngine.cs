@@ -41,6 +41,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public IMarkdownTokenTreeValidator TokenTreeValidator { get; set; }
 
+        public IMarkdownTokenAggregator TokenAggregator { get; set; }
+
         public Dictionary<string, LinkObj> Links { get; }
 
         public int MaxExtractCount { get; set; } = 1;
@@ -94,15 +96,16 @@ namespace Microsoft.DocAsCode.MarkdownLite
                             (e, t) => t.Extract(parser)),
                     MaxExtractCount + 1)));
 
-            // fix id.
-            var idTable = new Dictionary<string, int>();
-            tokens = RewriteTokens(
-                tokens,
-                sourceInfo.File,
-                new MarkdownRewriteEngine(
-                this,
-                MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownHeadingBlockToken>(
-                    (e, t) => t.RewriteId(idTable))));
+            // Aggregate tokens.
+            if (TokenAggregator != null)
+            {
+                tokens = RewriteTokens(
+                    tokens,
+                    sourceInfo.File,
+                    new MarkdownAggregateEngine(
+                        this,
+                        TokenAggregator));
+            }
 
             // customized rewriter.
             tokens = RewriteTokens(
@@ -110,10 +113,21 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 sourceInfo.File,
                 RewriteEngine);
 
+            // fix id.
+            var idTable = new Dictionary<string, int>();
+            tokens = RewriteTokens(
+                tokens,
+                sourceInfo.File,
+                new MarkdownRewriteEngine(
+                    this,
+                    MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownHeadingBlockToken>(
+                        (e, t) => t.RewriteId(idTable))));
+
             if (TokenTreeValidator != null)
             {
                 TokenTreeValidator.Validate(tokens);
             }
+
             var renderer = Renderer;
             foreach (var token in tokens)
             {
