@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     internal sealed class MarkdownTokenAggregateContext : IMarkdownTokenAggregateContext
     {
         private readonly ImmutableArray<IMarkdownToken> _sourceTokens;
-        private int _currentTokenIndex;
+        private int _currentTokenIndex = -1;
         private List<IMarkdownToken> _tokens;
 
         public MarkdownTokenAggregateContext(IMarkdownToken parentToken, ImmutableArray<IMarkdownToken> tokens)

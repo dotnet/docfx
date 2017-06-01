@@ -3,14 +3,16 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite.Tests
 {
+    using System.Collections.Immutable;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
     using Xunit;
 
+    [Trait("Related", "Markdown")]
     public class TokenAggregatorTest
     {
         [Theory]
-        [Trait("Related", "Markdown")]
         [InlineData(
             @"# Test",
             @"<h1 id=""test"">Test</h1>
@@ -56,6 +58,70 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
+        [Theory]
+        [InlineData(
+            @"P1
+
+P2",
+            @"<p>P1<br>P2</p>
+")]
+        [InlineData(
+            @"P1
+
+P2
+
+P3",
+            @"<p>P1<br>P2<br>P3</p>
+")]
+        [InlineData(
+            @"P1
+
+P2
+***
+P3
+
+P4",
+            @"<p>P1<br>P2</p>
+<hr>
+<p>P3<br>P4</p>
+")]
+        public void TestAggregatePara_Para_To_Para(string source, string expected)
+        {
+            var builder = new GfmEngineBuilder(new Options())
+            {
+                TokenAggregator = new ParaParaAggregateToPara(),
+            };
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Theory]
+        [InlineData(
+            @"# Test
+- - -
+P1
+
+P2",
+            @"<h2 id=""test"">Test</h2>
+<p>P1<br>P2</p>
+")]
+        public void TestCompositeAggregate(string source, string expected)
+        {
+            var builder = new GfmEngineBuilder(new Options())
+            {
+                TokenAggregator = new CompositeMarkdownTokenAggregator(
+                    new IMarkdownTokenAggregator[]
+                    {
+                        new ParaParaAggregateToPara(),
+                        new Head1HrAggregateToHead2(),
+                    }),
+            };
+            var engine = builder.CreateEngine(new HtmlRenderer());
+            var result = engine.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
         private sealed class Head1HrAggregateToHead2 : MarkdownTokenAggregator<MarkdownHeadingBlockToken>
         {
             protected override bool AggregateCore(MarkdownHeadingBlockToken headToken, IMarkdownTokenAggregateContext context)
@@ -75,6 +141,29 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
                                 headToken.SourceInfo), 2);
                         return true;
                     }
+                }
+                return false;
+            }
+        }
+
+        private sealed class ParaParaAggregateToPara : MarkdownTokenAggregator<MarkdownParagraphBlockToken>
+        {
+            protected override bool AggregateCore(MarkdownParagraphBlockToken headToken, IMarkdownTokenAggregateContext context)
+            {
+                var next = context.LookAhead(1);
+                if (next is MarkdownParagraphBlockToken nextPara)
+                {
+                    context.AggregateTo(
+                        new MarkdownParagraphBlockToken(
+                            headToken.Rule,
+                            headToken.Context,
+                            new InlineContent(
+                                headToken.InlineTokens.Tokens
+                                    .Add(new MarkdownBrInlineToken(headToken.Rule, headToken.InlineTokens.Tokens[0].Context, headToken.SourceInfo))
+                                    .AddRange(nextPara.InlineTokens.Tokens)),
+                            headToken.SourceInfo),
+                        2);
+                    return true;
                 }
                 return false;
             }

@@ -6,7 +6,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
 
     internal sealed class MarkdownAggregateEngine : IMarkdownRewriteEngine
     {
@@ -50,63 +49,39 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         private void Aggregate(MarkdownTokenAggregateContext aggContext)
         {
-            while (true)
+            while (aggContext.NextToken())
             {
                 _aggregator.Aggregate(aggContext);
-                if (!aggContext.NextToken())
-                {
-                    return;
-                }
             }
         }
 
-        public ImmutableArray<IMarkdownToken> GetParents()
-        {
-            return ImmutableArray.CreateRange(_parents.Reverse());
-        }
-
-        public bool HasVariable(string name)
-        {
+        ImmutableArray<IMarkdownToken> IMarkdownRewriteEngine.GetParents() =>
             throw new NotSupportedException();
-        }
 
-        public object GetVariable(string name)
-        {
+        bool IMarkdownRewriteEngine.HasVariable(string name) =>
             throw new NotSupportedException();
-        }
 
-        public void SetVariable(string name, object value)
-        {
+        object IMarkdownRewriteEngine.GetVariable(string name) =>
             throw new NotSupportedException();
-        }
 
-        public void RemoveVariable(string name)
-        {
+        void IMarkdownRewriteEngine.SetVariable(string name, object value) =>
             throw new NotSupportedException();
-        }
 
-        public bool HasPostProcess(string name)
-        {
+        void IMarkdownRewriteEngine.RemoveVariable(string name) =>
             throw new NotSupportedException();
-        }
 
-        public void SetPostProcess(string name, Action<IMarkdownRewriteEngine> action)
-        {
+        bool IMarkdownRewriteEngine.HasPostProcess(string name) =>
             throw new NotSupportedException();
-        }
 
-        public void RemovePostProcess(string name)
-        {
+        void IMarkdownRewriteEngine.SetPostProcess(string name, Action<IMarkdownRewriteEngine> action) =>
             throw new NotSupportedException();
-        }
 
-        public void Complete()
-        {
-        }
+        void IMarkdownRewriteEngine.RemovePostProcess(string name) =>
+            throw new NotSupportedException();
 
-        public void Initialize()
-        {
-        }
+        void IMarkdownRewriteEngine.Complete() { }
+
+        void IMarkdownRewriteEngine.Initialize() { }
 
         #endregion
     }

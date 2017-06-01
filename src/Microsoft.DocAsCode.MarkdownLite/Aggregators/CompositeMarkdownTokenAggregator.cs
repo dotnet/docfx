@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
     using System.Collections.Generic;
     using System.Collections.Immutable;
 
-    public abstract class CompositeMarkdownTokenAggregator : IMarkdownTokenAggregator
+    public class CompositeMarkdownTokenAggregator : IMarkdownTokenAggregator
     {
         private readonly ImmutableArray<IMarkdownTokenAggregator> _aggregators;
 
