@@ -1,0 +1,13 @@
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Microsoft.DocAsCode.MarkdownLite
+{
+    public interface IMarkdownTokenAggregateContext
+    {
+        IMarkdownToken ParentToken { get; }
+        IMarkdownToken CurrentToken { get; }
+        IMarkdownToken LookAhead(int offset);
+        void AggregateTo(IMarkdownToken token, int tokenCount);
+    }
+}
