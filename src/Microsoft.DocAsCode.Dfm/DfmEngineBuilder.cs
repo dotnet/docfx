@@ -78,6 +78,7 @@ namespace Microsoft.DocAsCode.Dfm
             BlockRules = blockRules.ToImmutableList();
 
             Rewriter = InitMarkdownStyle(container, baseDir, templateDir);
+            TokenAggregator = new TabGroupAggregator();
         }
 
         private static void Replace<TSource, TReplacement>(List<IMarkdownRule> blockRules)
@@ -110,6 +111,7 @@ namespace Microsoft.DocAsCode.Dfm
             return new DfmEngine(CreateParseContext().SetBaseFolder(_baseDir ?? string.Empty).SetFallbackFolders(_fallbackFolders), Rewriter, renderer, Options)
             {
                 TokenTreeValidator = TokenTreeValidator,
+                TokenAggregator = TokenAggregator,
             };
         }
 

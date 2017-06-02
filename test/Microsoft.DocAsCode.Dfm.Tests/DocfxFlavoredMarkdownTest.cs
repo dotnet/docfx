@@ -59,6 +59,20 @@ b:
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
+        public void TestTabGroup()
+        {
+            TestDfmInGeneral(
+                @"# [title-a](#tab/a)
+content-a
+# [title-b](#tab/b)
+content-b
+- - -",
+                @"<!-- todo: tab group -->
+");
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
         public void TestCodeFenceWithSpaceInFileName()
         {
             var source = @"  [!code-csharp  [  Test Space  ] ( test space in\) link.cs#abc ""title test"" ) ]  ";
