@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 }
             }
             // validate href
-            ValidateHref(item, file);
+            ValidateHref(item);
 
             // TocHref supports 2 forms: absolute path and local toc file.
             // When TocHref is set, using TocHref as Href in output, and using Href as Homepage in output
@@ -345,7 +345,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return false;
         }
 
-        private void ValidateHref(TocItemViewModel item, FileAndType file)
+        private void ValidateHref(TocItemViewModel item)
         {
             if (item.Href == null)
             {
@@ -355,7 +355,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             if ((hrefType == HrefType.MarkdownTocFile || hrefType == HrefType.YamlTocFile || hrefType == HrefType.RelativeFolder) &&
                 (UriUtility.HasFragment(item.Href) || UriUtility.HasQueryString(item.Href)))
             {
-                Logger.LogWarning($"Illegal href: {item.Href} in {file.File}.`#` or `?` aren't allowed when referencing toc file.");
+                Logger.LogWarning($"Illegal href: {item.Href}.`#` or `?` aren't allowed when referencing toc file.");
                 item.Href = UriUtility.GetPath(item.Href);
             }
         }
