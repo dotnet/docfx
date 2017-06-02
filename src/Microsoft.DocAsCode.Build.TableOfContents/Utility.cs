@@ -63,11 +63,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         public static HrefType GetHrefType(string href)
         {
-            if (href == null)
-            {
-                return HrefType.AbsolutePath;
-            }
-            var hrefWithoutAnchor = UriUtility.GetPath(href);
+            var hrefWithoutAnchor = href != null ? UriUtility.GetPath(href) : href;
             if (!PathUtility.IsRelativePath(hrefWithoutAnchor))
             {
                 return HrefType.AbsolutePath;

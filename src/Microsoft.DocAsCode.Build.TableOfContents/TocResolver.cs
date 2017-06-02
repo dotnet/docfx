@@ -76,6 +76,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                     Logger.LogWarning($"Homepage is deprecated in TOC. Homepage {item.Homepage} is overwritten with topicHref {item.TopicHref}");
                 }
             }
+            // validate href
+            ValidateHref(item, file);
+
             // TocHref supports 2 forms: absolute path and local toc file.
             // When TocHref is set, using TocHref as Href in output, and using Href as Homepage in output
             var tocHrefType = Utility.GetHrefType(item.TocHref);
@@ -150,7 +153,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         }
                         else
                         {
-                            CheckHref(item, file);
                             var relativeFolder = (RelativePath)file.File + (RelativePath)item.Href;
                             var tocFilePath = relativeFolder + (RelativePath)Constants.YamlTocFileName;
 
@@ -200,7 +202,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 case HrefType.MarkdownTocFile:
                 case HrefType.YamlTocFile:
                     {
-                        CheckHref(item, file);
                         var href = (RelativePath)item.Href;
                         var tocFilePath = (RelativePath)file.File + href;
                         var tocFile = file.ChangeFile(tocFilePath);
@@ -344,11 +345,17 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return false;
         }
 
-        private void CheckHref(TocItemViewModel item, FileAndType file)
+        private void ValidateHref(TocItemViewModel item, FileAndType file)
         {
-            if (UriUtility.HasFragment(item.Href) || UriUtility.HasQueryString(item.Href))
+            if (item.Href == null)
             {
-                Logger.LogWarning($"Illegal href: {item.Href} in {file.File}.");
+                return;
+            }
+            var hrefType = Utility.GetHrefType(item.Href);
+            if ((hrefType == HrefType.MarkdownTocFile || hrefType == HrefType.YamlTocFile || hrefType == HrefType.RelativeFolder) &&
+                (UriUtility.HasFragment(item.Href) || UriUtility.HasQueryString(item.Href)))
+            {
+                Logger.LogWarning($"Illegal href: {item.Href} in {file.File}.`#` or `?` aren't allowed when referencing toc file.");
                 item.Href = UriUtility.GetPath(item.Href);
             }
         }
