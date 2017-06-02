@@ -12,11 +12,11 @@ namespace Microsoft.DocAsCode.Tests.Common
     {
         public List<ILogItem> Items { get; } = new List<ILogItem>();
 
-        public Func<ILogItem, bool> Matcher { get; } 
+        private Func<ILogItem, bool> _matcher;
 
         private TestLoggerListener(Func<ILogItem, bool> matcher)
         {
-            Matcher = matcher;
+            _matcher = matcher;
         }
 
         #region ILoggerListener
@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Tests.Common
             {
                 throw new ArgumentNullException(nameof(item));
             }
-            if (Matcher(item))
+            if (_matcher(item))
             {
                 Items.Add(item);
             }
@@ -44,6 +44,11 @@ namespace Microsoft.DocAsCode.Tests.Common
         #endregion
 
         #region Creators
+
+        public static TestLoggerListener CreateLoggerListener(Func<ILogItem, bool> matcher)
+        {
+            return new TestLoggerListener(matcher);
+        }
 
         public static TestLoggerListener CreateLoggerListenerWithPhaseStartMatcher(string phase, LogLevel logLevel = LogLevel.Warning)
         {
