@@ -289,7 +289,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         public void ProcessSwaggerWithInvalidLinksOverwriteShouldSucceedWithWarning()
         {
             const string phaseName = "ProcessSwaggerWithInvalidLinksOverwriteShouldSucceedWithWarning";
-            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartMatcher(phaseName);
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(phaseName);
             Logger.RegisterListener(listener);
 
             using (new LoggerPhaseScope(phaseName))

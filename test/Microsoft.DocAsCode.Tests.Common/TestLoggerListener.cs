@@ -12,11 +12,11 @@ namespace Microsoft.DocAsCode.Tests.Common
     {
         public List<ILogItem> Items { get; } = new List<ILogItem>();
 
-        private Func<ILogItem, bool> _matcher;
+        private readonly Func<ILogItem, bool> _filter;
 
-        private TestLoggerListener(Func<ILogItem, bool> matcher)
+        public TestLoggerListener(Func<ILogItem, bool> filter)
         {
-            _matcher = matcher;
+            _filter = filter;
         }
 
         #region ILoggerListener
@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Tests.Common
             {
                 throw new ArgumentNullException(nameof(item));
             }
-            if (_matcher(item))
+            if (_filter(item))
             {
                 Items.Add(item);
             }
@@ -45,12 +45,7 @@ namespace Microsoft.DocAsCode.Tests.Common
 
         #region Creators
 
-        public static TestLoggerListener CreateLoggerListener(Func<ILogItem, bool> matcher)
-        {
-            return new TestLoggerListener(matcher);
-        }
-
-        public static TestLoggerListener CreateLoggerListenerWithPhaseStartMatcher(string phase, LogLevel logLevel = LogLevel.Warning)
+        public static TestLoggerListener CreateLoggerListenerWithPhaseStartFilter(string phase, LogLevel logLevel = LogLevel.Warning)
         {
             return new TestLoggerListener(iLogItem =>
             {
@@ -59,7 +54,7 @@ namespace Microsoft.DocAsCode.Tests.Common
                     return false;
                 }
                 if (phase == null ||
-                   (iLogItem?.Phase != null && iLogItem.Phase.StartsWith(phase, StringComparison.OrdinalIgnoreCase)))
+                   (iLogItem?.Phase != null && iLogItem.Phase.StartsWith(phase)))
                 {
                     return true;
                 }
@@ -67,7 +62,7 @@ namespace Microsoft.DocAsCode.Tests.Common
             });
         }
 
-        public static TestLoggerListener CreateLoggerListenerWithPhaseEndMatcher(string phase, LogLevel logLevel = LogLevel.Warning)
+        public static TestLoggerListener CreateLoggerListenerWithPhaseEndFilter(string phase, LogLevel logLevel = LogLevel.Warning)
         {
             return new TestLoggerListener(iLogItem =>
             {
@@ -76,7 +71,7 @@ namespace Microsoft.DocAsCode.Tests.Common
                     return false;
                 }
                 if (phase == null ||
-                   (iLogItem?.Phase != null && iLogItem.Phase.EndsWith(phase, StringComparison.OrdinalIgnoreCase)))
+                   (iLogItem?.Phase != null && iLogItem.Phase.EndsWith(phase)))
                 {
                     return true;
                 }
@@ -84,7 +79,7 @@ namespace Microsoft.DocAsCode.Tests.Common
             });
         }
 
-        public static TestLoggerListener CreateLoggerListenerWithPhaseEqualMatcher(string phase, LogLevel logLevel = LogLevel.Warning)
+        public static TestLoggerListener CreateLoggerListenerWithPhaseEqualFilter(string phase, LogLevel logLevel = LogLevel.Warning)
         {
             return new TestLoggerListener(iLogItem =>
             {
@@ -93,7 +88,7 @@ namespace Microsoft.DocAsCode.Tests.Common
                     return false;
                 }
                 if (phase == null ||
-                   (iLogItem?.Phase != null && iLogItem.Phase.Equals(phase, StringComparison.OrdinalIgnoreCase)))
+                   (iLogItem?.Phase != null && iLogItem.Phase == phase))
                 {
                     return true;
                 }

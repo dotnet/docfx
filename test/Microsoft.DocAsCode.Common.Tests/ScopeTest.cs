@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Common.Tests
         [Fact]
         public void TestPhaseScope()
         {
-            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualMatcher(null, LogLevel.Diagnostic);
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(null, LogLevel.Diagnostic);
             var logLevel = Logger.LogLevelThreshold;
             ILogItem item;
             try
@@ -91,7 +91,7 @@ namespace Microsoft.DocAsCode.Common.Tests
         public void TestFileScope()
         {
             const string PhaseName = "TestFileScope";
-            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualMatcher(PhaseName, LogLevel.Info);
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(PhaseName, LogLevel.Info);
             try
             {
                 Logger.RegisterListener(listener);
