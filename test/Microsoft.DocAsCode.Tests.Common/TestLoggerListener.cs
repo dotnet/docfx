@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Tests.Common
 
         public TestLoggerListener(Func<ILogItem, bool> filter)
         {
-            _filter = filter;
+            _filter = filter ?? throw new ArgumentNullException(nameof(filter));
         }
 
         #region ILoggerListener
