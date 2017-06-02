@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Common.Tests
 {
     using System;
+    using System.Collections.Generic;
 
     using Xunit;
 
@@ -27,17 +28,17 @@ namespace Microsoft.DocAsCode.Common.Tests
                 Action<bool> callback;
 
                 Logger.LogInfo("test no phase scope");
-                Assert.Null(listener.TakeAndRemove().Phase);
+                Assert.Null(TakeFirstLogItemAndRemove(listener.Items).Phase);
 
                 using (new LoggerPhaseScope("A"))
                 {
                     Logger.LogInfo("test in phase scope A");
-                    Assert.Equal("A", listener.TakeAndRemove().Phase);
+                    Assert.Equal("A", TakeFirstLogItemAndRemove(listener.Items).Phase);
 
                     using (new LoggerPhaseScope("B"))
                     {
                         Logger.LogInfo("test in phase scope B");
-                        Assert.Equal("A.B", listener.TakeAndRemove().Phase);
+                        Assert.Equal("A.B", TakeFirstLogItemAndRemove(listener.Items).Phase);
 
                         var captured = LoggerPhaseScope.Capture();
                         Assert.NotNull(captured);
@@ -55,30 +56,30 @@ namespace Microsoft.DocAsCode.Common.Tests
                     using (new LoggerPhaseScope("C", LogLevel.Diagnostic))
                     {
                         Logger.LogInfo("test in phase scope C");
-                        Assert.Equal("A.C", listener.TakeAndRemove().Phase);
+                        Assert.Equal("A.C", TakeFirstLogItemAndRemove(listener.Items).Phase);
 
                         // run callback in scope C.
                         callback(false);
-                        Assert.Equal("A.B", listener.TakeAndRemove().Phase);
+                        Assert.Equal("A.B", TakeFirstLogItemAndRemove(listener.Items).Phase);
                     } // exit scope C.
 
-                    item = listener.TakeAndRemove();
+                    item = TakeFirstLogItemAndRemove(listener.Items);
                     Assert.Equal("A.C", item.Phase);
                     Assert.Equal(LogLevel.Diagnostic, item.LogLevel);
                 } // exit scope A.
 
                 Logger.LogInfo("test no phase scope");
-                Assert.Null(listener.TakeAndRemove().Phase);
+                Assert.Null(TakeFirstLogItemAndRemove(listener.Items).Phase);
 
                 // run callback in no scope.
                 callback(true);
-                Assert.Equal("A.B", listener.TakeAndRemove().Phase);
-                item = listener.TakeAndRemove();
+                Assert.Equal("A.B", TakeFirstLogItemAndRemove(listener.Items).Phase);
+                item = TakeFirstLogItemAndRemove(listener.Items);
                 Assert.Equal("A.B", item.Phase);
                 Assert.Equal(LogLevel.Diagnostic, item.LogLevel);
 
                 Logger.LogInfo("test no phase scope again");
-                Assert.Null(listener.TakeAndRemove().Phase);
+                Assert.Null(TakeFirstLogItemAndRemove(listener.Items).Phase);
             }
             finally
             {
@@ -98,17 +99,17 @@ namespace Microsoft.DocAsCode.Common.Tests
                 Action callback;
 
                 Logger.LogInfo("Not in file scope.", PhaseName);
-                Assert.Null(listener.TakeAndRemove().File);
+                Assert.Null(TakeFirstLogItemAndRemove(listener.Items).File);
 
                 using (new LoggerFileScope("A"))
                 {
                     Logger.LogInfo("In file A", PhaseName);
-                    Assert.Equal("A", listener.TakeAndRemove().File);
+                    Assert.Equal("A", TakeFirstLogItemAndRemove(listener.Items).File);
 
                     using (new LoggerFileScope("B"))
                     {
                         Logger.LogInfo("In file B", PhaseName);
-                        Assert.Equal("B", listener.TakeAndRemove().File);
+                        Assert.Equal("B", TakeFirstLogItemAndRemove(listener.Items).File);
 
                         var captured = LoggerFileScope.Capture();
                         callback = () =>
@@ -121,37 +122,48 @@ namespace Microsoft.DocAsCode.Common.Tests
                     }
 
                     Logger.LogInfo("In file A", PhaseName);
-                    Assert.Equal("A", listener.TakeAndRemove().File);
+                    Assert.Equal("A", TakeFirstLogItemAndRemove(listener.Items).File);
 
                     callback();
-                    Assert.Equal("B", listener.TakeAndRemove().File);
+                    Assert.Equal("B", TakeFirstLogItemAndRemove(listener.Items).File);
 
                     Logger.LogInfo("In file A", PhaseName);
-                    Assert.Equal("A", listener.TakeAndRemove().File);
+                    Assert.Equal("A", TakeFirstLogItemAndRemove(listener.Items).File);
 
                     using (new LoggerFileScope("C"))
                     {
                         Logger.LogInfo("In file C", PhaseName);
-                        Assert.Equal("C", listener.TakeAndRemove().File);
+                        Assert.Equal("C", TakeFirstLogItemAndRemove(listener.Items).File);
 
                         callback();
-                        Assert.Equal("B", listener.TakeAndRemove().File);
+                        Assert.Equal("B", TakeFirstLogItemAndRemove(listener.Items).File);
                     }
                 }
 
                 Logger.LogInfo("Not in file scope.", PhaseName);
-                Assert.Null(listener.TakeAndRemove().File);
+                Assert.Null(TakeFirstLogItemAndRemove(listener.Items).File);
 
                 callback();
-                Assert.Equal("B", listener.TakeAndRemove().File);
+                Assert.Equal("B", TakeFirstLogItemAndRemove(listener.Items).File);
 
                 Logger.LogInfo("Not in file scope.", PhaseName);
-                Assert.Null(listener.TakeAndRemove().File);
+                Assert.Null(TakeFirstLogItemAndRemove(listener.Items).File);
             }
             finally
             {
                 Logger.UnregisterListener(listener);
             }
+        }
+
+        public ILogItem TakeFirstLogItemAndRemove(List<ILogItem> items)
+        {
+            if (items.Count == 0)
+            {
+                return null;
+            }
+            var result = items[0];
+            items.RemoveAt(0);
+            return result;
         }
     }
 }

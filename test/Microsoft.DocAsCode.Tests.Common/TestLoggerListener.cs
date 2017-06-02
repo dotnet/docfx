@@ -97,20 +97,5 @@ namespace Microsoft.DocAsCode.Tests.Common
         }
 
         #endregion
-
-        #region Helpers 
-
-        public ILogItem TakeAndRemove()
-        {
-            if (Items.Count == 0)
-            {
-                return null;
-            }
-            var result = Items[0];
-            Items.RemoveAt(0);
-            return result;
-        }
-
-        #endregion
     }
 }
