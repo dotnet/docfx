@@ -3,7 +3,7 @@ Walkthrough Part III: Generate PDF Documentation
 
 After completing [Walkthrough Part II: Add API Documentation to the Website](walkthrough_create_a_docfx_project_2.md), we successfully create a website containing both Conceptual and API documentation. In this section, we will generate PDF files for these articles.
 
-After completing walkthrough part II, our `D:\docfx_walkthrough\docfx_project` folder is in the following structure(Download the artifacts [*HERE*](artifacts/walkthrough2.zip)):
+After completing walkthrough part II, our `D:\docfx_walkthrough\docfx_project` folder is in the following structure(Download the artifacts [*HERE*](artifacts/walkthrough3.zip)):
 
 ```
 |- articles
@@ -14,6 +14,9 @@ After completing walkthrough part II, our `D:\docfx_walkthrough\docfx_project` f
 |- toc.yml
 |- docfx.json
 ```
+
+Step0. Install prerequisite 
+We leverage [wkhtmltopdf](https://wkhtmltopdf.org/) to generate PDF. [Download wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) to `c:\tools` and save the executable folder path to **%PATH%** by: `set PATH=%PATH%;c:\tools`
 
 Step1. Add a toc.yml specific for PDF
 ---------------------------
