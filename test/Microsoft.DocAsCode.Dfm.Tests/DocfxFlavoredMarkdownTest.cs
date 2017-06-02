@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Tests.Common;
 
     public class DocfxFlavoredMarkdownTest
     {
@@ -803,7 +804,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
             builder.Rewriter = mrb.CreateRewriter();
 
             var engine = builder.CreateDfmEngine(new DfmRenderer());
-            var listener = new TestLoggerListener("test!!!!" + "." + MarkdownValidatorBuilder.MarkdownValidatePhaseName);
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("test!!!!" + "." + MarkdownValidatorBuilder.MarkdownValidatePhaseName);
             Logger.RegisterListener(listener);
             string result;
             using (new LoggerPhaseScope("test!!!!"))
@@ -1335,7 +1336,7 @@ line4
             File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
             // act
-            var listener = new TestLoggerListener("Extract Dfm Code");
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("Extract Dfm Code");
             Logger.RegisterListener(listener);
             var marked = DocfxFlavoredMarked.Markup("[!code[tag2](Program.cs#Tag2)]", "Program.cs");
             Logger.UnregisterListener(listener);
@@ -1364,7 +1365,7 @@ line4
             File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
             // act
-            var listener = new TestLoggerListener("Extract Dfm Code");
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("Extract Dfm Code");
             Logger.RegisterListener(listener);
             var marked = DocfxFlavoredMarked.Markup("[!code[tag1](Program.cs#Tag1)]", "Program.cs");
             Logger.UnregisterListener(listener);

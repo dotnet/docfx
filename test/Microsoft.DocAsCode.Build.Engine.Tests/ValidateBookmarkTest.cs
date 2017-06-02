@@ -4,12 +4,9 @@
 namespace Microsoft.DocAsCode.Build.Engine.Tests
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
 
-    using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
@@ -20,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     public class ValidateBookmarkTest : TestBase
     {
         private readonly string _outputFolder;
-        private LoggerListener _listener = new LoggerListener("validate_bookmark.ValidateBookmark");
+        private TestLoggerListener _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("validate_bookmark.ValidateBookmark");
 
         public ValidateBookmarkTest()
         {
@@ -135,34 +132,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             };
             var actual = logs.Select(l => Tuple.Create(l.Message, l.File)).ToList();
             Assert.True(!expected.Except(actual).Any() && expected.Length == actual.Count);
-        }
-
-        private class LoggerListener : ILoggerListener
-        {
-            public string Phase { get; }
-
-            public List<ILogItem> Items { get; } = new List<ILogItem>();
-
-            public LoggerListener(string phase)
-            {
-                Phase = phase;
-            }
-
-            public void Dispose()
-            {
-            }
-
-            public void Flush()
-            {
-            }
-
-            public void WriteLine(ILogItem item)
-            {
-                if (item.Phase == Phase)
-                {
-                    Items.Add(item);
-                }
-            }
         }
     }
 }
