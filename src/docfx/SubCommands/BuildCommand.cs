@@ -286,7 +286,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.IntermediateFolder = options.IntermediateFolder;
             }
-            config.IntermediateFolder = config.IntermediateFolder ?? Path.Combine(config.BaseDirectory,"obj", ".cache", "build");
+            config.IntermediateFolder = config.IntermediateFolder ?? Path.Combine(config.BaseDirectory ?? optionsBaseDirectory, "obj", ".cache", "build");
             if (options.ChangesFile != null)
             {
                 config.ChangesFile = options.ChangesFile;
