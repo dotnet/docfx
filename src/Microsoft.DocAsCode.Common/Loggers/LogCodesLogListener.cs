@@ -6,10 +6,12 @@ namespace Microsoft.DocAsCode.Common
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
 
     public class LogCodesLogListener : ILoggerListener
     {
-        public ConcurrentDictionary<string, HashSet<string>> Codes { get; } = new ConcurrentDictionary<string, HashSet<string>>();
+        public ConcurrentDictionary<string, ImmutableHashSet<string>> Codes { get; }
+            = new ConcurrentDictionary<string, ImmutableHashSet<string>>();
 
         public void Dispose()
         {
@@ -31,13 +33,8 @@ namespace Microsoft.DocAsCode.Common
             }
             Codes.AddOrUpdate(
                 item.File,
-                new HashSet<string>(new[] { item.Code }),
-                (k, v) =>
-                    {
-                        v.Add(item.Code);
-                        return v;
-                    }
-                );
+                ImmutableHashSet.Create(item.Code),
+                (k, v) => v.Add(item.Code));
         }
     }
 }

@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Common
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
 
     using Microsoft.DocAsCode.Plugins;
@@ -64,7 +65,7 @@ namespace Microsoft.DocAsCode.Common
             };
         }
 
-        public static void ApplyLogCodes(ManifestItemCollection manifestItems, ConcurrentDictionary<string, HashSet<string>> codes)
+        public static void ApplyLogCodes(ManifestItemCollection manifestItems, ConcurrentDictionary<string, ImmutableHashSet<string>> codes)
         {
             if (manifestItems == null)
             {
