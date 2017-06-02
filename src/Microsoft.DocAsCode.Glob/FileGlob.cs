@@ -34,7 +34,9 @@ namespace Microsoft.DocAsCode.Glob
 
         private static IEnumerable<string> GetFilesFromSubfolder(string baseDirectory, string cwd, IEnumerable<GlobMatcher> globs, IEnumerable<GlobMatcher> excludeGlobs)
         {
-            foreach (var file in Directory.GetFiles(baseDirectory, "*", SearchOption.TopDirectoryOnly))
+            var blackListFolder = new List<string> { "node_modules", "bower_components" };
+            if (blackListFolder.Any(baseDirectory.Contains)) yield break;
+            foreach (var file in Directory.EnumerateFiles(baseDirectory, "*", SearchOption.TopDirectoryOnly))
             {
                 var relativePath = GetRelativeFilePath(cwd, file);
                 if (IsFileMatch(relativePath, globs, excludeGlobs))
