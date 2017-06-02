@@ -5,13 +5,12 @@ namespace Microsoft.DocAsCode.Common
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
 
     public class LogCodesLogListener : ILoggerListener
     {
         public ConcurrentDictionary<string, ImmutableHashSet<string>> Codes { get; }
-            = new ConcurrentDictionary<string, ImmutableHashSet<string>>();
+            = new ConcurrentDictionary<string, ImmutableHashSet<string>>(FilePathComparer.OSPlatformSensitiveRelativePathComparer);
 
         public void Dispose()
         {
