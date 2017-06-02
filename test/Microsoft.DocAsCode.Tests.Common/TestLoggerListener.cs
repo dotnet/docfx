@@ -10,38 +10,95 @@ namespace Microsoft.DocAsCode.Tests.Common
 
     public class TestLoggerListener : ILoggerListener
     {
-        public string Phase { get; }
-
         public List<ILogItem> Items { get; } = new List<ILogItem>();
 
-        public LogLevel LogLevelThreshold { get; set; }
+        public Func<ILogItem, bool> Matcher { get; } 
 
-        public Func<ILogItem, bool> PhaseMatcher { get; set; }
-
-        public TestLoggerListener(string phase = null,
-            LogLevel logLevelThreshold = LogLevel.Warning,
-            Func<ILogItem, bool> phaseMatcher = null)
+        private TestLoggerListener(Func<ILogItem, bool> matcher)
         {
-            Phase = phase;
-            LogLevelThreshold = logLevelThreshold;
-
-            // Set default phase matcher to start with current phase
-            PhaseMatcher = phaseMatcher ?? (iLogItem => iLogItem?.Phase != null && iLogItem.Phase.StartsWith(Phase));
+            Matcher = matcher;
         }
+
+        #region ILoggerListener
 
         public void WriteLine(ILogItem item)
         {
-            if (item == null || item.LogLevel < LogLevelThreshold)
+            if (item == null)
             {
-                return;
+                throw new ArgumentNullException(nameof(item));
             }
-            if (Phase == null ||
-                Phase.Equals(item.Phase, StringComparison.OrdinalIgnoreCase) ||
-                PhaseMatcher(item))
+            if (Matcher(item))
             {
                 Items.Add(item);
             }
         }
+
+        public void Flush()
+        {
+        }
+
+        public void Dispose()
+        {
+        }
+
+        #endregion
+
+        #region Creators
+
+        public static TestLoggerListener CreateLoggerListenerWithPhaseStartMatcher(string phase, LogLevel logLevel = LogLevel.Warning)
+        {
+            return new TestLoggerListener(iLogItem =>
+            {
+                if (iLogItem.LogLevel < logLevel)
+                {
+                    return false;
+                }
+                if (phase == null ||
+                   (iLogItem?.Phase != null && iLogItem.Phase.StartsWith(phase, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        public static TestLoggerListener CreateLoggerListenerWithPhaseEndMatcher(string phase, LogLevel logLevel = LogLevel.Warning)
+        {
+            return new TestLoggerListener(iLogItem =>
+            {
+                if (iLogItem.LogLevel < logLevel)
+                {
+                    return false;
+                }
+                if (phase == null ||
+                   (iLogItem?.Phase != null && iLogItem.Phase.EndsWith(phase, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        public static TestLoggerListener CreateLoggerListenerWithPhaseEqualMatcher(string phase, LogLevel logLevel = LogLevel.Warning)
+        {
+            return new TestLoggerListener(iLogItem =>
+            {
+                if (iLogItem.LogLevel < logLevel)
+                {
+                    return false;
+                }
+                if (phase == null ||
+                   (iLogItem?.Phase != null && iLogItem.Phase.Equals(phase, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        #endregion
+
+        #region Helpers 
 
         public ILogItem TakeAndRemove()
         {
@@ -54,12 +111,6 @@ namespace Microsoft.DocAsCode.Tests.Common
             return result;
         }
 
-        public void Dispose()
-        {
-        }
-
-        public void Flush()
-        {
-        }
+        #endregion
     }
 }

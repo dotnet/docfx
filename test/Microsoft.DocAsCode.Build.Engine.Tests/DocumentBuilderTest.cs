@@ -878,7 +878,7 @@ exports.getOptions = function (){
 
         private void Init(string phaseName)
         {
-            Listener = new TestLoggerListener(phaseName, phaseMatcher: iLogItem => iLogItem?.Phase != null && iLogItem.Phase.EndsWith(phaseName));
+            Listener = TestLoggerListener.CreateLoggerListenerWithPhaseEndMatcher(phaseName);
             Logger.RegisterListener(Listener);
         }
 

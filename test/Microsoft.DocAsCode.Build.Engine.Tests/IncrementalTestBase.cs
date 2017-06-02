@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
         protected void Init(string phaseName)
         {
-            Listener = new TestLoggerListener(phaseName);
+            Listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartMatcher(phaseName);
             Logger.RegisterListener(Listener);
         }
 

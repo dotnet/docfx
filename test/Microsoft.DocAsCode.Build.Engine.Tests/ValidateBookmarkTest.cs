@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     public class ValidateBookmarkTest : TestBase
     {
         private readonly string _outputFolder;
-        private TestLoggerListener _listener = new TestLoggerListener("validate_bookmark.ValidateBookmark");
+        private TestLoggerListener _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualMatcher("validate_bookmark.ValidateBookmark");
 
         public ValidateBookmarkTest()
         {
