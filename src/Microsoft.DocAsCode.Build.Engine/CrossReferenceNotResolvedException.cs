@@ -12,28 +12,23 @@ namespace Microsoft.DocAsCode.Build.Engine
     [Serializable]
     public class CrossReferenceNotResolvedException : DocumentException
     {
-        public string Uid { get; }
-        public string UidRawText { get; }
+        public XRefDetails XRefDetails { get; }
 
-        public CrossReferenceNotResolvedException(string uid, string uidRawText, string file) : base()
+        public CrossReferenceNotResolvedException(XRefDetails xrefDetails) : base()
         {
-            Uid = uid;
-            UidRawText = uidRawText;
+            XRefDetails = xrefDetails;
         }
 
         protected CrossReferenceNotResolvedException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
-            Uid = info.GetString(nameof(Uid));
-            UidRawText = info.GetString(nameof(UidRawText));
+            XRefDetails = (XRefDetails)info.GetValue(nameof(XRefDetails), typeof(XRefDetails));
         }
 
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        public override void GetObjectData(SerializationInfo info,
-            StreamingContext context)
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
+            info.AddValue(nameof(XRefDetails), XRefDetails);
             base.GetObjectData(info, context);
-            info.AddValue(nameof(Uid), Uid);
-            info.AddValue(nameof(UidRawText), UidRawText);
         }
     }
 }

@@ -222,6 +222,35 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         }
 
         [Fact]
+        public void ProcessMrefWithNotInvalidCrossReferenceShouldWarn()
+        {
+            var files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { "TestData/mref/System.String.yml" }, "TestData/");
+            files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/mref.overwrite.invalid.ref.md" });
+
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(nameof(ProcessMrefWithNotInvalidCrossReferenceShouldWarn));
+            try
+            {
+                Logger.RegisterListener(listener);
+
+                using (new LoggerPhaseScope(nameof(ProcessMrefWithNotInvalidCrossReferenceShouldWarn)))
+                {
+                    BuildDocument(files);
+                }
+
+                var logs = listener.GetItemsByLogLevel(LogLevel.Warning);
+                Assert.Equal(1, logs.Count());
+                var log = logs.Single();
+                Assert.Equal("Invalid cross reference \"&lt;xref:invalidXref&gt;\" in line 6 of file \"TestData/overwrite/mref.overwrite.invalid.ref.md\".", log.Message);
+                Assert.Equal("TestData/mref/System.String.yml", log.File);
+            }
+            finally
+            {
+                Logger.UnregisterListener(listener);
+            }
+        }
+
+        [Fact]
         public void ProcessMrefWithInvalidOverwriteShouldFail()
         {
             FileCollection files = new FileCollection(_defaultFiles);
