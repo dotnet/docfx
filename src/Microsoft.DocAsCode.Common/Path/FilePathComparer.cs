@@ -9,8 +9,7 @@ namespace Microsoft.DocAsCode.Common
     public class FilePathComparer
         : IEqualityComparer<string>
     {
-        private bool _ignoreToFullPath;
-
+        private readonly bool _ignoreToFullPath;
         private readonly static StringComparer _stringComparer = GetStringComparer();
 
         public static readonly FilePathComparer OSPlatformSensitiveComparer = new FilePathComparer();
@@ -35,11 +34,11 @@ namespace Microsoft.DocAsCode.Common
             string path;
             if (_ignoreToFullPath)
             {
-                path = obj.ToNormalizedFullPath();
+                path = obj.ToNormalizedPath();
             }
             else
             {
-                path = obj.ToNormalizedPath();
+                path = obj.ToNormalizedFullPath();
             }
 
             return _stringComparer.GetHashCode(path);
