@@ -4,10 +4,11 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Collections.Immutable;
     using System.Linq;
 
-    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Plugins;
 
     public static class ManifestUtility
@@ -62,6 +63,25 @@ namespace Microsoft.DocAsCode.Common
                 IncrementalInfo = incrementalInfos.Count > 0 ? incrementalInfos : null,
                 VersionInfo = manifests.Where(m => m.VersionInfo != null).SelectMany(m => m.VersionInfo).ToDictionary(p => p.Key, p => p.Value)
             };
+        }
+
+        public static void ApplyLogCodes(ManifestItemCollection manifestItems, ConcurrentDictionary<string, ImmutableHashSet<string>> codes)
+        {
+            if (manifestItems == null)
+            {
+                throw new ArgumentException(nameof(manifestItems));
+            }
+            if (codes == null)
+            {
+                throw new ArgumentException(nameof(codes));
+            }
+            foreach (var item in manifestItems)
+            {
+                if (codes.TryGetValue(item.SourceRelativePath, out var value))
+                {
+                    item.LogCodes = value;
+                }
+            }
         }
     }
 }

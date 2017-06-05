@@ -148,12 +148,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         foreach (var fileLinkSourceFile in list)
                         {
-                            Logger.LogWarning($"Invalid file link:({fileLinkSourceFile.Target}{fileLinkSourceFile.Anchor}).", null, fileLinkSourceFile.SourceFile, fileLinkSourceFile.LineNumber.ToString());
+                            Logger.LogWarning(
+                                $"Invalid file link:({fileLinkSourceFile.Target}{fileLinkSourceFile.Anchor}).",
+                                null,
+                                fileLinkSourceFile.SourceFile,
+                                fileLinkSourceFile.LineNumber.ToString(),
+                                WarningCodes.Build.InvalidFileLink);
                         }
                     }
                     else
                     {
-                        Logger.LogWarning($"Invalid file link:({fileLink}).");
+                        Logger.LogWarning($"Invalid file link:({fileLink}).", code: WarningCodes.Build.InvalidFileLink);
                     }
                 }
             });

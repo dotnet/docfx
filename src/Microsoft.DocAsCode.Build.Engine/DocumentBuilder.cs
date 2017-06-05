@@ -96,6 +96,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             Logger.LogInfo($"Markdown engine is {parameters[0].MarkdownEngineName}");
 
+            var logCodesLogListener = new LogCodesLogListener();
+            Logger.RegisterListener(logCodesLogListener);
+
             try
             {
                 _postProcessorsManager.IncrementalInitialize(_intermediateFolder, _currentBuildInfo, _lastBuildInfo, parameters[0].ForcePostProcess, parameters[0].MaxParallelism);
@@ -155,6 +158,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     var generatedManifest = ManifestUtility.MergeManifest(manifests);
                     ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
+                    ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
 
                     EnvironmentContext.FileAbstractLayerImpl =
                         FileAbstractLayerBuilder.Default
@@ -220,6 +224,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                     ClearCacheWithNoThrow(_currentBuildInfo.DirectoryName, true);
                 }
                 throw;
+            }
+            finally
+            {
+                Logger.UnregisterListener(logCodesLogListener);
             }
         }
 
