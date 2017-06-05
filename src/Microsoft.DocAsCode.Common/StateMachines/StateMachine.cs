@@ -4,8 +4,8 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
 
     public class StateMachine<TState, TEvent>
     {
@@ -21,11 +21,11 @@ namespace Microsoft.DocAsCode.Common
             IEqualityComparer<TEvent> eventComparer = null)
         {
             _stateComparer = stateComparer ?? EqualityComparer<TState>.Default;
-            _transit = transit;
+            _transit = transit ?? throw new ArgumentNullException(nameof(transit));
             _creator = CreateNewNode;
             EventComparer = eventComparer ?? EqualityComparer<TEvent>.Default;
             _states = new ConcurrentDictionary<TState, StateNode<TState, TEvent>>(_stateComparer);
-            RootState = new StateNode<TState, TEvent>(this, rootState);
+            RootState = CreateNewNode(rootState);
             _states.TryAdd(rootState, RootState);
         }
 

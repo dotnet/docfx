@@ -22,7 +22,13 @@ namespace Microsoft.DocAsCode.Common
 
         public TState Value { get; }
 
-        public StateNode<TState, TEvent> Transit(TEvent @event) =>
-            _path.GetOrAdd(@event, _creator);
+        public StateNode<TState, TEvent> Transit(TEvent @event)
+        {
+            if (@event == null)
+            {
+                throw new ArgumentNullException(nameof(@event));
+            }
+            return _path.GetOrAdd(@event, _creator);
+        }
     }
 }
