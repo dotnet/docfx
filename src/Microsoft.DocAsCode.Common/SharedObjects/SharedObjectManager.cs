@@ -9,10 +9,9 @@ namespace Microsoft.DocAsCode.Common
 
     public class SharedObjectManager<TState, TEvent>
     {
-        private readonly ConcurrentDictionary<TState, SharedObjectNode<TState, TEvent>> _states;
-        private readonly IEqualityComparer<TState> _stateComparer;
-        private readonly Func<TState, TEvent, TState> _transit;
         private readonly Func<TState, SharedObjectNode<TState, TEvent>> _creator;
+        private readonly Func<TState, TEvent, TState> _transit;
+        private readonly ConcurrentDictionary<TState, SharedObjectNode<TState, TEvent>> _states;
 
         public SharedObjectManager(
             TState initialState,
@@ -20,11 +19,10 @@ namespace Microsoft.DocAsCode.Common
             IEqualityComparer<TState> stateComparer = null,
             IEqualityComparer<TEvent> eventComparer = null)
         {
-            _stateComparer = stateComparer ?? EqualityComparer<TState>.Default;
-            _transit = transit ?? throw new ArgumentNullException(nameof(transit));
             _creator = CreateNewNode;
+            _transit = transit ?? throw new ArgumentNullException(nameof(transit));
+            _states = new ConcurrentDictionary<TState, SharedObjectNode<TState, TEvent>>(stateComparer ?? EqualityComparer<TState>.Default);
             EventComparer = eventComparer ?? EqualityComparer<TEvent>.Default;
-            _states = new ConcurrentDictionary<TState, SharedObjectNode<TState, TEvent>>(_stateComparer);
             Node = CreateNewNode(initialState);
             _states.TryAdd(initialState, Node);
         }
