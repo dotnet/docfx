@@ -171,6 +171,12 @@ namespace Microsoft.DocAsCode.Dfm
             return token.SourceInfo.Markdown;
         }
 
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmTabGroupBlockToken token, MarkdownBlockContext context)
+        {
+            // todo : Render DfmTabGroupBlockToken
+            return "<!-- todo: tab group -->\n";
+        }
+
         public void Dispose()
         {
             _inlineInclusionHelper.Dispose();
