@@ -76,6 +76,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                     Logger.LogWarning($"Homepage is deprecated in TOC. Homepage {item.Homepage} is overwritten with topicHref {item.TopicHref}");
                 }
             }
+            // validate href
+            ValidateHref(item);
+
             // TocHref supports 2 forms: absolute path and local toc file.
             // When TocHref is set, using TocHref as Href in output, and using Href as Homepage in output
             var tocHrefType = Utility.GetHrefType(item.TocHref);
@@ -259,7 +262,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             return wrapper;
         }
-        
+
         private TocViewModel UpdateOriginalHref(TocViewModel toc, RelativePath relativePath)
         {
             if (toc == null || relativePath.SubdirectoryCount == 0)
@@ -267,7 +270,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 return toc;
             }
 
-            foreach(var item in toc)
+            foreach (var item in toc)
             {
                 item.OriginalHomepage = GetRelativePath(item.OriginalHomepage, relativePath);
                 item.OriginalHref = GetRelativePath(item.OriginalHref, relativePath);
@@ -340,6 +343,21 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
 
             return false;
+        }
+
+        private void ValidateHref(TocItemViewModel item)
+        {
+            if (item.Href == null)
+            {
+                return;
+            }
+            var hrefType = Utility.GetHrefType(item.Href);
+            if ((hrefType == HrefType.MarkdownTocFile || hrefType == HrefType.YamlTocFile || hrefType == HrefType.RelativeFolder) &&
+                (UriUtility.HasFragment(item.Href) || UriUtility.HasQueryString(item.Href)))
+            {
+                Logger.LogWarning($"Illegal href: {item.Href}.`#` or `?` aren't allowed when referencing toc file.");
+                item.Href = UriUtility.GetPath(item.Href);
+            }
         }
     }
 }
