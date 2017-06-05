@@ -26,7 +26,14 @@ namespace Microsoft.DocAsCode.Common
 
         public bool Equals(string x, string y)
         {
-            return _stringComparer.Equals(x.ToNormalizedFullPath(), y.ToNormalizedFullPath());
+            if (_ignoreToFullPath)
+            {
+                return _stringComparer.Equals(x.ToNormalizedPath(), y.ToNormalizedPath());
+            }
+            else
+            {
+                return _stringComparer.Equals(x.ToNormalizedFullPath(), y.ToNormalizedFullPath());
+            }
         }
 
         public int GetHashCode(string obj)
