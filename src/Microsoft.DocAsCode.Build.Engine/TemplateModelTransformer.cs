@@ -169,26 +169,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             if (missingXRefDetails.Count > 0)
             {
-                var uidInfos = string.Join(",", missingXRefDetails.Select(i =>
+                var distinctUids = string.Join(", ", missingXRefDetails.Select(i => i.RawSource).Distinct().Select(s => $"\"{s}\""));
+                Logger.LogWarning($"Invalid cross reference {distinctUids}.", file: item.LocalPathFromRoot);
+                foreach (var xref in missingXRefDetails)
                 {
-                    var result = StringBuffer.Empty;
-                    result += "\"";
-                    result += i.RawSource;
-                    result += "\"";
-                    if (i.SourceStartLineNumber > 0)
-                    {
-                        result += " in line ";
-                        result += i.SourceStartLineNumber;
-                    }
-                    if (!string.IsNullOrEmpty(i.SourceFile))
-                    {
-                        result += " of file \"";
-                        result += i.SourceFile;
-                        result += "\"";
-                    }
-                    return result;
-                }));
-                Logger.LogWarning($"Invalid cross reference {uidInfos}.", file: item.LocalPathFromRoot);
+                    Logger.LogInfo($"Invalid cross reference details: {xref.RawSource}", file: xref.SourceFile ?? item.LocalPathFromRoot, line: xref.SourceEndLineNumber.ToString());
+                }
             }
 
             return manifestItem;

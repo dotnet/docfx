@@ -228,7 +228,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             files.Add(DocumentType.Article, new[] { "TestData/mref/System.String.yml" }, "TestData/");
             files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/mref.overwrite.invalid.ref.md" });
 
-            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(nameof(ProcessMrefWithNotInvalidCrossReferenceShouldWarn));
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(nameof(ProcessMrefWithNotInvalidCrossReferenceShouldWarn), LogLevel.Info);
             try
             {
                 Logger.RegisterListener(listener);
@@ -238,11 +238,20 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                     BuildDocument(files);
                 }
 
-                var logs = listener.GetItemsByLogLevel(LogLevel.Warning);
-                Assert.Equal(1, logs.Count());
-                var log = logs.Single();
-                Assert.Equal("Invalid cross reference \"&lt;xref:invalidXref&gt;\" in line 6 of file \"TestData/overwrite/mref.overwrite.invalid.ref.md\".", log.Message);
-                Assert.Equal("TestData/mref/System.String.yml", log.File);
+                var warnings = listener.GetItemsByLogLevel(LogLevel.Warning);
+                Assert.Equal(1, warnings.Count());
+                var warning = warnings.Single();
+                Assert.Equal("Invalid cross reference \"&lt;xref:invalidXref1&gt;\", \"&lt;xref:invalidXref2&gt;\".", warning.Message);
+                Assert.Equal("TestData/mref/System.String.yml", warning.File);
+
+                var infos = listener.GetItemsByLogLevel(LogLevel.Info).Where(i => i.Message.Contains("Invalid cross reference details")).ToList();
+                Assert.Equal(2, infos.Count());
+                Assert.Equal("Invalid cross reference details: &lt;xref:invalidXref1&gt;", infos[0].Message);
+                Assert.Equal("6", infos[0].Line);
+                Assert.Equal("TestData/overwrite/mref.overwrite.invalid.ref.md", infos[0].File);
+                Assert.Equal("Invalid cross reference details: &lt;xref:invalidXref2&gt;", infos[1].Message);
+                Assert.Equal("8", infos[1].Line);
+                Assert.Equal("TestData/overwrite/mref.overwrite.invalid.ref.md", infos[1].File);
             }
             finally
             {
