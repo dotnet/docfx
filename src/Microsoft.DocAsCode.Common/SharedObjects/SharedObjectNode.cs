@@ -6,23 +6,23 @@ namespace Microsoft.DocAsCode.Common
     using System;
     using System.Collections.Concurrent;
 
-    public class StateNode<TState, TEvent>
+    public class SharedObjectNode<TState, TEvent>
     {
-        private readonly StateMachine<TState, TEvent> _manager;
-        private readonly ConcurrentDictionary<TEvent, StateNode<TState, TEvent>> _path;
-        private readonly Func<TEvent, StateNode<TState, TEvent>> _creator;
+        private readonly SharedObjectManager<TState, TEvent> _manager;
+        private readonly ConcurrentDictionary<TEvent, SharedObjectNode<TState, TEvent>> _path;
+        private readonly Func<TEvent, SharedObjectNode<TState, TEvent>> _creator;
 
-        internal StateNode(StateMachine<TState, TEvent> obj, TState value)
+        internal SharedObjectNode(SharedObjectManager<TState, TEvent> manager, TState value)
         {
-            _manager = obj;
-            _path = new ConcurrentDictionary<TEvent, StateNode<TState, TEvent>>(_manager.EventComparer);
+            _manager = manager;
+            _path = new ConcurrentDictionary<TEvent, SharedObjectNode<TState, TEvent>>(_manager.EventComparer);
             Value = value;
             _creator = c => _manager.Transit(Value, c);
         }
 
         public TState Value { get; }
 
-        public StateNode<TState, TEvent> Transit(TEvent @event)
+        public SharedObjectNode<TState, TEvent> Transit(TEvent @event)
         {
             if (@event == null)
             {

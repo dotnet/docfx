@@ -11,32 +11,32 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     [Trait("Owner", "vwxyzh")]
     [Trait("Related", "StateMachine")]
-    public class StateMachineTest
+    public class SharedObjectTest
     {
         [Fact]
-        public void TestStateMachine()
+        public void TestSharedObject()
         {
-            var m = new StateMachine<string, string>(
+            var m = new SharedObjectManager<string, string>(
                 string.Empty,
                 (s, o) => new string(s.ToCharArray().Union(o.ToCharArray()).OrderBy(c => c).ToArray()));
 
-            Assert.Same(string.Empty, m.RootState.Value);
-            Assert.Same(m.RootState, m.RootState.Transit(string.Empty));
+            Assert.Same(string.Empty, m.Node.Value);
+            Assert.Same(m.Node, m.Node.Transit(string.Empty));
 
             // "" + "A" => "A"
-            var a = m.RootState.Transit("A");
+            var a = m.Node.Transit("A");
             Assert.Equal("A", a.Value);
-            Assert.Same(a, m.RootState.Transit("A"));
+            Assert.Same(a, m.Node.Transit("A"));
 
             // "" + "B" => "B"
-            var b = m.RootState.Transit("B");
+            var b = m.Node.Transit("B");
             Assert.Equal("B", b.Value);
-            Assert.Same(b, m.RootState.Transit("B"));
+            Assert.Same(b, m.Node.Transit("B"));
 
             // "" + "AB" => "AB"
-            var ab = m.RootState.Transit("AB");
+            var ab = m.Node.Transit("AB");
             Assert.Equal("AB", ab.Value);
-            Assert.Same(ab, m.RootState.Transit("AB"));
+            Assert.Same(ab, m.Node.Transit("AB"));
 
             // "A" + "B" => "AB"
             Assert.Same(ab, a.Transit("B"));
@@ -53,12 +53,12 @@ namespace Microsoft.DocAsCode.Common.Tests
             // "AB" + "B" => "AB"
             Assert.Same(ab, ab.Transit("B"));
 
-            Assert.Same(ab, m.RootState.Transit("AB"));
-            Assert.Same(ab, m.RootState.Transit("AB").Transit(string.Empty));
-            Assert.Same(ab, m.RootState.Transit("BA"));
-            Assert.Same(ab, m.RootState.Transit("BA").Transit(string.Empty));
-            Assert.Same(ab, m.RootState.Transit("A").Transit(string.Empty).Transit("B"));
-            Assert.Same(ab, m.RootState.Transit("B").Transit(string.Empty).Transit("A"));
+            Assert.Same(ab, m.Node.Transit("AB"));
+            Assert.Same(ab, m.Node.Transit("AB").Transit(string.Empty));
+            Assert.Same(ab, m.Node.Transit("BA"));
+            Assert.Same(ab, m.Node.Transit("BA").Transit(string.Empty));
+            Assert.Same(ab, m.Node.Transit("A").Transit(string.Empty).Transit("B"));
+            Assert.Same(ab, m.Node.Transit("B").Transit(string.Empty).Transit("A"));
         }
     }
 }

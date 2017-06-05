@@ -7,15 +7,15 @@ namespace Microsoft.DocAsCode.Common
     using System.Collections.Concurrent;
     using System.Collections.Generic;
 
-    public class StateMachine<TState, TEvent>
+    public class SharedObjectManager<TState, TEvent>
     {
-        private readonly ConcurrentDictionary<TState, StateNode<TState, TEvent>> _states;
+        private readonly ConcurrentDictionary<TState, SharedObjectNode<TState, TEvent>> _states;
         private readonly IEqualityComparer<TState> _stateComparer;
         private readonly Func<TState, TEvent, TState> _transit;
-        private readonly Func<TState, StateNode<TState, TEvent>> _creator;
+        private readonly Func<TState, SharedObjectNode<TState, TEvent>> _creator;
 
-        public StateMachine(
-            TState rootState,
+        public SharedObjectManager(
+            TState initialState,
             Func<TState, TEvent, TState> transit,
             IEqualityComparer<TState> stateComparer = null,
             IEqualityComparer<TEvent> eventComparer = null)
@@ -24,19 +24,19 @@ namespace Microsoft.DocAsCode.Common
             _transit = transit ?? throw new ArgumentNullException(nameof(transit));
             _creator = CreateNewNode;
             EventComparer = eventComparer ?? EqualityComparer<TEvent>.Default;
-            _states = new ConcurrentDictionary<TState, StateNode<TState, TEvent>>(_stateComparer);
-            RootState = CreateNewNode(rootState);
-            _states.TryAdd(rootState, RootState);
+            _states = new ConcurrentDictionary<TState, SharedObjectNode<TState, TEvent>>(_stateComparer);
+            Node = CreateNewNode(initialState);
+            _states.TryAdd(initialState, Node);
         }
 
-        public StateNode<TState, TEvent> RootState { get; }
+        public SharedObjectNode<TState, TEvent> Node { get; }
 
         internal IEqualityComparer<TEvent> EventComparer { get; }
 
-        internal StateNode<TState, TEvent> Transit(TState value, TEvent @event) =>
+        internal SharedObjectNode<TState, TEvent> Transit(TState value, TEvent @event) =>
             _states.GetOrAdd(_transit(value, @event), _creator);
 
-        private StateNode<TState, TEvent> CreateNewNode(TState value) =>
-            new StateNode<TState, TEvent>(this, value);
+        private SharedObjectNode<TState, TEvent> CreateNewNode(TState value) =>
+            new SharedObjectNode<TState, TEvent>(this, value);
     }
 }
