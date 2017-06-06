@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         public static bool IsSupportedRelativeHref(string href)
         {
-            var hrefType = Utility.GetHrefType(href);
+            var hrefType = GetHrefType(href);
             return IsSupportedRelativeHref(hrefType);
         }
 
@@ -37,18 +37,36 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 || hrefType == HrefType.MarkdownTocFile;
         }
 
-        public static TocViewModel LoadSingleToc(string file)
+        public static TocItemViewModel LoadSingleToc(string file)
         {
             var fileType = GetTocFileType(file);
             try
             {
                 if (fileType == TocFileType.Markdown)
                 {
-                    return MarkdownTocReader.LoadToc(EnvironmentContext.FileAbstractLayer.ReadAllText(file), file);
+                    return new TocItemViewModel
+                    {
+                        Items = MarkdownTocReader.LoadToc(EnvironmentContext.FileAbstractLayer.ReadAllText(file), file)
+                    };
                 }
                 else if (fileType == TocFileType.Yaml)
                 {
-                    return YamlUtility.Deserialize<TocViewModel>(file);
+                    try
+                    {
+                        return new TocItemViewModel
+                        {
+                            Items = YamlUtility.Deserialize<TocViewModel>(file)
+                        };
+                    }
+                    catch (YamlDotNet.Core.YamlException)
+                    {
+                        var tocWithMetadata = YamlUtility.Deserialize<TocViewModelWithMetadata>(file);
+                        return new TocItemViewModel
+                        {
+                            Items = tocWithMetadata.Items,
+                            Metadata = tocWithMetadata.Metadata
+                        };
+                    }
                 }
             }
             catch (Exception e)
