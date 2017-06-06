@@ -92,7 +92,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     new MetadataJsonItemConfig
                     {
                         Destination = options.OutputFolder,
-                        Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = true }
+                        Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = false }
                     }
                 };
             }
@@ -135,7 +135,7 @@ namespace Microsoft.DocAsCode.SubCommands
         private ExtractMetadataInputModel ConvertToInputModel(MetadataJsonItemConfig configModel)
         {
             var projects = configModel.Source;
-            var outputFolder = Path.Combine(EnvironmentContext.OutputDirectory, configModel.Destination ?? Constants.DefaultMetadataOutputFolderName);
+            var outputFolder = configModel.Destination ?? Constants.DefaultMetadataOutputFolderName;
             var inputModel = new ExtractMetadataInputModel
             {
                 PreserveRawInlineComments = configModel?.Raw ?? false,
