@@ -24,11 +24,15 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             }
             if (model.Items == null || model.Items.Count == 0)
             {
-                throw new ArgumentException($"{nameof(model)} must contain at least one item");
+                var message = $"{nameof(model)} must contain at least one item";
+                Logger.LogError(message);
+                throw new ArgumentException(message);
             }
             if (model.Items[0].SupportedLanguages == null || model.Items[0].SupportedLanguages.Length == 0)
             {
-                throw new ArgumentException($"{nameof(ItemViewModel.SupportedLanguages)} must contain at least one language");
+                var message = $"{nameof(ItemViewModel.SupportedLanguages)} must contain at least one language";
+                Logger.LogError(message);
+                throw new ArgumentException(message);
             }
 
             var supportedLanguages = model.Items[0].SupportedLanguages;
