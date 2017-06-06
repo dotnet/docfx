@@ -18,14 +18,17 @@ namespace Microsoft.DocAsCode.Dfm
 
         public ImmutableArray<DfmTabItemBlockToken> Items { get; }
 
+        public int ActiveTabIndex { get; }
+
         public SourceInfo SourceInfo { get; }
 
-        public DfmTabGroupBlockToken(IMarkdownRule rule, IMarkdownContext context, string id, ImmutableArray<DfmTabItemBlockToken> items, SourceInfo sourceInfo)
+        public DfmTabGroupBlockToken(IMarkdownRule rule, IMarkdownContext context, string id, ImmutableArray<DfmTabItemBlockToken> items, int activeTabIndex, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
             Id = id;
             Items = items;
+            ActiveTabIndex = activeTabIndex;
             SourceInfo = sourceInfo;
         }
 
@@ -49,7 +52,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return this;
             }
-            return new DfmTabGroupBlockToken(Rule, Context, Id, items, SourceInfo);
+            return new DfmTabGroupBlockToken(Rule, Context, Id, items, ActiveTabIndex, SourceInfo);
         }
     }
 }

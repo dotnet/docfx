@@ -62,14 +62,30 @@ b:
         [Trait("Related", "DfmMarkdown")]
         public void TestTabGroup()
         {
-            TestDfmInGeneral(
-                @"# [title-a](#tab/a)
+            var actual = DocfxFlavoredMarked.Markup(@"# [title-a](#tab/a)
 content-a
-# [title-b](#tab/b)
+# [title-b](#tab/b/c)
 content-b
-- - -",
-                @"<!-- todo: tab group -->
-");
+- - -");
+            var groupId = actual.Substring(35, 36);
+            var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"">
+<ul role=""tablist"">
+<li role=""presentation"">
+<a href=""#tabpanel_{groupId}_a"" role=""tab"" aria-controls=""tabpanel_{groupId}_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"">title-a</a>
+</li>
+<li role=""presentation"">
+<a href=""#tabpanel_{groupId}_b_c"" role=""tab"" aria-controls=""tabpanel_{groupId}_b_c"" data-tab=""b"" data-condition=""c"" tabindex=""-1"">title-b</a>
+</li>
+</ul>
+<section id=""#tabpanel_{groupId}_a"" role=""tabpanel"" data-tab=""a"">
+<p>content-a</p>
+</section>
+<section id=""#tabpanel_{groupId}_b_c"" role=""tabpanel"" data-tab=""b"" data-condition=""c"" aria-hidden=""true"" hidden>
+<p>content-b</p>
+</section>
+</div>
+";
+            Assert.Equal(expected.Replace("\r\n", "\n"), actual);
         }
 
         [Fact]

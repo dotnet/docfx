@@ -51,6 +51,7 @@ namespace Microsoft.DocAsCode.Dfm
                                 headToken.Context,
                                 Guid.NewGuid().ToString(),
                                 items.ToImmutableArray(),
+                                0,
                                 headToken.SourceInfo),
                             offset);
                         return true;
