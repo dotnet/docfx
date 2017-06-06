@@ -35,8 +35,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiSyntaxBuildOutput FromModel(SyntaxDetailViewModel model, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
-            if (model == null) return null;
-
+            if (model == null)
+            {
+                return null;
+            }
             return new ApiSyntaxBuildOutput
             {
                 Content = ApiBuildOutputUtility.TransformToLanguagePairList(model.Content, model.Contents, supportedLanguages),
@@ -50,8 +52,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiSyntaxBuildOutput FromModel(SyntaxDetailViewModel model, string[] supportedLanguages)
         {
-            if (model == null) return null;
-
+            if (model == null)
+            {
+                return null;
+            }
             return new ApiSyntaxBuildOutput
             {
                 Content = ApiBuildOutputUtility.TransformToLanguagePairList(model.Content, model.Contents, supportedLanguages),

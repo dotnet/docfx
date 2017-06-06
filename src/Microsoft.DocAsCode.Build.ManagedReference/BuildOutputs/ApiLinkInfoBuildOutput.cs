@@ -30,8 +30,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiLinkInfoBuildOutput FromModel(LinkInfo model)
         {
-            if (model == null) return null;
-
+            if (model == null)
+            {
+                return null;
+            }
             if (model.LinkType == LinkType.CRef)
             {
                 return new ApiLinkInfoBuildOutput
@@ -52,8 +54,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiLinkInfoBuildOutput FromModel(LinkInfo model, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
-            if (model == null) return null;
-
+            if (model == null)
+            {
+                return null;
+            }
             if (model.LinkType == LinkType.CRef)
             {
                 return new ApiLinkInfoBuildOutput

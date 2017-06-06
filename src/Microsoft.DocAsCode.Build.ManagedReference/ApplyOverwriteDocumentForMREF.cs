@@ -20,10 +20,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         public IEnumerable<ItemViewModel> GetItemsFromOverwriteDocument(FileModel fileModel, string uid, IHostService host)
         {
-            return Transform<ItemViewModel>(
-                fileModel,
-                uid,
-                host);
+            return Transform<ItemViewModel>(fileModel, uid, host);
         }
 
         public IEnumerable<ItemViewModel> GetItemsToOverwrite(FileModel fileModel, string uid, IHostService host)

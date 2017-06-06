@@ -30,8 +30,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiParameterBuildOutput FromModel(ApiParameter model)
         {
-            if (model == null) return null;
-
+            if (model == null)
+            {
+                return null;
+            }
             return new ApiParameterBuildOutput
             {
                 Name = model.Name,
@@ -42,8 +44,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiParameterBuildOutput FromModel(ApiParameter model, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
-            if (model == null) return null;
-
+            if (model == null)
+            {
+                return null;
+            }
             return new ApiParameterBuildOutput
             {
                 Name = model.Name,

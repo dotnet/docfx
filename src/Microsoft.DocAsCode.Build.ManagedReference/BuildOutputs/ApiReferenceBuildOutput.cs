@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Linq;
+    using System.Web;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
@@ -117,7 +118,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         [YamlMember(Alias = "level")]
         [JsonProperty("level")]
-        public int Level { get { return Inheritance != null ? Inheritance.Count : 0; } }
+        public int Level => Inheritance != null ? Inheritance.Count : 0;
 
         [YamlMember(Alias = "implements")]
         [JsonProperty("implements")]
@@ -165,8 +166,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiReferenceBuildOutput FromUid(string uid)
         {
-            if (string.IsNullOrEmpty(uid)) return null;
-
+            if (string.IsNullOrEmpty(uid))
+            {
+                return null;
+            }
             return new ApiReferenceBuildOutput
             {
                 Uid = uid,
@@ -175,8 +178,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiReferenceBuildOutput FromModel(ReferenceViewModel vm, string[] supportedLanguages)
         {
-            if (vm == null) return null;
-
+            if (vm == null)
+            {
+                return null;
+            }
             // TODO: may lead to potential problems with have vm.Additional["syntax"] as SyntaxDetailViewModel
             // It is now working as syntax is set only in FillReferenceInformation and not from YAML deserialization
             var result = new ApiReferenceBuildOutput
@@ -192,8 +197,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 Spec = GetSpecNames(ApiBuildOutputUtility.GetXref(vm.Uid, vm.Name, vm.FullName), supportedLanguages, vm.Specs),
                 Metadata = vm.Additional,
             };
-            object syntax;
-            if (result.Metadata.TryGetValue("syntax", out syntax))
+            if (result.Metadata.TryGetValue("syntax", out object syntax))
             {
                 result.Syntax = ApiSyntaxBuildOutput.FromModel(syntax as SyntaxDetailViewModel, supportedLanguages);
                 result.Metadata.Remove("syntax");
@@ -203,8 +207,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiReferenceBuildOutput FromModel(ItemViewModel vm)
         {
-            if (vm == null) return null;
-
+            if (vm == null)
+            {
+                return null;
+            }
             var output = new ApiReferenceBuildOutput
             {
                 Uid = vm.Uid,
@@ -264,25 +270,42 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         {
             if (specs != null && specs.Count > 0)
             {
-                return specs.Where(kv => supportedLanguages.Contains(kv.Key)).Select(kv => new ApiLanguageValuePair() { Language = kv.Key, Value = GetSpecName(kv.Value) }).ToList();
+                return (from spec in specs
+                        where supportedLanguages.Contains(spec.Key)
+                        select new ApiLanguageValuePair
+                        {
+                            Language = spec.Key,
+                            Value = GetSpecName(spec.Value),
+                        }).ToList();
             }
             if (!string.IsNullOrEmpty(xref))
             {
-                return supportedLanguages.Select(s => new ApiLanguageValuePair() { Language = s, Value = xref }).ToList();
+                return (from lang in supportedLanguages
+                        select new ApiLanguageValuePair
+                        {
+                            Language = lang,
+                            Value = xref,
+                        }).ToList();
             }
             return null;
         }
 
         private static string GetSpecName(List<SpecViewModel> spec)
         {
-            if (spec == null) return null;
+            if (spec == null)
+            {
+                return null;
+            }
             return string.Concat(spec.Select(GetCompositeName));
         }
 
         private static string GetCompositeName(SpecViewModel svm)
         {
             // If href does not exists, return full name
-            if (string.IsNullOrEmpty(svm.Uid)) { return System.Web.HttpUtility.HtmlEncode(svm.FullName); }
+            if (string.IsNullOrEmpty(svm.Uid))
+            {
+                return HttpUtility.HtmlEncode(svm.FullName);
+            }
 
             // If href exists, return name with href
             return ApiBuildOutputUtility.GetXref(svm.Uid, svm.Name, svm.FullName);

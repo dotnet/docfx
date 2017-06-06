@@ -26,8 +26,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiExceptionInfoBuildOutput FromModel(ExceptionInfo model)
         {
-            if (model == null) return null;
-
+            if (model == null)
+            {
+                return null;
+            }
             return new ApiExceptionInfoBuildOutput
             {
                 Type = ApiNames.FromUid(model.Type),
@@ -37,8 +39,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiExceptionInfoBuildOutput FromModel(ExceptionInfo model, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
-            if (model == null) return null;
-
+            if (model == null)
+            {
+                return null;
+            }
             return new ApiExceptionInfoBuildOutput
             {
                 Type = ApiBuildOutputUtility.GetApiNames(model.Type, references, supportedLanguages),
