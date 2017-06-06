@@ -92,7 +92,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     new MetadataJsonItemConfig
                     {
                         Destination = options.OutputFolder,
-                        Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = false }
+                        Source = new FileMapping(new FileMappingItem(options.Projects.ToArray())) { Expanded = true }
                     }
                 };
             }

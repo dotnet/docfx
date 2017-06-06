@@ -48,13 +48,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 throw new ArgumentNullException(nameof(input.OutputFolder), "Output folder must be specified");
             }
 
-            if (input.Files == null || input.Files.Count == 0)
-            {
-                Logger.Log(LogLevel.Warning, "No source project or file to process, exiting...");
-                return;
-            }
-
-            _files = input.Files.Select(s => new FileInformation(s))
+            _files = input.Files?.Select(s => new FileInformation(s))
                 .GroupBy(f => f.Type)
                 .ToDictionary(s => s.Key, s => s.Distinct().ToList());
             _rebuild = input.ForceRebuild;
@@ -79,6 +73,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public async Task ExtractMetadataAsync()
         {
+            if (_files == null || _files.Count == 0)
+            {
+                Logger.Log(LogLevel.Warning, "No source project or file to process, exiting...");
+                return;
+            }
+
             try
             {
                 if (_files.TryGetValue(FileType.NotSupported, out List<FileInformation> unsupportedFiles))
