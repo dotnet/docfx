@@ -240,7 +240,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var path = item.Key;
                 var project = item.Value;
                 documentCache.AddDocument(path, path);
-                documentCache.AddDocuments(path, project.Documents.Select(s => s.FilePath));
+                if (project.HasDocuments)
+                {
+                    documentCache.AddDocuments(path, project.Documents.Select(s => s.FilePath));
+                }
+                else
+                {
+                    Logger.Log(LogLevel.Warning, $"Project '{project.FilePath}' does not contain any documents.");
+                }
                 documentCache.AddDocuments(path, project.MetadataReferences
                     .Where(s => s is PortableExecutableReference)
                     .Select(s => ((PortableExecutableReference)s).FilePath));
