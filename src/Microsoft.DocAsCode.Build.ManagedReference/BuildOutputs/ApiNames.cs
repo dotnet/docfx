@@ -42,8 +42,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiNames FromUid(string uid)
         {
-            if (string.IsNullOrEmpty(uid)) return null;
-
+            if (string.IsNullOrEmpty(uid))
+            {
+                return null;
+            }
             return new ApiNames
             {
                 Uid = uid,

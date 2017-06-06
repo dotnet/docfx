@@ -121,8 +121,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 var m = host.LookupByUid(r.Uid).Find(x => x.Type == DocumentType.Article);
                 if (m == null)
                 {
-                    SourceInfo i;
-                    if (_items.TryGetValue(r.Uid, out i))
+                    if (_items.TryGetValue(r.Uid, out SourceInfo i))
                     {
                         FillContent(r, i);
                     }
@@ -177,8 +176,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             foreach (var c in _lastContextInfo)
             {
-                FileIncrementalInfo info;
-                if (increInfo.TryGetValue(c.File, out info) && info.IsIncremental)
+                if (increInfo.TryGetValue(c.File, out FileIncrementalInfo info) && info.IsIncremental)
                 {
                     _items[c.Uid] = c;
                 }

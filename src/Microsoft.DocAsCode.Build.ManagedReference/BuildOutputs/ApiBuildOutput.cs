@@ -164,11 +164,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 return null;
             }
 
-            object displayLangs;
-            if (model.Metadata.TryGetValue("_displayLangs", out displayLangs))
+            if (model.Metadata.TryGetValue("_displayLangs", out object displayLangs))
             {
-                var langsObj = displayLangs as object[];
-                if (langsObj != null)
+                if (displayLangs is object[] langsObj)
                 {
                     var langs = langsObj.Select(x => x?.ToString()).ToArray();
                     model.Items.ForEach(item => item.SupportedLanguages = IntersectLangs(item.SupportedLanguages, langs));

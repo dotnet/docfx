@@ -4,16 +4,18 @@
 namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 {
     using System.Collections.Generic;
+    using System.Text;
     using System.Web;
 
     public static class ApiBuildOutputUtility
     {
         public static ApiReferenceBuildOutput GetReferenceViewModel(string key, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
-            if (string.IsNullOrEmpty(key)) return null;
-
-            ApiReferenceBuildOutput arbo;
-            if (!references.TryGetValue(key, out arbo))
+            if (string.IsNullOrEmpty(key))
+            {
+                return null;
+            }
+            if (!references.TryGetValue(key, out ApiReferenceBuildOutput arbo))
             {
                 arbo = new ApiReferenceBuildOutput
                 {
@@ -37,11 +39,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static ApiNames GetApiNames(string key, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
-            if (string.IsNullOrEmpty(key)) return null;
-
+            if (string.IsNullOrEmpty(key))
+            {
+                return null;
+            }
             var result = ApiNames.FromUid(key);
-            ApiReferenceBuildOutput arbo;
-            if (references.TryGetValue(key, out arbo))
+            if (references.TryGetValue(key, out ApiReferenceBuildOutput arbo))
             {
                 result.Definition = arbo.Definition;
                 result.Name = arbo.Name;
@@ -55,10 +58,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static List<ApiLanguageValuePair> GetSpec(string key, Dictionary<string, ApiReferenceBuildOutput> references, string[] supportedLanguages)
         {
-            if (string.IsNullOrEmpty(key)) return null;
-
-            ApiReferenceBuildOutput reference;
-            if (!references.TryGetValue(key, out reference))
+            if (string.IsNullOrEmpty(key))
+            {
+                return null;
+            }
+            if (!references.TryGetValue(key, out ApiReferenceBuildOutput reference))
             {
                 return ApiReferenceBuildOutput.GetSpecNames(GetXref(key), supportedLanguages);
             }
@@ -70,8 +74,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static List<ApiLanguageValuePair> TransformToLanguagePairList(string defaultValue, SortedList<string, string> values, string[] supportedLanguages)
         {
-            if (string.IsNullOrEmpty(defaultValue) || supportedLanguages == null || supportedLanguages.Length == 0) return null;
-
+            if (string.IsNullOrEmpty(defaultValue) ||
+                supportedLanguages == null ||
+                supportedLanguages.Length == 0)
+            {
+                return null;
+            }
             var result = new List<ApiLanguageValuePair>();
             foreach (var language in supportedLanguages)
             {
@@ -87,33 +95,37 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
 
         public static string GetXref(string uid, string text = null, string alt = null)
         {
-            var result = $"<xref uid=\"{HttpUtility.HtmlEncode(uid)}\"";
+            var sb = new StringBuilder();
+            sb.Append("<xref uid=\"")
+                .Append(HttpUtility.HtmlEncode(uid))
+                .Append("\"");
             if (!string.IsNullOrEmpty(text))
             {
-                result += $" text=\"{HttpUtility.HtmlEncode(text)}\"";
+                sb.Append(" text=\"")
+                    .Append(HttpUtility.HtmlEncode(text))
+                    .Append("\"");
             }
             else
             {
-                result += " displayProperty=\"name\"";
+                sb.Append(" displayProperty=\"name\"");
             }
             if (!string.IsNullOrEmpty(alt))
             {
-                result += $" alt=\"{HttpUtility.HtmlEncode(alt)}\"";
+                sb.Append(" alt=\"")
+                    .Append(HttpUtility.HtmlEncode(alt))
+                    .Append("\"");
             }
             else
             {
-                result += " altProperty=\"fullName\"";
+                sb.Append(" altProperty=\"fullName\"");
             }
-            result += "/>";
-            return result;
+            sb.Append("/>");
+            return sb.ToString();
         }
 
-        public static string GetHref(string url, string altText = null)
-        {
-            var href = $"<span><a href=\"{url}\">";
-            if (!string.IsNullOrEmpty(altText)) href += HttpUtility.HtmlEncode(altText);
-            href += "</a></span>";
-            return href;
-        }
+        public static string GetHref(string url, string altText = null) =>
+            $@"<span><a href=""{url}"">{
+                HttpUtility.HtmlEncode(altText ?? string.Empty)
+                }</a></span>";
     }
 }
