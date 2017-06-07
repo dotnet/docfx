@@ -368,21 +368,22 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var assemblyCompilation = CompilationUtility.CreateCompilationFromAssembly(assemblyFiles);
                 if (assemblyCompilation != null)
                 {
-                    var referencedAssemblyList = CompilationUtility.GetAssemblyFromAssemblyComplation(assemblyCompilation);
-                    var assemblyExtension = GetAllExtensionMethodsFromAssembly(assemblyCompilation, referencedAssemblyList);
-                    var assemblyMetadataValues = (from assembly in referencedAssemblyList
-                                                  let metadata = GetAssemblyMetadataFromCacheAsync(assemblyFiles, assemblyCompilation, assembly, outputFolder, forceRebuild, _filterConfigFile, assemblyExtension)
-                                                  select metadata.Result.Item1).ToList();
                     var commentFiles = (from file in assemblyFiles
                                         select Path.ChangeExtension(file, XmlCommentFileExtension) into xmlFile
                                         where File.Exists(xmlFile)
                                         select xmlFile).ToList();
 
-                    MergeCommentsHelper.MergeComments(assemblyMetadataValues, commentFiles);
+                    var referencedAssemblyList = CompilationUtility.GetAssemblyFromAssemblyComplation(assemblyCompilation);
+                    var assemblyExtension = GetAllExtensionMethodsFromAssembly(assemblyCompilation, referencedAssemblyList);
 
-                    if (assemblyMetadataValues.Count > 0)
+                    foreach (var assembly in referencedAssemblyList)
                     {
-                        projectMetadataList.AddRange(assemblyMetadataValues);
+                        var mta = await GetAssemblyMetadataFromCacheAsync(assemblyFiles, assemblyCompilation, assembly, outputFolder, forceRebuild, _filterConfigFile, assemblyExtension);
+                        if (mta != null)
+                        {
+                            MergeCommentsHelper.MergeComments(mta.Item1, commentFiles);
+                            projectMetadataList.Add(mta.Item1);
+                        }
                     }
                 }
             }
