@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
     using System.Reflection;
     using System.Web;
 
+    using Newtonsoft.Json.Linq;
     using Xunit;
 
     using Microsoft.DocAsCode.Build.ConceptualDocuments;
@@ -283,6 +284,59 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
                 }
             };
 
+            AssertTocEqual(expectedModel, model);
+        }
+
+        [Fact]
+        public void ProcessYamlTocWithMetadataShouldSucceed()
+        {
+            var file1 = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent);
+            var content = $@"
+metadata:
+  meta: content
+items:
+- name: Topic1
+  href: {file1}
+  items:
+    - name: Topic1.1
+      href: {file1}
+";
+            var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
+            FileCollection files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { file1, toc, });
+            BuildDocument(files);
+            var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(toc, RawModelFileExtension)));
+            Assert.True(File.Exists(outputRawModelPath));
+
+            var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
+
+            Assert.NotNull(model.Metadata["metadata"]);
+
+            var meta = (JObject)model.Metadata["metadata"];
+            Assert.Equal(1, meta.Count);
+            Assert.Equal("content", meta["meta"]);
+
+            var expectedModel = new TocItemViewModel
+            {
+                Items = new TocViewModel
+                {
+                    new TocItemViewModel
+                    {
+                        Name = "Topic1",
+                        Href = file1,
+                        TopicHref = file1,
+                        Items = new TocViewModel
+                        {
+                            new TocItemViewModel
+                            {
+                                Name = "Topic1.1",
+                                Href = file1, // For relative file, href keeps unchanged
+                                TopicHref = file1,
+                            }
+                        }
+                    }
+                }
+            };
             AssertTocEqual(expectedModel, model);
         }
 
@@ -619,7 +673,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
         [Fact]
         public void ProcessYamlTocWithTocHrefAndHomepageShouldFail()
         {
-
             var content = $@"
 - name: Topic1
   tocHref: /Topic1/
