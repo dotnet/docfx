@@ -132,8 +132,8 @@ Write-Host "Using package version $packageVersion, and assembly version $assembl
 foreach ($sln in (Get-ChildItem *.sln)) {
     Write-Host "Start building $($sln.FullName)"
 
-    & dotnet restore $sln.FullName
-    ProcessLastExitCode $lastexitcode "dotnet restore $($sln.FullName)"
+    & dotnet restore $sln.FullName /p:Version=$packageVersion
+    ProcessLastExitCode $lastexitcode "dotnet restore $($sln.FullName) /p:Version=$packageVersion"
 
     & dotnet build $sln.FullName -c $configuration -v n /m:1
     ProcessLastExitCode $lastexitcode "dotnet build $($sln.FullName) -c $configuration -v n /m:1"
