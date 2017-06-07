@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             var model = new SimpleModel
             {
                 Identity = "Identity1",
-                Identities = new List<object> { "Identity2" }
+                Identities = new List<string> { "Identity2" }
             };
 
             var context = Handle(model);
@@ -390,7 +390,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             [UniqueIdentityReference]
             public string Identity { get; set; }
             [UniqueIdentityReference]
-            public List<object> Identities { get; set; }
+            public List<string> Identities { get; set; }
             [UrlContent]
             public string Href { get; set; }
         }
@@ -419,7 +419,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             public List<string> Identities { get; set; }
 
             [UniqueIdentityReference]
-            public IEnumerable<string> Substitute => InnerModels?.Where(s => s.CrefType == TestCrefType.Href).Select(s => s.Identity);
+            public IEnumerable<string> Substitute => InnerModels?.Where(s => s.CrefType == TestCrefType.Href).Select(s => s.Identity).ToList();
 
             public List<InnerModel> InnerModels { get; set; }
 

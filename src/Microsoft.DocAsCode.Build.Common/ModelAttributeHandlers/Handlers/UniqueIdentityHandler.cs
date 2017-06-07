@@ -51,22 +51,15 @@ namespace Microsoft.DocAsCode.Build.Common
                 }
                 else
                 {
-                    var list = currentObj as IEnumerable;
+                    var list = currentObj as IList<string>;
                     if (list != null)
                     {
-                        foreach (var i in list)
+                        for (var i = 0; i < list.Count; i++)
                         {
-                            if (i != null)
+                            var item = list[i];
+                            if (item != null)
                             {
-                                var item = i as string;
-                                if (item != null)
-                                {
-                                    context.LinkToUids.Add(item);
-                                }
-                                else
-                                {
-                                    throw new NotSupportedException($"Type {currentObj.GetType()} inside IEnumerable is NOT a supported item type for {nameof(UniqueIdentityReferenceAttribute)}");
-                                }
+                               context.LinkToUids.Add(item);
                             }
                         }
                     }
