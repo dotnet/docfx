@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         public TocViewModel Items { get; set; }
 
         [ExtensibleMember]
-        [JsonIgnore]
+        [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }
 }
