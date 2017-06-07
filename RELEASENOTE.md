@@ -3,6 +3,7 @@
 
 v2.19 (Pre-release)
 -----------
+1. Enable incremental Build by default. You can use option `--force` to force build.
 
 v2.18.2
 -----------
