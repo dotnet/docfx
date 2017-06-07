@@ -37,6 +37,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 || hrefType == HrefType.MarkdownTocFile;
         }
 
+        // TODO: refactor the return value to TocRootViewModel
         public static TocItemViewModel LoadSingleToc(string file)
         {
             var fileType = GetTocFileType(file);
@@ -60,7 +61,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                     }
                     catch (YamlDotNet.Core.YamlException)
                     {
-                        var tocWithMetadata = YamlUtility.Deserialize<TocViewModelWithMetadata>(file);
+                        var tocWithMetadata = YamlUtility.Deserialize<TocRootViewModel>(file);
                         return new TocItemViewModel
                         {
                             Items = tocWithMetadata.Items,

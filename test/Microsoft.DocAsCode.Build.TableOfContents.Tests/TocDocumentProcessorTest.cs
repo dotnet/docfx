@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents.Tests
     using System.Reflection;
     using System.Web;
 
+    using Newtonsoft.Json.Linq;
     using Xunit;
 
     using Microsoft.DocAsCode.Build.ConceptualDocuments;
@@ -309,7 +310,11 @@ items:
 
             var model = JsonUtility.Deserialize<TocItemViewModel>(outputRawModelPath);
 
-            Assert.Equal("content", model.Metadata["meta"]);
+            Assert.NotNull(model.Metadata["metadata"]);
+
+            var meta = (JObject)model.Metadata["metadata"];
+            Assert.Equal(1, meta.Count);
+            Assert.Equal("content", meta["meta"]);
 
             var expectedModel = new TocItemViewModel
             {

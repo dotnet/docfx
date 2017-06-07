@@ -9,15 +9,17 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.YamlSerialization;
+
     [Serializable]
-    public class TocViewModelWithMetadata
+    public class TocRootViewModel
     {
         [YamlMember(Alias = "items")]
         [JsonProperty("items")]
         public TocViewModel Items { get; set; }
 
-        [YamlMember(Alias = "metadata")]
-        [JsonProperty("metadata")]
+        [ExtensibleMember]
+        [JsonIgnore]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }
 }
