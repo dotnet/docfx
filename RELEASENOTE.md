@@ -1,5 +1,10 @@
-﻿Version Notes (Current Version: v2.18.2)
+﻿Version Notes (Current Version: v2.18.3)
 =======================================
+v2.18.3
+-----------
+1. Remove dependency to Build Tool 2015
+2. Fix runtime error when running in Mono: https://github.com/dotnet/docfx/issues/1720, https://github.com/dotnet/docfx/issues/1708
+
 v2.18.2
 -----------
 1. PDF is now supported. Refer to [Walkthrough: Generate PDF](~/tutorial/walkthrough/walkthrough_generate_pdf.md) to get start with generating PDF files.
