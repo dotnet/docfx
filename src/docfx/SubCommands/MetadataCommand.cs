@@ -135,7 +135,7 @@ namespace Microsoft.DocAsCode.SubCommands
         private ExtractMetadataInputModel ConvertToInputModel(MetadataJsonItemConfig configModel)
         {
             var projects = configModel.Source;
-            var outputFolder = Path.Combine(EnvironmentContext.OutputDirectory, configModel.Destination ?? Constants.DefaultMetadataOutputFolderName);
+            var outputFolder = configModel.Destination ?? Constants.DefaultMetadataOutputFolderName;
             var inputModel = new ExtractMetadataInputModel
             {
                 PreserveRawInlineComments = configModel?.Raw ?? false,

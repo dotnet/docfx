@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Reflection;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
 
     internal abstract class CacheBase
     {
@@ -48,7 +49,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ContainedFiles = containedFiles,
                 TriggeredUtcTime = triggeredTime,
                 CompleteUtcTime = completeTime,
-                OutputFolder = StringExtension.ToNormalizedFullPath(outputFolder),
+                OutputFolder = StringExtension.ToNormalizedFullPath(Path.Combine(EnvironmentContext.OutputDirectory, outputFolder)),
                 RelatvieOutputFiles = StringExtension.GetNormalizedPathList(fileRelativePaths),
                 BuildAssembly = AssemblyName,
                 ShouldSkipMarkup = shouldSkipMarkup,

@@ -14,19 +14,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     public static class MergeCommentsHelper
     {
-        public static void MergeComments(IEnumerable<MetadataItem> items, IEnumerable<string> commentFiles)
+        public static void MergeComments(MetadataItem item, IEnumerable<string> commentFiles)
         {
-            foreach (var item in items)
+            if (item == null || commentFiles == null)
             {
-                var list = from file in commentFiles
-                           let name = Path.GetFileNameWithoutExtension(file)
-                           where string.Equals(name, item.Name, StringComparison.OrdinalIgnoreCase)
-                           from uidAndReader in EnumerateDeveloperComments(file)
-                           select uidAndReader.ToCommentIdAndComment();
-
-                PatchMetadataItem(item, list);
-                RebuildReference(item);
+                return;
             }
+
+            var list = from file in commentFiles
+                       let name = Path.GetFileNameWithoutExtension(file)
+                       where string.Equals(name, item.Name, StringComparison.OrdinalIgnoreCase)
+                       from uidAndReader in EnumerateDeveloperComments(file)
+                       select uidAndReader.ToCommentIdAndComment();
+
+            PatchMetadataItem(item, list);
+            RebuildReference(item);
         }
 
         #region Private methods
