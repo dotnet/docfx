@@ -76,6 +76,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
                 var increPostProcessorHandler = new PostProcessorsHandlerWithIncremental(PostProcessorsHandler, increContext);
                 var manifest = JsonUtility.Deserialize<Manifest>(Path.GetFullPath("PostProcessors/Data/manifest_incremental.json"));
+                manifest.Files[1].SourceRelativePath = "B.md"; // Test file name case-insensitive
                 var outputFolder = GetRandomFolder();
                 PrepareOutput(outputFolder, "a", "b", "c");
                 SetDefaultFAL(manifest, outputFolder);

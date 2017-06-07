@@ -22,16 +22,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public PostProcessorsHandlerWithIncremental(IPostProcessorsHandler innerPostProcessorsHandler, IncrementalPostProcessorsContext increContext)
         {
-            if (innerPostProcessorsHandler == null)
-            {
-                throw new ArgumentNullException(nameof(innerPostProcessorsHandler));
-            }
-            if (increContext == null)
-            {
-                throw new ArgumentNullException(nameof(increContext));
-            }
-            _innerHandler = innerPostProcessorsHandler;
-            _increContext = increContext;
+            _innerHandler = innerPostProcessorsHandler ?? throw new ArgumentNullException(nameof(innerPostProcessorsHandler));
+            _increContext = increContext ?? throw new ArgumentNullException(nameof(increContext));
         }
 
         public void Handle(List<PostProcessor> postProcessors, Manifest manifest, string outputFolder)
@@ -254,8 +246,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (_increContext.IsIncremental)
                 {
                     var restoredIncreItems = new List<ManifestItem>();
-                    Dictionary<string, List<ManifestItem>> increItemsGroup;
-                    Dictionary<string, List<ManifestItem>> lastItemsGroup;
+                    OSPlatformSensitiveDictionary<List<ManifestItem>> increItemsGroup;
+                    OSPlatformSensitiveDictionary<List<ManifestItem>> lastItemsGroup;
                     using (new LoggerPhaseScope("Group", LogLevel.Verbose))
                     {
                         increItemsGroup = GroupBySourceRelativePath(increItems);
@@ -297,10 +289,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static Dictionary<string, List<ManifestItem>> GroupBySourceRelativePath(IEnumerable<ManifestItem> items)
+        private static OSPlatformSensitiveDictionary<List<ManifestItem>> GroupBySourceRelativePath(IEnumerable<ManifestItem> items)
         {
-            return (from f in items
-                    group f by f.SourceRelativePath).ToDictionary(g => g.Key, g => g.ToList());
+            var pairs = (from f in items
+                         group f by f.SourceRelativePath).Select(g => new KeyValuePair<string, List<ManifestItem>>(g.Key, g.ToList()));
+            return new OSPlatformSensitiveDictionary<List<ManifestItem>>(pairs);
         }
 
         #endregion
