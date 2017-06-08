@@ -171,9 +171,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 var distinctUids = string.Join(", ", missingXRefDetails.Select(i => i.RawSource).Distinct().Select(s => $"\"{s}\""));
                 Logger.LogWarning($"Invalid cross reference {distinctUids}.", file: item.LocalPathFromRoot);
-                foreach (var xref in missingXRefDetails)
+                foreach (var group in missingXRefDetails.GroupBy(i => i.SourceFile))
                 {
-                    Logger.LogInfo($"Invalid cross reference details: {xref.RawSource}", file: xref.SourceFile ?? item.LocalPathFromRoot, line: xref.SourceEndLineNumber.ToString());
+                    // For each source file, print the first 10 invalid cross reference
+                    foreach (var xref in group.Take(10))
+                    {
+                        Logger.LogInfo($"Invalid cross reference details: {xref.RawSource}", file: xref.SourceFile ?? item.LocalPathFromRoot, line: xref.SourceEndLineNumber.ToString());
+                    }
                 }
             }
 
