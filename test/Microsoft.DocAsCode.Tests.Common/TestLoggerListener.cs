@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Tests.Common
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
 
@@ -94,6 +95,15 @@ namespace Microsoft.DocAsCode.Tests.Common
                 }
                 return false;
             });
+        }
+
+        #endregion
+
+        #region Helper methods
+
+        public IEnumerable<ILogItem> GetItemsByLogLevel(LogLevel logLevel)
+        {
+            return Items.Where(i => i.LogLevel == logLevel);
         }
 
         #endregion

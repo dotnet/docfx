@@ -4,6 +4,7 @@
     using System.Collections;
     using System.Collections.Generic;
 
+    [Serializable]
     public sealed class XRefSpec : IDictionary<string, string>
     {
         public const string UidKey = "uid";

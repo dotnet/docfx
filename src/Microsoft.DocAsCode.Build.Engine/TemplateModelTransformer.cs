@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Web;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
     public class TemplateModelTransformer
@@ -24,12 +25,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public TemplateModelTransformer(DocumentBuildContext context, TemplateCollection templateCollection, ApplyTemplateSettings settings, IDictionary<string, object> globals)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _templateCollection = templateCollection;
             _settings = settings;
             _globalVariables = globals;
@@ -78,7 +74,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return manifestItem;
             }
 
-            HashSet<string> missingUids = new HashSet<string>();
+            List<XRefDetails> missingXRefDetails = new List<XRefDetails>();
 
             // Must convert to JObject first as we leverage JsonProperty as the property name for the model
             foreach (var template in templateBundle.Templates)
@@ -159,7 +155,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Logger.LogWarning(message);
                         }
 
-                        TransformDocument(result ?? string.Empty, extension, _context, outputFile, missingUids, manifestItem);
+                        TransformDocument(result ?? string.Empty, extension, _context, outputFile, missingXRefDetails, manifestItem);
                         Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputFile}\".");
                     }
                 }
@@ -171,10 +167,27 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             }
 
-            if (missingUids.Count > 0)
+            if (missingXRefDetails.Count > 0)
             {
-                var uids = string.Join(", ", missingUids.Select(s => $"\"{s}\""));
-                Logger.LogWarning($"Invalid cross reference {uids}.", null, item.LocalPathFromRoot);
+                var distinctUids = string.Join(", ", missingXRefDetails.Select(i => i.RawSource).Distinct().Select(s => $"\"{s}\""));
+                Logger.LogWarning($"Invalid cross reference {distinctUids}.", file: item.LocalPathFromRoot);
+                foreach (var group in missingXRefDetails.GroupBy(i => i.SourceFile))
+                {
+                    int maxCountPerFile = 10;
+                    string details;
+
+                    // For each source file, print the first 10 invalid cross reference
+                    if (group.Count() >= maxCountPerFile)
+                    {
+                        details = $"{string.Join(", ", group.Take(maxCountPerFile).Select(i => $"\"{i.RawSource}\" in line {i.SourceStartLineNumber.ToString()}"))}, etc. Fisrt {maxCountPerFile} invalid cross reference are shown above.";
+                    }
+                    else
+                    {
+                        details = string.Join(", ", group.Select(i => $"\"{i.RawSource}\" in line {i.SourceStartLineNumber.ToString()}"));
+                    }
+
+                    Logger.LogInfo($"Invalid cross reference details: {details}", file: group.Key ?? item.LocalPathFromRoot);
+                }
             }
 
             return manifestItem;
@@ -257,7 +270,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return StringExtension.ToDisplayPath(modelPath);
         }
 
-        private void TransformDocument(string result, string extension, IDocumentBuildContext context, string destFilePath, HashSet<string> missingUids, ManifestItem manifestItem)
+        private void TransformDocument(string result, string extension, IDocumentBuildContext context, string destFilePath, List<XRefDetails> missingXRefDetails, ManifestItem manifestItem)
         {
             Task<byte[]> hashTask;
             using (var stream = EnvironmentContext.FileAbstractLayer.Create(destFilePath).WithMd5Hash(out hashTask))
@@ -276,7 +289,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             var xrefExcetpion = s as CrossReferenceNotResolvedException;
                             if (xrefExcetpion != null)
                             {
-                                missingUids.Add(xrefExcetpion.UidRawText);
+                                missingXRefDetails.Add(xrefExcetpion.XRefDetails);
                                 return true;
                             }
                             else
@@ -384,7 +397,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (xref.ThrowIfNotResolved)
                 {
-                    throw new CrossReferenceNotResolvedException(xref.Uid, xref.RawSource, null);
+                    throw new CrossReferenceNotResolvedException(xref);
                 }
             }
         }

@@ -13,7 +13,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Common;
 
-    internal sealed class XRefDetails
+    [Serializable]
+    public sealed class XRefDetails
     {
         /// <summary>
         /// TODO: completely move into template
