@@ -44,7 +44,7 @@ docfx <command> [<args>]
 
 **Syntax**
 ```
-docfx metadata [<projects>]
+docfx metadata [<projects>] [--property <n1>=<v1>;<n2>=<v2>]
 ```
 
 **Layout**
@@ -81,6 +81,10 @@ The default output folder is `_site/` folder if it is not specified in `docfx.js
 If adding option `--shouldSkipMarkup` in metadata command, it means that DocFX would not render triple-slash-comments in source code as markdown.
 
 e.g. `docfx metadata --shouldSkipMarkup`
+
+#### 2.2.2 Command option `--property <n1>=<v1>;<n2>=<v2>`
+An optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the /property:<n1>=<v1>;<n2>=<v2> command line argument.
+For example: `docfx metadata --property TargetFramework=net46` generates metadata files with .NET framework 4.6. This command can be used when the project supports multiple `TargetFrameworks`.
 
 ### 2.3 Generate documentation command `docfx build`
 **Syntax**
@@ -171,6 +175,7 @@ force                    | If set to true, it would disable incremental build.
 shouldSkipMarkup         | If set to true, DocFX would not render triple-slash-comments in source code as markdown.
 filter                   | Defines the filter configuration file, please go to [How to filter out unwanted apis attributes](./howto_filter_out_unwanted_apis_attributes.md) for more details.
 useCompatibilityFileName | If set to true, DocFX would keep `` ` `` in comment id instead of replacing it with `-`.
+properties               |  Defines an optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the `/property:name=value` command line argument.
 
 **Sample**
 ```json
@@ -185,7 +190,10 @@ useCompatibilityFileName | If set to true, DocFX would keep `` ` `` in comment i
         }
       ],
       "dest": "obj/docfx/api/dotnet",
-      "shouldSkipMarkup": true
+      "shouldSkipMarkup": true,
+      "properties": {
+          "TargetFramework": "netstardard1.3"
+      }
     },
     {
       "src": [
@@ -195,12 +203,17 @@ useCompatibilityFileName | If set to true, DocFX would keep `` ` `` in comment i
         }
       ],
       "dest": "obj/docfx/api/js",
-      "useCompatibilityFileName": true
+      "useCompatibilityFileName": true,
+      "properties": {
+          "TargetFramework": "net46"
+      }
     }
   ]
 }
 
 ```
+> [!Note]
+> Make sure to specify `"TargetFramework": <one of the frameworks>` in your docfx.json when the project is targeting for multiple platforms.
 
 ### 3.2 Properties for `build`
 
