@@ -71,7 +71,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 _msbuildProperties["Configuration"] = "Release";
             }
 
-            _workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create(_msbuildProperties));
+            _workspace = new Lazy<MSBuildWorkspace>(() =>
+            {
+                var workspace = MSBuildWorkspace.Create(_msbuildProperties);
+                workspace.WorkspaceFailed += (s, e) =>
+                {
+                    Logger.LogWarning($"Workspace failed with: {e.Diagnostic}");
+                };
+                return workspace;
+            });
         }
 
         public async Task ExtractMetadataAsync()
