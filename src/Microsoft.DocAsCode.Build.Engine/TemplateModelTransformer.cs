@@ -173,11 +173,20 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogWarning($"Invalid cross reference {distinctUids}.", file: item.LocalPathFromRoot);
                 foreach (var group in missingXRefDetails.GroupBy(i => i.SourceFile))
                 {
+                    int maxCountPerFile = 10;
+                    string details;
+
                     // For each source file, print the first 10 invalid cross reference
-                    foreach (var xref in group.Take(10))
+                    if (group.Count() >= maxCountPerFile)
                     {
-                        Logger.LogInfo($"Invalid cross reference details: {xref.RawSource}", file: xref.SourceFile ?? item.LocalPathFromRoot, line: xref.SourceEndLineNumber.ToString());
+                        details = $"{string.Join(", ", group.Take(maxCountPerFile).Select(i => $"\"{i.RawSource}\" in line {i.SourceStartLineNumber.ToString()}"))}, etc. Fisrt {maxCountPerFile} invalid cross reference are shown above.";
                     }
+                    else
+                    {
+                        details = string.Join(", ", group.Select(i => $"\"{i.RawSource}\" in line {i.SourceStartLineNumber.ToString()}"));
+                    }
+
+                    Logger.LogInfo($"Invalid cross reference details: {details}", file: group.Key ?? item.LocalPathFromRoot);
                 }
             }
 

@@ -245,13 +245,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.Equal("TestData/mref/System.String.yml", warning.File);
 
                 var infos = listener.GetItemsByLogLevel(LogLevel.Info).Where(i => i.Message.Contains("Invalid cross reference details")).ToList();
-                Assert.Equal(2, infos.Count());
-                Assert.Equal("Invalid cross reference details: &lt;xref:invalidXref1&gt;", infos[0].Message);
-                Assert.Equal("6", infos[0].Line);
+                Assert.Equal(1, infos.Count());
+                Assert.Equal("Invalid cross reference details: \"&lt;xref:invalidXref1&gt;\" in line 6, \"&lt;xref:invalidXref2&gt;\" in line 8", infos[0].Message);
                 Assert.Equal("TestData/overwrite/mref.overwrite.invalid.ref.md", infos[0].File);
-                Assert.Equal("Invalid cross reference details: &lt;xref:invalidXref2&gt;", infos[1].Message);
-                Assert.Equal("8", infos[1].Line);
-                Assert.Equal("TestData/overwrite/mref.overwrite.invalid.ref.md", infos[1].File);
+                Assert.Null(infos[0].Line);
             }
             finally
             {
