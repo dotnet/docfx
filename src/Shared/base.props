@@ -51,4 +51,9 @@
   <ItemGroup>
     <Compile Condition="Exists($(VersionCSFile))" Include="$(VersionCSFile)" />
   </ItemGroup>
+
+  <ItemGroup>
+    <!-- Roslyn depends on this package, however official dotnet/sdk also contains another version of compiler, add the reference to base so that all the projects use this reference when compile-->
+    <PackageReference Include="Microsoft.Net.Compilers" Version="2.2.0" />
+  </ItemGroup>
 </Project>
