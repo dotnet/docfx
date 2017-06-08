@@ -291,8 +291,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static OSPlatformSensitiveDictionary<List<ManifestItem>> GroupBySourceRelativePath(IEnumerable<ManifestItem> items)
         {
-            var pairs = (from f in items
-                         group f by f.SourceRelativePath).Select(g => new KeyValuePair<string, List<ManifestItem>>(g.Key, g.ToList()));
+            var pairs = items.GroupBy(item => item.SourceRelativePath, FilePathComparer.OSPlatformSensitiveStringComparer)
+                .Select(g => new KeyValuePair<string, List<ManifestItem>>(g.Key, g.ToList()));
             return new OSPlatformSensitiveDictionary<List<ManifestItem>>(pairs);
         }
 
