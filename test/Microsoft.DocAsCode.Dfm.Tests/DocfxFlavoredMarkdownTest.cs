@@ -62,26 +62,28 @@ b:
         [Trait("Related", "DfmMarkdown")]
         public void TestTabGroup()
         {
-            var actual = DocfxFlavoredMarked.Markup(@"# [title-a](#tab/a)
+            var options = DocfxFlavoredMarked.CreateDefaultOptions();
+            options.ShouldExportSourceInfo = true;
+            var actual = DocfxFlavoredMarked.Markup(null, null, options, @"# [title-a](#tab/a)
 content-a
 # [title-b](#tab/b/c)
 content-b
-- - -");
+- - -", "test.md");
             var groupId = actual.Substring(35, 36);
-            var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"">
+            var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""test.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""5"">
 <ul role=""tablist"">
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}_a"" role=""tab"" aria-controls=""tabpanel_{groupId}_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"">title-a</a>
+<a href=""#tabpanel_{groupId}_a"" role=""tab"" aria-controls=""tabpanel_{groupId}_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1"">title-a</a>
 </li>
 <li role=""presentation"">
-<a href=""#tabpanel_{groupId}_b_c"" role=""tab"" aria-controls=""tabpanel_{groupId}_b_c"" data-tab=""b"" data-condition=""c"" tabindex=""-1"">title-b</a>
+<a href=""#tabpanel_{groupId}_b_c"" role=""tab"" aria-controls=""tabpanel_{groupId}_b_c"" data-tab=""b"" data-condition=""c"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">title-b</a>
 </li>
 </ul>
 <section id=""#tabpanel_{groupId}_a"" role=""tabpanel"" data-tab=""a"">
-<p>content-a</p>
+<p sourceFile=""test.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""2"">content-a</p>
 </section>
 <section id=""#tabpanel_{groupId}_b_c"" role=""tabpanel"" data-tab=""b"" data-condition=""c"" aria-hidden=""true"" hidden>
-<p>content-b</p>
+<p sourceFile=""test.md"" sourceStartLineNumber=""4"" sourceEndLineNumber=""4"">content-b</p>
 </section>
 </div>
 ";

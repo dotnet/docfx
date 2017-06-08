@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Dfm
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.MarkdownLite;
@@ -16,14 +17,14 @@ namespace Microsoft.DocAsCode.Dfm
 
         protected override bool AggregateCore(MarkdownHeadingBlockToken headToken, IMarkdownTokenAggregateContext context)
         {
-            var pair = ParseHeading(headToken);
-            if (pair == null)
+            var info = ParseHeading(headToken);
+            if (info == null)
             {
                 return false;
             }
             int offset = 1;
             var items = new List<DfmTabItemBlockToken>();
-            var list = new List<IMarkdownToken>();
+            IMarkdownToken terminator = null;
             while (true)
             {
                 var token = context.LookAhead(offset);
@@ -35,61 +36,72 @@ namespace Microsoft.DocAsCode.Dfm
                         {
                             goto default;
                         }
-                        items.Add(CreateTabItem(headToken, pair, list));
-                        pair = temp;
-                        list.Clear();
+                        items.Add(CreateTabItem(info));
+                        info = temp;
                         break;
                     case MarkdownHrBlockToken hr:
-                        offset++;
+                        terminator = hr;
                         goto case null;
                     case null:
-                        items.Add(CreateTabItem(headToken, pair, list));
-                        // todo : rule, source info
-                        context.AggregateTo(
-                            new DfmTabGroupBlockToken(
-                                headToken.Rule,
-                                headToken.Context,
-                                Guid.NewGuid().ToString(),
-                                items.ToImmutableArray(),
-                                0,
-                                headToken.SourceInfo),
-                            offset);
+                        items.Add(CreateTabItem(info));
+                        AggregateCore(headToken, context, offset, items, terminator);
                         return true;
                     default:
-                        list.Add(token);
+                        info.Content.Add(token);
                         break;
                 }
                 offset++;
             }
         }
 
-        private static DfmTabItemBlockToken CreateTabItem(
+        private static void AggregateCore(
             MarkdownHeadingBlockToken headToken,
-            Tuple<string, string, InlineContent> pair,
-            List<IMarkdownToken> list)
+            IMarkdownTokenAggregateContext context,
+            int offset,
+            List<DfmTabItemBlockToken> items,
+            IMarkdownToken terminator)
         {
-            // todo : rule, source info
-            var title = new DfmTabTitleBlockToken(
-                headToken.Rule,
-                headToken.Context,
-                pair.Item3,
-                headToken.SourceInfo);
-            var content = new DfmTabContentBlockToken(
-                headToken.Rule,
-                headToken.Context,
-                list.ToImmutableArray(),
-                headToken.SourceInfo);
-            return new DfmTabItemBlockToken(
-                headToken.Rule,
-                headToken.Context,
-                pair.Item1,
-                pair.Item2,
-                title,
-                content,
-                headToken.SourceInfo);
+            var md = items.Aggregate(StringBuffer.Empty, (s, t) => s + t.SourceInfo.Markdown);
+            if (terminator != null)
+            {
+                md += terminator.SourceInfo.Markdown;
+                offset++;
+            }
+            context.AggregateTo(
+                new DfmTabGroupBlockToken(
+                    DfmTabGroupBlockRule.Instance,
+                    headToken.Context,
+                    Guid.NewGuid().ToString(),
+                    items.ToImmutableArray(),
+                    0,
+                    headToken.SourceInfo.Copy(md.ToString())),
+                offset);
         }
 
-        private static Tuple<string, string, InlineContent> ParseHeading(MarkdownHeadingBlockToken headToken)
+        private static DfmTabItemBlockToken CreateTabItem(
+            TabItemInfo info)
+        {
+            var title = new DfmTabTitleBlockToken(
+                DfmTabGroupBlockRule.Instance,
+                info.Context,
+                info.Title,
+                info.HeadSource);
+            var content = new DfmTabContentBlockToken(
+                DfmTabGroupBlockRule.Instance,
+                info.Context,
+                info.Content.ToImmutableArray(),
+                info.GetContentSourceInfo());
+            return new DfmTabItemBlockToken(
+                DfmTabGroupBlockRule.Instance,
+                info.Context,
+                info.Id,
+                info.Condition,
+                title,
+                content,
+                info.GetItemSourceInfo());
+        }
+
+        private static TabItemInfo ParseHeading(MarkdownHeadingBlockToken headToken)
         {
             if (headToken.Content.Tokens.Length == 1 &&
                 headToken.Content.Tokens[0] is MarkdownLinkInlineToken link)
@@ -97,10 +109,43 @@ namespace Microsoft.DocAsCode.Dfm
                 var m = HrefRegex.Match(link.Href);
                 if (m.Success)
                 {
-                    return Tuple.Create(m.Groups[1].Value, m.Groups[2].Value, new InlineContent(link.Content));
+                    return new TabItemInfo
+                    {
+                        Id = m.Groups[1].Value,
+                        Condition = m.Groups[2].Value,
+                        Title = new InlineContent(link.Content),
+                        HeadSource = headToken.SourceInfo,
+                        Context = headToken.Context,
+                    };
                 }
             }
             return null;
+        }
+
+        private sealed class TabItemInfo
+        {
+            public string Id { get; set; }
+            public string Condition { get; set; }
+            public InlineContent Title { get; set; }
+            public IMarkdownContext Context { get; set; }
+            public SourceInfo HeadSource { get; set; }
+            public List<IMarkdownToken> Content { get; } = new List<IMarkdownToken>();
+
+            public SourceInfo GetContentSourceInfo() =>
+                SourceInfo.Create(
+                    Content.Aggregate(
+                        StringBuffer.Empty,
+                        (s, t) => s + t.SourceInfo.Markdown
+                    ).ToString(),
+                    HeadSource.File,
+                    Content.FirstOrDefault()?.SourceInfo.LineNumber ?? HeadSource.LineNumber);
+
+            public SourceInfo GetItemSourceInfo() =>
+                HeadSource.Copy(
+                    Content.Aggregate(
+                        (StringBuffer)HeadSource.Markdown,
+                        (s, t) => s + t.SourceInfo.Markdown
+                    ).ToString());
         }
     }
 }

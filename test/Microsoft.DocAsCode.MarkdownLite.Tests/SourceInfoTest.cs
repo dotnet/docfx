@@ -41,7 +41,7 @@ Yeah!", File);
 
             Assert.Equal(4, tokens[1].SourceInfo.LineNumber);
             Assert.Equal(File, tokens[1].SourceInfo.File);
-            Assert.Equal("First line.  \nMore line.", tokens[1].SourceInfo.Markdown);
+            Assert.Equal("First line.  \nMore line.\n", tokens[1].SourceInfo.Markdown);
 
             Assert.Equal(4, para.InlineTokens.Tokens[0].SourceInfo.LineNumber);
             Assert.Equal(File, para.InlineTokens.Tokens[0].SourceInfo.File);

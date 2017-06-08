@@ -176,7 +176,9 @@ namespace Microsoft.DocAsCode.Dfm
             StringBuffer sb = @"<div class=""tabGroup"" id=""tabgroup_";
             var groupId = StringHelper.Escape(token.Id);
             sb += groupId;
-            sb += "\">\n";
+            sb += "\"";
+            sb = AppendSourceInfo(sb, renderer, token);
+            sb += ">\n";
 
             sb = RenderTabHeaders(renderer, token, sb, groupId);
 
@@ -206,12 +208,14 @@ namespace Microsoft.DocAsCode.Dfm
                 }
                 if (i == token.ActiveTabIndex)
                 {
-                    sb += "\" tabindex=\"0\" aria-selected=\"true\">";
+                    sb += "\" tabindex=\"0\" aria-selected=\"true\"";
                 }
                 else
                 {
-                    sb += "\" tabindex=\"-1\">";
+                    sb += "\" tabindex=\"-1\"";
                 }
+                sb = AppendSourceInfo(sb, renderer, item.Title);
+                sb += ">";
                 sb += renderer.Render(item.Title);
                 sb += "</a>\n";
                 sb += "</li>\n";
