@@ -20,8 +20,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var si = sourceInfo;
             foreach (var token in blockTokens)
             {
-                var text = token as MarkdownTextToken;
-                if (text != null)
+                if (token is MarkdownTextToken text)
                 {
                     if (textContent == StringBuffer.Empty)
                     {
@@ -50,24 +49,33 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         private static IMarkdownToken GroupTextTokens(IMarkdownParser parser, IMarkdownRule rule, bool wrapParagraph, StringBuffer textContent, SourceInfo si)
         {
+            var rawMarkdown = textContent.ToString();
+            string markdown;
             if (textContent.EndsWith('\n'))
             {
-                textContent = textContent.Substring(0, textContent.GetLength() - 1);
+                markdown = textContent.Substring(0, textContent.GetLength() - 1).ToString();
             }
-            var rawMarkdown = textContent.ToString();
-            return CreateTwoPhaseToken(parser, rule, wrapParagraph, si.Copy(rawMarkdown));
+            else
+            {
+                markdown = rawMarkdown;
+            }
+            return CreateTwoPhaseToken(parser, rule, markdown, wrapParagraph, si.Copy(rawMarkdown));
         }
 
-        private static TwoPhaseBlockToken CreateTwoPhaseToken(IMarkdownParser parser, IMarkdownRule rule, bool wrapParagraph, SourceInfo sourceInfo)
+        private static TwoPhaseBlockToken CreateTwoPhaseToken(
+            IMarkdownParser parser,
+            IMarkdownRule rule,
+            string markdown,
+            bool wrapParagraph,
+            SourceInfo sourceInfo)
         {
-            var inlineContent = parser.TokenizeInline(sourceInfo);
             if (wrapParagraph)
             {
                 return new TwoPhaseBlockToken(
                     rule,
                     parser.Context,
                     sourceInfo,
-                    (p, t) => new MarkdownParagraphBlockToken(t.Rule, p.Context, p.TokenizeInline(t.SourceInfo), t.SourceInfo));
+                    (p, t) => new MarkdownParagraphBlockToken(t.Rule, p.Context, p.TokenizeInline(sourceInfo.Copy(markdown)), t.SourceInfo));
             }
             else
             {
@@ -75,7 +83,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     rule,
                     parser.Context,
                     sourceInfo,
-                    (p, t) => new MarkdownNonParagraphBlockToken(t.Rule, p.Context, p.TokenizeInline(t.SourceInfo), t.SourceInfo));
+                    (p, t) => new MarkdownNonParagraphBlockToken(t.Rule, p.Context, p.TokenizeInline(sourceInfo.Copy(markdown)), t.SourceInfo));
             }
         }
     }
