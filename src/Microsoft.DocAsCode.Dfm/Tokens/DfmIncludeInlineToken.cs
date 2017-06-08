@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class DfmIncludeInlineToken : IMarkdownToken
@@ -12,6 +14,7 @@ namespace Microsoft.DocAsCode.Dfm
         public string Src { get; }
         public string Name { get; }
         public string Title { get; }
+        [Obsolete]
         public string Raw { get; }
         public SourceInfo SourceInfo { get; }
 
