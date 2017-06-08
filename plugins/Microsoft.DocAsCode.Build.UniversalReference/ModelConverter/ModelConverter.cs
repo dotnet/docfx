@@ -24,15 +24,11 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             }
             if (model.Items == null || model.Items.Count == 0)
             {
-                var message = $"{nameof(model)} must contain at least one item";
-                Logger.LogError(message);
-                throw new ArgumentException(message);
+                throw new ArgumentException($"{nameof(model)} must contain at least one item");
             }
             if (model.Items[0].SupportedLanguages == null || model.Items[0].SupportedLanguages.Length == 0)
             {
-                var message = $"{nameof(ItemViewModel.SupportedLanguages)} must contain at least one language";
-                Logger.LogError(message);
-                throw new ArgumentException(message);
+                throw new ArgumentException($"{nameof(ItemViewModel.SupportedLanguages)} must contain at least one language");
             }
 
             var supportedLanguages = model.Items[0].SupportedLanguages;
@@ -61,7 +57,11 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                 cfg.AddProfile(new ApiBuildOutputProfile(supportedLanguages, model.Metadata, references));
             });
             Mapper.Configuration.AssertConfigurationIsValid();
-            var childUids = model.Items[0].Children.Concat(model.Items[0].ChildrenInDevLangs.SelectMany(kv => kv.Value)).Distinct();
+            var childUids = model.Items[0].Children ?? Enumerable.Empty<string>()
+                .Concat(model.Items[0].ChildrenInDevLangs != null
+                    ? model.Items[0].ChildrenInDevLangs.SelectMany(kv => kv.Value)
+                    : Enumerable.Empty<string>())
+                .Distinct();
             var children = new Dictionary<string, ApiBuildOutput>();
             if (model.References != null)
             {
