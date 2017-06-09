@@ -263,7 +263,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 
             var dependency = new HashSet<string>();
             var marked = DocfxFlavoredMarked.Markup(root, "root.md", dependency: dependency);
-            Assert.Equal("<p>Inline ## Inline inclusion do not parse header <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](root.md &quot;This is root&quot;)]: Circular dependency found in &quot;ref2.md&quot; -->[!include[root](root.md \"This is root\")]<!--END ERROR INCLUDE -->\nInline <strong>Hello</strong></p>\n", marked);
+            Assert.Equal("<p>Inline ## Inline inclusion do not parse header <!-- BEGIN ERROR INCLUDE: Unable to resolve [!include[root](root.md &quot;This is root&quot;)]: Circular dependency found in &quot;ref2.md&quot; -->[!include[root](root.md &quot;This is root&quot;)]<!--END ERROR INCLUDE -->\nInline <strong>Hello</strong></p>\n", marked);
             Assert.Equal(
                 new[] { "ref1.md", "ref2.md", "ref3.md", "root.md" },
                 dependency.OrderBy(x => x));

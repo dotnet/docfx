@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Dfm
         {
             lock (_blockInclusionHelper)
             {
-                return _blockInclusionHelper.Load(renderer, token.Src, token.Raw, token.SourceInfo, context, (DfmEngine)renderer.Engine);
+                return _blockInclusionHelper.Load(renderer, token.Src, token.SourceInfo, context, (DfmEngine)renderer.Engine);
             }
         }
 
@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.Dfm
         {
             lock (_inlineInclusionHelper)
             {
-                return _inlineInclusionHelper.Load(renderer, token.Src, token.Raw, token.SourceInfo, context, (DfmEngine)renderer.Engine);
+                return _inlineInclusionHelper.Load(renderer, token.Src, token.SourceInfo, context, (DfmEngine)renderer.Engine);
             }
         }
 

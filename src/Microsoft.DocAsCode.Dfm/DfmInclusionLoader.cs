@@ -25,18 +25,18 @@ namespace Microsoft.DocAsCode.Dfm
             _cache = new FileCacheLite(new FilePathComparer());
         }
 
-        public virtual string Load(IMarkdownRenderer adapter, string currentPath, string raw, SourceInfo sourceInfo, IMarkdownContext context, DfmEngine engine)
+        public virtual string Load(IMarkdownRenderer adapter, string currentPath, SourceInfo sourceInfo, IMarkdownContext context, DfmEngine engine)
         {
-            return LoadCore(adapter, currentPath, raw, sourceInfo, context, engine);
+            return LoadCore(adapter, currentPath, sourceInfo, context, engine);
         }
 
-        private string LoadCore(IMarkdownRenderer adapter, string currentPath, string raw, SourceInfo sourceInfo, IMarkdownContext context, DfmEngine engine)
+        private string LoadCore(IMarkdownRenderer adapter, string currentPath, SourceInfo sourceInfo, IMarkdownContext context, DfmEngine engine)
         {
             try
             {
                 if (!PathUtility.IsRelativePath(currentPath))
                 {
-                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Absolute path \"{currentPath}\" is not supported.", raw, sourceInfo);
+                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Absolute path \"{currentPath}\" is not supported.", sourceInfo);
                 }
 
                 // Always report original include file dependency
@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.Dfm
 
                 if (parents.Contains(currentPath, FilePathComparer.OSPlatformSensitiveComparer))
                 {
-                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Circular dependency found in \"{parent}\"", raw, sourceInfo);
+                    return GenerateErrorNodeWithCommentWrapper("INCLUDE", $"Circular dependency found in \"{parent}\"", sourceInfo);
                 }
 
                 // Add current file path to chain when entering recursion
@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Dfm
             }
             catch (Exception e)
             {
-                return GenerateErrorNodeWithCommentWrapper("INCLUDE", e.Message, raw, sourceInfo);
+                return GenerateErrorNodeWithCommentWrapper("INCLUDE", e.Message, sourceInfo);
             }
         }
 
@@ -91,10 +91,10 @@ namespace Microsoft.DocAsCode.Dfm
             return EnvironmentContext.FileAbstractLayer.ReadAllText(filePathWithStatus.Item1);
         }
 
-        private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, string html, SourceInfo sourceInfo)
+        private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, SourceInfo sourceInfo)
         {
-            Logger.LogWarning($"Unable to resolve \"{html}\" at line {sourceInfo.LineNumber}: " + comment, code: WarningCodes.Markdown.InvalidInclude);
-            return GenerateNodeWithCommentWrapper("ERROR " + tag, $"Unable to resolve {html}: {comment}", html);
+            Logger.LogWarning($"Unable to resolve \"{sourceInfo.Markdown}\" at line {sourceInfo.LineNumber}: " + comment, code: WarningCodes.Markdown.InvalidInclude);
+            return GenerateNodeWithCommentWrapper("ERROR " + tag, $"Unable to resolve {sourceInfo.Markdown}: {comment}", StringHelper.Escape(sourceInfo.Markdown));
         }
 
         private static string GenerateNodeWithCommentWrapper(string tag, string comment, string html)
