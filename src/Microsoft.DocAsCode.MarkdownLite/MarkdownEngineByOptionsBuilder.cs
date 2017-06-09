@@ -42,6 +42,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 builder.Add(new GfmHtmlCommentBlockRule());
             }
+            builder.Add(new MarkdownPreElementBlockRule());
             builder.Add(new MarkdownHtmlBlockRule());
             builder.Add(new MarkdownDefBlockRule());
             if (Options.Tables)

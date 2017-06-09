@@ -681,6 +681,70 @@ b",
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
+        [Theory]
+        [Trait("Related", "Markdown")]
+        [InlineData(
+            @"<pre>a</pre>
+abc",
+            @"<pre>a</pre>
+<p>abc</p>
+")]
+        [InlineData(
+            @"<pre id=""x"">a
+
+b</pre>
+abc",
+            @"<pre id=""x"">a
+
+b</pre>
+<p>abc</p>
+")]
+        [InlineData(
+            @"a
+<pre>b
+
+c</pre>
+d",
+            @"<p>a</p>
+<pre>b
+
+c</pre>
+<p>d</p>
+")]
+        [InlineData(
+            @"<pre
+
+<a>
+b</pre>
+c",
+            @"<pre
+
+<a>
+b</pre>
+<p>c</p>
+")]
+        [InlineData(
+            @"<pre:
+a</pre>
+b",
+            @"<p>&lt;pre:
+a</pre>
+b</p>
+")]
+        [InlineData(
+            @"<pree
+a</pre>
+b",
+            @"<p>&lt;pree
+a</pre>
+b</p>
+")]
+        public void TestPreElement(string source, string expected)
+        {
+            TestGfmInGeneral(source, expected);
+            TestLegacyGfmInGeneral(source, expected);
+        }
+
         [Fact]
         [Trait("Related", "Markdown")]
         public void TestListWithTab()
