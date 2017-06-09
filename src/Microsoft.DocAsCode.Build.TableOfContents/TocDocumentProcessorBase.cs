@@ -54,16 +54,16 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var toc = (TocItemViewModel)model.Content;
             UpdateTocItemHref(toc, model, context);
 
-            RegisterTocToContext(model, context);
+            RegisterTocToContext(toc, model, context);
         }
 
         #endregion
 
         #region Abstract methods
 
-        public abstract void RegisterTocToContext(FileModel model, IDocumentBuildContext context);
+        public abstract void RegisterTocToContext(TocItemViewModel item, FileModel model, IDocumentBuildContext context);
 
-        public abstract void RegisterTocMapToContext(FileModel model, IDocumentBuildContext context);
+        public abstract void RegisterTocMapToContext(TocItemViewModel item, FileModel model, IDocumentBuildContext context);
 
         #endregion
 
@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             ResolveUid(toc, model, context);
 
             // Have to register TocMap after uid is resolved
-            RegisterTocMapToContext(model, context);
+            RegisterTocMapToContext(toc, model, context);
 
             toc.Homepage = ResolveHref(toc.Homepage, toc.OriginalHomepage, model, context, nameof(toc.Homepage));
             toc.Href = ResolveHref(toc.Href, toc.OriginalHref, model, context, nameof(toc.Href));

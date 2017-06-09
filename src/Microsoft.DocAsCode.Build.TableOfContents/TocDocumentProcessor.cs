@@ -28,9 +28,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return ProcessingPriority.NotSupported;
         }
 
-        public override void RegisterTocToContext(FileModel model, IDocumentBuildContext context)
+        public override void RegisterTocToContext(TocItemViewModel toc, FileModel model, IDocumentBuildContext context)
         {
-            var toc = (TocItemViewModel)model.Content;
             var key = model.Key;
 
             // Add current folder to the toc mapping, e.g. `a/` maps to `a/toc`
@@ -50,14 +49,13 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             context.RegisterTocInfo(tocInfo);
         }
 
-        public override void RegisterTocMapToContext(FileModel model, IDocumentBuildContext context)
+        public override void RegisterTocMapToContext(TocItemViewModel item, FileModel model, IDocumentBuildContext context)
         {
-            var toc = (TocItemViewModel)model.Content;
             var key = model.Key;
             // If tocHref is set, href is originally RelativeFolder type, and href is set to the homepage of TocHref,
             // So in this case, TocHref should be used to in TocMap
             // TODO: what if user wants to set TocHref?
-            var tocHref = toc.TocHref;
+            var tocHref = item.TocHref;
             var tocHrefType = Utility.GetHrefType(tocHref);
             if (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile)
             {
@@ -65,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
             else
             {
-                var href = toc.Href; // Should be original href from working folder starting with ~
+                var href = item.Href; // Should be original href from working folder starting with ~
                 if (Utility.IsSupportedRelativeHref(href))
                 {
                     context.RegisterToc(key, UriUtility.GetPath(href));
