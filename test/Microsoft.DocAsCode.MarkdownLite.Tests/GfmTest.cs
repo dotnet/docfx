@@ -731,14 +731,6 @@ b",
 a</pre>
 b</p>
 ")]
-        [InlineData(
-            @"<pree
-a</pre>
-b",
-            @"<p>&lt;pree
-a</pre>
-b</p>
-")]
         public void TestPreElement(string source, string expected)
         {
             TestGfmInGeneral(source, expected);
