@@ -28,7 +28,12 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
             var page = YamlUtility.Deserialize<PageViewModel>(file.File);
             if (page.Items == null || page.Items.Count == 0)
             {
+                Logger.LogWarning("No items found from YAML file. No output is generated");
                 return null;
+            }
+            if (page.Items[0].SupportedLanguages == null || page.Items[0].SupportedLanguages.Length == 0)
+            {
+                throw new ArgumentException($"{nameof(ItemViewModel.SupportedLanguages)} must contain at least one language");
             }
             if (page.Metadata == null)
             {
@@ -102,7 +107,15 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                                 into g
                                 select g.First()).ToImmutableArray();
             result.ExternalXRefSpecs = GetXRefFromReference(vm).ToImmutableArray();
-            UpdateModelContent(model);
+            try
+            {
+                UpdateModelContent(model);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message);
+                throw;
+            }
 
             return result;
         }
