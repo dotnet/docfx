@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.18.3)
+﻿Version Notes (Current Version: v2.18.4)
 =======================================
+v2.18.4
+-----------
+1. Fix #1747: Add app.config redirect binding to docfx to resolve LoaderException for docfx metadata
+
 v2.18.3
 -----------
 1. Remove dependency to Build Tool 2015
