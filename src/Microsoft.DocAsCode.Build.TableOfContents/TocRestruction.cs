@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    public static class TocRestruction
+    internal static class TocRestructureUtility
     {
         public static void Restructure(TocItemViewModel toc, IList<TreeItemRestructure> restructures)
         {

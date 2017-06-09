@@ -40,7 +40,7 @@ root
                 GetRestructure(TreeItemActionType.DeleteSelf, "leaf3", new string[] { "leaf6", "leaf7" }),
                 GetRestructure(TreeItemActionType.ReplaceSelf, "leaf3", new string[] { "leaf6" }),
             };
-            TocRestruction.Restructure(toc, restructures);
+            TocRestructureUtility.Restructure(toc, restructures);
             var expected = GetTocItem(@"
 root
     node1
@@ -87,7 +87,7 @@ root
                 GetRestructure(TreeItemActionType.DeleteSelf, "node3", null),
                 GetRestructure(TreeItemActionType.ReplaceSelf, "node4", new string[] { "leaf6" }),
             };
-            TocRestruction.Restructure(toc, restructures);
+            TocRestructureUtility.Restructure(toc, restructures);
             var expected = GetTocItem(@"
 root
     node1
@@ -130,7 +130,7 @@ root
                 GetRestructure(TreeItemActionType.DeleteSelf, "leaf100", new string[] {"leaf6", "leaf7" }),
                 GetRestructure(TreeItemActionType.ReplaceSelf, "leaf100", new string[] {"leaf6", "leaf7" }),
             };
-            TocRestruction.Restructure(toc, restructures);
+            TocRestructureUtility.Restructure(toc, restructures);
             var expected = GetTocItem(layout);
             AssertTocEqual(expected, toc);
         }
@@ -151,7 +151,7 @@ root
             {
                 GetRestructure(TreeItemActionType.ReplaceSelf, "node2", new string[] {"leaf4", "leaf5" }),
             };
-            Assert.Throws<InvalidOperationException>(() => TocRestruction.Restructure(toc, restructures));
+            Assert.Throws<InvalidOperationException>(() => TocRestructureUtility.Restructure(toc, restructures));
         }
 
         [Fact]
@@ -173,7 +173,7 @@ root
                 GetRestructure(TreeItemActionType.ReplaceSelf, "node2", new string[] {"leaf8", "leaf9" }),
                 GetRestructure(TreeItemActionType.InsertBefore, "node2", new string[] {"leaf10", "leaf11" }),
             };
-            TocRestruction.Restructure(toc, restructures);
+            TocRestructureUtility.Restructure(toc, restructures);
             var expected = GetTocItem(@"
 root
     node1
@@ -204,7 +204,7 @@ root
                 GetRestructure(TreeItemActionType.InsertBefore, "leaf3", new string[] {"leaf3.1", "leaf3.2" }),
             };
 
-            TocRestruction.Restructure(toc, restructures);
+            TocRestructureUtility.Restructure(toc, restructures);
             var expected = GetTocItem(@"
 root
     node1

@@ -14,8 +14,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
     public abstract class BuildTocDocumentStepBase : BaseDocumentBuildStep
     {
-        internal ImmutableDictionary<string, TocItemInfo> TocModelCache = ImmutableDictionary<string, TocItemInfo>.Empty;
-
         #region IDocumentBuildStep
 
         /// <summary>
@@ -40,15 +38,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 tocCache[key] = tocResolver.Resolve(key);
             }
-            TocModelCache = tocCache.ToImmutableDictionary();
 
-            return PreBuildSelectModels(models, host);
+            return PreBuildSelectModels(models, host, tocCache.ToImmutableDictionary());
         }
 
         public override void Build(FileModel model, IHostService host)
         {
             var toc = (TocItemViewModel)model.Content;
-            TocRestruction.Restructure(toc, host.TableOfContentRestructions);
+            TocRestructureUtility.Restructure(toc, host.TableOfContentRestructions);
             BuildCore(toc, model, host);
             ReportDependency(model, host);
             model.Content = toc;
@@ -59,7 +56,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         #region Abstract methods
 
-        public abstract IEnumerable<FileModel> PreBuildSelectModels(ImmutableList<FileModel> models, IHostService host);
+        public abstract IEnumerable<FileModel> PreBuildSelectModels(ImmutableList<FileModel> models, IHostService host, ImmutableDictionary<string, TocItemInfo> tocCache);
 
         public abstract void ReportDependency(FileModel model, IHostService host);
 

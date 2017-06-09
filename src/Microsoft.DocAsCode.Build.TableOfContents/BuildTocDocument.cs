@@ -23,14 +23,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         public override int BuildOrder => 0;
 
-        public override IEnumerable<FileModel> PreBuildSelectModels(ImmutableList<FileModel> models, IHostService host)
+        public override IEnumerable<FileModel> PreBuildSelectModels(ImmutableList<FileModel> models, IHostService host, ImmutableDictionary<string, TocItemInfo> tocCache)
         {
             // TODO: move the depdendency reporting to build phase
-            PreBuildReportDependency(models, host, TocModelCache, 8);
+            PreBuildReportDependency(models, host, tocCache, 8);
 
             foreach (var model in models)
             {
-                var wrapper = TocModelCache[model.OriginalFileAndType.FullPath];
+                var wrapper = tocCache[model.OriginalFileAndType.FullPath];
 
                 // If the TOC file is referenced by other TOC, remove it from the collection
                 if (!wrapper.IsReferenceToc)
