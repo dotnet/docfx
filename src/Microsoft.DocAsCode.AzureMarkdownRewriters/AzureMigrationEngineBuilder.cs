@@ -114,7 +114,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
                             (IMarkdownRewriteEngine e, AzureMigrationIncludeBlockToken t) => new DfmIncludeBlockToken(t.Rule, t.Context, t.Src, t.Name, t.Title, t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
-                            (IMarkdownRewriteEngine e, AzureMigrationIncludeInlineToken t) => new DfmIncludeInlineToken(t.Rule, t.Context, t.Src, t.Name, t.Title, t.SourceInfo.Markdown, t.SourceInfo)
+                            (IMarkdownRewriteEngine e, AzureMigrationIncludeInlineToken t) => new DfmIncludeInlineToken(t.Rule, t.Context, t.Src, t.Name, t.Title, t.SourceInfo)
                         ),
                         MarkdownTokenRewriterFactory.FromLambda(
                             (IMarkdownRewriteEngine e, AzureVideoBlockToken t) => new DfmVideoBlockToken(t.Rule, t.Context, GenerateAzureVideoLink(t.Context, t.VideoId, t.SourceInfo.Markdown, t.SourceInfo.LineNumber.ToString()), t.SourceInfo)
