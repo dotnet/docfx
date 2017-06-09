@@ -9,15 +9,20 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class MarkdownPreElementBlockRule : IMarkdownRule
     {
+        private static readonly Matcher _ender =
+            Matcher.CaseInsensitiveString("/pre") +
+            Matcher.AnyCharIn(' ', '\n').RepeatAtLeast(0) +
+            '>';
         private static readonly Matcher _preElementMatcher =
             Matcher.WhiteSpacesOrEmpty +
             Matcher.CaseInsensitiveString("<pre") +
             Matcher.AnyCharIn(' ', '\n', '>').ToTest() +
             (
                 Matcher.AnyCharNotIn('<').RepeatAtLeast(0) |
-                (Matcher.Char('<') + Matcher.CaseInsensitiveString("/pre>").ToNegativeTest())
+                (Matcher.Char('<') + _ender.ToNegativeTest())
             ).RepeatAtLeast(0) +
-            Matcher.CaseInsensitiveString("</pre>") +
+            '<' +
+            _ender +
             Matcher.AnyStringInSingleLineOrEmpty +
             Matcher.NewLine.RepeatAtLeast(1);
 

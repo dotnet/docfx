@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             [Obsolete]
             public static readonly Regex Def = new Regex(@"^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$)", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]
-            public static readonly Regex PreElement = new Regex(@"^ *\<pre(?=[ \n>])[\s\S]*?\<\/pre\>.*\n*", RegexOptionCompiled | RegexOptions.IgnoreCase, RegexTimeOut);
+            public static readonly Regex PreElement = new Regex(@"^ *\<pre(?=[ \n>])[\s\S]*?\<\/pre[ \n]*\>.*\n*", RegexOptionCompiled | RegexOptions.IgnoreCase, RegexTimeOut);
             [Obsolete]
             public static readonly Regex Paragraph = new Regex(@"^((?:[^\n]+\n?(?!( *[-*_]){3,} *(?:\n+|$)| *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)|([^\n]+)\n *(=|-){2,} *(?:\n+|$)|( *>[^\n]+(\n(?! *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$))[^\n]+)*\n*)+|<(?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\b)\w+(?!:\/|[^\w\s@]*@)\b| *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$)))+)\n*", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]

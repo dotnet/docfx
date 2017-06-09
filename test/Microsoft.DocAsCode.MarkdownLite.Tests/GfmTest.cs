@@ -731,6 +731,16 @@ b",
 a</pre>
 b</p>
 ")]
+        [InlineData(
+            @"<pre>
+a</pre
+>
+b",
+            @"<pre>
+a</pre
+>
+<p>b</p>
+")]
         public void TestPreElement(string source, string expected)
         {
             TestGfmInGeneral(source, expected);
