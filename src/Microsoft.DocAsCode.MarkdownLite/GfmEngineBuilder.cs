@@ -32,6 +32,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             builder.Add(new MarkdownBlockquoteBlockRule());
             builder.Add(new MarkdownListBlockRule());
             builder.Add(new GfmHtmlCommentBlockRule());
+            builder.Add(new MarkdownPreElementBlockRule());
             builder.Add(new MarkdownHtmlBlockRule());
             builder.Add(new MarkdownDefBlockRule());
             builder.Add(new MarkdownTableBlockRule());

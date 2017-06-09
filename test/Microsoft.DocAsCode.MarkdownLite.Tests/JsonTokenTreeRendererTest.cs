@@ -49,7 +49,7 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
         //*************************************************</code></pre>
 ";
             var expected =
-                "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>3>Html\",\"children\":[{\"name\":\"1>3>Raw(FromHtml)>&lt;pre&gt;&lt;code&gt;//*************************************************\\n        // Test!\\n        //*************************************************&lt;/code&gt;&lt;/pre&gt;\\n\"}]}]}";
+                "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>3>Raw(FromBlock.Html.PreElement)>&lt;pre&gt;&lt;code&gt;//*************************************************\\n        // Test!\\n        //*************************************************&lt;/code&gt;&lt;/pre&gt;\\n\"}]}";
             Assert.Equal(expected, JsonRenderer(source));
         }
 
