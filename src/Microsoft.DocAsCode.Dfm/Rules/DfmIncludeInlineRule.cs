@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Dfm
             var title = match.Groups[4].Value;
 
             // 3. Apply inline rules to the included content
-            return new DfmIncludeInlineToken(this, parser.Context, path, value, title, match.Groups[0].Value, sourceInfo);
+            return new DfmIncludeInlineToken(this, parser.Context, path, value, title, sourceInfo);
         }
     }
 }
