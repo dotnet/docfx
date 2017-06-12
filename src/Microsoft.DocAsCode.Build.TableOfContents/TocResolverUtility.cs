@@ -10,7 +10,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Exceptions;
 
     public class TocResolverUtility
     {
@@ -19,10 +18,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var tocCache = new Dictionary<string, TocItemInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
             foreach (var model in models)
             {
-                if (!tocCache.ContainsKey(model.OriginalFileAndType.FullPath))
-                {
-                    tocCache[model.OriginalFileAndType.FullPath] = new TocItemInfo(model.OriginalFileAndType, (TocItemViewModel)model.Content);
-                }
+                tocCache[model.OriginalFileAndType.FullPath] = new TocItemInfo(model.OriginalFileAndType, (TocItemViewModel)model.Content);
             }
             var tocResolver = new TocResolver(host, tocCache);
             foreach (var key in tocCache.Keys.ToList())
@@ -32,12 +28,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             foreach (var model in models)
             {
-                if (!tocCache.TryGetValue(model.OriginalFileAndType.FullPath, out TocItemInfo tocItemInfo))
-                {
-                    throw new DocfxException($"File {model.OriginalFileAndType.FullPath} cannot be found from toc cache.");
-                }
-
                 // If the TOC file is referenced by other TOC, remove it from the collection
+                var tocItemInfo = tocCache[model.OriginalFileAndType.FullPath];
                 if (!tocItemInfo.IsReferenceToc)
                 {
                     model.Content = tocItemInfo.Content;
