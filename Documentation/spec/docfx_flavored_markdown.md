@@ -141,180 +141,180 @@ DFM currently supports the following __`<language>`__ values to be able to retri
   - Start with: `// <{name}>`
   - End with: `// </{name}>`
   - Languages:
-    * actionscript
-	* arduino
-	* assembly (alias: nasm)
-	* c (alias: cpp, c++, objective-c, obj-c, objc, objectivec)
-	* csharp (alias: cs)
-	* cuda
-	* d (alias: dlang)
-	* fsharp (alias: fs)
-	* go (alias: golang)
-	* java
-	* javascript (alias: js, node)
-	* pascal
-	* php
-	* processing
-	* rust
-	* scala
-	* smalltalk
-	* swift
-	* typescript (alias: ts)
+    actionscript,
+	arduino,
+	assembly (alias: nasm),
+	c (alias: cpp, c++, objective-c, obj-c, objc, objectivec),
+	csharp (alias: cs),
+	cuda,
+	d (alias: dlang),
+	fsharp (alias: fs),
+	go (alias: golang),
+	java,
+	javascript (alias: js, node),
+	pascal,
+	php,
+	processing,
+	rust,
+	scala,
+	smalltalk,
+	swift,
+	typescript (alias: ts)
   - File extensions:
-    * .as
-    * .asm
-    * .ino
-	* .c
-	* .cc
-	* .cpp
-	* .cs
-	* .cu
-	* .cuh
-	* .d
-	* .fs
-	* .fsi
-	* .fsx
-	* .go
-	* .h
-	* .hpp
-	* .java
-	* .js
-	* .pas
-	* .php
-	* .pde
-	* .rs
-	* .scala
-	* .st
-	* .swift
-	* .ts
+    .as,
+    .asm,
+    .ino,
+	.c,
+	.cc,
+	.cpp,
+	.cs,
+	.cu,
+	.cuh,
+	.d,
+	.fs,
+	.fsi,
+	.fsx,
+	.go,
+	.h,
+	.hpp,
+	.java,
+	.js,
+	.pas,
+	.php,
+	.pde,
+	.rs,
+	.scala,
+	.st,
+	.swift,
+	.ts
 * Basic family
   - Start with: `' <{name}>`
   - End with: `' </{name}>`
   - Languages:
-    * vb
-	* vbnet
-	* vbscript
+    vb,
+	vbnet,
+	vbscript
   - File extensions:
-    * .vb
-	* .bas
-	* .vbs
-	* .vba
+    .vb,
+	.bas,
+	.vbs,
+	.vba
 * Markup language family
   - Start with: `<!-- <{name}> -->`
   - End with: `'<!-- </{name}> -->`
   - Languages:
-	* cshtml
-	* html
-	* vbhtml
-	* wsdl
-    * xml
-	* xsl
-	* xslt
-	* xsd
-	* xaml
+	cshtml,
+	html,
+	vbhtml,
+	wsdl,
+    xml,
+	xsl,
+	xslt,
+	xsd,
+	xaml
   - File extensions:
-	* .asp
-	* .aspx
-	* .csdl
-	* .cshtml
-	* .edmx
-	* .jsp
-	* .vbhtml
-	* .wsdl
-    * .xaml
-    * .xml
-	* .xsd
-	* .xsl
-	* .xslt
-	* .html
+	.asp,
+	.aspx,
+	.csdl,
+	.cshtml,
+	.edmx,
+	.jsp,
+	.vbhtml,
+	.wsdl,
+    .xaml,
+    .xml,
+	.xsd,
+	.xsl,
+	.xslt,
+	.html
 * Sql family
   - Start with: `-- <{name}>`
   - End with: `-- </{name}>`
   - Languages:
-    * sql
+    sql
   - File extensions:
-	* .sql
+	.sql
 * Script family
   - Start with: `# <{name}>`
   - End with: `# </{name}>`
   - Languages:
-    * perl
-	* powershell (alias: posh)
-	* python
-	* r
-	* ruby (alias: ru)
-	* shell (alias: sh, bash)
+    perl,
+	powershell (alias: posh),
+	python,
+	r,
+	ruby (alias: ru),
+	shell (alias: sh, bash)
   - File extensions:
-    * .bash
-	* .pl
-	* .ps1
-	* .py
-	* .r
-	* .ru
-	* .ruby
-	* .sh
+    .bash,
+	.pl,
+	.ps1,
+	.py,
+	.r,
+	.ru,
+	.ruby,
+	.sh
 * Special language
   * batchfile
     - Start with: `rem <{name}>`
     - End with: `rem </{name}>`
     - Languages:
-      * batchfile
+      batchfile
     - File extensions:
-      * .bat
-      * .cmd
+      .bat
+      .cmd
   * csharp
     - Start with: `# region {name}`
     - End with: `#endregion`
     - Languages:
-      * csharp (alias: cs)
+      csharp (alias: cs)
     - File extensions:
-      * .cs
+      .cs
   * erlang
     - Start with: `% <{name}>`
     - End with: `% </{name}>`
     - Languages:
-      * erlang
+      erlang
     - File extensions:
-      * .erl
+      .erl
   * haskell
     - Start with: `-- <{name}>`
     - End with: `-- </{name}>`
     - Languages:
-      * haskell
+      haskell
     - File extensions:
-      * .hs
+      .hs
   * matlab
     - Start with: `% <{name}>`
     - End with: `% </{name}>`
     - Languages:
-      * matlab
+      matlab
     - File extensions:
-      * .matlab
+      .matlab
   * lisp
     - Start with: `; <{name}>`
     - End with: `; </{name}>`
     - Languages:
-      * lisp
+      lisp
     - File extensions:
-      * .lisp
-      * .lsp
+      .lisp,
+      .lsp
   * lua
     - Start with: `-- <{name}>`
     - End with: `-- </{name}>`
     - Languages:
-      * lua
+      lua
     - File extensions:
-      * .lua
+      .lua
   * vb
     - Start with: `#Region {name}`
     - End with: `#End Region`
     - Languages:
-      * vb (alias: vbnet)
+      vb (alias: vbnet)
     - File extensions:
-      * .vb
+      .vb
 
 > [!Note]
-> File extensions will be used without mentioning dev-lang.
+> If dev-lang is not specified, file extension will be used to determine the language.
 
 ## Note (Warning/Tip/Important)
 Using specific syntax inside block quote to indicate the following content is Note.
