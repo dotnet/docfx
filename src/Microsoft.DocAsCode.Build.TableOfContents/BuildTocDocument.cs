@@ -23,14 +23,22 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         public override int BuildOrder => 0;
 
-        public override IEnumerable<FileModel> PreBuildSelectModels(ImmutableList<FileModel> models, IHostService host, ImmutableDictionary<string, TocItemInfo> tocCache)
+        /// <summary>
+        /// 1. Expand the TOC reference
+        /// 2. Resolve homepage
+        /// </summary>
+        /// <param name="models"></param>
+        /// <param name="host"></param>
+        /// <returns></returns>
+        public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
-            // TODO: move the depdendency reporting to build phase
-            PreBuildReportDependency(models, host, tocCache, 8);
+            var tocModelCache = TocResolverUtility.Resolve(models, host);
+
+            ReportPreBuildDependency(models, host, tocModelCache.ToImmutableDictionary(), 8);
 
             foreach (var model in models)
             {
-                var wrapper = tocCache[model.OriginalFileAndType.FullPath];
+                var wrapper = tocModelCache[model.OriginalFileAndType.FullPath];
 
                 // If the TOC file is referenced by other TOC, remove it from the collection
                 if (!wrapper.IsReferenceToc)
@@ -41,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        public override void ReportDependency(FileModel model, IHostService host)
+        public override void ReportBuildDependency(FileModel model, IHostService host)
         {
             var item = (TocItemViewModel)model.Content;
 
@@ -52,7 +60,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         #region Private methods
 
-        private void PreBuildReportDependency(ImmutableList<FileModel> models, IHostService host, ImmutableDictionary<string, TocItemInfo> tocModelCache, int parallelism)
+        private void ReportPreBuildDependency(ImmutableList<FileModel> models, IHostService host, ImmutableDictionary<string, TocItemInfo> tocModelCache, int parallelism)
         {
             var nearest = new ConcurrentDictionary<string, Toc>(FilePathComparer.OSPlatformSensitiveStringComparer);
             models.RunAll(model =>

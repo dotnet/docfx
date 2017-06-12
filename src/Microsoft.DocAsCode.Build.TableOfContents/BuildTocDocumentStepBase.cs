@@ -16,38 +16,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     {
         #region IDocumentBuildStep
 
-        /// <summary>
-        /// 1. Expand the TOC reference
-        /// 2. Resolve homepage
-        /// </summary>
-        /// <param name="models"></param>
-        /// <param name="host"></param>
-        /// <returns></returns>
-        public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
-        {
-            var tocCache = new Dictionary<string, TocItemInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
-            foreach (var model in models)
-            {
-                if (!tocCache.ContainsKey(model.OriginalFileAndType.FullPath))
-                {
-                    tocCache[model.OriginalFileAndType.FullPath] = new TocItemInfo(model.OriginalFileAndType, (TocItemViewModel)model.Content);
-                }
-            }
-            var tocResolver = new TocResolver(host, tocCache);
-            foreach (var key in tocCache.Keys.ToList())
-            {
-                tocCache[key] = tocResolver.Resolve(key);
-            }
-
-            return PreBuildSelectModels(models, host, tocCache.ToImmutableDictionary());
-        }
-
         public override void Build(FileModel model, IHostService host)
         {
             var toc = (TocItemViewModel)model.Content;
             TocRestructureUtility.Restructure(toc, host.TableOfContentRestructions);
             BuildCore(toc, model, host);
-            ReportDependency(model, host);
+            ReportBuildDependency(model, host);
             model.Content = toc;
             // todo : metadata.
         }
@@ -56,9 +30,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         #region Abstract methods
 
-        public abstract IEnumerable<FileModel> PreBuildSelectModels(ImmutableList<FileModel> models, IHostService host, ImmutableDictionary<string, TocItemInfo> tocCache);
-
-        public abstract void ReportDependency(FileModel model, IHostService host);
+        public abstract void ReportBuildDependency(FileModel model, IHostService host);
 
         #endregion
 
