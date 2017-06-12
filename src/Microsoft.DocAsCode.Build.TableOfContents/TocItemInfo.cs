@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    public sealed class TocItemInfo
+    internal sealed class TocItemInfo
     {
         public TocItemViewModel Content { get; set; }
         public FileAndType File { get; }

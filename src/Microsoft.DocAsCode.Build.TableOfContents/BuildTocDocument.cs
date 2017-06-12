@@ -32,21 +32,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         /// <returns></returns>
         public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
-            var tocModelCache = TocResolverUtility.Resolve(models, host);
+            var resolvedModels = TocResolverUtility.Resolve(models, host).ToList();
 
-            ReportPreBuildDependency(models, host, tocModelCache.ToImmutableDictionary(), 8);
+            ReportPreBuildDependency(resolvedModels, host, 8);
 
-            foreach (var model in models)
-            {
-                var wrapper = tocModelCache[model.OriginalFileAndType.FullPath];
-
-                // If the TOC file is referenced by other TOC, remove it from the collection
-                if (!wrapper.IsReferenceToc)
-                {
-                    model.Content = wrapper.Content;
-                    yield return model;
-                }
-            }
+            return resolvedModels;
         }
 
         public override void ReportBuildDependency(FileModel model, IHostService host)
@@ -60,19 +50,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         #region Private methods
 
-        private void ReportPreBuildDependency(ImmutableList<FileModel> models, IHostService host, ImmutableDictionary<string, TocItemInfo> tocModelCache, int parallelism)
+        private void ReportPreBuildDependency(List<FileModel> models, IHostService host, int parallelism)
         {
             var nearest = new ConcurrentDictionary<string, Toc>(FilePathComparer.OSPlatformSensitiveStringComparer);
             models.RunAll(model =>
             {
-                var wrapper = tocModelCache[model.OriginalFileAndType.FullPath];
-
-                // If the TOC file is referenced by other TOC, not report dependency
-                if (wrapper.IsReferenceToc)
-                {
-                    return;
-                }
-                var item = wrapper.Content;
+                var item = (TocItemViewModel)model.Content;
                 UpdateNearestToc(host, item, model, nearest);
             },
             parallelism);
@@ -123,7 +106,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private void UpdateNearestTocForNotInTocItem(ImmutableList<FileModel> models, IHostService host, ConcurrentDictionary<string, Toc> nearest, int parallelism)
+        private void UpdateNearestTocForNotInTocItem(List<FileModel> models, IHostService host, ConcurrentDictionary<string, Toc> nearest, int parallelism)
         {
             var allSourceFiles = host.SourceFiles;
             Parallel.ForEach(
