@@ -4,6 +4,10 @@
 v2.19 (Pre-release)
 -----------
 1. Enable incremental Build by default. You can use option `--force` to force build.
+2. Tabbed content (draft).
+3. Support more develop language for code snippet.
+2. Bug fixes:
+   1. Fix html pre element behaivor.
 
 v2.18.2
 -----------
