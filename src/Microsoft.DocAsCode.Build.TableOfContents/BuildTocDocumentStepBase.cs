@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         #endregion
 
-        #region Abstract methods
+        #region Virtual methods
 
         public virtual void ReportUidDependency(FileModel model, IHostService host, TocItemViewModel item)
         {
