@@ -32,17 +32,17 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         /// <returns></returns>
         public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
-            var resolvedModels = TocResolverUtility.Resolve(models, host);
+            var resolvedModels = TocResolverUtility.Resolve(models, host).ToList();
 
-            ReportPreBuildDependency(resolvedModels.ToImmutableList(), host, 8);
+            ReportPreBuildDependency(resolvedModels, host, 8);
 
             return resolvedModels;
         }
 
-        public override void ReportBuildDependency(FileModel model, IHostService host)
+        public override void Build(FileModel model, IHostService host)
         {
+            base.Build(model, host);
             var item = (TocItemViewModel)model.Content;
-
             ReportUidDependency(model, host, item);
         }
 
@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         #region Private methods
 
-        private void ReportPreBuildDependency(ImmutableList<FileModel> models, IHostService host, int parallelism)
+        private void ReportPreBuildDependency(List<FileModel> models, IHostService host, int parallelism)
         {
             var nearest = new ConcurrentDictionary<string, Toc>(FilePathComparer.OSPlatformSensitiveStringComparer);
             models.RunAll(model =>
@@ -66,21 +66,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             foreach (var item in nearest)
             {
                 host.ReportDependencyFrom(item.Value.Model, item.Key, DependencyTypeName.Metadata);
-            }
-        }
-
-        private void ReportUidDependency(FileModel model, IHostService host, TocItemViewModel item)
-        {
-            if (item.TopicUid != null)
-            {
-                host.ReportDependencyFrom(model, item.TopicUid, DependencyItemSourceType.Uid, DependencyTypeName.Metadata);
-            }
-            if (item.Items != null && item.Items.Count > 0)
-            {
-                foreach (var i in item.Items)
-                {
-                    ReportUidDependency(model, host, i);
-                }
             }
         }
 
@@ -106,7 +91,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
         }
 
-        private void UpdateNearestTocForNotInTocItem(ImmutableList<FileModel> models, IHostService host, ConcurrentDictionary<string, Toc> nearest, int parallelism)
+        private void UpdateNearestTocForNotInTocItem(List<FileModel> models, IHostService host, ConcurrentDictionary<string, Toc> nearest, int parallelism)
         {
             var allSourceFiles = host.SourceFiles;
             Parallel.ForEach(

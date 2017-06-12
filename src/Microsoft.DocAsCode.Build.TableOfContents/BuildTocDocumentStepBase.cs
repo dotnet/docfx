@@ -4,11 +4,8 @@
 namespace Microsoft.DocAsCode.Build.TableOfContents
 {
     using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
@@ -21,7 +18,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var toc = (TocItemViewModel)model.Content;
             TocRestructureUtility.Restructure(toc, host.TableOfContentRestructions);
             BuildCore(toc, model, host);
-            ReportBuildDependency(model, host);
             model.Content = toc;
             // todo : metadata.
         }
@@ -30,7 +26,20 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         #region Abstract methods
 
-        public abstract void ReportBuildDependency(FileModel model, IHostService host);
+        public virtual void ReportUidDependency(FileModel model, IHostService host, TocItemViewModel item)
+        {
+            if (item.TopicUid != null)
+            {
+                host.ReportDependencyFrom(model, item.TopicUid, DependencyItemSourceType.Uid, DependencyTypeName.Metadata);
+            }
+            if (item.Items != null && item.Items.Count > 0)
+            {
+                foreach (var i in item.Items)
+                {
+                    ReportUidDependency(model, host, i);
+                }
+            }
+        }
 
         #endregion
 
