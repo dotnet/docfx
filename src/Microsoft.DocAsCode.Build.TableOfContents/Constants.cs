@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.TableOfContents
 {
-    internal static class Constants
+    public static class Constants
     {
         public const string MarkdownTocFileName = "toc.md";
         public const string YamlTocFileName = "toc.yml";
