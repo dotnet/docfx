@@ -155,7 +155,7 @@ docfx pdf [<config_file_path>] [-o:<output_path>]
 `docfx pdf` generates PDF for the files defined in config file, if config file is not specified, `docfx` tries to find and use `docfx.json` file under current folder.
 
 > [!NOTE]
-> Prerequisite: We leverage [wkhtmltopdf](https://wkhtmltopdf.org/) to generate PDF. [Download wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) and save the executable folder path to **%PATH%**
+> Prerequisite: We leverage [wkhtmltopdf](https://wkhtmltopdf.org/) to generate PDF. [Download wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) and save the executable folder path to **%PATH%**. Or just install wkhtmltopdf using chocolatey: `choco install wkhtmltopdf`
 
 Current design is that each TOC file generates a corresponding PDF file. Walk through [Walkthrough: Generate PDF Files](walkthrough/walkthrough_generate_pdf.md) to get start.
 
