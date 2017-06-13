@@ -142,117 +142,117 @@ DFM currently supports the following __`<language>`__ values to be able to retri
   - End with: `// </{name}>`
   - Languages:
     actionscript,
-	arduino,
-	assembly (alias: nasm),
-	c (alias: cpp, c++, objective-c, obj-c, objc, objectivec),
-	csharp (alias: cs),
-	cuda,
-	d (alias: dlang),
-	fsharp (alias: fs),
-	go (alias: golang),
-	java,
-	javascript (alias: js, node),
-	pascal,
-	php,
-	processing,
-	rust,
-	scala,
-	smalltalk,
-	swift,
-	typescript (alias: ts)
+    arduino,
+    assembly (alias: nasm),
+    c (alias: cpp, c++, objective-c, obj-c, objc, objectivec),
+    csharp (alias: cs),
+    cuda,
+    d (alias: dlang),
+    fsharp (alias: fs),
+    go (alias: golang),
+    java,
+    javascript (alias: js, node),
+    pascal,
+    php,
+    processing,
+    rust,
+    scala,
+    smalltalk,
+    swift,
+    typescript (alias: ts)
   - File extensions:
     .as,
     .asm,
     .ino,
-	.c,
-	.cc,
-	.cpp,
-	.cs,
-	.cu,
-	.cuh,
-	.d,
-	.fs,
-	.fsi,
-	.fsx,
-	.go,
-	.h,
-	.hpp,
-	.java,
-	.js,
-	.pas,
-	.php,
-	.pde,
-	.rs,
-	.scala,
-	.st,
-	.swift,
-	.ts
+    .c,
+    .cc,
+    .cpp,
+    .cs,
+    .cu,
+    .cuh,
+    .d,
+    .fs,
+    .fsi,
+    .fsx,
+    .go,
+    .h,
+    .hpp,
+    .java,
+    .js,
+    .pas,
+    .php,
+    .pde,
+    .rs,
+    .scala,
+    .st,
+    .swift,
+    .ts
 * Basic family
   - Start with: `' <{name}>`
   - End with: `' </{name}>`
   - Languages:
     vb,
-	vbnet,
-	vbscript
+    vbnet,
+    vbscript
   - File extensions:
     .vb,
-	.bas,
-	.vbs,
-	.vba
+    .bas,
+    .vbs,
+    .vba
 * Markup language family
   - Start with: `<!-- <{name}> -->`
   - End with: `'<!-- </{name}> -->`
   - Languages:
-	cshtml,
-	html,
-	vbhtml,
-	wsdl,
+    cshtml,
+    html,
+    vbhtml,
+    wsdl,
     xml,
-	xsl,
-	xslt,
-	xsd,
-	xaml
+    xsl,
+    xslt,
+    xsd,
+    xaml
   - File extensions:
-	.asp,
-	.aspx,
-	.csdl,
-	.cshtml,
-	.edmx,
-	.jsp,
-	.vbhtml,
-	.wsdl,
+    .asp,
+    .aspx,
+    .csdl,
+    .cshtml,
+    .edmx,
+    .jsp,
+    .vbhtml,
+    .wsdl,
     .xaml,
     .xml,
-	.xsd,
-	.xsl,
-	.xslt,
-	.html
+    .xsd,
+    .xsl,
+    .xslt,
+    .html
 * Sql family
   - Start with: `-- <{name}>`
   - End with: `-- </{name}>`
   - Languages:
     sql
   - File extensions:
-	.sql
+    .sql
 * Script family
   - Start with: `# <{name}>`
   - End with: `# </{name}>`
   - Languages:
     perl,
-	powershell (alias: posh),
-	python,
-	r,
-	ruby (alias: ru),
-	shell (alias: sh, bash)
+    powershell (alias: posh),
+    python,
+    r,
+    ruby (alias: ru),
+    shell (alias: sh, bash)
   - File extensions:
     .bash,
-	.pl,
-	.ps1,
-	.py,
-	.r,
-	.ru,
-	.ruby,
-	.sh
+    .pl,
+    .ps1,
+    .py,
+    .r,
+    .ru,
+    .ruby,
+    .sh
 * Special language
   * batchfile
     - Start with: `rem <{name}>`
