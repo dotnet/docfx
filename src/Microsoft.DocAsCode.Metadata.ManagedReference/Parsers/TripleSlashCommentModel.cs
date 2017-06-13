@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using System.Globalization;
 
     public class TripleSlashCommentModel
     {
@@ -556,7 +557,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var lineInfo = node as IXmlLineInfo;
             int column = lineInfo.HasLineInfo() ? lineInfo.LinePosition - 2 : 0;
 
-            return NormalizeXml(RemoveLeadingSpaces(node.InnerXml), column);
+            return NormalizeXml(RemoveLeadingSpaces(GetInnerXml(node)), column);
         }
 
         /// <summary>
@@ -643,6 +644,43 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                     return m.Value.Replace(group.ToString(), group.ToString().Trim('\n'));
                 });
+        }
+
+        /// <summary>
+        /// `>` is always encoded to `&gt;` in XML, when triple-slash-comments is considered as Markdown content, `>` is considered as blockquote
+        /// Decode `>` to enable the Markdown syntax considering `>` is not a Must-Encode in Text XElement
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private static string GetInnerXml(XPathNavigator node)
+        {
+            using (var sw = new StringWriter(CultureInfo.InvariantCulture))
+            {
+                using (var tw = new XmlWriterWithGtDecoded(sw))
+                {
+                    if (node.MoveToFirstChild())
+                    {
+                        do
+                        {
+                            tw.WriteNode(node, true);
+                        } while (node.MoveToNext());
+                        node.MoveToParent();
+                    }
+                }
+
+                return sw.ToString();
+            }
+        }
+
+        private sealed class XmlWriterWithGtDecoded : XmlTextWriter
+        {
+            public XmlWriterWithGtDecoded(TextWriter tw) : base(tw) { }
+            public XmlWriterWithGtDecoded(Stream w, Encoding encoding) : base(w, encoding) { }
+            public override void WriteString(string text)
+            {
+                var encoded = text.Replace("&", "&amp;").Replace("<", "&lt;").Replace("'", "&apos;").Replace("\"", "&quot;");
+                base.WriteRaw(encoded);
+            }
         }
     }
 }
