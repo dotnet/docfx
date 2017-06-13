@@ -22,6 +22,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
+    using Constants = DataContracts.Common.Constants;
+
     [Trait("Owner", "zhyan")]
     [Trait("EntityType", "DocumentBuilder")]
     [Collection("docfx STA")]
