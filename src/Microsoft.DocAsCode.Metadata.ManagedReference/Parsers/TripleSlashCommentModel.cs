@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
+    using System.Globalization;
 
     public class TripleSlashCommentModel
     {
@@ -653,9 +654,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <returns></returns>
         private static string GetInnerXml(XPathNavigator node)
         {
-            using (var sw = new MemoryStream())
+            using (var sw = new StringWriter(CultureInfo.InvariantCulture))
             {
-                using (var tw = new XmlWriterWithGtDecoded(sw, Encoding.UTF8))
+                using (var tw = new XmlWriterWithGtDecoded(sw))
                 {
                     if (node.MoveToFirstChild())
                     {
@@ -665,18 +666,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         } while (node.MoveToNext());
                         node.MoveToParent();
                     }
-                    tw.Flush();
-                    sw.Position = 0;
-                    using (var sr = new StreamReader(sw))
-                    {
-                        return sr.ReadToEnd();
-                    }
                 }
+
+                return sw.ToString();
             }
         }
 
         private sealed class XmlWriterWithGtDecoded : XmlTextWriter
         {
+            public XmlWriterWithGtDecoded(TextWriter tw) : base(tw) { }
             public XmlWriterWithGtDecoded(Stream w, Encoding encoding) : base(w, encoding) { }
             public override void WriteString(string text)
             {
