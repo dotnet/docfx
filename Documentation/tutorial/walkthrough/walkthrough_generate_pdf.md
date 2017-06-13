@@ -18,6 +18,9 @@ After completing walkthrough part II, our `D:\docfx_walkthrough\docfx_project` f
 Step0. Install prerequisite 
 We leverage [wkhtmltopdf](https://wkhtmltopdf.org/) to generate PDF. [Download wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) to some folder, e.g. `E:\Program Files\wkhtmltopdf\`, and save the executable folder path to **%PATH%** by: `set PATH=%PATH%;E:\Program Files\wkhtmltopdf\bin`, or save to global environment `PATH` by `setx PATH "%PATH%;E:\Program Files\wkhtmltopdf\bin"`.
 
+> [!NOTE]
+> Alternativeley you can install wkhtmltopdf via [chocolatey](https://chocolatey.org/) with `choco install wkhtmltopdf`. This will also add the executable folder to **%PATH%** during installation.
+
 Step1. Add a toc.yml specific for PDF
 ---------------------------
 Current design is that each TOC file generates a corresponding PDF file, TOC is also used as the cover page of the PDF, so we create a `toc.yml` file specific for PDF under a new folder `pdf`, using [TOC Include](http://dotnet.github.io/docfx/tutorial/intro_toc.html?q=toc%20inclu#link-to-another-toc-file) to include content from other TOC files.
