@@ -154,7 +154,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         else
                         {
                             var relativeFolder = (RelativePath)file.File + (RelativePath)item.Href;
-                            var tocFilePath = relativeFolder + (RelativePath)Constants.YamlTocFileName;
+                            var tocFilePath = relativeFolder + (RelativePath)Constants.TableOfContents.YamlTocFileName;
 
                             var tocFile = file.ChangeFile(tocFilePath);
 
@@ -162,12 +162,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                             // Second, try finding toc.md under the relative folder
                             if (!_collection.TryGetValue(tocFile.FullPath, out tocFileModel))
                             {
-                                tocFilePath = relativeFolder + (RelativePath)Constants.MarkdownTocFileName;
+                                tocFilePath = relativeFolder + (RelativePath)Constants.TableOfContents.MarkdownTocFileName;
                                 tocFile = file.ChangeFile(tocFilePath);
                                 if (!_collection.TryGetValue(tocFile.FullPath, out tocFileModel))
                                 {
                                     var message =
-                                        $"Unable to find either {Constants.YamlTocFileName} or {Constants.MarkdownTocFileName} inside {item.Href}. Make sure the file is included in config file docfx.json!";
+                                        $"Unable to find either {Constants.TableOfContents.YamlTocFileName} or {Constants.TableOfContents.MarkdownTocFileName} inside {item.Href}. Make sure the file is included in config file docfx.json!";
                                     Logger.LogWarning(message);
                                     break;
                                 }
