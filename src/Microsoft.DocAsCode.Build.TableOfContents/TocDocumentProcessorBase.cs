@@ -61,9 +61,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         #region Abstract methods
 
-        public abstract void RegisterTocToContext(TocItemViewModel item, FileModel model, IDocumentBuildContext context);
+        protected abstract void RegisterTocToContext(TocItemViewModel item, FileModel model, IDocumentBuildContext context);
 
-        public abstract void RegisterTocMapToContext(TocItemViewModel item, FileModel model, IDocumentBuildContext context);
+        protected abstract void RegisterTocMapToContext(TocItemViewModel item, FileModel model, IDocumentBuildContext context);
 
         #endregion
 
