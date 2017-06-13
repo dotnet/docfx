@@ -25,10 +25,6 @@ namespace Microsoft.DocAsCode
             {
                 jItems = JArray.Load(reader);
             }
-            else if (reader.TokenType == JsonToken.StartObject)
-            {
-                jItems = JContainer.Load(reader);
-            }
             else if (reader.TokenType == JsonToken.String)
             {
                 jItems = JRaw.Load(reader);
@@ -41,6 +37,10 @@ namespace Microsoft.DocAsCode
             if (jItems is JValue)
             {
                 model.Add(FileModelParser.ParseItem(jItems.ToString()));
+            }
+            else if (jItems is JObject)
+            {
+                model.Add(FileModelParser.ParseItem((JToken)jItems));
             }
             else
             {

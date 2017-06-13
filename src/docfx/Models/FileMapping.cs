@@ -25,6 +25,9 @@ namespace Microsoft.DocAsCode
     /// 2. Compact form
     ///     This form supports multiple file patterns in an array
     ///     e.g. `projects: ["file1", "file2"]`
+    /// 2. Object form
+    ///     If the Array form contains only one item, it can be shortened to an object
+    ///     e.g. `projects: ["file1", "file2"]`
     /// </summary>
     [JsonConverter(typeof(FileMappingConverter))]
     [Serializable]
