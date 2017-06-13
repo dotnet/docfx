@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 throw new DocumentException(message, e);
             }
 
-            throw new NotSupportedException($"{file} is not a valid TOC file, supported toc files could be \"{Constants.MarkdownTocFileName}\" or \"{Constants.YamlTocFileName}\".");
+            throw new NotSupportedException($"{file} is not a valid TOC file, supported toc files could be \"{Constants.TableOfContents.MarkdownTocFileName}\" or \"{Constants.TableOfContents.YamlTocFileName}\".");
         }
 
         public static HrefType GetHrefType(string href)
@@ -117,11 +117,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             var fileName = Path.GetFileName(filePath);
 
-            if (Constants.MarkdownTocFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
+            if (Constants.TableOfContents.MarkdownTocFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
             {
                 return TocFileType.Markdown;
             }
-            if (Constants.YamlTocFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
+            if (Constants.TableOfContents.YamlTocFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
             {
                 return TocFileType.Yaml;
             }

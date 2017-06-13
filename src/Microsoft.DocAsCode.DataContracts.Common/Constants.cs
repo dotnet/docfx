@@ -94,5 +94,11 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string CSharp = "csharp";
             public const string VB = "vb";
         }
+
+        public static class TableOfContents
+        {
+            public const string MarkdownTocFileName = "toc.md";
+            public const string YamlTocFileName = "toc.yml";
+        }
     }
 }
