@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return ProcessingPriority.NotSupported;
         }
 
-        public override void RegisterTocToContext(TocItemViewModel toc, FileModel model, IDocumentBuildContext context)
+        protected override void RegisterTocToContext(TocItemViewModel toc, FileModel model, IDocumentBuildContext context)
         {
             var key = model.Key;
 
@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             context.RegisterTocInfo(tocInfo);
         }
 
-        public override void RegisterTocMapToContext(TocItemViewModel item, FileModel model, IDocumentBuildContext context)
+        protected override void RegisterTocMapToContext(TocItemViewModel item, FileModel model, IDocumentBuildContext context)
         {
             var key = model.Key;
             // If tocHref is set, href is originally RelativeFolder type, and href is set to the homepage of TocHref,
