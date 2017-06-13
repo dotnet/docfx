@@ -48,5 +48,34 @@ namespace Microsoft.DocAsCode.Dfm
         {
             return $"[!VIDEO {token.Link}]\n\n";
         }
+
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmTabGroupBlockToken token, MarkdownBlockContext context)
+        {
+            var result = StringBuffer.Empty;
+            foreach (var item in token.Items)
+            {
+                result += "#### [";
+                foreach (var contentItem in item.Title.Content.Tokens)
+                {
+                    result += renderer.Render(contentItem);
+                }
+                result += "](#tab/";
+                result += item.Id;
+                if (string.IsNullOrEmpty(item.Condition))
+                {
+                    result += "/";
+                    result += item.Condition;
+                }
+                result += ")\n";
+
+                foreach (var contentItem in item.Content.Content)
+                {
+                    result += renderer.Render(contentItem);
+                }
+            }
+
+            result += "* * *\n";
+            return result;
+        }
     }
 }
