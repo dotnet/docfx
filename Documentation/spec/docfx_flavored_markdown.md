@@ -136,16 +136,185 @@ Allows you to insert code with code language specified. The content of specified
 ```
 
 ### Tag Name Representation in Code Snippet Source File
-DFM currently only supports the following __`<language>`__ values to be able to retrieve by tag name:
-* C#: cs, csharp
-* VB: vb, vbnet
-* C++: cpp, c++
-* F#: fsharp
-* XML: xml
-* Html: html
-* SQL: sql
-* Javascript: javascript
+DFM currently supports the following __`<language>`__ values to be able to retrieve by tag name:
+* C family
+  - Start with: `// <{name}>`
+  - End with: `// </{name}>`
+  - Languages:
+    actionscript,
+    arduino,
+    assembly (alias: nasm),
+    c (alias: cpp, c++, objective-c, obj-c, objc, objectivec),
+    csharp (alias: cs),
+    cuda,
+    d (alias: dlang),
+    fsharp (alias: fs),
+    go (alias: golang),
+    java,
+    javascript (alias: js, node),
+    pascal,
+    php,
+    processing,
+    rust,
+    scala,
+    smalltalk,
+    swift,
+    typescript (alias: ts)
+  - File extensions:
+    .as,
+    .asm,
+    .ino,
+    .c,
+    .cc,
+    .cpp,
+    .cs,
+    .cu,
+    .cuh,
+    .d,
+    .fs,
+    .fsi,
+    .fsx,
+    .go,
+    .h,
+    .hpp,
+    .java,
+    .js,
+    .pas,
+    .php,
+    .pde,
+    .rs,
+    .scala,
+    .st,
+    .swift,
+    .ts
+* Basic family
+  - Start with: `' <{name}>`
+  - End with: `' </{name}>`
+  - Languages:
+    vb,
+    vbnet,
+    vbscript
+  - File extensions:
+    .vb,
+    .bas,
+    .vbs,
+    .vba
+* Markup language family
+  - Start with: `<!-- <{name}> -->`
+  - End with: `'<!-- </{name}> -->`
+  - Languages:
+    cshtml,
+    html,
+    vbhtml,
+    wsdl,
+    xml,
+    xsl,
+    xslt,
+    xsd,
+    xaml
+  - File extensions:
+    .asp,
+    .aspx,
+    .csdl,
+    .cshtml,
+    .edmx,
+    .jsp,
+    .vbhtml,
+    .wsdl,
+    .xaml,
+    .xml,
+    .xsd,
+    .xsl,
+    .xslt,
+    .html
+* Sql family
+  - Start with: `-- <{name}>`
+  - End with: `-- </{name}>`
+  - Languages:
+    sql
+  - File extensions:
+    .sql
+* Script family
+  - Start with: `# <{name}>`
+  - End with: `# </{name}>`
+  - Languages:
+    perl,
+    powershell (alias: posh),
+    python,
+    r,
+    ruby (alias: ru),
+    shell (alias: sh, bash)
+  - File extensions:
+    .bash,
+    .pl,
+    .ps1,
+    .py,
+    .r,
+    .ru,
+    .ruby,
+    .sh
+* Special language
+  * batchfile
+    - Start with: `rem <{name}>`
+    - End with: `rem </{name}>`
+    - Languages:
+      batchfile
+    - File extensions:
+      .bat
+      .cmd
+  * csharp
+    - Start with: `# region {name}`
+    - End with: `#endregion`
+    - Languages:
+      csharp (alias: cs)
+    - File extensions:
+      .cs
+  * erlang
+    - Start with: `% <{name}>`
+    - End with: `% </{name}>`
+    - Languages:
+      erlang
+    - File extensions:
+      .erl
+  * haskell
+    - Start with: `-- <{name}>`
+    - End with: `-- </{name}>`
+    - Languages:
+      haskell
+    - File extensions:
+      .hs
+  * matlab
+    - Start with: `% <{name}>`
+    - End with: `% </{name}>`
+    - Languages:
+      matlab
+    - File extensions:
+      .matlab
+  * lisp
+    - Start with: `; <{name}>`
+    - End with: `; </{name}>`
+    - Languages:
+      lisp
+    - File extensions:
+      .lisp,
+      .lsp
+  * lua
+    - Start with: `-- <{name}>`
+    - End with: `-- </{name}>`
+    - Languages:
+      lua
+    - File extensions:
+      .lua
+  * vb
+    - Start with: `#Region {name}`
+    - End with: `#End Region`
+    - Languages:
+      vb (alias: vbnet)
+    - File extensions:
+      .vb
 
+> [!Note]
+> If dev-lang is not specified, file extension will be used to determine the language.
 
 ## Note (Warning/Tip/Important)
 Using specific syntax inside block quote to indicate the following content is Note.
