@@ -156,7 +156,7 @@ Classes in assemblies are by definition complete.
 <pre><code class=""c#"">public class XmlElement
     : XmlLinkedNode</code></pre>
 <ol><li>
-            word inside list-&gt;listItem-&gt;list-&gt;listItem-&gt;para.&gt;
+            word inside list->listItem->list->listItem->para.>
             the second line.
 </li><li>item2 in numbered list</li></ol>
 </li><li>item2 in bullet list</li></ul>

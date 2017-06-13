@@ -556,7 +556,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var lineInfo = node as IXmlLineInfo;
             int column = lineInfo.HasLineInfo() ? lineInfo.LinePosition - 2 : 0;
 
-            return NormalizeXml(RemoveLeadingSpaces(node.InnerXml), column);
+            return NormalizeXml(RemoveLeadingSpaces(GetInnerXml(node)), column);
         }
 
         /// <summary>
@@ -643,6 +643,46 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                     return m.Value.Replace(group.ToString(), group.ToString().Trim('\n'));
                 });
+        }
+
+        /// <summary>
+        /// `>` is always encoded to `&gt;` in XML, when triple-slash-comments is considered as Markdown content, `>` is considered as blockquote
+        /// Decode `>` to enable the Markdown syntax considering `>` is not a Must-Encode in Text XElement
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        private static string GetInnerXml(XPathNavigator node)
+        {
+            using (var sw = new MemoryStream())
+            {
+                using (var tw = new XmlWriterWithGtDecoded(sw, Encoding.UTF8))
+                {
+                    if (node.MoveToFirstChild())
+                    {
+                        do
+                        {
+                            tw.WriteNode(node, true);
+                        } while (node.MoveToNext());
+                        node.MoveToParent();
+                    }
+                    tw.Flush();
+                    sw.Position = 0;
+                    using (var sr = new StreamReader(sw))
+                    {
+                        return sr.ReadToEnd();
+                    }
+                }
+            }
+        }
+
+        private sealed class XmlWriterWithGtDecoded : XmlTextWriter
+        {
+            public XmlWriterWithGtDecoded(Stream w, Encoding encoding) : base(w, encoding) { }
+            public override void WriteString(string text)
+            {
+                var encoded = text.Replace("&", "&amp;").Replace("<", "&lt;").Replace("'", "&apos;").Replace("\"", "&quot;");
+                base.WriteRaw(encoded);
+            }
         }
     }
 }

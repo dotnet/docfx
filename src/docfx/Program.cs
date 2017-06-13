@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode
             }
         }
 
-        private static int ExecSubCommand(string[] args)
+        internal static int ExecSubCommand(string[] args)
         {
             var consoleLogListener = new ConsoleLogListener();
             var replayListener = new ReplayLogListener();
