@@ -8,7 +8,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
-    using Microsoft.DocAsCode.Plugins;
 
     internal static class Utility
     {
@@ -35,49 +34,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return hrefType == HrefType.RelativeFile
                 || hrefType == HrefType.YamlTocFile
                 || hrefType == HrefType.MarkdownTocFile;
-        }
-
-        // TODO: refactor the return value to TocRootViewModel
-        public static TocItemViewModel LoadSingleToc(string file)
-        {
-            var fileType = GetTocFileType(file);
-            try
-            {
-                if (fileType == TocFileType.Markdown)
-                {
-                    return new TocItemViewModel
-                    {
-                        Items = MarkdownTocReader.LoadToc(EnvironmentContext.FileAbstractLayer.ReadAllText(file), file)
-                    };
-                }
-                else if (fileType == TocFileType.Yaml)
-                {
-                    try
-                    {
-                        return new TocItemViewModel
-                        {
-                            Items = YamlUtility.Deserialize<TocViewModel>(file)
-                        };
-                    }
-                    catch (YamlDotNet.Core.YamlException)
-                    {
-                        var tocWithMetadata = YamlUtility.Deserialize<TocRootViewModel>(file);
-                        return new TocItemViewModel
-                        {
-                            Items = tocWithMetadata.Items,
-                            Metadata = tocWithMetadata.Metadata
-                        };
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                var message = $"{file} is not a valid TOC File: {e.Message}";
-                Logger.LogError(message);
-                throw new DocumentException(message, e);
-            }
-
-            throw new NotSupportedException($"{file} is not a valid TOC file, supported toc files could be \"{Constants.TableOfContents.MarkdownTocFileName}\" or \"{Constants.TableOfContents.YamlTocFileName}\".");
         }
 
         public static HrefType GetHrefType(string href)
