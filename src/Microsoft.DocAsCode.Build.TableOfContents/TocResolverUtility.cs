@@ -42,6 +42,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         // TODO: refactor the return value to TocRootViewModel
         public static TocItemViewModel LoadSingleToc(string file)
         {
+            if (string.IsNullOrEmpty(file))
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+
             var fileType = Utility.GetTocFileType(file);
             try
             {
@@ -69,6 +74,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         public static TocItemViewModel LoadYamlToc(string file)
         {
+            if (string.IsNullOrEmpty(file))
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+
             try
             {
                 return new TocItemViewModel
