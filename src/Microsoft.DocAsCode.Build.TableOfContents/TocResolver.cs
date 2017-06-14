@@ -217,7 +217,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         else
                         {
                             // It is acceptable that the referenced toc file is not included in docfx.json, as long as it can be found locally
-                            referencedTocFileModel = new TocItemInfo(tocFile, ResolveTocUtility.LoadSingleToc(tocFile.FullPath));
+                            referencedTocFileModel = new TocItemInfo(tocFile, TocHelper.LoadSingleToc(tocFile.FullPath));
 
                             referencedTocFileModel = ResolveItem(referencedTocFileModel, stack);
                             referencedToc = referencedTocFileModel.Content;

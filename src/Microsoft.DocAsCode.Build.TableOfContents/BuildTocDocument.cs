@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         /// <returns></returns>
         public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
         {
-            var resolvedModels = ResolveTocUtility.Resolve(models, host).ToList();
+            var resolvedModels = TocHelper.Resolve(models, host).ToList();
 
             ReportPreBuildDependency(resolvedModels, host, 8);
 
