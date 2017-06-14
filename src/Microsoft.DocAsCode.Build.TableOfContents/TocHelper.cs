@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    public class ResolveTocUtility
+    public static class TocHelper
     {
         public static IEnumerable<FileModel> Resolve(ImmutableList<FileModel> models, IHostService host)
         {
