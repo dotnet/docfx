@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         public override FileModel Load(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
             var filePath = file.FullPath;
-            var toc = Utility.LoadSingleToc(filePath);
+            var toc = TocHelper.LoadSingleToc(filePath);
 
             var repoDetail = GitUtility.TryGetFileDetail(filePath);
             var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
