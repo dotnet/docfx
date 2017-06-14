@@ -157,9 +157,10 @@ namespace Microsoft.DocAsCode.SubCommands
                         Logger.LogVerbose("Skipping assembly: Microsoft.DocAsCode.EntityModel.");
                         continue;
                     }
-                    if (assemblyName == typeof(ValidateBookmark).Assembly.GetName().Name)
+                    if (assemblyName == typeof(ValidateBookmark).Assembly.GetName().Name ||
+                        assemblyName == typeof(TocDocumentProcessor).Assembly.GetName().Name)
                     {
-                        // work around, don't load assembly that has ValidateBookmark.
+                        // work around, don't load assembly that has ValidateBookmark or TocDocumentProcessor, to prevent double loading
                         Logger.LogVerbose($"Skipping assembly: {assemblyName}.");
                         continue;
                     }
