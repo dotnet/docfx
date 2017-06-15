@@ -29,6 +29,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             };
 
+        public string Name { get; } = nameof(MergeCommand);
         public MergeJsonConfig Config { get; }
         public bool AllowReplay => true;
 

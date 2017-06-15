@@ -190,6 +190,8 @@ namespace Microsoft.DocAsCode.SubCommands
         };
         #endregion
 
+        public string Name { get; } = nameof(InitCommand);
+
         public bool AllowReplay => false;
 
         public InitCommand(InitCommandOptions options)

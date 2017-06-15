@@ -70,7 +70,7 @@ namespace Microsoft.DocAsCode
             var context = new SubCommandRunningContext();
             try
             {
-                using (new PerformanceScope("executing", LogLevel.Info))
+                using (new LoggerPhaseScope(command.Name, LogLevel.Info))
                 {
                     command.Exec(context);
                 }

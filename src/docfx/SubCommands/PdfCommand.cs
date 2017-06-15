@@ -19,6 +19,8 @@ namespace Microsoft.DocAsCode.SubCommands
     {
         private readonly BuildCommand _innerBuildCommand;
         private readonly PdfJsonConfig _config;
+
+        public string Name { get; } = nameof(PdfCommand);
         public bool AllowReplay => true;
 
         public PdfCommand(PdfCommandOptions options)

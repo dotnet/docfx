@@ -18,6 +18,8 @@ namespace Microsoft.DocAsCode.SubCommands
     {
         private readonly DependencyCommandOptions _options;
 
+        public string Name { get; } = nameof(DependencyCommand);
+
         public bool AllowReplay => true;
 
         public DependencyCommand(DependencyCommandOptions options)
