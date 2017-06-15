@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.18.4)
+﻿Version Notes (Current Version: v2.18.5)
 =======================================
+v2.18.5
+-------
+1. Log WorkspaceFail events so that we get more detailed information what's wrong when opening solutions or projects using Roslyn.
+
 v2.18.4
 -----------
 1. Fix #1747: Add app.config redirect binding to docfx to resolve LoaderException for docfx metadata
