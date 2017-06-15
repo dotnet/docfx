@@ -1,7 +1,7 @@
 # Future Roadmap
 ### Where we plan to strengthen docfx for all documentations
 
-- [x] Feature already availale in [docfx](RELEASENOTE.md)
+- [x] Feature already available in [docfx](RELEASENOTE.md)
 
 ## Near-term
 
