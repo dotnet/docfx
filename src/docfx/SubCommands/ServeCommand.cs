@@ -19,6 +19,8 @@ namespace Microsoft.DocAsCode.SubCommands
         private readonly ServeCommandOptions _options;
         public bool AllowReplay => false;
 
+        public string Name { get; } = nameof(ServeCommand);
+
         public ServeCommand(ServeCommandOptions options)
         {
             _options = options;

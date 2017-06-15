@@ -21,6 +21,7 @@ namespace Microsoft.DocAsCode.SubCommands
         internal readonly string BaseDirectory;
         internal readonly string OutputFolder;
 
+        public string Name { get; } = nameof(MetadataCommand);
         public bool AllowReplay => true;
 
         public MetadataJsonConfig Config { get; }

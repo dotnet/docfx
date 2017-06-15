@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.SubCommands
     {
         private string _message;
         public bool AllowReplay => false;
+        public string Name { get; } = nameof(HelpCommand);
 
         public HelpCommand(string message)
         {

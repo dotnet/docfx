@@ -23,6 +23,9 @@ namespace Microsoft.DocAsCode.SubCommands
         private readonly TemplateCommandType _commandType;
 
         private readonly ExportTemplateConfig _exportTemplateConfig = null;
+
+        public string Name { get; } = nameof(TemplateCommand);
+
         public bool AllowReplay => false;
 
         public TemplateCommand(TemplateCommandOptions options)

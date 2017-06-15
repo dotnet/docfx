@@ -14,6 +14,8 @@ namespace Microsoft.DocAsCode.SubCommands
     {
         private readonly DownloadCommandOptions _options;
 
+        public string Name { get; } = nameof(DownloadCommand);
+
         public bool AllowReplay => true;
 
         public DownloadCommand(DownloadCommandOptions options)

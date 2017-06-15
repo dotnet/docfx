@@ -22,6 +22,8 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private readonly TemplateManager _templateManager;
 
+        public string Name { get; } = nameof(BuildCommand);
+
         public BuildJsonConfig Config { get; }
 
         public bool AllowReplay => true;
