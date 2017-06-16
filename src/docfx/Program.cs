@@ -68,29 +68,31 @@ namespace Microsoft.DocAsCode
             replayListener.Replay = command.AllowReplay;
 
             var context = new SubCommandRunningContext();
+            PerformanceScope scope = null;
             try
             {
-                using (new LoggerPhaseScope(command.Name, LogLevel.Info))
+                // TODO: For now reuse AllowReplay for overall elapsed time statistics
+                if (command.AllowReplay)
                 {
-                    command.Exec(context);
+                    scope = new PerformanceScope(string.Empty, LogLevel.Info);
                 }
 
+                command.Exec(context);
                 return 0;
             }
-            catch (DocumentException de)
+            catch (Exception e) when (e is DocumentException || e is DocfxException)
             {
-                Logger.LogError(de.Message);
-                return 1;
-            }
-            catch (DocfxException de)
-            {
-                Logger.LogError(de.Message);
+                Logger.LogError(e.Message);
                 return 1;
             }
             catch (Exception e)
             {
                 Logger.LogError(e.ToString());
                 return 1;
+            }
+            finally
+            {
+                scope?.Dispose();
             }
         }
     }

@@ -39,7 +39,10 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             foreach (var command in Commands)
             {
-                command.Exec(context);
+                using (new LoggerPhaseScope(command.Name, LogLevel.Info))
+                {
+                    command.Exec(context);
+                }
             }
         }
 
