@@ -8,8 +8,10 @@ v2.19 (Pre-release)
 3. Support more develop language for code snippet.
 4. Downgrade invalid inline code snippet and invalid block file inclusion from error to warning.
 5. Add log code to manifest.
-6. Bug fixes:
+6. Add line and source file info for invalid cross reference
+7. Bug fixes:
    1. Fix html pre element behaivor.
+   2. Fix post processor restore manifest to be case-insensitive
 
 v2.18.2
 -----------
