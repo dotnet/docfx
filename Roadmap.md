@@ -27,7 +27,7 @@ We can consider **partials** as **components** when **partials** accepts paramet
 #### Proposals:
 1. Mustache to handlebars
 
-    Handlebars keeps most compatibility with Mustache template syntax, and meanwhile it is more powerful. It supports partials with parameters, which makes componentize possible. It also contains [Built-In Helpers](http://handlebarsjs.com/#builtins) such as `if` conditional and `each` iterator.
+    Handlebars keeps most compatibility with Mustache template syntax, and meanwhile it is more powerful. It supports partials with parameters, which makes componentization possible. It also contains [Built-In Helpers](http://handlebarsjs.com/#builtins) such as `if` conditional and `each` iterator.
 
 2. Support new syntax
     1. React  
