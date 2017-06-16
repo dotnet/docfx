@@ -25,6 +25,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public PdfCommand(PdfCommandOptions options)
         {
+            ConvertWrapper.PrerequisiteCheck();
             _config = ParseOptions(options);
             if (_config.Serve == true)
             {
@@ -42,7 +43,6 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void Exec(SubCommandRunningContext context)
         {
-            ConvertWrapper.PrerequisiteCheck();
             EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(_config.BaseDirectory) ? Directory.GetCurrentDirectory() : _config.BaseDirectory));
             // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
             var baseDirectory = EnvironmentContext.BaseDirectory;
