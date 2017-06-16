@@ -138,20 +138,27 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         transformDocument = true;
                     }
+
+                    var versionMessageSuffix = string.IsNullOrEmpty(parameter.VersionName) ? string.Empty : $" in version \"{parameter.VersionName}\"";
                     if (parameter.Files.Count == 0)
                     {
-                        Logger.LogWarning(string.IsNullOrEmpty(parameter.VersionName)
-                            ? "No files found, nothing is generated in default version."
-                            : $"No files found, nothing is generated in version \"{parameter.VersionName}\".");
+                        Logger.LogWarning($"No file found, nothing will be generated{versionMessageSuffix}. Please make sure docfx.json is correctly configured.");
                         manifests.Add(new Manifest());
-                        continue;
                     }
-                    parameter.Metadata = _postProcessorsManager.PrepareMetadata(parameter.Metadata);
-                    if (!string.IsNullOrEmpty(parameter.VersionName))
+                    else
                     {
-                        Logger.LogInfo($"Start building for version: {parameter.VersionName}");
+                        if (!parameter.Files.EnumerateFiles().Any(s => s.Type == DocumentType.Article))
+                        {
+                            Logger.LogWarning($"No content file found{versionMessageSuffix}. Please make sure the content section of docfx.json is correctly configured.");
+                        }
+
+                        parameter.Metadata = _postProcessorsManager.PrepareMetadata(parameter.Metadata);
+                        if (!string.IsNullOrEmpty(parameter.VersionName))
+                        {
+                            Logger.LogInfo($"Start building for version: {parameter.VersionName}");
+                        }
+                        manifests.Add(BuildCore(parameter, markdownServiceProvider));
                     }
-                    manifests.Add(BuildCore(parameter, markdownServiceProvider));
                 }
 
                 using (new LoggerPhaseScope("Postprocess", LogLevel.Verbose))
