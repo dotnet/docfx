@@ -34,7 +34,7 @@ We can consider **partials** as **components** when **partials** accepts paramet
 [React](https://facebook.github.io/react/) is popularly used when developing web applications. If we support `JSX` and leverage `React.Component`, is it more convenient for front-end developers to integrate with docfx?
 
     2. Razor  
-[RazorEngine](https://antaris.github.io/RazorEngine/) as the template engine for ASP.NET, is more friendly to C# developers. It also support partials with parameters.
+[RazorEngine](https://antaris.github.io/RazorEngine/) as the template engine for ASP.NET, is more friendly to C# developers. It also supports partials with parameters.
 
 ### Performance
 * Performance benchmark
@@ -61,5 +61,6 @@ With this API service, there is no need to download `msdn.zip` package or `xrefm
 * Localization and versioning support
 * More attractive themes
 * Sandcastle advanced features
+* Support more programming languages, e.g. Python, JavaScript, Golang, etc.
 
 ## Long-Term
