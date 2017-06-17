@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Text;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -79,7 +80,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 var content = JsonUtility.Deserialize<Dictionary<BuildPhase, string>>(reader);
                 foreach (var c in content)
                 {
-                    using (var sr = new StreamReader(Path.Combine(Path.GetDirectoryName(file), c.Value)))
+                    using (var sr = new StreamReader(Path.Combine(Path.GetDirectoryName(file), c.Value), Encoding.Unicode))
                     {
                         bm[c.Key] = BuildMessageInfo.Load(sr);
                     }
@@ -98,7 +99,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return;
             }
-            using (var writer = new StreamWriter(fileName))
+            using (var writer = new StreamWriter(fileName, false, Encoding.Unicode))
             {
                 JsonUtility.Serialize(
                     writer,
