@@ -1,0 +1,272 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>How-to: Customize DocFX Flavored Markdown | DocFX website </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="How-to: Customize DocFX Flavored Markdown | DocFX website ">
+    <meta name="generator" content="docfx 2.19.0.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="how-to-customize-docfx-flavored-markdown">How-to: Customize DocFX Flavored Markdown</h1>
+
+<h2 id="customize-renderer">Customize Renderer</h2>
+<p>DocFX Flavored Markdown introduced <a class="xref" href="../api/Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPartProvider.html">IDfmCustomizedRendererPartProvider</a> from v2.17.
+In older version, you need to define a new markdown renderer and export a new <a href="xref:Microsoft.DocAsCode.Build.EngineIMarkdownServiceProvider">markdown service</a>.</p>
+<p>Now, you can customize a part of renderer as a DocFX plugin.</p>
+<h3 id="default-rendering-for-block-code">Default rendering for block code</h3>
+<p>For standard markdown, block code is following:</p>
+<pre><code class="lang-md">```cs
+Console.WriteLine();
+```
+</code></pre><p>And the html will be:</p>
+<pre><code class="lang-html">&lt;pre&gt;&lt;code class=&quot;lang-cs&quot;&gt;Console.WriteLine();
+&lt;/code&gt;&lt;/pre&gt;
+</code></pre><h3 id="set-goal">Set goal</h3>
+<p>Now we want any csharp code (<code>cs</code>, <code>c#</code>, <code>csharp</code>) will generate following html:</p>
+<pre><code class="lang-html">&lt;pre&gt;&lt;code class=&quot;lang-csharp&quot;&gt;Console.WriteLine();
+&lt;/code&gt;&lt;/pre&gt;
+</code></pre><h3 id="create-customize-rendering-plugin-project">Create customize rendering plugin project</h3>
+<p>To complete this goal, we need to create a customized rendering plugin.</p>
+<ol>
+<li>Create a project, set project names.</li>
+<li>Add required nuget package: <code>Microsoft.DocAsCode.Dfm</code> with version &gt;= 2.17.</li>
+<li>Create a class, for example with name <code>CustomBlockCodeRendererPart</code>.</li>
+<li>Inherit <a class="xref" href="../api/Microsoft.DocAsCode.Dfm.DfmCustomizedRendererPartBase-3.html">DfmCustomizedRendererPartBase&lt;TRenderer, TToken, TContext&gt;</a> (which implements @Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPart).</li>
+<li><p>Implements renderer part class like following:</p>
+<pre><code class="lang-cs">public class CustomBlockCodeRendererPart : DfmCustomizedRendererPartBase&lt;IMarkdownRenderer, MarkdownCodeBlockToken, MarkdownBlockContext&gt;
+{
+    public override string Name =&gt; &quot;MyFirstCustomRendererPart&quot;;
+
+    public override bool Match(IMarkdownRenderer renderer, MarkdownCodeBlockToken token, MarkdownBlockContext context)
+    {
+        return token.Lang == &quot;cs&quot; || token.Lang == &quot;c#&quot; || token.Lang == &quot;csharp&quot;;
+    }
+
+    public override StringBuffer Render(IMarkdownRenderer renderer, MarkdownCodeBlockToken token, MarkdownBlockContext context)
+    {
+        StringBuffer result = &quot;&lt;pre&gt;&lt;code class=\&quot;&quot;;
+        result += renderer.Options.LangPrefix;
+        result += &quot;csharp&quot;;
+        result += &quot;\&quot;&gt;&quot;;
+        result += token.Code;
+        result += &quot;\n&lt;/code&gt;&lt;/pre&gt;&quot;;
+        return result;
+    }
+}
+</code></pre><div class="TIP"><h5>Tip</h5><p>If your part require dispose some resource, please implement <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a>.</p>
+</div>
+</li>
+<li><p>Create another class, for example with name <code>CustomBlockCodeRendererPartProvider</code></p>
+</li>
+<li><p>Implements <a class="xref" href="../api/Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPartProvider.html">IDfmCustomizedRendererPartProvider</a> and export like following:</p>
+<pre><code class="lang-cs">[Export(typeof(IDfmCustomizedRendererPartProvider))]
+public class CustomBlockCodeRendererPartProvider : IDfmCustomizedRendererPartProvider
+{
+    public IEnumerable&lt;IDfmCustomizedRendererPart&gt; CreateParts(IReadOnlyDictionary&lt;string, object&gt; parameters)
+    {
+        yield return new CustomBlockCodeRendererPart();
+    }
+}
+</code></pre></li>
+<li>Build the project.</li>
+</ol>
+<h3 id="enable-customize-rendering-plugin">Enable customize rendering plugin</h3>
+<ol>
+<li>Copy output assemblies to x\plugins, x is any folder.</li>
+<li>Run <code>docfx.exe</code> with template x (<a href="howto_build_your_own_type_of_documentation_with_custom_plug-in.html#enable-plug-in">details</a>)</li>
+</ol>
+<h2 id="customize-markdown-extension">Customize Markdown Extension</h2>
+<p>In DocFX Flavored Markdown, we can add new markdown extensions by existing plugin system.</p>
+<h3 id="compare-with-markdown-lite">Compare with markdown lite</h3>
+<p>In markdown lite, we can <a href="intro_markdown_lite.html#how-to-customize-markdown-syntax">customize markdown extension</a> by following steps:</p>
+<ol>
+<li>Create a new token</li>
+<li>Create a new rule</li>
+<li>Create a new renderer</li>
+<li>Create a new engine builder</li>
+</ol>
+<p>In DocFX Flavored Markdown, we introduced <a class="xref" href="../api/Microsoft.DocAsCode.Dfm.IDfmEngineCustomizer.html">IDfmEngineCustomizer</a> from v2.17.</p>
+<p>Now, we need to following step:</p>
+<ol>
+<li>Create a new token</li>
+<li>Create a new rule</li>
+<li>Create a new renderer part</li>
+<li>Create a new renderer part provider</li>
+<li>Create a new DFM engine customizer</li>
+</ol>
+<p>Difference:</p>
+<ul>
+<li>DFM markdown extension is a part plugin, markdown lite is a whole engine plugin.</li>
+<li>You can combine two or more DFM markdown extensions, but you must choose one of markdown lite engine plugin.</li>
+</ul>
+<h3 id="how-to-create-a-new-markdown-extension-by-plugin">How to create a new markdown extension by plugin</h3>
+<ol>
+<li>Define markdown syntax (same with <a href="intro_markdown_lite.html#define-markdown-syntax">markdown lite</a>).</li>
+<li>Select token kind (same with <a href="intro_markdown_lite.html#select-token-kind">markdown lite</a>).</li>
+<li>Define token (same with <a href="intro_markdown_lite.html#define-token">markdown lite</a>).</li>
+<li>Define rule (same with <a href="intro_markdown_lite.html#define-rule">markdown lite</a>).</li>
+<li><p>Create a new renderer part.</p>
+<pre><code class="lang-cs">public sealed class LabelRendererPart : DfmCustomizedRendererPartBase&lt;IMarkdownRenderer, MarkdownMyLabelBlockToken, MarkdownBlockContext&gt;
+{
+    public override string Name =&gt; &quot;LabelRendererPart&quot;;
+
+    public override bool Match(IMarkdownRenderer renderer, MarkdownMyLabelBlockToken token, MarkdownBlockContext context) =&gt; true;
+
+    public override StringBuffer Render(IMarkdownRenderer renderer, MarkdownMyLabelBlockToken token, MarkdownBlockContext context) =&gt; &quot;&lt;div id=\&quot;&quot; + token.Label + &quot;\&quot;&gt;&lt;/div&gt;&quot;;
+}
+</code></pre></li>
+<li><p>Create a new renderer part provider.</p>
+<pre><code class="lang-cs">[Export(typeof(IDfmCustomizedRendererPartProvider))]
+public class LabelRendererPartProvider : IDfmCustomizedRendererPartProvider
+{
+    public IEnumerable&lt;IDfmCustomizedRendererPart&gt; CreateParts(IReadOnlyDictionary&lt;string, object&gt; parameters)
+    {
+        yield return new LabelRendererPart();
+    }
+}
+</code></pre></li>
+<li><p>Create a new DFM engine customizer.</p>
+<pre><code class="lang-cs">[Export(typeof(IDfmEngineCustomizer))]
+public class MyDfmEngineCustomizer : IDfmEngineCustomizer
+{
+    public void Customize(DfmEngineBuilder builder, IReadOnlyDictionary&lt;string, object&gt; parameters)
+    {
+        var index = builder.BlockRules.FindIndex(r =&gt; r is MarkdownHeadingBlockRule);
+        builder.BlockRules = builder.BlockRules.Insert(index, new MyHeadingRule());
+    }
+}
+</code></pre></li>
+<li>Build project.</li>
+<li>Enable and test your plugin.</li>
+</ol>
+<div id="disqus_thread"></div>
+                <script>
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://docfx-github.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+                </script>
+                <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/howto_customize_docfx_flavored_markdown.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="#disqus_thread" class="contribution-link">0 Comments</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Copyright © 2015-2017 Microsoft<br>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+    <script id="dsq-count-scr" src="//docfx-github.disqus.com/count.js" async=""></script>
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-99241001-1', 'auto');
+      ga('send', 'pageview');
+    
+    </script>
+  </body>
+</html>

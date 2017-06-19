@@ -8,7 +8,7 @@
     <title>DocFX Flavored Markdown | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFX Flavored Markdown | DocFX website ">
-    <meta name="generator" content="docfx 2.18.5.0">
+    <meta name="generator" content="docfx 2.19.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -198,17 +198,214 @@ Give an example below.</p>
 [!code[Main](index.xml?range=2,5-7,9-) &quot;This includes the lines 2, 5, 6, 7 and lines 9 to the last line&quot;]
 [!code[Main](index.xml?highlight=2,5-7,9-) &quot;This includes the whole file with lines 2,5-7,9- highlighted&quot;]
 </code></pre><h3 id="tag-name-representation-in-code-snippet-source-file">Tag Name Representation in Code Snippet Source File</h3>
-<p>DFM currently only supports the following <strong><code>&lt;language&gt;</code></strong> values to be able to retrieve by tag name:</p>
+<p>DFM currently supports the following <strong><code>&lt;language&gt;</code></strong> values to be able to retrieve by tag name:</p>
 <ul>
-<li>C#: cs, csharp</li>
-<li>VB: vb, vbnet</li>
-<li>C++: cpp, c++</li>
-<li>F#: fsharp</li>
-<li>XML: xml</li>
-<li>Html: html</li>
-<li>SQL: sql</li>
-<li>Javascript: javascript</li>
+<li>C family<ul>
+<li>Start with: <code>// &lt;{name}&gt;</code></li>
+<li>End with: <code>// &lt;/{name}&gt;</code></li>
+<li>Languages:
+actionscript,
+arduino,
+assembly (alias: nasm),
+c (alias: cpp, c++, objective-c, obj-c, objc, objectivec),
+csharp (alias: cs),
+cuda,
+d (alias: dlang),
+fsharp (alias: fs),
+go (alias: golang),
+java,
+javascript (alias: js, node),
+pascal,
+php,
+processing,
+rust,
+scala,
+smalltalk,
+swift,
+typescript (alias: ts)</li>
+<li>File extensions:
+.as,
+.asm,
+.ino,
+.c,
+.cc,
+.cpp,
+.cs,
+.cu,
+.cuh,
+.d,
+.fs,
+.fsi,
+.fsx,
+.go,
+.h,
+.hpp,
+.java,
+.js,
+.pas,
+.php,
+.pde,
+.rs,
+.scala,
+.st,
+.swift,
+.ts</li>
 </ul>
+</li>
+<li>Basic family<ul>
+<li>Start with: <code>&#39; &lt;{name}&gt;</code></li>
+<li>End with: <code>&#39; &lt;/{name}&gt;</code></li>
+<li>Languages:
+vb,
+vbnet,
+vbscript</li>
+<li>File extensions:
+.vb,
+.bas,
+.vbs,
+.vba</li>
+</ul>
+</li>
+<li>Markup language family<ul>
+<li>Start with: <code>&lt;!-- &lt;{name}&gt; --&gt;</code></li>
+<li>End with: <code>&#39;&lt;!-- &lt;/{name}&gt; --&gt;</code></li>
+<li>Languages:
+cshtml,
+html,
+vbhtml,
+wsdl,
+xml,
+xsl,
+xslt,
+xsd,
+xaml</li>
+<li>File extensions:
+.asp,
+.aspx,
+.csdl,
+.cshtml,
+.edmx,
+.jsp,
+.vbhtml,
+.wsdl,
+.xaml,
+.xml,
+.xsd,
+.xsl,
+.xslt,
+.html</li>
+</ul>
+</li>
+<li>Sql family<ul>
+<li>Start with: <code>-- &lt;{name}&gt;</code></li>
+<li>End with: <code>-- &lt;/{name}&gt;</code></li>
+<li>Languages:
+sql</li>
+<li>File extensions:
+.sql</li>
+</ul>
+</li>
+<li>Script family<ul>
+<li>Start with: <code># &lt;{name}&gt;</code></li>
+<li>End with: <code># &lt;/{name}&gt;</code></li>
+<li>Languages:
+perl,
+powershell (alias: posh),
+python,
+r,
+ruby (alias: ru),
+shell (alias: sh, bash)</li>
+<li>File extensions:
+.bash,
+.pl,
+.ps1,
+.py,
+.r,
+.ru,
+.ruby,
+.sh</li>
+</ul>
+</li>
+<li>Special language<ul>
+<li>batchfile<ul>
+<li>Start with: <code>rem &lt;{name}&gt;</code></li>
+<li>End with: <code>rem &lt;/{name}&gt;</code></li>
+<li>Languages:
+batchfile</li>
+<li>File extensions:
+.bat
+.cmd</li>
+</ul>
+</li>
+<li>csharp<ul>
+<li>Start with: <code># region {name}</code></li>
+<li>End with: <code>#endregion</code></li>
+<li>Languages:
+csharp (alias: cs)</li>
+<li>File extensions:
+.cs</li>
+</ul>
+</li>
+<li>erlang<ul>
+<li>Start with: <code>% &lt;{name}&gt;</code></li>
+<li>End with: <code>% &lt;/{name}&gt;</code></li>
+<li>Languages:
+erlang</li>
+<li>File extensions:
+.erl</li>
+</ul>
+</li>
+<li>haskell<ul>
+<li>Start with: <code>-- &lt;{name}&gt;</code></li>
+<li>End with: <code>-- &lt;/{name}&gt;</code></li>
+<li>Languages:
+haskell</li>
+<li>File extensions:
+.hs</li>
+</ul>
+</li>
+<li>matlab<ul>
+<li>Start with: <code>% &lt;{name}&gt;</code></li>
+<li>End with: <code>% &lt;/{name}&gt;</code></li>
+<li>Languages:
+matlab</li>
+<li>File extensions:
+.matlab</li>
+</ul>
+</li>
+<li>lisp<ul>
+<li>Start with: <code>; &lt;{name}&gt;</code></li>
+<li>End with: <code>; &lt;/{name}&gt;</code></li>
+<li>Languages:
+lisp</li>
+<li>File extensions:
+.lisp,
+.lsp</li>
+</ul>
+</li>
+<li>lua<ul>
+<li>Start with: <code>-- &lt;{name}&gt;</code></li>
+<li>End with: <code>-- &lt;/{name}&gt;</code></li>
+<li>Languages:
+lua</li>
+<li>File extensions:
+.lua</li>
+</ul>
+</li>
+<li>vb<ul>
+<li>Start with: <code>#Region {name}</code></li>
+<li>End with: <code>#End Region</code></li>
+<li>Languages:
+vb (alias: vbnet)</li>
+<li>File extensions:
+.vb</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="NOTE"><h5>Note</h5><p>If dev-lang is not specified, file extension will be used to determine the language.</p>
+</div>
 <h2 id="note-warningtipimportant">Note (Warning/Tip/Important)</h2>
 <p>Using specific syntax inside block quote to indicate the following content is Note.</p>
 <pre><code>&gt; [!NOTE]

@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.18.5) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.19) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.18.5) | DocFX website ">
-    <meta name="generator" content="docfx 2.18.5.0">
+    <meta name="title" content="Version Notes (Current Version: v2.19) | DocFX website ">
+    <meta name="generator" content="docfx 2.19.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -67,20 +67,26 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="version-notes-current-version-v2185">Version Notes (Current Version: v2.18.5)</h1>
+<h1 id="version-notes-current-version-v219">Version Notes (Current Version: v2.19)</h1>
 
-<h2 id="v2185">v2.18.5</h2>
+<h2 id="v219">v2.19</h2>
 <ol>
-<li>Log WorkspaceFail events so that we get more detailed information what&#39;s wrong when opening solutions or projects using Roslyn.</li>
+<li>Enable incremental Build by default. You can use option <code>--force</code> to force rebuild.</li>
+<li>Improve <code>docfx metadata</code> error message when error opening solutions or projects using Roslyn. <a href="https://github.com/dotnet/docfx/pull/1738">https://github.com/dotnet/docfx/pull/1738</a></li>
+<li>Support more develop language for code snippet Markdown syntax. <a href="https://github.com/dotnet/docfx/pull/1754">https://github.com/dotnet/docfx/pull/1754</a></li>
+<li>Downgrade the message level for <em>invalid inline code snippet</em> and <em>invalid block file inclusion</em> from <em>Error</em> to <em>Warning</em>.</li>
+<li>Add LogCode for each file to the manifest file.</li>
+<li>DocFX is <strong>NOT</strong> dependent on Build Tool 2015 anymore.</li>
+<li>Add line and source file info for invalid cross reference</li>
+<li>Bug fixes:<ol>
+<li>Fix html pre element behavior in Markdown, empty lines are now allowed in <code>&lt;pre&gt;</code> blocks.</li>
+<li>Fix #1747: add app.config redirect binding to docfx to resolve LoaderException for docfx metadata</li>
+<li>Fix #1737: it is now possible to use <code>&gt; [!warning]</code> format in triple-slash comments</li>
+<li>Fix #1319 that docfx fails to load multiple solutions</li>
+<li>Fix #1720 and #1708 that docfx throws runtime error in Mono</li>
+<li>Fix post processor incremental bug: restore manifest should be case-insensitive</li>
 </ol>
-<h2 id="v2184">v2.18.4</h2>
-<ol>
-<li>Fix #1747: Add app.config redirect binding to docfx to resolve LoaderException for docfx metadata</li>
-</ol>
-<h2 id="v2183">v2.18.3</h2>
-<ol>
-<li>Remove dependency to Build Tool 2015</li>
-<li>Fix runtime error when running in Mono: <a href="https://github.com/dotnet/docfx/issues/1720">https://github.com/dotnet/docfx/issues/1720</a>, <a href="https://github.com/dotnet/docfx/issues/1708">https://github.com/dotnet/docfx/issues/1708</a></li>
+</li>
 </ol>
 <h2 id="v2182">v2.18.2</h2>
 <ol>

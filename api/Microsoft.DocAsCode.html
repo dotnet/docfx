@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Namespace Microsoft.DocAsCode
    | DocFX website ">
-    <meta name="generator" content="docfx 2.18.5.0">
+    <meta name="generator" content="docfx 2.19.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -77,7 +77,7 @@
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="Microsoft.DocAsCode">
   
-  <h1 id="Microsoft_DocAsCode" data-uid="Microsoft.DocAsCode">Namespace Microsoft.DocAsCode
+  <h1 id="Microsoft_DocAsCode" data-uid="Microsoft.DocAsCode" class="text-break">Namespace Microsoft.DocAsCode
   </h1>
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
@@ -103,17 +103,20 @@
 This form supports multiple file mappings, and also allows additional properties per mapping.
 e.g. </li>
 </ol>
-<pre><code>&quot;key&quot;: [
-  {&quot;files&quot;: [&quot;file1&quot;, &quot;file2&quot;], &quot;dest&quot;: &quot;dest1&quot;},
-  {&quot;files&quot;: &quot;file3&quot;, &quot;dest&quot;: &quot;dest2&quot;},
-  {&quot;files&quot;: [&quot;file4&quot;, &quot;file5&quot;], &quot;exclude&quot;: [&quot;file5&quot;], &quot;src&quot;: &quot;folder1&quot;},
-  {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v1.0&quot;, &quot;dest&quot;:&quot;v1.0/api&quot;, &quot;version&quot;: &quot;v1.0&quot;},
-  {&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v2.0&quot;, &quot;dest&quot;:&quot;v2.0/api&quot;, &quot;version&quot;: &quot;v2.0&quot;}
+<pre><code>&amp;quot;key&amp;quot;: [
+  {&amp;quot;files&amp;quot;: [&amp;quot;file1&amp;quot;, &amp;quot;file2&amp;quot;], &amp;quot;dest&amp;quot;: &amp;quot;dest1&amp;quot;},
+  {&amp;quot;files&amp;quot;: &amp;quot;file3&amp;quot;, &amp;quot;dest&amp;quot;: &amp;quot;dest2&amp;quot;},
+  {&amp;quot;files&amp;quot;: [&amp;quot;file4&amp;quot;, &amp;quot;file5&amp;quot;], &amp;quot;exclude&amp;quot;: [&amp;quot;file5&amp;quot;], &amp;quot;src&amp;quot;: &amp;quot;folder1&amp;quot;},
+  {&amp;quot;files&amp;quot;: &amp;quot;Example.yml&amp;quot;, &amp;quot;src&amp;quot;: &amp;quot;v1.0&amp;quot;, &amp;quot;dest&amp;quot;:&amp;quot;v1.0/api&amp;quot;, &amp;quot;version&amp;quot;: &amp;quot;v1.0&amp;quot;},
+  {&amp;quot;files&amp;quot;: &amp;quot;Example.yml&amp;quot;, &amp;quot;src&amp;quot;: &amp;quot;v2.0&amp;quot;, &amp;quot;dest&amp;quot;:&amp;quot;v2.0/api&amp;quot;, &amp;quot;version&amp;quot;: &amp;quot;v2.0&amp;quot;}
 ]
 </code></pre><ol start="2">
 <li>Compact form
 This form supports multiple file patterns in an array
-e.g. <code>projects: [&quot;file1&quot;, &quot;file2&quot;]</code></li>
+e.g. <code>projects: [&amp;quot;file1&amp;quot;, &amp;quot;file2&amp;quot;]</code></li>
+<li>Object form
+If the Array form contains only one item, it can be shortened to an object
+e.g. <code>projects: [&amp;quot;file1&amp;quot;, &amp;quot;file2&amp;quot;]</code></li>
 </ol>
 </section>
       <h4><a class="xref" href="Microsoft.DocAsCode.FileMappingConverter.html">FileMappingConverter</a></h4>

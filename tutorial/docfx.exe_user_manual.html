@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.18.5.0">
+    <meta name="generator" content="docfx 2.19.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -100,7 +100,7 @@
 <p><code>docfx help &lt;command&gt;</code> to read about a specific subcommand</p>
 <h3 id="22-extract-language-metadata-command-docfx-metadata">2.2 Extract language metadata command <code>docfx metadata</code></h3>
 <p><strong>Syntax</strong></p>
-<pre><code>docfx metadata [&lt;projects&gt;]
+<pre><code>docfx metadata [&lt;projects&gt;] [--property &lt;n1&gt;=&lt;v1&gt;;&lt;n2&gt;=&lt;v2&gt;]
 </code></pre><p><strong>Layout</strong></p>
 <pre><code>|-- &lt;metadata folder&gt;
       |-- api
@@ -128,6 +128,9 @@ Files can be combined using <code>,</code> as separator and <em>search pattern</
 <h4 id="222-command-option---shouldskipmarkup">2.2.2 Command option <code>--shouldSkipMarkup</code></h4>
 <p>If adding option <code>--shouldSkipMarkup</code> in metadata command, it means that DocFX would not render triple-slash-comments in source code as markdown.</p>
 <p>e.g. <code>docfx metadata --shouldSkipMarkup</code></p>
+<h4 id="222-command-option---property-n1v1n2v2">2.2.2 Command option <code>--property &lt;n1&gt;=&lt;v1&gt;;&lt;n2&gt;=&lt;v2&gt;</code></h4>
+<p>An optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the /property:<n1>=<v1>;<n2>=<v2> command line argument.
+For example: <code>docfx metadata --property TargetFramework=net46</code> generates metadata files with .NET framework 4.6. This command can be used when the project supports multiple <code>TargetFrameworks</code>.<p>
 <h3 id="23-generate-documentation-command-docfx-build">2.3 Generate documentation command <code>docfx build</code></h3>
 <p><strong>Syntax</strong></p>
 <pre><code>docfx build [-o:&lt;output_path&gt;] [-t:&lt;template folder&gt;]
@@ -231,6 +234,10 @@ And if <code>href</code> is referencing to a <strong>folder</strong>, it must en
 <td>useCompatibilityFileName</td>
 <td>If set to true, DocFX would keep <code>` </code> in comment id instead of replacing it with <code>-</code>.</td>
 </tr>
+<tr>
+<td>properties</td>
+<td>Defines an optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the <code>/property:name=value</code> command line argument.</td>
+</tr>
 </tbody>
 </table>
 <p><strong>Sample</strong></p>
@@ -245,7 +252,10 @@ And if <code>href</code> is referencing to a <strong>folder</strong>, it must en
         }
       ],
       &quot;dest&quot;: &quot;obj/docfx/api/dotnet&quot;,
-      &quot;shouldSkipMarkup&quot;: true
+      &quot;shouldSkipMarkup&quot;: true,
+      &quot;properties&quot;: {
+          &quot;TargetFramework&quot;: &quot;netstardard1.3&quot;
+      }
     },
     {
       &quot;src&quot;: [
@@ -255,11 +265,16 @@ And if <code>href</code> is referencing to a <strong>folder</strong>, it must en
         }
       ],
       &quot;dest&quot;: &quot;obj/docfx/api/js&quot;,
-      &quot;useCompatibilityFileName&quot;: true
+      &quot;useCompatibilityFileName&quot;: true,
+      &quot;properties&quot;: {
+          &quot;TargetFramework&quot;: &quot;net46&quot;
+      }
     }
   ]
 }
-</code></pre><h3 id="32-properties-for-build">3.2 Properties for <code>build</code></h3>
+</code></pre><div class="NOTE"><h5>Note</h5><p>Make sure to specify <code>&quot;TargetFramework&quot;: &lt;one of the frameworks&gt;</code> in your docfx.json when the project is targeting for multiple platforms.</p>
+</div>
+<h3 id="32-properties-for-build">3.2 Properties for <code>build</code></h3>
 <table>
 <thead>
 <tr>
@@ -678,7 +693,7 @@ It offers several options to determine how to parse the Glob pattern:</p>
 <li>Do we support output folder outside current project folder(the folder when <code>docfx.json</code> exists)?<br>A: YES.</li>
 <li>Do we support <strong>referencing</strong> files outside of current project folder(the folder when <code>docfx.json</code> exists)?<br>A: NO.</li>
 </ol>
-<div id="disqus_thread"></div>
+</v2></n2></v1></n1><div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE
                 var d = document, s = d.createElement('script');

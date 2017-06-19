@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class TocDocumentProcessor
    | DocFX website ">
-    <meta name="generator" content="docfx 2.18.5.0">
+    <meta name="generator" content="docfx 2.19.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -78,7 +78,7 @@
             <article class="content wrap" id="_content" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor">
   
   
-  <h1 id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor">Class TocDocumentProcessor
+  <h1 id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor" class="text-break">Class TocDocumentProcessor
   </h1>
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
@@ -86,10 +86,20 @@
     <h5>Inheritance</h5>
     <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
     <div class="level1"><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html">DisposableDocumentProcessor</a></div>
-    <div class="level2"><span class="xref">TocDocumentProcessor</span></div>
+    <div class="level2"><a class="xref" href="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessorBase.html">TocDocumentProcessorBase</a></div>
+    <div class="level3"><span class="xref">TocDocumentProcessor</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessorBase.html#Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessorBase_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__">TocDocumentProcessorBase.Load(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</a>
+    </div>
+    <div>
+      <a class="xref" href="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessorBase.html#Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessorBase_Save_Microsoft_DocAsCode_Plugins_FileModel_">TocDocumentProcessorBase.Save(FileModel)</a>
+    </div>
+    <div>
+      <a class="xref" href="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessorBase.html#Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessorBase_UpdateHref_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_">TocDocumentProcessorBase.UpdateHref(FileModel, IDocumentBuildContext)</a>
+    </div>
     <div>
       <a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_Dispose">DisposableDocumentProcessor.Dispose()</a>
     </div>
@@ -120,7 +130,7 @@
   <h5 id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[Export(typeof (IDocumentProcessor))]
-public class TocDocumentProcessor : DisposableDocumentProcessor, IDocumentProcessor, IDisposable</code></pre>
+public class TocDocumentProcessor : TocDocumentProcessorBase, IDocumentProcessor, IDisposable</code></pre>
   </div>
   <h3 id="properties">Properties
   </h3>
@@ -129,7 +139,7 @@ public class TocDocumentProcessor : DisposableDocumentProcessor, IDocumentProces
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_BuildSteps.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.BuildSteps%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L25">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L18">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_BuildSteps_" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.BuildSteps*"></a>
   <h4 id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_BuildSteps" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.BuildSteps">BuildSteps</h4>
@@ -162,7 +172,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L23">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L16">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_Name_" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.Name*"></a>
   <h4 id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_Name" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.Name">Name</h4>
@@ -196,7 +206,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L28">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L21">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_GetProcessingPriority_" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.GetProcessingPriority*"></a>
   <h4 id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)">GetProcessingPriority(FileAndType)</h4>
@@ -242,18 +252,18 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
   <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_">DisposableDocumentProcessor.GetProcessingPriority(FileAndType)</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.Load(Microsoft.DocAsCode.Plugins.FileAndType%2CSystem.Collections.Immutable.ImmutableDictionary%7BSystem.String%2CSystem.Object%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_RegisterTocMapToContext_Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.RegisterTocMapToContext(Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel%2CMicrosoft.DocAsCode.Plugins.FileModel%2CMicrosoft.DocAsCode.Plugins.IDocumentBuildContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L38">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L52">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_Load_" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.Load*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.Load(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})">Load(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</h4>
+  <a id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_RegisterTocMapToContext_" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.RegisterTocMapToContext*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_RegisterTocMapToContext_Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.RegisterTocMapToContext(Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel,Microsoft.DocAsCode.Plugins.FileModel,Microsoft.DocAsCode.Plugins.IDocumentBuildContext)">RegisterTocMapToContext(TocItemViewModel, FileModel, IDocumentBuildContext)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override FileModel Load(FileAndType file, ImmutableDictionary&lt;string, object&gt; metadata)</code></pre>
+    <pre><code class="lang-csharp hljs">protected override void RegisterTocMapToContext(TocItemViewModel item, FileModel model, IDocumentBuildContext context)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -266,108 +276,10 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileAndType.html">FileAndType</a></td>
-        <td><span class="parametername">file</span></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html">TocItemViewModel</a></td>
+        <td><span class="parametername">item</span></td>
         <td></td>
       </tr>
-      <tr>
-        <td><span class="xref">System.Collections.Immutable.ImmutableDictionary</span>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a>&gt;</td>
-        <td><span class="parametername">metadata</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__">DisposableDocumentProcessor.Load(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</a></div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.Save(Microsoft.DocAsCode.Plugins.FileModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L58">View Source</a>
-  </span>
-  <a id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_Save_" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.Save*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.Save(Microsoft.DocAsCode.Plugins.FileModel)">Save(FileModel)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override SaveResult Save(FileModel model)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
-        <td><span class="parametername">model</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.SaveResult.html">SaveResult</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_">DisposableDocumentProcessor.Save(FileModel)</a></div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_UpdateHref_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.UpdateHref(Microsoft.DocAsCode.Plugins.FileModel%2CMicrosoft.DocAsCode.Plugins.IDocumentBuildContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L69">View Source</a>
-  </span>
-  <a id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_UpdateHref_" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.UpdateHref*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_UpdateHref_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.UpdateHref(Microsoft.DocAsCode.Plugins.FileModel,Microsoft.DocAsCode.Plugins.IDocumentBuildContext)">UpdateHref(FileModel, IDocumentBuildContext)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override void UpdateHref(FileModel model, IDocumentBuildContext context)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
       <tr>
         <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
         <td><span class="parametername">model</span></td>
@@ -381,7 +293,51 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
     </tbody>
   </table>
   <h5 class="overrides">Overrides</h5>
-  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_UpdateHref_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_">DisposableDocumentProcessor.UpdateHref(FileModel, IDocumentBuildContext)</a></div>
+  <div><a class="xref" href="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessorBase.html#Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessorBase_RegisterTocMapToContext_Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_">TocDocumentProcessorBase.RegisterTocMapToContext(TocItemViewModel, FileModel, IDocumentBuildContext)</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_RegisterTocToContext_Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.RegisterTocToContext(Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel%2CMicrosoft.DocAsCode.Plugins.FileModel%2CMicrosoft.DocAsCode.Plugins.IDocumentBuildContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L31">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_RegisterTocToContext_" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.RegisterTocToContext*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor_RegisterTocToContext_Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_" data-uid="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor.RegisterTocToContext(Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel,Microsoft.DocAsCode.Plugins.FileModel,Microsoft.DocAsCode.Plugins.IDocumentBuildContext)">RegisterTocToContext(TocItemViewModel, FileModel, IDocumentBuildContext)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected override void RegisterTocToContext(TocItemViewModel toc, FileModel model, IDocumentBuildContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.DataContracts.Common.TocItemViewModel.html">TocItemViewModel</a></td>
+        <td><span class="parametername">toc</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
+        <td><span class="parametername">model</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildContext.html">IDocumentBuildContext</a></td>
+        <td><span class="parametername">context</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessorBase.html#Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessorBase_RegisterTocToContext_Microsoft_DocAsCode_DataContracts_Common_TocItemViewModel_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_">TocDocumentProcessorBase.RegisterTocToContext(TocItemViewModel, FileModel, IDocumentBuildContext)</a></div>
   <h3 id="extensionmethods">Extension Methods</h3>
   <div>
       <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
@@ -407,7 +363,7 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
                     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_TableOfContents_TocDocumentProcessor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.TableOfContents.TocDocumentProcessor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L18" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.TableOfContents/TocDocumentProcessor.cs/#L13" class="contribution-link">View Source</a>
                   </li>
                   <li>
                     <a href="#disqus_thread" class="contribution-link">0 Comments</a>
