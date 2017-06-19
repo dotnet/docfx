@@ -1,17 +1,25 @@
-﻿Version Notes (Current Version: v2.19)
+﻿Version Notes (Current Version: v2.20)
 =======================================
 
-v2.19 (Pre-release)
+v2.20 (Pre-release)
 -----------
-1. Enable incremental Build by default. You can use option `--force` to force build.
-2. Tabbed content (draft).
-3. Support more develop language for code snippet.
-4. Downgrade invalid inline code snippet and invalid block file inclusion from error to warning.
-5. Add log code to manifest.
-6. Add line and source file info for invalid cross reference
-7. Bug fixes:
-   1. Fix html pre element behaivor.
-   2. Fix post processor restore manifest to be case-insensitive
+
+v2.19
+-----------
+1. Enable incremental Build by default. You can use option `--force` to force rebuild.
+2. Improve `docfx metadata` error message when error opening solutions or projects using Roslyn. https://github.com/dotnet/docfx/pull/1738
+3. Support more develop language for code snippet Markdown syntax. https://github.com/dotnet/docfx/pull/1754
+4. Downgrade the message level for *invalid inline code snippet* and *invalid block file inclusion* from *Error* to *Warning*.
+5. Add LogCode for each file to the manifest file.
+6. DocFX is **NOT** dependent on Build Tool 2015 anymore.
+7. Add line and source file info for invalid cross reference
+8. Bug fixes:
+   1. Fix html pre element behavior in Markdown, empty lines are now allowed in `<pre>` blocks.
+   2. Fix #1747: add app.config redirect binding to docfx to resolve LoaderException for docfx metadata
+   3. Fix #1737: it is now possible to use `> [!warning]` format in triple-slash comments
+   4. Fix #1319 that docfx fails to load multiple solutions
+   5. Fix #1720 and #1708 that docfx throws runtime error in Mono
+   6. Fix post processor incremental bug: restore manifest should be case-insensitive
 
 v2.18.2
 -----------
