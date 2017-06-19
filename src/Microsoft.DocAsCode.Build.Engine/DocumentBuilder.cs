@@ -215,10 +215,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                         // overwrite intermediate cache files
                         if (_intermediateFolder != null && transformDocument)
                         {
-                            _currentBuildInfo.Save(_intermediateFolder);
-                            if (_lastBuildInfo != null)
+                            try
                             {
-                                ClearCacheWithNoThrow(_lastBuildInfo.DirectoryName, true);
+                                _currentBuildInfo.Save(_intermediateFolder);
+                                if (_lastBuildInfo != null)
+                                {
+                                    ClearCacheWithNoThrow(_lastBuildInfo.DirectoryName, true);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogWarning($"Error happened while saving cache. Message: {ex.Message}.");
                             }
                         }
                     }
