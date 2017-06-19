@@ -40,6 +40,10 @@ namespace Microsoft.DocAsCode.SubCommands
                     ExecCore();
                 }
             }
+            catch (AggregateException e)
+            {
+                throw e.GetBaseException();
+            }
             finally
             {
                 EnvironmentContext.Clean();

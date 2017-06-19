@@ -95,6 +95,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
                 await SaveAllMembersFromCacheAsync();
             }
+            catch (AggregateException e)
+            {
+                throw new ExtractMetadataException($"Error extracting metadata for {GetPrintableFileList(_files.SelectMany(s => s.Value))}: {e.GetBaseException()?.Message}", e);
+            }
             catch (Exception e)
             {
                 var files = GetPrintableFileList(_files.SelectMany(s => s.Value));
@@ -416,7 +420,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 // TODO: need an intermediate folder? when to clean it up?
                 // Save output to output folder
-                var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, _preserveRawInlineComments, _shouldSkipMarkup, _useCompatibilityFileName);
+                var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, _preserveRawInlineComments, _shouldSkipMarkup, _useCompatibilityFileName).ToList();
                 applicationCache.SaveToCache(cacheKey, documentCache.Cache, triggeredTime, outputFolder, outputFiles, _shouldSkipMarkup, _msbuildProperties);
             }
         }
@@ -639,7 +643,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return Tuple.Create(projectMetadata, rebuildProject);
         }
 
-        private static IList<string> ResolveAndExportYamlMetadata(
+        private static IEnumerable<string> ResolveAndExportYamlMetadata(
             Dictionary<string, MetadataItem> allMembers,
             Dictionary<string, ReferenceItem> allReferences,
             string folder,
@@ -647,14 +651,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             bool shouldSkipMarkup,
             bool useCompatibilityFileName)
         {
-            var outputFiles = new List<string>();
+            var outputFileNames = new Dictionary<string, int>(FilePathComparer.OSPlatformSensitiveStringComparer);
             var model = YamlMetadataResolver.ResolveMetadata(allMembers, allReferences, preserveRawInlineComments);
 
             var tocFileName = Constants.TocYamlFileName;
-            // 0. TODO: load last Manifest and remove files
+            // 0. load last Manifest and remove files
+            CleanupHistoricalFile(folder);
 
             // 1. generate toc.yml
-            outputFiles.Add(tocFileName);
             model.TocYamlViewModel.Type = MemberType.Toc;
 
             // TOC do not change
@@ -662,6 +666,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             string tocFilePath = Path.Combine(folder, tocFileName);
 
             YamlUtility.Serialize(tocFilePath, tocViewModel, YamlMime.TableOfContent);
+            outputFileNames.Add(tocFilePath, 1);
+            yield return tocFileName;
 
             ApiReferenceViewModel indexer = new ApiReferenceViewModel();
 
@@ -669,28 +675,77 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var members = model.Members;
             foreach (var memberModel in members)
             {
-                var outputPath = memberModel.Name + Constants.YamlExtension;
-                if (!useCompatibilityFileName)
-                {
-                    outputPath = outputPath.Replace('`', '-');
-                }
-                outputFiles.Add(outputPath);
-                string itemFilePath = Path.Combine(folder, outputPath);
+                var fileName = useCompatibilityFileName ? memberModel.Name : memberModel.Name.Replace('`', '-');
+                var outputFileName = GetUniqueFileNameWithSuffix(fileName + Constants.YamlExtension, outputFileNames);
+                string itemFilePath = Path.Combine(folder, outputFileName);
                 Directory.CreateDirectory(Path.GetDirectoryName(itemFilePath));
                 var memberViewModel = memberModel.ToPageViewModel();
                 memberViewModel.ShouldSkipMarkup = shouldSkipMarkup;
                 YamlUtility.Serialize(itemFilePath, memberViewModel, YamlMime.ManagedReference);
-                Logger.Log(LogLevel.Verbose, $"Metadata file for {memberModel.Name} is saved to {itemFilePath}.");
-                AddMemberToIndexer(memberModel, outputPath, indexer);
+                Logger.Log(LogLevel.Diagnostic, $"Metadata file for {memberModel.Name} is saved to {itemFilePath}.");
+                AddMemberToIndexer(memberModel, outputFileName, indexer);
+                yield return outputFileName;
             }
 
             // 3. generate manifest file
-            outputFiles.Add(IndexFileName);
             string indexFilePath = Path.Combine(folder, IndexFileName);
 
             JsonUtility.Serialize(indexFilePath, indexer);
+            yield return IndexFileName;
+        }
 
-            return outputFiles;
+        private static void CleanupHistoricalFile(string outputFolder)
+        {
+            var indexFilePath = Path.Combine(outputFolder, IndexFileName);
+            ApiReferenceViewModel index;
+            if (!File.Exists(indexFilePath))
+            {
+                return;
+            }
+            try
+            {
+                index = YamlUtility.Deserialize<ApiReferenceViewModel>(indexFilePath);
+            }
+            catch (Exception e)
+            {
+                Logger.LogInfo($"{indexFilePath} is not in a valid metadata manifest file format, ignored: {e.Message}.");
+                return;
+            }
+
+            foreach (var pair in index)
+            {
+                var filePath = Path.Combine(outputFolder, pair.Value);
+                try
+                {
+                    File.Delete(filePath);
+                }
+                catch (Exception e)
+                {
+                    Logger.LogDiagnostic($"Error deleting file {filePath}: {e.Message}");
+                }
+            }
+        }
+
+        private static string GetUniqueFileNameWithSuffix(string fileName, Dictionary<string, int> existingFileNames)
+        {
+            if (existingFileNames.TryGetValue(fileName, out int suffix))
+            {
+                existingFileNames[fileName] = suffix + 1;
+                var newFileName = $"{fileName}_{suffix}";
+                var extensionIndex = fileName.LastIndexOf('.');
+                if (extensionIndex > -1)
+                {
+                    newFileName = $"{fileName.Substring(0, extensionIndex)}_{suffix}.{fileName.Substring(extensionIndex + 1)}";
+                }
+                var extension = Path.GetExtension(fileName);
+                var name = Path.GetFileNameWithoutExtension(fileName);
+                return GetUniqueFileNameWithSuffix(newFileName, existingFileNames);
+            }
+            else
+            {
+                existingFileNames[fileName] = 1;
+                return fileName;
+            }
         }
 
         private static void AddMemberToIndexer(MetadataItem memberModel, string outputPath, ApiReferenceViewModel indexer)
