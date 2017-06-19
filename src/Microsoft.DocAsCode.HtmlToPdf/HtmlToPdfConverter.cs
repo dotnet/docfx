@@ -20,7 +20,6 @@ namespace Microsoft.DocAsCode.HtmlToPdf
     {
         #region Fields
 
-        private const string WkHtmlToPdfExeName = "wkhtmltopdf";
         private const string OutLineKidsName = "Kids";
         private const int TimeoutInMilliseconds = 60 * 1000;
 
@@ -127,7 +126,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     RedirectStandardInput = _htmlToPdfOptions.IsReadArgsFromStdin,
                     RedirectStandardOutput = _htmlToPdfOptions.IsOutputToStdout,
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    FileName = WkHtmlToPdfExeName,
+                    FileName = Constants.PdfCommandName,
                     Arguments = _htmlToPdfOptions + (_htmlToPdfOptions.IsReadArgsFromStdin ? string.Empty : arguments)
                 }
             })

@@ -3,7 +3,13 @@
 
 namespace Microsoft.DocAsCode.HtmlToPdf
 {
-    public static class BuildToolConstants
+    internal static class Constants
+    {
+        public const string PdfCommandName = "wkhtmltopdf";
+        public const string PdfCommandNotExistMessage = "wkhtmltopdf is a prerequisite when generating PDF. Please install it from https://wkhtmltopdf.org/downloads.html and save the executable folder to %PATH% first. Alternatively you can install it from https://chocolatey.org with `choco install wkhtmltopdf`.";
+    }
+
+    internal static class BuildToolConstants
     {
         public static class OutputFileExtensions
         {
@@ -29,14 +35,14 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         }
     }
 
-    public static class FileExtensions
+    internal static class FileExtensions
     {
         public const string JsonExtension = ".json";
         public const string PdfExtension = ".pdf";
         public const string MdExtension = ".md";
     }
 
-    public static class ManifestConstants
+    internal static class ManifestConstants
     {
         public const string ManifestFileName = "manifest.json";
 

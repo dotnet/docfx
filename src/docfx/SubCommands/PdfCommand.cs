@@ -25,6 +25,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public PdfCommand(PdfCommandOptions options)
         {
+            ConvertWrapper.PrerequisiteCheck();
             _config = ParseOptions(options);
             if (_config.Serve == true)
             {

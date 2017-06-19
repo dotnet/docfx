@@ -30,7 +30,10 @@ namespace Microsoft.DocAsCode
         internal static int ExecSubCommand(string[] args)
         {
             var consoleLogListener = new ConsoleLogListener();
-            var replayListener = new ReplayLogListener();
+            var replayListener = new ReplayLogListener
+            {
+                Replay = false
+            };
             replayListener.AddListener(consoleLogListener);
             Logger.RegisterAsyncListener(replayListener);
 
@@ -41,9 +44,9 @@ namespace Microsoft.DocAsCode
                 controller = ArgsParser.Instance.Parse(args);
                 command = controller.Create();
             }
-            catch (System.IO.FileNotFoundException fe)
+            catch (Exception e) when (e is System.IO.FileNotFoundException fe || e is DocfxException)
             {
-                Logger.LogError(fe.Message);
+                Logger.LogError(e.Message);
                 return 1;
             }
             catch (Exception e) when (e is OptionParserException || e is InvalidOptionException)

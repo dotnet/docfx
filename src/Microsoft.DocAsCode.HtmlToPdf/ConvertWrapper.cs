@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
     using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.HtmlToPdf.Transformer;
     using Microsoft.DocAsCode.Plugins;
 
@@ -34,6 +35,14 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         #endregion
 
         #region Public Methods
+
+        public static void PrerequisiteCheck()
+        {
+            if (!CommandUtility.ExistCommand(Constants.PdfCommandName))
+            {
+                throw new DocfxException(Constants.PdfCommandNotExistMessage);
+            }
+        }
 
         public void Convert()
         {
