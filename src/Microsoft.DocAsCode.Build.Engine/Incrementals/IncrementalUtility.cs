@@ -99,7 +99,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 return;
             }
-            using (var writer = new StreamWriter(fileName, false, Encoding.Unicode))
+            using (var writer = new StreamWriter(fileName))
             {
                 JsonUtility.Serialize(
                     writer,
@@ -195,7 +195,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 var tempFile = GetRandomEntry(baseDir);
                 using (var fs = File.Create(Path.Combine(baseDir, tempFile)))
-                using (var writer = new StreamWriter(fs))
+                using (var writer = new StreamWriter(fs, Encoding.Unicode))
                 {
                     bmi.Save(writer);
                 }

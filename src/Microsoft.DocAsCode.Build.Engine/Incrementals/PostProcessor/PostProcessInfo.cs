@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Text;
 
     using Microsoft.DocAsCode.Plugins;
 
@@ -59,7 +60,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
             if (MessageInfoFile != null)
             {
-                using (var sr = new StreamReader(Path.Combine(baseDir, MessageInfoFile)))
+                using (var sr = new StreamReader(Path.Combine(baseDir, MessageInfoFile), Encoding.Unicode))
                 {
                     MessageInfo = BuildMessageInfo.Load(sr);
                 }
@@ -81,7 +82,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 MessageInfoFile = IncrementalUtility.CreateRandomFileName(baseDir);
             }
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, PostProcessOutputsFile), PostProcessOutputs);
-            using (var sw = new StreamWriter(Path.Combine(baseDir, MessageInfoFile)))
+            using (var sw = new StreamWriter(Path.Combine(baseDir, MessageInfoFile), false, Encoding.Unicode))
             {
                 MessageInfo.Save(sw);
             }
