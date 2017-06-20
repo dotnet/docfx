@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.19)
+﻿Version Notes (Current Version: v2.19.1)
 =======================================
+
+v2.19.1
+-----------
+1.  Bug fixes: ignore exception when saving cache.
 
 v2.19
 -----------
