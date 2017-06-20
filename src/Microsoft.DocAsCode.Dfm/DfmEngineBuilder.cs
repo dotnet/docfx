@@ -98,25 +98,25 @@ namespace Microsoft.DocAsCode.Dfm
             var dict = new Dictionary<string, int>();
             return (IMarkdownRewriteEngine engine, DfmTabGroupBlockToken token) =>
             {
-                var value = token.Id;
+                var groupId = token.Id;
                 while (true)
                 {
-                    if (!dict.TryGetValue(value, out int index))
+                    if (!dict.TryGetValue(groupId, out int index))
                     {
-                        dict.Add(value, 0);
-                        if (token.Id == value)
+                        dict.Add(groupId, 1);
+                        if (token.Id == groupId)
                         {
                             return null;
                         }
                         else
                         {
-                            return new DfmTabGroupBlockToken(token.Rule, token.Context, value, token.Items, token.ActiveTabIndex, token.SourceInfo);
+                            return new DfmTabGroupBlockToken(token.Rule, token.Context, groupId, token.Items, token.ActiveTabIndex, token.SourceInfo);
                         }
                     }
                     else
                     {
-                        dict[token.Id] = index + 1;
-                        value = value + "-" + (index + 1).ToString();
+                        dict[groupId]++;
+                        groupId = groupId + "-" + index.ToString();
                     }
                 }
             };
