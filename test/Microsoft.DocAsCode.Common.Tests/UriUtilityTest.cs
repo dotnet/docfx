@@ -31,6 +31,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.Equal(nonFragment, UriUtility.GetNonFragment(input));
         }
 
+        [Fact]
         public void TestIsAbsoluteUri()
         {
             Assert.True(UriUtility.IsAbsoluteUri("http://www.contoso.com/"));
@@ -42,15 +43,16 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.False(UriUtility.IsAbsoluteUri(string.Empty));
         }
 
+        [Fact]
         public void TestIsAbsolutePath()
         {
             Assert.True(UriUtility.IsAbsolutePath("/catalog/shownew.htm"));
 
-            Assert.False(UriUtility.IsAbsoluteUri("http://www.contoso.com/"));
-            Assert.False(UriUtility.IsAbsoluteUri("ftp://example.org/resource.txt"));
-            Assert.False(UriUtility.IsAbsoluteUri("urn:ISSN:1535-3613"));
-            Assert.False(UriUtility.IsAbsoluteUri("#frag01"));
-            Assert.False(UriUtility.IsAbsoluteUri(string.Empty));
+            Assert.False(UriUtility.IsAbsolutePath("http://www.contoso.com/"));
+            Assert.False(UriUtility.IsAbsolutePath("ftp://example.org/resource.txt"));
+            Assert.False(UriUtility.IsAbsolutePath("urn:ISSN:1535-3613"));
+            Assert.False(UriUtility.IsAbsolutePath("#frag01"));
+            Assert.False(UriUtility.IsAbsolutePath(string.Empty));
         }
     }
 }
