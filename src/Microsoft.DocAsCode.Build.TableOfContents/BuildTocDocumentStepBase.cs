@@ -18,7 +18,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var toc = (TocItemViewModel)model.Content;
             TocRestructureUtility.Restructure(toc, host.TableOfContentRestructions);
             BuildCore(toc, model, host);
-            model.Content = toc;
             // todo : metadata.
         }
 
