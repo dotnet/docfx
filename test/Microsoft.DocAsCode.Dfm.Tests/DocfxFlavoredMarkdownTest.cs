@@ -69,7 +69,7 @@ content-a
 # [title-b](#tab/b/c)
 content-b
 - - -", "test.md");
-            var groupId = actual.Substring(35, 36);
+            var groupId = "uBn0rykxXo";
             var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""test.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""5"">
 <ul role=""tablist"">
 <li role=""presentation"">

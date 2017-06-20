@@ -93,6 +93,35 @@ namespace Microsoft.DocAsCode.Dfm
             blockRules[index] = new TReplacement();
         }
 
+        private static Func<IMarkdownRewriteEngine, DfmTabGroupBlockToken, IMarkdownToken> GetTabGroupIdRewriter()
+        {
+            var dict = new Dictionary<string, int>();
+            return (IMarkdownRewriteEngine engine, DfmTabGroupBlockToken token) =>
+            {
+                var value = token.Id;
+                while (true)
+                {
+                    if (!dict.TryGetValue(value, out int index))
+                    {
+                        dict.Add(value, 0);
+                        if (token.Id == value)
+                        {
+                            return null;
+                        }
+                        else
+                        {
+                            return new DfmTabGroupBlockToken(token.Rule, token.Context, value, token.Items, token.ActiveTabIndex, token.SourceInfo);
+                        }
+                    }
+                    else
+                    {
+                        dict[token.Id] = index + 1;
+                        value = value + "-" + (index + 1).ToString();
+                    }
+                }
+            };
+        }
+
         private static IMarkdownTokenRewriter InitMarkdownStyle(ICompositionContainer container, string baseDir, string templateDir)
         {
             try
@@ -108,7 +137,13 @@ namespace Microsoft.DocAsCode.Dfm
 
         public DfmEngine CreateDfmEngine(object renderer)
         {
-            return new DfmEngine(CreateParseContext().SetBaseFolder(_baseDir ?? string.Empty).SetFallbackFolders(_fallbackFolders), Rewriter, renderer, Options)
+            return new DfmEngine(
+                CreateParseContext().SetBaseFolder(_baseDir ?? string.Empty).SetFallbackFolders(_fallbackFolders),
+                MarkdownTokenRewriterFactory.Composite(
+                    MarkdownTokenRewriterFactory.FromLambda(GetTabGroupIdRewriter()),
+                    Rewriter),
+                renderer,
+                Options)
             {
                 TokenTreeValidator = TokenTreeValidator,
                 TokenAggregator = TokenAggregator,
