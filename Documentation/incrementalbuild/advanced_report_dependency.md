@@ -1,7 +1,7 @@
 🔧 Advanced: Report Dependency
 =================================
 
-`DocFX` provides the flexiblity to register customized dependency type and report dependency. In this topic, we will go through how to do that.
+`DocFX Incremental Build Framework` provides the flexiblity to register customized dependency type and report dependency. In this topic, we will go through how to do that.
 
 *Register Dependency Type*
 ---------------------------
@@ -12,7 +12,7 @@ Property                 | Type                                 | Description
 -----------------------  | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------
 **Name**                 | string                               | name of the dependency type(it should be unique)
 Phase                    | enum(`Compile` or `Link`)            | the build phase that this type of dependency could have an effect on.
-Transitivity             | enum(`None` or `SameType` or `All`)  | whether the dependency is transitive, trsnsitive upon the dependencies with same type, or transitive upon any dependency.
+Transitivity             | enum(`None` or `SameType` or `All`)  | whether the dependency is transitive, transitive upon the dependencies with same type, or transitive upon any dependency.
 
 
 #### Reserved dependency types
@@ -86,7 +86,7 @@ reversed dependency: `void ReportDependencyFrom(FileModel currentFileModel, stri
 
 report reference:    `void ReportReference(FileModel currentFileModel, string reference, string referenceType)`
 
-A common use is to report dependency between file and uid.
+A common usage is to report dependency between file and uid.
 
 For example, i'd like to report a dependency: file `~/test.md`(filemodel is `a`) depends on sentenceId @Testid(filemodel is `b`), dependency type is `link`,
 i could call the method `ReportDependencyTo(a, "Testid", "sentenceId", "link")` to report the dependency and `ReportReference(b, "Testid", "sentenceId")` to report the mapping between sentenceId and file. This way, the framework would do the resolution work and resolve it to file-file dependency.

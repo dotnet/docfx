@@ -70,7 +70,7 @@ For more details about how to register your own dependency types and report , yo
 
 Step3. [Optional]Implement @Microsoft.DocAsCode.Plugins.ICanTraceContextInfoBuildStep interface for plugins that need to access context info
 -----------------------------------------------------------------------------------------------------------------------
-When building articles, some plugins might need the info of unloaded articles. `DocFX` provides the interface `ICanTraceContextInfoBuildStep`, which is the superset of `ISupportIncrementalBuildStep` and also contains methods to save/load context info.
+When building articles, some plugins might need the info of unloaded articles. `Incremental Build Framework` provides the interface `ICanTraceContextInfoBuildStep`, which is the superset of `ISupportIncrementalBuildStep` and also contains methods to save/load context info.
 
 ```csharp
 public class RtfBuildStep : ICanTraceContextInfoBuildStep

@@ -1,6 +1,6 @@
-Introduction to *DocFX Incremental Build System*
+Introduction to *DocFX Incremental Build*
 ================================================
-*DocFX Incremental Build System* provides a flexible way to define plugins/processors to support incremental build.
+*DocFX Incremental Build Framework* provides a flexible way to define plugins/processors to support incremental build.
 
 Below is the workflow for incremental build.
 
@@ -17,6 +17,8 @@ Before `Compile` phase, only **changed files and their dependencies** would be l
 
 Plugins are also flexible to save/load context related info in Plugin Cache. Details please refer to [Plugin cache](customize_a_processor_to_support_incremental.md#plugin-cache).
 
+By default, incremental cache files will be put at path `obj/.cache/build/` relative to your `docfx.json`. You're also free to specify the path with option `--intermediateFolder`. About the structure of the cache folder please refer to [Cache folder structure](#cache-folder-structure).
+
 
 *Incremental Condition*
 ------------------------
@@ -24,7 +26,6 @@ Build could run incrementally only if all of the following conditions meet.
 
 1. The version supports incremental.
 
-- The intermediate folder(specified with option `--intermediateFolder`) that is used to store incremental cache files exists. This is a must for now, but we plan to remove the check later.
 - Cache files are not corrupted.
 - `DocFX` version isn't changed.
 - Plugins' hash isn't changed.
@@ -36,7 +37,17 @@ Build could run incrementally only if all of the following conditions meet.
 
 
 > [!Note]
-> Not all configs in `docfx.json` are counted in when calculating the config hash. The below table lists all the configs that matters. 
+> Not all configs in `docfx.json` are counted in when calculating the config hash. The below table lists configs that are ignored.
+> Property              | Description
+> --------------------- | ------------------------------------------------------------------------
+> Files                 | the file collection that is included in docfx.json, namely `files`
+> OutputBaseDir         | the base directory of output, namely `dest`
+> ChangesFile           | the changes file
+> MaxParallelism        | max parallelism
+> VersionName           | version name
+> ForceRebuild          | whether to force rebuild
+> ForcePostProcess      | whether to force post processor
+> LruSize               | lru size
 
 2. The processor supports incremental.
 
@@ -44,6 +55,7 @@ Build could run incrementally only if all of the following conditions meet.
 - The processor's `IncrementalContextHash` isn't changed.
 - All plugins in the processor implement the interface `ISupportIncrementalBuildStep`.
 
+  If you'd like to customize your processor to support incremental, you can view more from [Walkthrough: Customize a processor to support incremental](customize_a_processor_to_support_incremental.md).
 
 *Changes File*
 ---------------
