@@ -30,12 +30,7 @@ namespace Microsoft.DocAsCode
         internal static int ExecSubCommand(string[] args)
         {
             var consoleLogListener = new ConsoleLogListener();
-            var replayListener = new ReplayLogListener
-            {
-                Replay = false
-            };
-            replayListener.AddListener(consoleLogListener);
-            Logger.RegisterAsyncListener(replayListener);
+            Logger.RegisterListener(consoleLogListener);
 
             CommandController controller = null;
             ISubCommand command;
@@ -68,7 +63,10 @@ namespace Microsoft.DocAsCode
                 return 1;
             }
 
-            replayListener.Replay = command.AllowReplay;
+            if (command.AllowReplay)
+            {
+                Logger.RegisterAsyncListener(new AggregatedLogListener());
+            }
 
             var context = new SubCommandRunningContext();
             PerformanceScope scope = null;

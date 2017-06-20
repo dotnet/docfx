@@ -5,57 +5,38 @@ namespace Microsoft.DocAsCode.Common
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
     using System.Linq;
 #if NetCore
-    using ReplayList = System.Collections.Generic.SortedDictionary<LogLevel, System.Collections.Generic.List<ILogItem>>;
+    using AggregatedList = System.Collections.Generic.SortedDictionary<LogLevel, System.Collections.Generic.List<ILogItem>>;
 #else
-    using ReplayList = System.Collections.Generic.SortedList<LogLevel, System.Collections.Generic.List<ILogItem>>;
+    using AggregatedList = System.Collections.Generic.SortedDictionary<LogLevel, System.Collections.Generic.List<ILogItem>>;
 #endif
     /// <summary>
-    /// Replay log on flushing.
+    /// Replay aggregated log on flushing
     /// </summary>
-    [Obsolete]
-    public class ReplayLogListener : ILoggerListener
+    public class AggregatedLogListener : ILoggerListener
     {
-        private readonly LogLevel _replayLevel;
-        private readonly ReplayList _replayList;
-        private ImmutableArray<ILoggerListener> _listeners =
-            ImmutableArray<ILoggerListener>.Empty;
+        private readonly LogLevel _threshold;
+        private readonly ILoggerListener _innerListener;
+        private readonly AggregatedList _aggregatedList;
 
-        public bool Replay { get; set; } = true;
-
-        public ReplayLogListener(LogLevel replayLevel = LogLevel.Warning)
+        public AggregatedLogListener(LogLevel threshold = LogLevel.Warning)
         {
-            _replayLevel = replayLevel;
-            _replayList = new ReplayList();
-            for (LogLevel level = replayLevel; level <= LogLevel.Error; level++)
+            _threshold = threshold;
+            _aggregatedList = new AggregatedList();
+            _innerListener = new ConsoleLogListener();
+            for (LogLevel level = _threshold; level <= LogLevel.Error; level++)
             {
-                _replayList.Add(level, new List<ILogItem>());
+                _aggregatedList.Add(level, new List<ILogItem>());
             }
-        }
-
-        public void Dispose()
-        {
-            foreach (var listener in _listeners)
-            {
-                listener.Dispose();
-            }
-        }
-
-        public void AddListener(ILoggerListener listener)
-        {
-            _listeners = _listeners.Add(listener);
         }
 
         public void Flush()
         {
-            if (!Replay) return;
-
-            var logLevel = _replayList.LastOrDefault(s => s.Value.Count > 0).Key;
+            var logLevel = _aggregatedList.LastOrDefault(s => s.Value.Count > 0).Key;
             var buildStatus = GetBuildStatusFromLogLevel(logLevel);
             WriteHeader(buildStatus);
-            foreach (var list in _replayList)
+            foreach (var list in _aggregatedList)
             {
                 foreach (var item in list.Value)
                 {
@@ -63,26 +44,24 @@ namespace Microsoft.DocAsCode.Common
                 }
             }
 
-            foreach (var listener in _listeners)
-            {
-                listener.Flush();
-            }
-
+            _innerListener.Flush();
             WriteFooter(buildStatus);
-
-            foreach (var level in _replayList.Keys.ToList())
+            foreach (var level in _aggregatedList.Keys.ToList())
             {
-                _replayList[level] = new List<ILogItem>();
+                _aggregatedList[level] = new List<ILogItem>();
             }
+        }
+
+        public void Dispose()
+        {
         }
 
         public void WriteLine(ILogItem item)
         {
-            if (item.LogLevel >= _replayLevel && item.LogLevel <= LogLevel.Error)
+            if (item.LogLevel >= _threshold && item.LogLevel <= LogLevel.Error)
             {
-                _replayList[item.LogLevel].Add(item);
+                _aggregatedList[item.LogLevel].Add(item);
             }
-            WriteLineCore(item);
         }
 
         private void WriteHeader(BuildStatus status)
@@ -109,7 +88,7 @@ namespace Microsoft.DocAsCode.Common
 
         private void WriteFooter(BuildStatus status)
         {
-            var footer = string.Join(Environment.NewLine, _replayList.Select(s => $"\t{s.Value.Count} {s.Key}(s)"));
+            var footer = string.Join(Environment.NewLine, _aggregatedList.Select(s => $"\t{s.Value.Count} {s.Key}(s)"));
 #if !NetCore
             WriteToConsole(footer, status);
 #endif
@@ -117,10 +96,7 @@ namespace Microsoft.DocAsCode.Common
 
         private void WriteLineCore(ILogItem item)
         {
-            foreach (var listener in _listeners)
-            {
-                listener.WriteLine(item);
-            }
+            _innerListener.WriteLine(item);
         }
 
 #if !NetCore
