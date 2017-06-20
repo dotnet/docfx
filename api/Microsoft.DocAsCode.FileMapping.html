@@ -80,7 +80,26 @@
   
   <h1 id="Microsoft_DocAsCode_FileMapping" data-uid="Microsoft.DocAsCode.FileMapping" class="text-break">Class FileMapping
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>FileMapping supports 3 forms:</p>
+<ol>
+<li>Array form
+This form supports multiple file mappings, and also allows additional properties per mapping.
+e.g. 
+<pre><pre><code>&quot;key&quot;: [
+{&quot;files&quot;: [&quot;file1&quot;, &quot;file2&quot;], &quot;dest&quot;: &quot;dest1&quot;},
+{&quot;files&quot;: &quot;file3&quot;, &quot;dest&quot;: &quot;dest2&quot;},
+{&quot;files&quot;: [&quot;file4&quot;, &quot;file5&quot;], &quot;exclude&quot;: [&quot;file5&quot;], &quot;src&quot;: &quot;folder1&quot;},
+{&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v1.0&quot;, &quot;dest&quot;:&quot;v1.0/api&quot;, &quot;version&quot;: &quot;v1.0&quot;},
+{&quot;files&quot;: &quot;Example.yml&quot;, &quot;src&quot;: &quot;v2.0&quot;, &quot;dest&quot;:&quot;v2.0/api&quot;, &quot;version&quot;: &quot;v2.0&quot;}
+]</code></pre></pre></li>
+<li>Compact form
+This form supports multiple file patterns in an array
+e.g. <pre><code>projects: [&quot;file1&quot;, &quot;file2&quot;]</code></pre></li>
+<li>Object form
+If the Array form contains only one item, it can be shortened to an object
+e.g. <pre><code>projects: [&quot;file1&quot;, &quot;file2&quot;]</code></pre></li>
+</ol>
+</div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
