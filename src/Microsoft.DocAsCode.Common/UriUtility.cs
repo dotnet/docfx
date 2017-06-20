@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
+    using System.IO;
     using System.Text.RegularExpressions;
 
     public static class UriUtility
@@ -81,13 +82,23 @@ namespace Microsoft.DocAsCode.Common
             return index == -1 ? string.Empty : uriString.Substring(index);
         }
 
-        public static bool IsAbsolutePath(string uriString)
+        public static bool IsAbsoluteUri(string uriString)
         {
             if (uriString == null)
             {
                 throw new ArgumentNullException(nameof(uriString));
             }
             return AbsoluteUriRegex.Match(uriString).Success;
+        }
+
+        public static bool IsAbsolutePath(string uriString)
+        {
+            if (uriString == null)
+            {
+                throw new ArgumentNullException(nameof(uriString));
+            }
+            var length = uriString.Length;
+            return length >= 1 && (uriString[0] == Path.DirectorySeparatorChar || uriString[0] == Path.AltDirectorySeparatorChar);
         }
     }
 }

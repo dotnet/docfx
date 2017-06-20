@@ -122,11 +122,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return;
             }
 
-
             // TODO: What if href is not html?
             if (!string.IsNullOrEmpty(spec.Href))
             {
-                if (UriUtility.IsAbsolutePath(spec.Href))
+                if (UriUtility.IsAbsolutePath(spec.Href) || UriUtility.IsAbsoluteUri(spec.Href))
                 {
                     Href = spec.Href;
                 }
