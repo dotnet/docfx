@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode
     ///     </code></pre>
     /// 2. Compact form
     ///     This form supports multiple file patterns in an array
-    ///     e.g. <code>projects: ["file1", "file2"]<code>
+    ///     e.g. <code>projects: ["file1", "file2"]</code>
     /// 3. Object form
     ///     If the Array form contains only one item, it can be shortened to an object
     ///     e.g. <code>projects: ["file1", "file2"]</code>
