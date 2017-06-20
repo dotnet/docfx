@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Tests
 
     using Xunit;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.SubCommands;
     using Microsoft.DocAsCode.Tests.Common;
 
@@ -155,13 +156,22 @@ namespace Microsoft.DocAsCode.Tests
                     "<p>",
                     "test",
                 });
-            new BuildCommand(new BuildCommandOptions
+            var console = new ConsoleLogListener();
+            Logger.RegisterListener(console);
+            try
             {
-                Content = new List<string> { conceptualFile1, conceptualFile2 },
-                OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
-                Templates = new List<string> { Path.Combine(_templateFolder, "default") },
-                LruSize = 1,
-            }).Exec(null);
+                new BuildCommand(new BuildCommandOptions
+                {
+                    Content = new List<string> { conceptualFile1, conceptualFile2 },
+                    OutputFolder = Path.Combine(Directory.GetCurrentDirectory(), _outputFolder),
+                    Templates = new List<string> { Path.Combine(_templateFolder, "default") },
+                    LruSize = 1,
+                }).Exec(null);
+            }
+            finally
+            {
+                Logger.UnregisterListener(console);
+            }
 
             var file = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile1, ".html"));
             Assert.True(File.Exists(file));
