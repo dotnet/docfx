@@ -199,7 +199,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return null;
             }
-            var pp = ((FileAbstractLayer)EnvironmentContext.FileAbstractLayerImpl).GetOutputPhysicalPath(fileName);
+            string pp;
+            try
+            {
+                pp = ((FileAbstractLayer)EnvironmentContext.FileAbstractLayerImpl).GetOutputPhysicalPath(fileName);
+            }
+            catch (FileNotFoundException)
+            {
+                pp = ((FileAbstractLayer)EnvironmentContext.FileAbstractLayerImpl).GetPhysicalPath(fileName);
+            }
             var expandPP = Path.GetFullPath(Environment.ExpandEnvironmentVariables(pp));
             var outputPath = Path.GetFullPath(_context.BuildOutputFolder);
             if (expandPP.Length > outputPath.Length &&
