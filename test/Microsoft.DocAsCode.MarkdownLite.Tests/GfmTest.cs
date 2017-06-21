@@ -683,6 +683,7 @@ b",
 
         [Theory]
         [Trait("Related", "Markdown")]
+        #region Inline Data
         [InlineData(
             @"<pre>a</pre>
 abc",
@@ -741,6 +742,7 @@ a</pre
 >
 <p>b</p>
 ")]
+        #endregion
         public void TestPreElement(string source, string expected)
         {
             TestGfmInGeneral(source, expected);
@@ -775,6 +777,17 @@ a</pre
 </ol>
 ";
             TestGfmInGeneral(source, expected);
+        }
+
+        [Theory]
+        [Trait("Related", "Markdown")]
+        [InlineData(@"<div a:b=""c"">")]
+        [InlineData(@"<div a:b=""c"">
+</div>")]
+        public void TestTag(string html)
+        {
+            TestGfmInGeneral(html, html);
+            TestLegacyGfmInGeneral(html, html);
         }
 
         [Theory]
