@@ -3,12 +3,12 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using System.Text.RegularExpressions;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class TabGroupAggregator : MarkdownTokenAggregator<MarkdownHeadingBlockToken>
@@ -67,11 +67,12 @@ namespace Microsoft.DocAsCode.Dfm
                 md += terminator.SourceInfo.Markdown;
                 offset++;
             }
+            var groupId = (items[0].SourceInfo.File ?? string.Empty).GetMd5String().Replace("/", "-").Remove(10);
             context.AggregateTo(
                 new DfmTabGroupBlockToken(
                     DfmTabGroupBlockRule.Instance,
                     headToken.Context,
-                    Guid.NewGuid().ToString(),
+                    groupId,
                     items.ToImmutableArray(),
                     0,
                     headToken.SourceInfo.Copy(md.ToString())),
