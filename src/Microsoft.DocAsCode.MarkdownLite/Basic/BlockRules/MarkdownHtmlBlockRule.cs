@@ -49,6 +49,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             InlineElementNames.ToNegativeTest() +
             // \w+
             Matcher.AnyWordCharacter.RepeatAtLeast(1) +
+            Matcher.Char(':').ToNegativeTest() +
             // (?!:\/|[^\w\s@]*@)
             (
                 Matcher.String(":/") |
@@ -88,7 +89,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                     _ElementName +
                     // (?:"[^"]*"|'[^']*'|[^'"">])*
                     (
-                        Matcher.AnyCharNotIn('"', '\'', '>', ':').RepeatAtLeast(1) |
+                        Matcher.AnyCharNotIn('"', '\'', '>').RepeatAtLeast(1) |
                         (Matcher.Char('"') + Matcher.AnyCharNot('"').RepeatAtLeast(0) + '"') |
                         (Matcher.Char('\'') + Matcher.AnyCharNot('\'').RepeatAtLeast(0) + '\'')
                     ).RepeatAtLeast(0) +

@@ -779,14 +779,15 @@ a</pre
             TestGfmInGeneral(source, expected);
         }
 
-        [Fact]
+        [Theory]
         [Trait("Related", "Markdown")]
-        public void TestTag()
+        [InlineData(@"<div a:b=""c"">")]
+        [InlineData(@"<div a:b=""c"">
+</div>")]
+        public void TestTag(string html)
         {
-            // 1. Prepare data
-            var source = @"<div bi:type=""slideshow"" class=""slideshow slideshow-hero hero"" xmlns:bi=""urn:schemas-microsoft-com:mscom:bi""></div>";
-            var expected = source;
-            TestGfmInGeneral(source, expected);
+            TestGfmInGeneral(html, html);
+            TestLegacyGfmInGeneral(html, html);
         }
 
         [Theory]
