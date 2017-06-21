@@ -108,8 +108,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private ConcurrentDictionary<string, XRefSpec> ExternalXRefSpec { get; } = new ConcurrentDictionary<string, XRefSpec>();
 
-        private List<XRefMap> XRefMaps { get; set; }
-
         private ConcurrentDictionary<string, object> UnknownUids { get; } = new ConcurrentDictionary<string, object>();
 
         public void ReportExternalXRefSpec(XRefSpec spec)
@@ -408,7 +406,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return null;
             }
 
-            if (XRefMaps != null && XRefMaps.Count > 0)
+            if (_reader != null)
             {
                 xref = _reader.Result.Find(uid);
                 if (xref != null)
