@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Common
 #if NetCore
     using AggregatedList = System.Collections.Generic.SortedDictionary<LogLevel, System.Collections.Generic.List<ILogItem>>;
 #else
-    using AggregatedList = System.Collections.Generic.SortedDictionary<LogLevel, System.Collections.Generic.List<ILogItem>>;
+    using AggregatedList = System.Collections.Generic.SortedList<LogLevel, System.Collections.Generic.List<ILogItem>>;
 #endif
     /// <summary>
     /// Replay aggregated log on flushing
