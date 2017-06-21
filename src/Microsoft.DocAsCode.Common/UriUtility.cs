@@ -4,15 +4,12 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.IO;
-    using System.Text.RegularExpressions;
 
     public static class UriUtility
     {
         private const char QueryMarker = '?';
         private const char FragmentMarker = '#';
         private static readonly char[] QueryAndFragmentMarkers = { QueryMarker, FragmentMarker };
-        private static readonly Regex AbsoluteUriRegex = new Regex("^[a-zA-Z]+:.*$", RegexOptions.Compiled);
 
         public static bool HasFragment(string uriString)
         {
@@ -80,25 +77,6 @@ namespace Microsoft.DocAsCode.Common
             }
             var index = uriString.IndexOfAny(QueryAndFragmentMarkers);
             return index == -1 ? string.Empty : uriString.Substring(index);
-        }
-
-        public static bool IsAbsoluteUri(string uriString)
-        {
-            if (uriString == null)
-            {
-                throw new ArgumentNullException(nameof(uriString));
-            }
-            return AbsoluteUriRegex.Match(uriString).Success;
-        }
-
-        public static bool IsAbsolutePath(string uriString)
-        {
-            if (uriString == null)
-            {
-                throw new ArgumentNullException(nameof(uriString));
-            }
-            var length = uriString.Length;
-            return length >= 1 && (uriString[0] == Path.DirectorySeparatorChar || uriString[0] == Path.AltDirectorySeparatorChar);
         }
     }
 }

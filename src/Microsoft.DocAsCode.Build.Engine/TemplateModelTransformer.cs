@@ -412,6 +412,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             if (path == null)
             {
+                if (!string.IsNullOrEmpty(anchor))
+                {
+                    link.SetAttributeValue(attribute, originalHref + anchor);
+                }
+
                 return;
             }
 
