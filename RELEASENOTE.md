@@ -3,7 +3,9 @@
 
 v2.19.1
 -----------
-1.  Bug fixes: ignore exception when saving cache.
+1.  Bug fixes:
+    1. ignore exception when saving cache.
+    2. fix html tag in markdown.
 
 v2.19
 -----------
