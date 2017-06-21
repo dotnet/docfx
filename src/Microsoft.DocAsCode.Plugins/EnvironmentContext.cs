@@ -41,24 +41,14 @@ namespace Microsoft.DocAsCode.Plugins
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static IFileAbstractLayer FileAbstractLayerImpl { get; set; }
 
-        public static string Version
-        {
-            get
-            {
-                var version = _version;
-                if (string.IsNullOrEmpty(version))
-                {
-                    version = typeof(EnvironmentContext).Assembly.GetName().Version.ToString();
-                }
+        public static string Version => string.IsNullOrEmpty(_version) ? typeof(EnvironmentContext).Assembly.GetName().Version.ToString() : _version;
 
-                _version = version;
-                return _version;
-            }
-            set
-            {
-                _version = value;
-            }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static void SetVersion(string version)
+        {
+            _version = version;
         }
+
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static void Clean()
