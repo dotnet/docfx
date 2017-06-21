@@ -683,6 +683,7 @@ b",
 
         [Theory]
         [Trait("Related", "Markdown")]
+        #region Inline Data
         [InlineData(
             @"<pre>a</pre>
 abc",
@@ -741,6 +742,7 @@ a</pre
 >
 <p>b</p>
 ")]
+        #endregion
         public void TestPreElement(string source, string expected)
         {
             TestGfmInGeneral(source, expected);
@@ -774,6 +776,16 @@ a</pre
 </li>
 </ol>
 ";
+            TestGfmInGeneral(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestTag()
+        {
+            // 1. Prepare data
+            var source = @"<div bi:type=""slideshow"" class=""slideshow slideshow-hero hero"" xmlns:bi=""urn:schemas-microsoft-com:mscom:bi""></div>";
+            var expected = source;
             TestGfmInGeneral(source, expected);
         }
 
