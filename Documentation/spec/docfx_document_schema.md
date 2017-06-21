@@ -22,6 +22,8 @@ Some handler is predefined in DocFX, like markup a string using [DFM](..\spec\do
 
 Some handler can be injected into the schema parsing process to accomplish some custom steps.
 
+**TODO**: add definition for handler.
+
 ### 3.3 Integration with DocFX
 Schema is passed to DocFX as part of the template. It MUST be put in the `schemas` sub folder under template folder. The file name is treated as the schema name, also known as the document type of a template.
 
@@ -29,9 +31,12 @@ For example, to add a schema for a document type `ManagedReference`, a schema fi
 
 Schema describes the object model. The format of the object model is not constrained. YAML and JSON should both be supported.
 
+**TODO**: change to use YAML Mime to determine which schema to use.
+
 ## 4. General Considerations
 * This schema will reuse keywords in JSON schema, but will not change the defition of the existing one.
-* This schema can validate and manipulate single elements in place, but will not reconstruct the object.
+* To distinguish with JSON schema, the new keywords introduced in this schema is prefixed with `d-`. `d` stands for DocFX.
+* This schema can validate and manipulate single elements in place, but can not move the element to another place.
 
 ## 5. Validation keywords
 
@@ -74,40 +79,44 @@ Same as in JSON schema: http://json-schema.org/latest/json-schema-validation.htm
 
 ## 6. Manipulation keywords
 
-### 6.1 behavior
-The value of "behavior" MUST be a string. It defines how DocFX will manipulate the property and affect the build context.
+### 6.1 d-contentType
+The value of `d-contentType` MUST be a string. It defines how DocFX will manipulate the property and affect the build context.
 
 The following values are allowed:
-* `uid`: If the instance is a string, it will be marked as a UID (stands for unique identifier) in the current model, and add it to the document build context.
+* `uid`: If the instance is a string, it defines a UID in the build context for reference.
 * `href`: If the instance is a string and in relative path, it will be converted into path from docset root, and DocFX will update the path afterward.
-* `uidReference`: If the instance is a string, it wlll be taken as a UID, and a depdency on it will be logeged in document build context.
-* `markup`: If the instance is a string, it will be marked up and updated.
-* `include`: if the instance is a string and in relative path, content of the targeted file will replace it in place.
-* `markupInclude`: This is same as `include`, in spite of that the content will be marked up before fill in.
+* `uidReference`: If the instance is a string or an array of string, it references to a UID (some UIDS) in the build context.
+* `markdown`: If the instance is a string, it will be marked up and updated.
+* `includeFile`: if the instance is a string and in relative path, content of the targeted file will replace it in place.
+* `includeMarkdownFile`: This is same as `includeFile`, in spite of that the content will be marked up before filled in.
 
-### 6.2 tags
+**TODO** add some explanation for instance: http://json-schema.org/latest/json-schema-core.html#rfc.section.4.2
+
+### 6.2 d-tags
 The value of this keyword MUST be either a string or an array. If it is an array, elements of the array MUST be strings and MUST be unique.
 
 If a processor need to do some operations on a specified property, while the location of the property differs with schemas, it's hard to share the code.
 In this case, a tag can be defined to mark the property, then the processor can fetch the instances with defined tag from schema parser, and read or modify it.
 
-### 6.3 overwrite
+### 6.3 d-overwrite
 The value of "overwrite" MUST be a string. It specifies how DocFX uses the [overwrite files](..\tutorial\intro_overwrite_files.md) to overwrite the existing values.
 
 The following values are allowed:
-* `replace`: The value will be overwitten by the one specified in overwrite files. This is the default behavior if no overwrite keywords is specified.
+* `replace`: The value will be overwitten by the one specified in overwrite files.
 * `key`: If the instance is a string, it will be used as the key of the current object. It can be used to identify the object to overwrite in an array.
 * `merge`: If the instance is an object, it will be merged with the one in overwrite files. If there are duplicated keys, the one in overwrite files will overwrite the existing one.
 * `ignore`: Mark the current instance cannot be overwritten.
 
+For `object` and `array` type, the default behavior is `merge`. For other types, the default behavior is `replace`.
+
 > [!Note]
-> After applying the overwrite files, the model should be checked again to ensure that all the validation rules still satifies.
+> After applying the overwrite files, the model should be checked again to ensure that all the validation rules still satisfy.
 
-## 7. Undefined keywords
-The schema parser can only recognize the keywords defined above. Undefined keywords is also allowed in the schema. It can provide some description for the schema, or provide more information for other parties to process.
+## 7. Extension Keywords
 
-> [!note]
-> As there may be more keywords in JSON schema added to this, it's NOT RECOMMENDED to reuse the keywords already defined in JSON schema here, unless the usage is exactly same.
+While this schema defines some keywords for DocFX use, additional keywords can be added above it. 
+
+The extension keywords are RECOMMENDED to has the form `{an charactor other than "d"}-{keyword}`, so that it can be easily distinguished from keywords defined in this schema and JSON schema. They can have any valid JSON format value.
 
 ## 8. Samples
 Here's an sample of the schema. Assume we have the following YAML file:
@@ -147,7 +156,7 @@ sections:
   - html: "[Bind an existing SSL certificate to your application](app-service-web-tutorial-custom-SSL.md)"
 ```
 
-In this sample, we want to use the JSON schema to describe the overall model structure. Further more, the `href` property need to be resolved from the relative path to the final href. The `content` property need to be marked up as a Markdown string. The `metadata` need to be tagged for further custom operations.
+In this sample, we want to use the JSON schema to describe the overall model structure. Further more, the `href` property need to be resolved from the relative path to the final href. The `content` property need to be marked up as a Markdown string. The `metadata` need to be tagged for further custom operations. We want to use `setion`'s `title` as the key for overwrite `section` array.
 
 Here's the schema to describe these operations:
 
@@ -157,7 +166,7 @@ Here's the schema to describe these operations:
     "properties": {
         "metadata": {
             "type": "object",
-            "tags": "metadata"
+            "d-tags": "metadata"
         },
         "sections": {
             "type": "array",
@@ -171,20 +180,21 @@ Here's the schema to describe these operations:
                             "properties": {
                                 "href": {
                                     "type": "string",
-                                    "behavior": "href"
+                                    "d-contentType": "href"
                                 },
                                 "text": {
                                     "type": "string"
                                 },
                                 "content": {
                                     "type": "string",
-                                    "behavior": "markup"
+                                    "d-contentType": "markup"
                                 }
                             }
                         }
                     },
                     "title": {
-                        "type": "string"
+                        "type": "string",
+                        "d-overwrite": "key"
                     }
                 }
             }
