@@ -84,7 +84,7 @@ The value of `d-contentType` MUST be a string. It defines how DocFX will manipul
 
 The following values are allowed:
 * `uid`: If the instance is a string, it defines a UID in the build context for reference.
-* `href`: If the instance is a string and in relative path, it will be converted into path from docset root, and DocFX will update the path afterward.
+* `fileLink`: If the instance is a string and in relative path, it will be converted into path from docset root, and DocFX will update the path afterward.
 * `uidReference`: If the instance is a string or an array of string, it references to a UID (some UIDS) in the build context.
 * `markdown`: If the instance is a string, it will be marked up and updated.
 * `includeFile`: if the instance is a string and in relative path, content of the targeted file will replace it in place.
@@ -156,7 +156,7 @@ sections:
   - html: "[Bind an existing SSL certificate to your application](app-service-web-tutorial-custom-SSL.md)"
 ```
 
-In this sample, we want to use the JSON schema to describe the overall model structure. Further more, the `href` property need to be resolved from the relative path to the final href. The `content` property need to be marked up as a Markdown string. The `metadata` need to be tagged for further custom operations. We want to use `setion`'s `title` as the key for overwrite `section` array.
+In this sample, we want to use the JSON schema to describe the overall model structure. Further more, the `href` is a file link. It need to be resolved from the relative path to the final href. The `content` property need to be marked up as a Markdown string. The `metadata` need to be tagged for further custom operations. We want to use `setion`'s `title` as the key for overwrite `section` array.
 
 Here's the schema to describe these operations:
 
@@ -180,7 +180,7 @@ Here's the schema to describe these operations:
                             "properties": {
                                 "href": {
                                     "type": "string",
-                                    "d-contentType": "href"
+                                    "d-contentType": "fileLink"
                                 },
                                 "text": {
                                     "type": "string"
