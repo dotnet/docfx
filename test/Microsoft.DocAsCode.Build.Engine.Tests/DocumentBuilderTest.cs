@@ -99,6 +99,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "Test xref with attribute: <xref href=\"XRef2\" name=\"Foo&lt;T&gt;\"/>",
                     "Test invalid xref with attribute: <xref href=\"invalid\" alt=\"Foo&lt;T&gt;\"/>",
                     "Test invalid xref with attribute: <xref href=\"invalid\" fullname=\"Foo&lt;T&gt;\"/>",
+                    "Test external xref with absolute URL and anchor: @str",
                     "<p>",
                     "test",
                 },
@@ -203,7 +204,7 @@ tagRules : [
                             "<!-- I'm not title-->",
                             "<!-- Raw title is in the line below -->",
                             "",
-                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"30\">Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@XRef1\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\"></xref>",
+                            $"<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"31\">Test XRef: <xref href=\"XRef1\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@XRef1\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"11\" sourceendlinenumber=\"11\"></xref>",
                             $"Test link: <a href=\"~/{_inputFolder}/test/test.md\" data-raw-source=\"[link text](test/test.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"12\" sourceendlinenumber=\"12\">link text</a>",
                             $"Test link: <a href=\"~/{resourceFile}\" data-raw-source=\"[link text 2](../Microsoft.DocAsCode.Build.Engine.Tests.dll)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"13\" sourceendlinenumber=\"13\">link text 2</a>",
                             $"Test link style xref: <a href=\"xref:XRef2\" title=\"title\" data-raw-source=\"[link text 3](xref:XRef2 &quot;title&quot;)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"14\" sourceendlinenumber=\"14\">link text 3</a>",
@@ -221,6 +222,7 @@ tagRules : [
                             "Test xref with attribute: <xref href=\"XRef2\" name=\"Foo&lt;T&gt;\"></xref>",
                             "Test invalid xref with attribute: <xref href=\"invalid\" alt=\"Foo&lt;T&gt;\"></xref>",
                             "Test invalid xref with attribute: <xref href=\"invalid\" fullname=\"Foo&lt;T&gt;\"></xref>",
+                            $"Test external xref with absolute URL and anchor: <xref href=\"str\" data-throw-if-not-resolved=\"False\" data-raw-source=\"@str\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"29\" sourceendlinenumber=\"29\"></xref>",
                             "<p>",
                             @"test</p>",
                             ""),
@@ -250,6 +252,7 @@ tagRules : [
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
+                            "Test external xref with absolute URL and anchor: <a class=\"xref\" href=\"https://docs.python.org/3.5/library/stdtypes.html#str\">str</a>",
                             "<p>",
                             "test</p>",
                             ""),
@@ -863,6 +866,7 @@ exports.getOptions = function (){
                     TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null),
                     TemplateDir = templateFolder,
                     VersionDir = versionDir,
+                    XRefMaps = ImmutableArray.Create("TestData/xrefmap.yml")
                 };
                 builder.Build(parameters);
             }
