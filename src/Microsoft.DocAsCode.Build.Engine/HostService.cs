@@ -66,10 +66,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             VersionName = versionName;
             VersionOutputFolder = versionDir;
-            if (lruSize > 0)
-            {
-                _lru = LruList<ModelWithCache>.CreateSynchronized(lruSize, OnLruRemoving);
-            }
+
+            // Disable LRU, when Content.get, it is possible that the value is Serialized before the modification on the content does not complete yet
+            //if (lruSize > 0)
+            //{
+            //    _lru = LruList<ModelWithCache>.CreateSynchronized(lruSize, OnLruRemoving);
+            //}
             LoadCore(models);
         }
 
