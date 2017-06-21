@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Plugins
     {
         private static string _baseDirectory;
         private static string _outputDirectory;
+        private static string _version;
 
         /// <summary>
         /// The directory path which contains docfx.json.
@@ -39,6 +40,25 @@ namespace Microsoft.DocAsCode.Plugins
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static IFileAbstractLayer FileAbstractLayerImpl { get; set; }
+
+        public static string Version
+        {
+            get
+            {
+                var version = _version;
+                if (string.IsNullOrEmpty(version))
+                {
+                    version = typeof(EnvironmentContext).Assembly.GetName().Version.ToString();
+                }
+
+                _version = version;
+                return _version;
+            }
+            set
+            {
+                _version = value;
+            }
+        }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static void Clean()

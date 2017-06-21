@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.SubCommands
             Config = config;
 
             var assembly = typeof(Program).Assembly;
-            _version = assembly.GetName().Version.ToString();
+            _version = EnvironmentContext.Version;
 
             SetDefaultConfigValue(Config);
 
