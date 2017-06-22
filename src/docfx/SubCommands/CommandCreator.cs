@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
                 if (!string.IsNullOrEmpty(logOption.CorrelationId))
                 {
-                    if (AmbientContext.GetCurrentContext() == null)
+                    if (AmbientContext.CurrentContext == null)
                     {
                         AmbientContext.InitializeAmbientContext(logOption.CorrelationId);
                     }

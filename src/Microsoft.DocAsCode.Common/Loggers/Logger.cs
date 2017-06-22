@@ -214,11 +214,7 @@ namespace Microsoft.DocAsCode.Common
 
             public LogItem()
             {
-                var context = AmbientContext.GetCurrentContext();
-                if (context != null)
-                {
-                    CorrelationId = context.GenerateNextCorrelationId();
-                }
+                CorrelationId = AmbientContext.CurrentContext?.GenerateNextCorrelationId();
             }
         }
     }

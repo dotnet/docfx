@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentException("Phase name cannot be null or white space.", nameof(phaseName));
             }
 
-            _ac = AmbientContext.CurrentContext.CreateBranch();
+            _ac = AmbientContext.GetOrCreateAmbientContext().CreateBranch();
 
             _originPhaseName = GetPhaseName();
             phaseName = _originPhaseName == null ? phaseName : _originPhaseName + "." + phaseName;
@@ -38,6 +38,7 @@ namespace Microsoft.DocAsCode.Common
         private LoggerPhaseScope(CapturedLoggerPhaseScope captured, LogLevel? perfLogLevel)
         {
             _originPhaseName = GetPhaseName();
+            _ac = new AmbientContext(captured.AmbientContext);
             SetPhaseName(captured.PhaseName);
             if (perfLogLevel != null)
             {
@@ -65,7 +66,7 @@ namespace Microsoft.DocAsCode.Common
         {
             _performanceScope?.Dispose();
             SetPhaseName(_originPhaseName);
-            _ac.Dispose();
+            _ac?.Dispose();
         }
 
         internal static string GetPhaseName()
@@ -104,9 +105,12 @@ namespace Microsoft.DocAsCode.Common
             public CapturedLoggerPhaseScope()
             {
                 PhaseName = GetPhaseName();
+                AmbientContext = AmbientContext.CurrentContext;
             }
 
             public string PhaseName { get; }
+            public AmbientContext AmbientContext { get; }
+
         }
     }
 }

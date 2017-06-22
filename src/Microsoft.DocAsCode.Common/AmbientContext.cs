@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Runtime.CompilerServices;
     using System.Runtime.Remoting.Messaging;
     using System.Threading;
 
@@ -12,12 +11,13 @@ namespace Microsoft.DocAsCode.Common
     public sealed class AmbientContext : IDisposable
     {
         private static readonly string AMBCTX_NAME = nameof(AmbientContext);
-        
+
         // auto increment counter maintained during branch and trace entry creation.
-        private long _counter = 0;
+        private long[] _counterRef = new long[] { 0 };
 
         private readonly AmbientContext _originalAmbientContext;
-        private readonly string _id;
+
+        public string Id { get; }
 
         private AmbientContext() : this(Guid.NewGuid().ToString().ToUpperInvariant())
         {
@@ -25,25 +25,28 @@ namespace Microsoft.DocAsCode.Common
 
         private AmbientContext(string id)
         {
-            _id = id;
+            Id = id;
             _originalAmbientContext = GetCurrentContext();
             SetAmbientContext(this);
         }
 
-        public static AmbientContext CurrentContext
+        internal AmbientContext(AmbientContext context) : this(context.Id)
         {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                // no thread safety issue here because the TLS can only be initialized by the thread itself
-                var context = GetCurrentContext();
-                if (context == null)
-                {
-                    context = InitializeAmbientContext(null);
-                }
+            _counterRef = context._counterRef;
+        }
 
-                return context;
+        public static AmbientContext CurrentContext => GetCurrentContext();
+
+        public static AmbientContext GetOrCreateAmbientContext()
+        {
+            // no thread safety issue here because the TLS can only be initialized by the thread itself
+            var context = GetCurrentContext();
+            if (context == null)
+            {
+                context = InitializeAmbientContext(null);
             }
+
+            return new AmbientContext(context);
         }
 
         /// <summary>
@@ -64,23 +67,13 @@ namespace Microsoft.DocAsCode.Common
             return string.IsNullOrEmpty(id) ? new AmbientContext() : new AmbientContext(id);
         }
 
-        public static void RemoveAmbientContext()
-        {
-            CallContext.FreeNamedDataSlot(AMBCTX_NAME);
-        }
-
-        public static AmbientContext GetCurrentContext()
-        {
-            return CallContext.LogicalGetData(AMBCTX_NAME) as AmbientContext;
-        }
-
         /// <summary>
         /// Generates the next id which correlates with other ids hierarchically.
         /// </summary>
         /// <returns>The generated correlation id.</returns>
         public string GenerateNextCorrelationId()
         {
-            return string.Format("{0}.{1}", _id, Interlocked.Increment(ref _counter));
+            return string.Format("{0}.{1}", Id, Interlocked.Increment(ref _counterRef[0]));
         }
 
         /// <summary>
@@ -107,9 +100,19 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
+        private static AmbientContext GetCurrentContext()
+        {
+            return CallContext.LogicalGetData(AMBCTX_NAME) as AmbientContext;
+        }
+
         private static void SetAmbientContext(AmbientContext context)
         {
             CallContext.LogicalSetData(AMBCTX_NAME, context);
+        }
+
+        private static void RemoveAmbientContext()
+        {
+            CallContext.FreeNamedDataSlot(AMBCTX_NAME);
         }
     }
 }
