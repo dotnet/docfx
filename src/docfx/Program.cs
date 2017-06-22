@@ -29,6 +29,8 @@ namespace Microsoft.DocAsCode
 
         internal static int ExecSubCommand(string[] args)
         {
+            EnvironmentContext.SetVersion(typeof(Program).Assembly.GetName().Version.ToString());
+
             var consoleLogListener = new ConsoleLogListener();
             var replayListener = new ReplayLogListener
             {
