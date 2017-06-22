@@ -61,18 +61,17 @@ docfx metadata [<projects>] [--property <n1>=<v1>;<n2>=<v2>]
 
 `<projects>` specifies the projects to have metadata extracted. There are several approaches to extract language metadata.
 
-1. From a supported project file or project file list
-   Supported project file extensions include `.csproj`, `.vbproj`, `.sln`, and `project.json`.
+1. From a supported file or file list
+   Supported file extensions include `.csproj`, `.vbproj`, `.sln`, `project.json`, `dll` assembly file, `.cs` source file and `.vb` source file.
 
-   Files can be combined using `,` as separator, e.g. `docfx metadata a.csproj,b.sln`.
+   Multiple files are seperated by whitespace, e.g. `docfx metadata Class1.cs a.csproj`
+   
+> [!Note]
+> Glob pattern is **NOT** supported in command line options.
 
-2. From a supported source code file or source code file list
-   Supported source code file extensions include `.cs` and `.vb`.
-   Files can be combined using `,` as separator and *search pattern*.
+2. From *docfx.json* file, as described in **Section3**.
 
-3. From *docfx.json* file, as described in **Section3**.
-
-4. If the argument is not specified, `docfx.exe` will try reading `docfx.json` under current directory.
+3. If the argument is not specified, `docfx.exe` will try reading `docfx.json` under current directory.
 
 The default output folder is `_site/` folder if it is not specified in `docfx.json` under current directory.
 
