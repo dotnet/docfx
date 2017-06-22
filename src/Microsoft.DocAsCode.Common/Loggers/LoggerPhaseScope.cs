@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Common
     {
         private readonly string _originPhaseName;
         private readonly PerformanceScope _performanceScope;
-        private AmbientContext _ac;
+        private readonly AmbientContext _ac;
         public LoggerPhaseScope(string phaseName)
             : this(phaseName, null) { }
 
