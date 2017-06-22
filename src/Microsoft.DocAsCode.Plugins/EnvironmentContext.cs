@@ -49,7 +49,6 @@ namespace Microsoft.DocAsCode.Plugins
             _version = version;
         }
 
-
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static void Clean()
         {
