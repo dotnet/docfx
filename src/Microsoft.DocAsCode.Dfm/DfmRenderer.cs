@@ -229,7 +229,7 @@ namespace Microsoft.DocAsCode.Dfm
             for (int i = 0; i < token.Items.Length; i++)
             {
                 var item = token.Items[i];
-                sb += @"<section id=""#tabpanel_";
+                sb += @"<section id=""tabpanel_";
                 sb = AppendGroupId(sb, groupId, item);
                 sb += @""" role=""tabpanel"" data-tab=""";
                 sb += item.Id;
