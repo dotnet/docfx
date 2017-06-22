@@ -54,6 +54,7 @@ namespace Microsoft.DocAsCode.Common
 
         public void Dispose()
         {
+            _innerListener.Dispose();
         }
 
         public void WriteLine(ILogItem item)
@@ -72,10 +73,10 @@ namespace Microsoft.DocAsCode.Common
                 case BuildStatus.Failed:
                     message += "Build failed.";
                     break;
-                case BuildStatus.SucceedWithWarning:
+                case BuildStatus.SucceededWithWarning:
                     message += "Build succeeded with warning.";
                     break;
-                case BuildStatus.Succeed:
+                case BuildStatus.Succeeded:
                     message += "Build succeeded.";
                     break;
                 default:
@@ -107,10 +108,10 @@ namespace Microsoft.DocAsCode.Common
                 case BuildStatus.Failed:
                     WriteToConsole(message, ConsoleColor.Red);
                     break;
-                case BuildStatus.SucceedWithWarning:
+                case BuildStatus.SucceededWithWarning:
                     WriteToConsole(message, ConsoleColor.Yellow);
                     break;
-                case BuildStatus.Succeed:
+                case BuildStatus.Succeeded:
                     WriteToConsole(message, ConsoleColor.Green);
                     break;
                 default:
@@ -131,17 +132,17 @@ namespace Microsoft.DocAsCode.Common
                 case LogLevel.Error:
                     return BuildStatus.Failed;
                 case LogLevel.Warning:
-                    return BuildStatus.SucceedWithWarning;
+                    return BuildStatus.SucceededWithWarning;
                 default:
-                    return BuildStatus.Succeed;
+                    return BuildStatus.Succeeded;
             }
         }
 
         private enum BuildStatus
         {
             Failed,
-            SucceedWithWarning,
-            Succeed
+            SucceededWithWarning,
+            Succeeded
         }
     }
 }
