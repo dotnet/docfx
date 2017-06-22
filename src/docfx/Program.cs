@@ -98,7 +98,6 @@ namespace Microsoft.DocAsCode
             finally
             {
                 scope?.Dispose();
-                AmbientContext.CurrentContext?.Dispose();
             }
         }
     }
