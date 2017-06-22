@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Common
     {
         private readonly string _originPhaseName;
         private readonly PerformanceScope _performanceScope;
-
+        private AmbientContext _ac;
         public LoggerPhaseScope(string phaseName)
             : this(phaseName, null) { }
 
@@ -23,6 +23,9 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentException("Phase name cannot be null or white space.", nameof(phaseName));
             }
+
+            _ac = AmbientContext.CurrentContext.CreateBranch();
+
             _originPhaseName = GetPhaseName();
             phaseName = _originPhaseName == null ? phaseName : _originPhaseName + "." + phaseName;
             SetPhaseName(phaseName);
@@ -62,6 +65,7 @@ namespace Microsoft.DocAsCode.Common
         {
             _performanceScope?.Dispose();
             SetPhaseName(_originPhaseName);
+            _ac.Dispose();
         }
 
         internal static string GetPhaseName()

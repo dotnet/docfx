@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode
 
     [OptionUsage("metadata [<docfx.json file path>]")]
     [OptionUsage("metadata <code project1> [<code project2>] ... [<code projectN>]")]
-    internal class MetadataCommandOptions : ICanPrintHelpMessage, ILoggable
+    internal class MetadataCommandOptions : LogOptions, ICanPrintHelpMessage
     {
         [Option('f', "force", HelpText = "Force re-generate all the metadata")]
         public bool ForceRebuild { get; set; }
@@ -27,15 +27,6 @@ namespace Microsoft.DocAsCode
 
         [Option('h', "help", HelpText = "Print help message for this sub-command")]
         public bool PrintHelpMessage { get; set; }
-
-        [Option('l', "log", HelpText = "Specify the file name to save processing log")]
-        public string LogFilePath { get; set; }
-
-        [Option("logLevel", HelpText = "Specify to which log level will be logged. By default log level >= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.")]
-        public LogLevel? LogLevel { get; set; }
-
-        [Option("repositoryRoot", HelpText = "Specify the GIT repository root folder.")]
-        public string RepoRoot { get; set; }
 
         [ValueList(typeof(List<string>))]
         public List<string> Projects { get; set; }

@@ -209,6 +209,17 @@ namespace Microsoft.DocAsCode.Common
             public string Phase { get; set; }
 
             public string Code { get; set; }
+
+            public string CorrelationId { get; }
+
+            public LogItem()
+            {
+                var context = AmbientContext.GetCurrentContext();
+                if (context != null)
+                {
+                    CorrelationId = context.GenerateNextCorrelationId();
+                }
+            }
         }
     }
 }

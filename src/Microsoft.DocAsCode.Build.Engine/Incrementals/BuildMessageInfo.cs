@@ -153,6 +153,8 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             public string Phase { get; set; }
 
             public string Code { get; set; }
+
+            public string CorrelationId { get; set; }
         }
     }
 }

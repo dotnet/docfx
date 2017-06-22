@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var buildOption = options as BuildCommandOptions;
             string root = Path.GetDirectoryName(buildOption?.ConfigFile ?? Directory.GetCurrentDirectory());
 
-            var logOption = options as ILoggable;
+            var logOption = options as LogOptions;
             if (logOption != null)
             {
                 if (!string.IsNullOrWhiteSpace(logOption.LogFilePath) && Logger.FindAsyncListener(l => l is ReportLogListener) == null)
@@ -50,6 +50,14 @@ namespace Microsoft.DocAsCode.SubCommands
                 if (logOption.LogLevel.HasValue)
                 {
                     Logger.LogLevelThreshold = logOption.LogLevel.Value;
+                }
+
+                if (!string.IsNullOrEmpty(logOption.CorrelationId))
+                {
+                    if (AmbientContext.GetCurrentContext() == null)
+                    {
+                        AmbientContext.InitializeAmbientContext(logOption.CorrelationId);
+                    }
                 }
             }
 

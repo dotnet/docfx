@@ -56,7 +56,8 @@ namespace Microsoft.DocAsCode.Common
                 File = TransformFile(file),
                 Line = line,
                 DateTime = DateTime.UtcNow,
-                Code = item.Code
+                Code = item.Code,
+                CorrelationId = item.CorrelationId
             };
 
             _writer.WriteLine(JsonUtility.Serialize(reportItem));
@@ -124,6 +125,8 @@ namespace Microsoft.DocAsCode.Common
             public MessageSeverity Severity { get; set; }
             [JsonProperty("code")]
             public string Code{ get; set; }
+            [JsonProperty("correlation_id")]
+            public string CorrelationId { get; set; }
         }
 
         public enum MessageSeverity

@@ -11,5 +11,6 @@ namespace Microsoft.DocAsCode.Common
         string File { get; }
         string Line { get; }
         string Code { get; }
+        string CorrelationId { get; }
     }
 }
