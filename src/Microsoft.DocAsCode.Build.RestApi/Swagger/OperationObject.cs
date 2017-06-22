@@ -29,6 +29,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
         [JsonProperty("summary")]
         public string Summary { get; set; }
 
+        [YamlMember(Alias = "tags")]
+        [JsonProperty("tags")]
+        public List<string> Tags { get; set; }
+
         [YamlMember(Alias = "parameters")]
         [JsonProperty("parameters")]
         public List<ParameterObject> Parameters { get; set; }
