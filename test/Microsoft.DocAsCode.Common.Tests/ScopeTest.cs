@@ -21,58 +21,86 @@ namespace Microsoft.DocAsCode.Common.Tests
             var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(null, LogLevel.Diagnostic);
             var logLevel = Logger.LogLevelThreshold;
             ILogItem item;
+            AmbientContext.InitializeAmbientContext("id");
             try
             {
                 Logger.LogLevelThreshold = LogLevel.Diagnostic;
                 Logger.RegisterListener(listener);
-                Action<bool> callback;
+                Action<bool, int> callback;
 
                 Logger.LogInfo("test no phase scope");
                 Assert.Null(TakeFirstLogItemAndRemove(listener.Items).Phase);
-
+                Assert.Equal("id", AmbientContext.CurrentContext.Id);
+                Assert.Equal("id.2", AmbientContext.CurrentContext.GenerateNextCorrelationId());
                 using (new LoggerPhaseScope("A"))
                 {
                     Logger.LogInfo("test in phase scope A");
                     Assert.Equal("A", TakeFirstLogItemAndRemove(listener.Items).Phase);
-
+                    Assert.Equal("id.3", AmbientContext.CurrentContext.Id);
+                    Assert.Equal("id.3.2", AmbientContext.CurrentContext.GenerateNextCorrelationId());
                     using (new LoggerPhaseScope("B"))
                     {
                         Logger.LogInfo("test in phase scope B");
                         Assert.Equal("A.B", TakeFirstLogItemAndRemove(listener.Items).Phase);
 
+                        Assert.Equal("id.3.3", AmbientContext.CurrentContext.Id);
+                        Assert.Equal("id.3.3.2", AmbientContext.CurrentContext.GenerateNextCorrelationId());
+
                         var captured = LoggerPhaseScope.Capture();
                         Assert.NotNull(captured);
-                        callback = shouldLogPerformance =>
+                        callback = (shouldLogPerformance, round) =>
                         {
                             using (shouldLogPerformance ?
                                 LoggerPhaseScope.Restore(captured, LogLevel.Diagnostic) :
                                 LoggerPhaseScope.Restore(captured))
                             {
                                 Logger.LogInfo("test in captured phase scope B");
+                                if (round == 1)
+                                {
+                                    Assert.Equal("id.3.3", AmbientContext.CurrentContext.Id);
+                                    Assert.Equal("id.3.3.4", AmbientContext.CurrentContext.GenerateNextCorrelationId());
+                                }
+
+                                if (round == 2)
+                                {
+                                    Assert.Equal("id.3.3", AmbientContext.CurrentContext.Id);
+                                    Assert.Equal("id.3.3.6", AmbientContext.CurrentContext.GenerateNextCorrelationId());
+                                }
                             }
                         };
                     } // exit scope B.
 
+                    Assert.Equal("id.3", AmbientContext.CurrentContext.Id);
+
                     using (new LoggerPhaseScope("C", LogLevel.Diagnostic))
                     {
                         Logger.LogInfo("test in phase scope C");
+
                         Assert.Equal("A.C", TakeFirstLogItemAndRemove(listener.Items).Phase);
 
+                        Assert.Equal("id.3.4", AmbientContext.CurrentContext.Id);
+
                         // run callback in scope C.
-                        callback(false);
+                        callback(false, 1);
+
                         Assert.Equal("A.B", TakeFirstLogItemAndRemove(listener.Items).Phase);
+                        Assert.Equal("id.3.4", AmbientContext.CurrentContext.Id);
                     } // exit scope C.
+
+                    Assert.Equal("id.3", AmbientContext.CurrentContext.Id);
 
                     item = TakeFirstLogItemAndRemove(listener.Items);
                     Assert.Equal("A.C", item.Phase);
                     Assert.Equal(LogLevel.Diagnostic, item.LogLevel);
                 } // exit scope A.
 
+                Assert.Equal("id", AmbientContext.CurrentContext.Id);
+
                 Logger.LogInfo("test no phase scope");
                 Assert.Null(TakeFirstLogItemAndRemove(listener.Items).Phase);
 
                 // run callback in no scope.
-                callback(true);
+                callback(true, 2);
                 Assert.Equal("A.B", TakeFirstLogItemAndRemove(listener.Items).Phase);
                 item = TakeFirstLogItemAndRemove(listener.Items);
                 Assert.Equal("A.B", item.Phase);
@@ -85,6 +113,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             {
                 Logger.UnregisterListener(listener);
                 Logger.LogLevelThreshold = logLevel;
+                AmbientContext.CurrentContext.Dispose();
             }
         }
 

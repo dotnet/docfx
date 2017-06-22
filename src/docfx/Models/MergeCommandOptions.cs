@@ -7,10 +7,8 @@ namespace Microsoft.DocAsCode
 
     using CommandLine;
 
-    using Microsoft.DocAsCode.Common;
-
     [OptionUsage("merge [<config file path>]")]
-    internal class MergeCommandOptions : ICanPrintHelpMessage, ILoggable
+    internal class MergeCommandOptions : LogOptions, ICanPrintHelpMessage
     {
         public string OutputFolder { get; set; }
 
@@ -19,15 +17,6 @@ namespace Microsoft.DocAsCode
 
         [Option('h', "help", HelpText = "Print help message for this sub-command")]
         public bool PrintHelpMessage { get; set; }
-
-        [Option('l', "log", HelpText = "Specify the file name to save processing log")]
-        public string LogFilePath { get; set; }
-
-        [Option("logLevel", HelpText = "Specify to which log level will be logged. By default log level >= Info will be logged. The acceptable value could be Verbose, Info, Warning, Error.")]
-        public LogLevel? LogLevel { get; set; }
-
-        [Option("repositoryRoot", HelpText = "Specify the GIT repository root folder.")]
-        public string RepoRoot { get; set; }
 
         [OptionList("content", Separator = ',', HelpText = "Specifies content files for generating documentation.")]
         public List<string> Content { get; set; }

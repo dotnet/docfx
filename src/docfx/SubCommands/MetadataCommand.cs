@@ -190,7 +190,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 if (!File.Exists(Constants.ConfigFileName))
                 {
-                    throw new ArgumentException("Either provide config file or specify project files to generate metadata.");
+                    throw new OptionParserException("Either provide config file or specify project files to generate metadata.");
                 }
                 else
                 {
