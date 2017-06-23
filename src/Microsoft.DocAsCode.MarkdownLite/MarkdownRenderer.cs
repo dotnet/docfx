@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         {
             StringBuffer content = StringBuffer.Empty;
             content += "![";
-            content += token.Text;
+            content += StringHelper.EscapeMarkdown(token.Text);
             content += "](";
             content += StringHelper.EscapeMarkdown(token.Href);
             if (!string.IsNullOrEmpty(token.Title))
@@ -121,7 +121,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 var realToken = token as MarkdownImageInlineToken;
                 content += "![";
-                content += realToken.Text;
+                content += StringHelper.EscapeMarkdown(realToken.Text);
                 content += "][";
                 content += realToken.RefId;
                 content += "]";

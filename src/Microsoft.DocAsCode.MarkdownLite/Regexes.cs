@@ -177,9 +177,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
             public static readonly Regex HtmlUnescape = new Regex(@"&([#\w]+);", RegexOptionCompiled);
 
-            private const string EscapeChar = @"[!""#$%&'()*+,.:;<=>?@[^_`{|}~\-\/\\\]]";
-            public static readonly Regex MarkdownUnescape = new Regex(@"\\(" + EscapeChar + ")", RegexOptionCompiled);
-            public static readonly Regex MarkdownEscape = new Regex(EscapeChar, RegexOptionCompiled);
+            public static readonly Regex MarkdownUnescape = new Regex(@"\\([!""#$%&'()*+,.:;<=>?@[^_`{|}~\-\/\\\]])", RegexOptionCompiled);
+            public static readonly Regex MarkdownEscape = new Regex(@"[!""'()*+:<>[^_`{|}~\-\]]", RegexOptionCompiled);
         }
     }
 }

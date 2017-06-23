@@ -18,11 +18,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             IMarkdownToken result;
             if (isImage)
             {
-                result = new MarkdownImageInlineToken(this, parser.Context, escapedHref, title, text, sourceInfo, linkType, refId);
+                result = new MarkdownImageInlineToken(this, parser.Context, escapedHref, StringHelper.UnescapeMarkdown(title), StringHelper.UnescapeMarkdown(text), sourceInfo, linkType, refId);
             }
             else
             {
-                result = new MarkdownLinkInlineToken(this, parser.Context, escapedHref, title, parser.Tokenize(sourceInfo.Copy(text)), sourceInfo, linkType, refId);
+                result = new MarkdownLinkInlineToken(this, parser.Context, escapedHref, StringHelper.UnescapeMarkdown(title), parser.Tokenize(sourceInfo.Copy(text)), sourceInfo, linkType, refId);
             }
             parser.SwitchContext(c);
             return result;
