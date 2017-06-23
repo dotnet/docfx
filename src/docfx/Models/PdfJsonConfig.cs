@@ -24,6 +24,12 @@ namespace Microsoft.DocAsCode
         [JsonProperty("generatesExternalLink")]
         public bool GeneratesExternalLink { get; set; }
 
+        [JsonProperty("keepRawFiles")]
+        public bool KeepRawFiles { get; set; }
+
+        [JsonProperty("rawOutputFolder")]
+        public string RawOutputFolder { get; set; }
+
         [JsonProperty("excludedTocs")]
         public List<string> ExcludedTocs { get; set; }
 
@@ -32,5 +38,11 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("base")]
         public string BasePath { get; set; }
+
+        /// <summary>
+        /// Specify how to handle pages that fail to load: abort, ignore or skip(default abort)
+        /// </summary>
+        [JsonProperty("errorHandling")]
+        public string LoadErrorHandling { get; set; }
     }
 }

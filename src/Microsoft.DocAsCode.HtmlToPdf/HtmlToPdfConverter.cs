@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
     using iTextSharp.text.pdf;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     public class HtmlToPdfConverter
@@ -131,23 +132,27 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                 }
             })
             {
-                process.Start();
-                if (_htmlToPdfOptions.IsReadArgsFromStdin)
+                using(new LoggerPhaseScope(Constants.PdfCommandName))
                 {
-                    using (var standardInput = process.StandardInput)
+                    Logger.LogVerbose($"Executing {process.StartInfo.FileName} {process.StartInfo.Arguments} {arguments}");
+                    process.Start();
+                    if (_htmlToPdfOptions.IsReadArgsFromStdin)
                     {
-                        standardInput.AutoFlush = true;
-                        standardInput.Write(arguments);
+                        using (var standardInput = process.StandardInput)
+                        {
+                            standardInput.AutoFlush = true;
+                            standardInput.Write(arguments);
+                        }
                     }
-                }
-                if (_htmlToPdfOptions.IsOutputToStdout)
-                {
-                    using (var standardOutput = process.StandardOutput)
+                    if (_htmlToPdfOptions.IsOutputToStdout)
                     {
-                        standardOutput.BaseStream.CopyTo(stream);
+                        using (var standardOutput = process.StandardOutput)
+                        {
+                            standardOutput.BaseStream.CopyTo(stream);
+                        }
                     }
+                    process.WaitForExit(TimeoutInMilliseconds);
                 }
-                process.WaitForExit(TimeoutInMilliseconds);
             }
         }
 

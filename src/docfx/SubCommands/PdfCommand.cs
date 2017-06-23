@@ -46,9 +46,8 @@ namespace Microsoft.DocAsCode.SubCommands
             EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(_config.BaseDirectory) ? Directory.GetCurrentDirectory() : _config.BaseDirectory));
             // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
             var baseDirectory = EnvironmentContext.BaseDirectory;
-            var intermediateOutputFolder = Path.Combine(baseDirectory, "obj");
             var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(_config.OutputFolder) ? baseDirectory : _config.OutputFolder, _config.Destination ?? string.Empty));
-
+            var rawOutputFolder = string.IsNullOrEmpty(_config.RawOutputFolder) ? Path.Combine(outputFolder, "_raw") : _config.RawOutputFolder;
             var options = new PdfOptions
             {
                 BasePath = _config.BasePath,
@@ -60,11 +59,16 @@ namespace Microsoft.DocAsCode.SubCommands
                 GenerateAppendices = _config.GeneratesAppendices,
                 PdfConvertParallelism = _config.MaxParallelism == null || _config.MaxParallelism <= 0 ? Environment.ProcessorCount : _config.MaxParallelism.Value,
                 PdfDocsetName = _config.Name ?? Path.GetFileName(EnvironmentContext.BaseDirectory),
-                SourceDirectory = outputFolder,
+                SourceDirectory = rawOutputFolder,
                 ExcludeTocs = _config.ExcludedTocs?.ToArray(),
+                KeepRawFiles = _config.KeepRawFiles,
+                LoadErrorHandling = _config.LoadErrorHandling
             };
 
             // 1. call BuildCommand to generate html files first
+            // Output build command exec result to temp folder
+            _innerBuildCommand.Config.OutputFolder = rawOutputFolder;
+
             _innerBuildCommand.Exec(context);
 
             // 2. call html2pdf converter
@@ -150,9 +154,24 @@ namespace Microsoft.DocAsCode.SubCommands
                 config.BasePath = options.BasePath;
             }
 
+            if (!string.IsNullOrEmpty(options.RawOutputFolder))
+            {
+                config.RawOutputFolder = options.RawOutputFolder;
+            }
+
+            if (!string.IsNullOrEmpty(options.LoadErrorHandling))
+            {
+                config.LoadErrorHandling = options.LoadErrorHandling;
+            }
+
             if (options.GeneratesAppendices.HasValue)
             {
                 config.GeneratesAppendices = options.GeneratesAppendices.Value;
+            }
+
+            if (options.KeepRawFiles.HasValue)
+            {
+                config.KeepRawFiles = options.KeepRawFiles.Value;
             }
 
             if (options.GeneratesExternalLink.HasValue)
