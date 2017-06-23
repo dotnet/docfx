@@ -70,6 +70,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                             {
                                 Path = path.Key,
                                 OperationName = op.Key,
+                                Tags = operation.Tags,
                                 OperationId = operation.OperationId,
                                 HtmlId = GetHtmlId(itemUid),
                                 Uid = itemUid,
