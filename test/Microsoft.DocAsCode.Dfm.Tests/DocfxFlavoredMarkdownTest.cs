@@ -75,15 +75,68 @@ content-b
 <li role=""presentation"">
 <a href=""#tabpanel_{groupId}_a"" role=""tab"" aria-controls=""tabpanel_{groupId}_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1"">title-a</a>
 </li>
-<li role=""presentation"">
+<li role=""presentation"" aria-hidden=""true"" hidden=""hidden"">
 <a href=""#tabpanel_{groupId}_b_c"" role=""tab"" aria-controls=""tabpanel_{groupId}_b_c"" data-tab=""b"" data-condition=""c"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">title-b</a>
 </li>
 </ul>
 <section id=""tabpanel_{groupId}_a"" role=""tabpanel"" data-tab=""a"">
 <p sourceFile=""test.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""2"">content-a</p>
 </section>
-<section id=""tabpanel_{groupId}_b_c"" role=""tabpanel"" data-tab=""b"" data-condition=""c"" aria-hidden=""true"" hidden>
+<section id=""tabpanel_{groupId}_b_c"" role=""tabpanel"" data-tab=""b"" data-condition=""c"" aria-hidden=""true"" hidden=""hidden"">
 <p sourceFile=""test.md"" sourceStartLineNumber=""4"" sourceEndLineNumber=""4"">content-b</p>
+</section>
+</div>
+";
+            Assert.Equal(expected.Replace("\r\n", "\n"), actual);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestTabGroup_2()
+        {
+            var options = DocfxFlavoredMarked.CreateDefaultOptions();
+            options.ShouldExportSourceInfo = true;
+            var actual = DocfxFlavoredMarked.Markup(null, null, options, @"# [title-a](#tab/a)
+content-a
+# [title-b](#tab/b/c)
+content-b
+- - -
+# [title-a](#tab/a)
+content-a
+# [title-b](#tab/b/a)
+content-b
+- - -", "test.md");
+            var groupId = "uBn0rykxXo";
+            var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""test.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""5"">
+<ul role=""tablist"">
+<li role=""presentation"">
+<a href=""#tabpanel_{groupId}_a"" role=""tab"" aria-controls=""tabpanel_{groupId}_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1"">title-a</a>
+</li>
+<li role=""presentation"" aria-hidden=""true"" hidden=""hidden"">
+<a href=""#tabpanel_{groupId}_b_c"" role=""tab"" aria-controls=""tabpanel_{groupId}_b_c"" data-tab=""b"" data-condition=""c"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">title-b</a>
+</li>
+</ul>
+<section id=""tabpanel_{groupId}_a"" role=""tabpanel"" data-tab=""a"">
+<p sourceFile=""test.md"" sourceStartLineNumber=""2"" sourceEndLineNumber=""2"">content-a</p>
+</section>
+<section id=""tabpanel_{groupId}_b_c"" role=""tabpanel"" data-tab=""b"" data-condition=""c"" aria-hidden=""true"" hidden=""hidden"">
+<p sourceFile=""test.md"" sourceStartLineNumber=""4"" sourceEndLineNumber=""4"">content-b</p>
+</section>
+</div>
+<div class=""tabGroup"" id=""tabgroup_{groupId}-1"" sourceFile=""test.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""10"">
+<ul role=""tablist"">
+<li role=""presentation"">
+<a href=""#tabpanel_{groupId}-1_a"" role=""tab"" aria-controls=""tabpanel_uBn0rykxXo-1_a"" data-tab=""a"" tabindex=""0"" aria-selected=""true"" sourceFile=""test.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""6"">title-a</a>
+</li>
+<li role=""presentation"">
+<a href=""#tabpanel_{groupId}-1_b_a"" role=""tab"" aria-controls=""tabpanel_uBn0rykxXo-1_b_a"" data-tab=""b"" data-condition=""a"" tabindex=""-1"" sourceFile=""test.md"" sourceStartLineNumber=""8"" sourceEndLineNumber=""8"">title-b</a>
+</li>
+</ul>
+<section id=""tabpanel_{groupId}-1_a"" role=""tabpanel"" data-tab=""a"">
+<p sourceFile=""test.md"" sourceStartLineNumber=""7"" sourceEndLineNumber=""7"">content-a</p>
+</section>
+<section id=""tabpanel_{groupId}-1_b_a"" role=""tabpanel"" data-tab=""b"" data-condition=""a"" aria-hidden=""true"" hidden=""hidden"">
+<p sourceFile=""test.md"" sourceStartLineNumber=""9"" sourceEndLineNumber=""9"">content-b</p>
 </section>
 </div>
 ";
