@@ -54,8 +54,8 @@ Sample code:
 
 Property                 | Type                                                   | Description
 -----------------------  | -------------------------------------------------------| ----------------------------
-From                     | [DependencyItemSourceInfo](#dependencyItemSourceInfo)  | the depending one
-To                       | [DependencyItemSourceInfo](#dependencyItemSourceInfo)  | the dependent one
+From                     | [DependencyItemSourceInfo](#dependencyitemsourceinfo-model)  | the depending one
+To                       | [DependencyItemSourceInfo](#dependencyitemsourceinfo-model)  | the dependent one
 Type                     | string                                                 | the dependency type name
 
 ### DependencyItemSourceInfo model
