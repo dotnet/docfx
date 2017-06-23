@@ -1,7 +1,7 @@
 🔧 Advanced: Report Dependency
 =================================
 
-`DocFX Incremental Build Framework` provides the flexiblity to register customized dependency type and report dependency. In this topic, we will go through how to do that.
+DocFX Incremental Build Framework provides the flexiblity to register customized dependency type and report dependency. In this topic, we will go through how to do that.
 
 *Register Dependency Type*
 ---------------------------
@@ -31,7 +31,7 @@ reference                | Link                  | None                     | ma
 
 #### Register a customized dependency type
 
-Plugins are flexible to register customized dependency types by implementing @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep interface's method `GetDependencyTypesToRegister`. The method would be called by the framework at the very start of the whole build.
+Plugins are flexible to register customized dependency types by implementing @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep interface's method @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.GetDependencyTypesToRegister. The method would be called by the framework at the very start of the whole build.
 
 Sample code:
 
@@ -47,7 +47,7 @@ Sample code:
     };
 ```
 
-*Dependency item*
+*Report Dependency item*
 -------------------
 
 ### DependencyItem model
@@ -67,24 +67,24 @@ value                    | string          | value
 
 ### How to report
 
-`IHostService` provides the interface to report directed/reversed dependency items.
+@Microsoft.DocAsCode.Plugins.IHostService interface provides the methods to report directed/reversed dependency items.
 
 If you want to report the dependency between an file and another file, you can use below method:
 
-directed dependency: `void ReportDependencyTo(FileModel currentFileModel, string to, string type)`
+directed dependency: @Microsoft.DocAsCode.Plugins.IHostService.ReportDependencyTo(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String)
 
-reversed dependency: `void ReportDependencyFrom(FileModel currentFileModel, string from, string type)`
+reversed dependency: @Microsoft.DocAsCode.Plugins.IHostService.ReportDependencyFrom(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String)
 
 For example, i'd like to report a dependency: file `~/test.md`(filemodel is `a`) depends on file `~/../include/token/md`, dependency type is `include`,
 i could call the method `ReportDependencyTo(a, "~/../include/token.md", "include")`.
 
-Plugins are only allowed to report a dependency during `Compile` phase. However, some plugins might don't have enough info to resolve some dependency to file until the whole phase completes. `DocFX` provides the flexiblity that plugins could report dependency between items that are not files and resolve them later.
+Plugins are only allowed to report a dependency during `Compile` phase. However, some plugins might don't have enough info to resolve some dependency to file until the whole phase completes. Incremental build framework provides the flexiblity that plugins could report dependency between items that are not files and resolve them later.
 
-directed dependency: `void ReportDependencyTo(FileModel currentFileModel, string to, string toType, string type)`
+directed dependency: @Microsoft.DocAsCode.Plugins.IHostService.ReportDependencyTo(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String,System.String)
 
-reversed dependency: `void ReportDependencyFrom(FileModel currentFileModel, string from, string fromType, string type)`
+reversed dependency: @Microsoft.DocAsCode.Plugins.IHostService.ReportDependencyFrom(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String,System.String)
 
-report reference:    `void ReportReference(FileModel currentFileModel, string reference, string referenceType)`
+report reference:    @Microsoft.DocAsCode.Plugins.IHostService.ReportReference(Microsoft.DocAsCode.Plugins.FileModel,System.String,System.String)
 
 A common usage is to report dependency between file and uid.
 

@@ -53,9 +53,9 @@ Build could run incrementally only if all of the following conditions meet.
 
 2. The processor supports incremental.
 
-- The processor implements the interface `ISupportIncrementalDocumentProcessor`. Right now, `ConceptualDocumentProcessor` and `ManagedReferenceDocumentProcessor` supports the interface.
+- The processor implements the interface @Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor. Right now, @Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor and @Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor supports the interface.
 - The processor's `IncrementalContextHash` isn't changed.
-- All plugins in the processor implement the interface `ISupportIncrementalBuildStep`.
+- All plugins in the processor implement the interface @Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.
 
   If you'd like to customize your processor to support incremental, you can view more from [Walkthrough: Customize a processor to support incremental](customize_a_processor_to_support_incremental.md).
 

@@ -7,3 +7,5 @@
   href: obj/temp/docfxapi/
 - name: "Templates & Plugins"
   href: templates-and-plugins/
+- name: Incremental Build
+  href: incrementalbuild/
