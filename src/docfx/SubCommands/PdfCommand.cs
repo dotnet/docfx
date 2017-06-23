@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 GenerateAppendices = _config.GeneratesAppendices,
                 PdfConvertParallelism = _config.MaxParallelism == null || _config.MaxParallelism <= 0 ? Environment.ProcessorCount : _config.MaxParallelism.Value,
                 PdfDocsetName = _config.Name ?? Path.GetFileName(EnvironmentContext.BaseDirectory),
-                SourceDirectory = rawOutputFolder,
+                SourceDirectory = Path.Combine(rawOutputFolder, _config.Destination ?? string.Empty),
                 ExcludeTocs = _config.ExcludedTocs?.ToArray(),
                 KeepRawFiles = _config.KeepRawFiles,
                 LoadErrorHandling = _config.LoadErrorHandling
