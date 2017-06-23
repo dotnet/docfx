@@ -61,7 +61,7 @@ public class RtfBuildStep : ISupportIncrementalBuildStep
 }
 ```
 
-The above sample registered a dependency type named `ref`, this type of dependency applies during `Link` phase and it isn't transitive. `DocFX` has some reserved dependency types, you can refer to [Reserved Dependency Types](advanced_report_dependency.md#reserved-dependency-types) for more details.
+The above sample registered a dependency type named `ref`, this type of dependency applies during `Link` phase and it isn't transitive. `DocFX` has some reserved dependency types, you can refer to [Reserved Dependency Types](advanced_report_dependency.md#reserved_dependency_types) for more details.
 
 In `Build` step, this plugin reports dependencies of type `ref` by invoking `IHostService`'s `ReportDependencyTo` method. `IHostService` also provides `ReportDependencyFrom` method you can report reverse dependency.
 
