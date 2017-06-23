@@ -153,7 +153,7 @@ sections:
   children:
   - content: "Create an application using [.NET with Azure SQL DB](app-service-web-tutorial-dotnet-sqldatabase.md) or [Node.js with MongoDB](app-service-web-tutorial-nodejs-mongodb-app.md)"
   - content: "[Map an existing custom domain to your application](app-service-web-tutorial-custom-domain.md)"
-  - html: "[Bind an existing SSL certificate to your application](app-service-web-tutorial-custom-SSL.md)"
+  - content: "[Bind an existing SSL certificate to your application](app-service-web-tutorial-custom-SSL.md)"
 ```
 
 In this sample, we want to use the JSON schema to describe the overall model structure. Further more, the `href` is a file link. It need to be resolved from the relative path to the final href. The `content` property need to be marked up as a Markdown string. The `metadata` need to be tagged for further custom operations. We want to use `setion`'s `title` as the key for overwrite `section` array.
