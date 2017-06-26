@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotLiquid" Version="1.8.0" />
+    <PackageReference Include="DotLiquid" Version="2.0.145" />
     <PackageReference Include="HtmlAgilityPack" Version="1.4.9" />
     <PackageReference Include="Jint" Version="2.5.0" />
     <PackageReference Include="Microsoft.Composition" Version="1.0.27" />
