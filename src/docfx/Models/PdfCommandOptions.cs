@@ -14,11 +14,20 @@ namespace Microsoft.DocAsCode
         [Option("css", HelpText = "Specify the path for the css to generate pdf, default value is styles/default.css")]
         public string CssFilePath { get; set; }
 
-        [Option("generatesAppendices", HelpText = "Specify whether or not generate appendices for not-in-TOC articles")]
+        [Option("generatesAppendices", HelpText = "Specify whether or not to generate appendices for not-in-TOC articles")]
         public bool? GeneratesAppendices { get; set; }
 
-        [Option("generatesExternalLink", HelpText = "Specify whether or not generate external links for PDF")]
+        [Option("generatesExternalLink", HelpText = "Specify whether or not to generate external links for PDF")]
         public bool? GeneratesExternalLink { get; set; }
+
+        [Option("keepRawFiles", HelpText = "Specify whether or not to keep the intermediate html files that used to generate the PDF file. It it usually used in debug purpose. By default the value is false")]
+        public bool? KeepRawFiles { get; set; }
+
+        [Option("errorHandling", HelpText = "Specify how to handle pdf pages that fail to load: abort, ignore or skip(default abort), it is the same input as wkhtmltopdf --load-error-handling options")]
+        public string LoadErrorHandling { get; set; }
+
+        [Option("rawOutputFolder", HelpText = "Specify the output folder for the raw files, if not specified, raw files will by default be saved to _raw subfolder under output folder if keepRawFiles is set to true.")]
+        public string RawOutputFolder { get; set; }
 
         [Option("host", HelpText = "Specify the hostname to link not-in-TOC articles")]
         public new string Host { get; set; }

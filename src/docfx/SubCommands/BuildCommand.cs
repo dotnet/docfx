@@ -158,10 +158,6 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.Themes = new ListWithStringFallback(options.Themes);
             }
-            if (!string.IsNullOrEmpty(options.OutputFolder))
-            {
-                config.Destination = Path.GetFullPath(Path.Combine(options.OutputFolder, config.Destination ?? string.Empty));
-            }
             if (options.Content != null)
             {
                 if (config.Content == null)

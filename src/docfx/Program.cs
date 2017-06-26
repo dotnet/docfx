@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode
 {
     using System;
-    using System.Threading;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;

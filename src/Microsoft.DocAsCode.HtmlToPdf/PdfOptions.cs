@@ -16,6 +16,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         public string CssFilePath { get; set; }
 
+        public string LoadErrorHandling { get; set; }
+
         public string[] ExcludeTocs { get; set; }
 
         public bool GenerateAppendices { get; set; } = false;
@@ -27,6 +29,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         public string Locale { get; set; }
 
         public bool NeedGeneratePdfExternalLink { get; set; } = false;
+
+        public bool KeepRawFiles { get; set; } = false;
 
         public int PdfConvertParallelism { get; set; } = 4;
 
