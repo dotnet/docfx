@@ -49,7 +49,6 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             var basePath = Path.GetFullPath(_pdfOptions.SourceDirectory);
             try
             {
-                
                 ConvertCore(basePath);
             }
             finally
