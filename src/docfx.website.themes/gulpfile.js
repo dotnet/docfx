@@ -12,18 +12,24 @@ var knownOptions = {
 };
 
 var options = minimist(process.argv.slice(2), knownOptions);
-var files = [
-    "fonts/*",
-    "partials/*",
+var preprocessorFiles = [
     "layout/*",
-    "styles/*",
+    "partials/*",
     "*.js",
     "*.tmpl",
     "*.liquid",
+    "token.json",
+    "!gulpfile.js"
+];
+var webpageFiles = [
+    "fonts/*",
+    "styles/*",
     "favicon.ico",
     "logo.svg",
-    "token.json",
     "search-stopwords.json"];
+
+var files = preprocessorFiles.concat(webpageFiles);
+
 var pack = {
     "common": [
         {
@@ -76,7 +82,7 @@ var pack = {
             "cwd": "common",
         },
         {
-            "files": files,
+            "files": preprocessorFiles,
             "cwd": "default",
         },
         {
