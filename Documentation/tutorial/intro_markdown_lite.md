@@ -136,7 +136,7 @@ public class MarkdownMyLabelBlockRule : IMarkdownRule
             return null;
         }
         var sourceInfo = context.Consume(match.Length);
-        return new MarkdownMyLabelBlockToken(this, parser.Context, match.Group[1].Value, sourceInfo);
+        return new MarkdownMyLabelBlockToken(this, parser.Context, match.Groups[1].Value, sourceInfo);
     }
 }
 ```
