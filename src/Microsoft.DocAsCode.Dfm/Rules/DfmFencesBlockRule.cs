@@ -73,6 +73,7 @@ namespace Microsoft.DocAsCode.Dfm
             return null;
         }
 
+        [Obsolete]
         private IMarkdownToken TryMatchOld(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             var match = _dfmFencesRegex.Match(context.CurrentMarkdown);

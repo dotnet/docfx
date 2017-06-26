@@ -13,16 +13,61 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         protected virtual IMarkdownToken GenerateToken(IMarkdownParser parser, string href, string title, string text, bool isImage, SourceInfo sourceInfo, MarkdownLinkType linkType, string refId)
         {
-            var escapedHref = StringHelper.UnescapeMarkdown(href);
             var c = parser.SwitchContext(MarkdownInlineContext.IsInLink, BoxedTrue);
             IMarkdownToken result;
             if (isImage)
             {
-                result = new MarkdownImageInlineToken(this, parser.Context, escapedHref, StringHelper.UnescapeMarkdown(title), StringHelper.UnescapeMarkdown(text), sourceInfo, linkType, refId);
+                if (parser.Options.LegacyMode)
+                {
+                    result = new MarkdownImageInlineToken(
+                        this,
+                        parser.Context,
+                        StringHelper.LegacyUnescapeMarkdown(href),
+                        StringHelper.LegacyUnescapeMarkdown(title),
+                        StringHelper.LegacyUnescapeMarkdown(text),
+                        sourceInfo,
+                        linkType,
+                        refId);
+                }
+                else
+                {
+                    result = new MarkdownImageInlineToken(
+                        this,
+                        parser.Context,
+                        StringHelper.UnescapeMarkdown(href),
+                        StringHelper.UnescapeMarkdown(title),
+                        StringHelper.UnescapeMarkdown(text),
+                        sourceInfo,
+                        linkType,
+                        refId);
+                }
             }
             else
             {
-                result = new MarkdownLinkInlineToken(this, parser.Context, escapedHref, StringHelper.UnescapeMarkdown(title), parser.Tokenize(sourceInfo.Copy(text)), sourceInfo, linkType, refId);
+                if (parser.Options.LegacyMode)
+                {
+                    result = new MarkdownLinkInlineToken(
+                        this,
+                        parser.Context,
+                        StringHelper.LegacyUnescapeMarkdown(href),
+                        StringHelper.LegacyUnescapeMarkdown(title),
+                        parser.Tokenize(sourceInfo.Copy(text)),
+                        sourceInfo,
+                        linkType,
+                        refId);
+                }
+                else
+                {
+                    result = new MarkdownLinkInlineToken(
+                        this,
+                        parser.Context,
+                        StringHelper.UnescapeMarkdown(href),
+                        StringHelper.UnescapeMarkdown(title),
+                        parser.Tokenize(sourceInfo.Copy(text)),
+                        sourceInfo,
+                        linkType,
+                        refId);
+                }
             }
             parser.SwitchContext(c);
             return result;

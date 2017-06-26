@@ -62,9 +62,26 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return Regexes.Helper.MarkdownEscape.Replace(text, m => "\\" + m.Value);
         }
 
+        public static string EscapeMarkdownHref(string text)
+        {
+            return Regexes.Helper.MarkdownHrefEscape.Replace(text, m => "\\" + m.Value);
+        }
+
+        [Obsolete]
+        public static string LegacyEscapeMarkdown(string text)
+        {
+            return Regexes.Helper.LegacyMarkdownEscape.Replace(text, m => "\\" + m.Value);
+        }
+
         public static string UnescapeMarkdown(string markdown)
         {
             return Regexes.Helper.MarkdownUnescape.Replace(markdown, m => m.Groups[1].Value);
+        }
+
+        [Obsolete]
+        public static string LegacyUnescapeMarkdown(string markdown)
+        {
+            return Regexes.Helper.LegacyMarkdownUnescape.Replace(markdown, m => m.Groups[1].Value);
         }
 
         public static string NotEmpty(IList<string> source, int index1, int index2)
