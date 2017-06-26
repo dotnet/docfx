@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             SetDefaultConfigValue(Config);
 
-            _templateManager = new TemplateManager(assembly, "Template", Config.Templates, Config.Themes, Config.BaseDirectory);
+            _templateManager = new TemplateManager(assembly, Constants.EmbeddedTemplateFolderName, Config.Templates, Config.Themes, Config.BaseDirectory);
 
         }
 
