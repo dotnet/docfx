@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Build.Engine;
@@ -16,9 +17,11 @@ namespace Microsoft.DocAsCode.SubCommands
 
     internal sealed class TemplateCommand : ISubCommand
     {
-        private static readonly string[] ExistingTemplates = new string[] { "default", "iframe.html", "statictoc" };
         private const string DefaultOutputFolder = "_exported_templates";
+
+        private readonly string[] _templates;
         private readonly TemplateCommandOptions _options;
+        private readonly System.Reflection.Assembly _assembly;
 
         private readonly TemplateCommandType _commandType;
 
@@ -52,6 +55,9 @@ namespace Microsoft.DocAsCode.SubCommands
                 default:
                     break;
             }
+            _assembly = this.GetType().Assembly;
+            var templateRegex = new Regex($"{Regex.Escape(_assembly.GetName().Name)}\\.{Regex.Escape(Constants.EmbeddedTemplateFolderName)}\\.([\\S.]+)\\.zip");
+            _templates = _assembly.GetManifestResourceNames().Select(s => templateRegex.Match(s)).Where(s => s.Success).Select(s => s.Groups[1].Value).ToArray();
         }
 
         public void Exec(SubCommandRunningContext context)
@@ -73,7 +79,8 @@ namespace Microsoft.DocAsCode.SubCommands
         {
             // TODO: dynamically load...
             $"{Environment.NewLine}Existing embedded templates are:".WriteLineToConsole(ConsoleColor.Gray);
-            ExistingTemplates.Select(s => "\t" + s).ToArray().WriteLinesToConsole(ConsoleColor.White);
+
+            _templates.Select(s => "\t" + s).ToArray().WriteLinesToConsole(ConsoleColor.White);
         }
 
         private void ExecExportTemplate()
@@ -81,11 +88,11 @@ namespace Microsoft.DocAsCode.SubCommands
             var outputFolder = string.IsNullOrEmpty(_exportTemplateConfig.OutputFolder) ? DefaultOutputFolder : _exportTemplateConfig.OutputFolder;
             if (!Directory.Exists(outputFolder)) Directory.CreateDirectory(outputFolder);
 
-            var templates = _exportTemplateConfig.All ? ExistingTemplates : _exportTemplateConfig.Templates;
+            var templates = _exportTemplateConfig.All ? _templates : _exportTemplateConfig.Templates;
             foreach (var template in templates)
             {
                 Logger.LogInfo($"Exporting {template} to {outputFolder}");
-                var manager = new TemplateManager(this.GetType().Assembly, "Template", new List<string> { template }, null, null);
+                var manager = new TemplateManager(_assembly, Constants.EmbeddedTemplateFolderName, new List<string> { template }, null, null);
                 if (manager.TryExportTemplateFiles(Path.Combine(outputFolder, template)))
                 {
                     Logger.LogInfo($"{template} is exported to {outputFolder}");

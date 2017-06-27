@@ -44,19 +44,6 @@ var pack = {
             "files": files,
         }
     ],
-    "iframe.html": [
-        {
-            "files": files,
-            "cwd": "common",
-        },
-        {
-            "files": files,
-            "cwd": "default",
-        },
-        {
-            "files": files, // Overrides the former one if file name is the same
-        }
-    ],
     "statictoc": [
         {
             "files": files,
