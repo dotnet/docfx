@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     public static class IncrementalUtility
     {
         private const int MaxRetry = 3;
-        private static Encoding UTF8 = new UTF8Encoding(false, false);
+        private static readonly Encoding UTF8 = new UTF8Encoding(false, false);
 
         public static T LoadIntermediateFile<T>(string fileName)
         {

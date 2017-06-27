@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     public class PostProcessInfo
     {
         public const string FileName = "postprocess.info";
-        private static Encoding UTF8 = new UTF8Encoding(false, false);
+        private static readonly Encoding UTF8 = new UTF8Encoding(false, false);
 
         #region Properties
 
