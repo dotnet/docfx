@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Text;
 
     using Microsoft.DocAsCode.Plugins;
 
@@ -14,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     public class PostProcessInfo
     {
         public const string FileName = "postprocess.info";
+        private static readonly Encoding UTF8 = new UTF8Encoding(false, false);
 
         #region Properties
 
@@ -59,7 +61,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             }
             if (MessageInfoFile != null)
             {
-                using (var sr = new StreamReader(Path.Combine(baseDir, MessageInfoFile)))
+                using (var sr = new StreamReader(Path.Combine(baseDir, MessageInfoFile), UTF8))
                 {
                     MessageInfo = BuildMessageInfo.Load(sr);
                 }
@@ -81,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 MessageInfoFile = IncrementalUtility.CreateRandomFileName(baseDir);
             }
             IncrementalUtility.SaveIntermediateFile(Path.Combine(baseDir, PostProcessOutputsFile), PostProcessOutputs);
-            using (var sw = new StreamWriter(Path.Combine(baseDir, MessageInfoFile)))
+            using (var sw = new StreamWriter(Path.Combine(baseDir, MessageInfoFile), false, UTF8))
             {
                 MessageInfo.Save(sw);
             }

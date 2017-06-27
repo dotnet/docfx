@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Text;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -14,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
     public static class IncrementalUtility
     {
         private const int MaxRetry = 3;
+        private static readonly Encoding UTF8 = new UTF8Encoding(false, false);
 
         public static T LoadIntermediateFile<T>(string fileName)
         {
@@ -79,7 +81,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 var content = JsonUtility.Deserialize<Dictionary<BuildPhase, string>>(reader);
                 foreach (var c in content)
                 {
-                    using (var sr = new StreamReader(Path.Combine(Path.GetDirectoryName(file), c.Value)))
+                    using (var sr = new StreamReader(Path.Combine(Path.GetDirectoryName(file), c.Value), UTF8))
                     {
                         bm[c.Key] = BuildMessageInfo.Load(sr);
                     }
@@ -194,7 +196,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 var tempFile = GetRandomEntry(baseDir);
                 using (var fs = File.Create(Path.Combine(baseDir, tempFile)))
-                using (var writer = new StreamWriter(fs))
+                using (var writer = new StreamWriter(fs, UTF8))
                 {
                     bmi.Save(writer);
                 }
