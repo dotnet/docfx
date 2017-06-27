@@ -1,0 +1,25 @@
+{
+  "name": "pdf.default",
+  "description": "This is a docfx template to generate pdf files",
+  "authors": [
+    "docfx"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "docfx",
+    "template"
+  ],
+  "homepage": "https://github.com/dotnet/docfx",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "highlightjs": "~8.8.0"
+  }
+}
