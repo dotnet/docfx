@@ -74,6 +74,7 @@ namespace Microsoft.DocAsCode.Dfm
             return null;
         }
 
+        [Obsolete]
         private IMarkdownToken TryMatchOld(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             var match = Include.Match(context.CurrentMarkdown);
