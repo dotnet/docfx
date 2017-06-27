@@ -51,6 +51,7 @@ namespace Microsoft.DocAsCode.Dfm
             return null;
         }
 
+        [Obsolete]
         public IMarkdownToken TryMatchOld(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             var match = VideoRegex.Match(context.CurrentMarkdown);
@@ -61,7 +62,7 @@ namespace Microsoft.DocAsCode.Dfm
             var sourceInfo = context.Consume(match.Length);
 
             // [!Video https://]
-            var link = match.Groups["link"].Value;
+            var link = StringHelper.LegacyUnescapeMarkdown(match.Groups["link"].Value);
             return new DfmVideoBlockToken(this, parser.Context, link, sourceInfo);
         }
     }

@@ -648,7 +648,7 @@ this is a missing extension link with / and bookmark at the end [text](missing_e
 this is a normal link with / and extension at the end [text](normal.md) file ref
 this is a normal link with /, extension and bookmark at the end [text](normal.md#bookmark) file ref
 this is http link [text](http://www.google.com ""Google"") ref
-this is http escape link [text](http://www.google.com'dd#bookmark ""Google's homepage"") ref
+this is http escape link [text](http://www.google.com\'dd#bookmark ""Google\'s homepage"") ref
 this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
 
 ";
@@ -761,7 +761,7 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
         [Trait("Related", "AzureMarkdownRewriters")]
         public void TestAzureMarkdownRewriters_LinkRefWithBackslash()
         {
-            var source = @"[User-Defined Date/Time Formats (Format Function)](https://github.com/Azure-Samples/active-directory-java-webapp-openidconnect\/archive/complete.zip)";
+            var source = @"[User-Defined Date/Time Formats (Format Function)](https\://github\.com/Azure-Samples\/active-directory-java-webapp\-openidconnect\\/archive/complete\.zip)";
             var expected = @"[User-Defined Date/Time Formats (Format Function)](https://github.com/Azure-Samples/active-directory-java-webapp-openidconnect\\/archive/complete.zip)
 
 ";

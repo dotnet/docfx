@@ -46,14 +46,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 var sourceInfo = context.Consume(match.Length);
                 parser.Links[match["key"].GetValue().ToLower()] = new LinkObj
                 {
-                    Href = match["href"].GetValue(),
-                    Title = match.GetGroup("title")?.GetValue() ?? string.Empty,
+                    Href = StringHelper.UnescapeMarkdown(match["href"].GetValue()),
+                    Title = StringHelper.UnescapeMarkdown(match.GetGroup("title")?.GetValue() ?? string.Empty),
                 };
                 return new MarkdownIgnoreToken(this, parser.Context, sourceInfo);
             }
             return null;
         }
 
+        [Obsolete]
         public virtual IMarkdownToken TryMatchOld(IMarkdownParser parser, IMarkdownParsingContext context)
         {
             if (!parser.Context.Variables.ContainsKey(MarkdownBlockContext.IsTop) ||
@@ -69,8 +70,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
             var sourceInfo = context.Consume(match.Length);
             parser.Links[match.Groups[1].Value.ToLower()] = new LinkObj
             {
-                Href = match.Groups[2].Value,
-                Title = match.Groups[3].Value
+                Href = StringHelper.LegacyUnescapeMarkdown(match.Groups[2].Value),
+                Title = StringHelper.LegacyUnescapeMarkdown(match.Groups[3].Value),
             };
             return new MarkdownIgnoreToken(this, parser.Context, sourceInfo);
         }

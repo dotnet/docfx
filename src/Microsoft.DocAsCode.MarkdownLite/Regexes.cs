@@ -177,8 +177,14 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
             public static readonly Regex HtmlUnescape = new Regex(@"&([#\w]+);", RegexOptionCompiled);
 
-            public static readonly Regex MarkdownUnescape = new Regex(@"\\([\\`*{}\[\]()#+\-.!_>])", RegexOptionCompiled);
-            public static readonly Regex MarkdownEscape = new Regex(@"[\\()\[\]]", RegexOptionCompiled);
+            public static readonly Regex MarkdownUnescape = new Regex(@"\\([!""#$%&'()*+,.:;<=>?@[^_`{|}~\-\/\\\]])", RegexOptionCompiled);
+            public static readonly Regex MarkdownEscape = new Regex(@"[!""'()*+:<>[^_`{|}~\-\]]", RegexOptionCompiled);
+            public static readonly Regex MarkdownHrefEscape = new Regex(@"[()\\\""\']", RegexOptionCompiled);
+
+            [Obsolete]
+            public static readonly Regex LegacyMarkdownUnescape = new Regex(@"\\([\\`*{}\[\]()#+\-.!_>])", RegexOptionCompiled);
+            [Obsolete]
+            public static readonly Regex LegacyMarkdownEscape = new Regex(@"[\\()\[\]]", RegexOptionCompiled);
         }
     }
 }

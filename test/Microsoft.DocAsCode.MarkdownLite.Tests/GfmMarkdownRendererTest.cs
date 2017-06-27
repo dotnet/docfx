@@ -13,11 +13,12 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         [Fact]
         public void TestGfmRenderer_LinkWithSpecialCharactorsInTitle()
         {
-            var source = @"[This is link text with quotation ' and double quotation ""hello"" world](girl.md ""title is ""hello"" world."")";
-            var expected = @"[This is link text with quotation ' and double quotation ""hello"" world](girl.md ""title is ""hello"" world."")
+            var source = @"[This is link text with quotation ' and double quotation ""hello"" world](girl.md ""title is \""hello\"" world."")";
+            var expected = @"[This is link text with quotation ' and double quotation ""hello"" world](girl.md ""title is \""hello\"" world."")
 
 ";
             TestGfmRendererInGeneral(source, expected);
+            TestGfmRendererInGeneral(expected, expected);
         }
 
         [Fact]
@@ -29,6 +30,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 
 [A]: https://www.google.com";
             TestGfmRendererInGeneral(source, expected);
+            TestGfmRendererInGeneral(expected, expected);
         }
 
         [Fact]
@@ -40,6 +42,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 
 [A]: https://www.google.com";
             TestGfmRendererInGeneral(source, expected);
+            TestGfmRendererInGeneral(expected, expected);
         }
 
         [Fact]
@@ -51,6 +54,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 
 [NumberLink]: https://www.google.com";
             TestGfmRendererInGeneral(source, expected);
+            TestGfmRendererInGeneral(expected, expected);
         }
 
         [Fact]
@@ -62,6 +66,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 
 ";
             TestGfmRendererInGeneral(source, expected);
+            TestGfmRendererInGeneral(expected, expected);
         }
 
         public void TestGfmRenderer_AutoLinkWithMail()
@@ -71,6 +76,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 
 ";
             TestGfmRendererInGeneral(source, expected);
+            TestGfmRendererInGeneral(expected, expected);
         }
 
         [Fact]
@@ -81,16 +87,18 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 
 ";
             TestGfmRendererInGeneral(source, expected);
+            TestGfmRendererInGeneral(expected, expected);
         }
 
         [Fact]
         public void TestGfmRenderer_ImageLinkWithSpecialCharactorsInTitle()
         {
-            var source = @"![This is link text with quotation ' and double quotation ""hello"" world](girl.png ""title is ""hello"" world."")";
-            var expected = @"![This is link text with quotation ' and double quotation ""hello"" world](girl.png ""title is ""hello"" world."")
+            var source = @"![This is link text with quotation ' and double quotation ""hello"" world](girl.png ""title is \""hello\"" world."")";
+            var expected = @"![This is link text with quotation \' and double quotation \""hello\"" world](girl.png ""title is \""hello\"" world."")
 
 ";
             TestGfmRendererInGeneral(source, expected);
+            TestGfmRendererInGeneral(expected, expected);
         }
 
         [Fact]
@@ -102,6 +110,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 
 [A]: girl.png";
             TestGfmRendererInGeneral(source, expected);
+            TestGfmRendererInGeneral(expected, expected);
         }
 
         [Fact]
@@ -113,9 +122,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
 
 [NumberImageLink]: girl.png";
             TestGfmRendererInGeneral(source, expected);
+            TestGfmRendererInGeneral(expected, expected);
         }
 
-        public void TestGfmRendererInGeneral(string source, string expected)
+        private void TestGfmRendererInGeneral(string source, string expected)
         {
             var builder = new GfmEngineBuilder(new Options());
             var engine = builder.CreateEngine(new MarkdownRenderer());
