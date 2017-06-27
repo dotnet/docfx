@@ -12,7 +12,7 @@ var knownOptions = {
 };
 
 var options = minimist(process.argv.slice(2), knownOptions);
-var preprocessorFiles = [
+var templateFiles = [
     "layout/*",
     "partials/*",
     "*.js",
@@ -28,7 +28,7 @@ var webpageFiles = [
     "logo.svg",
     "search-stopwords.json"];
 
-var files = preprocessorFiles.concat(webpageFiles);
+var files = templateFiles.concat(webpageFiles);
 
 var pack = {
     "common": [
@@ -82,7 +82,7 @@ var pack = {
             "cwd": "common",
         },
         {
-            "files": preprocessorFiles,
+            "files": templateFiles,
             "cwd": "default",
         },
         {
