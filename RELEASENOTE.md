@@ -1,5 +1,8 @@
-﻿Version Notes (Current Version: v2.19.1)
+﻿Version Notes (Current Version: v2.19.2)
 =======================================
+v2.19.2
+1.  Bug fixes:
+    1. fix backslash escapes  in dfm-latest (following: http://spec.commonmark.org/0.27/#backslash-escapes).
 
 v2.19.1
 -----------
