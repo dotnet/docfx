@@ -10,8 +10,9 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Threading.Tasks;
     using System.Web;
 
+    using HtmlAgilityPack;
+
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
     public class TemplateModelTransformer
@@ -38,7 +39,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <returns></returns>
         internal ManifestItem Transform(InternalManifestItem item)
         {
-            if (item.Model == null || item.Model.Content == null) throw new ArgumentNullException("Content for item.Model should not be null!");
+            if (item.Model == null || item.Model.Content == null)
+            {
+                throw new ArgumentNullException("Content for item.Model should not be null!");
+            }
             var model = ConvertObjectToDictionary(item.Model.Content);
             model = AppendGlobalMetadata(model);
             if (_settings.Options.HasFlag(ApplyTemplateOptions.ExportRawModel))
@@ -235,15 +239,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             // Create a new object with __global property, the shared model does not contain __global property
-            var appended = new Dictionary<string, object>(model);
-            appended[GlobalVariableKey] = _globalVariables;
+            var appended = new Dictionary<string, object>(model)
+            {
+                [GlobalVariableKey] = _globalVariables
+            };
             return appended;
         }
 
         private static IDictionary<string, object> ConvertObjectToDictionary(object model)
         {
-            var dictionary = model as IDictionary<string, object>;
-            if (dictionary != null)
+            if (model is IDictionary<string, object> dictionary)
             {
                 return dictionary;
             }
@@ -294,8 +299,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         e.Handle(s =>
                         {
-                            var xrefExcetpion = s as CrossReferenceNotResolvedException;
-                            if (xrefExcetpion != null)
+                            if (s is CrossReferenceNotResolvedException xrefExcetpion)
                             {
                                 missingXRefDetails.Add(xrefExcetpion.XRefDetails);
                                 return true;
@@ -324,7 +328,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private void TransformHtml(IDocumentBuildContext context, string html, string sourceFilePath, string destFilePath, StreamWriter outputWriter)
         {
             // Update href and xref
-            HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
+            HtmlDocument document = new HtmlDocument();
             document.LoadHtml(html);
 
             var xrefExceptions = TransformHtmlCore(context, sourceFilePath, destFilePath, document);
@@ -336,7 +340,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private List<CrossReferenceNotResolvedException> TransformHtmlCore(IDocumentBuildContext context, string sourceFilePath, string destFilePath, HtmlAgilityPack.HtmlDocument html)
+        private List<CrossReferenceNotResolvedException> TransformHtmlCore(IDocumentBuildContext context, string sourceFilePath, string destFilePath, HtmlDocument html)
         {
             var xrefLinkNodes = html.DocumentNode.SelectNodes("//a[starts-with(@href, 'xref:')]");
             if (xrefLinkNodes != null)
@@ -367,10 +371,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             var srcNodes = html.DocumentNode.SelectNodes("//*/@src");
             if (srcNodes != null)
+            {
                 foreach (var link in srcNodes)
                 {
                     UpdateHref(link, "src", context, sourceFilePath, destFilePath);
                 }
+            }
 
             var hrefNodes = html.DocumentNode.SelectNodes("//*/@href");
             if (hrefNodes != null)
@@ -384,13 +390,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             return xrefExceptions;
         }
 
-        private static void TransformXrefLink(HtmlAgilityPack.HtmlNode node, IDocumentBuildContext context)
+        private static void TransformXrefLink(HtmlNode node, IDocumentBuildContext context)
         {
             var convertedNode = XRefDetails.ConvertXrefLinkNodeToXrefNode(node);
             node.ParentNode.ReplaceChild(convertedNode, node);
         }
 
-        private static void UpdateXref(HtmlAgilityPack.HtmlNode node, IDocumentBuildContext context, string language)
+        private static void UpdateXref(HtmlNode node, IDocumentBuildContext context, string language)
         {
             var xref = XRefDetails.From(node);
 
@@ -401,16 +407,13 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             var convertedNode = xref.ConvertToHtmlNode(language);
             node.ParentNode.ReplaceChild(convertedNode, node);
-            if (xrefSpec == null)
+            if (xrefSpec == null && xref.ThrowIfNotResolved)
             {
-                if (xref.ThrowIfNotResolved)
-                {
-                    throw new CrossReferenceNotResolvedException(xref);
-                }
+                throw new CrossReferenceNotResolvedException(xref);
             }
         }
 
-        private void UpdateHref(HtmlAgilityPack.HtmlNode link, string attribute, IDocumentBuildContext context, string sourceFilePath, string destFilePath)
+        private void UpdateHref(HtmlNode link, string attribute, IDocumentBuildContext context, string sourceFilePath, string destFilePath)
         {
             var originalHref = link.GetAttributeValue(attribute, null);
             var anchor = link.GetAttributeValue("anchor", null);
@@ -477,6 +480,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             public string FileLinkInSource { get; set; }
 
             public string FileLinkInDest { get; set; }
+
+            public bool IsResolved => ToFileInDest != null;
         }
     }
 }

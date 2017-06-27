@@ -33,5 +33,9 @@ namespace Microsoft.DocAsCode.Plugins
         /// The href.
         /// </summary>
         string Href { get; }
+        /// <summary>
+        /// Is resolved by DocFX.
+        /// </summary>
+        bool IsResolved { get; }
     }
 }
