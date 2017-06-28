@@ -1,7 +1,7 @@
 Walkthrough: Customize a processor to support incremental build
 ================================================================
 
-During this tutorial, we'll walk through the steps to enable a processor incremental.
+During this tutorial, we'll walk through the steps to enable a processor to be incremental.
 
 Step1. Implement @Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor interface for the processor
 ------------------------------------------------------------------------------------

@@ -11,7 +11,7 @@ Property              | Type                    | Description
 --------------------- | ---------------------   | -----------------------------------------------------------
 DirectoryName         | string                  | Base directory of the cache files of last successful build
 DocfxVersion          | string                  | DocFX version
-PluginHash            | string                  | The hash of plugins plugined in DocFX
+PluginHash            | string                  | The hash of plugins plugged in DocFX
 TemplateHash          | string                  | The hash of specified Templates
 Versions              | List<[BuildVersionInfo](#buildversioninfo-model)>  | entry point of the cache files per version
 PostProcessInfo       | PostProcessInfo         | The entry point of the cache files for postprocessor

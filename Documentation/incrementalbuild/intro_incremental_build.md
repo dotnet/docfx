@@ -16,7 +16,7 @@ Before `Compile` phase, only **changed files and their dependencies** would be l
 > [!Note]
 > Only `Compile` phase could report/collect dependencies.
 
-Framework also allows plugins to save/load context related info in Plugin Cache. Details please refer to [Plugin cache](customize_a_processor_to_support_incremental.md#step3-optionalimplement-microsoftdocascodepluginsicantracecontextinfobuildstep-interface-for-plugins-that-need-to-access-context-info).
+Framework also allows plugins to save/load context related info in Plugin Cache. Details please refer to [Plugin cache](customize_a_processor_to_support_incremental.md#step3-optionalimplement-microsoftdocascodepluginsicantracecontextinfobuildstep-interface-for-plugins-that-need-to-access-context-info) for more details.
 
 By default, incremental cache files will be put at path `obj/.cache/build/` relative to your `docfx.json`. You're also free to specify the path with option `--intermediateFolder`. About the structure of the cache folder please refer to [Cache file structure](advanced_cache_file_structure.md).
 
@@ -26,6 +26,8 @@ By default, incremental cache files will be put at path `obj/.cache/build/` rela
 Build could run incrementally only if all of the following conditions meet.
 
 1. The version supports incremental.
+
+Each version of file mappings would be built independently. For one version:
 
 - Cache files are not corrupted.
 - `DocFX` version isn't changed.
