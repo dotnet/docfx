@@ -161,7 +161,7 @@ namespace Microsoft.DocAsCode.Dfm
                 {
                     active = firstVisibleTab;
                     selectedTabIds.Add(items[firstVisibleTab].Id);
-                    Logger.LogWarning("No visible tab.", file: token.SourceInfo.File, line: token.SourceInfo.LineNumber.ToString(), code: "aaa");
+                    Logger.LogWarning("No visible tab.", file: token.SourceInfo.File, line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.NoVisibleTab);
                 }
                 else
                 {
