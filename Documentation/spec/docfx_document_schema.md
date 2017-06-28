@@ -101,7 +101,7 @@ An object to describe the schema of the value of the property.
 | type         | string | The type of the root document model. Refer to [type keyword](#6-1-type) for detailed description.
 | properties   | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties if `type` for the model is `object`. Omitting this keyword has the same behavior as an empty object.
 | items        | [Property Object](#property-object) | An object to hold the schema of the items if `type` for the model is `array`. Omitting this keyword has the same behavior as an empty schema.
-| d-include    | string | Defines the included file path. Refer to [d-contentType](6-2-d-include) for detailed explanation.
+| d-include    | bool   | Defines the included file path. Refer to [d-include](6-2-d-include) for detailed explanation.
 | d-contentType| string | Defines the content type of the property. Refer to [d-contentType](6-3-d-contentType) for detailed explanation.
 | d-tags       | array  | Defines the tags of the property. Refer to [d-tags](6-4-d-tags) for detailed explanation.
 | d-merge      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [d-merge](6-5-d-merge) for detailed explanation.
@@ -125,10 +125,10 @@ Same as in JSON schema: http://json-schema.org/latest/json-schema-validation.htm
 > An instance validates if and only if the instance is in any of the sets listed for this keyword.
 
 ### 6.2 d-include
-The value of `d-include` MUST be a string. It defines the file path of the file whose content will be used as the value of current property.
+It defines whether current property is a file path, whose content SHOULD be included as the value of the property.
 
 ### 6.3 d-contentType
-The value of `d-contentType` MUST be a string. It defines how applications interpret the property. The values MUST be one of the following:
+It defines how applications interpret the property. The values MUST be one of the following:
 
 | Value      | Description
 |------------|-------------
