@@ -323,8 +323,8 @@ The syntax part for methods contains a special language declaration, description
 > ```
 > YAML:
 > ```yaml
-> - uid: System.Decimal.op_Implicit(System.Char to System.Decimal)
->   id: op_Implicit(System.Char to System.Decimal)
+> - uid: System.Decimal.op_Implicit(System.Char)~System.Decimal
+>   id: op_Implicit(System.Char)~System.Decimal
 >   name.csharp: Implicit(Char to Decimal)
 >   fullName.csharp: System.Decimal.Implicit(System.Char to System.Decimal)
 > - uid: System.String.op_Equality(System.String,System.String)
