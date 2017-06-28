@@ -1,46 +1,120 @@
-# DocFX Document Schema Design Specification
+# DocFX Document Schema v1.0 Specification
 
 ## 1. Introduction
 DocFX supports different [document processors](..\tutorial\howto_build_your_own_type_of_documentation_with_custom_plug-in.md) to handle different kinds of input. For now, if the data model changes a bit, a new document processor is needed, even most works in processors are the same.
 
-DocFX Document Schema (abbreviated to `this schema` below) is introduced to address ths problem. This schema is a JSON media type for defining the structure of a DocFX document. This schema is intended to define manipulation, documentation, validation of the document data.
+DocFX Document Schema (abbreviated to *THIS schema* below) is introduced to address this problem. This schema is a JSON media type for defining the structure of a DocFX document. This schema is intended to **annotate**, **validate** and **interpret** the document data. 
 
 ## 2. Conventions and Terminology
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://tools.ietf.org/html/rfc2119).
 
 ## 3. Overview
-DocFX Document Schema is in [JSON](http://www.json.org/) format. It borrows most syntax from [JSON Schema](http://json-schema.org/), while it also introduces some other syntax to manuplating the data.
+DocFX Document Schema is in [JSON](http://www.json.org/) format. It borrows most syntax from [JSON Schema](http://json-schema.org/), while it also introduces some other syntax to manipulate the data.
 
-### 3.1 Validation
-This schema can describe the structure of a DocFX document. 
+### 3.1 Annotation
+*THIS schema* is a JSON based format for the structure of a DocFX document.
+
+### 3.2 Validation
 [JSON schema validation](http://json-schema.org/latest/json-schema-validation.html) already defines many keywords. This schema starts from supporting limited keyword like `type`, `properties`.
 
-### 3.2 Manipulation
-This schema can describe how to handle each property of the document.
-
-Some handler is predefined in DocFX, like markup a string using [DFM](..\spec\docfx_flavored_markdown.md), mark a property as an uid, include content from another source, etc. 
-
-Some handler can be injected into the schema parsing process to accomplish some custom steps.
-
-**TODO**: add definition for handler.
-
-### 3.3 Integration with DocFX
-Schema is passed to DocFX as part of the template. It MUST be put in the `schemas` sub folder under template folder. The file name is treated as the schema name, also known as the document type of a template.
-
-For example, to add a schema for a document type `ManagedReference`, a schema file should added like `{templateFolder}\schemas\ManagedReference.json`.
-
-Schema describes the object model. The format of the object model is not constrained. YAML and JSON should both be supported.
-
-**TODO**: change to use YAML Mime to determine which schema to use.
+### 3.3 Interpretation
+Besides annotate and validate the input document model, *THIS schema* also defines multiple interpretations for each property of the document model.
+For example, a property named `summary` contains value in Markdown format, *THIS schema* can define a `d-markup` interpretation for the `summary` property, so that the property can be marked using [DFM](..\spec\docfx_flavored_markdown.md) syntax.
 
 ## 4. General Considerations
-* This schema will reuse keywords in JSON schema, but will not change the defition of the existing one.
-* To distinguish with JSON schema, the new keywords introduced in this schema is prefixed with `d-`. `d` stands for DocFX.
-* This schema can validate and manipulate single elements in place, but can not move the element to another place.
+* *THIS schema* leverages JSON schema definition, that is to say, keywords defined in JSON schema keeps its meaning in *THIS schema* when it is supported by *THIS schema*.
+* Keywords introduced by *THIS schema* is prefixed with `d-` (`d` stands for DocFX) to differentiate from keywords defined by JSON schema.
 
-## 5. Validation keywords
+## 5. Detailed Specification
 
-### 5.1 type
+### Format
+The files describing DocFX document model in accordance with the DocFX document schema specification are represented as JSON objects and conform to the JSON standards. YAML, being a superset of JSON, can be used as well to represent a DocFX document schema specification file.
+
+All field names in the specification are **case sensitive**.
+
+This schema exposes two types of fields. Fixed fields, which have a declared name, and Patterned fields, which declare a regex pattern for the field name. Patterned fields can have multiple occurrences as long as each has a unique name.
+
+By convention, the schema file is suffixed with `.schema.json`.
+
+### Data Types
+Primitive data types in *THIS schema* are based on [JSON schema Draft 6 4.2 Instance](http://json-schema.org/latest/json-schema-core.html#rfc.section.4.2)
+
+### Schema
+For a given field, `*` as the starting character in *Description* cell stands for **required**.
+
+#### Schema Object
+This is the root document object for *THIS schema*.
+
+##### Fixed Field
+
+| Field Name      | Type   | Description
+|-----------------|--------|----------
+| d-schemaVersion | string | `*`The version of the schema specification
+| d-fileType      | string | `*`The file type of the document model. Supported values are `YAML` and `JSON`.
+| type            | string | `*`The type of the root document model MUST be `object`
+| d-mimeType      | string | The mime type of the document model that applies to current schema. If not set, the schema name will be considered as its mime type.
+| d-info          |[Info Object](#info-object) | `*`The information about current schema
+| properties      | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties if `type` for the model is `object`
+| items           | [Item Definitions Object](#item-definitions-object) | An object to hold the schema of all the items if `type` for the model is `array`
+
+##### Patterned Field
+| Field Name | Type | Description
+|------------|------|----------
+| ^x-        | Any  | Allows extensions to *THIS schema*. The field name MUST begin with x-, for example, x-internal-id. The value can be null, a primitive, an array or an object.
+
+#### Info Object
+The object provides metadata about the schema.
+
+##### Fixed Field
+
+| Field Name      | Type   | Description
+|-----------------|--------|----------
+| version      | string | `*`The version of current schema definition
+| id           | string | It is best practice to include an `id` property as an unique identifier for each schema.
+| title        | string | The title of current schema
+| description  | string | A short description of current schema
+
+##### Patterned Field
+| Field Name | Type | Description
+|------------|------|----------
+| ^x-        | Any  | Allows extensions to *THIS schema*. The field name MUST begin with x-, for example, x-internal-id. The value can be null, a primitive, an array or an object.
+
+#### Property Definitions Object
+It is an object where each key is the name of a property and each value is a schema to describe that property. 
+
+##### Patterned Field
+
+| Field Name      | Type   | Description
+|-----------------|--------|----------
+| {name}       | [Property Object](#property-object) | The schema object for the `{name}` property
+
+#### Property Object
+An object to describe the schema of the value of the property.
+
+##### Fixed Field
+
+| Field Name      | Type   | Description
+|-----------------|--------|----------
+| title        | string | The title of the property.
+| description  | string | A lengthy explanation about the purpose of the data described by the schema
+| default      | what `type` defined | The default value for current field
+| type         | string | The type of the root document model. Refer to [type keyword](#6-1-type) for detailed description.
+| properties   | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties if `type` for the model is `object`. Omitting this keyword has the same behavior as an empty object.
+| items        | [Property Object](#property-object) | An object to hold the schema of the items if `type` for the model is `array`. Omitting this keyword has the same behavior as an empty schema.
+| d-include    | string | Defines the included file path. Refer to [d-contentType](6-2-d-include) for detailed explanation.
+| d-contentType| string | Defines the content type of the property. Refer to [d-contentType](6-3-d-contentType) for detailed explanation.
+| d-tags       | array  | Defines the tags of the property. Refer to [d-tags](6-4-d-tags) for detailed explanation.
+| d-merge      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [d-merge](6-5-d-merge) for detailed explanation.
+
+##### Patterned Field
+| Field Name | Type | Description
+|------------|------|----------
+| ^x-        | Any  | Allows extensions to *THIS schema*. The field name MUST begin with x-, for example, x-internal-id. The value can be null, a primitive, an array or an object.
+
+
+## 6. Keywords in detail
+
+### 6.1 type
 
 Same as in JSON schema: http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.25
 
@@ -50,77 +124,37 @@ Same as in JSON schema: http://json-schema.org/latest/json-schema-validation.htm
 >
 > An instance validates if and only if the instance is in any of the sets listed for this keyword.
 
+### 6.2 d-include
+The value of `d-include` MUST be a string. It defines the file path of the file whose content will be used as the value of current property.
 
-### 5.2 properties
+### 6.3 d-contentType
+The value of `d-contentType` MUST be a string. It defines how applications interpret the property. The values MUST be one of the following:
 
-Same as in JSON schema: http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.18
+| Value      | Description
+|------------|-------------
+| `uid`      | `type` MUST be `string`. It means the property defines a unique identifier inside current document model
+| `fileLink` | `type` MUST be `string`. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.
+| `uidLink`  | `type` MUST be `string`. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output path.
+| `markdown` | `type` MUST be `string`. It means the property is in [DocFX flavored Markdown](..\spec\docfx_flavored_markdown.md) syntax. Application CAN help to transform it into HTML format.
 
-> The value of "properties" MUST be an object. Each value of this object MUST be a valid JSON Schema.
->
-> This keyword determines how child instances validate for objects, and does not directly validate the immediate instance itself.
->
-> Validation succeeds if, for each name that appears in both the instance and as a name within this keyword's value, the child instance for that name successfully validates against the corresponding schema.
->
-> Omitting this keyword has the same behavior as an empty object.
+### 6.4 d-tags
+The value of this keyword MUST be an `array`, elements of the array MUST be strings and MUST be unique. It provides hints for applications to decide how to interpret the property, for example, `localizable` tag can help Localization team to interpret the property as *localizable*; `metadata` tag can help DocFX to fill in additional metadata, e.g. github commit information.
 
-### 5.3 items
+### 6.5 d-merge
+The value of this keyword MUST be a string. It specifies how to merge two values of the given property. One use scenario is how DocFX uses the [overwrite files](..\tutorial\intro_overwrite_files.md) to overwrite the existing values. In the below table, we use `source` and `target` to stands for the two values for merging.
 
-Same as in JSON schema: http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.9
+The value MUST be one of the following:
+| Value      | Description
+|------------|-------------
+| `key`      | If `key` for `source` equals to the one for `target`, these two values are ready to merge.
+| `merge`    | The default behavior. For `array`, items in the list are merged by `key` for the item. For `string` or any value type, `target` replaces `source`. For `object`, merge each property along with its own `d-merge` value.
+| `replace`  | `target` replaces `source`.
+| `ignore`   | `source` is not allowed to be merged.
 
-> The value of "items" MUST be either a valid JSON Schema or an array of valid JSON Schemas.
->
-> This keyword determines how child instances validate for arrays, and does not directly validate the immediate instance itself.
->
-> If "items" is a schema, validation succeeds if all elements in the array successfully validate against that schema.
->
-> If "items" is an array of schemas, validation succeeds if each element of the instance validates against the schema at the same position, if any.
->
-> Omitting this keyword has the same behavior as an empty schema.
-
-## 6. Manipulation keywords
-
-### 6.1 d-contentType
-The value of `d-contentType` MUST be a string. It defines how DocFX will manipulate the property and affect the build context.
-
-The following values are allowed:
-* `uid`: If the instance is a string, it defines a UID in the build context for reference.
-* `fileLink`: If the instance is a string and in relative path, it will be converted into path from docset root, and DocFX will update the path afterward.
-* `uidReference`: If the instance is a string or an array of string, it references to a UID (some UIDS) in the build context.
-* `markdown`: If the instance is a string, it will be marked up and updated.
-* `includeFile`: if the instance is a string and in relative path, content of the targeted file will replace it in place.
-* `includeMarkdownFile`: This is same as `includeFile`, in spite of that the content will be marked up before filled in.
-
-**TODO** add some explanation for instance: http://json-schema.org/latest/json-schema-core.html#rfc.section.4.2
-
-### 6.2 d-tags
-The value of this keyword MUST be either a string or an array. If it is an array, elements of the array MUST be strings and MUST be unique.
-
-If a processor need to do some operations on a specified property, while the location of the property differs with schemas, it's hard to share the code.
-In this case, a tag can be defined to mark the property, then the processor can fetch the instances with defined tag from schema parser, and read or modify it.
-
-### 6.3 d-overwrite
-The value of "overwrite" MUST be a string. It specifies how DocFX uses the [overwrite files](..\tutorial\intro_overwrite_files.md) to overwrite the existing values.
-
-The following values are allowed:
-* `replace`: The value will be overwitten by the one specified in overwrite files.
-* `key`: If the instance is a string, it will be used as the key of the current object. It can be used to identify the object to overwrite in an array.
-* `merge`: If the instance is an object, it will be merged with the one in overwrite files. If there are duplicated keys, the one in overwrite files will overwrite the existing one.
-* `ignore`: Mark the current instance cannot be overwritten.
-
-For `object` and `array` type, the default behavior is `merge`. For other types, the default behavior is `replace`.
-
-> [!Note]
-> After applying the overwrite files, the model should be checked again to ensure that all the validation rules still satisfy.
-
-## 7. Extension Keywords
-
-While this schema defines some keywords for DocFX use, additional keywords can be added above it. 
-
-The extension keywords are RECOMMENDED to has the form `{an charactor other than "d"}-{keyword}`, so that it can be easily distinguished from keywords defined in this schema and JSON schema. They can have any valid JSON format value.
-
-## 8. Samples
+## 7. Samples
 Here's an sample of the schema. Assume we have the following YAML file:
 ```yaml
+### YamlMime:LandingPage
 title: Web Apps Documentation
 metadata:
   title: Azure Web Apps Documentation - Tutorials, API Reference
@@ -156,12 +190,21 @@ sections:
   - content: "[Bind an existing SSL certificate to your application](app-service-web-tutorial-custom-SSL.md)"
 ```
 
-In this sample, we want to use the JSON schema to describe the overall model structure. Further more, the `href` is a file link. It need to be resolved from the relative path to the final href. The `content` property need to be marked up as a Markdown string. The `metadata` need to be tagged for further custom operations. We want to use `setion`'s `title` as the key for overwrite `section` array.
+In this sample, we want to use the JSON schema to describe the overall model structure. Further more, the `href` is a file link. It need to be resolved from the relative path to the final href. The `content` property need to be marked up as a Markdown string. The `metadata` need to be tagged for further custom operations. We want to use `section`'s `title` as the key for overwrite `section` array.
 
 Here's the schema to describe these operations:
 
 ```json
 {
+    "d-schemaVersion": "1.0",
+    "d-mimeType": "LandingPage",
+    "d-fileType": "YAML",
+    "d-info": {
+        "id": "https://github.com/dotnet/docfx/schemas/landingpage.schema.json",
+        "title": "Landing page",
+        "description": "The schema for landing page",
+        "version": "1.0.0"
+    },
     "type": "object",
     "properties": {
         "metadata": {
@@ -187,14 +230,14 @@ Here's the schema to describe these operations:
                                 },
                                 "content": {
                                     "type": "string",
-                                    "d-contentType": "markup"
+                                    "d-contentType": "markdown"
                                 }
                             }
                         }
                     },
                     "title": {
                         "type": "string",
-                        "d-overwrite": "key"
+                        "d-merge": "key"
                     }
                 }
             }
@@ -205,3 +248,12 @@ Here's the schema to describe these operations:
     }
 }
 ```
+
+## 8. Open Issues
+1. DocFX fills `_global` metadata into the processed data model, should the schema reflect this behavior?
+   * If YES: 
+        * Pros:
+            1. Users are aware of the existence of `_global` metadata, they can overwrite the property if they want.
+            2. Template writers are aware of it, they can completely rely on the schema to write the template.
+        * Cons:
+            1. Schema writers need aware of the existence of `_global` metadata, it should always exists for any schema. (Should we introduce in a concept of base schema?)
