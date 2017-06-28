@@ -216,15 +216,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                             throw new BuildCacheException($"Last incremental post processor outputs should contain {item.RelativePath}.");
                         }
 
-                        IncrementalUtility.RetryIO(() =>
+                        // Copy when current base dir is not last base dir
+                        if (!FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(
+                            Environment.ExpandEnvironmentVariables(_increContext.CurrentBaseDir),
+                            Environment.ExpandEnvironmentVariables(_increContext.LastBaseDir)))
                         {
-                            // Copy last cached file to current cache.
-                            var newFileName = IncrementalUtility.GetRandomEntry(_increContext.CurrentBaseDir);
-                            var currentCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.CurrentBaseDir), newFileName);
-                            var lastCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.LastBaseDir), cachedFileName);
-                            File.Copy(lastCachedFile, currentCachedFile);
-                            item.LinkToPath = Path.Combine(_increContext.CurrentBaseDir, newFileName);
-                        });
+                            IncrementalUtility.RetryIO(() =>
+                            {
+                                // Copy last cached file to current cache.
+                                var newFileName = IncrementalUtility.GetRandomEntry(_increContext.CurrentBaseDir);
+                                var currentCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.CurrentBaseDir), newFileName);
+                                var lastCachedFile = Path.Combine(Environment.ExpandEnvironmentVariables(_increContext.LastBaseDir), cachedFileName);
+                                File.Copy(lastCachedFile, currentCachedFile);
+                                item.LinkToPath = Path.Combine(_increContext.CurrentBaseDir, newFileName);
+                            });
+                        }
                     });
             }
         }

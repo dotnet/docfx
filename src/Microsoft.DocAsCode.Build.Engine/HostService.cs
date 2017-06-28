@@ -393,14 +393,23 @@ namespace Microsoft.DocAsCode.Build.Engine
                             throw new BuildCacheException($"Last build hasn't loaded model {pair.Key}");
                         }
 
-                        foreach (var item in lfn)
+                        if (FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(
+                            Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir),
+                            Environment.ExpandEnvironmentVariables(incrementalContext.LastBaseDir)))
                         {
-                            // use copy rather than move because if the build failed, the intermediate files of last successful build shouldn't be corrupted.
-                            string fileName = IncrementalUtility.GetRandomEntry(incrementalContext.BaseDir);
-                            File.Copy(
-                                Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.LastBaseDir), item.FilePath),
-                                Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), fileName));
-                            items.Add(new ModelManifestItem() { SourceFilePath = item.SourceFilePath, FilePath = fileName });
+                            items.AddRange(lfn);
+                        }
+                        else
+                        {
+                            foreach (var item in lfn)
+                            {
+                                // use copy rather than move because if the build failed, the intermediate files of last successful build shouldn't be corrupted.
+                                string fileName = IncrementalUtility.GetRandomEntry(incrementalContext.BaseDir);
+                                File.Copy(
+                                    Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.LastBaseDir), item.FilePath),
+                                    Path.Combine(Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir), fileName));
+                                items.Add(new ModelManifestItem() { SourceFilePath = item.SourceFilePath, FilePath = fileName });
+                            }
                         }
                     }
                     else

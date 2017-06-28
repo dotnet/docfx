@@ -321,19 +321,26 @@ namespace Microsoft.DocAsCode.Build.Engine
             var result = item.Clone();
             result.IsIncremental = true;
             result.SourceRelativePath = sourceRelativePath;
-            foreach (var ofi in result.OutputFiles.Values)
+
+            // Copy when current base dir is not last base dir
+            if (!FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(
+                Environment.ExpandEnvironmentVariables(IncrementalContext.BaseDir),
+                Environment.ExpandEnvironmentVariables(IncrementalContext.LastBaseDir)))
             {
-                if (ofi.LinkToPath != null &&
-                    ofi.LinkToPath.Length > IncrementalContext.LastBaseDir.Length &&
-                    ofi.LinkToPath.StartsWith(IncrementalContext.LastBaseDir) &&
-                    (ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '\\' || ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '/'))
+                foreach (var ofi in result.OutputFiles.Values)
                 {
-                    IncrementalUtility.RetryIO(() =>
+                    if (ofi.LinkToPath != null &&
+                        ofi.LinkToPath.Length > IncrementalContext.LastBaseDir.Length &&
+                        ofi.LinkToPath.StartsWith(IncrementalContext.LastBaseDir) &&
+                        (ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '\\' || ofi.LinkToPath[IncrementalContext.LastBaseDir.Length] == '/'))
                     {
-                        var path = Path.Combine(IncrementalContext.BaseDir, IncrementalUtility.GetRandomEntry(IncrementalContext.BaseDir));
-                        File.Copy(Environment.ExpandEnvironmentVariables(ofi.LinkToPath), Environment.ExpandEnvironmentVariables(path));
-                        ofi.LinkToPath = path;
-                    });
+                        IncrementalUtility.RetryIO(() =>
+                        {
+                            var path = Path.Combine(IncrementalContext.BaseDir, IncrementalUtility.GetRandomEntry(IncrementalContext.BaseDir));
+                            File.Copy(Environment.ExpandEnvironmentVariables(ofi.LinkToPath), Environment.ExpandEnvironmentVariables(path));
+                            ofi.LinkToPath = path;
+                        });
+                    }
                 }
             }
 
