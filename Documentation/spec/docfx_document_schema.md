@@ -258,8 +258,6 @@ Here's the schema to describe these operations:
             2. Template writers are aware of it, they can completely rely on the schema to write the template.
         * Cons:
             1. Schema writers need aware of the existence of `_global` metadata, it should always exists for any schema. (Should we introduce in a concept of base schema?)
-<<<<<<< HEAD
-=======
     * Decision: *NOT* include, this schema is for **general purpose**, use documents to describe the changes introduced by DocFX.
 2. Is it necessary to prefix `d-` to every field that DocFX introduces in?
     * If keep `d-`
@@ -271,4 +269,3 @@ Here's the schema to describe these operations:
             2. Little chance that keywords DocFX defines duplicate with what JSON schema defines, after all, JSON schema defines a finite set of reserved keywords.
             3. For example[Swagger spec](http://swagger.io/) is also based on JSON schema and the fields it introduces in has no prefix. 
     * Decision to be made
->>>>>>> resolve comments
