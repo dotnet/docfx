@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly string _commitFromSHA;
         private readonly string _commitToSHA;
         private readonly string _templateHash;
-        private readonly bool _disableIncrementalFolderCleanup;
+        private readonly bool _cleanupCacheHistory;
 
         public DocumentBuilder(
             IEnumerable<Assembly> assemblies,
@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             string intermediateFolder = null,
             string commitFromSHA = null,
             string commitToSHA = null,
-            bool disableIncrementalFolderCleanup = false)
+            bool cleanupCacheHistory = false)
         {
             Logger.LogVerbose("Loading plug-in...");
             using (new LoggerPhaseScope("ImportPlugins", LogLevel.Verbose))
@@ -64,7 +64,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             _commitToSHA = commitToSHA;
             _templateHash = templateHash;
             _intermediateFolder = intermediateFolder;
-            _disableIncrementalFolderCleanup = disableIncrementalFolderCleanup;
+            _cleanupCacheHistory = cleanupCacheHistory;
             _postProcessorsManager = new PostProcessorsManager(_container, postProcessorNames);
         }
 
@@ -112,7 +112,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     currentBuildInfo.PluginHash = ComputePluginHash(_assemblyList);
                     currentBuildInfo.TemplateHash = _templateHash;
-                    if (_disableIncrementalFolderCleanup && lastBuildInfo != null)
+                    if (_cleanupCacheHistory && lastBuildInfo != null)
                     {
                         // Reuse the directory for last incremental if cleanup is disabled
                         currentBuildInfo.DirectoryName = lastBuildInfo.DirectoryName;
@@ -240,7 +240,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             try
                             {
                                 currentBuildInfo.Save(_intermediateFolder);
-                                if (lastBuildInfo != null && !_disableIncrementalFolderCleanup)
+                                if (lastBuildInfo != null && _cleanupCacheHistory)
                                 {
                                     ClearCacheWithNoThrow(lastBuildInfo.DirectoryName, true);
                                 }
@@ -258,7 +258,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 // Leave cache folder there as it contains historical data
                 // exceptions happens in this build does not corrupt the cache theoretically
                 // however the cache file created by this build will never be cleaned up with DisableIncrementalFolderCleanup option
-                if (_intermediateFolder != null && !_disableIncrementalFolderCleanup)
+                if (_intermediateFolder != null && _cleanupCacheHistory)
                 {
                     ClearCacheWithNoThrow(currentBuildInfo.DirectoryName, true);
                 }

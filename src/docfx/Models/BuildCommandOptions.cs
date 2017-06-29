@@ -118,7 +118,7 @@ namespace Microsoft.DocAsCode
         [Option("keepFileLink", HelpText = "If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a link_to_path property inside mainfiest.json to indicate the physical location of that file.")]
         public bool KeepFileLink { get; set; }
 
-        [Option("disableIncrementalFolderCleanup", HelpText = "If set to true, docfx reuses last incremental cache folder instead of creating a new one. This can improve the performance of incremental build by not copying massive intermediate files, however, it introduces issue that historical files not cleaned up and thus the size of intermeidate folder is not under control.")]
-        public bool? DisableIncrementalFolderCleanup { get; set; }
+        [Option("cleanupCacheHistory", HelpText = "If set to true, docfx create a new intermediate folder for cache files, historical cache data will be cleaned up")]
+        public bool? CleanupCacheHistory { get; set; }
     }
 }

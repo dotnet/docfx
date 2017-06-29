@@ -393,9 +393,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                             throw new BuildCacheException($"Last build hasn't loaded model {pair.Key}");
                         }
 
-                        if (FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(
-                            Environment.ExpandEnvironmentVariables(incrementalContext.BaseDir),
-                            Environment.ExpandEnvironmentVariables(incrementalContext.LastBaseDir)))
+                        if (FilePathComparerWithEnvironmentVariable.OSPlatformSensitiveRelativePathComparer.Equals(
+                            incrementalContext.BaseDir,
+                            incrementalContext.LastBaseDir))
                         {
                             items.AddRange(lfn);
                         }

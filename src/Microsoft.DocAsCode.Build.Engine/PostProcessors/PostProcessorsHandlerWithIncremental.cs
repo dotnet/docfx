@@ -215,11 +215,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             throw new BuildCacheException($"Last incremental post processor outputs should contain {item.RelativePath}.");
                         }
-
+                        
                         // Copy when current base dir is not last base dir
-                        if (!FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(
-                            Environment.ExpandEnvironmentVariables(_increContext.CurrentBaseDir),
-                            Environment.ExpandEnvironmentVariables(_increContext.LastBaseDir)))
+                        if (!FilePathComparerWithEnvironmentVariable.OSPlatformSensitiveRelativePathComparer.Equals(
+                            _increContext.CurrentBaseDir,
+                            _increContext.LastBaseDir))
                         {
                             IncrementalUtility.RetryIO(() =>
                             {

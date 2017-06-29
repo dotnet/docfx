@@ -323,9 +323,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             result.SourceRelativePath = sourceRelativePath;
 
             // Copy when current base dir is not last base dir
-            if (!FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(
-                Environment.ExpandEnvironmentVariables(IncrementalContext.BaseDir),
-                Environment.ExpandEnvironmentVariables(IncrementalContext.LastBaseDir)))
+            if (!FilePathComparerWithEnvironmentVariable.OSPlatformSensitiveRelativePathComparer.Equals(
+                IncrementalContext.BaseDir,
+                IncrementalContext.LastBaseDir))
             {
                 foreach (var ofi in result.OutputFiles.Values)
                 {
