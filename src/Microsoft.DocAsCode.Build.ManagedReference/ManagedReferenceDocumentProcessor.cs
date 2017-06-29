@@ -104,7 +104,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             return new FileModel(file, page, serializer: new BinaryFormatter())
             {
-                Uids = (from item in page.Items select new UidDefinition(item.Uid, localPathFromRoot)).ToImmutableArray(),
+                Uids = ((from item in page.Items select new UidDefinition(item.Uid, localPathFromRoot)).Concat(
+                        from item in page.Items where item.Overload != null select new UidDefinition(item.Overload, localPathFromRoot)))
+                        .ToImmutableArray(),
                 LocalPathFromRoot = localPathFromRoot
             };
         }
