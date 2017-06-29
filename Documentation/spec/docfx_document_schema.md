@@ -1,7 +1,7 @@
 # DocFX Document Schema v1.0 Specification
 
 ## 1. Introduction
-DocFX supports different [document processors](..\tutorial\howto_build_your_own_type_of_documentation_with_custom_plug-in.md) to handle different kinds of input. For now, if the data model changes a bit, a new document processor is needed, even most works in processors are the same.
+DocFX supports different [document processors](..\tutorial\howto_build_your_own_type_of_documentation_with_custom_plug-in.md) to handle different kinds of input. For now, if the data model changes a bit, a new document processor is needed, even most of the work in processors are the same.
 
 DocFX Document Schema (abbreviated to *THIS schema* below) is introduced to address this problem. This schema is a JSON media type for defining the structure of a DocFX document. This schema is intended to **annotate**, **validate** and **interpret** the document data. 
 
@@ -53,9 +53,9 @@ This is the root document object for *THIS schema*.
 | d-fileType      | string | `*`The file type of the document model. Supported values are `YAML` and `JSON`.
 | type            | string | `*`The type of the root document model MUST be `object`
 | d-mimeType      | string | The mime type of the document model that applies to current schema. If not set, the schema name will be considered as its mime type.
-| d-info          |[Info Object](#info-object) | `*`The information about current schema
+| d-info          | [Info Object](#info-object) | `*`The information about current schema
 | properties      | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties if `type` for the model is `object`
-| items           | [Item Definitions Object](#item-definitions-object) | An object to hold the schema of all the items if `type` for the model is `array`
+| items           | [Property Object](#property-object) | An object to hold the schema of all the items if `type` for the model is `array`
 
 ##### Patterned Field
 | Field Name | Type | Description
@@ -144,6 +144,7 @@ The value of this keyword MUST be an `array`, elements of the array MUST be stri
 The value of this keyword MUST be a string. It specifies how to merge two values of the given property. One use scenario is how DocFX uses the [overwrite files](..\tutorial\intro_overwrite_files.md) to overwrite the existing values. In the below table, we use `source` and `target` to stands for the two values for merging.
 
 The value MUST be one of the following:
+
 | Value      | Description
 |------------|-------------
 | `key`      | If `key` for `source` equals to the one for `target`, these two values are ready to merge.
@@ -257,3 +258,17 @@ Here's the schema to describe these operations:
             2. Template writers are aware of it, they can completely rely on the schema to write the template.
         * Cons:
             1. Schema writers need aware of the existence of `_global` metadata, it should always exists for any schema. (Should we introduce in a concept of base schema?)
+<<<<<<< HEAD
+=======
+    * Decision: *NOT* include, this schema is for **general purpose**, use documents to describe the changes introduced by DocFX.
+2. Is it necessary to prefix `d-` to every field that DocFX introduces in?
+    * If keep `d-`
+        * Pros:
+            1. `d-` makes it straightforward that these keywords are introduced in by DocFX
+            2. Keywords DocFX introduces in will never not duplicate with the one preserved by JSON schema
+        * Cons:
+            1. `d-` prefix provides a hint that these keywords are not *first class* keywords
+            2. Little chance that keywords DocFX defines duplicate with what JSON schema defines, after all, JSON schema defines a finite set of reserved keywords.
+            3. For example[Swagger spec](http://swagger.io/) is also based on JSON schema and the fields it introduces in has no prefix. 
+    * Decision to be made
+>>>>>>> resolve comments
