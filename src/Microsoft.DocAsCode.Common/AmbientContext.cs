@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Common
     using System.Threading;
 
     [Serializable]
-    public sealed class AmbientContext : IDisposable
+    public sealed class AmbientContext : MarshalByRefObject, IDisposable
     {
         private static readonly string AMBCTX_NAME = nameof(AmbientContext);
 
