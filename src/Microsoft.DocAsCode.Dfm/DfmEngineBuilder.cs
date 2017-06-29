@@ -96,30 +96,79 @@ namespace Microsoft.DocAsCode.Dfm
         private static Func<IMarkdownRewriteEngine, DfmTabGroupBlockToken, IMarkdownToken> GetTabGroupIdRewriter()
         {
             var dict = new Dictionary<string, int>();
+            var selectedTabIds = new HashSet<string>();
             return (IMarkdownRewriteEngine engine, DfmTabGroupBlockToken token) =>
             {
-                var groupId = token.Id;
-                while (true)
+                var newToken = RewriteActiveAndVisible(
+                    RewriteGroupId(token, dict),
+                    selectedTabIds);
+                if (token == newToken)
                 {
-                    if (!dict.TryGetValue(groupId, out int index))
-                    {
-                        dict.Add(groupId, 1);
-                        if (token.Id == groupId)
-                        {
-                            return null;
-                        }
-                        else
-                        {
-                            return new DfmTabGroupBlockToken(token.Rule, token.Context, groupId, token.Items, token.ActiveTabIndex, token.SourceInfo);
-                        }
-                    }
-                    else
-                    {
-                        dict[groupId]++;
-                        groupId = groupId + "-" + index.ToString();
-                    }
+                    return null;
                 }
+                return newToken;
             };
+        }
+
+        private static DfmTabGroupBlockToken RewriteGroupId(DfmTabGroupBlockToken token, Dictionary<string, int> dict)
+        {
+            var groupId = token.Id;
+            while (true)
+            {
+                if (!dict.TryGetValue(groupId, out int index))
+                {
+                    dict.Add(groupId, 1);
+                    break;
+                }
+                else
+                {
+                    dict[groupId]++;
+                    groupId = groupId + "-" + index.ToString();
+                }
+            }
+            if (token.Id == groupId)
+            {
+                return token;
+            }
+            return new DfmTabGroupBlockToken(token.Rule, token.Context, groupId, token.Items, token.ActiveTabIndex, token.SourceInfo);
+        }
+
+        private static DfmTabGroupBlockToken RewriteActiveAndVisible(DfmTabGroupBlockToken token, HashSet<string> selectedTabIds)
+        {
+            var items = token.Items;
+            int firstVisibleTab = -1;
+            int active = -1;
+            for (int i = 0; i < items.Length; i++)
+            {
+                var tab = items[i];
+                var visible = string.IsNullOrEmpty(tab.Condition) || selectedTabIds.Contains(tab.Condition);
+                if (visible && firstVisibleTab == -1)
+                {
+                    firstVisibleTab = i;
+                }
+                if (active == -1 && visible && selectedTabIds.Contains(tab.Id))
+                {
+                    active = i;
+                }
+                if (tab.Visible != visible)
+                {
+                    items = items.SetItem(i, new DfmTabItemBlockToken(tab.Rule, tab.Context, tab.Id, tab.Condition, tab.Title, tab.Content, visible, tab.SourceInfo));
+                }
+            }
+            if (active == -1)
+            {
+                if (firstVisibleTab != -1)
+                {
+                    active = firstVisibleTab;
+                    selectedTabIds.Add(items[firstVisibleTab].Id);
+                    Logger.LogWarning("All tabs are hidden in the tab group.", file: token.SourceInfo.File, line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.NoVisibleTab);
+                }
+                else
+                {
+                    active = 0;
+                }
+            }
+            return new DfmTabGroupBlockToken(token.Rule, token.Context, token.Id, items, active, token.SourceInfo);
         }
 
         private static IMarkdownTokenRewriter InitMarkdownStyle(ICompositionContainer container, string baseDir, string templateDir)

@@ -194,7 +194,12 @@ namespace Microsoft.DocAsCode.Dfm
             for (int i = 0; i < token.Items.Length; i++)
             {
                 var item = token.Items[i];
-                sb += "<li role=\"presentation\">\n";
+                sb += "<li role=\"presentation\"";
+                if (!item.Visible)
+                {
+                    sb += " aria-hidden=\"true\" hidden=\"hidden\"";
+                }
+                sb += ">\n";
                 sb += @"<a href=""#tabpanel_";
                 sb = AppendGroupId(sb, groupId, item);
                 sb += @""" role=""tab"" aria-controls=""tabpanel_";
@@ -244,7 +249,7 @@ namespace Microsoft.DocAsCode.Dfm
                 }
                 else
                 {
-                    sb += "\" aria-hidden=\"true\" hidden>\n";
+                    sb += "\" aria-hidden=\"true\" hidden=\"hidden\">\n";
                 }
                 sb += renderer.Render(item.Content);
                 sb += "</section>\n";

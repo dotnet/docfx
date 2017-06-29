@@ -21,9 +21,11 @@ namespace Microsoft.DocAsCode.Dfm
 
         public DfmTabContentBlockToken Content { get; }
 
+        public bool Visible { get; }
+
         public SourceInfo SourceInfo { get; }
 
-        public DfmTabItemBlockToken(IMarkdownRule rule, IMarkdownContext context, string id, string condition, DfmTabTitleBlockToken title, DfmTabContentBlockToken content, SourceInfo sourceInfo)
+        public DfmTabItemBlockToken(IMarkdownRule rule, IMarkdownContext context, string id, string condition, DfmTabTitleBlockToken title, DfmTabContentBlockToken content, bool visible, SourceInfo sourceInfo)
         {
             Rule = rule;
             Context = context;
@@ -31,6 +33,7 @@ namespace Microsoft.DocAsCode.Dfm
             Condition = condition;
             Title = title;
             Content = content;
+            Visible = visible;
             SourceInfo = sourceInfo;
         }
 
@@ -47,7 +50,16 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return this;
             }
-            return new DfmTabItemBlockToken(Rule, Context, Id, Condition, title, content, SourceInfo);
+            return new DfmTabItemBlockToken(Rule, Context, Id, Condition, title, content, Visible, SourceInfo);
+        }
+
+        public DfmTabItemBlockToken SetVisible(bool visible)
+        {
+            if (visible == Visible)
+            {
+                return this;
+            }
+            return new DfmTabItemBlockToken(Rule, Context, Id, Condition, Title, Content, visible, SourceInfo);
         }
     }
 }

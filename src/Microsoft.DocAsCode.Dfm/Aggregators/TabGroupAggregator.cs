@@ -99,6 +99,7 @@ namespace Microsoft.DocAsCode.Dfm
                 info.Condition,
                 title,
                 content,
+                true,
                 info.GetItemSourceInfo());
         }
 
