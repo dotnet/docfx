@@ -29,14 +29,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private readonly string _intermediateFolder;
         private readonly CompositionHost _container;
-        private readonly BuildInfo _currentBuildInfo =
-            new BuildInfo
-            {
-                BuildStartTime = DateTime.UtcNow,
-                DocfxVersion = typeof(DocumentBuilder).Assembly.GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version
-            };
-        private readonly BuildInfo _lastBuildInfo;
         private readonly PostProcessorsManager _postProcessorsManager;
+        private readonly List<Assembly> _assemblyList;
+        private readonly string _commitFromSHA;
+        private readonly string _commitToSHA;
+        private readonly string _templateHash;
+        private readonly bool _cleanupCacheHistory;
 
         public DocumentBuilder(
             IEnumerable<Assembly> assemblies,
@@ -44,7 +42,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             string templateHash,
             string intermediateFolder = null,
             string commitFromSHA = null,
-            string commitToSHA = null)
+            string commitToSHA = null,
+            bool cleanupCacheHistory = false)
         {
             Logger.LogVerbose("Loading plug-in...");
             using (new LoggerPhaseScope("ImportPlugins", LogLevel.Verbose))
@@ -53,22 +52,19 @@ namespace Microsoft.DocAsCode.Build.Engine
                 assemblyList.Add(typeof(DocumentBuilder).Assembly);
                 _container = CompositionContainer.GetContainer(assemblyList);
                 _container.SatisfyImports(this);
-                _currentBuildInfo.CommitFromSHA = commitFromSHA;
-                _currentBuildInfo.CommitToSHA = commitToSHA;
-                if (intermediateFolder != null)
-                {
-                    _currentBuildInfo.PluginHash = ComputePluginHash(assemblyList);
-                    _currentBuildInfo.TemplateHash = templateHash;
-                    _currentBuildInfo.DirectoryName = IncrementalUtility.CreateRandomDirectory(Environment.ExpandEnvironmentVariables(intermediateFolder));
-                }
+                _assemblyList = assemblyList;
             }
             Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
             foreach (var processor in Processors)
             {
                 Logger.LogVerbose($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");
             }
+
+            _commitFromSHA = commitFromSHA;
+            _commitToSHA = commitToSHA;
+            _templateHash = templateHash;
             _intermediateFolder = intermediateFolder;
-            _lastBuildInfo = BuildInfo.Load(_intermediateFolder);
+            _cleanupCacheHistory = cleanupCacheHistory;
             _postProcessorsManager = new PostProcessorsManager(_container, postProcessorNames);
         }
 
@@ -99,9 +95,35 @@ namespace Microsoft.DocAsCode.Build.Engine
             var logCodesLogListener = new LogCodesLogListener();
             Logger.RegisterListener(logCodesLogListener);
 
+            var currentBuildInfo =
+                new BuildInfo
+                {
+                    BuildStartTime = DateTime.UtcNow,
+                    DocfxVersion = EnvironmentContext.Version,
+                };
+
             try
             {
-                _postProcessorsManager.IncrementalInitialize(_intermediateFolder, _currentBuildInfo, _lastBuildInfo, parameters[0].ForcePostProcess, parameters[0].MaxParallelism);
+                var lastBuildInfo = BuildInfo.Load(_intermediateFolder);
+
+                currentBuildInfo.CommitFromSHA = _commitFromSHA;
+                currentBuildInfo.CommitToSHA = _commitToSHA;
+                if (_intermediateFolder != null)
+                {
+                    currentBuildInfo.PluginHash = ComputePluginHash(_assemblyList);
+                    currentBuildInfo.TemplateHash = _templateHash;
+                    if (_cleanupCacheHistory && lastBuildInfo != null)
+                    {
+                        // Reuse the directory for last incremental if cleanup is disabled
+                        currentBuildInfo.DirectoryName = lastBuildInfo.DirectoryName;
+                    }
+                    else
+                    {
+                        currentBuildInfo.DirectoryName = IncrementalUtility.CreateRandomDirectory(Environment.ExpandEnvironmentVariables(_intermediateFolder));
+                    }
+                }
+
+                _postProcessorsManager.IncrementalInitialize(_intermediateFolder, currentBuildInfo, lastBuildInfo, parameters[0].ForcePostProcess, parameters[0].MaxParallelism);
 
                 var manifests = new List<Manifest>();
                 bool transformDocument = false;
@@ -131,7 +153,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         EnvironmentContext.FileAbstractLayerImpl =
                             FileAbstractLayerBuilder.Default
                             .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                            .WriteToLink(Path.Combine(_intermediateFolder, _currentBuildInfo.DirectoryName))
+                            .WriteToLink(Path.Combine(_intermediateFolder, currentBuildInfo.DirectoryName))
                             .Create();
                     }
                     if (parameter.ApplyTemplateSettings.TransformDocument)
@@ -157,7 +179,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             Logger.LogInfo($"Start building for version: {parameter.VersionName}");
                         }
-                        manifests.Add(BuildCore(parameter, markdownServiceProvider));
+                        manifests.Add(BuildCore(parameter, markdownServiceProvider, currentBuildInfo, lastBuildInfo));
                     }
                 }
 
@@ -217,10 +239,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             try
                             {
-                                _currentBuildInfo.Save(_intermediateFolder);
-                                if (_lastBuildInfo != null)
+                                currentBuildInfo.Save(_intermediateFolder);
+                                if (lastBuildInfo != null && _cleanupCacheHistory)
                                 {
-                                    ClearCacheWithNoThrow(_lastBuildInfo.DirectoryName, true);
+                                    ClearCacheWithNoThrow(lastBuildInfo.DirectoryName, true);
                                 }
                             }
                             catch (Exception ex)
@@ -231,11 +253,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
             }
-            catch (Exception)
+            catch
             {
-                if (_intermediateFolder != null)
+                // Leave cache folder there as it contains historical data
+                // exceptions happens in this build does not corrupt the cache theoretically
+                // however the cache file created by this build will never be cleaned up with DisableIncrementalFolderCleanup option
+                if (_intermediateFolder != null && _cleanupCacheHistory)
                 {
-                    ClearCacheWithNoThrow(_currentBuildInfo.DirectoryName, true);
+                    ClearCacheWithNoThrow(currentBuildInfo.DirectoryName, true);
                 }
                 throw;
             }
@@ -245,12 +270,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        internal Manifest BuildCore(DocumentBuildParameters parameter, IMarkdownServiceProvider markdownServiceProvider)
+        internal Manifest BuildCore(DocumentBuildParameters parameter, IMarkdownServiceProvider markdownServiceProvider, BuildInfo currentBuildInfo, BuildInfo lastBuildInfo)
         {
             using (var builder = new SingleDocumentBuilder
             {
-                CurrentBuildInfo = _currentBuildInfo,
-                LastBuildInfo = _lastBuildInfo,
+                CurrentBuildInfo = currentBuildInfo,
+                LastBuildInfo = lastBuildInfo,
                 IntermediateFolder = _intermediateFolder,
                 MetadataValidators = MetadataValidators.Concat(GetMetadataRules(parameter)).ToList(),
                 Processors = Processors,
@@ -263,6 +288,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private void ClearCacheWithNoThrow(string subFolder, bool recursive)
         {
+            if (string.IsNullOrEmpty(subFolder))
+            {
+                return;
+            }
+
             try
             {
                 string fullPath = Path.Combine(Environment.ExpandEnvironmentVariables(_intermediateFolder), subFolder);

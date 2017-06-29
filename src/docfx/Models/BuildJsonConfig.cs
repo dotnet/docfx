@@ -135,5 +135,8 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("keepFileLink")]
         public bool KeepFileLink { get; set; }
+
+        [JsonProperty("cleanupCacheHistory")]
+        public bool CleanupCacheHistory { get; set; }
     }
 }

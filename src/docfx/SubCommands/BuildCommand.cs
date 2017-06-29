@@ -307,6 +307,11 @@ namespace Microsoft.DocAsCode.SubCommands
 
             config.KeepFileLink |= options.KeepFileLink;
 
+            if (options.CleanupCacheHistory.HasValue)
+            {
+                config.CleanupCacheHistory = options.CleanupCacheHistory.Value;
+            }
+
             config.FileMetadataFilePaths =
                 new ListWithStringFallback(config.FileMetadataFilePaths.Select(
                     path => PathUtility.IsRelativePath(path) ? Path.Combine(config.BaseDirectory, path) : path).Reverse());

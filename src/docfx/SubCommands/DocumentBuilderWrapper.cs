@@ -121,7 +121,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 changeList = ChangeList.Parse(config.ChangesFile, config.BaseDirectory);
             }
 
-            using (var builder = new DocumentBuilder(assemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder, changeList?.From, changeList?.To))
+            using (var builder = new DocumentBuilder(assemblies, postProcessorNames, templateManager?.GetTemplatesHash(), config.IntermediateFolder, changeList?.From, changeList?.To, config.CleanupCacheHistory))
             using (new PerformanceScope("building documents", LogLevel.Info))
             {
                 builder.Build(ConfigToParameter(config, templateManager, changeList, baseDirectory, outputDirectory, templateDirectory).ToList(), outputDirectory);
