@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Newtonsoft.Json.Linq;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Exceptions;
 
     public class Template
     {
@@ -100,7 +101,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             object obj;
             using (var lease = _preprocessorPool.Rent())
             {
-                obj = lease.Resource.GetOptionsFunc(model);
+                try
+                {
+                    obj = lease.Resource.GetOptionsFunc(model);
+                }
+                catch (Exception e)
+                {
+                    throw new InvalidPreprocessorException($"Error running GetOptions function inside template preprocessor: {e.Message}");
+                }
             }
             if (obj == null)
             {
@@ -125,7 +133,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             using (var lease = _preprocessorPool.Rent())
             {
-                return lease.Resource.TransformModelFunc(model);
+                try
+                {
+                    return lease.Resource.TransformModelFunc(model);
+                }
+                catch (Exception e)
+                {
+                    throw new InvalidPreprocessorException($"Error running Transform function inside template preprocessor: {e.Message}");
+                }
             }
         }
 
