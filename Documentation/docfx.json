@@ -23,7 +23,7 @@
         "src": ".."
       },
       {
-        "files": [ "tutorial/**/*.{md,yml}", "spec/**/*.{md,yml}", "*.{md,yml}", "guideline/**/*.{md,yml}", "templates-and-plugins/**/*.{md,yml}", "incrementalbuild/**/*.{md,yml}" ]
+        "files": [ "tutorial/**/*.{md,yml}", "spec/**/*.{md,yml}", "*.{md,yml}", "guideline/**/*.{md,yml}", "templates-and-plugins/**/*.{md,yml}" ]
       }
     ],
     "resource": [
