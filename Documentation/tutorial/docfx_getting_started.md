@@ -41,7 +41,32 @@ docfx docfx_project\docfx.json --serve
 ```
 
 Now you can view the generated website on http://localhost:8080.
-3. Use *DocFX* with a Build Server
+
+3. Use *DocFX* integrated with Visual Studio
+---------------
+
+*Step1.* Install the [`docfx.console`](https://www.nuget.org/packages/docfx.console/) (formerly `docfx.msbuild`) nuget package on the project that you want to document.
+It add itself to the build targets and add the `docfx.json` configuration file along with other files.
+
+*Step2.* Compile, a `_testsite` folder is generated with the documentation.
+
+> [!NOTE]
+> *Possible warnings*:
+> - *No metadata is generated for _project_name_*: *DocFx* is still dependent to Microsoft Build Tools 2015, so If you haven't VS 2015 installed, you need at least the [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159)
+> - *Cache is corrupted*: if your project targets multiple frameworks, you have to indicate one to be the main for the documentation, through the [`TargetFramework` property](https://github.com/dotnet/docfx/issues/1254#issuecomment-294080535) in `docfx.json`:
+
+>      "metadata": [ 
+>        {
+>          "src": "...",
+>          "dest": "...",
+>          "properties": {
+>            "TargetFramework": <one_of_your_framework>
+>          }
+>        },
+>      ]
+
+
+4. Use *DocFX* with a Build Server
 ---------------
 
 *DocFX* can be used in a Continuous Integration environment.
@@ -63,7 +88,7 @@ Many build systems set an environment variable with the branch name.  DocFX uses
 > [!NOTE]
 > *Known issue in AppVeyor*: Currently `platform: Any CPU` in *appveyor.yml* causes `docfx metadata` failure. https://github.com/dotnet/docfx/issues/1078
 
-4. Build from source code
+5. Build from source code
 ----------------
 As a prerequisite, you need:
 - [Visual Studio 2017](https://www.visualstudio.com/vs/) with *.NET Core cross-platform development* toolset
