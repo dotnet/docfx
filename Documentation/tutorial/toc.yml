@@ -25,6 +25,8 @@
     href: intro_template.md
   - name: "HowTo: Create Custom Template"
     href: howto_create_custom_template.md
+- name: Incremental Build
+  href: incrementalbuild/toc.yml
 - name: Extensibility
   items:
   - name: How to build your own type of documentation with custom plug-in
