@@ -48,14 +48,13 @@ Now you can view the generated website on http://localhost:8080.
 *Step1.* Install the [`docfx.console`](https://www.nuget.org/packages/docfx.console/) (formerly `docfx.msbuild`) nuget package on the project that you want to document.
 It add itself to the build targets and add the `docfx.json` configuration file along with other files.
 
-*Step2.* Compile, a `_testsite` folder is generated with the documentation.
+*Step2.* Compile, a `_site` folder is generated with the documentation.
 
 > [!NOTE]
-> *Possible warnings*:
-> - *No metadata is generated for _project_name_*: *DocFx* is still dependent to Microsoft Build Tools 2015, so If you haven't VS 2015 installed, you need at least the [Microsoft Build Tools 2015](https://www.microsoft.com/en-us/download/details.aspx?id=48159)
+> *Possible warning*:
 > - *Cache is corrupted*: if your project targets multiple frameworks, you have to indicate one to be the main for the documentation, through the [`TargetFramework` property](https://github.com/dotnet/docfx/issues/1254#issuecomment-294080535) in `docfx.json`:
 
->      "metadata": [ 
+>      "metadata": [
 >        {
 >          "src": "...",
 >          "dest": "...",
