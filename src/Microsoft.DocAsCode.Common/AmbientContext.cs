@@ -8,24 +8,21 @@ namespace Microsoft.DocAsCode.Common
     using System.Threading;
 
     [Serializable]
-    public sealed class AmbientContext : IDisposable
+    public struct AmbientContext : IDisposable
     {
         private static readonly string AMBCTX_NAME = nameof(AmbientContext);
 
         // auto increment counter maintained during branch and trace entry creation.
-        private long[] _counterRef = new long[] { 0 };
+        private long[] _counterRef;
 
         private object[] _originalAmbientContext;
 
         public string Id { get; private set; }
 
-        private AmbientContext()
-        {
-        }
-
         private AmbientContext(string id) : this()
         {
             Id = id;
+            _counterRef =  new long[] { 0 };
             _originalAmbientContext = GetCurrentContextRaw();
             SetCurrentContextRaw(ToObjectArray());
         }
@@ -38,7 +35,7 @@ namespace Microsoft.DocAsCode.Common
             SetCurrentContextRaw(ToObjectArray());
         }
 
-        public static AmbientContext CurrentContext => GetCurrentContext();
+        public static AmbientContext? CurrentContext => GetCurrentContext();
 
         public static AmbientContext GetOrCreateAmbientContext()
         {
@@ -48,7 +45,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 context = InitializeAmbientContext(null);
             }
-            return new AmbientContext(context);
+            return new AmbientContext(context.Value);
         }
 
         /// <summary>
@@ -102,7 +99,7 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
-        private static AmbientContext GetCurrentContext()
+        private static AmbientContext? GetCurrentContext()
         {
             return ToAmbientContext(GetCurrentContextRaw());
         }
@@ -132,7 +129,7 @@ namespace Microsoft.DocAsCode.Common
             };
         }
 
-        private static AmbientContext ToAmbientContext(object[] objs)
+        private static AmbientContext? ToAmbientContext(object[] objs)
         {
             if (objs == null || objs.Length < 3)
             {
