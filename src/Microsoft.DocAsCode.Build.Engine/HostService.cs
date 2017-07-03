@@ -496,12 +496,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 m.FileOrBaseDirChanged += fileOrBaseDirChangedHandler;
                 m.UidsChanged += uidsChangedHandler;
                 m.ContentAccessed += contentAccessedHandler;
-                foreach (var uid in m.Uids)
+                foreach (var uid in m.Uids.Select(s => s.Name).Distinct())
                 {
-                    if (!_uidIndex.TryGetValue(uid.Name, out List<FileModel> list))
+                    if (!_uidIndex.TryGetValue(uid, out List<FileModel> list))
                     {
                         list = new List<FileModel>();
-                        _uidIndex.Add(uid.Name, list);
+                        _uidIndex.Add(uid, list);
                     }
                     list.Add(m);
                 }
