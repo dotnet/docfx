@@ -106,7 +106,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 Uids = (from item in page.Items select item.Uid)
                 .Concat(from item in page.Items where item.Overload != null select item.Overload)
-                .Select(s => new UidDefinition(s, localPathFromRoot)).ToImmutableArray(),
+                .Distinct().Select(s => new UidDefinition(s, localPathFromRoot)).ToImmutableArray(),
                 LocalPathFromRoot = localPathFromRoot
             };
         }
