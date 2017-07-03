@@ -55,6 +55,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
             CreateFile("ManagedReference.html.primary.tmpl", "managed content", templateFolder);
+            CreateFile("ManagedReference.txt.tmpl", "{{summary}}{{remarks}}{{example.0}}", templateFolder);
             CreateFile("toc.html.tmpl", "toc", templateFolder);
 
             var tocFile = CreateFile("toc.md",
@@ -115,7 +116,22 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "test",
                 },
                 inputFolder);
-
+            var overwriteFile = CreateFile("test/ow.md",
+                new[] 
+                {
+                    "---",
+                    "uid: System.Console",
+                    "summary: *content",
+                    "---",
+                    "hello",
+                    "",
+                    "---",
+                    "uid: System.Console",
+                    "example: [*content]",
+                    "---",
+                    "example",
+                },
+                inputFolder);
             File.WriteAllText(MarkdownSytleConfig.MarkdownStyleFileName, @"{
 rules : [
     ""foo"",
@@ -133,6 +149,7 @@ tagRules : [
 
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
+            files.Add(DocumentType.Overwrite, new[] { overwriteFile });
             files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, "TestData/", null);
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
@@ -154,8 +171,12 @@ tagRules : [
                             ["meta"] = "Hello world!",
                         },
                         templateFolder: templateFolder,
-                        intermediateFolder: intermediateFolderVariable);
-
+                        intermediateFolder: intermediateFolderVariable,
+                        applyTemplateSettings: new ApplyTemplateSettings(inputFolder, outputFolderFirst)
+                        {
+                            RawModelExportSettings = { Export = true },
+                            TransformDocument = true,
+                        });
                 }
 
                 ClearListener();
@@ -236,6 +257,11 @@ tagRules : [
                     // check mref.
                     Assert.True(File.Exists(Path.Combine(outputFolderSecond, Path.ChangeExtension("System.Console.csyml", ".html"))));
                     Assert.True(File.Exists(Path.Combine(outputFolderSecond, Path.ChangeExtension("System.ConsoleColor.csyml", ".html"))));
+
+                    var contentFile = Path.Combine(outputFolderSecond, "System.Console.txt");
+                    Assert.True(File.Exists(contentFile));
+                    Assert.Equal($"&lt;p sourcefile=&quot;{inputFolder}/test/ow.md&quot; sourcestartlinenumber=&quot;5&quot; sourceendlinenumber=&quot;5&quot;&gt;hello&lt;/p&gt;\n&lt;p sourcefile=&quot;{inputFolder}/test/ow.md&quot; sourcestartlinenumber=&quot;11&quot; sourceendlinenumber=&quot;11&quot;&gt;example&lt;/p&gt;\n"
+, File.ReadAllText(contentFile));
                 }
 
                 {
