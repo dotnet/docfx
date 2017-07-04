@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
 
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Build.TableOfContents;
+    using Microsoft.DocAsCode.Build.TagsLevelRestApi;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.RestApi;
