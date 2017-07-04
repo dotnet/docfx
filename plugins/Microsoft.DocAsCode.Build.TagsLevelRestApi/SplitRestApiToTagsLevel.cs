@@ -135,7 +135,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             var originalFileName = Path.GetFileName(originalFile);
             var subDirectory = originalFileName.Remove(originalFileName.IndexOf('.'));
             var directory = Path.GetDirectoryName(originalFile);
-            var filePath = Path.Combine(directory, subDirectory, tagModel.Name + fileExtension);
+            var filePath = Path.Combine(directory, subDirectory, tagModel.Name + fileExtension).ToNormalizedPath();
 
             var newFileAndType = new FileAndType(model.FileAndType.BaseDir, filePath, model.FileAndType.Type, model.FileAndType.SourceDir, model.FileAndType.DestinationDir);
             var newKey = "~/" + RelativePath.GetPathWithoutWorkingFolderChar(filePath);
@@ -161,8 +161,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 Metadata = new Dictionary<string, object>()
                 {
                     [Constants.PropertyName.Name] = root.Name,
-                    [Constants.PropertyName.Href] = fileKey,
-                    [Constants.PropertyName.TopicHref] = fileKey
+                    [Constants.PropertyName.TopicUid] = root.Uid
                 }
             };
         }

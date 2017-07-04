@@ -120,7 +120,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 var rootModel = model.Items[0];
                 Assert.Equal("petstore.html", rootModel.TopicHref);
                 Assert.Equal(3, rootModel.Items.Count);
-                Assert.Equal("petstore/pet.html", rootModel.Items[0].TopicHref);
+                Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet", rootModel.Items[0].TopicUid);
                 Assert.Equal("pet", rootModel.Items[0].Name);
             }
         }
