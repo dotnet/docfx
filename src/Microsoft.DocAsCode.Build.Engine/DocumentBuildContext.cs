@@ -193,6 +193,29 @@ namespace Microsoft.DocAsCode.Build.Engine
             return list;
         }
 
+        private string requestUrl = "http://restfulapiwebservice0627.azurewebsites.net/uids";
+        private XRefSpec FindByRequest(string uid)
+        {   
+            
+            XRefSpec xf = null;
+            string url = requestUrl + "/" + uid + "/";
+            var client = new HttpClient();
+            if (Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
+            {
+                var response = client.GetAsync(uri).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = response.Content;
+                    string responseString = responseContent.ReadAsStringAsync().Result;
+                    xf = JsonUtility.Deserialize<XRefSpec>(responseString);
+                    //xf = Newtonsoft.Json.JsonConvert.DeserializeObject<XRefSpec>(responseString);
+                }
+
+            }
+            Logger.LogInfo($"query {uid} in function FindByRequest");
+            return xf;
+        }//add
+
         private List<string> ResolveByXRefMaps(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
         {
             if (_reader == null)
@@ -210,7 +233,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 else
                 {
-                    list.Add(uid);
+                    spec = FindByRequest(uid);//add
+                    if (spec != null)
+                    {
+                        externalXRefSpec.AddOrUpdate(uid, spec, (_, old) => old + spec);
+                    }//add
+                    else
+                    {
+                        list.Add(uid);
+                    }
                 }
             }
             Logger.LogInfo($"{uidList.Count - list.Count} external references found in {XRefMapUrls.Length} xref maps.");
