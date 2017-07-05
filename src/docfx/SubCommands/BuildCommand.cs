@@ -307,9 +307,9 @@ namespace Microsoft.DocAsCode.SubCommands
 
             config.KeepFileLink |= options.KeepFileLink;
 
-            if (options.CleanupCacheHistory.HasValue)
+            if (options.CleanupCacheHistory)
             {
-                config.CleanupCacheHistory = options.CleanupCacheHistory.Value;
+                config.CleanupCacheHistory = options.CleanupCacheHistory;
             }
 
             config.FileMetadataFilePaths =
