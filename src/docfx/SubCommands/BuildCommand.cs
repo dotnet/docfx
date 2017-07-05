@@ -306,11 +306,7 @@ namespace Microsoft.DocAsCode.SubCommands
             config.LruSize = options.LruSize ?? config.LruSize;
 
             config.KeepFileLink |= options.KeepFileLink;
-
-            if (options.CleanupCacheHistory.HasValue)
-            {
-                config.CleanupCacheHistory = options.CleanupCacheHistory.Value;
-            }
+            config.CleanupCacheHistory |= options.CleanupCacheHistory;
 
             config.FileMetadataFilePaths =
                 new ListWithStringFallback(config.FileMetadataFilePaths.Select(
