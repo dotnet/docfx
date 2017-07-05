@@ -43,6 +43,23 @@ namespace Microsoft.DocAsCode.Build.Engine
             string versionName,
             ApplyTemplateSettings applyTemplateSetting,
             string rootTocPath,
+            string versionFolder,
+            ImmutableArray<string> xrefServers)
+            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, versionFolder)
+        {
+            XRefServerUrls = xrefServers;
+        }//add
+
+        public DocumentBuildContext(
+            string buildOutputFolder,
+            IEnumerable<FileAndType> allSourceFiles,
+            ImmutableArray<string> externalReferencePackages,
+            ImmutableArray<string> xrefMaps,
+            int maxParallelism,
+            string baseFolder,
+            string versionName,
+            ApplyTemplateSettings applyTemplateSetting,
+            string rootTocPath,
             string versionFolder)
         {
             BuildOutputFolder = buildOutputFolder;
@@ -85,6 +102,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public ImmutableArray<string> ExternalReferencePackages { get; }
 
         public ImmutableArray<string> XRefMapUrls { get; }
+
+        public ImmutableArray<string> XRefServerUrls { get; }
 
         public ImmutableDictionary<string, FileAndType> AllSourceFiles { get; }
 
@@ -193,10 +212,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             return list;
         }
 
-        private string requestUrl = "http://restfulapiwebservice0627.azurewebsites.net/uids";
+        //private string requestUrl = "http://restfulapiwebservice0627.azurewebsites.net/uids";
         private XRefSpec FindByRequest(string uid)
-        {   
-            
+        {
+            string requestUrl = XRefServerUrls[0];
             XRefSpec xf = null;
             string url = requestUrl + "/" + uid + "/";
             var client = new HttpClient();
@@ -207,8 +226,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     var responseContent = response.Content;
                     string responseString = responseContent.ReadAsStringAsync().Result;
-                    xf = JsonUtility.Deserialize<XRefSpec>(responseString);
-                    //xf = Newtonsoft.Json.JsonConvert.DeserializeObject<XRefSpec>(responseString);
+                    //xf = JsonUtility.Deserialize<XRefSpec>(responseString);
+                    xf = Newtonsoft.Json.JsonConvert.DeserializeObject<XRefSpec>(responseString);
                 }
 
             }
