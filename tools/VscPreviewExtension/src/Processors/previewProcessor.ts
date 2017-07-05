@@ -52,12 +52,8 @@ export class PreviewProcessor {
 
     private prepareRequestData(documentUri: Uri, previewType: number, context, callback): ProxyRequest {
         let environmentVariables;
-        try {
-            environmentVariables = Utility.getEnvironmentVariables();
-        } catch (err) {
-            window.showErrorMessage(`[Extension Error]: ${err}`);
+        if (!(environmentVariables = Utility.getEnvironmentVariables()))
             return;
-        }
 
         let request = new ProxyRequest(documentUri, previewType, environmentVariables.docContent, environmentVariables.relativePath, environmentVariables.workspacePath, context, callback);
         return this.appendTempPreviewFileInformation(request);

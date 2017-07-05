@@ -27,7 +27,7 @@ export class DocFXPreviewProcessor extends PreviewProcessor {
     }
 
     public startPreview(uri: Uri, callback) {
-        let docfxConfigFilePath = this.validEnvironment();
+        let docfxConfigFilePath = this.validConfig();
         if (docfxConfigFilePath != undefined && docfxConfigFilePath != null) {
             try {
                 this._tempPreviewFileInformation = TempPreviewFileProcessor.initializeTempFileInformation(PreviewProcessor.context, this.navigationPort, this.parseConfig(docfxConfigFilePath));
@@ -43,7 +43,7 @@ export class DocFXPreviewProcessor extends PreviewProcessor {
         }
     }
 
-    private validEnvironment() {
+    private validConfig() {
         let workspacePath = workspace.rootPath;
         if (!workspacePath) {
             return null;

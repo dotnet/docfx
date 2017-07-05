@@ -11,7 +11,9 @@ import { Utility } from "./utility";
 export class TempPreviewFileProcessor {
     // TODO: Write\Delete temp preview file at client side instead of server side.
     public static initializeTempFileInformation(context: ExtensionContext, navigationPort: string, config) {
-        let environmentVariables = Utility.getEnvironmentVariables();
+        let environmentVariables;
+        if (!(environmentVariables = Utility.getEnvironmentVariables()))
+            return;
 
         let basename = path.basename(environmentVariables.relativePath);
         let filenameWithoutExt = basename.substr(0, basename.length - path.extname(environmentVariables.relativePath).length);
