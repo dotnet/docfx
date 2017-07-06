@@ -263,7 +263,7 @@ Here's the schema to describe these operations:
     * If keep `d-`
         * Pros:
             1. `d-` makes it straightforward that these keywords are introduced in by DocFX
-            2. Keywords DocFX introduces in will never not duplicate with the one preserved by JSON schema
+            2. Keywords DocFX introduces in will never duplicate with the one preserved by JSON schema
         * Cons:
             1. `d-` prefix provides a hint that these keywords are not *first class* keywords
             2. Little chance that keywords DocFX defines duplicate with what JSON schema defines, after all, JSON schema defines a finite set of reserved keywords.
