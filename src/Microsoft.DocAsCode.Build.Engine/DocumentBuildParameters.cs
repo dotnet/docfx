@@ -20,6 +20,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public ImmutableArray<string> XRefMaps { get; set; } = ImmutableArray<string>.Empty;
 
+        public ImmutableArray<string> XRefServiceUrls { get; set; } = ImmutableArray<string>.Empty;
+
         public ImmutableDictionary<string, object> Metadata { get; set; } = ImmutableDictionary<string, object>.Empty;
 
         public FileMetadata FileMetadata { get; set; }

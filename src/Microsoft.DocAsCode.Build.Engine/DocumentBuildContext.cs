@@ -18,7 +18,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
-
     public sealed class DocumentBuildContext : IDocumentBuildContext
     {
         private readonly ConcurrentDictionary<string, TocInfo> _tableOfContents = new ConcurrentDictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
@@ -31,7 +30,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, string.Empty, null, null) { }
 
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath)
-            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null) { }
+            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null, ImmutableArray<string>.Empty) { }
 
         public DocumentBuildContext(
             string buildOutputFolder,
@@ -43,7 +42,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             string versionName,
             ApplyTemplateSettings applyTemplateSetting,
             string rootTocPath,
-            string versionFolder)
+            string versionFolder,
+            ImmutableArray<string> xrefserviceUrls)
         {
             BuildOutputFolder = buildOutputFolder;
             VersionName = versionName;
@@ -51,6 +51,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             AllSourceFiles = GetAllSourceFiles(allSourceFiles);
             ExternalReferencePackages = externalReferencePackages;
             XRefMapUrls = xrefMaps;
+            XRefServiceUrls = xrefserviceUrls;
             MaxParallelism = maxParallelism;
             if (xrefMaps.Length > 0)
             {
@@ -85,6 +86,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public ImmutableArray<string> ExternalReferencePackages { get; }
 
         public ImmutableArray<string> XRefMapUrls { get; }
+
+        public ImmutableArray<string> XRefServiceUrls { get; }
 
         public ImmutableDictionary<string, FileAndType> AllSourceFiles { get; }
 
@@ -157,6 +160,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 uidList = ResolveByExternalReferencePackages(uidList, ExternalXRefSpec);
             }
+            if (uidList.Count > 0)
+            {
+                uidList = ResolveByXRefServiceAsync(uidList, ExternalXRefSpec).Result;
+            }
 
             foreach (var uid in uidList)
             {
@@ -190,6 +197,92 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             Logger.LogInfo($"{externalXRefSpec.Count - oldSpecCount} external references found in {ExternalReferencePackages.Length} packages.");
+            return list;
+        }
+
+        private async Task<List<string>> ResolveByXRefServiceAsync(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
+        {
+            if (XRefServiceUrls == null || XRefServiceUrls.Length == 0)
+            {
+                Logger.LogWarning($"You haven't provide an xrefservice item in docfx.json or command options!");
+                return uidList;
+            }
+            string requestUrl = XRefServiceUrls[0];
+            var list = new List<string>();
+            int pieceSize = 1000;
+            using (var client = new HttpClient())
+            {   
+                try
+                {
+                    client.BaseAddress = new Uri(requestUrl);
+                }
+                catch (UriFormatException e)
+                {
+                    Logger.LogWarning($"Ignore invalid url: {requestUrl}." + e.Message);
+                    return uidList;
+                }
+                catch (ArgumentException e)
+                {
+                    Logger.LogWarning($"Ignore invalid url: {requestUrl}." + e.Message);
+                    return uidList;
+                }
+                
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+                for (int i = 0; i < uidList.Count; i += pieceSize)
+                {
+                    List<string> smallPiece;
+                    if (i + pieceSize < uidList.Count)
+                    {
+                        smallPiece = uidList.GetRange(i, pieceSize);
+                    }
+                    else
+                    {
+                        smallPiece = uidList.GetRange(i, uidList.Count - i);
+                    }
+
+                    StringContent content = new StringContent(JsonUtility.Serialize(smallPiece), System.Text.Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = null;
+                    try
+                    {
+                        response = await client.PostAsync("", content);
+                    }
+                    catch (HttpRequestException e)
+                    {
+                        Logger.LogWarning(e.InnerException.Message + "\n" + smallPiece.Count + " uids being resolved failed, for example including " + smallPiece[0]);
+                        list.AddRange(smallPiece);
+                        continue;
+                    }
+                    
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var data = await response.Content.ReadAsStreamAsync();
+                        List<XRefSpec> xsList;
+                        using (var sr = new StreamReader(data))
+                        {
+                            xsList = JsonUtility.Deserialize<List<XRefSpec>>(sr);
+                        }
+                        for (int j = 0; j < xsList.Count; j++)
+                        {
+                            if (xsList[j] == null)
+                            {
+                                list.Add(smallPiece[j]);
+                            }
+                            else
+                            {
+                                externalXRefSpec.AddOrUpdate(smallPiece[j], xsList[j], (_, old) => old + xsList[j]);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        list.AddRange(smallPiece);
+                        Logger.LogWarning($"Request on {requestUrl} failed." + smallPiece.Count + " uids being resolved failed, for example including " + smallPiece[0]);
+                    }
+                }
+            }
+            Logger.LogInfo($"{uidList.Count - list.Count} external references found in {requestUrl} configured in docfx.json");
             return list;
         }
 
