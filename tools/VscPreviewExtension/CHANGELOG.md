@@ -1,12 +1,21 @@
-## Current Version **0.0.21**
+## Current Version **0.0.24**
 ### new features
-* Bug fix: remove background block of the inline code
+* Bug fix: fix broken image on the homepage
 
 ## Known Issues
 * When markdown use *file include* feature or there are multiple opened editors, preview match can't provide a good performance
 * Should kill child process when extension shutdown
 
 ## Verison History
+* **0.0.23**
+  * Feature add: DocFX default template support
+
+* **0.0.22**
+  * Bug fix: kill child process when extension shutdown
+
+* **0.0.21**
+  * Bug fix: remove background block of the inline code
+
 * **0.0.20**
   * Improve: remove the `img` folder in the publish version
 
