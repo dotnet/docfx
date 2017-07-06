@@ -2,7 +2,7 @@
 
 import * as childProcess from "child_process";
 
-export class Common {
+export class ChildProcessManagement {
     static spawn(command: string, options) : childProcess.ChildProcess {
         let file, args;
         if (process.platform === 'win32') {
