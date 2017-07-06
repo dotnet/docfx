@@ -1,21 +1,24 @@
 // Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-import { Uri, window, ExtensionContext } from "vscode";
+import { ExtensionContext, Uri, window } from "vscode";
 
 import { PreviewType } from "../constVariables/previewType";
 import { requestProxy } from "../Proxy/requestProxy";
 import { ProxyResponse } from "../Proxy/proxyResponse";
+import { ProxyRequest } from "../Proxy/proxyRequest";
+import { Utility } from "../common/utility";
 
 export class PreviewProcessor {
     public static previewType = PreviewType.dfmPreview;
     public initialized;
 
-    private static _context: ExtensionContext;
+    protected static context: ExtensionContext;
+
     private static proxy = requestProxy.getInstance();
     private _waiting = false;
 
-    constructor(context: ExtensionContext){
-        PreviewProcessor._context = context;
+    constructor(context: ExtensionContext) {
+        PreviewProcessor.context = context;
     }
 
     public static stopPreview() {
@@ -38,13 +41,26 @@ export class PreviewProcessor {
 
     private updateContentCoreAsync(uri: Uri) {
         let that = this;
-        PreviewProcessor.proxy.newRequest(uri, PreviewProcessor.previewType, PreviewProcessor._context, function (err,response) {
+        PreviewProcessor.proxy.newRequest(this.prepareRequestData(uri, PreviewProcessor.previewType, PreviewProcessor.context, function (err, response) {
             if (err) {
                 window.showErrorMessage(`[Proxy Error]: ${err}`);
             } else {
                 that.pageRefresh(response);
             }
-        });
+        }));
+    }
+
+    private prepareRequestData(documentUri: Uri, previewType: number, context, callback): ProxyRequest {
+        let environmentVariables;
+        if (!(environmentVariables = Utility.getEnvironmentVariables()))
+            return;
+
+        let request = new ProxyRequest(documentUri, previewType, environmentVariables.docContent, environmentVariables.relativePath, environmentVariables.workspacePath, context, callback);
+        return this.appendTempPreviewFileInformation(request);
+    }
+
+    protected appendTempPreviewFileInformation(request) {
+        return request;
     }
 
     protected pageRefresh(response: ProxyResponse) {

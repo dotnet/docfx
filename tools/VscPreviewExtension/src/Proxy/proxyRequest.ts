@@ -2,6 +2,7 @@
 
 import { Uri, ExtensionContext } from "vscode";
 import { PreviewType } from "../constVariables/previewType";
+import { TempPreviewFileInformation } from "../Common/tempPreviewFileInformation";
 
 export class ProxyRequest {
     documentUri: Uri;
@@ -10,13 +11,16 @@ export class ProxyRequest {
     oldPid: number;
     relativePath: string;
     workspacePath: string;
+    tempPreviewFilePath: string;
+    originalHtmlPath: string;
+    pageRefreshJsFilePath: string;
+    navigationPort: string;
     context: ExtensionContext;
     callback;
 
-    constructor(documentUri: Uri, previewType: number, oldPid: number, content: string, relativePath: string, workspacePath: string, context: ExtensionContext, callback) {
+    constructor(documentUri: Uri, previewType: number, content: string, relativePath: string, workspacePath: string, context: ExtensionContext, callback) {
         this.documentUri = documentUri;
         this.previewType = previewType;
-        this.oldPid = oldPid;
         this.content = content;
         this.relativePath = relativePath;
         this.workspacePath = workspacePath;
@@ -26,5 +30,16 @@ export class ProxyRequest {
 
     public getKeyString() {
         return this.documentUri.toString();
+    }
+
+    public storageChildProcessPid(pid: number) {
+        this.oldPid = pid;
+    }
+
+    public appendTempPreviewFileInformation(tempPreviewFileInformation: TempPreviewFileInformation) {
+        this.tempPreviewFilePath = tempPreviewFileInformation.tempPreviewFilePath;
+        this.originalHtmlPath = tempPreviewFileInformation.originalHtmlPath;
+        this.pageRefreshJsFilePath = tempPreviewFileInformation.pageRefreshJsFilePath;
+        this.navigationPort = tempPreviewFileInformation.navigationPort;
     }
 }

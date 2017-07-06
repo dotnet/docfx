@@ -22,9 +22,8 @@ setInterval(function () {
         var centerLocation = currentLocation;
         var selectItem = $("[sourcefile='" + filePathEscape + "']").filter(function (index) { return $(this).attr('sourcestartlinenumber') <= centerLocation && $(this).attr('sourceendlinenumber') >= centerLocation }).last();
         // If result of selection is empty selection, focus on the end of last node
-        while (selectItem.length === 0) {
-          centerLocation--;
-          selectItem = $("[sourcefile='" + filePathEscape + "']").filter(function (index) { return $(this).attr('sourcestartlinenumber') <= centerLocation && $(this).attr('sourceendlinenumber') >= centerLocation }).last();
+        if (selectItem.length === 0) {
+          selectItem = $("[sourcefile='" + filePathEscape + "']").filter(function (index) { return $(this).attr('sourcestartlinenumber') <= centerLocation }).last();
         }
         $("body,html").animate({
           scrollTop: selectItem.offset().top
