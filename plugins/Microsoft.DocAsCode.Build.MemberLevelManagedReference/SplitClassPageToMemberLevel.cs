@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
     using Microsoft.DocAsCode.Plugins;
 
     [Export("ManagedReferenceDocumentProcessor", typeof(IDocumentBuildStep))]
-    public class SplitClassPageToMemberLevel : BaseDocumentBuildStep, ISupportIncrementalBuildStep
+    public class SplitClassPageToMemberLevel : SplitModelBaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         private const char OverloadLastChar = '*';
         private const char Separator = '.';
@@ -33,49 +33,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         public override int BuildOrder => 1;
 
-        /// <summary>
-        /// Extract: group with overload
-        /// </summary>
-        /// <param name="models"></param>
-        /// <param name="host"></param>
-        /// <returns></returns>
-        public override IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
-        {
-            var collection = new List<FileModel>(models);
-
-            // Separate items into different models if the PageViewModel contains more than one item
-            var treeMapping = new Dictionary<string, Tuple<FileAndType, IEnumerable<TreeItem>>>();
-            foreach (var model in models)
-            {
-                var result = SplitModelToOverloadLevel(model);
-                if (result != null)
-                {
-                    if (treeMapping.ContainsKey(result.Uid))
-                    {
-                        Logger.LogWarning($"Model with the UID {result.Uid} already exists. '{model.OriginalFileAndType?.FullPath ?? model.FileAndType.FullPath}' is ignored.");
-                    }
-                    else
-                    {
-                        treeMapping.Add(result.Uid, Tuple.Create(model.OriginalFileAndType, result.TreeItems));
-                        collection.AddRange(result.Models);
-                    }
-                }
-            }
-
-            host.TableOfContentRestructions =
-                (from item in treeMapping
-                 select new TreeItemRestructure
-                 {
-                     ActionType = TreeItemActionType.AppendChild,
-                     Key = item.Key,
-                     TypeOfKey = TreeItemKeyType.TopicUid,
-                     RestructuredItems = item.Value.Item2.ToImmutableList(),
-                     SourceFiles = new FileAndType[] { item.Value.Item1 }.ToImmutableList(),
-                 }).ToImmutableList();
-
-            return collection;
-        }
-
         #region ISupportIncrementalBuildStep Members
 
         public bool CanIncrementalBuild(FileAndType fileAndType) => true;
@@ -86,7 +43,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         #endregion
 
-        private SplittedResult SplitModelToOverloadLevel(FileModel model)
+        #region SplitModelBaseDocumentBuildStep
+
+        protected override SplittedInfo SplitModelCore(FileModel model)
         {
             if (model.Type != DocumentType.Article)
             {
@@ -129,8 +88,22 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             // Regenerate uids
             model.Uids = CalculateUids(page, model.LocalPathFromRoot);
             model.Content = page;
-            return new SplittedResult(primaryItem.Uid, children.OrderBy(s => GetDisplayName(s)), splittedModels);
+            return new SplittedInfo(primaryItem.Uid, model.OriginalFileAndType, children.OrderBy(s => GetDisplayName(s)), splittedModels);
         }
+
+        protected override TreeItemRestructure GenerateTreeItemRestructure(SplittedInfo splittedInfo)
+        {
+            return new TreeItemRestructure
+            {
+                ActionType = TreeItemActionType.AppendChild,
+                Key = splittedInfo.Key,
+                TypeOfKey = TreeItemKeyType.TopicUid,
+                RestructuredItems = splittedInfo.TreeItems.ToImmutableList(),
+                SourceFiles = new FileAndType[] { splittedInfo.OriginalFileAndType }.ToImmutableList(),
+            };
+        }
+
+        #endregion SplitModelBaseDocumentBuildStep
 
         private IEnumerable<PageViewModel> GetNewPages(PageViewModel page)
         {
@@ -564,20 +537,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
 
             return null;
-        }
-
-        private sealed class SplittedResult
-        {
-            public string Uid { get; }
-            public IEnumerable<TreeItem> TreeItems { get; }
-            public IEnumerable<FileModel> Models { get; }
-
-            public SplittedResult(string uid, IEnumerable<TreeItem> items, IEnumerable<FileModel> models)
-            {
-                Uid = uid;
-                TreeItems = items;
-                Models = models;
-            }
         }
 
         private sealed class ModelWrapper
