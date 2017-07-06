@@ -112,7 +112,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     currentBuildInfo.PluginHash = ComputePluginHash(_assemblyList);
                     currentBuildInfo.TemplateHash = _templateHash;
-                    if (_cleanupCacheHistory && lastBuildInfo != null)
+                    if (!_cleanupCacheHistory && lastBuildInfo != null)
                     {
                         // Reuse the directory for last incremental if cleanup is disabled
                         currentBuildInfo.DirectoryName = lastBuildInfo.DirectoryName;
