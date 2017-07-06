@@ -13,6 +13,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Reflection;
     using System.Text;
 
+    using Newtonsoft.Json;
+
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
@@ -320,7 +322,13 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static void SaveManifest(Manifest manifest)
         {
-            JsonUtility.Serialize(Constants.ManifestFileName, manifest);
+            var sortedManifestFiles = manifest.Files.OrderBy(obj => obj.SourceRelativePath ?? String.Empty,
+                FilePathComparer.OSPlatformSensitiveStringComparer).ToList();
+
+            manifest.Files.Clear();
+            manifest.Files.AddRange(sortedManifestFiles);
+
+            JsonUtility.Serialize(Constants.ManifestFileName, manifest, Formatting.Indented);
             Logger.LogInfo($"Manifest file saved to {Constants.ManifestFileName}.");
         }
 
