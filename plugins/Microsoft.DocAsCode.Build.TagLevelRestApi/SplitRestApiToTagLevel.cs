@@ -128,7 +128,12 @@ namespace Microsoft.DocAsCode.Build.TagLevelRestApi
         private IEnumerable<RestApiChildItemViewModel> GetChildrenByTag(RestApiRootItemViewModel root, string tagName)
         {
             // Only group children into first tag, to keep cross reference unique
-            return root.Children.Where(child => child.Tags != null && tagName == child.Tags.FirstOrDefault());
+            var children = root.Children.Where(child => child.Tags != null && tagName == child.Tags.FirstOrDefault());
+            foreach (var child in children)
+            {
+                child.Tags = new List<string>();
+                yield return child;
+            }
         }
 
         private FileModel GenerateNewFileModel(FileModel model, RestApiRootItemViewModel tagModel)
