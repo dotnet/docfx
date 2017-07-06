@@ -262,7 +262,7 @@ Here's the schema to describe these operations:
 2. Is it necessary to prefix `d-` to every field that DocFX introduces in?
     * If keep `d-`
         * Pros:
-            1. `d-` makes it straightforward that these keywords are introduced in by DocFX
+            1. `d-` makes it straightforward that these keywords are introduced by DocFX
             2. Keywords DocFX introduces in will never duplicate with the one preserved by JSON schema
         * Cons:
             1. `d-` prefix provides a hint that these keywords are not *first class* keywords
