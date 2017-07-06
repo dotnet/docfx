@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.TagsLevelRestApi
+namespace Microsoft.DocAsCode.Build.TagLevelRestApi
 {
     using System;
     using System.Collections.Generic;
@@ -17,9 +17,9 @@ namespace Microsoft.DocAsCode.Build.TagsLevelRestApi
     using Microsoft.DocAsCode.Plugins;
 
     [Export("RestApiDocumentProcessor", typeof(IDocumentBuildStep))]
-    public class SplitRestApiToTagsLevel : BaseDocumentBuildStep
+    public class SplitRestApiToTagLevel : BaseDocumentBuildStep
     {
-        public override string Name => nameof(SplitRestApiToTagsLevel);
+        public override string Name => nameof(SplitRestApiToTagLevel);
 
         public override int BuildOrder => 1;
 
@@ -27,39 +27,34 @@ namespace Microsoft.DocAsCode.Build.TagsLevelRestApi
         {
             var collection = new List<FileModel>(models);
 
-            var treeMapping = new Dictionary<string, Tuple<FileAndType, IEnumerable<TreeItem>>>();
+            var treeItemRestructions = new List<TreeItemRestructure>();
             foreach (var model in models)
             {
                 var result = SplitModelToOperationGroup(model);
                 if (result != null)
                 {
-                    if (treeMapping.ContainsKey(result.Key))
+                    collection.AddRange(result.Item1);
+
+                    var tocRestuction = result.Item2;
+                    if (treeItemRestructions.Any(i => i.Key == tocRestuction.Key))
                     {
-                        Logger.LogWarning($"Model with the key {result.Key} already exists. '{model.OriginalFileAndType?.FullPath ?? model.FileAndType.FullPath}' is ignored.");
+                        Logger.LogWarning($"Model with the key {tocRestuction.Key} already exists. '{model.OriginalFileAndType?.FullPath ?? model.FileAndType.FullPath}' is ignored.");
                     }
                     else
                     {
-                        treeMapping.Add(result.Key, Tuple.Create(model.OriginalFileAndType, result.TreeItems));
-                        collection.AddRange(result.Models);
+                        treeItemRestructions.Add(tocRestuction);
                     }
                 }
             }
 
-            host.TableOfContentRestructions =
-                (from item in treeMapping
-                 select new TreeItemRestructure
-                 {
-                     ActionType = TreeItemActionType.AppendChild,
-                     Key = item.Key,
-                     TypeOfKey = TreeItemKeyType.TopicHref,
-                     RestructuredItems = item.Value.Item2.ToImmutableList(),
-                     SourceFiles = new FileAndType[] { item.Value.Item1 }.ToImmutableList(),
-                 }).ToImmutableList();
+            host.TableOfContentRestructions = host.TableOfContentRestructions == null ?
+                treeItemRestructions.ToImmutableList() :
+                host.TableOfContentRestructions.Concat(treeItemRestructions).ToImmutableList();
 
             return collection;
         }
 
-        private SplittedResult SplitModelToOperationGroup(FileModel model)
+        private Tuple<List<FileModel>, TreeItemRestructure> SplitModelToOperationGroup(FileModel model)
         {
             if (model.Type != DocumentType.Article)
             {
@@ -92,9 +87,19 @@ namespace Microsoft.DocAsCode.Build.TagsLevelRestApi
             var groupedUids = splittedModels.SelectMany(m => m.Uids).Select(u => u.Name).ToList();
             content.Tags = new List<RestApiTagViewModel>();
             content.Children = content.Children.Where(child => !groupedUids.Contains(child.Uid)).ToList();
+            content.Metadata["isSplittedByTag"] = true;
             model.Content = content;
 
-            return new SplittedResult(model.Key, treeItems.OrderBy(s => s.Metadata[Constants.PropertyName.Name]), splittedModels);
+            var treeItemRestruction = new TreeItemRestructure
+            {
+                ActionType = TreeItemActionType.AppendChild,
+                Key = model.Key,
+                TypeOfKey = TreeItemKeyType.TopicHref,
+                RestructuredItems = treeItems.OrderBy(s => s.Metadata[Constants.PropertyName.Name]).ToImmutableList(),
+                SourceFiles = new FileAndType[] { model.OriginalFileAndType }.ToImmutableList(),
+            };
+
+            return Tuple.Create(splittedModels, treeItemRestruction);
         }
 
         private IEnumerable<RestApiRootItemViewModel> GenerateTagModels(RestApiRootItemViewModel root)
@@ -178,20 +183,6 @@ namespace Microsoft.DocAsCode.Build.TagsLevelRestApi
                 }
             }
             return result;
-        }
-
-        private sealed class SplittedResult
-        {
-            public string Key { get; }
-            public IEnumerable<TreeItem> TreeItems { get; }
-            public IEnumerable<FileModel> Models { get; }
-
-            public SplittedResult(string key, IEnumerable<TreeItem> items, IEnumerable<FileModel> models)
-            {
-                Key = key;
-                TreeItems = items;
-                Models = models;
-            }
         }
     }
 }

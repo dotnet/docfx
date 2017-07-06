@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
 
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Build.TableOfContents;
-    using Microsoft.DocAsCode.Build.TagsLevelRestApi;
+    using Microsoft.DocAsCode.Build.TagLevelRestApi;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.RestApi;
@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
 
     [Trait("Owner", "jehuan")]
     [Trait("EntityType", "RestApiDocumentProcessorWithPlugins")]
-    public class SplitRestApiToTagsLevelTest : TestBase
+    public class SplitRestApiToTagLevelTest : TestBase
     {
         private string _inputFolder;
         private string _outputFolder;
@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
 
         private const string RawModelFileExtension = ".raw.json";
 
-        public SplitRestApiToTagsLevelTest()
+        public SplitRestApiToTagLevelTest()
         {
             _inputFolder = GetRandomFolder();
             _outputFolder = GetRandomFolder();
@@ -150,7 +150,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
         {
             yield return typeof(RestApiDocumentProcessor).Assembly;
             yield return typeof(TocDocumentProcessor).Assembly;
-            yield return typeof(SplitRestApiToTagsLevel).Assembly;
+            yield return typeof(SplitRestApiToTagLevel).Assembly;
         }
 
         private string GetRawModelFilePath(string fileName)
