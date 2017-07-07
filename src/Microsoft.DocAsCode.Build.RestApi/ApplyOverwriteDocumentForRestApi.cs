@@ -69,17 +69,26 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
         protected override void ApplyOverwrite(IHostService host, List<FileModel> overwrites, string uid, List<FileModel> articles)
         {
-            if (articles.Any(a => uid == ((RestApiRootItemViewModel)a.Content).Uid))
+            // 'articles' are filtered by registered uid, need further filtering by uid equality, then call getItemsToOverwrite function to select corresponding items
+            var matchedArticles = articles.Where(a => uid == ((RestApiRootItemViewModel)a.Content).Uid).ToList();
+            if (matchedArticles.Count > 0)
             {
-                ApplyOverwrite(host, overwrites, uid, articles, GetRootItemsFromOverwriteDocument, GetRootItemsToOverwrite);
+                ApplyOverwrite(host, overwrites, uid, matchedArticles, GetRootItemsFromOverwriteDocument, GetRootItemsToOverwrite);
+                return;
             }
-            else if (articles.Any(a => ((RestApiRootItemViewModel)a.Content).Children.Any(c => uid == c.Uid)))
+
+            matchedArticles = articles.Where(a => ((RestApiRootItemViewModel)a.Content).Children.Any(c => uid == c.Uid)).ToList();
+            if (matchedArticles.Count > 0)
             {
                 ApplyOverwrite(host, overwrites, uid, articles, GetChildItemsFromOverwriteDocument, GetChildItemsToOverwrite);
+                return;
             }
-            else if (articles.Any(a => ((RestApiRootItemViewModel)a.Content).Tags.Any(t => uid == t.Uid)))
+
+            matchedArticles = articles.Where(a => ((RestApiRootItemViewModel)a.Content).Tags.Any(t => uid == t.Uid)).ToList();
+            if (matchedArticles.Count > 0)
             {
                 ApplyOverwrite(host, overwrites, uid, articles, GetTagsFromOverwriteDocument, GetTagItemsToOverwrite);
+                return;
             }
         }
     }
