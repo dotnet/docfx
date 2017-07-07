@@ -80,14 +80,14 @@ namespace Microsoft.DocAsCode.Build.RestApi
             matchedArticles = articles.Where(a => ((RestApiRootItemViewModel)a.Content).Children.Any(c => uid == c.Uid)).ToList();
             if (matchedArticles.Count > 0)
             {
-                ApplyOverwrite(host, overwrites, uid, articles, GetChildItemsFromOverwriteDocument, GetChildItemsToOverwrite);
+                ApplyOverwrite(host, overwrites, uid, matchedArticles, GetChildItemsFromOverwriteDocument, GetChildItemsToOverwrite);
                 return;
             }
 
             matchedArticles = articles.Where(a => ((RestApiRootItemViewModel)a.Content).Tags.Any(t => uid == t.Uid)).ToList();
             if (matchedArticles.Count > 0)
             {
-                ApplyOverwrite(host, overwrites, uid, articles, GetTagsFromOverwriteDocument, GetTagItemsToOverwrite);
+                ApplyOverwrite(host, overwrites, uid, matchedArticles, GetTagsFromOverwriteDocument, GetTagItemsToOverwrite);
                 return;
             }
         }
