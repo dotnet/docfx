@@ -2511,6 +2511,29 @@ namespace Test1
         }
 
         [Fact]
+        [Trait("Related", "Multilanguage")]
+        public void TestGenerateMetadataWithFieldHasDefaultValue_SpecialCharacter()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public const char Test = '\uDBFF';
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Equal(1, output.Items.Count);
+            {
+                var field = output.Items[0].Items[0].Items[0];
+                Assert.NotNull(field);
+                Assert.Equal(@"public const char Test = '\uDBFF'", field.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(@"Public Const Test As Char = ""\uDBFF""c", field.Syntax.Content[SyntaxLanguage.VB]);
+            }
+        }
+
+        [Fact]
         [Trait("Related", "ExtensionMethod")]
         [Trait("Related", "Multilanguage")]
         public void TestGenerateMetadataAsyncWithExtensionMethods()

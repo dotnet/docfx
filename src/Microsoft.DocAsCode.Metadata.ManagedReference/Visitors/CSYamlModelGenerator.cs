@@ -1025,9 +1025,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return SyntaxFactory.LiteralExpression(
                         (bool)value ? SyntaxKind.TrueLiteralExpression : SyntaxKind.FalseLiteralExpression);
                 case SpecialType.System_Char:
-                    return SyntaxFactory.LiteralExpression(
-                        SyntaxKind.CharacterLiteralExpression,
-                        SyntaxFactory.Literal((char)value));
+                    var ch = (char)value;
+                    var category = char.GetUnicodeCategory(ch);
+                    switch (category)
+                    {
+                        case System.Globalization.UnicodeCategory.Surrogate:
+                            return SyntaxFactory.LiteralExpression(
+                                SyntaxKind.CharacterLiteralExpression,
+                                SyntaxFactory.Literal("'\\u" + ((int)ch).ToString("X4") + "'", ch));
+                        default:
+                            return SyntaxFactory.LiteralExpression(
+                                SyntaxKind.CharacterLiteralExpression,
+                                SyntaxFactory.Literal((char)value));
+                    }
                 case SpecialType.System_SByte:
                     return SyntaxFactory.LiteralExpression(
                         SyntaxKind.NumericLiteralExpression,
