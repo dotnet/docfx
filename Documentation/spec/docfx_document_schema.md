@@ -19,11 +19,10 @@ DocFX Document Schema is in [JSON](http://www.json.org/) format. It borrows most
 
 ### 3.3 Interpretation
 Besides annotate and validate the input document model, *THIS schema* also defines multiple interpretations for each property of the document model.
-For example, a property named `summary` contains value in Markdown format, *THIS schema* can define a `d-markup` interpretation for the `summary` property, so that the property can be marked using [DFM](..\spec\docfx_flavored_markdown.md) syntax.
+For example, a property named `summary` contains value in Markdown format, *THIS schema* can define a `markup` interpretation for the `summary` property, so that the property can be marked using [DFM](..\spec\docfx_flavored_markdown.md) syntax.
 
 ## 4. General Considerations
 * *THIS schema* leverages JSON schema definition, that is to say, keywords defined in JSON schema keeps its meaning in *THIS schema* when it is supported by *THIS schema*.
-* Keywords introduced by *THIS schema* is prefixed with `d-` (`d` stands for DocFX) to differentiate from keywords defined by JSON schema.
 
 ## 5. Detailed Specification
 
