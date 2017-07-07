@@ -49,13 +49,12 @@ This is the root document object for *THIS schema*.
 
 | Field Name      | Type   | Description
 |-----------------|--------|----------
-| d-schemaVersion | string | `*`The version of the schema specification
-| d-fileType      | string | `*`The file type of the document model. Supported values are `YAML` and `JSON`.
+| schemaVersion | string | `*`The version of the schema specification
+| fileType      | string | `*`The file type of the document model. Supported values are `YAML` and `JSON`.
 | type            | string | `*`The type of the root document model MUST be `object`
-| d-mimeType      | string | The mime type of the document model that applies to current schema. If not set, the schema name will be considered as its mime type.
-| d-info          | [Info Object](#info-object) | `*`The information about current schema
+| mimeType      | string | The mime type of the document model that applies to current schema. If not set, the schema name will be considered as its mime type.
+| info          | [Info Object](#info-object) | `*`The information about current schema
 | properties      | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties if `type` for the model is `object`
-| items           | [Property Object](#property-object) | An object to hold the schema of all the items if `type` for the model is `array`
 
 ##### Patterned Field
 | Field Name | Type | Description
@@ -69,7 +68,7 @@ The object provides metadata about the schema.
 
 | Field Name      | Type   | Description
 |-----------------|--------|----------
-| version      | string | `*`The version of current schema definition
+| version      | string | `*`The version of current schema object
 | id           | string | It is best practice to include an `id` property as an unique identifier for each schema.
 | title        | string | The title of current schema
 | description  | string | A short description of current schema
@@ -101,10 +100,10 @@ An object to describe the schema of the value of the property.
 | type         | string | The type of the root document model. Refer to [type keyword](#6-1-type) for detailed description.
 | properties   | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties if `type` for the model is `object`. Omitting this keyword has the same behavior as an empty object.
 | items        | [Property Object](#property-object) | An object to hold the schema of the items if `type` for the model is `array`. Omitting this keyword has the same behavior as an empty schema.
-| d-include    | bool   | Defines the included file path. Refer to [d-include](6-2-d-include) for detailed explanation.
-| d-contentType| string | Defines the content type of the property. Refer to [d-contentType](6-3-d-contentType) for detailed explanation.
-| d-tags       | array  | Defines the tags of the property. Refer to [d-tags](6-4-d-tags) for detailed explanation.
-| d-merge      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [d-merge](6-5-d-merge) for detailed explanation.
+| reference    | string | Defines whether current property is a reference to the actual value of the property. Refer to [reference](6-2-reference) for detailed explanation.
+| contentType| string | Defines the content type of the property. Refer to [contentType](6-3-contentType) for detailed explanation.
+| tags       | array  | Defines the tags of the property. Refer to [tags](6-4-tags) for detailed explanation.
+| mergeType      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [mergeType](6-5-mergeType) for detailed explanation.
 
 ##### Patterned Field
 | Field Name | Type | Description
@@ -124,23 +123,29 @@ Same as in JSON schema: http://json-schema.org/latest/json-schema-validation.htm
 >
 > An instance validates if and only if the instance is in any of the sets listed for this keyword.
 
-### 6.2 d-include
-It defines whether current property is a file path, whose content SHOULD be included as the value of the property.
-
-### 6.3 d-contentType
-It defines how applications interpret the property. The values MUST be one of the following:
+### 6.2 reference
+It defines whether current property is a reference to the actual value of the property. The values MUST be one of the following:
 
 | Value      | Description
 |------------|-------------
+| `false`    | It means the property is not a reference.
+| `file`     | It means current property stands for a file path that contains content to be included
+
+### 6.3 contentType
+It defines how applications interpret the property. If not defined, the behavior is similar to `default` value. The values MUST be one of the following:
+
+| Value      | Description
+|------------|-------------
+| `default`  | It means that no interpretion will be done to the property.
 | `uid`      | `type` MUST be `string`. It means the property defines a unique identifier inside current document model
 | `fileLink` | `type` MUST be `string`. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.
 | `uidLink`  | `type` MUST be `string`. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output path.
 | `markdown` | `type` MUST be `string`. It means the property is in [DocFX flavored Markdown](..\spec\docfx_flavored_markdown.md) syntax. Application CAN help to transform it into HTML format.
 
-### 6.4 d-tags
+### 6.4 tags
 The value of this keyword MUST be an `array`, elements of the array MUST be strings and MUST be unique. It provides hints for applications to decide how to interpret the property, for example, `localizable` tag can help Localization team to interpret the property as *localizable*; `metadata` tag can help DocFX to fill in additional metadata, e.g. github commit information.
 
-### 6.5 d-merge
+### 6.5 mergeType
 The value of this keyword MUST be a string. It specifies how to merge two values of the given property. One use scenario is how DocFX uses the [overwrite files](..\tutorial\intro_overwrite_files.md) to overwrite the existing values. In the below table, we use `source` and `target` to stands for the two values for merging.
 
 The value MUST be one of the following:
@@ -148,7 +153,7 @@ The value MUST be one of the following:
 | Value      | Description
 |------------|-------------
 | `key`      | If `key` for `source` equals to the one for `target`, these two values are ready to merge.
-| `merge`    | The default behavior. For `array`, items in the list are merged by `key` for the item. For `string` or any value type, `target` replaces `source`. For `object`, merge each property along with its own `d-merge` value.
+| `merge`    | The default behavior. For `array`, items in the list are merged by `key` for the item. For `string` or any value type, `target` replaces `source`. For `object`, merge each property along with its own `merge` value.
 | `replace`  | `target` replaces `source`.
 | `ignore`   | `source` is not allowed to be merged.
 
@@ -197,10 +202,10 @@ Here's the schema to describe these operations:
 
 ```json
 {
-    "d-schemaVersion": "1.0",
-    "d-mimeType": "LandingPage",
-    "d-fileType": "YAML",
-    "d-info": {
+    "schemaVersion": "1.0",
+    "mimeType": "LandingPage",
+    "fileType": "YAML",
+    "info": {
         "id": "https://github.com/dotnet/docfx/schemas/landingpage.schema.json",
         "title": "Landing page",
         "description": "The schema for landing page",
@@ -210,7 +215,7 @@ Here's the schema to describe these operations:
     "properties": {
         "metadata": {
             "type": "object",
-            "d-tags": "metadata"
+            "tags": [ "metadata" ]
         },
         "sections": {
             "type": "array",
@@ -224,21 +229,22 @@ Here's the schema to describe these operations:
                             "properties": {
                                 "href": {
                                     "type": "string",
-                                    "d-contentType": "fileLink"
+                                    "contentType": "fileLink"
                                 },
                                 "text": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "tags": [ "localizable" ]
                                 },
                                 "content": {
                                     "type": "string",
-                                    "d-contentType": "markdown"
+                                    "contentType": "markdown"
                                 }
                             }
                         }
                     },
                     "title": {
                         "type": "string",
-                        "d-merge": "key"
+                        "mergeType": "key"
                     }
                 }
             }
@@ -268,4 +274,4 @@ Here's the schema to describe these operations:
             1. `d-` prefix provides a hint that these keywords are not *first class* keywords
             2. Little chance that keywords DocFX defines duplicate with what JSON schema defines, after all, JSON schema defines a finite set of reserved keywords.
             3. For example[Swagger spec](http://swagger.io/) is also based on JSON schema and the fields it introduces in has no prefix. 
-    * Decision to be made
+    * Decision: *Remove* `d-` prefix.
