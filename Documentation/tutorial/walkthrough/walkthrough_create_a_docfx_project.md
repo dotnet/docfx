@@ -8,7 +8,7 @@ Step1. Setup DocFX
 Download *docfx* from http://dotnet.github.io/docfx/. [Getting Started with docfx](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html#2-use-docfx-exe-directly) describes three ways to install *docfx*. This walkthrough uses the first one: Use *docfx.exe* directly.
 
 1. Download *docfx.zip* and unzip it to `D:\docfx\`
-2. Add `D:\docfx\` to `PATH` so that command `docfx` and be directly called from everywhere for convenience. (for example, for Windows, `setx PATH "%PATH%;D:\docfx\"`
+2. Add `D:\docfx\` to `PATH` so that command `docfx` and be directly called from everywhere for convenience. (for example, for Windows, `set PATH=%PATH%;D:\docfx\`
 
 Step2. Init a DocFX project
 ---------------------------
