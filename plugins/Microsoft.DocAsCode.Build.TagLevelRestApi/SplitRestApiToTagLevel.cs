@@ -155,16 +155,15 @@ namespace Microsoft.DocAsCode.Build.TagLevelRestApi
             var newModel = new FileModel(newFileAndType, tagModel, model.OriginalFileAndType, model.Serializer, newKey)
             {
                 LocalPathFromRoot = model.LocalPathFromRoot,
-                Uids = CalculateUids(tagModel, model.LocalPathFromRoot)
-            };
+                Uids = CalculateUids(tagModel).Select(i => new UidDefinition(i, model.LocalPathFromRoot)).ToImmutableArray()
+        };
 
             return newModel;
         }
 
-        private ImmutableArray<UidDefinition> CalculateUids(RestApiRootItemViewModel root, string file)
+        private IEnumerable<string> CalculateUids(RestApiRootItemViewModel root)
         {
-            return new[] { new UidDefinition(root.Uid, file) }
-                   .Concat(from item in root.Children select new UidDefinition(item.Uid, file)).ToImmutableArray();
+            return new[] { root.Uid }.Concat(root.Children.Select(child => child.Uid));
         }
 
         private TreeItem ConvertToTreeItem(RestApiRootItemViewModel root, string fileKey)

@@ -73,6 +73,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Everything about your Pets</p>\n", model.Description);
                 Assert.Equal(8, model.Children.Count);
                 Assert.Equal(0, model.Tags.Count);
+                Assert.Equal(0, model.Children[0].Tags.Count);
                 Assert.Equal("swagger/petstore/pet.html", model.Metadata["_path"]);
                 Assert.Equal("TestData/swagger/petstore/pet.json", model.Metadata["_key"]);
                 Assert.True(model.Metadata.ContainsKey("externalDocs"));
@@ -107,6 +108,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Everything about your Pets</p>\n", model.Description);
                 Assert.Equal(8, model.Children.Count);
                 Assert.Equal(0, model.Tags.Count);
+                Assert.Equal(0, model.Children[0].Tags.Count);
                 Assert.Equal("swagger/petstore/pet.html", model.Metadata["_path"]);
                 Assert.Equal("TestData/swagger/petstore/pet.json", model.Metadata["_key"]);
                 Assert.True(model.Metadata.ContainsKey("externalDocs"));
