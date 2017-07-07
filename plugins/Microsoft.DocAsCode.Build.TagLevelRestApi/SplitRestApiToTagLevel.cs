@@ -90,6 +90,9 @@ namespace Microsoft.DocAsCode.Build.TagLevelRestApi
             content.Metadata["isSplittedByTag"] = true;
             model.Content = content;
 
+            // Reset uid definition
+            model.Uids = model.Uids.Where(u => !groupedUids.Contains(u.Name)).ToImmutableArray();
+
             var treeItemRestruction = new TreeItemRestructure
             {
                 ActionType = TreeItemActionType.AppendChild,
