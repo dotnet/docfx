@@ -3,6 +3,8 @@
 
 v2.20 (Pre-release)
 -----------
+1. Bug fixes:
+   1. Fix #1817: Error extracting metadata when containing constant surrogate unicode charactor.
 
 v2.19
 -----------
