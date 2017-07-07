@@ -8,34 +8,34 @@ namespace Microsoft.DocAsCode.Common
     using System.Threading;
 
     [Serializable]
-    public sealed class AmbientContext : IDisposable
+    public struct AmbientContext : IDisposable
     {
         private static readonly string AMBCTX_NAME = nameof(AmbientContext);
 
         // auto increment counter maintained during branch and trace entry creation.
-        private long[] _counterRef = new long[] { 0 };
+        private long[] _counterRef;
 
-        private readonly AmbientContext _originalAmbientContext;
+        private object[] _originalAmbientContext;
 
-        public string Id { get; }
+        public string Id { get; private set; }
 
-        private AmbientContext() : this(Guid.NewGuid().ToString().ToUpperInvariant())
-        {
-        }
-
-        private AmbientContext(string id)
+        private AmbientContext(string id) : this()
         {
             Id = id;
-            _originalAmbientContext = GetCurrentContext();
-            SetAmbientContext(this);
+            _counterRef =  new long[] { 0 };
+            _originalAmbientContext = GetCurrentContextRaw();
+            SetCurrentContextRaw(ToObjectArray());
         }
 
-        internal AmbientContext(AmbientContext context) : this(context.Id)
+        internal AmbientContext(AmbientContext context) : this()
         {
+            Id = context.Id;
             _counterRef = context._counterRef;
+            _originalAmbientContext = GetCurrentContextRaw();
+            SetCurrentContextRaw(ToObjectArray());
         }
 
-        public static AmbientContext CurrentContext => GetCurrentContext();
+        public static AmbientContext? CurrentContext => GetCurrentContext();
 
         public static AmbientContext GetOrCreateAmbientContext()
         {
@@ -45,8 +45,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 context = InitializeAmbientContext(null);
             }
-
-            return new AmbientContext(context);
+            return new AmbientContext(context.Value);
         }
 
         /// <summary>
@@ -64,7 +63,7 @@ namespace Microsoft.DocAsCode.Common
                 throw new InvalidOperationException("Cannot initialize an ambient context because it has already been initialized.");
             }
 
-            return string.IsNullOrEmpty(id) ? new AmbientContext() : new AmbientContext(id);
+            return string.IsNullOrEmpty(id) ? new AmbientContext(Guid.NewGuid().ToString().ToUpperInvariant()) : new AmbientContext(id);
         }
 
         /// <summary>
@@ -96,23 +95,53 @@ namespace Microsoft.DocAsCode.Common
             }
             else
             {
-                SetAmbientContext(_originalAmbientContext);
+                SetCurrentContextRaw(_originalAmbientContext);
             }
         }
 
-        private static AmbientContext GetCurrentContext()
+        private static AmbientContext? GetCurrentContext()
         {
-            return CallContext.LogicalGetData(AMBCTX_NAME) as AmbientContext;
+            return ToAmbientContext(GetCurrentContextRaw());
         }
 
-        private static void SetAmbientContext(AmbientContext context)
+        private static object[] GetCurrentContextRaw()
         {
-            CallContext.LogicalSetData(AMBCTX_NAME, context);
+            return CallContext.LogicalGetData(AMBCTX_NAME) as object[];
+        }
+
+        private static void SetCurrentContextRaw(object[] raw)
+        {
+            CallContext.LogicalSetData(AMBCTX_NAME, raw);
         }
 
         private static void RemoveAmbientContext()
         {
             CallContext.FreeNamedDataSlot(AMBCTX_NAME);
+        }
+
+        private object[] ToObjectArray()
+        {
+            return new object[]
+            {
+                Id,
+                _counterRef,
+                _originalAmbientContext,
+            };
+        }
+
+        private static AmbientContext? ToAmbientContext(object[] objs)
+        {
+            if (objs == null || objs.Length < 3)
+            {
+                return null;
+            }
+
+            return new AmbientContext()
+            {
+                Id = objs[0] as string,
+                _counterRef = objs[1] as long[],
+                _originalAmbientContext = objs[2] as object[],
+            };
         }
     }
 }

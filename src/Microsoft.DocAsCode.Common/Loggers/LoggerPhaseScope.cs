@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Common
     {
         private readonly string _originPhaseName;
         private readonly PerformanceScope _performanceScope;
-        private readonly AmbientContext _ac;
+        private readonly AmbientContext? _ac = null;
         public LoggerPhaseScope(string phaseName)
             : this(phaseName, null) { }
 
@@ -38,7 +38,11 @@ namespace Microsoft.DocAsCode.Common
         private LoggerPhaseScope(CapturedLoggerPhaseScope captured, LogLevel? perfLogLevel)
         {
             _originPhaseName = GetPhaseName();
-            _ac = new AmbientContext(captured.AmbientContext);
+            var context = captured.CurrentAmbientContext;
+            if (context.HasValue)
+            {
+                _ac = new AmbientContext(context.Value);
+            }
             SetPhaseName(captured.PhaseName);
             if (perfLogLevel != null)
             {
@@ -105,11 +109,11 @@ namespace Microsoft.DocAsCode.Common
             public CapturedLoggerPhaseScope()
             {
                 PhaseName = GetPhaseName();
-                AmbientContext = AmbientContext.CurrentContext;
+                CurrentAmbientContext = AmbientContext.CurrentContext;
             }
 
             public string PhaseName { get; }
-            public AmbientContext AmbientContext { get; }
+            public AmbientContext? CurrentAmbientContext { get; }
 
         }
     }
