@@ -1,7 +1,10 @@
-﻿Version Notes (Current Version: v2.20)
+﻿Version Notes (Current Version: v2.21)
 =======================================
 
-v2.20 (Pre-release)
+v2.21 (Pre-release)
+-----------
+
+v2.20
 -----------
 1. Add anchor links to default theme.
 2. Disable LRU cache as it has race condition bug and not easy to fix.
