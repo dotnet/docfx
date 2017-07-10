@@ -5,12 +5,12 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class FileExtensions
+    <title>Class AggregatedLogListener
    | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class FileExtensions
+    <meta name="title" content="Class AggregatedLogListener
    | DocFX website ">
-    <meta name="generator" content="docfx 2.19.2.0">
+    <meta name="generator" content="docfx 2.20.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -75,17 +75,18 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Microsoft.DocAsCode.HtmlToPdf.FileExtensions">
+            <article class="content wrap" id="_content" data-uid="Microsoft.DocAsCode.Common.AggregatedLogListener">
   
   
-  <h1 id="Microsoft_DocAsCode_HtmlToPdf_FileExtensions" data-uid="Microsoft.DocAsCode.HtmlToPdf.FileExtensions" class="text-break">Class FileExtensions
+  <h1 id="Microsoft_DocAsCode_Common_AggregatedLogListener" data-uid="Microsoft.DocAsCode.Common.AggregatedLogListener" class="text-break">Class AggregatedLogListener
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>Replay aggregated log on flushing</p>
+</div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
-    <div class="level1"><span class="xref">FileExtensions</span></div>
+    <div class="level1"><span class="xref">AggregatedLogListener</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -111,101 +112,120 @@
       <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">Object.MemberwiseClone()</a>
     </div>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.DocAsCode.HtmlToPdf.html">Microsoft.DocAsCode.HtmlToPdf</a></h6>
-  <h6><strong>Assembly</strong>: Microsoft.DocAsCode.HtmlToPdf.dll</h6>
-  <h5 id="Microsoft_DocAsCode_HtmlToPdf_FileExtensions_syntax">Syntax</h5>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.DocAsCode.Common.html">Microsoft.DocAsCode.Common</a></h6>
+  <h6><strong>Assembly</strong>: Microsoft.DocAsCode.Common.dll</h6>
+  <h5 id="Microsoft_DocAsCode_Common_AggregatedLogListener_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static class FileExtensions</code></pre>
+    <pre><code class="lang-csharp hljs">public class AggregatedLogListener : ILoggerListener, IDisposable</code></pre>
   </div>
-  <h3 id="fields">Fields
+  <h3 id="constructors">Constructors
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_HtmlToPdf_FileExtensions_JsonExtension.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.HtmlToPdf.FileExtensions.JsonExtension%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Common_AggregatedLogListener__ctor_Microsoft_DocAsCode_Common_LogLevel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Common.AggregatedLogListener.%23ctor(Microsoft.DocAsCode.Common.LogLevel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.HtmlToPdf/Constants.cs/#L34">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/AggregatedLogListener.cs/#L23">View Source</a>
   </span>
-  <h4 id="Microsoft_DocAsCode_HtmlToPdf_FileExtensions_JsonExtension" data-uid="Microsoft.DocAsCode.HtmlToPdf.FileExtensions.JsonExtension">JsonExtension</h4>
+  <a id="Microsoft_DocAsCode_Common_AggregatedLogListener__ctor_" data-uid="Microsoft.DocAsCode.Common.AggregatedLogListener.#ctor*"></a>
+  <h4 id="Microsoft_DocAsCode_Common_AggregatedLogListener__ctor_Microsoft_DocAsCode_Common_LogLevel_" data-uid="Microsoft.DocAsCode.Common.AggregatedLogListener.#ctor(Microsoft.DocAsCode.Common.LogLevel)">AggregatedLogListener(LogLevel)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public const string JsonExtension = &quot;.json&quot;</code></pre>
+    <pre><code class="lang-csharp hljs">public AggregatedLogListener(LogLevel threshold = LogLevel.Warning)</code></pre>
   </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
         <th>Type</th>
+        <th>Name</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.Common.LogLevel.html">LogLevel</a></td>
+        <td><span class="parametername">threshold</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
+  <h3 id="methods">Methods
+  </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_HtmlToPdf_FileExtensions_MdExtension.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.HtmlToPdf.FileExtensions.MdExtension%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Common_AggregatedLogListener_Dispose.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Common.AggregatedLogListener.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.HtmlToPdf/Constants.cs/#L36">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/AggregatedLogListener.cs/#L55">View Source</a>
   </span>
-  <h4 id="Microsoft_DocAsCode_HtmlToPdf_FileExtensions_MdExtension" data-uid="Microsoft.DocAsCode.HtmlToPdf.FileExtensions.MdExtension">MdExtension</h4>
+  <a id="Microsoft_DocAsCode_Common_AggregatedLogListener_Dispose_" data-uid="Microsoft.DocAsCode.Common.AggregatedLogListener.Dispose*"></a>
+  <h4 id="Microsoft_DocAsCode_Common_AggregatedLogListener_Dispose" data-uid="Microsoft.DocAsCode.Common.AggregatedLogListener.Dispose">Dispose()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public const string MdExtension = &quot;.md&quot;</code></pre>
+    <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
   </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/es4s3w1d(v=vs.110).aspx">IDisposable.Dispose()</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_HtmlToPdf_FileExtensions_PdfExtension.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.HtmlToPdf.FileExtensions.PdfExtension%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Common_AggregatedLogListener_Flush.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Common.AggregatedLogListener.Flush%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.HtmlToPdf/Constants.cs/#L35">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/AggregatedLogListener.cs/#L34">View Source</a>
   </span>
-  <h4 id="Microsoft_DocAsCode_HtmlToPdf_FileExtensions_PdfExtension" data-uid="Microsoft.DocAsCode.HtmlToPdf.FileExtensions.PdfExtension">PdfExtension</h4>
+  <a id="Microsoft_DocAsCode_Common_AggregatedLogListener_Flush_" data-uid="Microsoft.DocAsCode.Common.AggregatedLogListener.Flush*"></a>
+  <h4 id="Microsoft_DocAsCode_Common_AggregatedLogListener_Flush" data-uid="Microsoft.DocAsCode.Common.AggregatedLogListener.Flush">Flush()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public const string PdfExtension = &quot;.pdf&quot;</code></pre>
+    <pre><code class="lang-csharp hljs">public void Flush()</code></pre>
   </div>
-  <h5 class="fieldValue">Field Value</h5>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="Microsoft.DocAsCode.Common.ILoggerListener.html#Microsoft_DocAsCode_Common_ILoggerListener_Flush">ILoggerListener.Flush()</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Common_AggregatedLogListener_WriteLine_Microsoft_DocAsCode_Common_ILogItem_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Common.AggregatedLogListener.WriteLine(Microsoft.DocAsCode.Common.ILogItem)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/AggregatedLogListener.cs/#L60">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Common_AggregatedLogListener_WriteLine_" data-uid="Microsoft.DocAsCode.Common.AggregatedLogListener.WriteLine*"></a>
+  <h4 id="Microsoft_DocAsCode_Common_AggregatedLogListener_WriteLine_Microsoft_DocAsCode_Common_ILogItem_" data-uid="Microsoft.DocAsCode.Common.AggregatedLogListener.WriteLine(Microsoft.DocAsCode.Common.ILogItem)">WriteLine(ILogItem)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void WriteLine(ILogItem item)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
         <th>Type</th>
+        <th>Name</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.Common.ILogItem.html">ILogItem</a></td>
+        <td><span class="parametername">item</span></td>
         <td></td>
       </tr>
     </tbody>
   </table>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="Microsoft.DocAsCode.Common.ILoggerListener.html#Microsoft_DocAsCode_Common_ILoggerListener_WriteLine_Microsoft_DocAsCode_Common_ILogItem_">ILoggerListener.WriteLine(ILogItem)</a></div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
+  </div>
 <div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE
@@ -224,10 +244,10 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_HtmlToPdf_FileExtensions.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.HtmlToPdf.FileExtensions%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Common_AggregatedLogListener.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Common.AggregatedLogListener%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.HtmlToPdf/Constants.cs/#L32" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/Loggers/AggregatedLogListener.cs/#L17" class="contribution-link">View Source</a>
                   </li>
                   <li>
                     <a href="#disqus_thread" class="contribution-link">0 Comments</a>

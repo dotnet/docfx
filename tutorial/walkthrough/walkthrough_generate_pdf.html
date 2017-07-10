@@ -8,7 +8,7 @@
     <title>Walkthrough Part III: Generate PDF Documentation | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough Part III: Generate PDF Documentation | DocFX website ">
-    <meta name="generator" content="docfx 2.19.2.0">
+    <meta name="generator" content="docfx 2.20.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -86,7 +86,9 @@
 |- toc.yml
 |- docfx.json
 </code></pre><p>Step0. Install prerequisite 
-We leverage <a href="https://wkhtmltopdf.org/">wkhtmltopdf</a> to generate PDF. <a href="https://wkhtmltopdf.org/downloads.html">Download wkhtmltopdf</a> to some folder, e.g. <code>E:\Program Files\wkhtmltopdf\</code>, and save the executable folder path to <strong>%PATH%</strong> by: <code>set PATH=%PATH%;E:\Program Files\wkhtmltopdf\bin</code>, or save to global environment <code>PATH</code> by <code>setx PATH &quot;%PATH%;E:\Program Files\wkhtmltopdf\bin&quot;</code>.</p>
+We leverage <a href="https://wkhtmltopdf.org/">wkhtmltopdf</a> to generate PDF. <a href="https://wkhtmltopdf.org/downloads.html">Download wkhtmltopdf</a> to some folder, e.g. <code>E:\Program Files\wkhtmltopdf\</code>, and save the executable folder path to <strong>%PATH%</strong> by: <code>set PATH=%PATH%;E:\Program Files\wkhtmltopdf\bin</code>.</p>
+<div class="NOTE"><h5>Note</h5><p>Alternativeley you can install wkhtmltopdf via <a href="https://chocolatey.org/">chocolatey</a> with <code>choco install wkhtmltopdf</code>. This will also add the executable folder to <strong>%PATH%</strong> during installation.</p>
+</div>
 <h2 id="step1-add-a-tocyml-specific-for-pdf">Step1. Add a toc.yml specific for PDF</h2>
 <p>Current design is that each TOC file generates a corresponding PDF file, TOC is also used as the cover page of the PDF, so we create a <code>toc.yml</code> file specific for PDF under a new folder <code>pdf</code>, using <a href="http://dotnet.github.io/docfx/tutorial/intro_toc.html?q=toc%20inclu#link-to-another-toc-file">TOC Include</a> to include content from other TOC files.</p>
 <pre><code class="lang-yml">- name: Articles

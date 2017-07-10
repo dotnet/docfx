@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.19.2) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.20) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.19.2) | DocFX website ">
-    <meta name="generator" content="docfx 2.19.2.0">
+    <meta name="title" content="Version Notes (Current Version: v2.20) | DocFX website ">
+    <meta name="generator" content="docfx 2.20.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -67,20 +67,29 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="version-notes-current-version-v2192">Version Notes (Current Version: v2.19.2)</h1>
+<h1 id="version-notes-current-version-v220">Version Notes (Current Version: v2.20)</h1>
 
-<p>v2.19.2</p>
+<h2 id="v220">v2.20</h2>
 <ol>
-<li>Bug fixes:<ol>
-<li>fix backslash escapes  in dfm-latest (following: <a href="http://spec.commonmark.org/0.27/#backslash-escapes">http://spec.commonmark.org/0.27/#backslash-escapes</a>).</li>
+<li>Add anchor links to default theme.</li>
+<li>Disable LRU cache as it has race condition bug and not easy to fix.</li>
+<li>PDF improvements:<ol>
+<li>Intermediate html files are now removed by default, you can use <code>--keepRawFiles</code> option to keep them.</li>
+<li>Add syntax highlight to PDF, it is using highlight.js in client-side js.</li>
+<li>Add hook files to css and js, you can now customize PDF styles by adding your own <code>main.css</code> and <code>main.js</code>.</li>
 </ol>
 </li>
-</ol>
-<h2 id="v2191">v2.19.1</h2>
-<ol>
+<li>Change the default behavior of incremental build that it is always based on the same cache folder (originally the cache folder changes in every build and copy historical files form last cache folder). You can use <code>--cleanupCacheHistory</code> option to cleanup the historical cache data.</li>
 <li>Bug fixes:<ol>
-<li>ignore exception when saving cache.</li>
-<li>fix html tag in markdown.</li>
+<li>Fix #1817: Error extracting metadata when containing constant surrogate unicode character.</li>
+<li>Fix #1655: Using hashtag in external cross reference broken.</li>
+<li>Fix #219: Fails when source code contains two type names that differ only in case</li>
+<li>Fix #164: Clean up previous auto-generated metadata YAML files when calling <code>docfx metadata</code></li>
+<li>Fix #1797: the command docfx template list does not show the pdf template</li>
+<li>Fix #1803: Overriding example with *content in same file as other overrides doesn&#39;t work</li>
+<li>Fix #1807: XREF link to API doc with wildcard UID not getting generated</li>
+<li>Fix #1823: Metadata being generated from referenced projects</li>
+<li>FIx #1824: Change generated .manifest file to be indented and ordered.</li>
 </ol>
 </li>
 </ol>

@@ -8,7 +8,7 @@
     <title>Getting Started with DocFX | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Getting Started with DocFX | DocFX website ">
-    <meta name="generator" content="docfx 2.19.2.0">
+    <meta name="generator" content="docfx 2.20.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -101,7 +101,26 @@ Install docfx through <a href="https://chocolatey.org/install">Chocolatey</a> by
 <p><em>Step3.</em> Build the website</p>
 <pre><code>docfx docfx_project\docfx.json --serve
 </code></pre><p>Now you can view the generated website on <a href="http://localhost:8080">http://localhost:8080</a>.</p>
-<h2 id="3-use-docfx-with-a-build-server">3. Use <em>DocFX</em> with a Build Server</h2>
+<h2 id="3-use-docfx-integrated-with-visual-studio">3. Use <em>DocFX</em> integrated with Visual Studio</h2>
+<p><em>Step1.</em> Install the <a href="https://www.nuget.org/packages/docfx.console/"><code>docfx.console</code></a> (formerly <code>docfx.msbuild</code>) nuget package on the project that you want to document.
+It add itself to the build targets and add the <code>docfx.json</code> configuration file along with other files.</p>
+<p><em>Step2.</em> Compile, a <code>_site</code> folder is generated with the documentation.</p>
+<div class="NOTE"><h5>Note</h5><p><em>Possible warning</em>:</p>
+<ul>
+<li><em>Cache is corrupted</em>: if your project targets multiple frameworks, you have to indicate one to be the main for the documentation, through the <a href="https://github.com/dotnet/docfx/issues/1254#issuecomment-294080535"><code>TargetFramework</code> property</a> in <code>docfx.json</code>:</li>
+</ul>
+</div>
+<blockquote><pre><code> &quot;metadata&quot;: [
+   {
+     &quot;src&quot;: &quot;...&quot;,
+     &quot;dest&quot;: &quot;...&quot;,
+     &quot;properties&quot;: {
+       &quot;TargetFramework&quot;: &lt;one_of_your_framework&gt;
+     }
+   },
+ ]
+</code></pre></blockquote>
+<h2 id="4-use-docfx-with-a-build-server">4. Use <em>DocFX</em> with a Build Server</h2>
 <p><em>DocFX</em> can be used in a Continuous Integration environment.</p>
 <p>Most build systems do not checkout the branch that is being built, but
 use a <code>detached head</code> for the specific commit.  DoxFX needs the the branch name to implement the <code>View Source</code> link in the API documentation.</p>
@@ -117,7 +136,7 @@ use a <code>detached head</code> for the specific commit.  DoxFX needs the the b
 </ul>
 <div class="NOTE"><h5>Note</h5><p><em>Known issue in AppVeyor</em>: Currently <code>platform: Any CPU</code> in <em>appveyor.yml</em> causes <code>docfx metadata</code> failure. <a href="https://github.com/dotnet/docfx/issues/1078">https://github.com/dotnet/docfx/issues/1078</a></p>
 </div>
-<h2 id="4-build-from-source-code">4. Build from source code</h2>
+<h2 id="5-build-from-source-code">5. Build from source code</h2>
 <p>As a prerequisite, you need:</p>
 <ul>
 <li><a href="https://www.visualstudio.com/vs/">Visual Studio 2017</a> with <em>.NET Core cross-platform development</em> toolset</li>

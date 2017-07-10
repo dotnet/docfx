@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.19.2.0">
+    <meta name="generator" content="docfx 2.20.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -111,14 +111,14 @@
 </code></pre><h4 id="221-optional-projects-argument">2.2.1 Optional <code>&lt;projects&gt;</code> argument</h4>
 <p><code>&lt;projects&gt;</code> specifies the projects to have metadata extracted. There are several approaches to extract language metadata.</p>
 <ol>
-<li><p>From a supported project file or project file list
-Supported project file extensions include <code>.csproj</code>, <code>.vbproj</code>, <code>.sln</code>, and <code>project.json</code>.</p>
-<p>Files can be combined using <code>,</code> as separator, e.g. <code>docfx metadata a.csproj,b.sln</code>.</p>
+<li><p>From a supported file or file list
+Supported file extensions include <code>.csproj</code>, <code>.vbproj</code>, <code>.sln</code>, <code>project.json</code>, <code>dll</code> assembly file, <code>.cs</code> source file and <code>.vb</code> source file.</p>
+<p>Multiple files are seperated by whitespace, e.g. <code>docfx metadata Class1.cs a.csproj</code></p>
 </li>
-<li><p>From a supported source code file or source code file list
-Supported source code file extensions include <code>.cs</code> and <code>.vb</code>.
-Files can be combined using <code>,</code> as separator and <em>search pattern</em>.</p>
-</li>
+</ol>
+<div class="NOTE"><h5>Note</h5><p>Glob pattern is <strong>NOT</strong> supported in command line options.</p>
+</div>
+<ol start="2">
 <li><p>From <em>docfx.json</em> file, as described in <strong>Section3</strong>.</p>
 </li>
 <li><p>If the argument is not specified, <code>docfx.exe</code> will try reading <code>docfx.json</code> under current directory.</p>
@@ -195,7 +195,7 @@ And if <code>href</code> is referencing to a <strong>folder</strong>, it must en
 <p><strong>Syntax</strong></p>
 <pre><code>docfx pdf [&lt;config_file_path&gt;] [-o:&lt;output_path&gt;]
 </code></pre><p><code>docfx pdf</code> generates PDF for the files defined in config file, if config file is not specified, <code>docfx</code> tries to find and use <code>docfx.json</code> file under current folder.</p>
-<div class="NOTE"><h5>Note</h5><p>Prerequisite: We leverage <a href="https://wkhtmltopdf.org/">wkhtmltopdf</a> to generate PDF. <a href="https://wkhtmltopdf.org/downloads.html">Download wkhtmltopdf</a> and save the executable folder path to <strong>%PATH%</strong></p>
+<div class="NOTE"><h5>Note</h5><p>Prerequisite: We leverage <a href="https://wkhtmltopdf.org/">wkhtmltopdf</a> to generate PDF. <a href="https://wkhtmltopdf.org/downloads.html">Download wkhtmltopdf</a> and save the executable folder path to <strong>%PATH%</strong>. Or just install wkhtmltopdf using chocolatey: <code>choco install wkhtmltopdf</code></p>
 </div>
 <p>Current design is that each TOC file generates a corresponding PDF file. Walk through <a href="walkthrough/walkthrough_generate_pdf.html">Walkthrough: Generate PDF Files</a> to get start.</p>
 <h2 id="3-docfxjson-format">3. <code>docfx.json</code> Format</h2>
