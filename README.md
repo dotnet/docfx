@@ -16,6 +16,9 @@ Let's make DocFX better together!
 
 [![Feature Requests](http://feathub.com/docascode/docfx-feature-proposals?format=svg)](http://feathub.com/docascode/docfx-feature-proposals)
 
+## Twitter account
+Follow us by twitter account [`@docfxmsft`](https://twitter.com/docfxmsft)
+
 ## What is it?
 *DocFX* makes it extremely easy to generate your developer hub with API reference, landing page, and how-to.
 
