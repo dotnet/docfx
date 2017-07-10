@@ -23,8 +23,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
         {
             IReadOnlyList<string> fallbackFolders = null;
-            object obj;
-            if (parameters.Extensions != null && parameters.Extensions.TryGetValue("fallbackFolders", out obj))
+            object obj = null;
+            if (parameters.Extensions?.TryGetValue("fallbackFolders", out obj) == true)
             {
                 try
                 {
@@ -34,6 +34,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     // Swallow cast exception. 
                 }
+            }
+
+            if (parameters.Extensions?.TryGetValue("skipIdRewrite", out obj) == true)
+            {
+                SkipIdRewrite = obj as bool? ?? false;
             }
 
             return new DfmService(
@@ -47,6 +52,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         protected virtual bool LegacyMode => false;
+
+        protected virtual bool SkipIdRewrite { get; set; }
 
         [ImportMany]
         public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; } = Enumerable.Empty<IMarkdownTokenTreeValidator>();
@@ -81,6 +88,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 var options = DocfxFlavoredMarked.CreateDefaultOptions();
                 options.LegacyMode = provider.LegacyMode;
+                options.SkipIdRewrite = provider.SkipIdRewrite;
                 options.ShouldExportSourceInfo = true;
                 _builder = new DfmEngineBuilder(
                     options,

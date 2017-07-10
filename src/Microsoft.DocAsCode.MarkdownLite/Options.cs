@@ -39,6 +39,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public bool LegacyMode { get; set; }
 
+        public bool SkipIdRewrite { get; set; }
+
         #endregion
 
         #region Constructors
