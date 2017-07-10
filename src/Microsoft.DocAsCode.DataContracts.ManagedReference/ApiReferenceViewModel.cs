@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
 {
     using System.Collections.Generic;
 
-    public class ApiReferenceViewModel : Dictionary<string, string>
+    public class ApiReferenceViewModel : SortedDictionary<string, string>
     {
     }
 }
