@@ -3,7 +3,8 @@
 
 v2.20 (Pre-release)
 -----------
-1. Bug fixes:
+1. Add anchor links to default theme.
+2. Bug fixes:
    1. Fix #1817: Error extracting metadata when containing constant surrogate unicode charactor.
    2. Fix #1655: Using hashtag in external cross reference broken.
 
