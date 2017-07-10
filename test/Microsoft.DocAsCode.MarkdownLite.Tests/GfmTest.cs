@@ -664,6 +664,18 @@ b",
         [InlineData(@"[a]()", @"<p><a href="""" data-raw-source=""[a]()"">a</a></p>
 ")]
         [InlineData(@"<p>[a](b)</p>", @"<p>[a](b)</p>")]
+        [InlineData(@"A\
+", @"<p>A\</p>
+")]
+        [InlineData(@"A\
+B", @"<p>A<br>B</p>
+")]
+        [InlineData(@"A  
+", @"<p>A  </p>
+")]
+        [InlineData(@"A  
+B", @"<p>A<br>B</p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {

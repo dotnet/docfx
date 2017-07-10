@@ -105,6 +105,12 @@ namespace Microsoft.DocAsCode.MarkdownLite.Matchers
 
         public static Matcher NewLine { get; } = new CharMatcher('\n');
 
+        public static Matcher BlankCharacter { get; } = new AnyCharInMatcher(new[] { ' ', '\n' });
+
+        public static Matcher Blank { get; } = Repeat(BlankCharacter, 1);
+
+        public static Matcher BlankOrEmpty { get; } = Repeat(BlankCharacter, 0);
+
         public static Matcher String(string text)
         {
             if (text == null)
