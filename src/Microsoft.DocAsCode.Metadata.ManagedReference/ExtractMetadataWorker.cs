@@ -929,7 +929,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     Logger.LogVerbose($"Loading project {s}", file: s);
                     var project = _workspace.Value.CurrentSolution.Projects.FirstOrDefault(
-                        p => FilePathComparer.OSPlatformSensitiveStringComparer.Equals(p.FilePath, s));
+                        p => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(p.FilePath, s));
 
                     if (project != null)
                     {
@@ -937,6 +937,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
 
                     return _workspace.Value.OpenProjectAsync(s).Result;
+                }
+                catch (AggregateException e)
+                {
+                    Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.GetBaseException()?.Message}. Ignored.");
+                    return null;
                 }
                 catch (Exception e)
                 {
