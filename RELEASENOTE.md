@@ -4,9 +4,22 @@
 v2.20 (Pre-release)
 -----------
 1. Add anchor links to default theme.
-2. Bug fixes:
-   1. Fix #1817: Error extracting metadata when containing constant surrogate unicode charactor.
+2. Disable LRU cache as it has race condition bug and not easy to fix.
+3. PDF improvements:
+   1. Intermediate html files are now removed by default, you can use `--keepRawFiles` option to keep them.
+   2. Add syntax highlight to PDF, it is using highlight.js in client-side js.
+   3. Add hook files to css and js, you can now customize PDF styles by adding your own `main.css` and `main.js`.
+4. Change the default behavior of incremental build that it is always based on the same cache folder (originally the cache folder changes in every build and copy historical files form last cache folder). You can use `--cleanupCacheHistory` option to cleanup the historical cache data.
+5. Bug fixes:
+   1. Fix #1817: Error extracting metadata when containing constant surrogate unicode character.
    2. Fix #1655: Using hashtag in external cross reference broken.
+   3. Fix #219: Fails when source code contains two type names that differ only in case
+   4. Fix #164: Clean up previous auto-generated metadata YAML files when calling `docfx metadata`
+   5. Fix #1797: the command docfx template list does not show the pdf template
+   6. Fix #1803: Overriding example with *content in same file as other overrides doesn't work
+   7. Fix #1807: XREF link to API doc with wildcard UID not getting generated
+   8. Fix #1823: Metadata being generated from referenced projects
+   9. FIx #1824: Change generated .manifest file to be indented and ordered.
 
 v2.19
 -----------
