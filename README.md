@@ -2,6 +2,7 @@
 
 [![Join the chat at https://gitter.im/dotnet/docfx](https://badges.gitter.im/dotnet/docfx.svg)](https://gitter.im/dotnet/docfx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Github All Releases](https://img.shields.io/github/downloads/dotnet/docfx/total.svg?maxAge=600)](https://github.com/dotnet/docfx/releases/latest)
+[![Twitter Follow](https://img.shields.io/twitter/follow/espadrine.svg?style=social&label=Follow)](https://twitter.com/docfxmsft)
 
 |            | Build Status  |  Package   |  Chocolatey |
 | ---------- | ------------- | ---------- | ----------- |
@@ -15,9 +16,6 @@ Let's make DocFX better together!
 **Vote** for the proposals you like, and **add** yours:
 
 [![Feature Requests](http://feathub.com/docascode/docfx-feature-proposals?format=svg)](http://feathub.com/docascode/docfx-feature-proposals)
-
-## Twitter account
-Follow us by twitter account [`@docfxmsft`](https://twitter.com/docfxmsft)
 
 ## What is it?
 *DocFX* makes it extremely easy to generate your developer hub with API reference, landing page, and how-to.
