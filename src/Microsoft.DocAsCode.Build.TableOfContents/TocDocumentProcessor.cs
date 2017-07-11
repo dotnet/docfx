@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 if (PathUtility.IsRelativePath(toc.Homepage))
                 {
-                    var pathToRoot = ((RelativePath)model.File + (RelativePath)toc.Homepage).GetPathFromWorkingFolder();
+                    var pathToRoot = ((RelativePath)model.File + (RelativePath)HttpUtility.UrlDecode(toc.Homepage)).GetPathFromWorkingFolder();
                     tocInfo.Homepage = pathToRoot;
                 }
             }
