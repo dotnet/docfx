@@ -7,15 +7,13 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
     public class Options
     {
-        #region Properties
-
         public Func<string, string, string> Highlight { get; set; }
 
         public Func<string, string> Sanitizer { get; set; }
 
-        public string LangPrefix { get; set; }
+        public string LangPrefix { get; set; } = "lang-";
 
-        public string HeaderPrefix { get; set; }
+        public string HeaderPrefix { get; set; } = string.Empty;
 
         public bool XHtml { get; set; }
 
@@ -23,15 +21,15 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public bool Pedantic { get; set; }
 
-        public bool Mangle { get; set; }
+        public bool Mangle { get; set; } = true;
 
         public bool Smartypants { get; set; }
 
         public bool Breaks { get; set; }
 
-        public bool Gfm { get; set; }
+        public bool Gfm { get; set; } = true;
 
-        public bool Tables { get; set; }
+        public bool Tables { get; set; } = true;
 
         public bool SmartLists { get; set; }
 
@@ -39,28 +37,6 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public bool LegacyMode { get; set; }
 
-        #endregion
-
-        #region Constructors
-
-        public Options()
-        {
-            Highlight = null;
-            Sanitizer = null;
-            LangPrefix = "lang-";
-            HeaderPrefix = "";
-            XHtml = false;
-            Sanitize = false;
-            Pedantic = false;
-            Mangle = true;
-            Smartypants = false;
-            Breaks = false;
-            Gfm = true;
-            Tables = true;
-            SmartLists = false;
-            ShouldExportSourceInfo = false;
-        }
-
-        #endregion
+        public bool ShouldFixId { get; set; } = true;
     }
 }

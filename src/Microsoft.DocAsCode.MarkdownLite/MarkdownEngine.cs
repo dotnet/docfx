@@ -113,15 +113,18 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 sourceInfo.File,
                 RewriteEngine);
 
-            // fix id.
-            var idTable = new Dictionary<string, int>();
-            tokens = RewriteTokens(
-                tokens,
-                sourceInfo.File,
-                new MarkdownRewriteEngine(
-                    this,
-                    MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownHeadingBlockToken>(
-                        (e, t) => t.RewriteId(idTable))));
+            if (Options.ShouldFixId)
+            {
+                // fix id.
+                var idTable = new Dictionary<string, int>();
+                tokens = RewriteTokens(
+                    tokens,
+                    sourceInfo.File,
+                    new MarkdownRewriteEngine(
+                        this,
+                        MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownHeadingBlockToken>(
+                            (e, t) => t.RewriteId(idTable))));
+            }
 
             if (TokenTreeValidator != null)
             {
