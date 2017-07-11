@@ -113,7 +113,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 sourceInfo.File,
                 RewriteEngine);
 
-            if (Options.SkipIdRewrite)
+            if (Options.ShouldFixId)
             {
                 // fix id.
                 var idTable = new Dictionary<string, int>();

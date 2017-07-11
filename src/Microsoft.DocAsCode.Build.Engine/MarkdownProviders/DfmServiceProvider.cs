@@ -36,9 +36,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            if (parameters.Extensions?.TryGetValue("skipIdRewrite", out obj) == true)
+            if (parameters.Extensions?.TryGetValue("shouldFixId", out obj) == true)
             {
-                SkipIdRewrite = obj as bool? ?? false;
+                ShouldFixId = obj as bool? ?? true;
             }
 
             return new DfmService(
@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         protected virtual bool LegacyMode => false;
 
-        protected virtual bool SkipIdRewrite { get; set; }
+        protected virtual bool ShouldFixId { get; set; }
 
         [ImportMany]
         public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; } = Enumerable.Empty<IMarkdownTokenTreeValidator>();
@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 var options = DocfxFlavoredMarked.CreateDefaultOptions();
                 options.LegacyMode = provider.LegacyMode;
-                options.SkipIdRewrite = provider.SkipIdRewrite;
+                options.ShouldFixId = provider.ShouldFixId;
                 options.ShouldExportSourceInfo = true;
                 _builder = new DfmEngineBuilder(
                     options,
