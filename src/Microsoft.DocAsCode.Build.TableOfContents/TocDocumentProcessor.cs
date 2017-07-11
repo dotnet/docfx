@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 {
     using System.Collections.Generic;
     using System.Composition;
+    using System.Web;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
@@ -59,14 +60,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var tocHrefType = Utility.GetHrefType(tocHref);
             if (tocHrefType == HrefType.MarkdownTocFile || tocHrefType == HrefType.YamlTocFile)
             {
-                context.RegisterToc(key, UriUtility.GetPath(tocHref));
+                context.RegisterToc(key, HttpUtility.UrlDecode(UriUtility.GetPath(tocHref)));
             }
             else
             {
                 var href = item.Href; // Should be original href from working folder starting with ~
                 if (Utility.IsSupportedRelativeHref(href))
                 {
-                    context.RegisterToc(key, UriUtility.GetPath(href));
+                    context.RegisterToc(key, HttpUtility.UrlDecode(UriUtility.GetPath(href)));
                 }
             }
         }

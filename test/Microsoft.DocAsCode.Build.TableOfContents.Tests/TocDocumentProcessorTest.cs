@@ -671,6 +671,28 @@ items:
         }
 
         [Fact]
+        public void RelativePathToTocShouldExistWithUrlEncodedHref()
+        {
+            // Arrange
+            const string fileFolder = "sub1()";
+            const string fileFolderEncoded = "sub1%28%29";
+            var file = _fileCreator.CreateFile(string.Empty, FileType.MarkdownContent, fileFolder);
+            var toc1 = _fileCreator.CreateFile($"#[Topic]({Path.Combine(fileFolderEncoded, Path.GetFileName(file))})", FileType.MarkdownToc);
+            var toc2 = _fileCreator.CreateFile($"# a nearer toc", FileType.MarkdownToc, fileFolder);
+            var files = new FileCollection(_inputFolder);
+            files.Add(DocumentType.Article, new[] { file, toc1, toc2 });
+
+            // Act
+            BuildDocument(files);
+
+            // Assert
+            var outputRawModelPath = Path.GetFullPath(Path.Combine(_outputFolder, Path.ChangeExtension(file, RawModelFileExtension)));
+            Assert.True(File.Exists(outputRawModelPath));
+            var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
+            Assert.Equal("../toc.md", model["_tocRel"]);
+        }
+
+        [Fact]
         public void ProcessYamlTocWithTocHrefAndHomepageShouldFail()
         {
             var content = $@"
