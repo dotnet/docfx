@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Plugins
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using Newtonsoft.Json;
@@ -18,13 +19,19 @@ namespace Microsoft.DocAsCode.Plugins
         public override object ReadJson(JsonReader reader, Type objecType, object existingValue,
             JsonSerializer serializer)
         {
-            return serializer.Deserialize(reader, objecType);
+            var manifestCollectionList = (List<ManifestItem>) serializer.Deserialize(reader, typeof(List<ManifestItem>));
+            if (existingValue != null)
+            {
+                ((ManifestItemCollection)existingValue).AddRange(manifestCollectionList);
+                return existingValue;
+            }
+            return new ManifestItemCollection(manifestCollectionList);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            var sortedManifestFiles = ((ManifestItemCollection) value).OrderBy(
-                obj => obj.SourceRelativePath ?? String.Empty,
+            var sortedManifestFiles = ((ManifestItemCollection)value).OrderBy(
+                obj => obj.SourceRelativePath ?? string.Empty,
                 StringComparer.Ordinal).ToList();
 
             serializer.Serialize(writer, sortedManifestFiles);
