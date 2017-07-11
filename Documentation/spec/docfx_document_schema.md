@@ -48,29 +48,13 @@ This is the root document object for *THIS schema*.
 
 | Field Name      | Type   | Description
 |-----------------|--------|----------
-| schemaVersion | string | `*`The version of the schema specification
-| fileType      | string | `*`The file type of the document model. Supported values are `YAML` and `JSON`.
-| type            | string | `*`The type of the root document model MUST be `object`
-| mimeType      | string | The mime type of the document model that applies to current schema. If not set, the schema name will be considered as its mime type.
-| info          | [Info Object](#info-object) | `*`The information about current schema
-| properties      | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties if `type` for the model is `object`
-
-##### Patterned Field
-| Field Name | Type | Description
-|------------|------|----------
-| ^x-        | Any  | Allows extensions to *THIS schema*. The field name MUST begin with x-, for example, x-internal-id. The value can be null, a primitive, an array or an object.
-
-#### Info Object
-The object provides metadata about the schema.
-
-##### Fixed Field
-
-| Field Name      | Type   | Description
-|-----------------|--------|----------
-| version      | string | `*`The version of current schema object
-| id           | string | It is best practice to include an `id` property as an unique identifier for each schema.
-| title        | string | The title of current schema
-| description  | string | A short description of current schema
+| $schema         | string | `*`The version of the schema specification, for example, `https://github.com/dotnet/docfx/v1.0/schema#`.
+| version         | string | `*`The version of current schema object.
+| id              | string | It is best practice to include an `id` property as an unique identifier for each schema.
+| title           | string | The title of current schema, `LandingPage`, for example. In DocFX, this value can be used to determine what kind of documents apply to this schema, If not specified, file name of this schema is used.
+| description     | string  | A short description of current schema.
+| type            | string | `*`The type of the root document model MUST be `object`.
+| properties      | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties if `type` for the model is `object`.
 
 ##### Patterned Field
 | Field Name | Type | Description
@@ -100,7 +84,7 @@ An object to describe the schema of the value of the property.
 | properties   | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties if `type` for the model is `object`. Omitting this keyword has the same behavior as an empty object.
 | items        | [Property Object](#property-object) | An object to hold the schema of the items if `type` for the model is `array`. Omitting this keyword has the same behavior as an empty schema.
 | reference    | string | Defines whether current property is a reference to the actual value of the property. Refer to [reference](6-2-reference) for detailed explanation.
-| contentType| string | Defines the content type of the property. Refer to [contentType](6-3-contentType) for detailed explanation.
+| contentType  | string | Defines the content type of the property. Refer to [contentType](6-3-contentType) for detailed explanation.
 | tags       | array  | Defines the tags of the property. Refer to [tags](6-4-tags) for detailed explanation.
 | mergeType      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [mergeType](6-5-mergeType) for detailed explanation.
 
@@ -127,7 +111,7 @@ It defines whether current property is a reference to the actual value of the pr
 
 | Value      | Description
 |------------|-------------
-| `false`    | It means the property is not a reference.
+| `none`     | It means the property is not a reference.
 | `file`     | It means current property stands for a file path that contains content to be included
 
 ### 6.3 contentType
@@ -137,8 +121,8 @@ It defines how applications interpret the property. If not defined, the behavior
 |------------|-------------
 | `default`  | It means that no interpretion will be done to the property.
 | `uid`      | `type` MUST be `string`. It means the property defines a unique identifier inside current document model
-| `fileLink` | `type` MUST be `string`. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.
-| `uidLink`  | `type` MUST be `string`. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output path.
+| `xref`     | `type` MUST be `string`. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.
+| `href`     | `type` MUST be `string`. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output path.
 | `markdown` | `type` MUST be `string`. It means the property is in [DocFX flavored Markdown](..\spec\docfx_flavored_markdown.md) syntax. Application CAN help to transform it into HTML format.
 
 ### 6.4 tags
@@ -201,15 +185,11 @@ Here's the schema to describe these operations:
 
 ```json
 {
-    "schemaVersion": "1.0",
-    "mimeType": "LandingPage",
-    "fileType": "YAML",
-    "info": {
-        "id": "https://github.com/dotnet/docfx/schemas/landingpage.schema.json",
-        "title": "Landing page",
-        "description": "The schema for landing page",
-        "version": "1.0.0"
-    },
+    "$schema": "https://github.com/dotnet/docfx/schemas/v1/schema.json#",
+    "version": "1.0.0",
+    "id": "https://github.com/dotnet/docfx/schemas/landingpage.schema.json",
+    "title": "LandingPage",
+    "description": "The schema for landing page",
     "type": "object",
     "properties": {
         "metadata": {
@@ -228,7 +208,7 @@ Here's the schema to describe these operations:
                             "properties": {
                                 "href": {
                                     "type": "string",
-                                    "contentType": "fileLink"
+                                    "contentType": "href"
                                 },
                                 "text": {
                                     "type": "string",
