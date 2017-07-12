@@ -206,11 +206,57 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return uidList;
             }
-            string requestUrl = XRefServiceUrls[0];
-            var list = new List<string>();
+            var unResolvedUidList = new List<string>();
             int pieceSize = 1000;
+            List<XRefSpec> xsList = null;
+            for (int i = 0; i < uidList.Count; i += pieceSize)
+            {
+                List<string> smallPiece;
+                smallPiece = uidList.GetRange(i, Math.Min(pieceSize, uidList.Count - i));
+                bool isSuccess = false;
+
+                foreach(string requestUrl in XRefServiceUrls)
+                {
+                    var result = await QueryByHttpRequestAsync(requestUrl, smallPiece, xsList);
+                    bool isExist = result.Item1;
+                    if(isExist)
+                    {
+                        isSuccess = true;
+                        xsList = result.Item2;
+                        break;
+                    }
+                }
+                
+                if(isSuccess)
+                {
+                    for(int j = 0; j < xsList.Count; j++)
+                    {
+                        if(xsList[j] != null)
+                        {
+                            externalXRefSpec.AddOrUpdate(smallPiece[j], xsList[j], (_, old) => old + xsList[j]);
+                        }
+                        else
+                        {
+                            unResolvedUidList.Add(smallPiece[j]);
+                        }
+                    }
+                }
+                else
+                {
+                    unResolvedUidList.AddRange(smallPiece);
+                    Logger.LogWarning($"Failed to resolve {smallPiece.Count} uids from all requestUrls: for example include " + smallPiece.Take(10).ToDelimitedString());
+                }
+            }
+            
+            Logger.LogInfo($"{uidList.Count - unResolvedUidList.Count} external references found in xrefservice configured in docfx.json");
+            return unResolvedUidList;
+        }
+
+        private async Task<Tuple<bool, List<XRefSpec>>> QueryByHttpRequestAsync(string requestUrl, List<string> smallPiece, List<XRefSpec> xsList)
+        {
             using (var client = new HttpClient())
-            {   
+            {
+                var failedResult = new Tuple<bool, List<XRefSpec>>(false, null);
                 try
                 {
                     client.BaseAddress = new Uri(requestUrl);
@@ -218,64 +264,51 @@ namespace Microsoft.DocAsCode.Build.Engine
                 catch (UriFormatException e)
                 {
                     Logger.LogWarning($"Ignore invalid url: {requestUrl}." + e.Message);
-                    return uidList;
+                    return failedResult;
                 }
                 catch (ArgumentException e)
                 {
                     Logger.LogWarning($"Ignore invalid url: {requestUrl}." + e.Message);
-                    return uidList;
+                    return failedResult;
                 }
-                
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                for (int i = 0; i < uidList.Count; i += pieceSize)
+                StringContent content = new StringContent(JsonUtility.Serialize(smallPiece), System.Text.Encoding.UTF8, "application/json");
+                HttpResponseMessage response = null;
+                try
                 {
-                    List<string> smallPiece;
-                    smallPiece = uidList.GetRange(i, Math.Min(pieceSize, uidList.Count - i));
+                    response = await client.PostAsync("", content);
+                }
+                catch (HttpRequestException e)
+                {
+                    Logger.LogWarning(e.InnerException.Message + "\n" + $"Failed to resolve {smallPiece.Count} uids from {requestUrl}: for example include " + smallPiece.Take(10).ToDelimitedString());
+                    return failedResult;
+                }
 
-                    StringContent content = new StringContent(JsonUtility.Serialize(smallPiece), System.Text.Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = null;
-                    try
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStreamAsync();
+                    using (var sr = new StreamReader(data))
                     {
-                        response = await client.PostAsync("", content);
-                    }
-                    catch (HttpRequestException e)
-                    {
-                        Logger.LogWarning(e.InnerException.Message + "\n" + smallPiece.Count + " uids being resolved failed, for example including " + smallPiece[0]);
-                        list.AddRange(smallPiece);
-                        continue;
-                    }
-                    
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var data = await response.Content.ReadAsStreamAsync();
-                        List<XRefSpec> xsList;
-                        using (var sr = new StreamReader(data))
+                        try
                         {
                             xsList = JsonUtility.Deserialize<List<XRefSpec>>(sr);
                         }
-                        for (int j = 0; j < xsList.Count; j++)
+                        catch
                         {
-                            if (xsList[j] == null)
-                            {
-                                list.Add(smallPiece[j]);
-                            }
-                            else
-                            {
-                                externalXRefSpec.AddOrUpdate(smallPiece[j], xsList[j], (_, old) => old + xsList[j]);
-                            }
+                            Logger.LogWarning("An error appears in JsonUtility.Deserialize function.");
+                            return failedResult;
                         }
                     }
-                    else
-                    {
-                        list.AddRange(smallPiece);
-                        Logger.LogWarning($"Request on {requestUrl} failed." + smallPiece.Count + " uids being resolved failed, for example including " + smallPiece[0]);
-                    }
+                    return new Tuple<bool, List<XRefSpec>>(true, xsList);
+                }
+                else
+                {
+                    Logger.LogWarning($"Failed to resolve {smallPiece.Count} uids from {requestUrl}: for example include " + smallPiece.Take(10).ToDelimitedString());
+                    return failedResult;
                 }
             }
-            Logger.LogInfo($"{uidList.Count - list.Count} external references found in {requestUrl} configured in docfx.json");
-            return list;
         }
 
         private List<string> ResolveByXRefMaps(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
