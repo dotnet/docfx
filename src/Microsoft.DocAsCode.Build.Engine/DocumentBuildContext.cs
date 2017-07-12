@@ -204,7 +204,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (XRefServiceUrls == null || XRefServiceUrls.Length == 0)
             {
-                Logger.LogWarning($"You haven't provide an xrefservice item in docfx.json or command options!");
                 return uidList;
             }
             string requestUrl = XRefServiceUrls[0];
@@ -233,14 +232,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 for (int i = 0; i < uidList.Count; i += pieceSize)
                 {
                     List<string> smallPiece;
-                    if (i + pieceSize < uidList.Count)
-                    {
-                        smallPiece = uidList.GetRange(i, pieceSize);
-                    }
-                    else
-                    {
-                        smallPiece = uidList.GetRange(i, uidList.Count - i);
-                    }
+                    smallPiece = uidList.GetRange(i, Math.Min(pieceSize, uidList.Count - i));
 
                     StringContent content = new StringContent(JsonUtility.Serialize(smallPiece), System.Text.Encoding.UTF8, "application/json");
                     HttpResponseMessage response = null;
