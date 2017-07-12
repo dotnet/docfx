@@ -95,8 +95,8 @@ namespace Microsoft.DocAsCode.Tests
             {
                 SourceRelativePath = "b"
             };
-            manifest.Files.Add(manifestItemA);
             manifest.Files.Add(manifestItemB);
+            manifest.Files.Add(manifestItemA);
 
             Assert.Equal(
                 "{\"files\":[{\"source_relative_path\":\"a\",\"output\":{},\"is_incremental\":false},{\"source_relative_path\":\"b\",\"output\":{},\"is_incremental\":false}]}",
