@@ -9,6 +9,9 @@ namespace Microsoft.DocAsCode.Plugins
     using System.Collections.Specialized;
     using System.Linq;
 
+    using Newtonsoft.Json;
+
+    [JsonConverter(typeof(ManifestItemCollectionConverter))]
     public class ManifestItemCollection : ObservableCollection<ManifestItem>
     {
         public ManifestItemCollection() { }
