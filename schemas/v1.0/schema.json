@@ -8,6 +8,11 @@
             "minItems": 1,
             "items": { "$ref": "#/definitions/propertyObject" }
         },
+        "propertyDefinition": {
+            "type": "object",
+            "additionalProperties": { "$ref": "#/definitions/propertyObject" },
+            "default": {}
+        },
         "propertyObject": {
             "type": "object",
             "properties": {
@@ -19,7 +24,7 @@
                 },
                 "default": { },
                 "type": { "$ref": "#/definitions/simpleTypes" },
-                "properties": { "$ref": "#/definitions/propertyObject" },
+                "properties": { "$ref": "#/definitions/propertyDefinition" },
                 "items": {
                     "anyOf": [
                         { "$ref": "#/definitions/propertyObject" },
@@ -43,6 +48,7 @@
                         "uid",
                         "xref",
                         "href",
+                        "file",
                         "markdown"
                     ]
                 },
@@ -98,6 +104,9 @@
             "type": "string",
             "description": "The title of current schema, `LandingPage`, for example. In DocFX, this value can be used to determine what kind of documents apply to this schema, If not specified, file name of this schema is used."
         },
+        "description": {
+            "type": "string"
+        },
         "type": {
             "type": "string",
             "enum": [
@@ -106,7 +115,7 @@
             "description": "The type of the root document model MUST be `object`"
         },
         "default": {},
-        "properties": { "$ref": "#/definitions/propertyObject" },
+        "properties": { "$ref": "#/definitions/propertyDefinition" },
         "patternProperties": {
             "^x_": { }
         }
