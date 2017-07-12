@@ -51,10 +51,10 @@ This is the root document object for *THIS schema*.
 | $schema         | string | `*`The version of the schema specification, for example, `https://github.com/dotnet/docfx/v1.0/schema#`.
 | version         | string | `*`The version of current schema object.
 | id              | string | It is best practice to include an `id` property as an unique identifier for each schema.
-| title           | string | The title of current schema, `LandingPage`, for example. In DocFX, this value can be used to determine what kind of documents apply to this schema, If not specified, file name of this schema is used.
+| title           | string | The title of current schema, `LandingPage`, for example. In DocFX, this value can be used to determine what kind of documents apply to this schema, If not specified, file name before `schema.json` of this schema is used.
 | description     | string  | A short description of current schema.
 | type            | string | `*`The type of the root document model MUST be `object`.
-| properties      | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties if `type` for the model is `object`.
+| properties      | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties.
 
 ##### Patterned Field
 | Field Name | Type | Description
@@ -122,7 +122,8 @@ It defines how applications interpret the property. If not defined, the behavior
 | `default`  | It means that no interpretion will be done to the property.
 | `uid`      | `type` MUST be `string`. It means the property defines a unique identifier inside current document model
 | `xref`     | `type` MUST be `string`. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.
-| `href`     | `type` MUST be `string`. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output path.
+| `href`     | `type` MUST be `string`. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output link.
+| `file`     | `type` MUST be `string`. It means the property defines a file path inside current document model. Application CAN help to validate if the linked file exists, and resolve the path to the corresponding file output path. The difference between `file` and `href` is that `href` is always URL encoded while `file` is not.
 | `markdown` | `type` MUST be `string`. It means the property is in [DocFX flavored Markdown](..\spec\docfx_flavored_markdown.md) syntax. Application CAN help to transform it into HTML format.
 
 ### 6.4 tags
@@ -185,7 +186,7 @@ Here's the schema to describe these operations:
 
 ```json
 {
-    "$schema": "https://github.com/dotnet/docfx/schemas/v1/schema.json#",
+    "$schema": "https://github.com/dotnet/docfx/schemas/v1.0/schema.json#",
     "version": "1.0.0",
     "id": "https://github.com/dotnet/docfx/schemas/landingpage.schema.json",
     "title": "LandingPage",
