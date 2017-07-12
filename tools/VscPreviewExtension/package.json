@@ -20,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/dotnet/docfx/issues"
   },
-  "homepage": "https://github.com/dotnet/docfx/blob/dev/tools/VscPreviewExtension",
+  "homepage": "https://github.com/dotnet/docfx/blob/dev/tools/VscPreviewExtension/README.md",
   "repository": {
     "type": "git",
     "url": "https://github.com/dotnet/docfx/tree/dev/tools/VscPreviewExtension"
