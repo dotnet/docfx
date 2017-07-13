@@ -204,6 +204,7 @@ root
                 GetRestructure(TreeItemActionType.InsertBefore, "leaf3", new string[] {"leaf3.1", "leaf3.2" }),
             };
 
+            // After leaf3 is appended as child, leaf3.1 and leaf3.2 should insert before leaf3.
             TocRestructureUtility.Restructure(toc, restructures);
             var expected = GetTocItem(@"
 root
@@ -212,6 +213,8 @@ root
         leaf3.1
         leaf3.2
         leaf3
+        leaf3.1
+        leaf3.2
         leaf3
         leaf4
     leaf3.1
@@ -219,6 +222,8 @@ root
     leaf3
     node2
         node1
+            leaf3.1
+            leaf3.2
             leaf3
             leaf4
 ");

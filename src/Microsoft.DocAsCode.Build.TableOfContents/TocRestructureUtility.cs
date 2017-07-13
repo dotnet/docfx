@@ -23,6 +23,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private static void RestructureCore(TocItemViewModel item, List<TocItemViewModel> items, IList<TreeItemRestructure> restructures)
         {
+            foreach (var restruction in restructures)
+            {
+                if (Matches(item, restruction))
+                {
+                    RestructureItem(item, items, restruction);
+                }
+            }
+
             if (item.Items != null && item.Items.Count > 0)
             {
                 var parentItems = new List<TocItemViewModel>(item.Items);
@@ -32,14 +40,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 }
 
                 item.Items = new TocViewModel(parentItems);
-            }
-
-            foreach (var restruction in restructures)
-            {
-                if (Matches(item, restruction))
-                {
-                    RestructureItem(item, items, restruction);
-                }
             }
         }
 
