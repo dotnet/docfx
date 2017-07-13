@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
 {
     public class EmptyRenderer
     {
-        public virtual StringBuffer Render(IMarkdownRenderer render, IMarkdownToken token, IMarkdownContext context)
+        public virtual StringBuffer Render(IMarkdownRenderer renderer, IMarkdownToken token, IMarkdownContext context)
         {
             return StringBuffer.Empty;
         }
