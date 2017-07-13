@@ -269,14 +269,18 @@ exports.getBookmarks = function (model) {
             }
             if (tag.children) {
                 tag.children.forEach(function (child) {
-                    bookmarks[child.uid] = common.getHtmlId(child.uid);
+                    if (child.uid) {
+                        bookmarks[child.uid] = common.getHtmlId(child.uid);
+                    }
                 })
             }
         })
     }
     if (model.children) {
         model.children.forEach(function (child) {
-            bookmarks[child.uid] = common.getHtmlId(child.uid);
+            if (child.uid) {
+                bookmarks[child.uid] = common.getHtmlId(child.uid);
+            }
         });
     }
 
