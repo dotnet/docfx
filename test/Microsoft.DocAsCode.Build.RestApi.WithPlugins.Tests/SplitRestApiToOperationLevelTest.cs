@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
 
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Build.TableOfContents;
-    using Microsoft.DocAsCode.Build.TagLevelRestApi;
+    using Microsoft.DocAsCode.Build.OperationLevelRestApi;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.RestApi;
@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
 
     [Trait("Owner", "jehuan")]
     [Trait("EntityType", "RestApiDocumentProcessorWithPlugins")]
-    public class SplitRestApiToTagLevelTest : TestBase
+    public class SplitRestApiToOperationLevelTest : TestBase
     {
         private string _inputFolder;
         private string _outputFolder;
@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
 
         private const string RawModelFileExtension = ".raw.json";
 
-        public SplitRestApiToTagLevelTest()
+        public SplitRestApiToOperationLevelTest()
         {
             _inputFolder = GetRandomFolder();
             _outputFolder = GetRandomFolder();
@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
         }
 
         [Fact]
-        public void ProcessRestApiShouldSucceed()
+        public void SplitRestApiToOperationLevelShouldSucceed()
         {
             var files = new FileCollection(_defaultFiles);
             BuildDocument(files);
@@ -60,28 +60,34 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 Assert.NotNull(model);
                 Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0", model.Uid);
                 Assert.Equal(0, model.Children.Count);
-                Assert.Equal(0, model.Tags.Count);
+                Assert.Equal(3, model.Tags.Count);
             }
             {
-                // Verify splitted tag page
-                var outputRawModelPath = GetRawModelFilePath("petstore/pet.json");
+                // Verify splitted operation page
+                var outputRawModelPath = GetRawModelFilePath("petstore/addPet.json");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
                 Assert.NotNull(model);
-                Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet", model.Uid);
-                Assert.Equal("pet", model.Name);
-                Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Everything about your Pets</p>\n", model.Description);
-                Assert.Equal(8, model.Children.Count);
+                Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet", model.Uid);
+                Assert.Null(model.HtmlId);
+                Assert.Equal("addPet", model.Name);
+                Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Add a new pet to the store</p>\n", model.Summary);
                 Assert.Equal(0, model.Tags.Count);
-                Assert.Equal(0, model.Children[0].Tags.Count);
-                Assert.Equal("swagger/petstore/pet.html", model.Metadata["_path"]);
-                Assert.Equal("TestData/swagger/petstore/pet.json", model.Metadata["_key"]);
+                Assert.Equal("swagger/petstore/addPet.html", model.Metadata["_path"]);
+                Assert.Equal("TestData/swagger/petstore/addPet.json", model.Metadata["_key"]);
                 Assert.True(model.Metadata.ContainsKey("externalDocs"));
+                Assert.Equal(1, model.Children.Count);
+
+                var child = model.Children[0];
+                Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet/operation", child.Uid);
+                Assert.Null(child.HtmlId);
+                Assert.Null(child.Summary); // Summary is poped to operation page
+                Assert.Equal(1, child.Tags.Count);
             }
         }
 
         [Fact]
-        public void ProcessRestApiWithTocShouldSucceed()
+        public void SplitRestApiToOperationLevelWithTocShouldSucceed()
         {
             var files = new FileCollection(_defaultFiles);
             files.Add(DocumentType.Article, new[] { "TestData/swagger/toc.yml" }, "TestData/");
@@ -95,23 +101,30 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 Assert.NotNull(model);
                 Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0", model.Uid);
                 Assert.Equal(0, model.Children.Count);
-                Assert.Equal(0, model.Tags.Count);
+                Assert.Equal(3, model.Tags.Count);
             }
             {
-                // Verify splitted tag page
-                var outputRawModelPath = GetRawModelFilePath("petstore/pet.json");
+                // Verify splitted operation page
+                var outputRawModelPath = GetRawModelFilePath("petstore/addPet.json");
                 Assert.True(File.Exists(outputRawModelPath));
                 var model = JsonUtility.Deserialize<RestApiRootItemViewModel>(outputRawModelPath);
                 Assert.NotNull(model);
-                Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet", model.Uid);
-                Assert.Equal("pet", model.Name);
-                Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Everything about your Pets</p>\n", model.Description);
-                Assert.Equal(8, model.Children.Count);
+                Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet", model.Uid);
+                Assert.Null(model.HtmlId);
+                Assert.Equal("addPet", model.Name);
+                Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Add a new pet to the store</p>\n", model.Summary);
                 Assert.Equal(0, model.Tags.Count);
-                Assert.Equal(0, model.Children[0].Tags.Count);
-                Assert.Equal("swagger/petstore/pet.html", model.Metadata["_path"]);
-                Assert.Equal("TestData/swagger/petstore/pet.json", model.Metadata["_key"]);
+                Assert.Equal("swagger/petstore/addPet.html", model.Metadata["_path"]);
+                Assert.Equal("TestData/swagger/petstore/addPet.json", model.Metadata["_key"]);
+                Assert.Equal("../toc.yml", model.Metadata["_tocRel"]);
                 Assert.True(model.Metadata.ContainsKey("externalDocs"));
+                Assert.Equal(1, model.Children.Count);
+
+                var child = model.Children[0];
+                Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet/operation", child.Uid);
+                Assert.Null(child.HtmlId);
+                Assert.Null(child.Summary); // Summary has been poped to operation page
+                Assert.Equal(1, child.Tags.Count);
             }
             {
                 // Verify toc page
@@ -122,9 +135,11 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 Assert.Equal(1, model.Items.Count);
                 var rootModel = model.Items[0];
                 Assert.Equal("petstore.html", rootModel.TopicHref);
-                Assert.Equal(3, rootModel.Items.Count);
-                Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/tag/pet", rootModel.Items[0].TopicUid);
-                Assert.Equal("pet", rootModel.Items[0].Name);
+                Assert.Equal(20, rootModel.Items.Count);
+                Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet", rootModel.Items[0].TopicUid);
+                Assert.Equal("petstore/addPet.html", rootModel.Items[0].TopicHref);
+                Assert.Equal("petstore/addPet.html", rootModel.Items[0].Href);
+                Assert.Equal("addPet", rootModel.Items[0].Name);
             }
         }
 
@@ -152,7 +167,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
         {
             yield return typeof(RestApiDocumentProcessor).Assembly;
             yield return typeof(TocDocumentProcessor).Assembly;
-            yield return typeof(SplitRestApiToTagLevel).Assembly;
+            yield return typeof(SplitRestApiToOperationLevel).Assembly;
         }
 
         private string GetRawModelFilePath(string fileName)
