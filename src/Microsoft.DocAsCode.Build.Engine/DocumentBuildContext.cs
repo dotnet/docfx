@@ -206,53 +206,46 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return uidList;
             }
-            var unResolvedUidList = new List<string>();
+            int needQueryCount = uidList.Count;
+            var unresolvedUidList = new List<string>();
             int pieceSize = 1000;
-            List<XRefSpec> xsList = null;
-            for (int i = 0; i < uidList.Count; i += pieceSize)
-            {
-                List<string> smallPiece;
-                smallPiece = uidList.GetRange(i, Math.Min(pieceSize, uidList.Count - i));
-                bool isSuccess = false;
-
-                foreach(string requestUrl in XRefServiceUrls)
+            foreach (string requestUrl in XRefServiceUrls)
+            {    
+                for(int i = 0; i < uidList.Count; i+= pieceSize)
                 {
-                    var result = await QueryByHttpRequestAsync(requestUrl, smallPiece, xsList);
-                    bool isExist = result.Item1;
-                    if(isExist)
+                    List<string> smallPiece = uidList.GetRange(i, Math.Min(pieceSize, uidList.Count - i));
+                    var result = await QueryByHttpRequestAsync(requestUrl, smallPiece);
+                    bool isSuccess = result.Item1;
+                    List<XRefSpec> xsList = result.Item2;
+                    if (isSuccess)
                     {
-                        isSuccess = true;
-                        xsList = result.Item2;
-                        break;
-                    }
-                }
-                
-                if(isSuccess)
-                {
-                    for(int j = 0; j < xsList.Count; j++)
-                    {
-                        if(xsList[j] != null)
+                        for (int j = 0; j < xsList.Count; j++)
                         {
-                            externalXRefSpec.AddOrUpdate(smallPiece[j], xsList[j], (_, old) => old + xsList[j]);
-                        }
-                        else
-                        {
-                            unResolvedUidList.Add(smallPiece[j]);
+                            if (xsList[j] != null)
+                            {
+                                externalXRefSpec.AddOrUpdate(smallPiece[j], xsList[j], (_, old) => old + xsList[j]);
+                            }
+                            else
+                            {
+                                unresolvedUidList.Add(smallPiece[j]);
+                            }
                         }
                     }
+                    else
+                    {
+                        unresolvedUidList.AddRange(smallPiece);
+                    }
                 }
-                else
-                {
-                    unResolvedUidList.AddRange(smallPiece);
-                    Logger.LogWarning($"Failed to resolve {smallPiece.Count} uids from all requestUrls: for example include " + smallPiece.Take(10).ToDelimitedString());
-                }
+                Logger.LogInfo($"{uidList.Count - unresolvedUidList.Count} uids found in {requestUrl}.");
+                uidList = new List<string>(unresolvedUidList);
+                unresolvedUidList.Clear();
             }
-            
-            Logger.LogInfo($"{uidList.Count - unResolvedUidList.Count} external references found in xrefservice configured in docfx.json");
-            return unResolvedUidList;
+
+            Logger.LogInfo($"{needQueryCount - uidList.Count} uids found in xrefservice.");
+            return uidList;
         }
 
-        private async Task<Tuple<bool, List<XRefSpec>>> QueryByHttpRequestAsync(string requestUrl, List<string> smallPiece, List<XRefSpec> xsList)
+        private async Task<Tuple<bool, List<XRefSpec>>> QueryByHttpRequestAsync(string requestUrl, List<string> smallPiece)
         {
             using (var client = new HttpClient())
             {
@@ -289,15 +282,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (response.IsSuccessStatusCode)
                 {
                     var data = await response.Content.ReadAsStreamAsync();
+                    List<XRefSpec> xsList;
                     using (var sr = new StreamReader(data))
                     {
                         try
                         {
                             xsList = JsonUtility.Deserialize<List<XRefSpec>>(sr);
                         }
-                        catch
+                        catch (Newtonsoft.Json.JsonReaderException e)
                         {
-                            Logger.LogWarning("An error appears in JsonUtility.Deserialize function.");
+                            Logger.LogWarning(e.Message);
                             return failedResult;
                         }
                     }
