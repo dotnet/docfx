@@ -62,6 +62,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
 
                 Assert.Equal("Hello world!", model.Metadata["meta"]);
                 Assert.Equal(true, model.Metadata["_splitReference"]);
+                Assert.Equal(true, model.Metadata["_splitFrom"]);
                 Assert.Equal(20, model.Children.Count);
             }
             {
@@ -72,6 +73,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
 
                 Assert.Equal("Hello world!", model.Metadata["meta"]);
                 Assert.Equal(true, model.Metadata["_splitReference"]);
+                Assert.Equal(false, model.Metadata.ContainsKey("_splitFrom"));
                 Assert.Equal(MemberType.Constructor, model.Type);
                 Assert.Equal(3, model.Children.Count);
             }
