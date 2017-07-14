@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
+    using System.Net.Http.Headers;
 
     public sealed class DocumentBuildContext : IDocumentBuildContext
     {
@@ -265,7 +266,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     return failedResult;
                 }
                 client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 StringContent content = new StringContent(JsonUtility.Serialize(smallPiece), System.Text.Encoding.UTF8, "application/json");
                 HttpResponseMessage response = null;
@@ -275,11 +276,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 catch (HttpRequestException e)
                 {
-                    Logger.LogWarning(e.InnerException.Message + "\n" + $"Failed to resolve {smallPiece.Count} uids from {requestUrl}: for example include " + smallPiece.Take(10).ToDelimitedString());
+                    Logger.LogWarning(e.InnerException.Message + "\n" + $"Failed to resolve {smallPiece.Count} uids from {requestUrl}: for example including " + smallPiece.Take(10).ToDelimitedString());
                     return failedResult;
                 }
 
-                if (response.IsSuccessStatusCode)
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var data = await response.Content.ReadAsStreamAsync();
                     List<XRefSpec> xsList;
@@ -291,7 +292,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
                         catch (Newtonsoft.Json.JsonReaderException e)
                         {
-                            Logger.LogWarning(e.Message);
+                            Logger.LogWarning($"Response from {requestUrl} is not in valid JSON format." + e.Message);
                             return failedResult;
                         }
                     }
@@ -299,7 +300,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 else
                 {
-                    Logger.LogWarning($"Failed to resolve {smallPiece.Count} uids from {requestUrl}: for example include " + smallPiece.Take(10).ToDelimitedString());
+                    Logger.LogWarning($"Failed to resolve {smallPiece.Count} uids from {requestUrl}: for example including " + smallPiece.Take(10).ToDelimitedString());
                     return failedResult;
                 }
             }
