@@ -161,11 +161,11 @@ namespace Microsoft.DocAsCode.Dfm
                 {
                     active = firstVisibleTab;
                     selectedTabIds.Add(items[firstVisibleTab].Id);
-                    Logger.LogWarning("All tabs are hidden in the tab group.", file: token.SourceInfo.File, line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.NoVisibleTab);
                 }
                 else
                 {
                     active = 0;
+                    Logger.LogWarning("All tabs are hidden in the tab group.", file: token.SourceInfo.File, line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.NoVisibleTab);
                 }
             }
             return new DfmTabGroupBlockToken(token.Rule, token.Context, token.Id, items, active, token.SourceInfo);
