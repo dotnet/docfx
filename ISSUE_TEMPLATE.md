@@ -1,3 +1,5 @@
+DocFX Version:
+
 ### Title
 *A short description of the bug that becomes the issue title*  
 e.g. Long polling transport tries reconnecting forever when ping succeeds but poll request fails.
