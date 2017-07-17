@@ -63,7 +63,7 @@ templates:
       version: 1.0.0
       engines:
         docfx: ">=2.20.0"
-      thumbnail: ~/templates-and-plugins/images/roel4ez-bootstrap.screenshot.png
+      thumbnail: ~/templates-and-plugins/images/roel4ez-modal.screenshot.png
       homepage: https://github.com/roel4ez/docfx-lightbox-plugin
       repository:
         type: git
