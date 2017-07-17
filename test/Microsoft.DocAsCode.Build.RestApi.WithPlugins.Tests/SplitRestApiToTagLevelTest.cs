@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
 
     [Trait("Owner", "jehuan")]
     [Trait("EntityType", "RestApiDocumentProcessorWithPlugins")]
+    [Collection("docfx STA")]
     public class SplitRestApiToTagLevelTest : TestBase
     {
         private string _inputFolder;

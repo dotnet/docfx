@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Build.TableOfContents;
     using Microsoft.DocAsCode.Build.OperationLevelRestApi;
+    using Microsoft.DocAsCode.Build.TagLevelRestApi;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.RestApi;
@@ -20,6 +21,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
 
     [Trait("Owner", "jehuan")]
     [Trait("EntityType", "RestApiDocumentProcessorWithPlugins")]
+    [Collection("docfx STA")]
     public class SplitRestApiToOperationLevelTest : TestBase
     {
         private string _inputFolder;
@@ -143,7 +145,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
             }
         }
 
-        private void BuildDocument(FileCollection files)
+        private void BuildDocument(FileCollection files, bool enableTagLevel = false)
         {
             var parameters = new DocumentBuildParameters
             {
@@ -157,17 +159,21 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 TemplateManager = _templateManager
             };
 
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
+            using (var builder = new DocumentBuilder(LoadAssemblies(enableTagLevel), ImmutableArray<string>.Empty, null))
             {
                 builder.Build(parameters);
             }
         }
 
-        private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()
+        private static IEnumerable<System.Reflection.Assembly> LoadAssemblies(bool enableTagLevel)
         {
             yield return typeof(RestApiDocumentProcessor).Assembly;
             yield return typeof(TocDocumentProcessor).Assembly;
             yield return typeof(SplitRestApiToOperationLevel).Assembly;
+            if (enableTagLevel)
+            {
+                yield return typeof(SplitRestApiToTagLevel).Assembly;
+            }
         }
 
         private string GetRawModelFilePath(string fileName)
