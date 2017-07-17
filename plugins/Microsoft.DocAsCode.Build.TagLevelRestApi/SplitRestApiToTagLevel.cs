@@ -78,6 +78,7 @@ namespace Microsoft.DocAsCode.Build.TagLevelRestApi
             var splittedModels = new List<FileModel>();
             foreach (var tagModel in tagModels)
             {
+                tagModel.Metadata["_isSplittedToTag"] = true;
                 var newModel = GenerateNewFileModel(model, tagModel);
                 splittedModels.Add(newModel);
                 treeItems.Add(ConvertToTreeItem(tagModel, newModel.Key));
@@ -87,7 +88,7 @@ namespace Microsoft.DocAsCode.Build.TagLevelRestApi
             var groupedUids = splittedModels.SelectMany(m => m.Uids).Select(u => u.Name).ToList();
             content.Tags = new List<RestApiTagViewModel>();
             content.Children = content.Children.Where(child => !groupedUids.Contains(child.Uid)).ToList();
-            content.Metadata["isSplittedByTag"] = true;
+            content.Metadata["_isSplittedByTag"] = true;
             model.Content = content;
 
             // Reset uid definition

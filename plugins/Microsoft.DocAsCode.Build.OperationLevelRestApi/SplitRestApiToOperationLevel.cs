@@ -74,6 +74,7 @@ namespace Microsoft.DocAsCode.Build.OperationLevelRestApi
             var splittedModels = new List<FileModel>();
             foreach (var operationModel in GenerateOperationModels(content))
             {
+                operationModel.Metadata["_isSplittedToOperation"] = true;
                 var newModel = GenerateNewFileModel(model, operationModel);
                 splittedModels.Add(newModel);
                 treeItems.Add(ConvertToTreeItem(operationModel, newModel.Key));
@@ -81,6 +82,7 @@ namespace Microsoft.DocAsCode.Build.OperationLevelRestApi
 
             // Reset children
             content.Children = new List<RestApiChildItemViewModel>();
+            content.Metadata["_isSplittedByOperation"] = true;
             model.Content = content;
 
             // Reset uid definition
@@ -118,7 +120,7 @@ namespace Microsoft.DocAsCode.Build.OperationLevelRestApi
                 var model = new RestApiRootItemViewModel
                 {
                     Uid = child.Uid,
-                    Name = child.OperationId, // TODO: provide an extensible way to rewrite the name.
+                    Name = child.OperationId,
                     Conceptual = child.Conceptual,
                     Description = child.Description,
                     Summary = child.Summary,
@@ -132,7 +134,7 @@ namespace Microsoft.DocAsCode.Build.OperationLevelRestApi
                 // Reset child's uid to "originalUid/operation", that is to say, overwrite of original Uid will show in operation page.
                 child.Uid = string.Join("/", child.Uid, "operation");
 
-                // Reset html id, which set by template
+                // Reset html id, which is set by template
                 child.HtmlId = null;
 
                 // Reset child's additional content, which will show in operation page.

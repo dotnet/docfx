@@ -62,6 +62,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0", model.Uid);
                 Assert.Equal(0, model.Children.Count);
                 Assert.Equal(0, model.Tags.Count);
+                Assert.True((bool)model.Metadata["_isSplittedByTag"]);
             }
             {
                 // Verify splitted tag page
@@ -78,6 +79,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 Assert.Equal("swagger/petstore/pet.html", model.Metadata["_path"]);
                 Assert.Equal("TestData/swagger/petstore/pet.json", model.Metadata["_key"]);
                 Assert.True(model.Metadata.ContainsKey("externalDocs"));
+                Assert.True((bool)model.Metadata["_isSplittedToTag"]);
             }
         }
 
