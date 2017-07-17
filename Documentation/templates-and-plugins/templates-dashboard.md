@@ -39,6 +39,40 @@ templates:
         init: "git clone https://github.com/MathewSachin/docfx-tmpl.git mathew"
         command: "-t default,mathew/src"
         config: '"template":["default","mathew/src"]'
+    - name: docfx-lightbox-plugin (Featherlight)
+      description: A template which adds a lightbox to each image, using the jquery plugin Featherlight.
+      type: External
+      author: roel4ez
+      version: 1.0.0
+      engines:
+        docfx: ">=2.20.0"
+      thumbnail: ~/templates-and-plugins/images/roel4ez-feather.screenshot.png
+      homepage: https://github.com/roel4ez/docfx-lightbox-plugin
+      repository:
+        type: git
+        url: "https://github.com/roel4ez/docfx-lightbox-plugin.git"
+      license: MIT
+      usage:
+        init: "git clone https://github.com/roel4ez/docfx-lightbox-plugin.git docfx-lightbox-plugin"
+        command: "-t default,docfx-lightbox-plugin/templates/lightbox-featherlight"
+        config: '"template":["default","docfx-lightbox-plugin/templates/lightbox-featherlight"]'
+    - name: docfx-lightbox-plugin (Bootstrap Modal)
+      description: A template which adds a lightbox to each image, using the Modal window from Bootstrap.
+      type: External
+      author: roel4ez
+      version: 1.0.0
+      engines:
+        docfx: ">=2.20.0"
+      thumbnail: ~/templates-and-plugins/images/roel4ez-bootstrap.screenshot.png
+      homepage: https://github.com/roel4ez/docfx-lightbox-plugin
+      repository:
+        type: git
+        url: "https://github.com/roel4ez/docfx-lightbox-plugin.git"
+      license: MIT
+      usage:
+        init: "git clone https://github.com/roel4ez/docfx-lightbox-plugin.git docfx-lightbox-plugin"
+        command: "-t default,docfx-lightbox-plugin/templates/bootstrap-modal"
+        config: '"template":["default","docfx-lightbox-plugin/templates/bootstrap-modal"]'
 ---
 
 # Dashboard for Templates
