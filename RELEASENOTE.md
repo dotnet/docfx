@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.20)
+﻿Version Notes (Current Version: v2.21)
 =======================================
+v2.20.1
+-----------
+1. Bug fixes:
+   1. Fix bug in tabbed content.
 
 v2.20
 -----------
