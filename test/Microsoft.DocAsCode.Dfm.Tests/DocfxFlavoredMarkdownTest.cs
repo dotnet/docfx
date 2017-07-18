@@ -52,6 +52,14 @@ b:
         [InlineData(
             @"[*a*](xref:uid)",
             "<p><a href=\"xref:uid\" data-raw-source=\"[*a*](xref:uid)\"><em>a</em></a></p>\n")]
+        [InlineData(
+            @"# <a id=""x""></a>Y",
+            @"<h1 id=""x"">Y</h1>
+")]
+        [InlineData(
+            @"# <a name=""x""></a>Y",
+            @"<h1 id=""x"">Y</h1>
+")]
         #endregion
         public void TestDfmInGeneral(string source, string expected)
         {
@@ -66,7 +74,7 @@ b:
             options.ShouldExportSourceInfo = true;
             var actual = DocfxFlavoredMarked.Markup(null, null, options, @"# [title-a](#tab/a)
 content-a
-# [title-b](#tab/b/c)
+# <a id=""x""></a>[title-b](#tab/b/c)
 content-b
 - - -", "test.md");
             var groupId = "uBn0rykxXo";
