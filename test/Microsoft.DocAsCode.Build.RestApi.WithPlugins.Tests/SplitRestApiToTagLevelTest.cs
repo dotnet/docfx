@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.RestApi.Tests
+namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -16,10 +16,12 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
+    using Newtonsoft.Json.Linq;
     using Xunit;
 
     [Trait("Owner", "jehuan")]
     [Trait("EntityType", "RestApiDocumentProcessorWithPlugins")]
+    [Collection("docfx STA")]
     public class SplitRestApiToTagLevelTest : TestBase
     {
         private string _inputFolder;
@@ -61,6 +63,8 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0", model.Uid);
                 Assert.Equal(0, model.Children.Count);
                 Assert.Equal(0, model.Tags.Count);
+                Assert.True((bool)model.Metadata["_isSplittedByTag"]);
+                Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Find out more about Swagger</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
             }
             {
                 // Verify splitted tag page
@@ -77,6 +81,10 @@ namespace Microsoft.DocAsCode.Build.RestApi.Tests
                 Assert.Equal("swagger/petstore/pet.html", model.Metadata["_path"]);
                 Assert.Equal("TestData/swagger/petstore/pet.json", model.Metadata["_key"]);
                 Assert.True(model.Metadata.ContainsKey("externalDocs"));
+                Assert.True((bool)model.Metadata["_isSplittedToTag"]);
+
+                // Test overwritten metadata
+                Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Find out more about pets</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
             }
         }
 

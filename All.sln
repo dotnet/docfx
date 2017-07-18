@@ -181,6 +181,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.SchemaDrivenProcessor.Tests", "test\Microsoft.DocAsCode.Build.SchemaDrivenProcessor.Tests\Microsoft.DocAsCode.Build.SchemaDrivenProcessor.Tests.csproj", "{CFAA9BBA-FE45-43A3-88D7-A8065FDB44FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.OperationLevelRestApi", "plugins\Microsoft.DocAsCode.Build.OperationLevelRestApi\Microsoft.DocAsCode.Build.OperationLevelRestApi.csproj", "{CB8D3397-E338-4801-B3E7-42FE65F535AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -613,6 +615,14 @@ Global
 		{CFAA9BBA-FE45-43A3-88D7-A8065FDB44FD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CFAA9BBA-FE45-43A3-88D7-A8065FDB44FD}.Release|x86.ActiveCfg = Release|Any CPU
 		{CFAA9BBA-FE45-43A3-88D7-A8065FDB44FD}.Release|x86.Build.0 = Release|Any CPU
+		{CB8D3397-E338-4801-B3E7-42FE65F535AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB8D3397-E338-4801-B3E7-42FE65F535AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB8D3397-E338-4801-B3E7-42FE65F535AE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CB8D3397-E338-4801-B3E7-42FE65F535AE}.Debug|x86.Build.0 = Debug|Any CPU
+		{CB8D3397-E338-4801-B3E7-42FE65F535AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB8D3397-E338-4801-B3E7-42FE65F535AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB8D3397-E338-4801-B3E7-42FE65F535AE}.Release|x86.ActiveCfg = Release|Any CPU
+		{CB8D3397-E338-4801-B3E7-42FE65F535AE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -699,5 +709,6 @@ Global
 		{7CFCAAFD-622D-4FCA-BBCB-1481867AA505} = {F922E543-9AD4-4031-8BD1-8A7AA9771D1E}
 		{0310C799-3965-4221-90AA-5084F82F567F} = {7CFCAAFD-622D-4FCA-BBCB-1481867AA505}
 		{CFAA9BBA-FE45-43A3-88D7-A8065FDB44FD} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
+		{CB8D3397-E338-4801-B3E7-42FE65F535AE} = {2EBDC7B1-6C85-4E32-A059-27370C240CBE}
 	EndGlobalSection
 EndGlobal
