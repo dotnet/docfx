@@ -70,7 +70,7 @@ When dealing with multiple templates, DocFX merges the files inside these templa
 
 The principle for merging is: if a file name collides then the file in the latter template overwrites the one in the former template.
 
-For example, you can merge `default` template and your custom template by calling `docfx build docfx.json -t default, c:/docfx_howto/simple_template`. Multiple templates are split by a comma `,` in the command line. Or you can define it in `docfx.json` by:
+For example, you can merge `default` template and your custom template by calling `docfx build docfx.json -t default,c:/docfx_howto/simple_template`. Multiple templates are split by a comma `,` in the command line. Or you can define it in `docfx.json` by:
 ```
 "build": {
     "template": [
