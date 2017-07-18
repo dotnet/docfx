@@ -9,8 +9,8 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <licenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</licenseUrl>
     <projectUrl>https://github.com/dotnet/docfx</projectUrl>
-    <description>This is a plugin for DocFX to split Rest API into operation level pages.</description>
-    <releaseNotes>The initial version to split RestApi pages to operation level.</releaseNotes>
+    <description>This is a plugin for DocFX to split REST API into operation level pages.</description>
+    <releaseNotes>The initial version to split REST API pages to operation level.</releaseNotes>
     <copyright>Copyright 2015-2017</copyright>
     <tags>Documentation API Metadata docascode docfx rest plugin</tags>
   </metadata>

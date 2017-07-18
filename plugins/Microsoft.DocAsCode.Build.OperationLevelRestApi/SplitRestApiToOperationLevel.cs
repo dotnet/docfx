@@ -128,7 +128,7 @@ namespace Microsoft.DocAsCode.Build.OperationLevelRestApi
                     Documentation = child.Documentation,
                     Children = new List<RestApiChildItemViewModel> { child },
                     Tags = new List<RestApiTagViewModel>(),
-                    Metadata = MergeMetadata(root.Metadata, child.Metadata)
+                    Metadata = MergeChildMetadata(root, child)
                 };
 
                 // Reset child's uid to "originalUid/operation", that is to say, overwrite of original Uid will show in operation page.
@@ -181,15 +181,15 @@ namespace Microsoft.DocAsCode.Build.OperationLevelRestApi
             };
         }
 
-        private Dictionary<string, object> MergeMetadata(Dictionary<string, object> rootMetadata, Dictionary<string, object> childMetadata)
+        private Dictionary<string, object> MergeChildMetadata(RestApiRootItemViewModel root, RestApiChildItemViewModel child)
         {
-            var result = new Dictionary<string, object>(rootMetadata);
-            foreach (var pair in childMetadata)
+            var result = new Dictionary<string, object>(child.Metadata);
+            foreach (var pair in root.Metadata)
             {
-                // Root metadata wins for the same key
+                // Child metadata wins for the same key
                 if (!result.ContainsKey(pair.Key))
                 {
-                    result[pair.Key] = childMetadata[pair.Key];
+                    result[pair.Key] = pair.Value;
                 }
             }
             return result;
