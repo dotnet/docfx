@@ -78,7 +78,11 @@ namespace Microsoft.DocAsCode.Dfm
             BlockRules = blockRules.ToImmutableList();
 
             Rewriter = InitMarkdownStyle(container, baseDir, templateDir);
-            TokenAggregator = new TabGroupAggregator();
+            TokenAggregator = new CompositeMarkdownTokenAggregator(
+                new IMarkdownTokenAggregator[]
+                {
+                    new TabGroupAggregator(),
+                });
         }
 
         private static void Replace<TSource, TReplacement>(List<IMarkdownRule> blockRules)
