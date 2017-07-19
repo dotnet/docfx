@@ -150,29 +150,26 @@ function getRemoteUrl(remote, startLine, gitContribute, gitUrlPattern) {
 
 function getGitInfo(gitContribute, gitRemote) {
     // apiSpecFolder defines the folder contains overwrite files for MRef, the default value is apiSpec
-    var defaultApiSpecFolder = "apiSpec";
+    var defaultApiSpecFolder = 'apiSpec';
 
-    if (!gitContribute && !gitRemote) {
-        return {
-            apiSpecFolder: defaultApiSpecFolder
-        }
+    var result = {};
+    if (gitContribute && gitContribute.apiSpecFolder) {
+        result.apiSpecFolder = gitContribute.apiSpecFolder;
+    } else {
+        result.apiSpecFolder = defaultApiSpecFolder;
     }
+    mergeKey(gitContribute, gitRemote, result, 'repo');
+    mergeKey(gitContribute, gitRemote, result, 'branch');
+    mergeKey(gitContribute, gitRemote, result, 'path');
 
-    if (!gitContribute) {
-        return {
-            apiSpecFolder: defaultApiSpecFolder,
-            repo: gitRemote.repo,
-            branch: gitRemote.branch,
-            // path defines the relative path from current git repo.
-            path: gitRemote.path
+    return result;
+
+    function mergeKey(source, sourceFallback, dest, key) {
+        if (source && source[key]) {
+            dest[key] = source[key];
+        } else if (sourceFallback && sourceFallback[key]) {
+            dest[key] = sourceFallback[key];
         }
-    }
-
-    return {
-        apiSpecFolder: gitContribute.apiSpecFolder || defaultApiSpecFolder,
-        repo: gitContribute.repo || gitRemote.repo,
-        branch: gitContribute.branch || gitRemote.branch,
-        path: gitRemote.path
     }
 }
 
