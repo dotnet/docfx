@@ -25,6 +25,8 @@ $scriptHome = Split-Path $scriptPath
 $versionCsFolderPath = $scriptHome + "\TEMP\"
 $versionCsFilePath = $versionCsFolderPath + "version.cs"
 
+$global:LASTEXITCODE = $null
+
 Push-Location $scriptHome
 
 function NugetPack {
