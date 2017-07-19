@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 return null;
             }
-            var content = line.TrimStart('#').TrimStart(' ');
+            var content = line.TrimStart('#').Trim(' ');
             if (!content.StartsWith(YamlMimePrefix))
             {
                 return null;

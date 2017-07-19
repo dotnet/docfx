@@ -25,6 +25,7 @@ function getDirectoryName(path) {
 }
 
 function getHtmlId(input) {
+    if (!input) return '';
     return input.replace(/\W/g, '_');
 }
 

@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
   <metadata>
-    <id>rest.tagpage.plugins</id>
+    <id>rest.operationpage.plugins</id>
     <version>1.0.0</version>
-    <title>rest.tagpage.plugins</title>
+    <title>rest.operationpage.plugins</title>
     <authors>Microsoft</authors>
     <owners>Microsoft</owners>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <licenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</licenseUrl>
     <projectUrl>https://github.com/dotnet/docfx</projectUrl>
-    <description>This is a plugin for DocFX to split REST API into tag level pages. Operations with the same tag are grouped into one page. If operation is in multiple tags, it would be included in first tag level page. This package contains the plugin for RestApi document processor only.</description>
-    <releaseNotes>The initial version to split REST API pages to tag level.</releaseNotes>
+    <description>This is a plugin for DocFX to split REST API into operation level pages.</description>
+    <releaseNotes>The initial version to split REST API pages to operation level.</releaseNotes>
     <copyright>Copyright 2015-2017</copyright>
     <tags>Documentation API Metadata docascode docfx rest plugin</tags>
   </metadata>

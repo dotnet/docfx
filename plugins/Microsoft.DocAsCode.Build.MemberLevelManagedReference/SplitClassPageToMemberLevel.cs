@@ -24,6 +24,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         private const char OverloadLastChar = '*';
         private const char Separator = '.';
         private const string SplitReferencePropertyName = "_splitReference";
+        private const string SplitFromPropertyName = "_splitFrom";
         private const string IsOverloadPropertyName = "_isOverload";
         private const int MaximumFileNameLength = 180;
         private static readonly List<string> EmptyList = new List<string>();
@@ -123,6 +124,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             page.References = itemsToSplit.Select(ConvertToReference).Concat(page.References).ToList();
 
             primaryItem.Metadata[SplitReferencePropertyName] = true;
+            primaryItem.Metadata[SplitFromPropertyName] = true;
 
             page.Items = new List<ItemViewModel> { primaryItem };
 

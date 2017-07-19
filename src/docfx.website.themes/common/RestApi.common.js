@@ -18,6 +18,8 @@ exports.transform = function (model) {
             child.path = appendQueryParamsToPath(child.path, child.parameters);
             child.sourceurl = child.sourceurl || common.getViewSourceHref(child, null, model._gitUrlPattern);
             child.conceptual = child.conceptual || ''; // set to empty incase mustache looks up
+            child.summary = child.summary || ''; // set to empty incase mustache looks up
+            child.description = child.description || ''; // set to empty incase mustache looks up
             child.footer = child.footer || ''; // set to empty incase mustache looks up
             child.remarks = child.remarks || ''; // set to empty incase mustache looks up
             child.htmlId = common.getHtmlId(child.uid);
@@ -269,14 +271,18 @@ exports.getBookmarks = function (model) {
             }
             if (tag.children) {
                 tag.children.forEach(function (child) {
-                    bookmarks[child.uid] = common.getHtmlId(child.uid);
+                    if (child.uid) {
+                        bookmarks[child.uid] = common.getHtmlId(child.uid);
+                    }
                 })
             }
         })
     }
     if (model.children) {
         model.children.forEach(function (child) {
-            bookmarks[child.uid] = common.getHtmlId(child.uid);
+            if (child.uid) {
+                bookmarks[child.uid] = common.getHtmlId(child.uid);
+            }
         });
     }
 

@@ -151,7 +151,7 @@ Classes in assemblies are by definition complete.
             Assert.Equal(@"
 <a href=""https://example.org"">https://example.org</a>
 <a href=""https://example.org"">example</a>
-<p>This is <span class=""paramref"">ref</span> a sample of exception node</p>
+<p>This is <code data-dev-comment-type=""paramref"">ref</code> a sample of exception node</p>
 <ul><li>
 <pre><code class=""c#"">public class XmlElement
     : XmlLinkedNode</code></pre>

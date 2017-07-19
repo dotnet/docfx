@@ -12,7 +12,7 @@
     "Other"
   ],
   "main": "./out/src/extension",
-  "icon": "images/logo.svg",
+  "icon": "images/logo.png",
   "galleryBanner": {
     "color": "#2D2D2D",
     "theme": "dark"
@@ -20,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/dotnet/docfx/issues"
   },
-  "homepage": "https://github.com/dotnet/docfx/blob/dev/src/VscPreviewExtension/README.md",
+  "homepage": "https://github.com/dotnet/docfx/blob/dev/tools/VscPreviewExtension/README.md",
   "repository": {
     "type": "git",
     "url": "https://github.com/dotnet/docfx/tree/dev/tools/VscPreviewExtension"
