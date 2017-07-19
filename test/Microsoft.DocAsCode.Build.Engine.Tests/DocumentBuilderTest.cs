@@ -812,6 +812,51 @@ exports.getOptions = function (){
         }
 
         [Fact]
+        public void TestBuildWithXrefService()
+        {
+            #region Prepare test data
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
+
+            var conceptualFile = CreateFile("hh/test.md",
+                new[]
+                {
+                    "#title",
+                    "line1 go to @Microsoft.DocAsCode.AzureMarkdownRewriters.AzureBlockquoteBlockRule for details.",
+                    "line2 go to @Microsoft.DocAsCode.AzureMarkdownRewriters.AzureBlockquoteBlockRule.LeadingBlockquote for details.",
+                    "line3 @hh not found."
+                },
+                _inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] {conceptualFile});
+            #endregion
+
+            using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
+            {
+                BuildDocument(
+                    files,
+                    new Dictionary<string, object>(),
+                    templateFolder: _templateFolder);
+            }
+            {
+                // check conceptual.
+                var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));
+                Assert.True(File.Exists(conceptualOutputPath));
+                Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
+                Assert.Equal(
+                    string.Join(
+                        "",
+                        "\n",
+                        "<p>line1 go to <a class=\"xref\" href=\"http://dotnet.github.io/docfx/api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureBlockquoteBlockRule.html\">",
+                        "AzureBlockquoteBlockRule</a> for details.\n",
+                        "line2 go to <a class=\"xref\" href=\"http://dotnet.github.io/docfx/api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureBlockquoteBlockRule.html#Microsoft_DocAsCode_AzureMarkdownRewriters_AzureBlockquoteBlockRule_LeadingBlockquote\">",
+                        "LeadingBlockquote</a> for details.\n",
+                        "line3 @hh not found.</p>\n"),
+                     File.ReadAllText(conceptualOutputPath));
+            }
+        }
+
+        [Fact]
         public void TestBuildWithMultipleVersion()
         {
             #region Prepare test data
@@ -866,7 +911,8 @@ exports.getOptions = function (){
                     TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null),
                     TemplateDir = templateFolder,
                     VersionDir = versionDir,
-                    XRefMaps = ImmutableArray.Create("TestData/xrefmap.yml")
+                    XRefMaps = ImmutableArray.Create("TestData/xrefmap.yml"),
+                    XRefServiceUrls = ImmutableArray.Create("http://restfulapiwebservice0627.azurewebsites.net/uids")
                 };
                 builder.Build(parameters);
             }

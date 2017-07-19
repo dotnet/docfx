@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             ApplyTemplateSettings applyTemplateSetting,
             string rootTocPath,
             string versionFolder,
-            ImmutableArray<string> xrefserviceUrls)
+            ImmutableArray<string> xrefServiceUrls)
         {
             BuildOutputFolder = buildOutputFolder;
             VersionName = versionName;
@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             AllSourceFiles = GetAllSourceFiles(allSourceFiles);
             ExternalReferencePackages = externalReferencePackages;
             XRefMapUrls = xrefMaps;
-            XRefServiceUrls = xrefserviceUrls;
+            XRefServiceUrls = xrefServiceUrls;
             MaxParallelism = maxParallelism;
             if (xrefMaps.Length > 0)
             {
@@ -212,18 +212,25 @@ namespace Microsoft.DocAsCode.Build.Engine
             int pieceSize = 1000;
             foreach (string requestUrl in XRefServiceUrls)
             {    
-                for(int i = 0; i < uidList.Count; i+= pieceSize)
+                for(int i = 0; i < uidList.Count; i += pieceSize)
                 {
                     List<string> smallPiece = uidList.GetRange(i, Math.Min(pieceSize, uidList.Count - i));
                     var result = await QueryByHttpRequestAsync(requestUrl, smallPiece);
                     bool isSuccess = result.Item1;
                     List<XRefSpec> xsList = result.Item2;
-                    if (isSuccess)
+                    if (isSuccess && xsList.Count == smallPiece.Count)
                     {
                         for (int j = 0; j < xsList.Count; j++)
                         {
                             if (xsList[j] != null)
                             {
+                                if(smallPiece[j] != xsList[j].Uid)
+                                {
+                                    Logger.LogWarning($"Results returned from {requestUrl} are not conform to custom format." +
+                                        $"The results returned should be placed on the same index position as the uid in the query uidList, if an uid can't be found null should be returned.");
+                                    unresolvedUidList.AddRange(smallPiece.GetRange(j, smallPiece.Count - j));
+                                    break;
+                                }
                                 externalXRefSpec.AddOrUpdate(smallPiece[j], xsList[j], (_, old) => old + xsList[j]);
                             }
                             else
@@ -238,8 +245,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
                 Logger.LogInfo($"{uidList.Count - unresolvedUidList.Count} uids found in {requestUrl}.");
-                uidList = new List<string>(unresolvedUidList);
-                unresolvedUidList.Clear();
+                uidList = unresolvedUidList;
+                unresolvedUidList = new List<string>();
             }
 
             Logger.LogInfo($"{needQueryCount - uidList.Count} uids found in xrefservice.");
@@ -300,7 +307,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 else
                 {
-                    Logger.LogWarning($"Failed to resolve {smallPiece.Count} uids from {requestUrl}: for example including " + smallPiece.Take(10).ToDelimitedString());
+                    Logger.LogWarning($"Failed to resolve {smallPiece.Count} uids from {requestUrl}, error status code is {response.StatusCode}: for example including " + smallPiece.Take(10).ToDelimitedString());
                     return failedResult;
                 }
             }
