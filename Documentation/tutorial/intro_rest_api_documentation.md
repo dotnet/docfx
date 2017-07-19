@@ -8,7 +8,7 @@ DocFX now supports generating documentation from REST APIs following [Swagger sp
 
 The Swagger RESTful API files *MUST* end with `.json`.
 
-One Swagger API file generates one HTML file. For example. a file `contacts.swagger.json` generates file naming `contacts.html`.
+One Swagger API file generates one HTML file. For example, a file `contacts.swagger.json` generates file naming `contacts.html`.
 
 Basic structure
 --------------
@@ -225,3 +225,12 @@ You can define your own metadata with YAML header. This functionality is quite u
 When the key of the metadata is already preserved by DocFX, for example, `summary`, the value of `summary` will be overwritten. You can also overwrite complex types, for example, `description` of a `parameter`. Make sure the data structure of the provided metadata is consistent with the one defined in DocFX, otherwise, DocFX is unable to cast the value and fails.
 
 When the key of the metadata is not preserved by DocFX, for example, `not_predefined`. The metadata is kept and can be used in the template.
+
+## Split extensibility
+By default, one *REST* API file generates one HTML file. For example, petstore.json generates petstore.html. We provide `rest.tagpage` and `rest.opearationpage` plugins to split the original *REST* API page into smaller pages.
+
+1. With `rest.tagpage` plugin enabled, operations with the same tag are grouped into one page.
+2. With `rest.operationpage` plugin enabled, each operation is spliited into single page.
+3. With both `rest.tagpage` and `rest.operationpage` plugins enabled, the *REST* model will be splitted to tag level first, then split to operation level.
+
+Refer [Plugins dashboard](../templates-and-plugins/plugins-dashboard.md) for more details.
