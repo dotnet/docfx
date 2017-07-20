@@ -230,7 +230,7 @@ When the key of the metadata is not preserved by DocFX, for example, `not_predef
 By default, one *REST* API file generates one HTML file. For example, petstore.json generates petstore.html. We provide `rest.tagpage` and `rest.opearationpage` plugins to split the original *REST* API page into smaller pages.
 
 1. With `rest.tagpage` plugin enabled, operations with the same tag are grouped into one page.
-2. With `rest.operationpage` plugin enabled, each operation is spliited into single page.
+2. With `rest.operationpage` plugin enabled, each operation is splitted into single page.
 3. With both `rest.tagpage` and `rest.operationpage` plugins enabled, the *REST* model will be splitted to tag level first, then split to operation level.
 
 Refer [Plugins dashboard](../templates-and-plugins/plugins-dashboard.md) for more details.
