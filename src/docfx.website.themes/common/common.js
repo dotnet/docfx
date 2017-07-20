@@ -165,9 +165,9 @@ function getGitInfo(gitContribute, gitRemote) {
     return result;
 
     function mergeKey(source, sourceFallback, dest, key) {
-        if (source && source[key]) {
+        if (source && key in source) {
             dest[key] = source[key];
-        } else if (sourceFallback && sourceFallback[key]) {
+        } else if (sourceFallback && key in source) {
             dest[key] = sourceFallback[key];
         }
     }
