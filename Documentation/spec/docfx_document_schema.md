@@ -80,13 +80,13 @@ An object to describe the schema of the value of the property.
 | title        | string | The title of the property.
 | description  | string | A lengthy explanation about the purpose of the data described by the schema
 | default      | what `type` defined | The default value for current field
-| type         | string | The type of the root document model. Refer to [type keyword](#6-1-type) for detailed description.
+| type         | string | The type of the root document model. Refer to [type keyword](#61-type) for detailed description.
 | properties   | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties if `type` for the model is `object`. Omitting this keyword has the same behavior as an empty object.
 | items        | [Property Object](#property-object) | An object to hold the schema of the items if `type` for the model is `array`. Omitting this keyword has the same behavior as an empty schema.
-| reference    | string | Defines whether current property is a reference to the actual value of the property. Refer to [reference](6-2-reference) for detailed explanation.
-| contentType  | string | Defines the content type of the property. Refer to [contentType](6-3-contentType) for detailed explanation.
-| tags       | array  | Defines the tags of the property. Refer to [tags](6-4-tags) for detailed explanation.
-| mergeType      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [mergeType](6-5-mergeType) for detailed explanation.
+| reference    | string | Defines whether current property is a reference to the actual value of the property. Refer to [reference](#62-reference) for detailed explanation.
+| contentType  | string | Defines the content type of the property. Refer to [contentType](#63-contenttype) for detailed explanation.
+| tags       | array  | Defines the tags of the property. Refer to [tags](#64-tags) for detailed explanation.
+| mergeType      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [mergeType](#65-mergetype) for detailed explanation.
 
 ##### Patterned Field
 | Field Name | Type | Description
