@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
         {
             var builder = new GfmEngineBuilder(new Options())
             {
-                TokenAggregator = new Head1HrAggregateToHead2(),
+                TokenAggregators = ImmutableList.Create<IMarkdownTokenAggregator>(new Head1HrAggregateToHead2()),
             };
             var engine = builder.CreateEngine(new HtmlRenderer());
             var result = engine.Markup(source);
@@ -89,7 +89,7 @@ P4",
         {
             var builder = new GfmEngineBuilder(new Options())
             {
-                TokenAggregator = new ParaParaAggregateToPara(),
+                TokenAggregators = ImmutableList.Create<IMarkdownTokenAggregator>(new ParaParaAggregateToPara()),
             };
             var engine = builder.CreateEngine(new HtmlRenderer());
             var result = engine.Markup(source);
@@ -110,12 +110,9 @@ P2",
         {
             var builder = new GfmEngineBuilder(new Options())
             {
-                TokenAggregator = new CompositeMarkdownTokenAggregator(
-                    new IMarkdownTokenAggregator[]
-                    {
-                        new ParaParaAggregateToPara(),
-                        new Head1HrAggregateToHead2(),
-                    }),
+                TokenAggregators = ImmutableList.Create<IMarkdownTokenAggregator>(
+                    new ParaParaAggregateToPara(),
+                    new Head1HrAggregateToHead2()),
             };
             var engine = builder.CreateEngine(new HtmlRenderer());
             var result = engine.Markup(source);
