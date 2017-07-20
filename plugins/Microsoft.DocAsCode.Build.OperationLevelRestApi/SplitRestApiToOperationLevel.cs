@@ -83,6 +83,7 @@ namespace Microsoft.DocAsCode.Build.OperationLevelRestApi
             // Reset children
             content.Children = new List<RestApiChildItemViewModel>();
             content.Metadata["_isSplittedByOperation"] = true;
+            content.Tags = new List<RestApiTagViewModel>();
             model.Content = content;
 
             // Reset uid definition
@@ -142,6 +143,7 @@ namespace Microsoft.DocAsCode.Build.OperationLevelRestApi
                 child.Description = null;
                 child.Summary = null;
                 child.Remarks = null;
+                child.Tags = new List<string>();
 
                 yield return model;
             }
