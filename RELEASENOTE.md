@@ -1,5 +1,16 @@
-﻿Version Notes (Current Version: v2.21.1)
+﻿Version Notes (Current Version: v2.21.2)
 =======================================
+v2.21.2
+-----------
+1. Allow manual define heading id:
+
+   ```md
+   # <a id="a"></a>B
+   ```
+   will generate following html:
+   ```html
+   <h1 id="a">B</h1>
+
 v2.21.1
 -----------
 1. Bug fixes:
