@@ -5,7 +5,7 @@ Customize Renderer
 ------------------
 
 DocFX Flavored Markdown introduced @Microsoft.DocAsCode.Dfm.IDfmCustomizedRendererPartProvider from v2.17.
-In older version, you need to define a new markdown renderer and export a new [markdown service](xref:Microsoft.DocAsCode.Build.EngineIMarkdownServiceProvider).
+In older version, you need to define a new markdown renderer and export a new [markdown service](xref:Microsoft.DocAsCode.Plugins.IMarkdownServiceProvider).
 
 Now, you can customize a part of renderer as a DocFX plugin.
 
