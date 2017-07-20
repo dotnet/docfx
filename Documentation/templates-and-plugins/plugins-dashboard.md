@@ -15,6 +15,30 @@ templates:
         init: "nuget install memberpage -OutputDirectory <output>"
         command: "-t default,<output>/memberpage.<version>/content"
         config: 'template: ["statictoc", "<output>/memberpage.<version>/content"]'
+    - name: rest.tagpage
+      description: It splits the *REST* model into tag level model. With this plugin enabled, operations with the same tag are grouped into one page. If the operation is in multiple tags, it would be included in first tag level page.
+      type: Internal
+      thumbnail: ~/templates-and-plugins/images/rest.tagpage.default.screenshot.png
+      homepage: https://www.nuget.org/packages/rest.tagpage/
+      repository:
+        type: git
+        url: "https://github.com/dotnet/docfx/tree/master/plugins/Microsoft.DocAsCode.Build.TagLevelRestApi"
+      usage:
+        init: "nuget install rest.tagpage -OutputDirectory <output>"
+        command: "-t default,<output>/rest.tagpage.<version>/content"
+        config: 'template: ["default", "<output>/rest.tagpage.<version>/content"]'
+    - name: rest.operationpage
+      description: It splits the *REST* model into operation level model. If it's enabled toghether with `rest.tagpage`, the *REST* model will split to tag level first, then split to operation level.
+      type: Internal
+      thumbnail: ~/templates-and-plugins/images/rest.operationpage.default.screenshot.png
+      homepage: https://www.nuget.org/packages/rest.operationpage/
+      repository:
+        type: git
+        url: "https://github.com/dotnet/docfx/tree/master/plugins/Microsoft.DocAsCode.Build.OperationLevelRestApi"
+      usage:
+        init: "nuget install rest.operationpage -OutputDirectory <output>"
+        command: "-t default,<output>/rest.operationpage.<version>/content"
+        config: 'template: ["default", "<output>/rest.operationpage.<version>/content"]'
 ---
 
 # Dashboard for Templates
