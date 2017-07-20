@@ -384,6 +384,7 @@ items:
   assemblies:
   - System.Console
   namespace: System
+  overload: System.Console.WriteLine*
   syntax:
     content: public static void WriteLine()
     content.vb: Public Shared Sub WriteLine
@@ -1452,3 +1453,8 @@ references:
     isExternal: true
   - name: ()
     fullName: ()
+- uid: System.Console.WriteLine*
+  commentId: Overload:System.Console.WriteLine
+  isExternal: false
+  name: WriteLine
+  nameWithType: System.Console.WriteLine

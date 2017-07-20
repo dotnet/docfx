@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Tests
     using Xunit;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
 
     public class JsonConverterTest
     {
@@ -79,6 +80,30 @@ namespace Microsoft.DocAsCode.Tests
 
             var result = JsonUtility.Serialize(fileMappingItem);
             Assert.Equal("{\"files\":[\"file1\"],\"src\":\"folder1\"}", result);
+        }
+
+        [Fact]
+        [Trait("Related", "docfx")]
+        public void TestManifestItemCollectionConverterCouldSerializeAndDeserialize()
+        {
+            var manifest = new Manifest();
+            ManifestItem manifestItemA = new ManifestItem
+            {
+                SourceRelativePath = "a"
+            };
+            ManifestItem manifestItemB = new ManifestItem
+            {
+                SourceRelativePath = "b"
+            };
+            manifest.Files.Add(manifestItemB);
+            manifest.Files.Add(manifestItemA);
+
+            Assert.Equal(
+                "{\"files\":[{\"source_relative_path\":\"a\",\"output\":{},\"is_incremental\":false},{\"source_relative_path\":\"b\",\"output\":{},\"is_incremental\":false}]}",
+                JsonUtility.Serialize(manifest));
+            Assert.Equal(
+                "{\"files\":[{\"source_relative_path\":\"a\",\"output\":{},\"is_incremental\":false},{\"source_relative_path\":\"b\",\"output\":{},\"is_incremental\":false}]}",
+                JsonUtility.Serialize(JsonUtility.FromJsonString<Manifest>(JsonUtility.Serialize(manifest))));
         }
 
         private static object ConvertJObjectToObject(object raw)

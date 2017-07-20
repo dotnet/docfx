@@ -30,21 +30,21 @@ namespace Microsoft.DocAsCode.Common.Tests
 
                 Logger.LogInfo("test no phase scope");
                 Assert.Null(TakeFirstLogItemAndRemove(listener.Items).Phase);
-                Assert.Equal("id", AmbientContext.CurrentContext.Id);
-                Assert.Equal("id.2", AmbientContext.CurrentContext.GenerateNextCorrelationId());
+                Assert.Equal("id", AmbientContext.CurrentContext?.Id);
+                Assert.Equal("id.2", AmbientContext.CurrentContext?.GenerateNextCorrelationId());
                 using (new LoggerPhaseScope("A"))
                 {
                     Logger.LogInfo("test in phase scope A");
                     Assert.Equal("A", TakeFirstLogItemAndRemove(listener.Items).Phase);
-                    Assert.Equal("id.3", AmbientContext.CurrentContext.Id);
-                    Assert.Equal("id.3.2", AmbientContext.CurrentContext.GenerateNextCorrelationId());
+                    Assert.Equal("id.3", AmbientContext.CurrentContext?.Id);
+                    Assert.Equal("id.3.2", AmbientContext.CurrentContext?.GenerateNextCorrelationId());
                     using (new LoggerPhaseScope("B"))
                     {
                         Logger.LogInfo("test in phase scope B");
                         Assert.Equal("A.B", TakeFirstLogItemAndRemove(listener.Items).Phase);
 
-                        Assert.Equal("id.3.3", AmbientContext.CurrentContext.Id);
-                        Assert.Equal("id.3.3.2", AmbientContext.CurrentContext.GenerateNextCorrelationId());
+                        Assert.Equal("id.3.3", AmbientContext.CurrentContext?.Id);
+                        Assert.Equal("id.3.3.2", AmbientContext.CurrentContext?.GenerateNextCorrelationId());
 
                         var captured = LoggerPhaseScope.Capture();
                         Assert.NotNull(captured);
@@ -57,20 +57,20 @@ namespace Microsoft.DocAsCode.Common.Tests
                                 Logger.LogInfo("test in captured phase scope B");
                                 if (round == 1)
                                 {
-                                    Assert.Equal("id.3.3", AmbientContext.CurrentContext.Id);
-                                    Assert.Equal("id.3.3.4", AmbientContext.CurrentContext.GenerateNextCorrelationId());
+                                    Assert.Equal("id.3.3", AmbientContext.CurrentContext?.Id);
+                                    Assert.Equal("id.3.3.4", AmbientContext.CurrentContext?.GenerateNextCorrelationId());
                                 }
 
                                 if (round == 2)
                                 {
-                                    Assert.Equal("id.3.3", AmbientContext.CurrentContext.Id);
-                                    Assert.Equal("id.3.3.6", AmbientContext.CurrentContext.GenerateNextCorrelationId());
+                                    Assert.Equal("id.3.3", AmbientContext.CurrentContext?.Id);
+                                    Assert.Equal("id.3.3.6", AmbientContext.CurrentContext?.GenerateNextCorrelationId());
                                 }
                             }
                         };
                     } // exit scope B.
 
-                    Assert.Equal("id.3", AmbientContext.CurrentContext.Id);
+                    Assert.Equal("id.3", AmbientContext.CurrentContext?.Id);
 
                     using (new LoggerPhaseScope("C", LogLevel.Diagnostic))
                     {
@@ -78,23 +78,23 @@ namespace Microsoft.DocAsCode.Common.Tests
 
                         Assert.Equal("A.C", TakeFirstLogItemAndRemove(listener.Items).Phase);
 
-                        Assert.Equal("id.3.4", AmbientContext.CurrentContext.Id);
+                        Assert.Equal("id.3.4", AmbientContext.CurrentContext?.Id);
 
                         // run callback in scope C.
                         callback(false, 1);
 
                         Assert.Equal("A.B", TakeFirstLogItemAndRemove(listener.Items).Phase);
-                        Assert.Equal("id.3.4", AmbientContext.CurrentContext.Id);
+                        Assert.Equal("id.3.4", AmbientContext.CurrentContext?.Id);
                     } // exit scope C.
 
-                    Assert.Equal("id.3", AmbientContext.CurrentContext.Id);
+                    Assert.Equal("id.3", AmbientContext.CurrentContext?.Id);
 
                     item = TakeFirstLogItemAndRemove(listener.Items);
                     Assert.Equal("A.C", item.Phase);
                     Assert.Equal(LogLevel.Diagnostic, item.LogLevel);
                 } // exit scope A.
 
-                Assert.Equal("id", AmbientContext.CurrentContext.Id);
+                Assert.Equal("id", AmbientContext.CurrentContext?.Id);
 
                 Logger.LogInfo("test no phase scope");
                 Assert.Null(TakeFirstLogItemAndRemove(listener.Items).Phase);
@@ -113,7 +113,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             {
                 Logger.UnregisterListener(listener);
                 Logger.LogLevelThreshold = logLevel;
-                AmbientContext.CurrentContext.Dispose();
+                AmbientContext.CurrentContext?.Dispose();
             }
         }
 

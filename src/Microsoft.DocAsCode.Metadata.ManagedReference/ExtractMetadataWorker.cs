@@ -23,7 +23,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     public sealed class ExtractMetadataWorker : IDisposable
     {
         private const string XmlCommentFileExtension = "xml";
-        private const string IndexFileName = ".manifest";
         private readonly Dictionary<FileType, List<FileInformation>> _files;
         private readonly bool _rebuild;
         private readonly bool _shouldSkipMarkup;
@@ -35,6 +34,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         //Lacks UT for shared workspace
         private readonly Lazy<MSBuildWorkspace> _workspace;
+
+        internal const string IndexFileName = ".manifest";
 
         public ExtractMetadataWorker(ExtractMetadataInputModel input)
         {
@@ -690,7 +691,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // 3. generate manifest file
             string indexFilePath = Path.Combine(folder, IndexFileName);
 
-            JsonUtility.Serialize(indexFilePath, indexer);
+            JsonUtility.Serialize(indexFilePath, indexer, Newtonsoft.Json.Formatting.Indented);
             yield return IndexFileName;
         }
 
@@ -704,7 +705,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             try
             {
-                index = YamlUtility.Deserialize<ApiReferenceViewModel>(indexFilePath);
+                index = JsonUtility.Deserialize<ApiReferenceViewModel>(indexFilePath);
             }
             catch (Exception e)
             {
@@ -927,12 +928,20 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 try
                 {
                     Logger.LogVerbose($"Loading project {s}", file: s);
-                    var project = _workspace.Value.OpenProjectAsync(s).Result;
-                    foreach (var p in _workspace.Value.CurrentSolution.Projects)
+                    var project = _workspace.Value.CurrentSolution.Projects.FirstOrDefault(
+                        p => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(p.FilePath, s));
+
+                    if (project != null)
                     {
-                        cache.TryAdd(p.FilePath.ToNormalizedFullPath(), p);
+                        return project;
                     }
-                    return project;
+
+                    return _workspace.Value.OpenProjectAsync(s).Result;
+                }
+                catch (AggregateException e)
+                {
+                    Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.GetBaseException()?.Message}. Ignored.");
+                    return null;
                 }
                 catch (Exception e)
                 {

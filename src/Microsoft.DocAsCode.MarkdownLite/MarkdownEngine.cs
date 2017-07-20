@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdownLite
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Text.RegularExpressions;
@@ -41,7 +42,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public IMarkdownTokenTreeValidator TokenTreeValidator { get; set; }
 
+        [Obsolete]
         public IMarkdownTokenAggregator TokenAggregator { get; set; }
+
+        public ImmutableList<IMarkdownTokenAggregator> TokenAggregators { get; set; }
 
         public Dictionary<string, LinkObj> Links { get; }
 
@@ -107,21 +111,35 @@ namespace Microsoft.DocAsCode.MarkdownLite
                         TokenAggregator));
             }
 
+            // Aggregate tokens.
+            foreach (var agg in TokenAggregators)
+            {
+                tokens = RewriteTokens(
+                    tokens,
+                    sourceInfo.File,
+                    new MarkdownAggregateEngine(
+                        this,
+                        agg));
+            }
+
             // customized rewriter.
             tokens = RewriteTokens(
                 tokens,
                 sourceInfo.File,
                 RewriteEngine);
 
-            // fix id.
-            var idTable = new Dictionary<string, int>();
-            tokens = RewriteTokens(
-                tokens,
-                sourceInfo.File,
-                new MarkdownRewriteEngine(
-                    this,
-                    MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownHeadingBlockToken>(
-                        (e, t) => t.RewriteId(idTable))));
+            if (Options.ShouldFixId)
+            {
+                // fix id.
+                var idTable = new Dictionary<string, int>();
+                tokens = RewriteTokens(
+                    tokens,
+                    sourceInfo.File,
+                    new MarkdownRewriteEngine(
+                        this,
+                        MarkdownTokenRewriterFactory.FromLambda<IMarkdownRewriteEngine, MarkdownHeadingBlockToken>(
+                            (e, t) => t.RewriteId(idTable))));
+            }
 
             if (TokenTreeValidator != null)
             {

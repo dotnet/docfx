@@ -18,7 +18,7 @@
       "name": "pet",
       "description": "Everything about your Pets",
       "externalDocs": {
-        "description": "Find out more",
+        "description": "Find out more about pets",
         "url": "http://swagger.io"
       }
     },
@@ -55,7 +55,11 @@
           }
         ],
         "responses": { "405": { "description": "Invalid input" } },
-        "security": [ { "petstore_auth": [ "write:pets", "read:pets" ] } ]
+        "security": [ { "petstore_auth": [ "write:pets", "read:pets" ] } ],
+        "externalDocs": {
+          "description": "Find out more about addPet",
+          "url": "http://swagger.io"
+        }
       },
       "put": {
         "tags": [ "pet" ],

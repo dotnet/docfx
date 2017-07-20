@@ -269,7 +269,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 xrefNode += $" {attr.Name}=\"{attr.Value}\"";
             }
-            xrefNode += $">{node.InnerText}</xref>";
+            xrefNode += $">{node.InnerHtml}</xref>";
 
             return HtmlAgilityPack.HtmlNode.CreateNode(xrefNode);
         }

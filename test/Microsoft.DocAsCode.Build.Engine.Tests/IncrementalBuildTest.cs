@@ -96,6 +96,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                     "Test xref with attribute: <xref href=\"XRef2\" name=\"Foo&lt;T&gt;\"/>",
                     "Test invalid xref with attribute: <xref href=\"invalid\" alt=\"Foo&lt;T&gt;\"/>",
                     "Test invalid xref with attribute: <xref href=\"invalid\" fullname=\"Foo&lt;T&gt;\"/>",
+                    "Test xref to overload method: @System.Console.WriteLine*",
                     "<p>",
                     "test",
                 },
@@ -158,6 +159,7 @@ tagRules : [
             string outputFolderFirst = Path.Combine(outputFolder, "IncrementalBuild.TestBasic");
             string outputFolderSecond = Path.Combine(outputFolder, "IncrementalBuild.TestBasic.Second");
             string outputFolderThird = Path.Combine(outputFolder, "IncrementalBuild.TestBasic.Third");
+            string cacheFolderName;
             try
             {
                 using (new LoggerPhaseScope("IncrementalBuild.TestBasic-first"))
@@ -178,9 +180,16 @@ tagRules : [
                             TransformDocument = true,
                         });
                 }
+                {
+                    // check cache folder
+                    Assert.True(Directory.Exists(intermediateFolder));
+                    Assert.True(File.Exists(Path.Combine(intermediateFolder, "build.info")));
+                    var subFolders = Directory.GetDirectories(intermediateFolder, "*");
+                    Assert.Equal(1, subFolders.Length);
+                    cacheFolderName = Path.GetFileName(subFolders[0]);
+                }
 
                 ClearListener();
-
                 // no changes
                 using (new LoggerPhaseScope("IncrementalBuild.TestBasic-second"))
                 {
@@ -212,11 +221,19 @@ tagRules : [
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
+                    // check cache folder
+                    Assert.True(Directory.Exists(intermediateFolder));
+                    Assert.True(File.Exists(Path.Combine(intermediateFolder, BuildInfo.FileName)));
+                    var subFolders = Directory.GetDirectories(intermediateFolder, "*");
+                    Assert.Equal(1, subFolders.Length);
+                    Assert.Equal(cacheFolderName, Path.GetFileName(subFolders[0]));
+                }
+                {
                     // check xrefmap
                     var xrefMapOutputPath = Path.Combine(outputFolderSecond, "xrefmap.yml");
                     Assert.True(File.Exists(xrefMapOutputPath));
                     var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
-                    Assert.Equal(70, xrefMap.References.Count);
+                    Assert.Equal(71, xrefMap.References.Count);
                 }
                 {
                     // check conceptual.
@@ -244,6 +261,7 @@ tagRules : [
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
+                            "Test xref to overload method: <a class=\"xref\" href=\"../System.Console.html\">WriteLine</a>",
                             "<p>",
                             "test</p>",
                             ""),
@@ -315,7 +333,7 @@ tagRules : [
                     var xrefMapOutputPath = Path.Combine(outputFolderThird, "xrefmap.yml");
                     Assert.True(File.Exists(xrefMapOutputPath));
                     var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
-                    Assert.Equal(70, xrefMap.References.Count);
+                    Assert.Equal(71, xrefMap.References.Count);
                 }
                 {
                     // check conceptual.
@@ -343,6 +361,7 @@ tagRules : [
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
+                            "Test xref to overload method: <a class=\"xref\" href=\"../System.Console.html\">WriteLine</a>",
                             "<p>",
                             "test</p>",
                             ""),
@@ -366,6 +385,39 @@ tagRules : [
                     // check logs.
                     var logs = Listener.Items.Where(i => i.Phase.StartsWith("IncrementalBuild.TestBasic")).ToList();
                     Assert.Equal(7, logs.Count);
+                }
+                {
+                    // check cache folder
+                    Assert.True(Directory.Exists(intermediateFolder2));
+                    Assert.True(File.Exists(Path.Combine(intermediateFolder2, BuildInfo.FileName)));
+                    var subFolders = Directory.GetDirectories(intermediateFolder2, "*");
+                    Assert.Equal(1, subFolders.Length);
+                    Assert.Equal(cacheFolderName, Path.GetFileName(subFolders[0]));
+                }
+
+                // no changes
+                using (new LoggerPhaseScope("IncrementalBuild.TestBasic-fourth"))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolderThird,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolderVariable,
+                        cleanupCacheHistory: true);
+
+                }
+                {
+                    // check cache folder
+                    Assert.True(Directory.Exists(intermediateFolder2));
+                    Assert.True(File.Exists(Path.Combine(intermediateFolder2, BuildInfo.FileName)));
+                    var subFolders = Directory.GetDirectories(intermediateFolder2, "*");
+                    Assert.Equal(1, subFolders.Length);
+                    Assert.NotEqual(cacheFolderName, Path.GetFileName(subFolders[0]));
                 }
             }
             finally
@@ -550,7 +602,7 @@ tagRules : [
                     var xrefMapOutputPath = Path.Combine(outputFolderForIncremental, "xrefmap.yml");
                     Assert.True(File.Exists(xrefMapOutputPath));
                     var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
-                    Assert.Equal(70, xrefMap.References.Count);
+                    Assert.Equal(71, xrefMap.References.Count);
                 }
                 {
                     // compare with force build
@@ -743,7 +795,7 @@ tagRules : [
                     var xrefMapOutputPath = Path.Combine(outputFolderForIncremental, "xrefmap.yml");
                     Assert.True(File.Exists(xrefMapOutputPath));
                     var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
-                    Assert.Equal(70, xrefMap.References.Count);
+                    Assert.Equal(71, xrefMap.References.Count);
                 }
                 {
                     // compare with force build
@@ -960,7 +1012,7 @@ tagRules : [
                     var xrefMapOutputPath = Path.Combine(outputFolderForIncremental, "xrefmap.yml");
                     Assert.True(File.Exists(xrefMapOutputPath));
                     var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
-                    Assert.Equal(69, xrefMap.References.Count);
+                    Assert.Equal(70, xrefMap.References.Count);
                 }
                 {
                     // compare with force build
@@ -1166,7 +1218,7 @@ tagRules : [
                     var xrefMapOutputPath = Path.Combine(outputFolderForIncremental, "xrefmap.yml");
                     Assert.True(File.Exists(xrefMapOutputPath));
                     var xrefMap = YamlUtility.Deserialize<XRefMap>(xrefMapOutputPath);
-                    Assert.Equal(69, xrefMap.References.Count);
+                    Assert.Equal(70, xrefMap.References.Count);
                 }
                 {
                     // compare with force build
@@ -4932,9 +4984,10 @@ tagRules : [
             string intermediateFolder = null,
             Dictionary<string, ChangeKindWithDependency> changes = null,
             bool enableSplit = false,
-            bool forceRebuild = false)
+            bool forceRebuild = false,
+            bool cleanupCacheHistory = false)
         {
-            using (var builder = new DocumentBuilder(LoadAssemblies(enableSplit), ImmutableArray<string>.Empty, templateHash, intermediateFolder))
+            using (var builder = new DocumentBuilder(LoadAssemblies(enableSplit), ImmutableArray<string>.Empty, templateHash, intermediateFolder, cleanupCacheHistory: cleanupCacheHistory))
             {
                 if (applyTemplateSettings == null)
                 {
