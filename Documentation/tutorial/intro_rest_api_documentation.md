@@ -227,7 +227,7 @@ When the key of the metadata is already preserved by DocFX, for example, `summar
 When the key of the metadata is not preserved by DocFX, for example, `not_predefined`. The metadata is kept and can be used in the template.
 
 ## Split extensibility
-By default, one *REST* API file generates one HTML file. For example, petstore.json generates petstore.html. We provide `rest.tagpage` and `rest.opearationpage` plugins to split the original *REST* API page into smaller pages.
+By default, one *REST* API file generates one HTML file. For example, petstore.json generates petstore.html. We provide `rest.tagpage` and `rest.operationpage` plugins to split the original *REST* API page into smaller pages.
 
 1. With `rest.tagpage` plugin enabled, operations with the same tag are grouped into one page.
 2. With `rest.operationpage` plugin enabled, each operation is splitted into single page.
