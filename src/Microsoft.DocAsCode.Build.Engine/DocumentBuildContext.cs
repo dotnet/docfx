@@ -207,84 +207,77 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return uidList;
             }
-            int needQueryCount = uidList.Count;
+            
             var unresolvedUidList = new List<string>();
             int pieceSize = 1000;
-            foreach (string requestUrl in XRefServiceUrls)
-            {    
-                for(int i = 0; i < uidList.Count; i += pieceSize)
+            for(int i = 0; i < uidList.Count; i += pieceSize)
+            {
+                List<string> smallPiece = uidList.GetRange(i, Math.Min(pieceSize, uidList.Count - i));
+                foreach(string requestUrl in XRefServiceUrls)
                 {
-                    List<string> smallPiece = uidList.GetRange(i, Math.Min(pieceSize, uidList.Count - i));
-                    var result = await QueryByHttpRequestAsync(requestUrl, smallPiece);
-                    bool isSuccess = result.Item1;
-                    List<XRefSpec> xsList = result.Item2;
-                    if (isSuccess && xsList.Count == smallPiece.Count)
+                    var queryUidTasks = new List<Task<List<XRefSpec>>>();
+                    foreach(string uid in smallPiece)
                     {
-                        for (int j = 0; j < xsList.Count; j++)
+                        queryUidTasks.Add(QueryByHttpRequestAsync(requestUrl, uid));
+                    }
+                    var results = await Task.WhenAll(queryUidTasks);
+                    List<string> stillNeedQueryList = new List<string>();
+                    for(int j = 0; j < results.Length; j++)
+                    {
+                        if(results[j].Count > 0 && results[j][0].Uid == smallPiece[j])
                         {
-                            if (xsList[j] != null)
-                            {
-                                if(smallPiece[j] != xsList[j].Uid)
-                                {
-                                    Logger.LogWarning($"Results returned from {requestUrl} are not conform to custom format." +
-                                        $"The results returned should be placed on the same index position as the uid in the query uidList, if an uid can't be found null should be returned.");
-                                    unresolvedUidList.AddRange(smallPiece.GetRange(j, smallPiece.Count - j));
-                                    break;
-                                }
-                                externalXRefSpec.AddOrUpdate(smallPiece[j], xsList[j], (_, old) => old + xsList[j]);
-                            }
-                            else
-                            {
-                                unresolvedUidList.Add(smallPiece[j]);
-                            }
+                            externalXRefSpec.AddOrUpdate(smallPiece[j], results[j][0], (_, old) => old + results[j][0]);
+                        }
+                        else
+                        {
+                            stillNeedQueryList.Add(smallPiece[j]);
                         }
                     }
-                    else
-                    {
-                        unresolvedUidList.AddRange(smallPiece);
-                    }
+                    smallPiece = stillNeedQueryList;
                 }
-                Logger.LogInfo($"{uidList.Count - unresolvedUidList.Count} uids found in {requestUrl}.");
-                uidList = unresolvedUidList;
-                unresolvedUidList = new List<string>();
+                unresolvedUidList.AddRange(smallPiece);
             }
 
-            Logger.LogInfo($"{needQueryCount - uidList.Count} uids found in xrefservice.");
-            return uidList;
+            Logger.LogInfo($"{uidList.Count - unresolvedUidList.Count} uids found in xrefservice.");
+            return unresolvedUidList;
         }
 
-        private async Task<Tuple<bool, List<XRefSpec>>> QueryByHttpRequestAsync(string requestUrl, List<string> smallPiece)
+        public async Task<List<XRefSpec>> QueryByHttpRequestAsync(string requestUrl, string uid)
         {
             using (var client = new HttpClient())
             {
-                var failedResult = new Tuple<bool, List<XRefSpec>>(false, null);
+                string url = requestUrl.Replace("{uid}",Uri.EscapeDataString(uid));
                 try
                 {
-                    client.BaseAddress = new Uri(requestUrl);
+                    client.BaseAddress = new Uri(url);
                 }
                 catch (UriFormatException e)
                 {
-                    Logger.LogWarning($"Ignore invalid url: {requestUrl}." + e.Message);
-                    return failedResult;
+                    Logger.LogWarning($"Ignore invalid url: {requestUrl}.{e.Message}");
+                    return new List<XRefSpec>();
                 }
                 catch (ArgumentException e)
                 {
-                    Logger.LogWarning($"Ignore invalid url: {requestUrl}." + e.Message);
-                    return failedResult;
+                    Logger.LogWarning($"Ignore invalid url: {requestUrl}.{e.Message}");
+                    return new List<XRefSpec>();
                 }
+
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                StringContent content = new StringContent(JsonUtility.Serialize(smallPiece), System.Text.Encoding.UTF8, "application/json");
                 HttpResponseMessage response = null;
                 try
                 {
-                    response = await client.PostAsync("", content);
+                    response = await client.GetAsync(client.BaseAddress);
                 }
                 catch (HttpRequestException e)
                 {
-                    Logger.LogWarning(e.InnerException.Message + "\n" + $"Failed to resolve {smallPiece.Count} uids from {requestUrl}: for example including " + smallPiece.Take(10).ToDelimitedString());
-                    return failedResult;
+                    Logger.LogWarning($"Error occurs when resolve {uid} from {requestUrl}.{e.InnerException.Message}");
+                    return new List<XRefSpec>();
+                }
+                catch
+                {
+                    Logger.LogWarning($"Error occurs when resolve {uid} from {requestUrl}.");
+                    return new List<XRefSpec>();
                 }
 
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -299,16 +292,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
                         catch (Newtonsoft.Json.JsonReaderException e)
                         {
-                            Logger.LogWarning($"Response from {requestUrl} is not in valid JSON format." + e.Message);
-                            return failedResult;
+                            Logger.LogWarning($"Response from {requestUrl} is not in valid JSON format.{e.Message}");
+                            return new List<XRefSpec>();
                         }
                     }
-                    return new Tuple<bool, List<XRefSpec>>(true, xsList);
+                    return xsList;
                 }
                 else
                 {
-                    Logger.LogWarning($"Failed to resolve {smallPiece.Count} uids from {requestUrl}, error status code is {response.StatusCode}: for example including " + smallPiece.Take(10).ToDelimitedString());
-                    return failedResult;
+                    Logger.LogWarning($"Failed to resolve uid from {requestUrl}, error status code is {response.StatusCode}");
+                    return new List<XRefSpec>();
                 }
             }
         }
