@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Newtonsoft.Json;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
+    using Microsoft.DocAsCode.Build.SchemaDrivenProcessor;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Exceptions;
@@ -96,6 +97,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             var logCodesLogListener = new LogCodesLogListener();
             Logger.RegisterListener(logCodesLogListener);
+
+            // Load schema driven processor from template
+            var sdps = LoadSchemaDrivenDocumentProcessors(parameters[0]).ToList();
+
+            if (sdps.Count > 0)
+            {
+                Logger.LogInfo($"{sdps.Count()} schema driven document processor plug-in(s) loaded.");
+                Processors = Processors.Union(sdps);
+            }
 
             var currentBuildInfo =
                 new BuildInfo
@@ -181,7 +191,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             Logger.LogInfo($"Start building for version: {parameter.VersionName}");
                         }
-                        manifests.Add(BuildCore(parameter, markdownServiceProvider, currentBuildInfo, lastBuildInfo));
+
+                        using (new LoggerPhaseScope("BuildCore"))
+                        {
+                            manifests.Add(BuildCore(parameter, markdownServiceProvider, currentBuildInfo, lastBuildInfo));
+                        }
                     }
                 }
 
@@ -285,6 +299,27 @@ namespace Microsoft.DocAsCode.Build.Engine
             })
             {
                 return builder.Build(parameter);
+            }
+        }
+
+        private IEnumerable<IDocumentProcessor> LoadSchemaDrivenDocumentProcessors(DocumentBuildParameters parameter)
+        {
+            using (var resource = parameter.TemplateManager.CreateTemplateResource())
+            {
+                foreach (var pair in resource.GetResourceStreams(@"^schemas/.*\.schema\.json"))
+                {
+                    var fileName = Path.GetFileName(pair.Key);
+                    using (var stream = pair.Value)
+                    {
+                        using (var sr = new StreamReader(stream))
+                        {
+                            var schema = DSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
+                            var sdp = new SchemaDrivenDocumentProcessor(schema, _assemblyList);
+                            Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
+                            yield return sdp;
+                        }
+                    }
+                }
             }
         }
 
