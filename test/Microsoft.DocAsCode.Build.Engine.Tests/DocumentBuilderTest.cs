@@ -21,6 +21,13 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
+    using Moq;
+    using System.Net.Http;
+    using Moq.Protected;
+    using System.Threading.Tasks;
+    using System.Net;
+    using System.Threading;
+    using UnitTestUtilities;
 
     [Trait("Owner", "zhyan")]
     [Trait("EntityType", "DocumentBuilder")]
@@ -811,49 +818,52 @@ exports.getOptions = function (){
             }
         }
 
+        public class FakeResponseHandler : DelegatingHandler
+        {
+            private readonly Dictionary<Uri, HttpResponseMessage> _FakeResponses = new Dictionary<Uri, HttpResponseMessage>();
+
+            public void AddFakeResponse(Uri uri, HttpResponseMessage responseMessage)
+            {
+                _FakeResponses.Add(uri, responseMessage);
+            }
+
+            protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+            {
+                if (_FakeResponses.ContainsKey(request.RequestUri))
+                {
+                    return _FakeResponses[request.RequestUri];
+                }
+                else
+                {
+                    return new HttpResponseMessage(HttpStatusCode.NotFound) { RequestMessage = request };
+                }
+            }
+        }
+
         [Fact]
         public void TestBuildWithXrefService()
         {
-            #region Prepare test data
-            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
-
-            var conceptualFile = CreateFile("hh/test.md",
-                new[]
-                {
-                    "#title",
-                    "line1 go to @Microsoft.DocAsCode.AzureMarkdownRewriters.AzureBlockquoteBlockRule for details.",
-                    "line2 go to @Microsoft.DocAsCode.AzureMarkdownRewriters.AzureBlockquoteBlockRule.LeadingBlockquote for details.",
-                    "line3 @hh not found."
-                },
-                _inputFolder);
-
-            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, new[] {conceptualFile});
-            #endregion
-
-            using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
+            var fakeResponseHandler = new FakeResponseHandler();
+            fakeResponseHandler.AddFakeResponse(new Uri("http://example.org/test1"), new HttpResponseMessage
             {
-                BuildDocument(
-                    files,
-                    new Dictionary<string, object>(),
-                    templateFolder: _templateFolder);
-            }
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("[]")
+            });
+            fakeResponseHandler.AddFakeResponse(new Uri("http://example.org/test2"), new HttpResponseMessage
             {
-                // check conceptual.
-                var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));
-                Assert.True(File.Exists(conceptualOutputPath));
-                Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
-                Assert.Equal(
-                    string.Join(
-                        "",
-                        "\n",
-                        "<p>line1 go to <a class=\"xref\" href=\"http://dotnet.github.io/docfx/api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureBlockquoteBlockRule.html\">",
-                        "AzureBlockquoteBlockRule</a> for details.\n",
-                        "line2 go to <a class=\"xref\" href=\"http://dotnet.github.io/docfx/api/Microsoft.DocAsCode.AzureMarkdownRewriters.AzureBlockquoteBlockRule.html#Microsoft_DocAsCode_AzureMarkdownRewriters_AzureBlockquoteBlockRule_LeadingBlockquote\">",
-                        "LeadingBlockquote</a> for details.\n",
-                        "line3 @hh not found.</p>\n"),
-                     File.ReadAllText(conceptualOutputPath));
-            }
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("[{'uid':'csharp_coding_standards', 'name':'C# Coding Standards', 'href':'http://dotnet.github.io/docfx/guideline/csharp_coding_standards.html'}]")
+            });
+
+            var httpClient = new HttpClient(fakeResponseHandler);
+            var docc = new DocumentBuildContext("");
+
+            var result = (Task<List<XRefSpec>>)Helper.RunInstanceMethod(typeof(DocumentBuildContext), "QueryByHttpRequestAsync", docc,
+                new object[3] { httpClient, "http://example.org/test1", "xx" });
+            Assert.Equal(0, result.Result.Count);
+            result = (Task<List<XRefSpec>>)Helper.RunInstanceMethod(typeof(DocumentBuildContext), "QueryByHttpRequestAsync", docc,
+                new object[3] { httpClient, "http://example.org/test2", "xx" });
+            Assert.Equal("csharp_coding_standards", result.Result[0].Uid);
         }
 
         [Fact]
@@ -937,5 +947,52 @@ exports.getOptions = function (){
             Logger.UnregisterListener(Listener);
             Listener = null;
         }
+    }
+}
+
+namespace UnitTestUtilities
+{
+    using System.Reflection;
+    using System;
+
+    public class Helper
+    {
+        public static object RunStaticMethod(System.Type t, string strMethod, object[] aobjParams)
+        {
+            BindingFlags eFlags =
+             BindingFlags.Static | BindingFlags.Public |
+             BindingFlags.NonPublic;
+            return RunMethod(t, strMethod,
+             null, aobjParams, eFlags);
+        } //end of method
+
+        public static object RunInstanceMethod(System.Type t, string strMethod, object objInstance, object[] aobjParams)
+        {
+            BindingFlags eFlags = BindingFlags.Instance | BindingFlags.Public |
+             BindingFlags.NonPublic;
+            return RunMethod(t, strMethod,
+             objInstance, aobjParams, eFlags);
+        } //end of method
+
+        private static object RunMethod(System.Type t, string strMethod, object objInstance, object[] aobjParams, BindingFlags eFlags)
+        {
+            MethodInfo m;
+            try
+            {
+                m = t.GetMethod(strMethod, eFlags);
+                if (m == null)
+                {
+                    throw new ArgumentException("There is no method '" +
+                     strMethod + "' for type '" + t.ToString() + "'.");
+                }
+
+                object objRet = m.Invoke(objInstance, aobjParams);
+                return objRet;
+            }
+            catch
+            {
+                throw;
+            }
+        } //end of method
     }
 }
