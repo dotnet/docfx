@@ -68,11 +68,13 @@
   }
 
   function isEmpty(obj) {
+    if(!obj) return true;
+
     for (var prop in obj) {
       if (obj.hasOwnProperty(prop))
         return false;
     }
 
-    return JSON.stringify(obj) === JSON.stringify({});
+    return true;
   }
 })();
