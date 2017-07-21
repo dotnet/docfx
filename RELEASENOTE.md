@@ -3,6 +3,9 @@
 
 v2.22 (Pre-release)
 -----------
+1. Bug fixed:
+   1. Fix _rel unfound when href is url decoded.
+   2. Fix #1886: Fails when project doesn't contain git remote information.
 
 v2.20
 -----------
