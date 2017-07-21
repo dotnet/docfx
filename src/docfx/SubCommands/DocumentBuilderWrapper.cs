@@ -171,9 +171,9 @@ namespace Microsoft.DocAsCode.SubCommands
                         continue;
                     }
 
-                    foreach (var assem in defaultPluggedAssemblies)
+                    if (defaultPluggedAssemblies.Select(n => n.GetName().Name).Contains(assemblyName))
                     {
-                        Logger.LogVerbose($"Skipping default plugged assembly : {assemblyName}.");
+                        Logger.LogVerbose($"Skipping default plugged assembly: {assemblyName}.");
                         continue;
                     }
 
