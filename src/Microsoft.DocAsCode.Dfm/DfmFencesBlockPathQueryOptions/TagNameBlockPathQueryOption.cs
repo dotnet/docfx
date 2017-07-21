@@ -80,7 +80,7 @@ namespace Microsoft.DocAsCode.Dfm
                 .AddAlias("fsharp", "fs", ".fs", ".fsi", ".fsx")
                 .AddAlias("go", "golang", ".go")
                 .AddAlias("haskell", ".hs")
-                .AddAlias("html", ".html", ".cshtml", "cshtml", ".vbhtml", "vbhtml", ".jsp", ".asp", ".aspx")
+                .AddAlias("html", ".html", ".cshtml", "cshtml", ".vbhtml", "vbhtml", ".jsp", ".asp", ".aspx", "ascx")
                 .AddAlias("java", ".java")
                 .AddAlias("javascript", "js", "node", ".js")
                 .AddAlias("lisp", ".lisp", ".lsp")
