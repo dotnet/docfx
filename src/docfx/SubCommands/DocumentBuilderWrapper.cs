@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.SubCommands
         private readonly TemplateManager _manager;
         private readonly LogLevel _logLevel;
 
-        public DocumentBuilderWrapper(
+    public DocumentBuilderWrapper(
             BuildJsonConfig config,
             TemplateManager manager,
             string baseDirectory,
@@ -130,11 +130,18 @@ namespace Microsoft.DocAsCode.SubCommands
 
         private static IEnumerable<Assembly> LoadPluginAssemblies(string pluginDirectory)
         {
-            yield return typeof(ConceptualDocumentProcessor).Assembly;
-            yield return typeof(ManagedReferenceDocumentProcessor).Assembly;
-            yield return typeof(ResourceDocumentProcessor).Assembly;
-            yield return typeof(RestApiDocumentProcessor).Assembly;
-            yield return typeof(TocDocumentProcessor).Assembly;
+            var defaultPluggedAssemblies = new List<Assembly>
+            {
+                typeof(ConceptualDocumentProcessor).Assembly,
+                typeof(ManagedReferenceDocumentProcessor).Assembly,
+                typeof(ResourceDocumentProcessor).Assembly,
+                typeof(RestApiDocumentProcessor).Assembly,
+                typeof(TocDocumentProcessor).Assembly,
+            };
+            foreach (var assem in defaultPluggedAssemblies)
+            {
+                yield return assem;
+            }
 
             if (pluginDirectory == null || !Directory.Exists(pluginDirectory))
             {
@@ -157,13 +164,19 @@ namespace Microsoft.DocAsCode.SubCommands
                         Logger.LogVerbose("Skipping assembly: Microsoft.DocAsCode.EntityModel.");
                         continue;
                     }
-                    if (assemblyName == typeof(ValidateBookmark).Assembly.GetName().Name ||
-                        assemblyName == typeof(TocDocumentProcessor).Assembly.GetName().Name)
+                    if (assemblyName == typeof(ValidateBookmark).Assembly.GetName().Name)
                     {
-                        // work around, don't load assembly that has ValidateBookmark or TocDocumentProcessor, to prevent double loading
+                        // work around, don't load assembly that has ValidateBookmark, to prevent double loading
                         Logger.LogVerbose($"Skipping assembly: {assemblyName}.");
                         continue;
                     }
+
+                    if (defaultPluggedAssemblies.Select(n => n.GetName().Name).Contains(assemblyName))
+                    {
+                        Logger.LogVerbose($"Skipping default plugged assembly: {assemblyName}.");
+                        continue;
+                    }
+
                     try
                     {
                         assembly = Assembly.Load(assemblyName);
