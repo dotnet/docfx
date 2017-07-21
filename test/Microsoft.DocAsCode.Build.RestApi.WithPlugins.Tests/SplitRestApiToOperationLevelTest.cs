@@ -64,7 +64,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0", model.Uid);
                 Assert.Equal(0, model.Children.Count);
                 Assert.True((bool)model.Metadata["_isSplittedByOperation"]);
-                Assert.Equal(3, model.Tags.Count);
+                Assert.Equal(0, model.Tags.Count);
                 Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Find out more about Swagger</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
             }
             {
@@ -83,6 +83,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 Assert.True(model.Metadata.ContainsKey("externalDocs"));
                 Assert.True((bool)model.Metadata["_isSplittedToOperation"]);
                 Assert.Equal(1, model.Children.Count);
+                Assert.Equal(0, model.Tags.Count);
 
                 // Test overwritten metadata
                 Assert.Equal("<p sourcefile=\"TestData/swagger/petstore.json\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Find out more about addPet</p>\n", ((JObject)model.Metadata["externalDocs"])["description"]);
@@ -91,7 +92,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet/operation", child.Uid);
                 Assert.Null(child.HtmlId);
                 Assert.Null(child.Summary); // Summary is poped to operation page
-                Assert.Equal(1, child.Tags.Count);
+                Assert.Equal(0, child.Tags.Count);
             }
         }
 
@@ -110,7 +111,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 Assert.NotNull(model);
                 Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0", model.Uid);
                 Assert.Equal(0, model.Children.Count);
-                Assert.Equal(3, model.Tags.Count);
+                Assert.Equal(0, model.Tags.Count);
             }
             {
                 // Verify splitted operation page
@@ -128,12 +129,13 @@ namespace Microsoft.DocAsCode.Build.RestApi.WithPlugins.Tests
                 Assert.Equal("../toc.yml", model.Metadata["_tocRel"]);
                 Assert.True(model.Metadata.ContainsKey("externalDocs"));
                 Assert.Equal(1, model.Children.Count);
+                Assert.Equal(0, model.Tags.Count);
 
                 var child = model.Children[0];
                 Assert.Equal("petstore.swagger.io/v2/Swagger Petstore/1.0.0/addPet/operation", child.Uid);
                 Assert.Null(child.HtmlId);
                 Assert.Null(child.Summary); // Summary has been poped to operation page
-                Assert.Equal(1, child.Tags.Count);
+                Assert.Equal(0, child.Tags.Count);
             }
             {
                 // Verify toc page
