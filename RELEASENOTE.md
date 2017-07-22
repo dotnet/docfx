@@ -3,9 +3,12 @@
 
 v2.22 (Pre-release)
 -----------
-1. Bug fixed:
+1. Support *REST* extensibility by `rest.tagpage` and `rest.operationpage` plugins, to split the original *REST* API page into smaller pages. Refer to [plugins dashboard](http://dotnet.github.io/docfx/templates-and-plugins/plugins-dashboard.html) for more details.
+2. Bug fixed:
    1. Fix _rel unfound when href is url decoded.
    2. Fix #1886: Fails when project doesn't contain git remote information.
+   3. Fix toc restruction to support expand child by sequence.
+   4. Ignore default plugged assemblies when loading plugins.
 
 v2.20
 -----------
