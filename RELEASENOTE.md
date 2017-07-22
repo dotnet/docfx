@@ -10,6 +10,8 @@ v2.21.2
    will generate following html:
    ```html
    <h1 id="a">B</h1>
+ 2. Bug fixes:
+    1. Ignore default plugged assemblies when loading plugins.
 
 v2.21.1
 -----------
