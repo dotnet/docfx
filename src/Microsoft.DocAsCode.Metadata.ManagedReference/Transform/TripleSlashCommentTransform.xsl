@@ -92,7 +92,7 @@
 
   <xsl:template match="paramref">
     <xsl:if test="normalize-space(@name)">
-      <code data-dev-comment-type="paramref">
+      <code data-dev-comment-type="paramref" class="paramref">
         <xsl:value-of select="@name" />
       </code>
     </xsl:if>
@@ -100,14 +100,14 @@
 
   <xsl:template match="typeparamref">
     <xsl:if test="normalize-space(@name)">
-      <code data-dev-comment-type="typeparamref">
+      <code data-dev-comment-type="typeparamref" class="typeparamref">
         <xsl:value-of select="@name" />
       </code>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="languageKeyword">
-    <code data-dev-comment-type="languageKeyword">
+    <code data-dev-comment-type="languageKeyword" class="languageKeyword">
       <xsl:apply-templates />
     </code>
   </xsl:template>
