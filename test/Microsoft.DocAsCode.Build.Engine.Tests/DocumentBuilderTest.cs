@@ -6,9 +6,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Net;
+    using System.Net.Http;
+    using System.Threading.Tasks;
     using System.IO;
     using System.Reflection;
-
+    
     using Newtonsoft.Json.Linq;
     using Xunit;
 
@@ -21,12 +24,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
-    using Moq;
-    using System.Net.Http;
-    using Moq.Protected;
-    using System.Threading.Tasks;
-    using System.Net;
-    using System.Threading;
+    
     using UnitTestUtilities;
 
     [Trait("Owner", "zhyan")]
@@ -818,7 +816,7 @@ exports.getOptions = function (){
             }
         }
 
-        public class FakeResponseHandler : DelegatingHandler
+        private class FakeResponseHandler : DelegatingHandler
         {
             private readonly Dictionary<Uri, HttpResponseMessage> _FakeResponses = new Dictionary<Uri, HttpResponseMessage>();
 
@@ -858,10 +856,10 @@ exports.getOptions = function (){
             var httpClient = new HttpClient(fakeResponseHandler);
             var docc = new DocumentBuildContext("");
 
-            var result = (Task<List<XRefSpec>>)Helper.RunInstanceMethod(typeof(DocumentBuildContext), "QueryByHttpRequestAsync", docc,
+            var result = (Task<List<XRefSpec>>)PrivateMethodTestHelper.RunInstanceMethod(typeof(DocumentBuildContext), "QueryByHttpRequestAsync", docc,
                 new object[3] { httpClient, "http://example.org/test1", "xx" });
             Assert.Equal(0, result.Result.Count);
-            result = (Task<List<XRefSpec>>)Helper.RunInstanceMethod(typeof(DocumentBuildContext), "QueryByHttpRequestAsync", docc,
+            result = (Task<List<XRefSpec>>)PrivateMethodTestHelper.RunInstanceMethod(typeof(DocumentBuildContext), "QueryByHttpRequestAsync", docc,
                 new object[3] { httpClient, "http://example.org/test2", "xx" });
             Assert.Equal("csharp_coding_standards", result.Result[0].Uid);
         }
@@ -921,8 +919,7 @@ exports.getOptions = function (){
                     TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null),
                     TemplateDir = templateFolder,
                     VersionDir = versionDir,
-                    XRefMaps = ImmutableArray.Create("TestData/xrefmap.yml"),
-                    XRefServiceUrls = ImmutableArray.Create("http://restfulapiwebservice0627.azurewebsites.net/uids")
+                    XRefMaps = ImmutableArray.Create("TestData/xrefmap.yml")
                 };
                 builder.Build(parameters);
             }
@@ -947,52 +944,5 @@ exports.getOptions = function (){
             Logger.UnregisterListener(Listener);
             Listener = null;
         }
-    }
-}
-
-namespace UnitTestUtilities
-{
-    using System.Reflection;
-    using System;
-
-    public class Helper
-    {
-        public static object RunStaticMethod(System.Type t, string strMethod, object[] aobjParams)
-        {
-            BindingFlags eFlags =
-             BindingFlags.Static | BindingFlags.Public |
-             BindingFlags.NonPublic;
-            return RunMethod(t, strMethod,
-             null, aobjParams, eFlags);
-        } //end of method
-
-        public static object RunInstanceMethod(System.Type t, string strMethod, object objInstance, object[] aobjParams)
-        {
-            BindingFlags eFlags = BindingFlags.Instance | BindingFlags.Public |
-             BindingFlags.NonPublic;
-            return RunMethod(t, strMethod,
-             objInstance, aobjParams, eFlags);
-        } //end of method
-
-        private static object RunMethod(System.Type t, string strMethod, object objInstance, object[] aobjParams, BindingFlags eFlags)
-        {
-            MethodInfo m;
-            try
-            {
-                m = t.GetMethod(strMethod, eFlags);
-                if (m == null)
-                {
-                    throw new ArgumentException("There is no method '" +
-                     strMethod + "' for type '" + t.ToString() + "'.");
-                }
-
-                object objRet = m.Invoke(objInstance, aobjParams);
-                return objRet;
-            }
-            catch
-            {
-                throw;
-            }
-        } //end of method
     }
 }

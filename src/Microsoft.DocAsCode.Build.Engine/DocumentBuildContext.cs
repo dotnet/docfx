@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Net.Http;
+    using System.Net.Http.Headers;
     using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
@@ -17,7 +18,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
-    using System.Net.Http.Headers;
 
     public sealed class DocumentBuildContext : IDocumentBuildContext
     {
