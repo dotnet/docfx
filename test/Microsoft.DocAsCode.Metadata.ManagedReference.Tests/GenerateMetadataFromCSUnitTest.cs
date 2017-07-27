@@ -976,6 +976,65 @@ namespace Test1
         }
 
         [Trait("Related", "Generic")]
+        [Trait("Related", "EII")]
+        [Fact]
+        public void TestGenerateMetadataWithEditorBrowsableNeverEii()
+        {
+            string code = @"
+using System.Collections.Generic
+namespace Test
+{
+    using System.ComponentModel;
+    public interface IInterface
+    {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        bool Method();
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        bool Property { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        event EventHandler Event;
+    }
+
+    public class Class : IInterface
+    {
+        bool IInterface.Method() { return false; }
+        bool IInterface.Property { get { return false; } }
+        event EventHandler IInterface.Event { add {} remove {} }
+    }
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Equal(1, output.Items.Count);
+            var ns = output.Items[0];
+            Assert.Equal(2, ns.Items.Count);
+            {
+                var type = ns.Items[0];
+                Assert.NotNull(type);
+                Assert.Equal("IInterface", type.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test.IInterface", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test.IInterface", type.Name);
+                Assert.Equal("public interface IInterface", type.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "interface" }, type.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Null(type.Implements);
+
+                // Verify member with EditorBrowsable.Never should be filtered out
+                Assert.Equal(0, type.Items.Count);
+            }
+            {
+                var type = ns.Items[1];
+                Assert.NotNull(type);
+                Assert.Equal("Class", type.DisplayNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test.Class", type.DisplayQualifiedNames[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test.Class", type.Name);
+                Assert.Equal("public class Class : IInterface", type.Syntax.Content[SyntaxLanguage.CSharp]);
+                Assert.Equal(new[] { "public", "class" }, type.Modifiers[SyntaxLanguage.CSharp]);
+                Assert.Equal("Test.IInterface", type.Implements[0]);
+
+                // Verify EII member with EditorBrowsable.Never should be filtered out
+                Assert.Equal(0, type.Items.Count);
+            }
+        }
+
+        [Trait("Related", "Generic")]
         [Trait("Related", "Extension Method")]
         [Fact]
         public void TestGenerateMetadataWithExtensionMethod()
