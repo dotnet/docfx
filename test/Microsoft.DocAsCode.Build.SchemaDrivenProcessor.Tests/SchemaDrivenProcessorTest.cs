@@ -74,8 +74,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor.Tests
             Assert.True(File.Exists(rawModelFilePath));
         }
 
-
-
         private void BuildDocument(FileCollection files)
         {
             var parameters = new DocumentBuildParameters

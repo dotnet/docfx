@@ -32,41 +32,21 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor
 
         #region Constructors
 
-        public SchemaDrivenDocumentProcessor(DSchema schema, IEnumerable<Assembly> assemblies)
+        public SchemaDrivenDocumentProcessor(DSchema schema, ICompositionContainer container)
         {
             if (string.IsNullOrWhiteSpace(schema.Title))
             {
                 throw new ArgumentException("Title for schema must not be empty");
             }
+
             _schemaName = schema.Title;
             _schema = schema;
-            LoadBuildSteps(assemblies);
             _serializerPool = new ResourcePoolManager<JsonSerializer>(GetSerializer, 0x10);
-        }
-
-        public void LoadBuildSteps(IEnumerable<Assembly> assemblies)
-        {
-            var configuration = new ContainerConfiguration();
-            foreach (var assembly in assemblies)
+            if (container != null)
             {
-                if (assembly != null)
-                {
-                    configuration.WithAssembly(assembly);
-                }
-            }
-
-            try
-            {
-                var container = configuration.CreateContainer();
-                container.SatisfyImports(this);
                 var commonSteps = container.GetExports<IDocumentBuildStep>(nameof(SchemaDrivenDocumentProcessor));
                 var schemaSpecificSteps = container.GetExports<IDocumentBuildStep>($"{nameof(SchemaDrivenDocumentProcessor)}.{_schemaName}");
                 BuildSteps = commonSteps.Union(schemaSpecificSteps).ToList();
-            }
-            catch (ReflectionTypeLoadException ex)
-            {
-                Logger.LogError($"Error when get composition container: {ex.Message}, loader exceptions: {(ex.LoaderExceptions != null ? string.Join(", ", ex.LoaderExceptions.Select(e => e.Message)) : "none")}");
-                throw;
             }
         }
 
@@ -115,7 +95,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor
                 case DocumentType.Article:
                     // TODO: Support dynamic in YAML deserializer
                     var content = YamlUtility.Deserialize<object>(file.File);
-                    content = DynamicConverter.Convert(content);
+                    content = ConvertToObjectHelper.ConvertToDynamic(content);
 
                     var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
