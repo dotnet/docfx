@@ -955,6 +955,35 @@ tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b h
 
         [Fact]
         [Trait("Related", "DfmMarkdown")]
+        public void TestDfmFencesInlineLevel_Legacy()
+        {
+            var root = @"
+[!code-FakeREST[REST](api.json)][!Code-FakeREST-i[REST-i](api.json ""This is root"")][!CODE[No Language](api.json)][!code-js[empty](api.json)]
+";
+
+            var apiJsonContent = @"
+{
+   ""method"": ""GET"",
+   ""resourceFormat"": ""https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End"",
+   ""requestUrl"": ""https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End"",
+   ""requestHeaders"": {
+                ""Accept"": ""application/json""
+   }
+}";
+            File.WriteAllText("api.json", apiJsonContent.Replace("\r\n", "\n"));
+            var dependency = new HashSet<string>();
+            var option = DocfxFlavoredMarked.CreateDefaultOptions();
+            option.LegacyMode = true;
+            var engine = DocfxFlavoredMarked.CreateBuilder(null, null, option).CreateDfmEngine(new DfmRenderer());
+            var marked = engine.Markup(root, "api.json", dependency: dependency);
+            Assert.Equal("<p><pre><code class=\"lang-FakeREST\" name=\"REST\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-FakeREST-i\" name=\"REST-i\" title=\"This is root\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code name=\"No Language\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre><pre><code class=\"lang-js\" name=\"empty\">\n{\n   &quot;method&quot;: &quot;GET&quot;,\n   &quot;resourceFormat&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestUrl&quot;: &quot;https://outlook.office.com/api/v1.0/me/events?$select=Subject,Organizer,Start,End&quot;,\n   &quot;requestHeaders&quot;: {\n                &quot;Accept&quot;: &quot;application/json&quot;\n   }\n}\n</code></pre></p>\n", marked);
+            Assert.Equal(
+                new[] { "api.json" },
+                dependency.OrderBy(x => x));
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
         public void TestDfmFencesBlockLevelWithWhitespaceLeading()
         {
             var root = @"
