@@ -1001,6 +1001,7 @@ namespace Test
         bool IInterface.Property { get { return false; } }
         event EventHandler IInterface.Event { add {} remove {} }
     }
+}
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
             Assert.Equal(1, output.Items.Count);
