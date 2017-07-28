@@ -981,7 +981,6 @@ namespace Test1
         public void TestGenerateMetadataWithEditorBrowsableNeverEii()
         {
             string code = @"
-using System.Collections.Generic
 namespace Test
 {
     using System.ComponentModel;
