@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.Dfm
             Matcher.WhiteSpacesOrEmpty +
             (Matcher.NewLine.RepeatAtLeast(1) | Matcher.EndOfString);
 
-        private static readonly Regex _dfmFencesRegex = new Regex(@"^ *\[\!((?i)code(\-(?<lang>[\w|\-]+))?)\s*\[(?<name>(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?(?<path>[^\n]*?)((?<option>[\#|\?])(?<optionValue>\S+))?>?(?:\s+(?<quote>['""])(?<title>[\s\S]*?)\k<quote>)?\s*\)\]\s*(\n|$)", RegexOptions.Compiled, TimeSpan.FromSeconds(10));
+        private static readonly Regex _dfmFencesRegex = new Regex(@"^ *\[\!(?:(?i)code(?:\-(?<lang>[\w|\-]+))?)\s*\[(?<name>(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\(\s*<?(?<path>(?:[^\n\]]|\\\])*?)((?<option>[\#|\?])(?<optionValue>\S+))?>?(?:\s+(?<quote>['""])(?<title>[\s\S]*?)\k<quote>)?\s*\)\]\s*(?:\n|$)", RegexOptions.Compiled, TimeSpan.FromSeconds(10));
 
         public override string Name => "DfmFences";
 
