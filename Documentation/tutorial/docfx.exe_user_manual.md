@@ -342,7 +342,7 @@ _disableBreadcrumb    | bool    | Indicate whether to show breadcrumb on the top
 _disableToc           | bool    | Indicate whether to show table of contents on the left of page.
 _disableAffix         | bool    | Indicate whether to show the affix bar on the right of page.
 _disableContribution  | bool    | Indicate whether to show the `View Source` and `Improve this Doc` buttons.
-_gitContribute        | object  | Customize the `Improve this Doc` URL button for public contributors. Use `repo` to specify the contribution repository URL. Use `branch` to specify the contribution branch. Use `path` to specify the folder for new overwrite files. If not set, the git URL and branch of the current git repository will be used.
+_gitContribute        | object  | Customize the `Improve this Doc` URL button for public contributors. Use `repo` to specify the contribution repository URL. Use `branch` to specify the contribution branch. Use `apiSpecFolder` to specify the folder for new overwrite files. If not set, the git URL and branch of the current git repository will be used.
 _gitUrlPattern        | string  | Choose the URL pattern of the generated link for `View Source` and `Improve this Doc`. Supports `github` and `vso` currently. If not set, DocFX will try speculating the pattern from domain name of the git URL.
 
 #### 3.2.3 Separated metadata files for global metadata and file metadata
