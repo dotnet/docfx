@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class ManifestItemCollection
    | DocFX website ">
-    <meta name="generator" content="docfx 2.21.2.0">
+    <meta name="generator" content="docfx 2.22.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -204,7 +204,8 @@
   <h6><strong>Assembly</strong>: Microsoft.DocAsCode.Plugins.dll</h6>
   <h5 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class ManifestItemCollection : ObservableCollection&lt;ManifestItem&gt;, IList&lt;ManifestItem&gt;, ICollection&lt;ManifestItem&gt;, IList, ICollection, IReadOnlyList&lt;ManifestItem&gt;, IReadOnlyCollection&lt;ManifestItem&gt;, IEnumerable&lt;ManifestItem&gt;, IEnumerable, INotifyCollectionChanged, INotifyPropertyChanged</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof (ManifestItemCollectionConverter))]
+public class ManifestItemCollection : ObservableCollection&lt;ManifestItem&gt;, IList&lt;ManifestItem&gt;, ICollection&lt;ManifestItem&gt;, IList, ICollection, IReadOnlyList&lt;ManifestItem&gt;, IReadOnlyCollection&lt;ManifestItem&gt;, IEnumerable&lt;ManifestItem&gt;, IEnumerable, INotifyCollectionChanged, INotifyPropertyChanged</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
@@ -213,7 +214,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection__ctor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L14">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L17">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection__ctor_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.#ctor*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection__ctor" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.#ctor">ManifestItemCollection()</h4>
@@ -228,7 +229,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection__ctor_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_Plugins_ManifestItem__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.%23ctor(System.Collections.Generic.IEnumerable%7BMicrosoft.DocAsCode.Plugins.ManifestItem%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L16">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L19">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection__ctor_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.#ctor*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection__ctor_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_Plugins_ManifestItem__" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.#ctor(System.Collections.Generic.IEnumerable{Microsoft.DocAsCode.Plugins.ManifestItem})">ManifestItemCollection(IEnumerable&lt;ManifestItem&gt;)</h4>
@@ -262,7 +263,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection_Count.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.Count%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L32">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L35">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_Count_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.Count*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_Count" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.Count">Count</h4>
@@ -294,7 +295,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection_Add_Microsoft_DocAsCode_Plugins_ManifestItem_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.Add(Microsoft.DocAsCode.Plugins.ManifestItem)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L34">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L37">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_Add_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.Add*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_Add_Microsoft_DocAsCode_Plugins_ManifestItem_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.Add(Microsoft.DocAsCode.Plugins.ManifestItem)">Add(ManifestItem)</h4>
@@ -326,7 +327,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection_AddRange_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_Plugins_ManifestItem__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.AddRange(System.Collections.Generic.IEnumerable%7BMicrosoft.DocAsCode.Plugins.ManifestItem%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L54">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L57">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_AddRange_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.AddRange*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_AddRange_System_Collections_Generic_IEnumerable_Microsoft_DocAsCode_Plugins_ManifestItem__" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.AddRange(System.Collections.Generic.IEnumerable{Microsoft.DocAsCode.Plugins.ManifestItem})">AddRange(IEnumerable&lt;ManifestItem&gt;)</h4>
@@ -358,7 +359,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection_Clear.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.Clear%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L36">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L39">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_Clear_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.Clear*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_Clear" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.Clear">Clear()</h4>
@@ -373,7 +374,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection_ClearItems.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.ClearItems%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L21">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L24">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_ClearItems_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.ClearItems*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_ClearItems" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.ClearItems">ClearItems()</h4>
@@ -390,7 +391,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection_Contains_Microsoft_DocAsCode_Plugins_ManifestItem_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.Contains(Microsoft.DocAsCode.Plugins.ManifestItem)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L38">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L41">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_Contains_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.Contains*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_Contains_Microsoft_DocAsCode_Plugins_ManifestItem_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.Contains(Microsoft.DocAsCode.Plugins.ManifestItem)">Contains(ManifestItem)</h4>
@@ -437,7 +438,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection_CopyTo_Microsoft_DocAsCode_Plugins_ManifestItem___System_Int32_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.CopyTo(Microsoft.DocAsCode.Plugins.ManifestItem%5B%5D%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L40">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L43">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_CopyTo_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.CopyTo*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_CopyTo_Microsoft_DocAsCode_Plugins_ManifestItem___System_Int32_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.CopyTo(Microsoft.DocAsCode.Plugins.ManifestItem[],System.Int32)">CopyTo(ManifestItem[], Int32)</h4>
@@ -474,7 +475,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection_GetEnumerator.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.GetEnumerator%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L42">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L45">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_GetEnumerator_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.GetEnumerator*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_GetEnumerator" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.GetEnumerator">GetEnumerator()</h4>
@@ -504,7 +505,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection_IndexOf_Microsoft_DocAsCode_Plugins_ManifestItem_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.IndexOf(Microsoft.DocAsCode.Plugins.ManifestItem)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L44">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L47">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_IndexOf_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.IndexOf*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_IndexOf_Microsoft_DocAsCode_Plugins_ManifestItem_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.IndexOf(Microsoft.DocAsCode.Plugins.ManifestItem)">IndexOf(ManifestItem)</h4>
@@ -551,7 +552,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection_Insert_System_Int32_Microsoft_DocAsCode_Plugins_ManifestItem_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.Insert(System.Int32%2CMicrosoft.DocAsCode.Plugins.ManifestItem)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L46">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L49">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_Insert_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.Insert*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_Insert_System_Int32_Microsoft_DocAsCode_Plugins_ManifestItem_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.Insert(System.Int32,Microsoft.DocAsCode.Plugins.ManifestItem)">Insert(Int32, ManifestItem)</h4>
@@ -588,7 +589,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection_Remove_Microsoft_DocAsCode_Plugins_ManifestItem_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.Remove(Microsoft.DocAsCode.Plugins.ManifestItem)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L48">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L51">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_Remove_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.Remove*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_Remove_Microsoft_DocAsCode_Plugins_ManifestItem_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.Remove(Microsoft.DocAsCode.Plugins.ManifestItem)">Remove(ManifestItem)</h4>
@@ -635,7 +636,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection_RemoveAll_System_Predicate_Microsoft_DocAsCode_Plugins_ManifestItem__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.RemoveAll(System.Predicate%7BMicrosoft.DocAsCode.Plugins.ManifestItem%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L62">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L65">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_RemoveAll_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.RemoveAll*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_RemoveAll_System_Predicate_Microsoft_DocAsCode_Plugins_ManifestItem__" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.RemoveAll(System.Predicate{Microsoft.DocAsCode.Plugins.ManifestItem})">RemoveAll(Predicate&lt;ManifestItem&gt;)</h4>
@@ -682,7 +683,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection_RemoveAt_System_Int32_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection.RemoveAt(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L50">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L53">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_RemoveAt_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.RemoveAt*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_ManifestItemCollection_RemoveAt_System_Int32_" data-uid="Microsoft.DocAsCode.Plugins.ManifestItemCollection.RemoveAt(System.Int32)">RemoveAt(Int32)</h4>
@@ -758,7 +759,7 @@
                     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_ManifestItemCollection.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.ManifestItemCollection%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L12" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/ManifestItemCollection.cs/#L14" class="contribution-link">View Source</a>
                   </li>
                   <li>
                     <a href="#disqus_thread" class="contribution-link">0 Comments</a>

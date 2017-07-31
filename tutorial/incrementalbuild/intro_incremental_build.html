@@ -1,0 +1,238 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Introduction to DocFX Incremental Build | DocFX website </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Introduction to DocFX Incremental Build | DocFX website ">
+    <meta name="generator" content="docfx 2.22.0.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="introduction-to-docfx-incremental-build">Introduction to <em>DocFX Incremental Build</em></h1>
+
+<p>Workflow for DocFX build with incremental.</p>
+<p><img src="images/incrementalbuildframework.png" alt="DocFX incremental build workflow"></p>
+<p>DocFX&#39;s build workflow is divided into three phases, namely <code>Compile</code>, <code>Link</code> and <code>PostProcess</code>.</p>
+<p>By default, changed files would be collected by comparing file&#39;s <code>LastWriteTimeUtc</code> and <code>MD5</code>. We also provide the command option <code>--changesFile</code> to overwrite the default behavior. About the style of the changesFile, please refer to <a href="#changes-file">ChangesFile</a> section.</p>
+<p>Before <code>Compile</code> phase, only <strong>changed files and their dependencies</strong> would be loaded. During <code>Compile</code> phase, rebuilt articles could report new dependencies. After <code>Compile</code> phase, newly introduced dependencies would lead to some unchanged files being reloaded.</p>
+<p><em>DocFX Incremental Build Framework</em> provides <a href="customize_a_processor_to_support_incremental.html">a flexible way</a> to define plugins/processors to support incremental build. Plugins that support incremental are free to <a href="advanced_report_dependency.html">report dependencies</a> at <code>Compile</code> phase.</p>
+<div class="NOTE"><h5>Note</h5><p>Only <code>Compile</code> phase could report/collect dependencies.</p>
+</div>
+<p>Framework also allows plugins to save/load context related info in Plugin Cache. For more details please refer to <a href="customize_a_processor_to_support_incremental.html#step3-optionalimplement-microsoftdocascodepluginsicantracecontextinfobuildstep-interface-for-plugins-that-need-to-access-context-info">Plugin cache</a>.</p>
+<p>By default, incremental cache files will be put at path <code>obj/.cache/build/</code> relative to your <code>docfx.json</code>. You&#39;re also free to specify the path with option <code>--intermediateFolder</code>. About the structure of the cache folder please refer to <a href="advanced_cache_file_structure.html">Cache file structure</a>.</p>
+<h2 id="incremental-condition"><em>Incremental Condition</em></h2>
+<p>Build could run incrementally only if all of the following conditions meet.</p>
+<ol>
+<li>The version supports incremental.</li>
+</ol>
+<p>Each version of file mappings would be built independently. For one version:</p>
+<ul>
+<li>Cache files are not corrupted.</li>
+<li><code>DocFX</code> version isn&#39;t changed.</li>
+<li>Plugins&#39; hash isn&#39;t changed.</li>
+<li>Templates&#39; hash isn&#39;t changed.</li>
+<li>The <code>docfx.json</code> config hash isn&#39;t changed.</li>
+<li>This isn&#39;t a force build. Namely, no <code>--force</code> option.</li>
+<li>This isn&#39;t a debug run. Namely, no <code>--exportRawModel</code> or <code>--exportViewModel</code> option.</li>
+<li>If provided with <a href="#changes-file">changesFile</a>, this build&#39;s <code>CommitFromSHA</code> should be same with last build&#39;s <code>CommitToSHA</code>.</li>
+</ul>
+<div class="NOTE"><h5>Note</h5><p>Not all configs in <code>docfx.json</code> are counted in when calculating the config hash. The below table lists configs that are ignored.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Files</td>
+<td>the file collection that is included in docfx.json, namely <code>files</code></td>
+</tr>
+<tr>
+<td>OutputBaseDir</td>
+<td>the base directory of output, namely <code>dest</code></td>
+</tr>
+<tr>
+<td>ChangesFile</td>
+<td>the changes file</td>
+</tr>
+<tr>
+<td>MaxParallelism</td>
+<td>max parallelism</td>
+</tr>
+<tr>
+<td>VersionName</td>
+<td>version name</td>
+</tr>
+<tr>
+<td>ForceRebuild</td>
+<td>whether to force rebuild</td>
+</tr>
+<tr>
+<td>ForcePostProcess</td>
+<td>whether to force post processor</td>
+</tr>
+<tr>
+<td>LruSize</td>
+<td>lru size</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ol start="2">
+<li>The processor supports incremental.</li>
+</ol>
+<ul>
+<li>The processor implements the interface <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor.html">ISupportIncrementalDocumentProcessor</a>. Right now, <a class="xref" href="../../api/Microsoft.DocAsCode.Build.ConceptualDocuments.ConceptualDocumentProcessor.html">ConceptualDocumentProcessor</a> and <a class="xref" href="../../api/Microsoft.DocAsCode.Build.ManagedReference.ManagedReferenceDocumentProcessor.html">ManagedReferenceDocumentProcessor</a> supports the interface.</li>
+<li>The processor&#39;s <code>IncrementalContextHash</code> isn&#39;t changed.</li>
+<li><p>All plugins in the processor implement the interface <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html">ISupportIncrementalBuildStep</a>.</p>
+<p>If you&#39;d like to customize your processor to support incremental, you can view more from <a href="customize_a_processor_to_support_incremental.html">Walkthrough: Customize a processor to support incremental</a>.</p>
+</li>
+</ul>
+<h2 id="changes-file"><em>Changes File</em></h2>
+<p>You can specify the changes with the build option <code>--changesFile</code>. This would overwrite <code>DocFX</code>&#39;s default behavior to calculate changes.</p>
+<p>Below is a sample changesFile <code>changes.tsv</code>.</p>
+<pre><code>&lt;from&gt;  f2166a5a0db6db595d263fb6c7288d64e535c4b2
+&lt;to&gt;    158f883df18be9404df03f4844dd705251b280a2
+F:/docfx-seed-master/docfx-seed-master/articles/csharp_coding_standards.md            Updated
+F:/docfx-seed-master/docfx-seed-master/articles/images/seed.jpg      Created
+F:/docfx-seed-master/docfx-seed-master/articles/test.md       Deleted
+</code></pre><p>or you can use relative path to <code>docfx.json</code>.</p>
+<pre><code>&lt;from&gt;  f2166a5a0db6db595d263fb6c7288d64e535c4b2
+&lt;to&gt;    158f883df18be9404df03f4844dd705251b280a2
+articles/csharp_coding_standards.md            Updated
+articles/images/seed.jpg      Created
+articles/test.md       Deleted
+</code></pre><p>The first two lines denote that the changelist is compared between the commit <code>&lt;from&gt;</code> and the commit <code>&lt;to&gt;</code>. The two lines could be omitted if you don&#39;t want to check the commit match. Otherwise, <code>DocFX</code> would check whether the changesFile&#39;s <code>&lt;from&gt;</code> is same with last build&#39;s <code>&lt;to&gt;</code>.</p>
+<p>You can specify the changesFile from option: <code>--changesFile &quot;&lt;path of changes.tsv relative to docfx.json&gt;&quot;</code>, or you can update <code>docfx.json</code> to add <code>&quot;changesFile&quot;: &quot;&lt;path of changes.tsv relative to docfx.json&gt;&quot;</code>.</p>
+<div id="disqus_thread"></div>
+                <script>
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://docfx-github.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+                </script>
+                <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/incrementalbuild/intro_incremental_build.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="#disqus_thread" class="contribution-link">0 Comments</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Copyright © 2015-2017 Microsoft<br>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+    <script id="dsq-count-scr" src="//docfx-github.disqus.com/count.js" async=""></script>
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-99241001-1', 'auto');
+      ga('send', 'pageview');
+    
+    </script>
+  </body>
+</html>

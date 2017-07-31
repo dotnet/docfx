@@ -5,12 +5,12 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class AmbientContext
+    <title>Struct AmbientContext
    | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class AmbientContext
+    <meta name="title" content="Struct AmbientContext
    | DocFX website ">
-    <meta name="generator" content="docfx 2.21.2.0">
+    <meta name="generator" content="docfx 2.22.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -78,22 +78,20 @@
             <article class="content wrap" id="_content" data-uid="Microsoft.DocAsCode.Common.AmbientContext">
   
   
-  <h1 id="Microsoft_DocAsCode_Common_AmbientContext" data-uid="Microsoft.DocAsCode.Common.AmbientContext" class="text-break">Class AmbientContext
+  <h1 id="Microsoft_DocAsCode_Common_AmbientContext" data-uid="Microsoft.DocAsCode.Common.AmbientContext" class="text-break">Struct AmbientContext
   </h1>
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
-  <div class="inheritance">
-    <h5>Inheritance</h5>
-    <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
-    <div class="level1"><span class="xref">AmbientContext</span></div>
-  </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">Object.ToString()</a>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/2dts52z7(v=vs.110).aspx">ValueType.Equals(Object)</a>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Object.Equals(Object)</a>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/y3509fc2(v=vs.110).aspx">ValueType.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/wb77sz3h(v=vs.110).aspx">ValueType.ToString()</a>
     </div>
     <div>
       <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Object.Equals(Object, Object)</a>
@@ -102,13 +100,7 @@
       <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">Object.ReferenceEquals(Object, Object)</a>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">Object.GetHashCode()</a>
-    </div>
-    <div>
       <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">Object.GetType()</a>
-    </div>
-    <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">Object.MemberwiseClone()</a>
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.DocAsCode.Common.html">Microsoft.DocAsCode.Common</a></h6>
@@ -116,7 +108,7 @@
   <h5 id="Microsoft_DocAsCode_Common_AmbientContext_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[Serializable]
-public sealed class AmbientContext : IDisposable</code></pre>
+public struct AmbientContext : IDisposable</code></pre>
   </div>
   <h3 id="properties">Properties
   </h3>
@@ -133,7 +125,7 @@ public sealed class AmbientContext : IDisposable</code></pre>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static AmbientContext CurrentContext { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public static AmbientContext? CurrentContext { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -145,7 +137,7 @@ public sealed class AmbientContext : IDisposable</code></pre>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Common.AmbientContext.html">AmbientContext</a></td>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/b3h38hb0(v=vs.110).aspx">Nullable</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Common.AmbientContext.html">AmbientContext</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -187,7 +179,7 @@ public sealed class AmbientContext : IDisposable</code></pre>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Common_AmbientContext_CreateBranch.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Common.AmbientContext.CreateBranch%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/AmbientContext.cs/#L83">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/AmbientContext.cs/#L82">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Common_AmbientContext_CreateBranch_" data-uid="Microsoft.DocAsCode.Common.AmbientContext.CreateBranch*"></a>
   <h4 id="Microsoft_DocAsCode_Common_AmbientContext_CreateBranch" data-uid="Microsoft.DocAsCode.Common.AmbientContext.CreateBranch">CreateBranch()</h4>
@@ -219,7 +211,7 @@ public sealed class AmbientContext : IDisposable</code></pre>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Common_AmbientContext_Dispose.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Common.AmbientContext.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/AmbientContext.cs/#L91">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/AmbientContext.cs/#L90">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Common_AmbientContext_Dispose_" data-uid="Microsoft.DocAsCode.Common.AmbientContext.Dispose*"></a>
   <h4 id="Microsoft_DocAsCode_Common_AmbientContext_Dispose" data-uid="Microsoft.DocAsCode.Common.AmbientContext.Dispose">Dispose()</h4>
@@ -237,7 +229,7 @@ public sealed class AmbientContext : IDisposable</code></pre>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Common_AmbientContext_GenerateNextCorrelationId.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Common.AmbientContext.GenerateNextCorrelationId%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/AmbientContext.cs/#L74">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/AmbientContext.cs/#L73">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Common_AmbientContext_GenerateNextCorrelationId_" data-uid="Microsoft.DocAsCode.Common.AmbientContext.GenerateNextCorrelationId*"></a>
   <h4 id="Microsoft_DocAsCode_Common_AmbientContext_GenerateNextCorrelationId" data-uid="Microsoft.DocAsCode.Common.AmbientContext.GenerateNextCorrelationId">GenerateNextCorrelationId()</h4>
@@ -299,7 +291,7 @@ public sealed class AmbientContext : IDisposable</code></pre>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Common_AmbientContext_InitializeAmbientContext_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Common.AmbientContext.InitializeAmbientContext(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/AmbientContext.cs/#L58">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Common/AmbientContext.cs/#L57">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Common_AmbientContext_InitializeAmbientContext_" data-uid="Microsoft.DocAsCode.Common.AmbientContext.InitializeAmbientContext*"></a>
   <h4 id="Microsoft_DocAsCode_Common_AmbientContext_InitializeAmbientContext_System_String_" data-uid="Microsoft.DocAsCode.Common.AmbientContext.InitializeAmbientContext(System.String)">InitializeAmbientContext(String)</h4>

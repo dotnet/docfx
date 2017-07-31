@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>DocFX Document Schema Design Specification | DocFX website </title>
+    <title>DocFX Document Schema v1.0 Specification | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="DocFX Document Schema Design Specification | DocFX website ">
-    <meta name="generator" content="docfx 2.21.2.0">
+    <meta name="title" content="DocFX Document Schema v1.0 Specification | DocFX website ">
+    <meta name="generator" content="docfx 2.22.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -74,91 +74,300 @@
         <div class="article row grid-right">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="docfx-document-schema-design-specification">DocFX Document Schema Design Specification</h1>
+<h1 id="docfx-document-schema-v10-specification">DocFX Document Schema v1.0 Specification</h1>
 
 <h2 id="1-introduction">1. Introduction</h2>
-<p>DocFX supports different <a href="../tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.html">document processors</a> to handle different kinds of input. For now, if the data model changes a bit, a new document processor is needed, even most works in processors are the same.</p>
-<p>DocFX Document Schema (abbreviated to <code>this schema</code> below) is introduced to address ths problem. This schema is a JSON media type for defining the structure of a DocFX document. This schema is intended to define manipulation, documentation, validation of the document data.</p>
+<p>DocFX supports different <a href="../tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.html">document processors</a> to handle different kinds of input. For now, if the data model changes a bit, a new document processor is needed, even most of the work in processors are the same.</p>
+<p>DocFX Document Schema (abbreviated to <em>THIS schema</em> below) is introduced to address this problem. This schema is a JSON media type for defining the structure of a DocFX document. This schema is intended to <strong>annotate</strong>, <strong>validate</strong> and <strong>interpret</strong> the document data. </p>
 <h2 id="2-conventions-and-terminology">2. Conventions and Terminology</h2>
 <p>The key words &quot;MUST&quot;, &quot;MUST NOT&quot;, &quot;REQUIRED&quot;, &quot;SHALL&quot;, &quot;SHALL NOT&quot;, &quot;SHOULD&quot;, &quot;SHOULD NOT&quot;, &quot;RECOMMENDED&quot;, &quot;MAY&quot;, and &quot;OPTIONAL&quot; in this document are to be interpreted as described in <a href="https://tools.ietf.org/html/rfc2119">RFC 2119</a>.</p>
 <h2 id="3-overview">3. Overview</h2>
-<p>DocFX Document Schema is in <a href="http://www.json.org/">JSON</a> format. It borrows most syntax from <a href="http://json-schema.org/">JSON Schema</a>, while it also introduces some other syntax to manuplating the data.</p>
-<h3 id="31-validation">3.1 Validation</h3>
-<p>This schema can describe the structure of a DocFX document. 
-<a href="http://json-schema.org/latest/json-schema-validation.html">JSON schema validation</a> already defines many keywords. This schema starts from supporting limited keyword like <code>type</code>, <code>properties</code>.</p>
-<h3 id="32-manipulation">3.2 Manipulation</h3>
-<p>This schema can describe how to handle each property of the document.</p>
-<p>Some handler is predefined in DocFX, like markup a string using <a href="docfx_flavored_markdown.html">DFM</a>, mark a property as an uid, include content from another source, etc. </p>
-<p>Some handler can be injected into the schema parsing process to accomplish some custom steps.</p>
-<p><strong>TODO</strong>: add definition for handler.</p>
-<h3 id="33-integration-with-docfx">3.3 Integration with DocFX</h3>
-<p>Schema is passed to DocFX as part of the template. It MUST be put in the <code>schemas</code> sub folder under template folder. The file name is treated as the schema name, also known as the document type of a template.</p>
-<p>For example, to add a schema for a document type <code>ManagedReference</code>, a schema file should added like <code>{templateFolder}\schemas\ManagedReference.json</code>.</p>
-<p>Schema describes the object model. The format of the object model is not constrained. YAML and JSON should both be supported.</p>
-<p><strong>TODO</strong>: change to use YAML Mime to determine which schema to use.</p>
+<p>DocFX Document Schema is in <a href="http://www.json.org/">JSON</a> format. It borrows most syntax from <a href="http://json-schema.org/">JSON Schema</a>, while it also introduces some other syntax to manipulate the data.</p>
+<h3 id="31-annotation">3.1 Annotation</h3>
+<p><em>THIS schema</em> is a JSON based format for the structure of a DocFX document.</p>
+<h3 id="32-validation">3.2 Validation</h3>
+<p><a href="http://json-schema.org/latest/json-schema-validation.html">JSON schema validation</a> already defines many keywords. This schema starts from supporting limited keyword like <code>type</code>, <code>properties</code>.</p>
+<h3 id="33-interpretation">3.3 Interpretation</h3>
+<p>Besides annotate and validate the input document model, <em>THIS schema</em> also defines multiple interpretations for each property of the document model.
+For example, a property named <code>summary</code> contains value in Markdown format, <em>THIS schema</em> can define a <code>markup</code> interpretation for the <code>summary</code> property, so that the property can be marked using <a href="docfx_flavored_markdown.html">DFM</a> syntax.</p>
 <h2 id="4-general-considerations">4. General Considerations</h2>
 <ul>
-<li>This schema will reuse keywords in JSON schema, but will not change the defition of the existing one.</li>
-<li>To distinguish with JSON schema, the new keywords introduced in this schema is prefixed with <code>d-</code>. <code>d</code> stands for DocFX.</li>
-<li>This schema can validate and manipulate single elements in place, but can not move the element to another place.</li>
+<li><em>THIS schema</em> leverages JSON schema definition, that is to say, keywords defined in JSON schema keeps its meaning in <em>THIS schema</em> when it is supported by <em>THIS schema</em>.</li>
 </ul>
-<h2 id="5-validation-keywords">5. Validation keywords</h2>
-<h3 id="51-type">5.1 type</h3>
+<h2 id="5-detailed-specification">5. Detailed Specification</h2>
+<h3 id="format">Format</h3>
+<p>The files describing DocFX document model in accordance with the DocFX document schema specification are represented as JSON objects and conform to the JSON standards. YAML, being a superset of JSON, can be used as well to represent a DocFX document schema specification file.</p>
+<p>All field names in the specification are <strong>case sensitive</strong>.</p>
+<p>This schema exposes two types of fields. Fixed fields, which have a declared name, and Patterned fields, which declare a regex pattern for the field name. Patterned fields can have multiple occurrences as long as each has a unique name.</p>
+<p>By convention, the schema file is suffixed with <code>.schema.json</code>.</p>
+<h3 id="data-types">Data Types</h3>
+<p>Primitive data types in <em>THIS schema</em> are based on <a href="http://json-schema.org/latest/json-schema-core.html#rfc.section.4.2">JSON schema Draft 6 4.2 Instance</a></p>
+<h3 id="schema">Schema</h3>
+<p>For a given field, <code>*</code> as the starting character in <em>Description</em> cell stands for <strong>required</strong>.</p>
+<h4 id="schema-object">Schema Object</h4>
+<p>This is the root document object for <em>THIS schema</em>.</p>
+<h5 id="fixed-field">Fixed Field</h5>
+<table>
+<thead>
+<tr>
+<th>Field Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$schema</td>
+<td>string</td>
+<td><code>*</code>The version of the schema specification, for example, <code>https://github.com/dotnet/docfx/v1.0/schema#</code>.</td>
+</tr>
+<tr>
+<td>version</td>
+<td>string</td>
+<td><code>*</code>The version of current schema object.</td>
+</tr>
+<tr>
+<td>id</td>
+<td>string</td>
+<td>It is best practice to include an <code>id</code> property as an unique identifier for each schema.</td>
+</tr>
+<tr>
+<td>title</td>
+<td>string</td>
+<td>The title of current schema, <code>LandingPage</code>, for example. In DocFX, this value can be used to determine what kind of documents apply to this schema, If not specified, file name before <code>schema.json</code> of this schema is used.</td>
+</tr>
+<tr>
+<td>description</td>
+<td>string</td>
+<td>A short description of current schema.</td>
+</tr>
+<tr>
+<td>type</td>
+<td>string</td>
+<td><code>*</code>The type of the root document model MUST be <code>object</code>.</td>
+</tr>
+<tr>
+<td>properties</td>
+<td><a href="#property-definitions-object">Property Definitions Object</a></td>
+<td>An object to hold the schema of all the properties.</td>
+</tr>
+</tbody>
+</table>
+<h5 id="patterned-field">Patterned Field</h5>
+<table>
+<thead>
+<tr>
+<th>Field Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>^x-</td>
+<td>Any</td>
+<td>Allows extensions to <em>THIS schema</em>. The field name MUST begin with x-, for example, x-internal-id. The value can be null, a primitive, an array or an object.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="property-definitions-object">Property Definitions Object</h4>
+<p>It is an object where each key is the name of a property and each value is a schema to describe that property. </p>
+<h5 id="patterned-field">Patterned Field</h5>
+<table>
+<thead>
+<tr>
+<th>Field Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>{name}</td>
+<td><a href="#property-object">Property Object</a></td>
+<td>The schema object for the <code>{name}</code> property</td>
+</tr>
+</tbody>
+</table>
+<h4 id="property-object">Property Object</h4>
+<p>An object to describe the schema of the value of the property.</p>
+<h5 id="fixed-field">Fixed Field</h5>
+<table>
+<thead>
+<tr>
+<th>Field Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>title</td>
+<td>string</td>
+<td>The title of the property.</td>
+</tr>
+<tr>
+<td>description</td>
+<td>string</td>
+<td>A lengthy explanation about the purpose of the data described by the schema</td>
+</tr>
+<tr>
+<td>default</td>
+<td>what <code>type</code> defined</td>
+<td>The default value for current field</td>
+</tr>
+<tr>
+<td>type</td>
+<td>string</td>
+<td>The type of the root document model. Refer to <a href="#61-type">type keyword</a> for detailed description.</td>
+</tr>
+<tr>
+<td>properties</td>
+<td><a href="#property-definitions-object">Property Definitions Object</a></td>
+<td>An object to hold the schema of all the properties if <code>type</code> for the model is <code>object</code>. Omitting this keyword has the same behavior as an empty object.</td>
+</tr>
+<tr>
+<td>items</td>
+<td><a href="#property-object">Property Object</a></td>
+<td>An object to hold the schema of the items if <code>type</code> for the model is <code>array</code>. Omitting this keyword has the same behavior as an empty schema.</td>
+</tr>
+<tr>
+<td>reference</td>
+<td>string</td>
+<td>Defines whether current property is a reference to the actual value of the property. Refer to <a href="#62-reference">reference</a> for detailed explanation.</td>
+</tr>
+<tr>
+<td>contentType</td>
+<td>string</td>
+<td>Defines the content type of the property. Refer to <a href="#63-contenttype">contentType</a> for detailed explanation.</td>
+</tr>
+<tr>
+<td>tags</td>
+<td>array</td>
+<td>Defines the tags of the property. Refer to <a href="#64-tags">tags</a> for detailed explanation.</td>
+</tr>
+<tr>
+<td>mergeType</td>
+<td>string</td>
+<td>Defines how to merge the property. Omitting this keyword has the same behavior as <code>merge</code>. Refer to <a href="#65-mergetype">mergeType</a> for detailed explanation.</td>
+</tr>
+</tbody>
+</table>
+<h5 id="patterned-field">Patterned Field</h5>
+<table>
+<thead>
+<tr>
+<th>Field Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>^x-</td>
+<td>Any</td>
+<td>Allows extensions to <em>THIS schema</em>. The field name MUST begin with x-, for example, x-internal-id. The value can be null, a primitive, an array or an object.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="6-keywords-in-detail">6. Keywords in detail</h2>
+<h3 id="61-type">6.1 type</h3>
 <p>Same as in JSON schema: <a href="http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.25">http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.25</a></p>
 <blockquote><p>The value of this keyword MUST be either a string or an array. If it is an array, elements of the array MUST be strings and MUST be unique.</p>
 <p>String values MUST be one of the six primitive types (&quot;null&quot;, &quot;boolean&quot;, &quot;object&quot;, &quot;array&quot;, &quot;number&quot;, or &quot;string&quot;), or &quot;integer&quot; which matches any number with a zero fractional part.</p>
 <p>An instance validates if and only if the instance is in any of the sets listed for this keyword.</p>
 </blockquote>
-<h3 id="52-properties">5.2 properties</h3>
-<p>Same as in JSON schema: <a href="http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.18">http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.18</a></p>
-<blockquote><p>The value of &quot;properties&quot; MUST be an object. Each value of this object MUST be a valid JSON Schema.</p>
-<p>This keyword determines how child instances validate for objects, and does not directly validate the immediate instance itself.</p>
-<p>Validation succeeds if, for each name that appears in both the instance and as a name within this keyword&#39;s value, the child instance for that name successfully validates against the corresponding schema.</p>
-<p>Omitting this keyword has the same behavior as an empty object.</p>
-</blockquote>
-<h3 id="53-items">5.3 items</h3>
-<p>Same as in JSON schema: <a href="http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.9">http://json-schema.org/latest/json-schema-validation.html#rfc.section.6.9</a></p>
-<blockquote><p>The value of &quot;items&quot; MUST be either a valid JSON Schema or an array of valid JSON Schemas.</p>
-<p>This keyword determines how child instances validate for arrays, and does not directly validate the immediate instance itself.</p>
-<p>If &quot;items&quot; is a schema, validation succeeds if all elements in the array successfully validate against that schema.</p>
-<p>If &quot;items&quot; is an array of schemas, validation succeeds if each element of the instance validates against the schema at the same position, if any.</p>
-<p>Omitting this keyword has the same behavior as an empty schema.</p>
-</blockquote>
-<h2 id="6-manipulation-keywords">6. Manipulation keywords</h2>
-<h3 id="61-d-contenttype">6.1 d-contentType</h3>
-<p>The value of <code>d-contentType</code> MUST be a string. It defines how DocFX will manipulate the property and affect the build context.</p>
-<p>The following values are allowed:</p>
-<ul>
-<li><code>uid</code>: If the instance is a string, it defines a UID in the build context for reference.</li>
-<li><code>fileLink</code>: If the instance is a string and in relative path, it will be converted into path from docset root, and DocFX will update the path afterward.</li>
-<li><code>uidReference</code>: If the instance is a string or an array of string, it references to a UID (some UIDS) in the build context.</li>
-<li><code>markdown</code>: If the instance is a string, it will be marked up and updated.</li>
-<li><code>includeFile</code>: if the instance is a string and in relative path, content of the targeted file will replace it in place.</li>
-<li><code>includeMarkdownFile</code>: This is same as <code>includeFile</code>, in spite of that the content will be marked up before filled in.</li>
-</ul>
-<p><strong>TODO</strong> add some explanation for instance: <a href="http://json-schema.org/latest/json-schema-core.html#rfc.section.4.2">http://json-schema.org/latest/json-schema-core.html#rfc.section.4.2</a></p>
-<h3 id="62-d-tags">6.2 d-tags</h3>
-<p>The value of this keyword MUST be either a string or an array. If it is an array, elements of the array MUST be strings and MUST be unique.</p>
-<p>If a processor need to do some operations on a specified property, while the location of the property differs with schemas, it&#39;s hard to share the code.
-In this case, a tag can be defined to mark the property, then the processor can fetch the instances with defined tag from schema parser, and read or modify it.</p>
-<h3 id="63-d-overwrite">6.3 d-overwrite</h3>
-<p>The value of &quot;overwrite&quot; MUST be a string. It specifies how DocFX uses the <a href="../tutorial/intro_overwrite_files.html">overwrite files</a> to overwrite the existing values.</p>
-<p>The following values are allowed:</p>
-<ul>
-<li><code>replace</code>: The value will be overwitten by the one specified in overwrite files.</li>
-<li><code>key</code>: If the instance is a string, it will be used as the key of the current object. It can be used to identify the object to overwrite in an array.</li>
-<li><code>merge</code>: If the instance is an object, it will be merged with the one in overwrite files. If there are duplicated keys, the one in overwrite files will overwrite the existing one.</li>
-<li><code>ignore</code>: Mark the current instance cannot be overwritten.</li>
-</ul>
-<p>For <code>object</code> and <code>array</code> type, the default behavior is <code>merge</code>. For other types, the default behavior is <code>replace</code>.</p>
-<div class="NOTE"><h5>Note</h5><p>After applying the overwrite files, the model should be checked again to ensure that all the validation rules still satisfy.</p>
-</div>
-<h2 id="7-extension-keywords">7. Extension Keywords</h2>
-<p>While this schema defines some keywords for DocFX use, additional keywords can be added above it. </p>
-<p>The extension keywords are RECOMMENDED to has the form <code>{an charactor other than &quot;d&quot;}-{keyword}</code>, so that it can be easily distinguished from keywords defined in this schema and JSON schema. They can have any valid JSON format value.</p>
-<h2 id="8-samples">8. Samples</h2>
+<h3 id="62-reference">6.2 reference</h3>
+<p>It defines whether current property is a reference to the actual value of the property. The values MUST be one of the following:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>none</code></td>
+<td>It means the property is not a reference.</td>
+</tr>
+<tr>
+<td><code>file</code></td>
+<td>It means current property stands for a file path that contains content to be included</td>
+</tr>
+</tbody>
+</table>
+<h3 id="63-contenttype">6.3 contentType</h3>
+<p>It defines how applications interpret the property. If not defined, the behavior is similar to <code>default</code> value. The values MUST be one of the following:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>default</code></td>
+<td>It means that no interpretion will be done to the property.</td>
+</tr>
+<tr>
+<td><code>uid</code></td>
+<td><code>type</code> MUST be <code>string</code>. It means the property defines a unique identifier inside current document model</td>
+</tr>
+<tr>
+<td><code>xref</code></td>
+<td><code>type</code> MUST be <code>string</code>. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.</td>
+</tr>
+<tr>
+<td><code>href</code></td>
+<td><code>type</code> MUST be <code>string</code>. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output link.</td>
+</tr>
+<tr>
+<td><code>file</code></td>
+<td><code>type</code> MUST be <code>string</code>. It means the property defines a file path inside current document model. Application CAN help to validate if the linked file exists, and resolve the path to the corresponding file output path. The difference between <code>file</code> and <code>href</code> is that <code>href</code> is always URL encoded while <code>file</code> is not.</td>
+</tr>
+<tr>
+<td><code>markdown</code></td>
+<td><code>type</code> MUST be <code>string</code>. It means the property is in <a href="docfx_flavored_markdown.html">DocFX flavored Markdown</a> syntax. Application CAN help to transform it into HTML format.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="64-tags">6.4 tags</h3>
+<p>The value of this keyword MUST be an <code>array</code>, elements of the array MUST be strings and MUST be unique. It provides hints for applications to decide how to interpret the property, for example, <code>localizable</code> tag can help Localization team to interpret the property as <em>localizable</em>; <code>metadata</code> tag can help DocFX to fill in additional metadata, e.g. github commit information.</p>
+<h3 id="65-mergetype">6.5 mergeType</h3>
+<p>The value of this keyword MUST be a string. It specifies how to merge two values of the given property. One use scenario is how DocFX uses the <a href="../tutorial/intro_overwrite_files.html">overwrite files</a> to overwrite the existing values. In the below table, we use <code>source</code> and <code>target</code> to stands for the two values for merging.</p>
+<p>The value MUST be one of the following:</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>key</code></td>
+<td>If <code>key</code> for <code>source</code> equals to the one for <code>target</code>, these two values are ready to merge.</td>
+</tr>
+<tr>
+<td><code>merge</code></td>
+<td>The default behavior. For <code>array</code>, items in the list are merged by <code>key</code> for the item. For <code>string</code> or any value type, <code>target</code> replaces <code>source</code>. For <code>object</code>, merge each property along with its own <code>merge</code> value.</td>
+</tr>
+<tr>
+<td><code>replace</code></td>
+<td><code>target</code> replaces <code>source</code>.</td>
+</tr>
+<tr>
+<td><code>ignore</code></td>
+<td><code>source</code> is not allowed to be merged.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="7-samples">7. Samples</h2>
 <p>Here&#39;s an sample of the schema. Assume we have the following YAML file:</p>
-<pre><code class="lang-yaml">title: Web Apps Documentation
+<pre><code class="lang-yaml">### YamlMime:LandingPage
+title: Web Apps Documentation
 metadata:
   title: Azure Web Apps Documentation - Tutorials, API Reference
   meta.description: Learn how to use App Service Web Apps to build and host websites and web applications.
@@ -191,14 +400,19 @@ sections:
   - content: &quot;Create an application using [.NET with Azure SQL DB](app-service-web-tutorial-dotnet-sqldatabase.md) or [Node.js with MongoDB](app-service-web-tutorial-nodejs-mongodb-app.md)&quot;
   - content: &quot;[Map an existing custom domain to your application](app-service-web-tutorial-custom-domain.md)&quot;
   - content: &quot;[Bind an existing SSL certificate to your application](app-service-web-tutorial-custom-SSL.md)&quot;
-</code></pre><p>In this sample, we want to use the JSON schema to describe the overall model structure. Further more, the <code>href</code> is a file link. It need to be resolved from the relative path to the final href. The <code>content</code> property need to be marked up as a Markdown string. The <code>metadata</code> need to be tagged for further custom operations. We want to use <code>setion</code>&#39;s <code>title</code> as the key for overwrite <code>section</code> array.</p>
+</code></pre><p>In this sample, we want to use the JSON schema to describe the overall model structure. Further more, the <code>href</code> is a file link. It need to be resolved from the relative path to the final href. The <code>content</code> property need to be marked up as a Markdown string. The <code>metadata</code> need to be tagged for further custom operations. We want to use <code>section</code>&#39;s <code>title</code> as the key for overwrite <code>section</code> array.</p>
 <p>Here&#39;s the schema to describe these operations:</p>
 <pre><code class="lang-json">{
+    &quot;$schema&quot;: &quot;https://github.com/dotnet/docfx/schemas/v1.0/schema.json#&quot;,
+    &quot;version&quot;: &quot;1.0.0&quot;,
+    &quot;id&quot;: &quot;https://github.com/dotnet/docfx/schemas/landingpage.schema.json&quot;,
+    &quot;title&quot;: &quot;LandingPage&quot;,
+    &quot;description&quot;: &quot;The schema for landing page&quot;,
     &quot;type&quot;: &quot;object&quot;,
     &quot;properties&quot;: {
         &quot;metadata&quot;: {
             &quot;type&quot;: &quot;object&quot;,
-            &quot;d-tags&quot;: &quot;metadata&quot;
+            &quot;tags&quot;: [ &quot;metadata&quot; ]
         },
         &quot;sections&quot;: {
             &quot;type&quot;: &quot;array&quot;,
@@ -212,21 +426,22 @@ sections:
                             &quot;properties&quot;: {
                                 &quot;href&quot;: {
                                     &quot;type&quot;: &quot;string&quot;,
-                                    &quot;d-contentType&quot;: &quot;fileLink&quot;
+                                    &quot;contentType&quot;: &quot;href&quot;
                                 },
                                 &quot;text&quot;: {
-                                    &quot;type&quot;: &quot;string&quot;
+                                    &quot;type&quot;: &quot;string&quot;,
+                                    &quot;tags&quot;: [ &quot;localizable&quot; ]
                                 },
                                 &quot;content&quot;: {
                                     &quot;type&quot;: &quot;string&quot;,
-                                    &quot;d-contentType&quot;: &quot;markup&quot;
+                                    &quot;contentType&quot;: &quot;markdown&quot;
                                 }
                             }
                         }
                     },
                     &quot;title&quot;: {
                         &quot;type&quot;: &quot;string&quot;,
-                        &quot;d-overwrite&quot;: &quot;key&quot;
+                        &quot;mergeType&quot;: &quot;key&quot;
                     }
                 }
             }
@@ -236,7 +451,46 @@ sections:
         }
     }
 }
-</code></pre><div id="disqus_thread"></div>
+</code></pre><h2 id="8-open-issues">8. Open Issues</h2>
+<ol>
+<li>DocFX fills <code>_global</code> metadata into the processed data model, should the schema reflect this behavior?<ul>
+<li>If YES: <ul>
+<li>Pros:<ol>
+<li>Users are aware of the existence of <code>_global</code> metadata, they can overwrite the property if they want.</li>
+<li>Template writers are aware of it, they can completely rely on the schema to write the template.</li>
+</ol>
+</li>
+<li>Cons:<ol>
+<li>Schema writers need aware of the existence of <code>_global</code> metadata, it should always exists for any schema. (Should we introduce in a concept of base schema?)</li>
+</ol>
+<ul>
+<li>Decision: <em>NOT</em> include, this schema is for <strong>general purpose</strong>, use documents to describe the changes introduced by DocFX.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Is it necessary to prefix <code>d-</code> to every field that DocFX introduces in?<ul>
+<li>If keep <code>d-</code><ul>
+<li>Pros:<ol>
+<li><code>d-</code> makes it straightforward that these keywords are introduced by DocFX</li>
+<li>Keywords DocFX introduces in will never duplicate with the one preserved by JSON schema</li>
+</ol>
+</li>
+<li>Cons:<ol>
+<li><code>d-</code> prefix provides a hint that these keywords are not <em>first class</em> keywords</li>
+<li>Little chance that keywords DocFX defines duplicate with what JSON schema defines, after all, JSON schema defines a finite set of reserved keywords.</li>
+<li>For example<a href="http://swagger.io/">Swagger spec</a> is also based on JSON schema and the fields it introduces in has no prefix. </li>
+</ol>
+</li>
+</ul>
+</li>
+<li>Decision: <em>Remove</em> <code>d-</code> prefix.</li>
+</ul>
+</li>
+</ol>
+<div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE
                 var d = document, s = d.createElement('script');

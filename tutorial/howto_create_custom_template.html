@@ -8,7 +8,7 @@
     <title>How-to: Create A Custom Template | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="How-to: Create A Custom Template | DocFX website ">
-    <meta name="generator" content="docfx 2.21.2.0">
+    <meta name="generator" content="docfx 2.22.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -111,7 +111,7 @@
 <p>DocFX supports specifying multiple templates for a documentation project. That allows you to leverage the <code>default</code> template for handling other types of documents, together with your custom template.</p>
 <p>When dealing with multiple templates, DocFX merges the files inside these templates.</p>
 <p>The principle for merging is: if a file name collides then the file in the latter template overwrites the one in the former template.</p>
-<p>For example, you can merge <code>default</code> template and your custom template by calling <code>docfx build docfx.json -t default, c:/docfx_howto/simple_template</code>. Multiple templates are split by a comma <code>,</code> in the command line. Or you can define it in <code>docfx.json</code> by:</p>
+<p>For example, you can merge <code>default</code> template and your custom template by calling <code>docfx build docfx.json -t default,c:/docfx_howto/simple_template</code>. Multiple templates are split by a comma <code>,</code> in the command line. Or you can define it in <code>docfx.json</code> by:</p>
 <pre><code>&quot;build&quot;: {
     &quot;template&quot;: [
         &quot;default&quot;,

@@ -1,0 +1,303 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>&#128295; Advanced: Report Dependency | DocFX website </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="&#128295; Advanced: Report Dependency | DocFX website ">
+    <meta name="generator" content="docfx 2.22.0.0">
+    
+    <link rel="shortcut icon" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                <img id="logo" class="svg" src="../../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list"></div>
+          <div class="sr-items"></div>
+          <ul id="pagination"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="-advanced-report-dependency">🔧 Advanced: Report Dependency</h1>
+
+<p>DocFX Incremental Build Framework provides the flexiblity to register customized dependency type and report dependency. In this topic, we will go through how to do that.</p>
+<h2 id="register-dependency-type"><em>Register Dependency Type</em></h2>
+<h3 id="dependency-type">Dependency type</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>string</td>
+<td>name of the dependency type(it should be unique)</td>
+</tr>
+<tr>
+<td>Phase</td>
+<td>enum(<code>Compile</code> or <code>Link</code>)</td>
+<td>the build phase that this type of dependency could have an effect on.</td>
+</tr>
+<tr>
+<td>Transitivity</td>
+<td>enum(<code>None</code> or <code>SameType</code> or <code>All</code>)</td>
+<td>whether the dependency is transitive, transitive upon the dependencies with same type, or transitive upon any dependency.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="reserved-dependency-types">Reserved dependency types</h4>
+<p>Below table lists all reserved dependency types. When creating a customized dependency type, name shouldn&#39;t conflict with the reserved ones.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Name</strong></th>
+<th>Phase</th>
+<th>Transitivity</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>include</td>
+<td>Compile</td>
+<td>All</td>
+<td>file inclusion and code snippet</td>
+</tr>
+<tr>
+<td>uid</td>
+<td>Link</td>
+<td>None</td>
+<td>cross reference</td>
+</tr>
+<tr>
+<td>file</td>
+<td>Link</td>
+<td>None</td>
+<td>file link</td>
+</tr>
+<tr>
+<td>overwrite</td>
+<td>Link</td>
+<td>All</td>
+<td>overwrite files</td>
+</tr>
+<tr>
+<td>bookmark</td>
+<td>Link</td>
+<td>None</td>
+<td>file link with bookmark</td>
+</tr>
+<tr>
+<td>metadata</td>
+<td>Link</td>
+<td>None</td>
+<td>metadata related dependency</td>
+</tr>
+<tr>
+<td>reference</td>
+<td>Link</td>
+<td>None</td>
+<td>managed reference document&#39;s references</td>
+</tr>
+</tbody>
+</table>
+<h4 id="register-a-customized-dependency-type">Register a customized dependency type</h4>
+<p>Plugins are flexible to register customized dependency types by implementing <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html">ISupportIncrementalBuildStep</a> interface&#39;s method <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_GetDependencyTypesToRegister">GetDependencyTypesToRegister()</a>. The method would be called by the framework at the very start of the whole build.</p>
+<p>Sample code:</p>
+<pre><code class="lang-csharp">    public IEnumerable&lt;DependencyType&gt; GetDependencyTypesToRegister() =&gt; new[]
+    {
+        new DependencyType()
+        {
+            Name = &quot;ref&quot;,
+            Phase = BuildPhase.Link,
+            Transitivity = DependencyTransitivity.None,
+        }
+    };
+</code></pre><h2 id="report-dependency-item"><em>Report Dependency item</em></h2>
+<h3 id="dependencyitem-model">DependencyItem model</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>From</td>
+<td><a href="#dependencyitemsourceinfo-model">DependencyItemSourceInfo</a></td>
+<td>the depending one</td>
+</tr>
+<tr>
+<td>To</td>
+<td><a href="#dependencyitemsourceinfo-model">DependencyItemSourceInfo</a></td>
+<td>the dependent one</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>string</td>
+<td>the dependency type name</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dependencyitemsourceinfo-model">DependencyItemSourceInfo model</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sourceType</td>
+<td>string</td>
+<td>the type of the value. <code>file</code> and <code>uid</code> are reserved types</td>
+</tr>
+<tr>
+<td>value</td>
+<td>string</td>
+<td>value</td>
+</tr>
+</tbody>
+</table>
+<h3 id="how-to-report">How to report</h3>
+<p><a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html">IHostService</a> interface provides the methods to report directed/reversed dependency items.</p>
+<p>If you want to report the dependency between an file and another file, you can use below method:</p>
+<p>directed dependency: <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService_ReportDependencyTo_Microsoft_DocAsCode_Plugins_FileModel_System_String_System_String_">ReportDependencyTo(FileModel, String, String)</a></p>
+<p>reversed dependency: <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService_ReportDependencyFrom_Microsoft_DocAsCode_Plugins_FileModel_System_String_System_String_">ReportDependencyFrom(FileModel, String, String)</a></p>
+<p>For example, i&#39;d like to report a dependency: file <code>~/test.md</code>(filemodel is <code>a</code>) depends on file <code>~/../include/token/md</code>, dependency type is <code>include</code>,
+i could call the method <code>ReportDependencyTo(a, &quot;~/../include/token.md&quot;, &quot;include&quot;)</code>.</p>
+<p>Plugins are only allowed to report a dependency during <code>Compile</code> phase. However, some plugins might don&#39;t have enough info to resolve some dependency to file until the whole phase completes. Incremental build framework provides the flexiblity that plugins could report dependency between items that are not files and resolve them later.</p>
+<p>directed dependency: <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService_ReportDependencyTo_Microsoft_DocAsCode_Plugins_FileModel_System_String_System_String_System_String_">ReportDependencyTo(FileModel, String, String, String)</a></p>
+<p>reversed dependency: <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService_ReportDependencyFrom_Microsoft_DocAsCode_Plugins_FileModel_System_String_System_String_System_String_">ReportDependencyFrom(FileModel, String, String, String)</a></p>
+<p>report reference:    <a class="xref" href="../../api/Microsoft.DocAsCode.Plugins.IHostService.html#Microsoft_DocAsCode_Plugins_IHostService_ReportReference_Microsoft_DocAsCode_Plugins_FileModel_System_String_System_String_">ReportReference(FileModel, String, String)</a></p>
+<p>A common usage is to report dependency between file and uid.</p>
+<p>For example, i&#39;d like to report a dependency: file <code>~/test.md</code>(filemodel is <code>a</code>) depends on sentenceId @Testid(filemodel is <code>b</code>), dependency type is <code>link</code>,
+i could call the method <code>ReportDependencyTo(a, &quot;Testid&quot;, &quot;sentenceId&quot;, &quot;link&quot;)</code> to report the dependency and <code>ReportReference(b, &quot;Testid&quot;, &quot;sentenceId&quot;)</code> to report the mapping between sentenceId and file. This way, the framework would do the resolution work and resolve it to file-file dependency.</p>
+<div id="disqus_thread"></div>
+                <script>
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://docfx-github.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+                </script>
+                <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+            </article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/dotnet/docfx/blob/dev/Documentation/tutorial/incrementalbuild/advanced_report_dependency.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="#disqus_thread" class="contribution-link">0 Comments</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Copyright © 2015-2017 Microsoft<br>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+    <script id="dsq-count-scr" src="//docfx-github.disqus.com/count.js" async=""></script>
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    
+      ga('create', 'UA-99241001-1', 'auto');
+      ga('send', 'pageview');
+    
+    </script>
+  </body>
+</html>

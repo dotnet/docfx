@@ -8,7 +8,7 @@
     <title>Introduction to DocFX Template System | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to DocFX Template System | DocFX website ">
-    <meta name="generator" content="docfx 2.21.2.0">
+    <meta name="generator" content="docfx 2.22.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -161,11 +161,11 @@ Hello World
     &lt;body&gt;
 &lt;/html&gt;
 </code></pre><h3 id="renderer-in-liquid-syntax"><em>Renderer</em> in Liquid syntax</h3>
-<h4 id="naming-rule-1">Naming rule</h4>
+<h4 id="naming-rule">Naming rule</h4>
 <p><em>Renderer</em>s in <a href="https://github.com/Shopify/liquid">Liquid</a> syntax <strong>MUST</strong> end with <code>.liquid</code> extension. Liquid contains <a href="https://help.shopify.com/themes/liquid/tags/theme-tags#include">include</a> tag to support partials, we follow the ruby partials naming convention to have <code>_&lt;partialName&gt;.liquid</code> as partial template. </p>
-<h4 id="extended-syntax-for-dependencies-1">Extended syntax for Dependencies</h4>
+<h4 id="extended-syntax-for-dependencies">Extended syntax for Dependencies</h4>
 <p>DocFX introduces a custom tag <code>ref</code>, e.g. <code>{% ref file1 %}</code>, to specify the resource files that current template depends on.</p>
-<h4 id="extended-syntax-for-master-page-1">Extended syntax for Master page</h4>
+<h4 id="extended-syntax-for-master-page">Extended syntax for Master page</h4>
 <p>DocFX introduces custom tags <code>master</code> and <code>body</code> to use master page:</p>
 <pre><code class="lang-liquid">{% master &lt;master_page_name&gt; %}
 </code></pre><p>Inside the master page, the following syntax is used for pages to place their content body:</p>

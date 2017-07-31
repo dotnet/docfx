@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.21.2) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.22) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.21.2) | DocFX website ">
-    <meta name="generator" content="docfx 2.21.2.0">
+    <meta name="title" content="Version Notes (Current Version: v2.22) | DocFX website ">
+    <meta name="generator" content="docfx 2.22.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -67,23 +67,16 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="version-notes-current-version-v2212">Version Notes (Current Version: v2.21.2)</h1>
+<h1 id="version-notes-current-version-v222">Version Notes (Current Version: v2.22)</h1>
 
-<h2 id="v2212">v2.21.2</h2>
+<h2 id="v222">v2.22</h2>
 <ol>
-<li><p>Allow manual define heading id:</p>
-<pre><code class="lang-md"># &lt;a id=&quot;a&quot;&gt;&lt;/a&gt;B
-</code></pre><p>will generate following html:</p>
-<pre><code class="lang-html">&lt;h1 id=&quot;a&quot;&gt;B&lt;/h1&gt;
-2. Bug fixes:
- 1. Ignore default plugged assemblies when loading plugins.
-
-</code></pre></li>
-</ol>
-<h2 id="v2211">v2.21.1</h2>
-<ol>
-<li>Bug fixes:<ol>
-<li>Fix bug in tabbed content.</li>
+<li>Support <em>REST</em> extensibility by <code>rest.tagpage</code> and <code>rest.operationpage</code> plugins, to split the original <em>REST</em> API page into smaller pages. Refer to <a href="http://dotnet.github.io/docfx/templates-and-plugins/plugins-dashboard.html">plugins dashboard</a> for more details.</li>
+<li>Bug fixed:<ol>
+<li>Fix _rel unfound when href is url decoded.</li>
+<li>Fix #1886: Fails when project doesn&#39;t contain git remote information.</li>
+<li>Fix toc restruction to support expand child by sequence.</li>
+<li>Ignore default plugged assemblies when loading plugins.</li>
 </ol>
 </li>
 </ol>

@@ -7,7 +7,7 @@
   <title>Available plugins and templates | </title>
   <meta name="title" content="Available plugins and templates | ">
   <meta name="viewport" content="width=device-width">
-  <meta name="generator" content="docfx 2.21.2.0">
+  <meta name="generator" content="docfx 2.22.0.0">
   <link rel="shortcut icon" href="../favicon.ico">
   <link rel="stylesheet" href="../styles/docfx.vendor.css">
   <link rel="stylesheet" href="../styles/docfx.css">
@@ -104,6 +104,30 @@
                   <li><span>Init:<code>nuget install memberpage -OutputDirectory &lt;output&gt;</code></span></li>
                   <li><span>In command:<code>-t default,&lt;output&gt;/memberpage.&lt;version&gt;/content</code></span></li>
                   <li><span>In <c>docfx.json</c>:<code>template: [&quot;statictoc&quot;, &quot;&lt;output&gt;/memberpage.&lt;version&gt;/content&quot;]</code></span></li>
+                </ul>
+              </li>
+              <li class="template-item">
+                <div class="template-screenshot">
+                  <img src="images/rest.tagpage.default.screenshot.png" class="template-screenshot-img">
+                </div>
+                <a class="template-title" href="https://www.nuget.org/packages/rest.tagpage/">rest.tagpage</a>
+                <p class="template-desc">It splits the *REST* model into tag level model. With this plugin enabled, operations with the same tag are grouped into one page. If the operation is in multiple tags, it would be included in first tag level page.</p>
+                <ul>
+                  <li><span>Init:<code>nuget install rest.tagpage -OutputDirectory &lt;output&gt;</code></span></li>
+                  <li><span>In command:<code>-t default,&lt;output&gt;/rest.tagpage.&lt;version&gt;/content</code></span></li>
+                  <li><span>In <c>docfx.json</c>:<code>template: [&quot;default&quot;, &quot;&lt;output&gt;/rest.tagpage.&lt;version&gt;/content&quot;]</code></span></li>
+                </ul>
+              </li>
+              <li class="template-item">
+                <div class="template-screenshot">
+                  <img src="images/rest.operationpage.default.screenshot.png" class="template-screenshot-img">
+                </div>
+                <a class="template-title" href="https://www.nuget.org/packages/rest.operationpage/">rest.operationpage</a>
+                <p class="template-desc">It splits the *REST* model into operation level model. If it's enabled toghether with `rest.tagpage`, the *REST* model will split to tag level first, then split to operation level.</p>
+                <ul>
+                  <li><span>Init:<code>nuget install rest.operationpage -OutputDirectory &lt;output&gt;</code></span></li>
+                  <li><span>In command:<code>-t default,&lt;output&gt;/rest.operationpage.&lt;version&gt;/content</code></span></li>
+                  <li><span>In <c>docfx.json</c>:<code>template: [&quot;default&quot;, &quot;&lt;output&gt;/rest.operationpage.&lt;version&gt;/content&quot;]</code></span></li>
                 </ul>
               </li>
           </ul>

@@ -8,7 +8,7 @@
     <title>Introduction to REST API Documentation | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to REST API Documentation | DocFX website ">
-    <meta name="generator" content="docfx 2.21.2.0">
+    <meta name="generator" content="docfx 2.22.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -79,7 +79,7 @@
 <h2 id="introduction">Introduction</h2>
 <p>DocFX now supports generating documentation from REST APIs following <a href="http://swagger.io/specification/">Swagger specification</a> version 2.0.</p>
 <p>The Swagger RESTful API files <em>MUST</em> end with <code>.json</code>.</p>
-<p>One Swagger API file generates one HTML file. For example. a file <code>contacts.swagger.json</code> generates file naming <code>contacts.html</code>.</p>
+<p>One Swagger API file generates one HTML file. For example, a file <code>contacts.swagger.json</code> generates file naming <code>contacts.html</code>.</p>
 <h2 id="basic-structure">Basic structure</h2>
 <p>A single Swagger API file is considered as a unique REST <strong>File</strong> containing multiple <strong>API</strong>s. The <strong>UID</strong>(Unique IDentifier) for the <strong>File</strong> is defined as the combination of <code>host</code>, <code>basePath</code>, <code>info.title</code> and <code>info.version</code> with <code>/</code> as separator. For example, the following Swagger API file has <strong>UID</strong> equals to <code>microsoft.com/docfx/Contacts/1.6</code>:</p>
 <pre><code class="lang-json">{
@@ -260,6 +260,14 @@ Overwrite description for `microsoft.com/docfx/Contacts/1.6/tag/Basic`
 <p>You can define your own metadata with YAML header. This functionality is quite useful when your own template is used.</p>
 <p>When the key of the metadata is already preserved by DocFX, for example, <code>summary</code>, the value of <code>summary</code> will be overwritten. You can also overwrite complex types, for example, <code>description</code> of a <code>parameter</code>. Make sure the data structure of the provided metadata is consistent with the one defined in DocFX, otherwise, DocFX is unable to cast the value and fails.</p>
 <p>When the key of the metadata is not preserved by DocFX, for example, <code>not_predefined</code>. The metadata is kept and can be used in the template.</p>
+<h2 id="split-extensibility">Split extensibility</h2>
+<p>By default, one <em>REST</em> API file generates one HTML file. For example, petstore.json generates petstore.html. We provide <code>rest.tagpage</code> and <code>rest.operationpage</code> plugins to split the original <em>REST</em> API page into smaller pages.</p>
+<ol>
+<li>With <code>rest.tagpage</code> plugin enabled, operations with the same tag are grouped into one page.</li>
+<li>With <code>rest.operationpage</code> plugin enabled, each operation is splitted into single page.</li>
+<li>With both <code>rest.tagpage</code> and <code>rest.operationpage</code> plugins enabled, the <em>REST</em> model will be splitted to tag level first, then split to operation level.</li>
+</ol>
+<p>Refer <a href="../templates-and-plugins/plugins-dashboard.html">Plugins dashboard</a> for more details.</p>
 <div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE
