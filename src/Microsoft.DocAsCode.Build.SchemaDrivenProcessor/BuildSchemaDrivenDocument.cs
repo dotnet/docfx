@@ -15,12 +15,12 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor
     using Microsoft.DocAsCode.Plugins;
 
     // [Export(nameof(SchemaDrivenDocumentProcessor), typeof(IDocumentBuildStep))]
-    public class BuildSchemaBasedDocument : BaseDocumentBuildStep, ISupportIncrementalBuildStep
+    public class BuildSchemaDrivenDocument : BaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         private const string ConceptualKey = Constants.PropertyName.Conceptual;
         private const string DocumentTypeKey = "documentType";
 
-        public override string Name => nameof(BuildSchemaBasedDocument);
+        public override string Name => nameof(BuildSchemaDrivenDocument);
 
         public override int BuildOrder => 0;
 

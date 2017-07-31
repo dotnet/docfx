@@ -6,6 +6,7 @@
 /// </summary>
 namespace Microsoft.DocAsCode.Common
 {
+    using System;
     using System.Collections.Generic;
     using System.Dynamic;
     using System.Linq;
@@ -57,6 +58,39 @@ namespace Microsoft.DocAsCode.Common
             }
 
             return JToken.FromObject(raw, JsonUtility.DefaultSerializer.Value);
+        }
+
+        public static object ConvertToDynamic(object obj)
+        {
+            var dict = obj as Dictionary<object, object>;
+            if (dict != null)
+            {
+                var result = new ExpandoObject();
+
+                foreach (var pair in dict)
+                {
+                    var key = pair.Key as string;
+                    if (key == null)
+                    {
+                        throw new NotSupportedException("Only string key is supported.");
+                    }
+
+                    ((IDictionary<string, Object>)result).Add(key, ConvertToDynamic(pair.Value));
+                }
+
+                return result;
+            }
+
+            var array = obj as List<object>;
+            if (array != null)
+            {
+                for (int i = 0; i < array.Count; i++)
+                {
+                    array[i] = ConvertToDynamic(array[i]);
+                }
+            }
+
+            return obj;
         }
     }
 }

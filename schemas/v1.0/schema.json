@@ -120,6 +120,5 @@
             "^x_": { }
         }
     },
-    "default": {},
-    "additionalProperties": { "$ref": "#/definitions/propertyObject" }
+    "default": {}
 }
