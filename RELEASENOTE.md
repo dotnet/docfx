@@ -1,7 +1,10 @@
-﻿Version Notes (Current Version: v2.22)
+﻿Version Notes (Current Version: v2.23)
 =======================================
 
-v2.22 (Pre-release)
+v2.23 (Pre-release)
+-----------
+
+v2.22
 -----------
 1. Support *REST* extensibility by `rest.tagpage` and `rest.operationpage` plugins, to split the original *REST* API page into smaller pages. Refer to [plugins dashboard](http://dotnet.github.io/docfx/templates-and-plugins/plugins-dashboard.html) for more details.
 2. Bug fixed:
