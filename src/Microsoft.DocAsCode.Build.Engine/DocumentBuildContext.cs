@@ -246,7 +246,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return unresolvedUidList;
         }
 
-        private async Task<List<XRefSpec>> QueryByHttpRequestAsync(HttpClient client, string requestUrl, string uid)
+        internal async Task<List<XRefSpec>> QueryByHttpRequestAsync(HttpClient client, string requestUrl, string uid)
         {
             string url = requestUrl.Replace("{uid}", Uri.EscapeDataString(uid));
             try

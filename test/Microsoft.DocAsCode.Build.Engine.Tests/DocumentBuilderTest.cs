@@ -24,8 +24,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
-    
-    using UnitTestUtilities;
 
     [Trait("Owner", "zhyan")]
     [Trait("EntityType", "DocumentBuilder")]
@@ -854,14 +852,12 @@ exports.getOptions = function (){
             });
 
             var httpClient = new HttpClient(fakeResponseHandler);
-            var docc = new DocumentBuildContext("");
+            var dbc= new DocumentBuildContext("");
 
-            var result = (Task<List<XRefSpec>>)PrivateMethodTestHelper.RunInstanceMethod(typeof(DocumentBuildContext), "QueryByHttpRequestAsync", docc,
-                new object[3] { httpClient, "http://example.org/test1", "xx" });
-            Assert.Equal(0, result.Result.Count);
-            result = (Task<List<XRefSpec>>)PrivateMethodTestHelper.RunInstanceMethod(typeof(DocumentBuildContext), "QueryByHttpRequestAsync", docc,
-                new object[3] { httpClient, "http://example.org/test2", "xx" });
-            Assert.Equal("csharp_coding_standards", result.Result[0].Uid);
+            var result = dbc.QueryByHttpRequestAsync(httpClient, "http://example.org/test1", "xx").Result;
+            Assert.Equal(0, result.Count);
+            result = dbc.QueryByHttpRequestAsync(httpClient, "http://example.org/test2", "xx").Result;
+            Assert.Equal("csharp_coding_standards", result[0].Uid);
         }
 
         [Fact]
