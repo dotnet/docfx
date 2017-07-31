@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor
     public class SchemaValidator
     {
         private const string SupportedMetaSchemaUrl = "https://github.com/dotnet/docfx/schemas/v1.0/schema.json#";
-        public static void Validate(DSchema schema)
+        public static void Validate(DocumentSchema schema)
         {
             if (!schema.Schema.Equals(SupportedMetaSchemaUrl, StringComparison.Ordinal))
             {

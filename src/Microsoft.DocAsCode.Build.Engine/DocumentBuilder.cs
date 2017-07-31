@@ -318,7 +318,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         using (var sr = new StreamReader(stream))
                         {
-                            var schema = DSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
+                            var schema = DocumentSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
                             var sdp = new SchemaDrivenDocumentProcessor(schema, new CompositionContainer(CompositionContainer.DefaultContainer));
                             Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
                             yield return sdp;

@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor
 
     using Microsoft.DocAsCode.Exceptions;
 
-    public class DSchema : BaseSchema
+    public class DocumentSchema : BaseSchema
     {
         private const string SchemaFileEnding = ".schema.json";
         public static readonly ThreadLocal<JsonSerializer> DefaultSerializer = new ThreadLocal<JsonSerializer>(
@@ -26,10 +26,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor
                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
                    Converters =
                    {
-                     new StringEnumConverter { CamelCaseText = true },
+                       new StringEnumConverter { CamelCaseText = true },
                    },
-
-
                });
 
         [JsonProperty("$schema")]
@@ -46,14 +44,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor
             return JObject.FromObject(this, DefaultSerializer.Value);
         }
 
-        public static DSchema Load(TextReader reader, string title)
+        public static DocumentSchema Load(TextReader reader, string title)
         {
             using (var json = new JsonTextReader(reader))
             {
-                DSchema schema;
+                DocumentSchema schema;
                 try
                 {
-                    schema = DefaultSerializer.Value.Deserialize<DSchema>(json);
+                    schema = DefaultSerializer.Value.Deserialize<DocumentSchema>(json);
                 }
                 catch (Exception e)
                 {
@@ -80,7 +78,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor
             }
         }
 
-        public static DSchema Load(string schemaPath)
+        public static DocumentSchema Load(string schemaPath)
         {
             if (string.IsNullOrEmpty(schemaPath))
             {
@@ -88,15 +86,21 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor
             }
             if (!schemaPath.EndsWith(SchemaFileEnding, StringComparison.OrdinalIgnoreCase))
             {
-                throw new InvalidSchemaException($"Schema path must be end with {SchemaFileEnding}");
+                throw new InvalidSchemaException($"Schema path {schemaPath} does not end with {SchemaFileEnding}");
             }
 
             var fileName = Path.GetFileName(schemaPath);
             var name = fileName.Substring(0, fileName.Length - SchemaFileEnding.Length);
+            if (string.IsNullOrEmpty(name))
+            {
+                {
+                    throw new InvalidSchemaException($"Schema path {schemaPath} is invalid");
+                }
+            }
 
             using (var fr = new StreamReader(schemaPath))
             {
-                return Load(fr, fileName);
+                return Load(fr, name);
             }
         }
     }

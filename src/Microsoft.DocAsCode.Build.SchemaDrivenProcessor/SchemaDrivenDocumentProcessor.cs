@@ -27,12 +27,12 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor
 
         private readonly ResourcePoolManager<JsonSerializer> _serializerPool;
         private readonly string _schemaName;
-        private readonly DSchema _schema;
+        private readonly DocumentSchema _schema;
         #endregion
 
         #region Constructors
 
-        public SchemaDrivenDocumentProcessor(DSchema schema, ICompositionContainer container)
+        public SchemaDrivenDocumentProcessor(DocumentSchema schema, ICompositionContainer container)
         {
             if (string.IsNullOrWhiteSpace(schema.Title))
             {

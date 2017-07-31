@@ -22,6 +22,5 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor
         public List<string> Tags { get; set; }
 
         public MergeType MergeType { get; set; }
-
     }
 }
