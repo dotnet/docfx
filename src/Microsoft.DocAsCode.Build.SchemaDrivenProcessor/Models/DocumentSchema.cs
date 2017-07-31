@@ -93,9 +93,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor
             var name = fileName.Substring(0, fileName.Length - SchemaFileEnding.Length);
             if (string.IsNullOrEmpty(name))
             {
-                {
-                    throw new InvalidSchemaException($"Schema path {schemaPath} is invalid");
-                }
+                throw new InvalidSchemaException($"Schema path {schemaPath} is invalid");
             }
 
             using (var fr = new StreamReader(schemaPath))
