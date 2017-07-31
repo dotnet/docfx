@@ -145,7 +145,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
                 {
-                    if (visitFunc(symbol.ExplicitInterfaceImplementations[i].ContainingType, false, outer))
+                    if (visitFunc(symbol.ExplicitInterfaceImplementations[i], false, outer))
                     {
                         return true;
                     }
@@ -170,7 +170,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
                 {
-                    if (visitFunc(symbol.ExplicitInterfaceImplementations[i].ContainingType, false, outer))
+                    if (visitFunc(symbol.ExplicitInterfaceImplementations[i], false, outer))
                     {
                         return true;
                     }
@@ -195,7 +195,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 for (int i = 0; i < symbol.ExplicitInterfaceImplementations.Length; i++)
                 {
-                    if (visitFunc(symbol.ExplicitInterfaceImplementations[i].ContainingType, false, outer))
+                    if (visitFunc(symbol.ExplicitInterfaceImplementations[i], false, outer))
                     {
                         return true;
                     }
