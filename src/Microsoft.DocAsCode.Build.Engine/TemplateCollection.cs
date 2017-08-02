@@ -20,8 +20,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             get
             {
-                TemplateBundle template;
-                if (key != null && this.TryGetValue(key, out template))
+                if (key != null && TryGetValue(key, out TemplateBundle template))
                 {
                     return template;
                 }
@@ -118,8 +117,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         null :
                         new TemplatePreprocessorResource(currentScript.name, currentScript.item);
                     var template = new Template(name, context, templateResource, templatePrepocessorResource, resource, maxParallelism);
-                    List<Template> templateList;
-                    if (dict.TryGetValue(template.Type, out templateList))
+                    if (dict.TryGetValue(template.Type, out List<Template> templateList))
                     {
                         templateList.Add(template);
                     }

@@ -74,8 +74,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         {
             get
             {
-                string result;
-                Names.TryGetValue("csharp", out result);
+                Names.TryGetValue("csharp", out string result);
                 return result;
             }
             set
@@ -97,8 +96,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         {
             get
             {
-                string result;
-                Names.TryGetValue("vb", out result);
+                Names.TryGetValue("vb", out string result);
                 return result;
             }
             set
@@ -128,8 +126,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         {
             get
             {
-                string result;
-                Names.TryGetValue("csharp", out result);
+                Names.TryGetValue("csharp", out string result);
                 return result;
             }
             set
@@ -151,8 +148,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         {
             get
             {
-                string result;
-                Names.TryGetValue("vb", out result);
+                Names.TryGetValue("vb", out string result);
                 return result;
             }
             set
@@ -182,8 +178,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         {
             get
             {
-                string result;
-                FullNames.TryGetValue("csharp", out result);
+                FullNames.TryGetValue("csharp", out string result);
                 return result;
             }
             set
@@ -205,8 +200,7 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         {
             get
             {
-                string result;
-                FullNames.TryGetValue("vb", out result);
+                FullNames.TryGetValue("vb", out string result);
                 return result;
             }
             set

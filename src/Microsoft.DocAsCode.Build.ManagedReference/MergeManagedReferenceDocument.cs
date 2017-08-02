@@ -148,8 +148,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         {
             foreach (var pair in mergeTo)
             {
-                MergeItem item;
-                if (mergeFrom.TryGetValue(pair.Key, out item))
+                if (mergeFrom.TryGetValue(pair.Key, out MergeItem item))
                 {
                     MergeCore(pair.Value, item);
                     mergeFrom.Remove(pair.Key);

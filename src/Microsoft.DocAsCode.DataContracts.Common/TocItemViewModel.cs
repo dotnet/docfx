@@ -38,8 +38,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         {
             get
             {
-                string result;
-                NameInDevLangs.TryGetValue(Constants.DevLang.CSharp, out result);
+                NameInDevLangs.TryGetValue(Constants.DevLang.CSharp, out string result);
                 return result;
             }
             set { NameInDevLangs[Constants.DevLang.CSharp] = value; }
@@ -51,8 +50,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         {
             get
             {
-                string result;
-                NameInDevLangs.TryGetValue(Constants.DevLang.VB, out result);
+                NameInDevLangs.TryGetValue(Constants.DevLang.VB, out string result);
                 return result;
             }
             set { NameInDevLangs[Constants.DevLang.VB] = value; }

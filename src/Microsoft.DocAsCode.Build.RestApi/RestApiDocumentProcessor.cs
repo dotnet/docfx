@@ -106,11 +106,9 @@ namespace Microsoft.DocAsCode.Build.RestApi
             }
             var vm = (RestApiRootItemViewModel)model.Content;
 
-            object documentTypeObject;
-            if (vm.Metadata.TryGetValue(DocumentTypeKey, out documentTypeObject))
+            if (vm.Metadata.TryGetValue(DocumentTypeKey, out object documentTypeObject))
             {
-                var documentType = documentTypeObject as string;
-                if (documentType != null)
+                if (documentTypeObject is string documentType)
                 {
                     model.DocumentType = documentType;
                 }
@@ -212,8 +210,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 using (JsonReader reader = new JsonTextReader(streamReader))
                 {
                     var jObject = JObject.Load(reader);
-                    JToken swaggerValue;
-                    if (jObject.TryGetValue("swagger", out swaggerValue))
+                    if (jObject.TryGetValue("swagger", out JToken swaggerValue))
                     {
                         var swaggerString = (string)swaggerValue;
                         if (swaggerString != null && swaggerString.Equals("2.0"))
@@ -243,9 +240,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 {
                     foreach (var operation in path.Value.Metadata)
                     {
-                        JToken operationId;
-                        var jObject = operation.Value as JObject;
-                        if (jObject != null && !jObject.TryGetValue(OperationIdKey, out operationId))
+                        if (operation.Value is JObject jObject && !jObject.TryGetValue(OperationIdKey, out JToken operationId))
                         {
                             throw new DocfxException($"{OperationIdKey} should exist in operation '{operation.Key}' of path '{path.Key}' for swagger file '{fileName}'");
                         }

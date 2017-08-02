@@ -199,8 +199,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var mergeVersion = MergeList(overload, s =>
             {
                 List<string> versionList = null;
-                object versionObj;
-                if (s.Metadata.TryGetValue(Constants.MetadataName.Version, out versionObj))
+                if (s.Metadata.TryGetValue(Constants.MetadataName.Version, out object versionObj))
                 {
                     versionList = GetVersionFromMetadata(versionObj);
                 }
@@ -239,8 +238,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private List<string> GetVersionFromMetadata(object value)
         {
-            var text = value as string;
-            if (text != null)
+            if (value is string text)
             {
                 return new List<string> { text };
             }
@@ -351,8 +349,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 {
                     case "summary":
                         {
-                            var summary = pair.Value as string;
-                            if (summary != null)
+                            if (pair.Value is string summary)
                             {
                                 item.Summary = summary;
                             }
@@ -360,8 +357,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                         }
                     case "remarks":
                         {
-                            var remarks = pair.Value as string;
-                            if (remarks != null)
+                            if (pair.Value is string remarks)
                             {
                                 item.Remarks = remarks;
                             }
@@ -402,23 +398,23 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private TreeItem ConvertToTreeItem(ItemViewModel item, Dictionary<string, object> overwriteMetadata = null)
         {
-            var result = new TreeItem();
-            result.Metadata = new Dictionary<string, object>()
+            var result = new TreeItem()
             {
-                [Constants.PropertyName.Name] = item.Name,
-                [Constants.PropertyName.FullName] = item.FullName,
-                [Constants.PropertyName.TopicUid] = item.Uid,
-                [Constants.PropertyName.NameWithType] = item.NameWithType,
-                [Constants.PropertyName.Type] = item.Type.ToString()
+                Metadata =
+                {
+                    [Constants.PropertyName.Name] = item.Name,
+                    [Constants.PropertyName.FullName] = item.FullName,
+                    [Constants.PropertyName.TopicUid] = item.Uid,
+                    [Constants.PropertyName.NameWithType] = item.NameWithType,
+                    [Constants.PropertyName.Type] = item.Type.ToString()
+                }
             };
-
             if (item.Platform != null)
             {
                 result.Metadata[Constants.PropertyName.Platform] = item.Platform;
             }
 
-            object version;
-            if (item.Metadata.TryGetValue(Constants.MetadataName.Version, out version))
+            if (item.Metadata.TryGetValue(Constants.MetadataName.Version, out object version))
             {
                 result.Metadata[Constants.MetadataName.Version] = version;
             }
@@ -482,16 +478,16 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var newFileAndType = new FileAndType(model.FileAndType.BaseDir, filePath, model.FileAndType.Type, model.FileAndType.SourceDir, model.FileAndType.DestinationDir);
             var keyForModel = "~/" + RelativePath.GetPathWithoutWorkingFolderChar(filePath);
 
-            var newModel = new FileModel(newFileAndType, newPage, model.OriginalFileAndType, model.Serializer, keyForModel);
-            newModel.LocalPathFromRoot = model.LocalPathFromRoot;
-            newModel.Uids = CalculateUids(newPage, model.LocalPathFromRoot);
-            return newModel;
+            return new FileModel(newFileAndType, newPage, model.OriginalFileAndType, model.Serializer, keyForModel)
+            {
+                LocalPathFromRoot = model.LocalPathFromRoot,
+                Uids = CalculateUids(newPage, model.LocalPathFromRoot)
+            };
         }
 
         private string GetUniqueFileNameWithSuffix(string fileName, Dictionary<string, int> existingFileNames)
         {
-            int suffix;
-            if (existingFileNames.TryGetValue(fileName, out suffix))
+            if (existingFileNames.TryGetValue(fileName, out int suffix))
             {
                 existingFileNames[fileName] = suffix + 1;
                 return GetUniqueFileNameWithSuffix($"{fileName}_{suffix}", existingFileNames);
@@ -535,14 +531,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private List<string> GetListFromObject(object value)
         {
-            var collection = value as IEnumerable<object>;
-            if (collection != null)
+            if (value is IEnumerable<object> collection)
             {
                 return collection.OfType<string>().ToList();
             }
 
-            var jarray = value as JArray;
-            if (jarray != null)
+            if (value is JArray jarray)
             {
                 try
                 {
@@ -559,8 +553,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private T GetPropertyValue<T>(Dictionary<string, object> metadata, string key) where T : class
         {
-            object result;
-            if (metadata != null && metadata.TryGetValue(key, out result))
+            if (metadata != null && metadata.TryGetValue(key, out object result))
             {
                 return result as T;
             }

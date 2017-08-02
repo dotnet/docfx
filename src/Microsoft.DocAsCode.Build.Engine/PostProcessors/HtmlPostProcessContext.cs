@@ -34,8 +34,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var deserializer = new StreamDeserializer(stream);
                 var seg = deserializer.ReadSegment();
                 var entries = deserializer.ReadDictionaryLazy(seg);
-                Lazy<object> lazy;
-                if (!entries.TryGetValue(contextName, out lazy))
+                if (!entries.TryGetValue(contextName, out Lazy<object> lazy))
                 {
                     return default(T);
                 }

@@ -228,7 +228,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private static string GetLanguageSpecificAttribute(XRefSpec spec, string language, params string[] keyInFallbackOrder)
         {
-            if (keyInFallbackOrder == null || keyInFallbackOrder.Length == 0) throw new ArgumentException("key must be provided!", nameof(keyInFallbackOrder));
+            if (keyInFallbackOrder == null || keyInFallbackOrder.Length == 0)
+            {
+                throw new ArgumentException("key must be provided!", nameof(keyInFallbackOrder));
+            }
             string suffix = string.Empty;
             if (!string.IsNullOrEmpty(language))
             {
@@ -236,9 +239,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             foreach (var key in keyInFallbackOrder)
             {
-                string value;
                 var keyWithSuffix = key + suffix;
-                if (spec.TryGetValue(keyWithSuffix, out value))
+                if (spec.TryGetValue(keyWithSuffix, out string value))
                 {
                     return value;
                 }

@@ -163,8 +163,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 throw new InvalidOperationException($"HostService: {name} doesn't record incremental info, cannot call the method to get model load info.");
             }
-            OSPlatformSensitiveDictionary<BuildPhase?> mi;
-            if (ModelLoadInfo.TryGetValue(name, out mi))
+            if (ModelLoadInfo.TryGetValue(name, out OSPlatformSensitiveDictionary<BuildPhase?> mi))
             {
                 return mi;
             }
@@ -333,8 +332,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                     {
                         continue;
                     }
-                    FileAttributeItem item;
-                    if (!TryGetFileAttributeFromLast(key, out item))
+                    if (!TryGetFileAttributeFromLast(key, out FileAttributeItem item))
                     {
                         string md5;
                         using (var fs = File.OpenRead(f.FullPath))

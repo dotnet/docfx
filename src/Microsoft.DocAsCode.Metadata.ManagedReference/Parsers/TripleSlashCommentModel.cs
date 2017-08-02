@@ -78,7 +78,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public static TripleSlashCommentModel CreateModel(string xml, SyntaxLanguage language, ITripleSlashCommentParserContext context)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
             if (string.IsNullOrEmpty(xml)) return null;
 
             // Quick turnaround for badly formed XML comment
@@ -101,46 +104,64 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public void CopyInheritedData(TripleSlashCommentModel src)
         {
             if (src == null)
+            {
                 throw new ArgumentNullException(nameof(src));
+            }
 
-            if (Summary == null)
-                Summary = src.Summary;
-            if (Remarks == null)
-                Remarks = src.Remarks;
-            if (Returns == null)
-                Returns = src.Returns;
-
+            Summary = Summary ?? src.Summary;
+            Remarks = Remarks ?? src.Remarks;
+            Returns = Returns ?? src.Returns;
             if (Exceptions == null && src.Exceptions != null)
+            {
                 Exceptions = src.Exceptions.Select(e => e.Clone()).ToList();
+            }
             if (Sees == null && src.Sees != null)
+            {
                 Sees = src.Sees.Select(s => s.Clone()).ToList();
+            }
             if (SeeAlsos == null && src.SeeAlsos != null)
+            {
                 SeeAlsos = src.SeeAlsos.Select(s => s.Clone()).ToList();
+            }
             if (Examples == null && src.Examples != null)
+            {
                 Examples = new List<string>(src.Examples);
+            }
             if (Parameters == null && src.Parameters != null)
+            {
                 Parameters = new Dictionary<string, string>(src.Parameters);
+            }
             if (TypeParameters == null && src.TypeParameters != null)
+            {
                 TypeParameters = new Dictionary<string, string>(src.TypeParameters);
+            }
         }
 
         public string GetParameter(string name)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
             return GetValue(name, Parameters);
         }
 
         public string GetTypeParameter(string name)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
             return GetValue(name, TypeParameters);
         }
 
         private static string GetValue(string name, Dictionary<string, string> dictionary)
         {
-            if (dictionary == null) return null;
-            string description;
-            if (dictionary.TryGetValue(name, out description))
+            if (dictionary == null)
+            {
+                return null;
+            }
+            if (dictionary.TryGetValue(name, out string description))
             {
                 return description;
             }
@@ -198,7 +219,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             string selector = "/member/exception";
             var result = GetMulitpleCrefInfo(nav, selector).ToList();
-            if (result.Count == 0) return null;
+            if (result.Count == 0)
+            {
+                return null;
+            }
             return result;
         }
 
@@ -213,7 +237,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private List<LinkInfo> GetSees(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             var result = GetMultipleLinkInfo(nav, "/member/see").ToList();
-            if (result.Count == 0) return null;
+            if (result.Count == 0)
+            {
+                return null;
+            }
             return result;
         }
 
@@ -228,7 +255,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private List<LinkInfo> GetSeeAlsos(XPathNavigator nav, ITripleSlashCommentParserContext context)
         {
             var result = GetMultipleLinkInfo(nav, "/member/seealso").ToList();
-            if (result.Count == 0) return null;
+            if (result.Count == 0)
+            {
+                return null;
+            }
             return result;
         }
 
@@ -261,7 +291,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             var node = nav.SelectSingleNode("/member/inheritdoc");
             if (node == null)
+            {
                 return false;
+            }
             if (node.HasAttributes)
             {
                 //The Sandcastle implementation of <inheritdoc /> supports two attributes: 'cref' and 'select'.
@@ -351,7 +383,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             var iterator = navigator.Select(xpath);
             var result = new Dictionary<string, string>();
-            if (iterator == null) return result;
+            if (iterator == null)
+            {
+                return result;
+            }
             foreach (XPathNavigator nav in iterator)
             {
                 string name = nav.GetAttribute("name", string.Empty);
@@ -397,7 +432,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private void ResolveCrefLink(XNode node, string nodeSelector, Action<string, string> addReference)
         {
-            if (node == null || string.IsNullOrEmpty(nodeSelector)) return;
+            if (node == null || string.IsNullOrEmpty(nodeSelector))
+            {
+                return;
+            }
 
             try
             {
@@ -425,10 +463,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             item.ReplaceWith(replacement);
                         }
 
-                        if (addReference != null)
-                        {
-                            addReference(id, cref);
-                        }
+                        addReference?.Invoke(id, cref);
                     }
                     else
                     {
@@ -461,7 +496,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private IEnumerable<string> GetMultipleExampleNodes(XPathNavigator navigator, string selector)
         {
             var iterator = navigator.Select(selector);
-            if (iterator == null) yield break;
+            if (iterator == null)
+            {
+                yield break;
+            }
             foreach (XPathNavigator nav in iterator)
             {
                 string description = GetXmlValue(nav);
@@ -472,7 +510,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private IEnumerable<ExceptionInfo> GetMulitpleCrefInfo(XPathNavigator navigator, string selector)
         {
             var iterator = navigator.Clone().Select(selector);
-            if (iterator == null) yield break;
+            if (iterator == null)
+            {
+                yield break;
+            }
             foreach (XPathNavigator nav in iterator)
             {
                 string description = GetXmlValue(nav);
@@ -488,8 +529,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         var type = match.Groups["type"].Value;
                         if (type == "T")
                         {
-                            if (string.IsNullOrEmpty(description)) description = null;
-                            yield return new ExceptionInfo { Description = description, Type = id, CommentId = commentId };
+                            if (string.IsNullOrEmpty(description))
+                            {
+                                description = null;
+                            }
+                            yield return new ExceptionInfo
+                            {
+                                Description = description,
+                                Type = id,
+                                CommentId = commentId
+                            };
                         }
                     }
                 }
@@ -499,11 +548,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private IEnumerable<LinkInfo> GetMultipleLinkInfo(XPathNavigator navigator, string selector)
         {
             var iterator = navigator.Clone().Select(selector);
-            if (iterator == null) yield break;
+            if (iterator == null)
+            {
+                yield break;
+            }
             foreach (XPathNavigator nav in iterator)
             {
                 string altText = GetXmlValue(nav);
-                if (string.IsNullOrEmpty(altText)) altText = null;
+                if (string.IsNullOrEmpty(altText))
+                {
+                    altText = null;
+                }
 
                 string commentId = nav.GetAttribute("cref", string.Empty);
                 string url = nav.GetAttribute("href", string.Empty);
@@ -520,12 +575,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             id += '*';
                         }
 
-                        yield return new LinkInfo { AltText = altText, LinkId = id, CommentId = commentId, LinkType = LinkType.CRef };
+                        yield return new LinkInfo
+                        {
+                            AltText = altText,
+                            LinkId = id,
+                            CommentId = commentId,
+                            LinkType = LinkType.CRef
+                        };
                     }
                 }
                 else if (!string.IsNullOrEmpty(url))
                 {
-                    yield return new LinkInfo { AltText = altText ?? url, LinkId = url, LinkType = LinkType.HRef };
+                    yield return new LinkInfo
+                    {
+                        AltText = altText ?? url,
+                        LinkId = url,
+                        LinkType = LinkType.HRef
+                    };
                 }
             }
         }
@@ -540,8 +606,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             else
             {
-                var output = GetXmlValue(node);
-                return output;
+                return GetXmlValue(node);
             }
         }
 
@@ -638,7 +703,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 m =>
                 {
                     var group = m.Groups[1];
-                    if (group.ToString() == string.Empty)
+                    if (group.Length == 0)
                     {
                         return m.Value;
                     }
@@ -675,11 +740,13 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private sealed class XmlWriterWithGtDecoded : XmlTextWriter
         {
             public XmlWriterWithGtDecoded(TextWriter tw) : base(tw) { }
+
             public XmlWriterWithGtDecoded(Stream w, Encoding encoding) : base(w, encoding) { }
+
             public override void WriteString(string text)
             {
                 var encoded = text.Replace("&", "&amp;").Replace("<", "&lt;").Replace("'", "&apos;").Replace("\"", "&quot;");
-                base.WriteRaw(encoded);
+                WriteRaw(encoded);
             }
         }
     }

@@ -29,7 +29,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public CacheBase(string path)
         {
             _path = path;
-
             _configs = ReadCacheFile(path);
         }
 
@@ -55,7 +54,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ShouldSkipMarkup = shouldSkipMarkup,
                 MSBuildProperties = msbuildProperties,
             };
-            this.SaveConfig(key, info);
+            SaveConfig(key, info);
         }
 
         #region Virtual Methods
@@ -89,9 +88,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         protected virtual BuildInfo ReadConfig(string key)
         {
-            BuildInfo info;
-            if (_configs.TryGetValue(key, out info)) return info;
-            return null;
+            _configs.TryGetValue(key, out BuildInfo info);
+            return info;
         }
 
         protected virtual void SaveConfig(string key, BuildInfo config)
@@ -111,7 +109,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 _configs.Remove(key.Key);
             }
-
 
             if (_configs.Count > CleanupMaxCount)
             {
@@ -134,7 +131,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             catch
             {
-            } 
+            }
 
             return new Dictionary<string, BuildInfo>();
         }
@@ -164,63 +161,32 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 else _fileEnumerator = files.GetEnumerator();
             }
 
-            public override bool CanRead
-            {
-                get
-                {
-                    return true;
-                }
-            }
+            public override bool CanRead => true;
 
-            public override bool CanSeek
-            {
-                get
-                {
-                    return false;
-                }
-            }
+            public override bool CanSeek => false;
 
-            public override bool CanWrite
-            {
-                get
-                {
-                    return false;
-                }
-            }
+            public override bool CanWrite => false;
 
-            public override long Length
-            {
-                get
-                {
-                    throw new NotSupportedException();
-                }
-            }
+            public override long Length => throw new NotSupportedException();
 
             public override long Position
             {
-                get
-                {
-                    throw new NotSupportedException();
-                }
-
-                set
-                {
-                    throw new NotSupportedException();
-                }
+                get { throw new NotSupportedException(); }
+                set { throw new NotSupportedException(); }
             }
 
-            public override void Flush()
-            {
-                throw new NotSupportedException();
-            }
+            public override void Flush() => throw new NotSupportedException();
 
             public override int Read(byte[] buffer, int offset, int count)
             {
-                if (_fileEnumerator == null) return 0;
-
-                if (_stream == null)
+                if (_fileEnumerator == null)
                 {
-                    if (!TryGetNextFileStream(out _stream)) return 0;
+                    return 0;
+                }
+
+                if (_stream == null && !TryGetNextFileStream(out _stream))
+                {
+                    return 0;
                 }
 
                 int readed;
@@ -231,7 +197,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         // Dispose current stream before fetching the next one
                         _stream.Dispose();
-                        if (!TryGetNextFileStream(out _stream)) return 0;
+                        if (!TryGetNextFileStream(out _stream))
+                        {
+                            return 0;
+                        }
                     }
                     else
                     {
@@ -240,27 +209,27 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
-            public override long Seek(long offset, SeekOrigin origin)
-            {
+            public override long Seek(long offset, SeekOrigin origin)=>
                 throw new NotSupportedException();
-            }
 
-            public override void SetLength(long value)
-            {
+            public override void SetLength(long value) =>
                 throw new NotSupportedException();
-            }
 
-            public override void Write(byte[] buffer, int offset, int count)
-            {
+            public override void Write(byte[] buffer, int offset, int count) =>
                 throw new NotSupportedException();
-            }
 
             protected override void Dispose(bool disposing)
             {
                 if (disposing)
                 {
-                    if (_fileEnumerator != null) _fileEnumerator.Dispose();
-                    if (_stream != null) _stream.Dispose();
+                    if (_fileEnumerator != null)
+                    {
+                        _fileEnumerator.Dispose();
+                    }
+                    if (_stream != null)
+                    {
+                        _stream.Dispose();
+                    }
                 }
 
                 base.Dispose(disposing);

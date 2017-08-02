@@ -19,8 +19,7 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite
         public IMarkdownService CreateMarkdownService(MarkdownServiceParameters parameters)
         {
             IReadOnlyList<string> fallbackFolders = null;
-            object obj;
-            if (parameters.Extensions != null && parameters.Extensions.TryGetValue("fallbackFolders", out obj))
+            if (parameters.Extensions != null && parameters.Extensions.TryGetValue("fallbackFolders", out object obj))
             {
                 try
                 {
@@ -82,8 +81,10 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite
 
             public StringBuffer Render(IMarkdownRenderer render, IMarkdownToken token, IMarkdownContext context)
             {
-                var yamlHeader = token as DfmYamlHeaderBlockToken;
-                if (yamlHeader != null) return RenderYamlHeader(render, yamlHeader, context);
+                if (token is DfmYamlHeaderBlockToken yamlHeader)
+                {
+                    return RenderYamlHeader(render, yamlHeader, context);
+                }
 
                 return StringHelper.HtmlEncode(_dfmMarkdownRenderer.Render(token));
             }

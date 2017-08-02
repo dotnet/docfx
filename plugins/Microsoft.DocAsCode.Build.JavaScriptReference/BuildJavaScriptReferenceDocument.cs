@@ -117,8 +117,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
             var fls = model.FileLinkSources.ToDictionary(p => p.Key, p => p.Value);
             foreach (var pair in mr.FileLinkSources)
             {
-                ImmutableList<LinkSourceInfo> list;
-                if (fls.TryGetValue(pair.Key, out list))
+                if (fls.TryGetValue(pair.Key, out ImmutableList<LinkSourceInfo> list))
                 {
                     fls[pair.Key] = list.AddRange(pair.Value);
                 }
@@ -132,8 +131,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
             var uls = model.UidLinkSources.ToDictionary(p => p.Key, p => p.Value);
             foreach (var pair in mr.UidLinkSources)
             {
-                ImmutableList<LinkSourceInfo> list;
-                if (uls.TryGetValue(pair.Key, out list))
+                if (uls.TryGetValue(pair.Key, out ImmutableList<LinkSourceInfo> list))
                 {
                     uls[pair.Key] = list.AddRange(pair.Value);
                 }

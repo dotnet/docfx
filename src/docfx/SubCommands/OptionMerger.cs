@@ -34,8 +34,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 foreach (var pair in item.Item)
                 {
-                    T value;
-                    if (merged.TryGetValue(pair.Key, out value))
+                    if (merged.TryGetValue(pair.Key, out T value))
                     {
                         merged[pair.Key] = merger(pair.Key, new MergeContext<T>(item.Name, pair.Value), new MergeContext<T>(overrideItem.Name, value));
                     }

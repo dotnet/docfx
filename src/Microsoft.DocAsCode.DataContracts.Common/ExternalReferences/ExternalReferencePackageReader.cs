@@ -76,8 +76,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
                           };
             foreach (var entry in entries)
             {
-                List<string> list;
-                if (!uidEntryMap.TryGetValue(entry.Uid, out list))
+                if (!uidEntryMap.TryGetValue(entry.Uid, out List<string> list))
                 {
                     list = new List<string>();
                     uidEntryMap[entry.Uid] = list;

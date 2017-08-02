@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System;
     using System.Collections.Generic;
+
     using Microsoft.CodeAnalysis;
 
     public class CachedFilterVisitor : DelegatingFilterVisitor
@@ -20,9 +21,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         protected override bool CanVisitApiCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
         {
-            bool result;
             var key = new CachedKey(symbol, wantProtectedMember);
-            if (_cache.TryGetValue(key, out result))
+            if (_cache.TryGetValue(key, out bool result))
             {
                 return result;
             }
@@ -32,9 +32,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         protected override bool CanVisitAttributeCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
         {
-            bool result;
             var key = new CachedKey(symbol, wantProtectedMember);
-            if (_attributeCache.TryGetValue(key, out result))
+            if (_attributeCache.TryGetValue(key, out bool result))
             {
                 return result;
             }

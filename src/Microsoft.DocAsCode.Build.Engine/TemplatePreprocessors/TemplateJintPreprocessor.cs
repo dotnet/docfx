@@ -114,8 +114,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         return null;
                     }
 
-                    Engine cachedEngine;
-                    if (!engineCache.TryGetValue(s, out cachedEngine))
+                    if (!engineCache.TryGetValue(s, out Engine cachedEngine))
                     {
                         cachedEngine = CreateEngine(engine, RequireFuncVariableName);
                         engineCache[s] = cachedEngine;

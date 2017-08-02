@@ -40,9 +40,11 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public bool TryGetCommandCreator(string name, out ISubCommandCreator creator)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
-            ExportFactory<ISubCommandCreator, BaseCommandOption> commandFactory;
-            if (_commandMapping.TryGetValue(name, out commandFactory))
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException(nameof(name));
+            }
+            if (_commandMapping.TryGetValue(name, out var commandFactory))
             {
                 creator = commandFactory.CreateExport().Value;
                 return true;
@@ -59,8 +61,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 // Drawback: do not support such case: docfx --force <subcommands>
                 var subCommandName = args[0];
-                ISubCommandCreator command;
-                if (TryGetCommandCreator(subCommandName, out command))
+                if (TryGetCommandCreator(subCommandName, out ISubCommandCreator command))
                 {
                     var subArgs = args.Skip(1).ToArray();
                     return command.Create(subArgs, this, SubCommandParseOption.Strict);
@@ -72,8 +73,14 @@ namespace Microsoft.DocAsCode.SubCommands
             var options = new CompositeOptions();
             var parser = CommandUtility.GetParser(SubCommandParseOption.Loose);
             bool parsed = parser.ParseArguments(args, options);
-            if (options.ShouldShowVersion) return new HelpCommand(GetVersionText());
-            if (options.IsHelp) return new HelpCommand(GetHelpText());
+            if (options.ShouldShowVersion)
+            {
+                return new HelpCommand(GetVersionText());
+            }
+            if (options.IsHelp)
+            {
+                return new HelpCommand(GetHelpText());
+            }
             return new CompositeCommand(args, this, options);
         }
 

@@ -36,8 +36,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
                 return null;
             }
 
-            ApiReferenceBuildOutput result;
-            if (_references.TryGetValue(source, out result))
+            if (_references.TryGetValue(source, out ApiReferenceBuildOutput result))
             {
                 return result;
             }

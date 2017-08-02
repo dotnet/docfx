@@ -45,10 +45,16 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public bool AreFilesModified(IEnumerable<string> files)
         {
-            if (_versionChanged) return true;
+            if (_versionChanged)
+            {
+                return true;
+            }
             foreach (var file in files)
             {
-                if (IsFileModified(file)) return true;
+                if (IsFileModified(file))
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -67,8 +73,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// <returns></returns>
         private bool IsFileModified(string file)
         {
-            if (_versionChanged) return true;
-            if (string.IsNullOrEmpty(file)) return false;
+            if (_versionChanged)
+            {
+                return true;
+            }
+            if (string.IsNullOrEmpty(file))
+            {
+                return false;
+            }
             if (!File.Exists(file))
             {
                 Logger.Log(LogLevel.Verbose, $"File '{file}' does not exist anymore, rebuild needed");
@@ -97,7 +109,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static bool VersionNewer(VersionStamp thisVersion, VersionStamp thatVersion)
         {
             var version = thisVersion.GetNewerVersion(thatVersion);
-            if (version == thisVersion) return true;
+            if (version == thisVersion)
+            {
+                return true;
+            }
             return false;
         }
 
@@ -124,10 +139,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 equalityComparer = EqualityComparer<TValue>.Default;
             }
 
-            return dict1.All(pair =>
-            {
-                return dict2.TryGetValue(pair.Key, out TValue val) && equalityComparer.Equals(pair.Value, val);
-            });
+            return dict1.All(
+                pair =>
+                    dict2.TryGetValue(pair.Key, out TValue val) &&
+                    equalityComparer.Equals(pair.Value, val));
         }
     }
 }

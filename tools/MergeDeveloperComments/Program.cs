@@ -118,8 +118,7 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
                 {
                     if (set.Add(type))
                     {
-                        ReferenceViewModel reference;
-                        if (!references.TryGetValue(type, out reference))
+                        if (!references.TryGetValue(type, out ReferenceViewModel reference))
                         {
                             reference = references[type] = new ReferenceViewModel() { Uid = type };
                         }
@@ -215,16 +214,14 @@ namespace Microsoft.DocAsCode.MergeDeveloperComments
                                          from uidAndReader in EnumerateDeveloperComments(f)
                                          select uidAndReader)
             {
-                string yamlFile;
-                if (!map.TryGetValue(uidAndReader.Uid, out yamlFile))
+                if (!map.TryGetValue(uidAndReader.Uid, out string yamlFile))
                 {
                     continue;
                 }
                 var uidAndElement = uidAndReader.ToUidAndElement();
                 lock (_syncRoot)
                 {
-                    List<UidAndComment> list;
-                    if (_aggregator.TryGetValue(yamlFile, out list))
+                    if (_aggregator.TryGetValue(yamlFile, out List<UidAndComment> list))
                     {
                         list.Add(uidAndElement);
                     }

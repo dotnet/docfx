@@ -85,7 +85,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public void Merge(ReferenceItem other)
         {
-            if (other == null) throw new ArgumentNullException(nameof(other));
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
             IsDefinition = Merge(other.IsDefinition, IsDefinition);
             Definition = Merge(other.Definition, Definition);
             Parent = Merge(other.Parent, Parent);
@@ -99,8 +102,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 foreach (var pair in other.Parts)
                 {
                     var sourceParts = pair.Value;
-                    List<LinkItem> targetParts;
-                    if (Parts.TryGetValue(pair.Key, out targetParts))
+                    if (Parts.TryGetValue(pair.Key, out List<LinkItem> targetParts))
                     {
                         if (sourceParts.Count == 0)
                         {
