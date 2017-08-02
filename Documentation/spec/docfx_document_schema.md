@@ -85,8 +85,9 @@ An object to describe the schema of the value of the property.
 | items        | [Property Object](#property-object) | An object to hold the schema of the items if `type` for the model is `array`. Omitting this keyword has the same behavior as an empty schema.
 | reference    | string | Defines whether current property is a reference to the actual value of the property. Refer to [reference](#62-reference) for detailed explanation.
 | contentType  | string | Defines the content type of the property. Refer to [contentType](#63-contenttype) for detailed explanation.
-| tags       | array  | Defines the tags of the property. Refer to [tags](#64-tags) for detailed explanation.
-| mergeType      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [mergeType](#65-mergetype) for detailed explanation.
+| uidResolver  | string | It defines what properties can be fetched by others when they cross reference this uid split by `,`. If the value is not specified, the default value is `name,displayName,fullName`. Refer to [uidResolver](#64-uidresolver) for detailed explanation.
+| tags       | array  | Defines the tags of the property. Refer to [tags](#65-tags) for detailed explanation.
+| mergeType      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [mergeType](#66-mergetype) for detailed explanation.
 
 ##### Patterned Field
 | Field Name | Type | Description
@@ -126,10 +127,13 @@ It defines how applications interpret the property. If not defined, the behavior
 | `file`     | `type` MUST be `string`. It means the property defines a file path inside current document model. Application CAN help to validate if the linked file exists, and resolve the path to the corresponding file output path. The difference between `file` and `href` is that `href` is always URL encoded while `file` is not.
 | `markdown` | `type` MUST be `string`. It means the property is in [DocFX flavored Markdown](..\spec\docfx_flavored_markdown.md) syntax. Application CAN help to transform it into HTML format.
 
-### 6.4 tags
+### 6.4 uidResolver
+This key only takes effect when the `contentType` value for current property is `uid`. It defines what properties can be fetched by others when they cross reference this uid. Generally we would suggest that properties such as `name`, `displayName` to be saved. Property names are split by `,` with the following syntax: `{propertyName1},{propertyName2},{propertyName3},...{propertyNameN}`. If the value is not specified, the default value is `name,displayName,fullName`. The included properties will be exported to the output xrefmap.yml and cross referenced by others.
+
+### 6.5 tags
 The value of this keyword MUST be an `array`, elements of the array MUST be strings and MUST be unique. It provides hints for applications to decide how to interpret the property, for example, `localizable` tag can help Localization team to interpret the property as *localizable*; `metadata` tag can help DocFX to fill in additional metadata, e.g. github commit information.
 
-### 6.5 mergeType
+### 6.6 mergeType
 The value of this keyword MUST be a string. It specifies how to merge two values of the given property. One use scenario is how DocFX uses the [overwrite files](..\tutorial\intro_overwrite_files.md) to overwrite the existing values. In the below table, we use `source` and `target` to stands for the two values for merging.
 
 The value MUST be one of the following:
