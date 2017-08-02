@@ -52,8 +52,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 item.Remarks = Markup(host, item.Remarks, model, filter);
             }
 
-            var rootModel = item as RestApiRootItemViewModel;
-            if (rootModel != null)
+            if (item is RestApiRootItemViewModel rootModel)
             {
                 // Mark up recursively for swagger root except for children and tags
                 foreach (var jToken in rootModel.Metadata.Values.OfType<JToken>())
@@ -92,8 +91,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
 
         private static void MarkupRecursive(JToken jToken, IHostService host, FileModel model, Func<string, bool> filter = null)
         {
-            var jArray = jToken as JArray;
-            if (jArray != null)
+            if (jToken is JArray jArray)
             {
                 foreach (var item in jArray)
                 {
@@ -101,15 +99,13 @@ namespace Microsoft.DocAsCode.Build.RestApi
                 }
             }
 
-            var jObject = jToken as JObject;
-            if (jObject != null)
+            if (jToken is JObject jObject)
             {
                 foreach (var pair in jObject)
                 {
                     if (MarkupKeys.Contains(pair.Key) && pair.Value != null)
                     {
-                        var jValue = pair.Value as JValue;
-                        if (jValue != null && jValue.Type == JTokenType.String)
+                        if (pair.Value is JValue jValue && jValue.Type == JTokenType.String)
                         {
                             jObject[pair.Key] = Markup(host, (string)jValue, model, filter);
                         }
@@ -145,8 +141,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             var fls = model.FileLinkSources.ToDictionary(p => p.Key, p => p.Value);
             foreach (var pair in mr.FileLinkSources)
             {
-                ImmutableList<LinkSourceInfo> list;
-                if (fls.TryGetValue(pair.Key, out list))
+                if (fls.TryGetValue(pair.Key, out ImmutableList<LinkSourceInfo> list))
                 {
                     fls[pair.Key] = list.AddRange(pair.Value);
                 }
@@ -160,8 +155,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             var uls = model.UidLinkSources.ToDictionary(p => p.Key, p => p.Value);
             foreach (var pair in mr.UidLinkSources)
             {
-                ImmutableList<LinkSourceInfo> list;
-                if (uls.TryGetValue(pair.Key, out list))
+                if (uls.TryGetValue(pair.Key, out ImmutableList<LinkSourceInfo> list))
                 {
                     uls[pair.Key] = list.AddRange(pair.Value);
                 }

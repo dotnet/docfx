@@ -11,7 +11,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     internal class ProjectDocumentCache
     {
-        private readonly ConcurrentDictionary<string, HashSet<string>> _cache = new ConcurrentDictionary<string, HashSet<string>>();
+        private readonly ConcurrentDictionary<string, HashSet<string>> _cache =
+            new ConcurrentDictionary<string, HashSet<string>>();
 
         public ProjectDocumentCache() { }
 
@@ -28,13 +29,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                         cacheValue.Add(item.ToNormalizedFullPath());
                     }
                 }
-                if (cacheValue.Count > 0) _cache.TryAdd(input.Key.ToNormalizedFullPath(), cacheValue);
+                if (cacheValue.Count > 0)
+                {
+                    _cache.TryAdd(input.Key.ToNormalizedFullPath(), cacheValue);
+                }
             }
         }
 
-        public IDictionary<string, List<string>> Cache { get { return _cache.ToDictionary(s => s.Key, s => s.Value.ToList()); } }
+        public IDictionary<string, List<string>> Cache =>
+            _cache.ToDictionary(s => s.Key, s => s.Value.ToList());
 
-        public IEnumerable<string> Documents { get { return _cache.Values.SelectMany(s => s.ToList()).Distinct(); } }
+        public IEnumerable<string> Documents =>
+            _cache.Values.SelectMany(s => s.ToList()).Distinct();
+
         public void AddDocuments(IEnumerable<string> documents)
         {
             var key = documents.OrderBy(s => s).FirstOrDefault();
@@ -43,7 +50,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public void AddDocuments(string projectPath, IEnumerable<string> documents)
         {
-            if (string.IsNullOrEmpty(projectPath) || documents == null || !documents.Any()) return;
+            if (string.IsNullOrEmpty(projectPath) || documents == null || !documents.Any())
+            {
+                return;
+            }
             var projectKey = projectPath.ToNormalizedFullPath();
             var documentCache = _cache.GetOrAdd(projectKey, s => new HashSet<string>());
             foreach (var document in documents)
@@ -54,7 +64,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public void AddDocument(string projectPath, string document)
         {
-            if (string.IsNullOrEmpty(projectPath) || string.IsNullOrEmpty(document)) return;
+            if (string.IsNullOrEmpty(projectPath) || string.IsNullOrEmpty(document))
+            {
+                return;
+            }
             var projectKey = projectPath.ToNormalizedFullPath();
             var documentCache = _cache.GetOrAdd(projectKey, s => new HashSet<string>());
             documentCache.Add(document.ToNormalizedFullPath());
@@ -62,10 +75,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public IEnumerable<string> GetDocuments(string projectPath)
         {
-            if (string.IsNullOrEmpty(projectPath)) return null;
+            if (string.IsNullOrEmpty(projectPath))
+            {
+                return null;
+            }
             var projectKey = projectPath.ToNormalizedFullPath();
-            HashSet<string> documents = null;
-            _cache.TryGetValue(projectKey, out documents);
+            _cache.TryGetValue(projectKey, out HashSet<string> documents);
             return documents.GetNormalizedFullPathList();
         }
     }

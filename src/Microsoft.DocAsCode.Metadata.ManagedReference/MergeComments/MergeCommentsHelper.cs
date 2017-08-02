@@ -75,8 +75,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         private static void AddReference(string id, string commentId, Dictionary<string, ReferenceItem> references)
         {
-            ReferenceItem reference;
-            if (!references.TryGetValue(id, out reference))
+            if (!references.TryGetValue(id, out ReferenceItem reference))
             {
                 references[id] = new ReferenceItem { CommentId = commentId };
             }

@@ -30,8 +30,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     var superClass = inheritance[inheritance.Count - 1];
 
-                    ReferenceItem referenceItem;
-                    if (reference.TryGetValue(superClass, out referenceItem))
+                    if (reference.TryGetValue(superClass, out ReferenceItem referenceItem))
                     {
                         superClass = referenceItem.Definition ?? superClass;
                     }
@@ -39,8 +38,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     // ignore System.Object's derived class
                     if (superClass != "System.Object")
                     {
-                        List<string> derivedClasses;
-                        if (_derivedClassMapping.TryGetValue(superClass, out derivedClasses))
+                        if (_derivedClassMapping.TryGetValue(superClass, out List<string> derivedClasses))
                         {
                             derivedClasses.Add(item.Name);
                         }
@@ -59,8 +57,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 if (item.Type == MemberType.Class)
                 {
-                    List<string> derivedClasses;
-                    if (_derivedClassMapping.TryGetValue(item.Name, out derivedClasses))
+                    if (_derivedClassMapping.TryGetValue(item.Name, out List<string> derivedClasses))
                     {
                         derivedClasses.Sort();
                         item.DerivedClasses = derivedClasses;

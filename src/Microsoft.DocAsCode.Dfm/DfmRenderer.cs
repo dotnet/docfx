@@ -109,8 +109,7 @@ namespace Microsoft.DocAsCode.Dfm
                     content += "\"";
                     content = AppendSourceInfo(content, renderer, splitToken.Token);
                     content += ">";
-                    string heading;
-                    if (Tokens != null && Tokens.TryGetValue(noteToken.NoteType.ToLower(), out heading))
+                    if (Tokens != null && Tokens.TryGetValue(noteToken.NoteType.ToLower(), out string heading))
                     {
                         content += heading;
                     }

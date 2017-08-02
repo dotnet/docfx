@@ -222,8 +222,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
         public static ApiNames ResolveApiNames(string uid, string[] supportedLanguages, IReadOnlyDictionary<string, ApiNames> references)
         {
-            ApiNames result;
-            if (references != null && references.TryGetValue(uid, out result))
+            if (references != null && references.TryGetValue(uid, out ApiNames result))
             {
                 return result;
             }
@@ -273,8 +272,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
         private static ApiBuildOutput ResolveApiBuildOutput(string uid, IReadOnlyDictionary<string, ApiBuildOutput> children)
         {
-            ApiBuildOutput result;
-            if (!children.TryGetValue(uid, out result))
+            if (!children.TryGetValue(uid, out ApiBuildOutput result))
             {
                 var message = $"Can't find {uid} in items or references";
                 Logger.LogError(message);

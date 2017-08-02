@@ -23,8 +23,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public TemplateRendererResource(string resourceName, string content, string templateName)
         {
             var extension = Path.GetExtension(resourceName);
-            TemplateRendererType type;
-            if (!TemplateRenderTypeMapping.TryGetValue(extension, out type))
+            if (!TemplateRenderTypeMapping.TryGetValue(extension, out TemplateRendererType type))
             {
                 throw new NotSupportedException($"The template extension {extension} is not supported.");
             }

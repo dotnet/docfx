@@ -321,8 +321,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
         private string GenerateAzureVideoLink(IMarkdownContext context, string azureVideoId, string rawMarkdown, string line)
         {
-            object path;
-            if (!context.Variables.TryGetValue("path", out path))
+            if (!context.Variables.TryGetValue("path", out object path))
             {
                 Logger.LogWarning("Can't get current file path. Skip video token rewriter.");
                 return azureVideoId;

@@ -54,8 +54,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.Equal(2, c.D1.Count);
             Assert.True(c.CD.ContainsKey("D1.b"));
             Assert.Equal(2, c.CD["D1.b"]);
-            object value;
-            Assert.True(c.CD.TryGetValue("D1.b", out value));
+            Assert.True(c.CD.TryGetValue("D1.b", out object value));
             Assert.Equal(2, value);
             Assert.True(c.CD.TryGetValue("D2.b", out value));
             Assert.Equal(1, value);

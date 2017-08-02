@@ -159,8 +159,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                                       select m).ToList();
                     if (extensions.Count > 0)
                     {
-                        IEnumerable<IMethodSymbol> ext;
-                        if (methods.TryGetValue(compilation, out ext))
+                        if (methods.TryGetValue(compilation, out IEnumerable<IMethodSymbol> ext))
                         {
                             methods[compilation] = ext.Union(extensions);
                         }
@@ -759,8 +758,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 TreeIterator.Preorder(memberModel, null, s => s.Items, (member, parent) =>
                 {
-                    string path;
-                    if (indexer.TryGetValue(member.Name, out path))
+                    if (indexer.TryGetValue(member.Name, out string path))
                     {
                         Logger.LogWarning($"{member.Name} already exists in {path}, the duplicate one {outputPath} will be ignored.");
                     }
@@ -791,8 +789,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     {
                         if (ns.Type == MemberType.Namespace)
                         {
-                            MetadataItem nsOther;
-                            if (namespaceMapping.TryGetValue(ns.Name, out nsOther))
+                            if (namespaceMapping.TryGetValue(ns.Name, out MetadataItem nsOther))
                             {
                                 if (ns.Items != null)
                                 {
@@ -827,8 +824,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
                         ns.Items?.ForEach(s =>
                         {
-                            MetadataItem existingMetadata;
-                            if (allMembers.TryGetValue(s.Name, out existingMetadata))
+                            if (allMembers.TryGetValue(s.Name, out MetadataItem existingMetadata))
                             {
                                 Logger.Log(LogLevel.Warning, $"Duplicate member {s.Name} is found from {existingMetadata.Source.Path} and {s.Source.Path}, use the one in {existingMetadata.Source.Path} and ignore the one from {s.Source.Path}");
                             }
@@ -839,8 +835,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
                             s.Items?.ForEach(s1 =>
                             {
-                                MetadataItem existingMetadata1;
-                                if (allMembers.TryGetValue(s1.Name, out existingMetadata1))
+                                if (allMembers.TryGetValue(s1.Name, out MetadataItem existingMetadata1))
                                 {
                                     Logger.Log(LogLevel.Warning, $"Duplicate member {s1.Name} is found from {existingMetadata1.Source.Path} and {s1.Source.Path}, use the one in {existingMetadata1.Source.Path} and ignore the one from {s1.Source.Path}");
                                 }

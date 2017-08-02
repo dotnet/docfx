@@ -27,8 +27,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
         {
             StringBuffer content = StringBuffer.Empty;
 
-            object path;
-            if (!context.Variables.TryGetValue("path", out path))
+            if (!context.Variables.TryGetValue("path", out object path))
             {
                 path = string.Empty;
                 content += token.SourceInfo.Markdown;

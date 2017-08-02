@@ -61,10 +61,8 @@ namespace Microsoft.DocAsCode.Dfm
 
                 // Add current file path to chain when entering recursion
                 parents = parents.Push(currentPath);
-                string result;
-                HashSet<string> dependency;
-                if (!_dependencyCache.TryGetValue(currentPath, out dependency) ||
-                    !_cache.TryGet(currentPath, out result))
+                if (!_dependencyCache.TryGetValue(currentPath, out HashSet<string> dependency) ||
+                    !_cache.TryGet(currentPath, out string result))
                 {
                     var src = GetIncludedContent(originalRelativePath, context);
                     dependency = new HashSet<string>();

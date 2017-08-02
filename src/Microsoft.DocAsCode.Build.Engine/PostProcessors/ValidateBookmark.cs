@@ -110,8 +110,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     string title = linkItem.Title;
                     string linkedToFile = linkItem.Href;
                     string bookmark = linkItem.Bookmark;
-                    HashSet<string> bookmarks;
-                    if (_registeredBookmarks.TryGetValue(linkedToFile, out bookmarks) && !bookmarks.Contains(bookmark))
+                    if (_registeredBookmarks.TryGetValue(linkedToFile, out HashSet<string> bookmarks) && !bookmarks.Contains(bookmark))
                     {
                         string currentFileSrc = linkItem.SourceFile ?? _fileMapping[currentFile];
                         string linkedToFileSrc = _fileMapping[linkedToFile];

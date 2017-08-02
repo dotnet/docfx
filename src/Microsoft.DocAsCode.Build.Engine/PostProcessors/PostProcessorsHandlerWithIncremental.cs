@@ -210,12 +210,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     new ParallelOptions { MaxDegreeOfParallelism = _increContext.MaxParallelism },
                     item =>
                     {
-                        string cachedFileName;
-                        if (!_increContext.LastInfo.PostProcessOutputs.TryGetValue(item.RelativePath, out cachedFileName))
+                        if (!_increContext.LastInfo.PostProcessOutputs.TryGetValue(item.RelativePath, out string cachedFileName))
                         {
                             throw new BuildCacheException($"Last incremental post processor outputs should contain {item.RelativePath}.");
                         }
-                        
+
                         // Copy when current base dir is not last base dir
                         if (!FilePathComparerWithEnvironmentVariable.OSPlatformSensitiveRelativePathComparer.Equals(
                             _increContext.CurrentBaseDir,
@@ -263,8 +262,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         foreach (var pair in increItemsGroup)
                         {
-                            List<ManifestItem> cachedItems;
-                            if (!lastItemsGroup.TryGetValue(pair.Key, out cachedItems))
+                            if (!lastItemsGroup.TryGetValue(pair.Key, out List<ManifestItem> cachedItems))
                             {
                                 throw new BuildCacheException($"Last manifest items doesn't contain the item with source relative path '{pair.Key}.'");
                             }

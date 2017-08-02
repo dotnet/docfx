@@ -54,8 +54,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         public ManifestItem Query(string url)
         {
-            ManifestItem manifestItemWithAssetId;
-            if (_cache.TryGetValue(url, out manifestItemWithAssetId))
+            if (_cache.TryGetValue(url, out ManifestItem manifestItemWithAssetId))
             {
                 return manifestItemWithAssetId;
             }

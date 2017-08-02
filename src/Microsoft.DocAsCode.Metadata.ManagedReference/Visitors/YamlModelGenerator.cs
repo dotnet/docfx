@@ -44,10 +44,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             var id = VisitorHelper.GetId(symbol);
 
-            ReferenceItem reference = new ReferenceItem();
-            reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
-            reference.IsDefinition = symbol.IsDefinition;
-            reference.CommentId = VisitorHelper.GetCommentId(symbol);
+            ReferenceItem reference = new ReferenceItem()
+            {
+                Parts = new SortedList<SyntaxLanguage, List<LinkItem>>(),
+                IsDefinition = symbol.IsDefinition,
+                CommentId = VisitorHelper.GetCommentId(symbol)
+            };
             GenerateReferenceInternal(symbol, reference, adapter);
 
             if (!references.ContainsKey(id))
@@ -64,8 +66,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         internal string AddReference(string id, string commentId, Dictionary<string, ReferenceItem> references)
         {
-            ReferenceItem reference;
-            if (!references.TryGetValue(id, out reference))
+            if (!references.TryGetValue(id, out ReferenceItem reference))
             {
                 // Add id to reference dictionary
                 references[id] = new ReferenceItem() { CommentId = commentId };
@@ -78,10 +79,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             string uidBody = VisitorHelper.GetOverloadIdBody(symbol);
 
-            ReferenceItem reference = new ReferenceItem();
-            reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
-            reference.IsDefinition = true;
-            reference.CommentId = "Overload:" + uidBody;
+            ReferenceItem reference = new ReferenceItem()
+            {
+                Parts = new SortedList<SyntaxLanguage, List<LinkItem>>(),
+                IsDefinition = true,
+                CommentId = "Overload:" + uidBody
+            };
             GenerateReferenceInternal(symbol, reference, adapter, true);
 
             var uid = uidBody + "*";
@@ -110,8 +113,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 throw new InvalidDataException($"Fail to parse id for symbol {symbol.MetadataName} in namespace {symbol.ContainingSymbol?.MetadataName}.");
             }
-            ReferenceItem reference = new ReferenceItem();
-            reference.Parts = new SortedList<SyntaxLanguage, List<LinkItem>>();
+            ReferenceItem reference = new ReferenceItem()
+            {
+                Parts = new SortedList<SyntaxLanguage, List<LinkItem>>()
+            };
             GenerateReferenceInternal(symbol, reference, adapter);
             var originalSymbol = symbol;
             var reducedFrom = (symbol as IMethodSymbol)?.ReducedFrom;

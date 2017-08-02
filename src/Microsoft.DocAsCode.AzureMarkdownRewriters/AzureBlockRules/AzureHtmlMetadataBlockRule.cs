@@ -32,8 +32,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             }
 
             var sourceInfo = context.Consume(match.Length);
-            object currentFilePath;
-            if (!engine.Context.Variables.TryGetValue("path", out currentFilePath))
+            if (!engine.Context.Variables.TryGetValue("path", out object currentFilePath))
             {
                 Logger.LogWarning($"Can't get path for setting azure ms.assetid. Won't set it.");
                 currentFilePath = string.Empty;

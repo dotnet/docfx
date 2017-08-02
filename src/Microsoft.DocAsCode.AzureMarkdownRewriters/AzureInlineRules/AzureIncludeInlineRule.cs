@@ -41,8 +41,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
             }
 
             // 3. Apply inline rules to the included content
-            object currentFilePath;
-            if (!engine.Context.Variables.TryGetValue("path", out currentFilePath))
+            if (!engine.Context.Variables.TryGetValue("path", out object currentFilePath))
             {
                 Logger.LogWarning($"Can't get path for the file that ref azure inline include file, return MarkdownTextToken. Raw: {match.Value}");
                 return new MarkdownTextToken(this, engine.Context, match.Value, sourceInfo);

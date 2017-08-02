@@ -38,8 +38,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// <returns>logged messages</returns>
         public IEnumerable<ILogItem> GetMessages(string file)
         {
-            List<LogItem> messages;
-            if (_logs.TryGetValue(file, out messages))
+            if (_logs.TryGetValue(file, out List<LogItem> messages))
             {
                 return messages;
             }
@@ -82,8 +81,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             {
                 fileFromWorkingDir = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, item.File);
             }
-            List<LogItem> logsPerFile;
-            if (!_logs.TryGetValue(fileFromWorkingDir, out logsPerFile))
+            if (!_logs.TryGetValue(fileFromWorkingDir, out List<LogItem> logsPerFile))
             {
                 logsPerFile = _logs[fileFromWorkingDir] = new List<LogItem>();
             }
@@ -115,11 +113,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
             public Listener(BuildMessageInfo bmi)
             {
-                if (bmi == null)
-                {
-                    throw new ArgumentNullException(nameof(bmi));
-                }
-                _bmi = bmi;
+                _bmi = bmi ?? throw new ArgumentNullException(nameof(bmi));
             }
 
             public void Dispose()

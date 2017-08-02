@@ -58,8 +58,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (!page.References.ContainsKey(key))
             {
-                ReferenceItem item;
-                if (context.References.TryGetValue(key, out item))
+                if (context.References.TryGetValue(key, out ReferenceItem item))
                 {
                     var reference = context.References[key].Clone();
                     page.References.Add(key, reference);
