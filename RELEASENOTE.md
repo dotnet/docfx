@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.22)
+﻿Version Notes (Current Version: v2.22.1)
 =======================================
+v2.22.1
+-----------
+1. Bug fixed:
+   1. fix parsing inline code fences for legacy dfm.
 
 v2.22
 -----------
