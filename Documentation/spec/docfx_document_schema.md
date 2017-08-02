@@ -219,7 +219,8 @@ Here's the schema to describe these operations:
                                     "type": "string",
                                     "contentType": "markdown"
                                 }
-                            }
+                            },
+                            "tags": [ "metadata" ]
                         }
                     },
                     "title": {
