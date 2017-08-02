@@ -85,9 +85,8 @@ An object to describe the schema of the value of the property.
 | items        | [Property Object](#property-object) | An object to hold the schema of the items if `type` for the model is `array`. Omitting this keyword has the same behavior as an empty schema.
 | reference    | string | Defines whether current property is a reference to the actual value of the property. Refer to [reference](#62-reference) for detailed explanation.
 | contentType  | string | Defines the content type of the property. Refer to [contentType](#63-contenttype) for detailed explanation.
-| uidResolver  | string | It defines what properties can be fetched by others. Property names are split by `,`. If the value is not specified, the default value is `name,displayName,fullName`. Refer to [uidResolver](#64-uidresolver) for detailed explanation.
-| tags       | array  | Defines the tags of the property. Refer to [tags](#65-tags) for detailed explanation.
-| mergeType      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [mergeType](#66-mergetype) for detailed explanation.
+| tags       | array  | Defines the tags of the property. Refer to [tags](#64-tags) for detailed explanation.
+| mergeType      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [mergeType](#65-mergetype) for detailed explanation.
 
 ##### Patterned Field
 | Field Name | Type | Description
@@ -121,19 +120,16 @@ It defines how applications interpret the property. If not defined, the behavior
 | Value      | Description
 |------------|-------------
 | `default`  | It means that no interpretion will be done to the property.
-| `uid`      | `type` MUST be `string`. It means the property defines a unique identifier inside current document model
+| `uid`      | `type` MUST be `string`. With this value, the property name MUST be `uid`. It means the property defines a unique identifier inside current document model
 | `xref`     | `type` MUST be `string`. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.
 | `href`     | `type` MUST be `string`. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output link.
 | `file`     | `type` MUST be `string`. It means the property defines a file path inside current document model. Application CAN help to validate if the linked file exists, and resolve the path to the corresponding file output path. The difference between `file` and `href` is that `href` is always URL encoded while `file` is not.
 | `markdown` | `type` MUST be `string`. It means the property is in [DocFX flavored Markdown](..\spec\docfx_flavored_markdown.md) syntax. Application CAN help to transform it into HTML format.
 
-### 6.4 uidResolver
-This key only takes effect when the `contentType` value for current property is `uid`. It defines what properties can be fetched by others when they cross reference this uid. Generally we would suggest that properties such as `name`, `displayName` be saved. Property names are split by `,` with the following syntax: `{propertyName1},{propertyName2},{propertyName3},...{propertyNameN}`. If the value is not specified, the default value is `name,displayName,fullName`. The included properties will be exported to the output xrefmap.yml and can be cross referenced by others.
-
-### 6.5 tags
+### 6.4 tags
 The value of this keyword MUST be an `array`, elements of the array MUST be strings and MUST be unique. It provides hints for applications to decide how to interpret the property, for example, `localizable` tag can help Localization team to interpret the property as *localizable*; `metadata` tag can help DocFX to fill in additional metadata, e.g. github commit information.
 
-### 6.6 mergeType
+### 6.5 mergeType
 The value of this keyword MUST be a string. It specifies how to merge two values of the given property. One use scenario is how DocFX uses the [overwrite files](..\tutorial\intro_overwrite_files.md) to overwrite the existing values. In the below table, we use `source` and `target` to stands for the two values for merging.
 
 The value MUST be one of the following:
@@ -259,3 +255,13 @@ Here's the schema to describe these operations:
             2. Little chance that keywords DocFX defines duplicate with what JSON schema defines, after all, JSON schema defines a finite set of reserved keywords.
             3. For example[Swagger spec](http://swagger.io/) is also based on JSON schema and the fields it introduces in has no prefix. 
     * Decision: *Remove* `d-` prefix.
+3. What's remaining work if to apply schema to the complex data model, for example, ManagedReference, or UniversalReference?
+    * 1. OPS plugin framework, to insert metadata into the data model, for example, git commit id, git contributers.
+      Solution: A TagInterpreter plugin framework to insert metadata if the property contains `metadata` tag
+    * 2. The schema is able to support complex Json Schema syntax, such as definition reference `#/definiton/commonobject`
+    * 3. Support complex syntax in `<xref>` to support specify the html content to be rendered. Current `xref` always renders to `<a/> if `uid` can be resolved
+      Idea: One idea is to support syntax similar to `<xref uid="uid" template="a.tmpl">` that template writer can specify the template used to render `xref`
+    * 4. Support overwrite the object with given `uid`
+        Challenge: The schema can define multiple `uid`s inside one document.
+    * 5. Support incremental build
+    
