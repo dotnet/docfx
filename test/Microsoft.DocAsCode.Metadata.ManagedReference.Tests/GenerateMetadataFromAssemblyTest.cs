@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
         public void TestGenerateMetadataFromAssembly()
         {
             var compilation = CompilationUtility.CreateCompilationFromAssembly(AssemblyFiles);
-            var referenceAssembly = CompilationUtility.GetAssemblyFromAssemblyComplation(compilation).ToList();
+            var referenceAssembly = CompilationUtility.GetAssemblyFromAssemblyComplation(compilation).Select(s => s.Item2).ToList();
 
             var output = GenerateYamlMetadata(compilation, referenceAssembly[1]);
             var @class = output.Items[0].Items[2];
