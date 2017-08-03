@@ -23,8 +23,7 @@ namespace Microsoft.DocAsCode.SubCommands
             var result = ToOrderedKeyValuePair(options.ConfigFile);
             foreach (var pair in result)
             {
-                ISubCommandCreator command;
-                if (!controller.TryGetCommandCreator(pair.Key, out command))
+                if (!controller.TryGetCommandCreator(pair.Key, out ISubCommandCreator command))
                 {
                     Logger.LogWarning($"{pair.Key} is not a recognized command name, ignored.");
                 }

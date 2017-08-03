@@ -26,8 +26,7 @@ namespace Microsoft.DocAsCode.SubCommands
         public void Exec(SubCommandRunningContext context)
         {
             var builder = new XRefArchiveBuilder();
-            Uri uri;
-            if (Uri.TryCreate(_options.Uri, UriKind.RelativeOrAbsolute, out uri))
+            if (Uri.TryCreate(_options.Uri, UriKind.RelativeOrAbsolute, out Uri uri))
             {
                 builder.DownloadAsync(uri, _options.ArchiveFile).Wait();
             }

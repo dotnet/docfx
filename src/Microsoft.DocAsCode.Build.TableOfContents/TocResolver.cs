@@ -205,24 +205,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         var href = (RelativePath)item.Href;
                         var tocFilePath = (RelativePath)file.File + href;
                         var tocFile = file.ChangeFile(tocFilePath);
-                        TocItemInfo referencedTocFileModel;
-                        TocItemViewModel referencedToc;
                         stack.Push(file);
-                        if (_collection.TryGetValue(tocFile.FullPath, out referencedTocFileModel) || _notInProjectTocCache.TryGetValue(tocFile, out referencedTocFileModel))
-                        {
-                            referencedTocFileModel = ResolveItem(referencedTocFileModel, stack);
-                            referencedTocFileModel.IsReferenceToc = true;
-                            referencedToc = referencedTocFileModel.Content;
-                        }
-                        else
-                        {
-                            // It is acceptable that the referenced toc file is not included in docfx.json, as long as it can be found locally
-                            referencedTocFileModel = new TocItemInfo(tocFile, TocHelper.LoadSingleToc(tocFile.FullPath));
-
-                            referencedTocFileModel = ResolveItem(referencedTocFileModel, stack);
-                            referencedToc = referencedTocFileModel.Content;
-                            _notInProjectTocCache[tocFile] = referencedTocFileModel;
-                        }
+                        var referencedToc = GetReferencedToc(tocFile, stack);
                         stack.Pop();
                         // For referenced toc, content from referenced toc is expanded as the items of current toc item,
                         // Href is reset to the homepage of current toc item
@@ -258,6 +242,25 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
 
             return wrapper;
+        }
+
+        private TocItemViewModel GetReferencedToc(FileAndType tocFile, Stack<FileAndType> stack)
+        {
+            if (_collection.TryGetValue(tocFile.FullPath, out TocItemInfo referencedTocFileModel) || _notInProjectTocCache.TryGetValue(tocFile, out referencedTocFileModel))
+            {
+                referencedTocFileModel = ResolveItem(referencedTocFileModel, stack);
+                referencedTocFileModel.IsReferenceToc = true;
+                return referencedTocFileModel.Content;
+            }
+            else
+            {
+                // It is acceptable that the referenced toc file is not included in docfx.json, as long as it can be found locally
+                referencedTocFileModel = new TocItemInfo(tocFile, TocHelper.LoadSingleToc(tocFile.FullPath));
+
+                referencedTocFileModel = ResolveItem(referencedTocFileModel, stack);
+                _notInProjectTocCache[tocFile] = referencedTocFileModel;
+                return referencedTocFileModel.Content;
+            }
         }
 
         private TocViewModel UpdateOriginalHref(TocViewModel toc, RelativePath relativePath)

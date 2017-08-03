@@ -23,8 +23,7 @@ namespace Microsoft.DocAsCode.Common
                     enumerators[i] = new EnumeratorInfo<TItem>(sources[i]?.OrderBy(x => x, comparer));
                 }
                 var indexes = new List<int>(sources.Count);
-                TResult result;
-                while (MoveNext(enumerators, indexes, comparer, merger, out result))
+                while (MoveNext(enumerators, indexes, comparer, merger, out TResult result))
                 {
                     yield return result;
                     indexes.Clear();

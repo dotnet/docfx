@@ -21,8 +21,7 @@ namespace Microsoft.DocAsCode.Tests
         {
             var args = new string[0];
             var controller = ArgsParser.Instance.Parse(args);
-            ISubCommandCreator creator;
-            var result = controller.TryGetCommandCreator("metadata", out creator);
+            var result = controller.TryGetCommandCreator("metadata", out ISubCommandCreator creator);
             Assert.True(result);
             result = controller.TryGetCommandCreator("build", out creator);
             Assert.True(result);

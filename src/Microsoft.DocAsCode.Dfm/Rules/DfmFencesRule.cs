@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Dfm
                 return null;
             }
 
-            int startLine, endLine, line;
+            int startLine, endLine;
             if (queryOption == "#")
             {
                 // check if line number representation
@@ -59,8 +59,7 @@ namespace Microsoft.DocAsCode.Dfm
                 int? dedent = null;
                 if (collection[DedentQueryStringKey] != null)
                 {
-                    int dedentTemp;
-                    if (int.TryParse(collection[DedentQueryStringKey], out dedentTemp))
+                    if (int.TryParse(collection[DedentQueryStringKey], out int dedentTemp))
                     {
                         dedent = dedentTemp;
                     }
@@ -93,7 +92,7 @@ namespace Microsoft.DocAsCode.Dfm
                             else
                             {
                                 // consider region as a sigine line number
-                                var tempLine = int.TryParse(region, out line) ? line : (int?)null;
+                                var tempLine = int.TryParse(region, out int line) ? line : (int?)null;
                                 option.LinePairs.Add(new Tuple<int?, int?>(tempLine, tempLine));
                             }
                         }

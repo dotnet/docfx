@@ -78,9 +78,8 @@ namespace Microsoft.DocAsCode.SubCommands
         private MetadataJsonConfig ParseOptions(MetadataCommandOptions options, out string baseDirectory, out string outputFolder)
         {
             MetadataJsonConfig config;
-            string configFile;
             baseDirectory = null;
-            if (TryGetJsonConfig(options.Projects, out configFile))
+            if (TryGetJsonConfig(options.Projects, out string configFile))
             {
                 config = CommandUtility.GetConfig<MetadataConfig>(configFile).Item;
                 if (config == null)
