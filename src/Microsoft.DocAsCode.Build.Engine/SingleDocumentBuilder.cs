@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Linq;
     using System.Collections.Immutable;
     using System.Text;
-    using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Common;
@@ -314,15 +313,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return XRefMapFileName;
             }
 
-            // TODO: full check of invalid chars
-            version = Regex.Replace(
-                version,
-                "[><|]",
-                new MatchEvaluator(m =>
-               {
-                   return $"[u{((int)m.Value[0]).ToString("X4")}]";
-               }));
-            return version + "." + XRefMapFileName;
+            return Uri.EscapeDataString(version) + "." + XRefMapFileName;
         }
 
         private IMarkdownService CreateMarkdownService(DocumentBuildParameters parameters, ImmutableDictionary<string, string> tokens)
