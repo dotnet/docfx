@@ -59,8 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var list = new List<XRefSpec>(References.Count);
             foreach (var r in References)
             {
-                Uri uri;
-                if (!Uri.TryCreate(r.Href, UriKind.RelativeOrAbsolute, out uri))
+                if (!Uri.TryCreate(r.Href, UriKind.RelativeOrAbsolute, out Uri uri))
                 {
                     Logger.LogWarning($"Bad uri in xref map: {r.Href}");
                     continue;

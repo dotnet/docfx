@@ -98,8 +98,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 TocRestructionsFile = IncrementalUtility.CreateRandomFileName(baseDir),
             };
             cb.Versions.Add(cbv);
-            var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, buildInfoIncrementalStatus, parameters, cbv, lbv);
-            context.IsTemplateUpdated = (cb.TemplateHash != lb?.TemplateHash);
+            var context = new IncrementalBuildContext(baseDir, lastBaseDir, lastBuildStartTime, buildInfoIncrementalStatus, parameters, cbv, lbv)
+            {
+                IsTemplateUpdated = (cb.TemplateHash != lb?.TemplateHash)
+            };
             context.InitDependency();
             context.InitFileAttributes();
             context.InitChanges();

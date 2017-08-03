@@ -13,12 +13,11 @@ namespace Microsoft.DocAsCode.SubCommands
     {
         public override HelpCommand CreateCommand(HelpCommandOptions options, ISubCommandController controller)
         {
-            ISubCommandCreator creator;
             if (string.IsNullOrEmpty(options.Command))
             {
                 return new HelpCommand(controller.GetHelpText());
             }
-            if (controller.TryGetCommandCreator(options.Command, out creator))
+            if (controller.TryGetCommandCreator(options.Command, out ISubCommandCreator creator))
             {
                 return new HelpCommand(creator.GetHelpText());
             }

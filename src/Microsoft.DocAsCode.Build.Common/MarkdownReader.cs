@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Build.Common
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
 
@@ -16,12 +17,15 @@ namespace Microsoft.DocAsCode.Build.Common
 
     public class MarkdownReader
     {
+        private static readonly ImmutableList<string> RequiredProperties = ImmutableList.Create(Constants.PropertyName.Uid);
+
         public static IEnumerable<OverwriteDocumentModel> ReadMarkdownAsOverwrite(IHostService host, FileAndType ft)
         {
             // Order the list from top to bottom
             var markdown = EnvironmentContext.FileAbstractLayer.ReadAllText(ft.File);
             var parts = MarkupMultiple(host, markdown, ft);
-            return parts.Select(part => TransformModel(ft.FullPath, part));
+            return from part in parts
+                   select TransformModel(ft.FullPath, part);
         }
 
         public static Dictionary<string, object> ReadMarkdownAsConceptual(string file)
@@ -34,7 +38,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 [Constants.PropertyName.Type] = "Conceptual",
                 [Constants.PropertyName.Source] = new SourceDetail { Remote = repoInfo },
                 [Constants.PropertyName.Path] = file,
-                [Constants.PropertyName.Documentation] = new SourceDetail { Remote = repoInfo}
+                [Constants.PropertyName.Documentation] = new SourceDetail { Remote = repoInfo }
             };
         }
 
@@ -46,8 +50,7 @@ namespace Microsoft.DocAsCode.Build.Common
             }
 
             var properties = part.YamlHeader;
-            string checkPropertyMessage;
-            var checkPropertyStatus = CheckRequiredProperties(properties, RequiredProperties, out checkPropertyMessage);
+            var checkPropertyStatus = CheckRequiredProperties(properties, RequiredProperties, out string checkPropertyMessage);
             if (!checkPropertyStatus)
             {
                 throw new InvalidDataException(checkPropertyMessage);
@@ -95,23 +98,27 @@ namespace Microsoft.DocAsCode.Build.Common
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.Fail("Markup failed!");
+                Debug.Fail("Markup failed!");
                 var message = $"Markup failed: {ex.Message}.";
                 Logger.LogError(message);
                 throw new DocumentException(message, ex);
             }
         }
 
-        private static readonly List<string> RequiredProperties = new List<string> { Constants.PropertyName.Uid };
-
         private static Dictionary<string, object> RemoveRequiredProperties(ImmutableDictionary<string, object> properties, IEnumerable<string> requiredProperties)
         {
-            if (properties == null) return null;
+            if (properties == null)
+            {
+                return null;
+            }
 
             var overridenProperties = new Dictionary<string, object>(properties);
             foreach (var requiredProperty in requiredProperties)
             {
-                if (requiredProperty != null) overridenProperties.Remove(requiredProperty);
+                if (requiredProperty != null)
+                {
+                    overridenProperties.Remove(requiredProperty);
+                }
             }
 
             return overridenProperties;
@@ -119,8 +126,10 @@ namespace Microsoft.DocAsCode.Build.Common
 
         private static bool CheckRequiredProperties(ImmutableDictionary<string, object> properties, IEnumerable<string> requiredKeys, out string message)
         {
-            var notExistsKeys = requiredKeys.Where(k => !properties.Keys.Contains(k));
-            if (notExistsKeys.Any())
+            var notExistsKeys = (from key in requiredKeys
+                                 where !properties.Keys.Contains(key)
+                                 select key).ToList();
+            if (notExistsKeys.Count > 0)
             {
                 message =
                     $"Required properties {{{{{string.Join(",", notExistsKeys)}}}}} are not set. Note that keys are case sensitive.";

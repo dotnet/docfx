@@ -76,8 +76,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     return null;
                 }
 
-                var val = currentObj as string;
-                if (val != null)
+                if (currentObj is string val)
                 {
                     var marked = Markup(val, context);
                     if (currentPropertyInfo != null)
@@ -87,8 +86,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     return marked;
                 }
 
-                var list = currentObj as IList<string>;
-                if (list != null)
+                if (currentObj is IList<string> list)
                 {
                     for (var i = 0; i < list.Count; i++)
                     {
@@ -131,8 +129,7 @@ namespace Microsoft.DocAsCode.Build.Common
                     return content;
                 }
 
-                string result;
-                if (TryMarkupPlaceholderContent(content, context, out result))
+                if (TryMarkupPlaceholderContent(content, context, out string result))
                 {
                     return result;
                 }
