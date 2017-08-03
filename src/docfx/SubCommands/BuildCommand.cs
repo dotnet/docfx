@@ -50,7 +50,8 @@ namespace Microsoft.DocAsCode.SubCommands
             EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Directory.GetCurrentDirectory() : Config.BaseDirectory));
             // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
             var baseDirectory = EnvironmentContext.BaseDirectory;
-            var intermediateOutputFolder = Path.Combine(baseDirectory, "obj");
+            Config.IntermediateFolder = Config.IntermediateFolder ?? Path.Combine(baseDirectory, "obj", ".cache", "build");
+
             var outputFolder = Path.GetFullPath(Path.Combine(string.IsNullOrEmpty(Config.OutputFolder) ? baseDirectory : Config.OutputFolder, Config.Destination ?? string.Empty));
 
             BuildDocument(baseDirectory, outputFolder);
@@ -284,7 +285,6 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 config.IntermediateFolder = options.IntermediateFolder;
             }
-            config.IntermediateFolder = config.IntermediateFolder ?? Path.Combine(config.BaseDirectory ?? optionsBaseDirectory, "obj", ".cache", "build");
             if (options.ChangesFile != null)
             {
                 config.ChangesFile = options.ChangesFile;
