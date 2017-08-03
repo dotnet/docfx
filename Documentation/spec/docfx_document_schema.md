@@ -78,8 +78,8 @@ An object to describe the schema of the value of the property.
 | Field Name      | Type   | Description
 |-----------------|--------|----------
 | title        | string | The title of the property.
-| description  | string | A lengthy explanation about the purpose of the data described by the schema
-| default      | what `type` defined | The default value for current field
+| description  | string | A lengthy explanation about the purpose of the data described by the schema.
+| default      | what `type` defined | The default value for current field.
 | type         | string | The type of the root document model. Refer to [type keyword](#61-type) for detailed description.
 | properties   | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties if `type` for the model is `object`. Omitting this keyword has the same behavior as an empty object.
 | items        | [Property Object](#property-object) | An object to hold the schema of the items if `type` for the model is `array`. Omitting this keyword has the same behavior as an empty schema.
@@ -112,7 +112,7 @@ It defines whether current property is a reference to the actual value of the pr
 | Value      | Description
 |------------|-------------
 | `none`     | It means the property is not a reference.
-| `file`     | It means current property stands for a file path that contains content to be included
+| `file`     | It means current property stands for a file path that contains content to be included.
 
 ### 6.3 contentType
 It defines how applications interpret the property. If not defined, the behavior is similar to `default` value. The values MUST be one of the following:
@@ -120,7 +120,7 @@ It defines how applications interpret the property. If not defined, the behavior
 | Value      | Description
 |------------|-------------
 | `default`  | It means that no interpretion will be done to the property.
-| `uid`      | `type` MUST be `string`. With this value, the property name MUST be `uid`. It means the property defines a unique identifier inside current document model
+| `uid`      | `type` MUST be `string`. With this value, the property name MUST be `uid`. It means the property defines a unique identifier inside current document model.
 | `xref`     | `type` MUST be `string`. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.
 | `href`     | `type` MUST be `string`. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output link.
 | `file`     | `type` MUST be `string`. It means the property defines a file path inside current document model. Application CAN help to validate if the linked file exists, and resolve the path to the corresponding file output path. The difference between `file` and `href` is that `href` is always URL encoded while `file` is not.
