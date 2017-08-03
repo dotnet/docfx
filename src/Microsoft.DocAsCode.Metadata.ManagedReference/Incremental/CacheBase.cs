@@ -74,12 +74,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     }
                     else
                     {
-                        Logger.Log(LogLevel.Warning, $"Cache for {key} in {_path} is corrupted");
+                        Logger.Log(LogLevel.Info, $"Cache for {key} in {_path} is corrupted, rebuild...");
                     }
                 }
                 catch (Exception e)
                 {
-                    Logger.Log(LogLevel.Warning, $"Cache for {key} in {_path} is not valid: {e.Message}");
+                    Logger.Log(LogLevel.Info, $"Cache for {key} in {_path} is not valid: {e.Message}, rebuild...");
                 }
             }
 

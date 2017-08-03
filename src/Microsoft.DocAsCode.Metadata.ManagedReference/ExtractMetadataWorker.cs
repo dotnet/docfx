@@ -84,7 +84,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (_files == null || _files.Count == 0)
             {
-                Logger.Log(LogLevel.Warning, "No source project or file to process, exiting...");
+                Logger.Log(LogLevel.Warning, "No project detected for extracting metadata.");
                 return;
             }
 
@@ -392,12 +392,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                                         where File.Exists(xmlFile)
                                         select xmlFile).ToList();
 
-                    var referencedAssemblyList = CompilationUtility.GetAssemblyFromAssemblyComplation(assemblyCompilation);
-                    var assemblyExtension = GetAllExtensionMethodsFromAssembly(assemblyCompilation, referencedAssemblyList);
+                    var referencedAssemblyList = CompilationUtility.GetAssemblyFromAssemblyComplation(assemblyCompilation).ToList();
+                    var assemblyExtension = GetAllExtensionMethodsFromAssembly(assemblyCompilation, referencedAssemblyList.Select(s => s.Item2));
 
                     foreach (var assembly in referencedAssemblyList)
                     {
-                        var mta = await GetAssemblyMetadataFromCacheAsync(assemblyFiles, assemblyCompilation, assembly, outputFolder, forceRebuild, _filterConfigFile, assemblyExtension);
+                        var mta = await GetAssemblyMetadataFromCacheAsync(new string[] { assembly.Item1.Display }, assemblyCompilation, assembly.Item2, outputFolder, forceRebuild, _filterConfigFile, assemblyExtension);
                         if (mta != null)
                         {
                             MergeCommentsHelper.MergeComments(mta.Item1, commentFiles);
