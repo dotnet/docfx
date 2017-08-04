@@ -1,4 +1,7 @@
-﻿namespace Microsoft.DocAsCode.Dfm
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+namespace Microsoft.DocAsCode.Dfm
 {
     using System.Collections.Generic;
 
@@ -22,25 +25,5 @@
         public IMarkdownRule Rule { get; }
         public IMarkdownContext Context { get; }
         public SourceInfo SourceInfo { get; }
-    }
-
-    public class DfmSectionBlockSplitToken : SplitToken
-    {
-        public DfmSectionBlockSplitToken(IMarkdownToken token) : base(token) { }
-    }
-
-    public class DfmNoteBlockSplitToken : SplitToken
-    {
-        public DfmNoteBlockSplitToken(IMarkdownToken token) : base(token) { }
-    }
-
-    public class DfmVideoBlockSplitToken : SplitToken
-    {
-        public DfmVideoBlockSplitToken(IMarkdownToken token) : base(token) { }
-    }
-
-    public class DfmDefaultBlockQuoteBlockSplitToken : SplitToken
-    {
-        public DfmDefaultBlockQuoteBlockSplitToken(IMarkdownToken token) : base(token) { }
     }
 }
