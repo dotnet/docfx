@@ -76,13 +76,28 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        public static List<IAssemblySymbol> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation)
+        public static IEnumerable<Tuple<MetadataReference, IAssemblySymbol>> GetAssemblyFromAssemblyComplation(Compilation assemblyCompilation)
         {
-            return (from reference in assemblyCompilation.References
-                    let assembly = (IAssemblySymbol)assemblyCompilation.GetAssemblyOrModuleSymbol(reference)
+            foreach(var reference in assemblyCompilation.References)
+            {
+                Logger.LogVerbose($"Loading assembly {reference.Display}...");
+                var assembly = (IAssemblySymbol)assemblyCompilation.GetAssemblyOrModuleSymbol(reference);
+                if (assembly == null)
+                {
+                    Logger.LogWarning($"Unable to get symbol from {reference.Display}, ignored...");
+                }
+                else
+                {
                     //TODO: "mscorlib" shouldn't be ignored while extracting metadata from .NET Core/.NET Framework
-                    where assembly != null && assembly.Identity?.Name != "mscorlib"
-                    select assembly).ToList();
+                    if (assembly.Identity?.Name == "mscorlib")
+                    {
+                        Logger.LogVerbose($"Ignored mscorlib assembly {reference.Display}");
+                        yield break;
+                    }
+
+                    yield return Tuple.Create(reference, assembly);
+                }
+            }
         }
 
         private static string GetAbbreviateString(string input, int length = 20)
