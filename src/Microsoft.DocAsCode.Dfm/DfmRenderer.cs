@@ -83,68 +83,19 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 if (splitToken.Token is DfmSectionBlockToken)
                 {
-                    if (!splitToken.Token.SourceInfo.Markdown.EndsWith("\n"))
-                    {
-                        Logger.LogWarning("The content part of [!div] syntax is suggested to start in a new line.", file: splitToken.Token.SourceInfo.File, line: splitToken.Token.SourceInfo.LineNumber.ToString());
-                    }
-                    content += "<div";
-                    content += ((DfmSectionBlockToken)splitToken.Token).Attributes;
-                    content = AppendSourceInfo(content, renderer, splitToken.Token);
-                    content += ">";
-                    foreach (var item in splitToken.InnerTokens)
-                    {
-                        content += renderer.Render(item);
-                    }
-                    content += "</div>\n";
+                    content += DfmSectionBlockTokenRender(renderer, splitToken);
                 }
                 else if (splitToken.Token is DfmNoteBlockToken)
                 {
-                    if (!splitToken.Token.SourceInfo.Markdown.EndsWith("\n"))
-                    {
-                        Logger.LogWarning("The content part of NOTE/WARNING/CAUTION/IMPORTANT/NEXT syntax is suggested to start in a new line.", file: splitToken.Token.SourceInfo.File, line: splitToken.Token.SourceInfo.LineNumber.ToString());
-                    }
-                    var noteToken = (DfmNoteBlockToken)splitToken.Token;
-                    content += "<div class=\"";
-                    content += noteToken.NoteType.ToUpper();
-                    content += "\"";
-                    content = AppendSourceInfo(content, renderer, splitToken.Token);
-                    content += ">";
-                    if (Tokens != null && Tokens.TryGetValue(noteToken.NoteType.ToLower(), out string heading))
-                    {
-                        content += heading;
-                    }
-                    else
-                    {
-                        content += "<h5>";
-                        content += noteToken.NoteType.ToUpper();
-                        content += "</h5>";
-                    }
-                    foreach (var item in splitToken.InnerTokens)
-                    {
-                        content += renderer.Render(item);
-                    }
-                    content += "</div>\n";
+                    content += DfmNoteBlockTokenRender(renderer, splitToken);
                 }
                 else if (splitToken.Token is DfmVideoBlockToken)
                 {
-                    var videoToken = splitToken.Token as DfmVideoBlockToken;
-                    content += "<div class=\"embeddedvideo\"><iframe src=\"";
-                    content += videoToken.Link;
-                    content += "\" frameborder=\"0\" allowfullscreen=\"true\"";
-                    content = AppendSourceInfo(content, renderer, splitToken.Token);
-                    content += "></iframe></div>\n";
-                    continue;
+                    content += DfmVideoBlockTokenRender(renderer, splitToken);
                 }
                 else
                 {
-                    content += "<blockquote";
-                    content = AppendSourceInfo(content, renderer, splitToken.Token);
-                    content += ">";
-                    foreach (var item in splitToken.InnerTokens)
-                    {
-                        content += renderer.Render(item);
-                    }
-                    content += "</blockquote>\n";
+                    content += DfmBlockQuoteTokenRender(renderer, splitToken);
                 }
             }
             return content;
@@ -287,6 +238,87 @@ namespace Microsoft.DocAsCode.Dfm
                 sb += renderer.Render(item);
             }
             return sb;
+        }
+
+        public StringBuffer DfmSectionBlockTokenRender(IMarkdownRenderer renderer, SplitToken splitToken)
+        {
+            StringBuffer content = string.Empty;
+            if (!splitToken.Token.SourceInfo.Markdown.EndsWith("\n"))
+            {
+                Logger.LogWarning("The content part of [!div] syntax is suggested to start in a new line.", file: splitToken.Token.SourceInfo.File, line: splitToken.Token.SourceInfo.LineNumber.ToString());
+            }
+            content += "<div";
+            content += ((DfmSectionBlockToken)splitToken.Token).Attributes;
+            content = AppendSourceInfo(content, renderer, splitToken.Token);
+            content += ">";
+            foreach (var item in splitToken.InnerTokens)
+            {
+                content += renderer.Render(item);
+            }
+            content += "</div>\n";
+
+            return content;
+        }
+
+        public StringBuffer DfmNoteBlockTokenRender(IMarkdownRenderer renderer, SplitToken splitToken)
+        {
+            StringBuffer content = string.Empty;
+            if (!splitToken.Token.SourceInfo.Markdown.EndsWith("\n"))
+            {
+                Logger.LogWarning("The content part of NOTE/WARNING/CAUTION/IMPORTANT/NEXT syntax is suggested to start in a new line.", file: splitToken.Token.SourceInfo.File, line: splitToken.Token.SourceInfo.LineNumber.ToString());
+            }
+            var noteToken = (DfmNoteBlockToken)splitToken.Token;
+            content += "<div class=\"";
+            content += noteToken.NoteType.ToUpper();
+            content += "\"";
+            content = AppendSourceInfo(content, renderer, splitToken.Token);
+            content += ">";
+            if (Tokens != null && Tokens.TryGetValue(noteToken.NoteType.ToLower(), out string heading))
+            {
+                content += heading;
+            }
+            else
+            {
+                content += "<h5>";
+                content += noteToken.NoteType.ToUpper();
+                content += "</h5>";
+            }
+            foreach (var item in splitToken.InnerTokens)
+            {
+                content += renderer.Render(item);
+            }
+            content += "</div>\n";
+            return content;
+        }
+
+        public StringBuffer DfmVideoBlockTokenRender(IMarkdownRenderer renderer, SplitToken splitToken)
+        {
+            StringBuffer content = string.Empty;
+
+            var videoToken = splitToken.Token as DfmVideoBlockToken;
+            content += "<div class=\"embeddedvideo\"><iframe src=\"";
+            content += videoToken.Link;
+            content += "\" frameborder=\"0\" allowfullscreen=\"true\"";
+            content = AppendSourceInfo(content, renderer, splitToken.Token);
+            content += "></iframe></div>\n";
+
+            return content;
+        }
+
+        public StringBuffer DfmBlockQuoteTokenRender(IMarkdownRenderer renderer, SplitToken splitToken)
+        {
+            StringBuffer content = string.Empty;
+
+            content += "<blockquote";
+            content = AppendSourceInfo(content, renderer, splitToken.Token);
+            content += ">";
+            foreach (var item in splitToken.InnerTokens)
+            {
+                content += renderer.Render(item);
+            }
+            content += "</blockquote>\n";
+
+            return content;
         }
 
         public void Dispose()
