@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor.Tests
+namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor.Tests
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.Build.Engine;
-    using Microsoft.DocAsCode.Build.SchemaDrivenProcessor.Processors;
+    using Microsoft.DocAsCode.Build.SchemaDriven.Processors;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
