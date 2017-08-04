@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 if (token is IDfmBlockSpecialSplitToken)
                 {
-                    splitToken = new SplitToken(token);
+                    splitToken = CreateSplitToken(token);
                     splitTokens.Add(splitToken);
                 }
                 else
@@ -28,12 +28,30 @@ namespace Microsoft.DocAsCode.Dfm
                         splitToken.InnerTokens.Add(token);
                         continue;
                     }
-                    splitToken = new SplitToken(token);
+                    splitToken = CreateSplitToken(token);
                     splitToken.InnerTokens.Add(token);
                     splitTokens.Add(splitToken);
                 }
             }
+
             return splitTokens;
+        }
+
+        private static SplitToken CreateSplitToken(IMarkdownToken token)
+        {
+            if (token is DfmSectionBlockToken)
+            {
+                return new DfmSectionBlockSplitToken(token);
+            }
+            if (token is DfmNoteBlockToken)
+            {
+                return new DfmNoteBlockSplitToken(token);
+            }
+            if (token is DfmVideoBlockToken)
+            {
+                return new DfmVideoBlockSplitToken(token);
+            }
+            return new DfmDefaultBlockQuoteBlockSplitToken(token);
         }
     }
 }
