@@ -1,5 +1,10 @@
-﻿Version Notes (Current Version: v2.22.1)
+﻿Version Notes (Current Version: v2.22.2)
 =======================================
+v2.22.2
+-----------
+1. Bug fixed:
+   1. Fix incremental bug that ExtensionData in ReferenceViewModel is log in cache file
+
 v2.22.1
 -----------
 1. Bug fixed:
