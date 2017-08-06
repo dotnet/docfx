@@ -3,6 +3,8 @@
 
 v2.23 (Pre-release)
 -----------
+1. Bug fixed:
+   1. Fix #1825: ArgumentNullException when EII implements a member with EditorBrowsableState.Never.
 
 v2.22
 -----------
