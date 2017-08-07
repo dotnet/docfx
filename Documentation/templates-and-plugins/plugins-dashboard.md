@@ -28,7 +28,7 @@ templates:
         command: "-t default,<output>/rest.tagpage.<version>/content"
         config: 'template: ["default", "<output>/rest.tagpage.<version>/content"]'
     - name: rest.operationpage
-      description: It splits the *REST* model into operation level model. If it's enabled toghether with `rest.tagpage`, the *REST* model will split to tag level first, then split to operation level.
+      description: It splits the *REST* model into operation level model. If it's enabled together with `rest.tagpage`, the *REST* model will split to tag level first, then split to operation level.
       type: Internal
       thumbnail: ~/templates-and-plugins/images/rest.operationpage.default.screenshot.png
       homepage: https://www.nuget.org/packages/rest.operationpage/
