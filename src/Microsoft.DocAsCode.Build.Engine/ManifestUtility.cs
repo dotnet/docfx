@@ -46,7 +46,8 @@ namespace Microsoft.DocAsCode.Common
 
             var xrefMaps = (from manifest in manifests
                             where manifest.XRefMap != null
-                            select manifest.XRefMap).ToList();
+                            from pair in (Dictionary<string, string>)manifest.XRefMap
+                            select pair).ToList();
             var incrementalInfos = (from manifest in manifests
                                     from i in manifest.IncrementalInfo ?? Enumerable.Empty<IncrementalInfo>()
                                     select i).ToList();
@@ -58,7 +59,9 @@ namespace Microsoft.DocAsCode.Common
                 Homepages = (from manifest in manifests
                              from homepage in manifest.Homepages ?? Enumerable.Empty<HomepageInfo>()
                              select homepage).Distinct().ToList(),
-                XRefMap = xrefMaps.Count <= 1 ? xrefMaps.FirstOrDefault() : xrefMaps,
+                XRefMap = xrefMaps.Count == 0
+                    ? null
+                    : xrefMaps.ToDictionary(p => p.Key, p => p.Value),
                 SourceBasePath = manifests.FirstOrDefault()?.SourceBasePath,
                 IncrementalInfo = incrementalInfos.Count > 0 ? incrementalInfos : null,
                 VersionInfo = manifests.Where(m => m.VersionInfo != null).SelectMany(m => m.VersionInfo).ToDictionary(p => p.Key, p => p.Value)

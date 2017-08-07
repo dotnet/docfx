@@ -134,17 +134,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                         return new Manifest(context.ManifestItems)
                         {
                             Homepages = GetHomepages(context),
-                            XRefMap = ExportXRefMap(parameters, context),
+                            XRefMap = new Dictionary<string, string>
+                            {
+                                [ExportXRefMap(parameters, context)] = context.VersionName
+                            },
                             SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
                             IncrementalInfo = context.IncrementalBuildContext != null ? new List<IncrementalInfo> { context.IncrementalBuildContext.IncrementalInfo } : null,
                             VersionInfo = string.IsNullOrEmpty(context.VersionName) ?
-                            new Dictionary<string, VersionInfo>() :
-                            new Dictionary<string, VersionInfo>
+                                new Dictionary<string, VersionInfo>() :
+                                new Dictionary<string, VersionInfo>
                                 {
-                                    {
-                                        context.VersionName,
-                                        new VersionInfo {VersionFolder = context.VersionFolder}
-                                    }
+                                    [context.VersionName] = new VersionInfo { VersionFolder = context.VersionFolder }
                                 }
                         };
                     }
