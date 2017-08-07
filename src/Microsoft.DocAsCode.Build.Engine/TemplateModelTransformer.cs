@@ -18,6 +18,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     public class TemplateModelTransformer
     {
         private const string GlobalVariableKey = "__global";
+        private const int MaxInvalidXrefMessagePerFile = 10;
 
         private readonly DocumentBuildContext _context;
         private readonly ApplyTemplateSettings _settings;
@@ -78,7 +79,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return manifestItem;
             }
 
-            List<XRefDetails> missingXRefDetails = new List<XRefDetails>();
+            var aes = new List<AggregateException>();
 
             // Must convert to JObject first as we leverage JsonProperty as the property name for the model
             foreach (var template in templateBundle.Templates)
@@ -159,7 +160,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Logger.LogWarning(message);
                         }
 
-                        TransformDocument(result ?? string.Empty, extension, _context, outputFile, missingXRefDetails, manifestItem);
+                        var ae = TransformDocument(result ?? string.Empty, extension, _context, outputFile, manifestItem);
+                        if (ae != null)
+                        {
+                            aes.Add(ae);
+                        }
+
                         Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputFile}\".");
                     }
                 }
@@ -168,33 +174,50 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var message = $"Error processing {item.LocalPathFromRoot}: {e.Message}";
                     throw new PathTooLongException(message, e);
                 }
-
             }
 
-            if (missingXRefDetails.Count > 0)
-            {
-                var distinctUids = string.Join(", ", missingXRefDetails.Select(i => i.RawSource).Distinct().Select(s => $"\"{s}\""));
-                Logger.LogWarning($"Invalid cross reference {distinctUids}.", file: item.LocalPathFromRoot);
-                foreach (var group in missingXRefDetails.GroupBy(i => i.SourceFile))
-                {
-                    int maxCountPerFile = 10;
-                    string details;
-
-                    // For each source file, print the first 10 invalid cross reference
-                    if (group.Count() >= maxCountPerFile)
-                    {
-                        details = $"{string.Join(", ", group.Take(maxCountPerFile).Select(i => $"\"{i.RawSource}\" in line {i.SourceStartLineNumber.ToString()}"))}, etc. Fisrt {maxCountPerFile} invalid cross reference are shown above.";
-                    }
-                    else
-                    {
-                        details = string.Join(", ", group.Select(i => $"\"{i.RawSource}\" in line {i.SourceStartLineNumber.ToString()}"));
-                    }
-
-                    Logger.LogInfo($"Invalid cross reference details: {details}", file: group.Key ?? item.LocalPathFromRoot);
-                }
-            }
+            LogInvalidXRefExceptions(aes);
 
             return manifestItem;
+        }
+
+        private void LogInvalidXRefExceptions(List<AggregateException> aes)
+        {
+            if (aes == null || aes.Count == 0)
+            {
+                return;
+            }
+
+            var invalidXRefs = (from ae in aes
+                                      from ie in ae.InnerExceptions
+                                      select ie as InvalidCrossReferenceException into ce
+                                      where ce != null
+                                      select ce.XRefDetails).Distinct().ToList();
+
+            if (invalidXRefs.Count == 0)
+            {
+                return;
+            }
+
+            var distinctUids = invalidXRefs.Select(i => i.RawSource).Distinct().Select(s => $"\"{HttpUtility.HtmlDecode(s)}\"").ToList();
+            Logger.LogWarning($"{distinctUids.Count} invalid cross reference(s) {distinctUids.ToDelimitedString(", ")}.");
+            foreach (var group in invalidXRefs.GroupBy(i => i.SourceFile))
+            {
+                // For each source file, print the first 10 invalid cross reference
+                var result = group.ToList();
+                var details = result.Take(MaxInvalidXrefMessagePerFile).Select(i => $"\"{HttpUtility.HtmlDecode(i.RawSource)}\" in line {i.SourceStartLineNumber.ToString()}");
+                var prefix = result.Count > MaxInvalidXrefMessagePerFile ? $"top {MaxInvalidXrefMessagePerFile} " : string.Empty;
+                var message = $"Details for {prefix}invalid cross reference(s): {details.ToDelimitedString(", ")}";
+
+                if (group.Key != null)
+                {
+                    Logger.LogInfo(message, file: group.Key);
+                }
+                else
+                {
+                    Logger.LogInfo(message);
+                }
+            }
         }
 
         private string GetLinkToPath(string fileName)
@@ -283,9 +306,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             return StringExtension.ToDisplayPath(modelPath);
         }
 
-        private void TransformDocument(string result, string extension, IDocumentBuildContext context, string destFilePath, List<XRefDetails> missingXRefDetails, ManifestItem manifestItem)
+        private AggregateException TransformDocument(string result, string extension, IDocumentBuildContext context, string destFilePath, ManifestItem manifestItem)
         {
             Task<byte[]> hashTask;
+            AggregateException ae = null;
             using (var stream = EnvironmentContext.FileAbstractLayer.Create(destFilePath).WithMd5Hash(out hashTask))
             using (var sw = new StreamWriter(stream))
             {
@@ -297,11 +321,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     catch (AggregateException e)
                     {
+                        ae = e;
                         e.Handle(s =>
                         {
-                            if (s is CrossReferenceNotResolvedException xrefExcetpion)
+                            if (s is InvalidCrossReferenceException xrefExcetpion)
                             {
-                                missingXRefDetails.Add(xrefExcetpion.XRefDetails);
                                 return true;
                             }
                             else
@@ -323,6 +347,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Hash = Convert.ToBase64String(hashTask.Result)
             };
             manifestItem.OutputFiles.Add(extension, ofi);
+            return ae;
         }
 
         private void TransformHtml(IDocumentBuildContext context, string html, string sourceFilePath, string destFilePath, StreamWriter outputWriter)
@@ -340,7 +365,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private List<CrossReferenceNotResolvedException> TransformHtmlCore(IDocumentBuildContext context, string sourceFilePath, string destFilePath, HtmlDocument html)
+        private List<InvalidCrossReferenceException> TransformHtmlCore(IDocumentBuildContext context, string sourceFilePath, string destFilePath, HtmlDocument html)
         {
             var xrefLinkNodes = html.DocumentNode.SelectNodes("//a[starts-with(@href, 'xref:')]");
             if (xrefLinkNodes != null)
@@ -351,9 +376,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            var xrefExceptions = new List<CrossReferenceNotResolvedException>();
-            var xrefNodes = html.DocumentNode.SelectNodes("//xref")?
-                .Where(s => !string.IsNullOrEmpty(s.GetAttributeValue("href", null)) || !string.IsNullOrEmpty(s.GetAttributeValue("uid", null))).ToList();
+            var xrefExceptions = new List<InvalidCrossReferenceException>();
+            var xrefNodes = html.DocumentNode.SelectNodes("//xref");
             if (xrefNodes != null)
             {
                 foreach (var xref in xrefNodes)
@@ -362,7 +386,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         UpdateXref(xref, context, Constants.DefaultLanguage);
                     }
-                    catch (CrossReferenceNotResolvedException e)
+                    catch (InvalidCrossReferenceException e)
                     {
                         xrefExceptions.Add(e);
                     }
@@ -399,17 +423,20 @@ namespace Microsoft.DocAsCode.Build.Engine
         private static void UpdateXref(HtmlNode node, IDocumentBuildContext context, string language)
         {
             var xref = XRefDetails.From(node);
-
-            // Resolve external xref map first, and then internal xref map.
-            // Internal one overrides external one
-            var xrefSpec = context.GetXrefSpec(HttpUtility.HtmlDecode(xref.Uid));
-            xref.ApplyXrefSpec(xrefSpec);
+            XRefSpec xrefSpec = null;
+            if (!string.IsNullOrEmpty(xref.Uid))
+            {
+                // Resolve external xref map first, and then internal xref map.
+                // Internal one overrides external one
+                xrefSpec = context.GetXrefSpec(HttpUtility.HtmlDecode(xref.Uid));
+                xref.ApplyXrefSpec(xrefSpec);
+            }
 
             var convertedNode = xref.ConvertToHtmlNode(language);
             node.ParentNode.ReplaceChild(convertedNode, node);
             if (xrefSpec == null && xref.ThrowIfNotResolved)
             {
-                throw new CrossReferenceNotResolvedException(xref);
+                throw new InvalidCrossReferenceException(xref);
             }
         }
 
