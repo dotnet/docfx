@@ -135,16 +135,20 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context),
+                            XRefMapInfo = new Dictionary<string, XrefMapInfo>
+                            {
+                                [ExportXRefMap(parameters, context)] = new XrefMapInfo
+                                {
+                                    Version = context.VersionName
+                                }
+                            },
                             SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
                             IncrementalInfo = context.IncrementalBuildContext != null ? new List<IncrementalInfo> { context.IncrementalBuildContext.IncrementalInfo } : null,
                             VersionInfo = string.IsNullOrEmpty(context.VersionName) ?
-                            new Dictionary<string, VersionInfo>() :
-                            new Dictionary<string, VersionInfo>
+                                new Dictionary<string, VersionInfo>() :
+                                new Dictionary<string, VersionInfo>
                                 {
-                                    {
-                                        context.VersionName,
-                                        new VersionInfo {VersionFolder = context.VersionFolder}
-                                    }
+                                    [context.VersionName] = new VersionInfo { VersionFolder = context.VersionFolder }
                                 }
                         };
                     }

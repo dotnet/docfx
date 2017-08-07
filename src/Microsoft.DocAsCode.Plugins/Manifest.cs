@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.ComponentModel;
@@ -36,8 +37,12 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("source_base_path")]
         public string SourceBasePath { get; set; }
 
+        [Obsolete("Please use xrefmap_info")]
         [JsonProperty("xrefmap")]
         public object XRefMap { get; set; }
+
+        [JsonProperty("xrefmap_info")]
+        public Dictionary<string, XrefMapInfo> XRefMapInfo { get; set; }
 
         [JsonProperty("files")]
         public ManifestItemCollection Files { get; }

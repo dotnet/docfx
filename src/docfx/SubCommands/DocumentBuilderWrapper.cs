@@ -328,7 +328,7 @@ namespace Microsoft.DocAsCode.SubCommands
         private static Dictionary<string, FileMappingParameters> GroupFileMappings(FileMapping content,
             FileMapping overwrite, FileMapping resource)
         {
-            var result = new Dictionary<string, FileMappingParameters>
+            var result = new Dictionary<string, FileMappingParameters>(StringComparer.OrdinalIgnoreCase)
             {
                 [string.Empty] = new FileMappingParameters()
             };
