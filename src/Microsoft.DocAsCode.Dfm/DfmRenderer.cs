@@ -172,6 +172,7 @@ namespace Microsoft.DocAsCode.Dfm
             return _codeRenderer.Render(renderer, token, context);
         }
 
+        [Obsolete]
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmFencesBlockToken token, MarkdownBlockContext context)
         {
             return Render(renderer, token, (IMarkdownContext)context);
