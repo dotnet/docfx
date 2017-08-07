@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Newtonsoft.Json;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
-    using Microsoft.DocAsCode.Build.SchemaDrivenProcessor;
+    using Microsoft.DocAsCode.Build.SchemaDriven;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Exceptions;

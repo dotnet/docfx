@@ -3,4 +3,4 @@
 
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Microsoft.DocAsCode.Build.SchemaDrivenProcessor.Tests")]
+[assembly: InternalsVisibleTo("Microsoft.DocAsCode.Build.SchemaDriven.Tests")]

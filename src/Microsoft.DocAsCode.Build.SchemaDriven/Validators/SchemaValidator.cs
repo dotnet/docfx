@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor
+namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
     using System;
     using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor
                 throw new InvalidSchemaException($"Schema {schema.Schema} is not supported. Current supported schemas are: {SupportedMetaSchemaUrl}.");
             }
 
-            using (var stream = typeof(SchemaValidator).Assembly.GetManifestResourceStream("Microsoft.DocAsCode.Build.SchemaDrivenProcessor.schemas.v1._0.schema.json"))
+            using (var stream = typeof(SchemaValidator).Assembly.GetManifestResourceStream("Microsoft.DocAsCode.Build.SchemaDriven.schemas.v1._0.schema.json"))
             using (var sr = new StreamReader(stream))
             {
                 var metaSchema = JSchema.Parse(sr.ReadToEnd());

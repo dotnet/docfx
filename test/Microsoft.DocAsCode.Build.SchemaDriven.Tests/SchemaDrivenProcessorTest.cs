@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor.Tests
+namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -11,10 +11,12 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor.Tests
     using System.Text.RegularExpressions;
 
     using Microsoft.DocAsCode.Build.Engine;
+    using Microsoft.DocAsCode.Build.SchemaDriven.Processors;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
+    using Newtonsoft.Json.Linq;
     using Xunit;
 
     [Trait("Owner", "lianwei")]
@@ -72,6 +74,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor.Tests
 
             var rawModelFilePath = GetRawModelFilePath(inputFileName);
             Assert.True(File.Exists(rawModelFilePath));
+            var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
+            
+            Assert.Equal("world", rawModel["metadata"]["hello"].ToString());
+            Assert.Equal("/metadata", rawModel["metadata"]["path"].ToString());
+            Assert.Equal("/sections/0/children/1", rawModel["sections"][0]["children"][1]["path"].ToString());
         }
 
         private void BuildDocument(FileCollection files)
@@ -152,6 +159,19 @@ namespace Microsoft.DocAsCode.Build.SchemaDrivenProcessor.Tests
             public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
             {
                 return models;
+            }
+        }
+
+        [Export(typeof(ITagInterpreter))]
+        public class MetadataTagInterpreter : ITagInterpreter
+        {
+            public string TagName => "metadata";
+
+            public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
+            {
+                ((dynamic)value).hello = "world";
+                ((dynamic)value).path = path;
+                return value;
             }
         }
     }
