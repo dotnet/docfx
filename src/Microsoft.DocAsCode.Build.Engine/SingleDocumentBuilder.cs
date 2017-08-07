@@ -134,9 +134,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                         return new Manifest(context.ManifestItems)
                         {
                             Homepages = GetHomepages(context),
-                            XRefMap = new Dictionary<string, string>
+                            XRefMap = ExportXRefMap(parameters, context),
+                            XRefMapInfo = new Dictionary<string, XrefMapInfo>
                             {
-                                [ExportXRefMap(parameters, context)] = context.VersionName
+                                [ExportXRefMap(parameters, context)] = new XrefMapInfo
+                                {
+                                    Version = context.VersionName
+                                }
                             },
                             SourceBasePath = StringExtension.ToNormalizedPath(EnvironmentContext.BaseDirectory),
                             IncrementalInfo = context.IncrementalBuildContext != null ? new List<IncrementalInfo> { context.IncrementalBuildContext.IncrementalInfo } : null,
