@@ -23,6 +23,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private readonly ConcurrentDictionary<string, TocInfo> _tableOfContents = new ConcurrentDictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
         private readonly Task<IXRefContainerReader> _reader;
+        private ImmutableArray<string> _xrefMapUrls { get; }
+        private ImmutableArray<string> _xrefServiceUrls { get; }
 
         public DocumentBuildContext(string buildOutputFolder)
             : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Directory.GetCurrentDirectory(), string.Empty, null, null) { }
@@ -51,8 +53,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             ApplyTemplateSettings = applyTemplateSetting;
             AllSourceFiles = GetAllSourceFiles(allSourceFiles);
             ExternalReferencePackages = externalReferencePackages;
-            XRefMapUrls = xrefMaps;
-            XRefServiceUrls = xrefServiceUrls;
+            _xrefMapUrls = xrefMaps;
+            _xrefServiceUrls = xrefServiceUrls;
             MaxParallelism = maxParallelism;
             if (xrefMaps.Length > 0)
             {
@@ -85,10 +87,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 
         public ImmutableArray<string> ExternalReferencePackages { get; }
-
-        private ImmutableArray<string> XRefMapUrls { get; }
-
-        private ImmutableArray<string> XRefServiceUrls { get; }
 
         public ImmutableDictionary<string, FileAndType> AllSourceFiles { get; }
 
@@ -203,7 +201,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private async Task<List<string>> ResolveByXRefServiceAsync(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
         {
-            if (XRefServiceUrls == null || XRefServiceUrls.Length == 0)
+            if (_xrefServiceUrls == null || _xrefServiceUrls.Length == 0)
             {
                 return uidList;
             }
@@ -217,7 +215,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 for(int i = 0; i < uidList.Count; i += pieceSize)
                 {
                     List<string> smallPiece = uidList.GetRange(i, Math.Min(pieceSize, uidList.Count - i));
-                    foreach(string requestUrl in XRefServiceUrls)
+                    foreach(string requestUrl in _xrefServiceUrls)
                     {
                         var queryUidTasks = new List<Task<List<XRefSpec>>>();
                         foreach(string uid in smallPiece)
@@ -249,6 +247,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         internal async Task<List<XRefSpec>> QueryByHttpRequestAsync(HttpClient client, string requestUrl, string uid)
         {
             string url = requestUrl.Replace("{uid}", Uri.EscapeDataString(uid));
+            List<XRefSpec> emptyList = new List<XRefSpec>();
             try
             {
                 var data = await client.GetStreamAsync(url);
@@ -261,17 +260,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             catch (HttpRequestException e)
             {
                 Logger.LogWarning($"Error occurs when resolve {uid} from {requestUrl}.{e.InnerException.Message}");
-                return new List<XRefSpec>();
+                return emptyList;
             }
             catch (Newtonsoft.Json.JsonReaderException e)
             {
                 Logger.LogWarning($"Response from {requestUrl} is not in valid JSON format.{e.Message}");
-                return new List<XRefSpec>();
+                return emptyList;
             }
             catch (Exception e)
             {
                 Logger.LogWarning($"Error occurs when resolve {uid} from {requestUrl}.{e.Message}");
-                return new List<XRefSpec>();
+                return emptyList;
             }
         }
 
@@ -295,7 +294,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     list.Add(uid);
                 }
             }
-            Logger.LogInfo($"{uidList.Count - list.Count} external references found in {XRefMapUrls.Length} xref maps.");
+            Logger.LogInfo($"{uidList.Count - list.Count} external references found in {_xrefMapUrls.Length} xref maps.");
             return list;
         }
 
@@ -303,8 +302,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (var client = new HttpClient())
             {
-                Logger.LogInfo($"Downloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, XRefMapUrls)}");
-                var mapTasks = (from url in XRefMapUrls
+                Logger.LogInfo($"Downloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, _xrefMapUrls)}");
+                var mapTasks = (from url in _xrefMapUrls
                                 select LoadXRefMap(url, client)).ToArray();
                 Task.WaitAll(mapTasks);
                 return (from t in mapTasks
