@@ -1,9 +1,9 @@
 # DocFX Flavored Markdown Preview
 ------------
 
-[![Current Version](https://vsmarketplacebadge.apphb.com/version/docfxsvc.DocFXPreview.svg)](https://marketplace.visualstudio.com/items?itemName=docfxsvc.DocFXPreview)
-[![Install Count](https://vsmarketplacebadge.apphb.com/installs/docfxsvc.DocFXPreview.svg)](https://marketplace.visualstudio.com/items?itemName=docfxsvc.DocFXPreview)
-[![Open Issues](https://vsmarketplacebadge.apphb.com/rating/docfxsvc.DocFXPreview.svg) ](https://marketplace.visualstudio.com/items?itemName=docfxsvc.DocFXPreview)
+[![Current Version](https://vsmarketplacebadge.apphb.com/version/docfxsvc.DocFX.svg)](https://marketplace.visualstudio.com/items?itemName=docfxsvc.DocFX)
+[![Install Count](https://vsmarketplacebadge.apphb.com/installs/docfxsvc.DocFX.svg)](https://marketplace.visualstudio.com/items?itemName=docfxsvc.DocFX)
+[![Open Issues](https://vsmarketplacebadge.apphb.com/rating/docfxsvc.DocFX.svg) ](https://marketplace.visualstudio.com/items?itemName=docfxsvc.DocFX)
 
 An extension to support [**DFM**](https://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html) for Visual Studio Code! The preview provides the following features:
 
@@ -30,7 +30,7 @@ For further information and details about DocFX Flavored Markdown, please refere
 | `ctrl+k q` | `Open Dfm Preview to the side` | Preview to side |
 |  | `show Dfm Show` | Show Source |
 
-  ![PreviewToside](https://github.com/dotnet/docfx/raw/master/tools/VscPreviewExtension/images/previewToSide.gif)
+  ![PreviewToside](https://github.com/dotnet/docfx/raw/master/tools/VscExtension/images/previewToSide.gif)
 
 ## Token tree
 | Shortcuts | command title | command |
@@ -41,14 +41,14 @@ For further information and details about DocFX Flavored Markdown, please refere
 
   - Display the detailed information of node on mouseover
 
-  ![TokenTree](https://github.com/dotnet/docfx/raw/master/tools/VscPreviewExtension/images/Tokentree.gif)
+  ![TokenTree](https://github.com/dotnet/docfx/raw/master/tools/VscExtension/images/Tokentree.gif)
 
 - Match between markdown file with tokenTree Node
   - Click/select the text you want to match to the tokenTree
     > You can select multiple lines.
   - Click the text of node to match to the markdown file
 
-  ![Match](https://github.com/dotnet/docfx/raw/master/tools/VscPreviewExtension/images/Match.gif)
+  ![Match](https://github.com/dotnet/docfx/raw/master/tools/VscExtension/images/Match.gif)
 
 # Found a Bug?
 Please file any issue through the [Github Issue](https://github.com/dotnet/docfx/issues) system.
@@ -65,7 +65,7 @@ Please file any issue through the [Github Issue](https://github.com/dotnet/docfx
   * Press `F5` to debug
 
 # Source
-[docfx/src/VscPreviewExtension](https://github.com/dotnet/docfx/tree/dev/tools/VscPreviewExtension)
+[docfx/src/VscExtension](https://github.com/dotnet/docfx/tree/dev/tools/VscExtension)
 
 # Licences
 *DocFX* is licensed under the [MIT license](LICENSE).
