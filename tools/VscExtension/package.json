@@ -1,7 +1,7 @@
 {
   "name": "DocFX",
   "displayName": "DocFX",
-  "description": "An amazing tool to make community users using and contributing to DocFX easier and more convenient, the main features includes DocFX Flavored Markdown previewing with default template or Docs template, generating token tree of markdown file",
+  "description": "An amazing tool to make community users using and contributing to DocFX easier and more convenient, the main features include previewing DocFX Flavored Markdown with different templates, generating token tree of markdown file",
   "version": "0.0.25",
   "publisher": "docfxsvc",
   "engines": {
