@@ -8,7 +8,7 @@
 An extension to support [**DFM**](https://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html) for Visual Studio Code! The preview provides the following features:
 
 * Preview the `DFM` to the side
-* Preview markdown with different template
+* Preview markdown with different templates
 * Preview the `TokenTree` to the side
 * Match the markdown file to the tokenTree node
 * Match the tokenTree node to the markdown file
