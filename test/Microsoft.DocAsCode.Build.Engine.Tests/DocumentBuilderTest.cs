@@ -816,18 +816,18 @@ exports.getOptions = function (){
 
         private class FakeResponseHandler : DelegatingHandler
         {
-            private readonly Dictionary<Uri, HttpResponseMessage> _FakeResponses = new Dictionary<Uri, HttpResponseMessage>();
+            private readonly Dictionary<Uri, HttpResponseMessage> _fakeResponses = new Dictionary<Uri, HttpResponseMessage>();
 
             public void AddFakeResponse(Uri uri, HttpResponseMessage responseMessage)
             {
-                _FakeResponses.Add(uri, responseMessage);
+                _fakeResponses.Add(uri, responseMessage);
             }
 
             protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
             {
-                if (_FakeResponses.ContainsKey(request.RequestUri))
+                if (_fakeResponses.ContainsKey(request.RequestUri))
                 {
-                    return _FakeResponses[request.RequestUri];
+                    return _fakeResponses[request.RequestUri];
                 }
                 else
                 {

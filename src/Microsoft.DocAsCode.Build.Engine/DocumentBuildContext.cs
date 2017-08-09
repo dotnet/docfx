@@ -217,7 +217,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     List<string> smallPiece = uidList.GetRange(i, Math.Min(pieceSize, uidList.Count - i));
                     foreach(string requestUrl in _xrefServiceUrls)
                     {
-                        var queryUidTasks = new List<Task<List<XRefSpec>>>();
+                        IList<Task<IList<XRefSpec>>> queryUidTasks = new List<Task<IList<XRefSpec>>>();
                         foreach(string uid in smallPiece)
                         {
                             queryUidTasks.Add(QueryByHttpRequestAsync(client, requestUrl, uid));
@@ -226,7 +226,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         List<string> stillNeedQueryList = new List<string>();
                         for(int j = 0; j < results.Length; j++)
                         {
-                            if(results[j].Count > 0 && results[j][0].Uid == smallPiece[j])
+                            if(results[j] != null && results[j].Count > 0 && results[j][0].Uid == smallPiece[j])
                             {
                                 externalXRefSpec.AddOrUpdate(smallPiece[j], results[j][0], (_, old) => old + results[j][0]);
                             }
@@ -244,33 +244,32 @@ namespace Microsoft.DocAsCode.Build.Engine
             return unresolvedUidList;
         }
 
-        internal async Task<List<XRefSpec>> QueryByHttpRequestAsync(HttpClient client, string requestUrl, string uid)
+        internal async Task<IList<XRefSpec>> QueryByHttpRequestAsync(HttpClient client, string requestUrl, string uid)
         {
             string url = requestUrl.Replace("{uid}", Uri.EscapeDataString(uid));
-            List<XRefSpec> emptyList = new List<XRefSpec>();
             try
             {
                 var data = await client.GetStreamAsync(url);
                 using (var sr = new StreamReader(data))
                 {
-                    List<XRefSpec> xsList = JsonUtility.Deserialize<List<XRefSpec>>(sr);
+                    IList<XRefSpec> xsList = JsonUtility.Deserialize<List<XRefSpec>>(sr);
                     return xsList;
                 }
             }
             catch (HttpRequestException e)
             {
                 Logger.LogWarning($"Error occurs when resolve {uid} from {requestUrl}.{e.InnerException.Message}");
-                return emptyList;
+                return null;
             }
             catch (Newtonsoft.Json.JsonReaderException e)
             {
                 Logger.LogWarning($"Response from {requestUrl} is not in valid JSON format.{e.Message}");
-                return emptyList;
+                return null;
             }
             catch (Exception e)
             {
                 Logger.LogWarning($"Error occurs when resolve {uid} from {requestUrl}.{e.Message}");
-                return emptyList;
+                return null;
             }
         }
 
