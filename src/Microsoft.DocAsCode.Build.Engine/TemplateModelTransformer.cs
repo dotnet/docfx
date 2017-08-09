@@ -79,7 +79,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return manifestItem;
             }
 
-            var aes = new List<AggregateException>();
+            var unresolvedXRefs = new List<XRefDetails>();
 
             // Must convert to JObject first as we leverage JsonProperty as the property name for the model
             foreach (var template in templateBundle.Templates)
@@ -160,12 +160,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Logger.LogWarning(message);
                         }
 
-                        var ae = TransformDocument(result ?? string.Empty, extension, _context, outputFile, manifestItem);
-                        if (ae != null)
-                        {
-                            aes.Add(ae);
-                        }
-
+                        List<XRefDetails> invalidXRefs;
+                        TransformDocument(result ?? string.Empty, extension, _context, outputFile, manifestItem, out invalidXRefs);
+                        unresolvedXRefs.AddRange(invalidXRefs);
                         Logger.LogDiagnostic($"Transformed model \"{item.LocalPathFromRoot}\" to \"{outputFile}\".");
                     }
                 }
@@ -176,37 +173,25 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            LogInvalidXRefExceptions(aes);
+            LogInvalidXRefs(unresolvedXRefs);
 
             return manifestItem;
         }
 
-        private void LogInvalidXRefExceptions(List<AggregateException> aes)
+        private void LogInvalidXRefs(List<XRefDetails> unresolvedXRefs)
         {
-            if (aes == null || aes.Count == 0)
+            if (unresolvedXRefs == null || unresolvedXRefs.Count == 0)
             {
                 return;
             }
 
-            var invalidXRefs = (from ae in aes
-                                      from ie in ae.InnerExceptions
-                                      select ie as InvalidCrossReferenceException into ce
-                                      where ce != null
-                                      select ce.XRefDetails).Distinct().ToList();
-
-            if (invalidXRefs.Count == 0)
-            {
-                return;
-            }
-
-            var distinctUids = invalidXRefs.Select(i => i.RawSource).Distinct().Select(s => $"\"{HttpUtility.HtmlDecode(s)}\"").ToList();
+            var distinctUids = unresolvedXRefs.Select(i => i.RawSource).Distinct().Select(s => $"\"{HttpUtility.HtmlDecode(s)}\"").ToList();
             Logger.LogWarning($"{distinctUids.Count} invalid cross reference(s) {distinctUids.ToDelimitedString(", ")}.");
-            foreach (var group in invalidXRefs.GroupBy(i => i.SourceFile))
+            foreach (var group in unresolvedXRefs.GroupBy(i => i.SourceFile))
             {
                 // For each source file, print the first 10 invalid cross reference
-                var result = group.ToList();
-                var details = result.Take(MaxInvalidXrefMessagePerFile).Select(i => $"\"{HttpUtility.HtmlDecode(i.RawSource)}\" in line {i.SourceStartLineNumber.ToString()}");
-                var prefix = result.Count > MaxInvalidXrefMessagePerFile ? $"top {MaxInvalidXrefMessagePerFile} " : string.Empty;
+                var details = group.Take(MaxInvalidXrefMessagePerFile).Select(i => $"\"{HttpUtility.HtmlDecode(i.RawSource)}\" in line {i.SourceStartLineNumber.ToString()}").Distinct().ToList();
+                var prefix = details.Count > MaxInvalidXrefMessagePerFile ? $"top {MaxInvalidXrefMessagePerFile} " : string.Empty;
                 var message = $"Details for {prefix}invalid cross reference(s): {details.ToDelimitedString(", ")}";
 
                 if (group.Key != null)
@@ -306,34 +291,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             return StringExtension.ToDisplayPath(modelPath);
         }
 
-        private AggregateException TransformDocument(string result, string extension, IDocumentBuildContext context, string destFilePath, ManifestItem manifestItem)
+        private void TransformDocument(string result, string extension, IDocumentBuildContext context, string destFilePath, ManifestItem manifestItem, out List<XRefDetails> unresolvedXRefs)
         {
             Task<byte[]> hashTask;
-            AggregateException ae = null;
+            unresolvedXRefs = new List<XRefDetails>();
             using (var stream = EnvironmentContext.FileAbstractLayer.Create(destFilePath).WithMd5Hash(out hashTask))
             using (var sw = new StreamWriter(stream))
             {
                 if (extension.Equals(".html", StringComparison.OrdinalIgnoreCase))
                 {
-                    try
-                    {
-                        TransformHtml(context, result, manifestItem.SourceRelativePath, destFilePath, sw);
-                    }
-                    catch (AggregateException e)
-                    {
-                        ae = e;
-                        e.Handle(s =>
-                        {
-                            if (s is InvalidCrossReferenceException xrefExcetpion)
-                            {
-                                return true;
-                            }
-                            else
-                            {
-                                return false;
-                            }
-                        });
-                    }
+                    TransformHtml(context, result, manifestItem.SourceRelativePath, destFilePath, sw, out unresolvedXRefs);
                 }
                 else
                 {
@@ -347,26 +314,22 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Hash = Convert.ToBase64String(hashTask.Result)
             };
             manifestItem.OutputFiles.Add(extension, ofi);
-            return ae;
         }
 
-        private void TransformHtml(IDocumentBuildContext context, string html, string sourceFilePath, string destFilePath, StreamWriter outputWriter)
+        private void TransformHtml(IDocumentBuildContext context, string html, string sourceFilePath, string destFilePath, StreamWriter outputWriter, out List<XRefDetails> unresolvedXRefs)
         {
             // Update href and xref
             HtmlDocument document = new HtmlDocument();
             document.LoadHtml(html);
 
-            var xrefExceptions = TransformHtmlCore(context, sourceFilePath, destFilePath, document);
+            TransformHtmlCore(context, sourceFilePath, destFilePath, document, out unresolvedXRefs);
 
             document.Save(outputWriter);
-            if (xrefExceptions.Count > 0)
-            {
-                throw new AggregateException(xrefExceptions);
-            }
         }
 
-        private List<InvalidCrossReferenceException> TransformHtmlCore(IDocumentBuildContext context, string sourceFilePath, string destFilePath, HtmlDocument html)
+        private void TransformHtmlCore(IDocumentBuildContext context, string sourceFilePath, string destFilePath, HtmlDocument html, out List<XRefDetails> unresolvedXRefs)
         {
+            unresolvedXRefs = new List<XRefDetails>();
             var xrefLinkNodes = html.DocumentNode.SelectNodes("//a[starts-with(@href, 'xref:')]");
             if (xrefLinkNodes != null)
             {
@@ -376,19 +339,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            var xrefExceptions = new List<InvalidCrossReferenceException>();
             var xrefNodes = html.DocumentNode.SelectNodes("//xref");
             if (xrefNodes != null)
             {
                 foreach (var xref in xrefNodes)
                 {
-                    try
+                    var xrefDetails = UpdateXref(xref, context, Constants.DefaultLanguage);
+                    if (xrefDetails == null && xrefDetails.ThrowIfNotResolved)
                     {
-                        UpdateXref(xref, context, Constants.DefaultLanguage);
-                    }
-                    catch (InvalidCrossReferenceException e)
-                    {
-                        xrefExceptions.Add(e);
+                        unresolvedXRefs.Add(xrefDetails);
                     }
                 }
             }
@@ -410,8 +369,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     UpdateHref(link, "href", context, sourceFilePath, destFilePath);
                 }
             }
-
-            return xrefExceptions;
         }
 
         private static void TransformXrefLink(HtmlNode node, IDocumentBuildContext context)
@@ -420,7 +377,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             node.ParentNode.ReplaceChild(convertedNode, node);
         }
 
-        private static void UpdateXref(HtmlNode node, IDocumentBuildContext context, string language)
+        private static XRefDetails UpdateXref(HtmlNode node, IDocumentBuildContext context, string language)
         {
             var xref = XRefDetails.From(node);
             XRefSpec xrefSpec = null;
@@ -434,10 +391,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             var convertedNode = xref.ConvertToHtmlNode(language);
             node.ParentNode.ReplaceChild(convertedNode, node);
-            if (xrefSpec == null && xref.ThrowIfNotResolved)
-            {
-                throw new InvalidCrossReferenceException(xref);
-            }
+            return xref;
         }
 
         private void UpdateHref(HtmlNode link, string attribute, IDocumentBuildContext context, string sourceFilePath, string destFilePath)
