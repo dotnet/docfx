@@ -7,10 +7,12 @@ namespace Microsoft.DocAsCode.Common
     using System.Text;
     using System.Threading;
 
-    using YamlDotNet.Serialization;
-
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.YamlSerialization;
+
+    using YamlDotNet.Serialization;
+
+    using YamlDeserializer = Microsoft.DocAsCode.YamlSerialization.YamlDeserializer;
 
     public static class YamlUtility
     {
