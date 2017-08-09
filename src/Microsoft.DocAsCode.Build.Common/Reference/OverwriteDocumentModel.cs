@@ -72,6 +72,13 @@ namespace Microsoft.DocAsCode.Build.Common
         [JsonIgnore]
         public Dictionary<string, List<LinkSourceInfo>> UidLinkSources { get; set; } = new Dictionary<string, List<LinkSourceInfo>>();
 
+        /// <summary>
+        /// Dependencies extracted from the markdown content
+        /// </summary>
+        [YamlIgnore]
+        [JsonIgnore]
+        public ImmutableArray<string> Dependency { get; set; } = ImmutableArray<string>.Empty;
+
         public T ConvertTo<T>() where T : class
         {
             using (var sw = new StringWriter())

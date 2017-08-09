@@ -163,6 +163,7 @@ namespace Microsoft.DocAsCode.Build.Common
                 context.LinkToFiles.UnionWith(mr.LinkToFiles);
                 context.FileLinkSources = context.FileLinkSources.Merge(mr.FileLinkSources.Select(s => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(s.Key, s.Value)));
                 context.UidLinkSources = context.UidLinkSources.Merge(mr.UidLinkSources.Select(s => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(s.Key, s.Value)));
+                context.Dependency.UnionWith(mr.Dependency);
                 return mr.Html;
             }
         }

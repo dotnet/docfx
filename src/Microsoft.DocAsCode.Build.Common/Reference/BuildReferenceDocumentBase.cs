@@ -54,6 +54,10 @@ namespace Microsoft.DocAsCode.Build.Common
                               item.Uid,
                               model.LocalPathFromRoot,
                               item.Documentation.StartLine + 1)).ToImmutableArray();
+            foreach (var d in overwrites.SelectMany(s => s.Dependency))
+            {
+                host.ReportDependencyTo(model, d, DependencyTypeName.Include);
+            }
         }
 
         protected virtual void BuildArticleCore(IHostService host, FileModel model, IModelAttributeHandler handlers = null, HandleModelAttributesContext handlerContext = null, bool shouldSkipMarkup = false)
@@ -83,6 +87,10 @@ namespace Microsoft.DocAsCode.Build.Common
             model.UidLinkSources = model.UidLinkSources.ToDictionary(v => v.Key, v => v.Value.ToList())
                 .Merge(handlerContext.UidLinkSources.Select(i => new KeyValuePair<string, IEnumerable<LinkSourceInfo>>(i.Key, i.Value)))
                 .ToImmutableDictionary(v => v.Key, v => v.Value.ToImmutableList());
+            foreach (var d in handlerContext.Dependency)
+            {
+                host.ReportDependencyTo(model, d, DependencyTypeName.Include);
+            }
         }
     }
 }
