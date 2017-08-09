@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Build.Common
         public bool EnableContentPlaceholder { get; set; }
         public string PlaceholderContent { get; set; }
         public bool ContainsPlaceholder { get; set; }
-
+        public HashSet<string> Dependency { get; set; } = new HashSet<string>();
         public FileAndType FileAndType { get; set; }
         public HashSet<string> LinkToFiles { get; set; } = new HashSet<string>(FilePathComparer.OSPlatformSensitiveStringComparer);
         public HashSet<string> LinkToUids { get; set; } = new HashSet<string>();

@@ -147,11 +147,12 @@ tagRules : [
     }
 ]
 }");
-
+            var mrefFile1 = CreateFile("api\\System.Console.csyml", File.ReadAllText("TestData/System.Console.csyml"), inputFolder);
+            var mrefFile2 = CreateFile("api\\System.ConsoleColor.csyml", File.ReadAllText("TestData/System.ConsoleColor.csyml"), inputFolder);
+            var codesnippet = CreateFile("api/snippets/dataflowdegreeofparallelism.cs", File.ReadAllText("TestData/snippets/dataflowdegreeofparallelism.cs"), inputFolder);
             FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
-            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2 });
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile, conceptualFile2, mrefFile1, mrefFile2 });
             files.Add(DocumentType.Overwrite, new[] { overwriteFile });
-            files.Add(DocumentType.Article, new[] { "TestData/System.Console.csyml", "TestData/System.ConsoleColor.csyml" }, "TestData/", null);
             files.Add(DocumentType.Resource, new[] { resourceFile });
             #endregion
 
@@ -261,7 +262,7 @@ tagRules : [
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
-                            "Test xref to overload method: <a class=\"xref\" href=\"../System.Console.html\">WriteLine</a>",
+                            "Test xref to overload method: <a class=\"xref\" href=\"api/System.Console.html\">WriteLine</a>",
                             "<p>",
                             "test</p>",
                             ""),
@@ -273,10 +274,10 @@ tagRules : [
                 }
                 {
                     // check mref.
-                    Assert.True(File.Exists(Path.Combine(outputFolderSecond, Path.ChangeExtension("System.Console.csyml", ".html"))));
-                    Assert.True(File.Exists(Path.Combine(outputFolderSecond, Path.ChangeExtension("System.ConsoleColor.csyml", ".html"))));
+                    Assert.True(File.Exists(Path.Combine(outputFolderSecond, Path.ChangeExtension(mrefFile1, ".html"))));
+                    Assert.True(File.Exists(Path.Combine(outputFolderSecond, Path.ChangeExtension(mrefFile2, ".html"))));
 
-                    var contentFile = Path.Combine(outputFolderSecond, "System.Console.txt");
+                    var contentFile = Path.Combine(outputFolderSecond, Path.ChangeExtension(mrefFile1, ".txt"));
                     Assert.True(File.Exists(contentFile));
                     Assert.Equal($"&lt;p sourcefile=&quot;{inputFolder}/test/ow.md&quot; sourcestartlinenumber=&quot;5&quot; sourceendlinenumber=&quot;5&quot;&gt;hello&lt;/p&gt;\n&lt;p sourcefile=&quot;{inputFolder}/test/ow.md&quot; sourcestartlinenumber=&quot;11&quot; sourceendlinenumber=&quot;11&quot;&gt;example&lt;/p&gt;\n"
 , File.ReadAllText(contentFile));
@@ -361,7 +362,7 @@ tagRules : [
                             "Test xref with attribute: <a class=\"xref\" href=\"test/test.html\">Foo&lt;T&gt;</a>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
                             "Test invalid xref with attribute: <span class=\"xref\">Foo&lt;T&gt;</span>",
-                            "Test xref to overload method: <a class=\"xref\" href=\"../System.Console.html\">WriteLine</a>",
+                            "Test xref to overload method: <a class=\"xref\" href=\"api/System.Console.html\">WriteLine</a>",
                             "<p>",
                             "test</p>",
                             ""),
@@ -373,8 +374,8 @@ tagRules : [
                 }
                 {
                     // check mref.
-                    Assert.True(File.Exists(Path.Combine(outputFolderThird, Path.ChangeExtension("System.Console.csyml", ".html"))));
-                    Assert.True(File.Exists(Path.Combine(outputFolderThird, Path.ChangeExtension("System.ConsoleColor.csyml", ".html"))));
+                    Assert.True(File.Exists(Path.Combine(outputFolderThird, Path.ChangeExtension(mrefFile1, ".html"))));
+                    Assert.True(File.Exists(Path.Combine(outputFolderThird, Path.ChangeExtension(mrefFile2, ".html"))));
                 }
 
                 {
@@ -418,6 +419,33 @@ tagRules : [
                     var subFolders = Directory.GetDirectories(intermediateFolder2, "*");
                     Assert.Equal(1, subFolders.Length);
                     Assert.NotEqual(cacheFolderName, Path.GetFileName(subFolders[0]));
+                }
+
+                // rename code snippet
+                using (new LoggerPhaseScope("IncrementalBuild.TestBasic-fifth"))
+                {
+                    ClearListener();
+                    File.Delete(codesnippet);
+                    BuildDocument(
+                        files, 
+                        inputFolder,
+                        outputFolderThird,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolderVariable,
+                        cleanupCacheHistory: true);
+                    {
+                        // check logs.
+                        var logs = Listener.Items.Where(i => i.Phase.StartsWith("IncrementalBuild.TestBasic")).ToList();
+                        Assert.Equal(8, logs.Count);
+                        var errorLog = logs.First(s => s.LogLevel == LogLevel.Error);
+                        Assert.NotNull(errorLog);
+                        Assert.Equal(mrefFile1, errorLog.File);
+                        Assert.True(errorLog.Message.StartsWith("Unable to resolve"));
+                    }
                 }
             }
             finally

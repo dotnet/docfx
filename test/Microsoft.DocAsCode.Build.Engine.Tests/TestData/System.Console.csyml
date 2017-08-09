@@ -81,6 +81,8 @@ items:
   - System.Object.GetHashCode
   - System.Object.GetType
   - System.Object.MemberwiseClone
+  example:
+  - " \n [!code-csharp[TPLDataflow_DegreeOfParallelism#2](snippets/dataflowdegreeofparallelism.cs#2)]\n"
 - uid: System.Console.In
   id: In
   parent: System.Console

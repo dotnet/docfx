@@ -74,7 +74,8 @@ namespace Microsoft.DocAsCode.Build.Common
                     StartLine = part.StartLine,
                     EndLine = part.EndLine,
                     Path = part.SourceFile
-                }
+                },
+                Dependency = part.Origin.Dependency
             };
         }
 
