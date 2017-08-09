@@ -222,7 +222,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         }
 
         [Fact]
-        public void ProcessMrefWithNotInvalidCrossReferenceShouldWarn()
+        public void ProcessMrefWithInvalidCrossReferenceShouldWarn()
         {
             var files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, new[] { "TestData/mref/System.String.yml" }, "TestData/");
