@@ -12,6 +12,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
+    using YamlDotNet.Core;
+
     public static class TocHelper
     {
         public static IEnumerable<FileModel> Resolve(ImmutableList<FileModel> models, IHostService host)
@@ -86,14 +88,25 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                     Items = YamlUtility.Deserialize<TocViewModel>(file)
                 };
             }
-            catch (YamlDotNet.Core.YamlException)
+            catch (YamlException exForList)
             {
-                var tocWithMetadata = YamlUtility.Deserialize<TocRootViewModel>(file);
-                return new TocItemViewModel
+                try
                 {
-                    Items = tocWithMetadata.Items,
-                    Metadata = tocWithMetadata.Metadata
-                };
+                    var tocWithMetadata = YamlUtility.Deserialize<TocRootViewModel>(file);
+                    return new TocItemViewModel
+                    {
+                        Items = tocWithMetadata.Items,
+                        Metadata = tocWithMetadata.Metadata
+                    };
+                }
+                catch (YamlException exForObject)
+                {
+                    if (exForList.Start.Index < exForObject.Start.Index)
+                    {
+                        throw;
+                    }
+                }
+                throw;
             }
         }
     }
