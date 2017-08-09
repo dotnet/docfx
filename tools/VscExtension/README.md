@@ -8,6 +8,7 @@
 An extension to support [**DFM**](https://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html) for Visual Studio Code! The preview provides the following features:
 
 * Preview the `DFM` to the side
+* Preview markdown with different template
 * Preview the `TokenTree` to the side
 * Match the markdown file to the tokenTree node
 * Match the tokenTree node to the markdown file
@@ -23,19 +24,28 @@ An extension to support [**DFM**](https://dotnet.github.io/docfx/spec/docfx_flav
 For further information and details about DocFX Flavored Markdown, please reference [DocFX Flavored Markdown](https://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html)
 
 # Feature Details
-## Live preview
+## Live DFM preview
 | Shortcuts | command title | command |
 |:-------|:--------|:--------|
-| `ctrl+shift+q` | `Toggle Dfm Preview` | Preview  |
-| `ctrl+k q` | `Open Dfm Preview to the side` | Preview to side |
-|  | `show Dfm Show` | Show Source |
+| `ctrl+shift+q` | `DocFX: Open DFM preview` | Preview  |
+| `ctrl+k q` | `DocFX: Open DFM preview to the side` | Preview to side |
+|  | `DocFX: Show source` | Show Source |
 
   ![PreviewToside](https://github.com/dotnet/docfx/raw/master/tools/VscExtension/images/previewToSide.gif)
+
+## Live DocFX preview
+| command title | command |
+|:--------|:--------|
+| `DocFX: Open DocFX preview to the side(Only support DocFX 2.17+)` | DocFX Preview to side |
+
+  - Build your docfx project before DocFXPreview
+
+  ![DocFXPreview](https://github.com/dotnet/docfx/raw/master/tools/VscExtension/images/DocFXPreview.gif)
 
 ## Token tree
 | Shortcuts | command title | command |
 |:-------|:--------|:--------|
-| `ctrl+shift+t` | `Open Dfm Preview to the side` | TokenTreeToSide  |
+| `ctrl+shift+t` | `DocFX: Open token tree to the side` | TokenTreeToSide  |
 
   - Expand and collapse the nodes by clicking the circle of node
 
