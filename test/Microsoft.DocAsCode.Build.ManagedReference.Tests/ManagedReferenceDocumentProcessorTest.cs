@@ -228,12 +228,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             files.Add(DocumentType.Article, new[] { "TestData/mref/System.String.yml" }, "TestData/");
             files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/mref.overwrite.invalid.ref.md" });
 
-            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(nameof(ProcessMrefWithNotInvalidCrossReferenceShouldWarn), LogLevel.Info);
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(nameof(ProcessMrefWithInvalidCrossReferenceShouldWarn), LogLevel.Info);
             try
             {
                 Logger.RegisterListener(listener);
 
-                using (new LoggerPhaseScope(nameof(ProcessMrefWithNotInvalidCrossReferenceShouldWarn)))
+                using (new LoggerPhaseScope(nameof(ProcessMrefWithInvalidCrossReferenceShouldWarn)))
                 {
                     BuildDocument(files);
                 }
