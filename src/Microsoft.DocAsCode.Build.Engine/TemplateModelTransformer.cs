@@ -344,8 +344,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 foreach (var xref in xrefNodes)
                 {
-                    var xrefDetails = UpdateXref(xref, context, Constants.DefaultLanguage);
-                    if (xrefDetails == null && xrefDetails.ThrowIfNotResolved)
+                    var resolved = UpdateXref(xref, context, Constants.DefaultLanguage, out var xrefDetails);
+                    if (!resolved)
                     {
                         unresolvedXRefs.Add(xrefDetails);
                     }
@@ -377,9 +377,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             node.ParentNode.ReplaceChild(convertedNode, node);
         }
 
-        private static XRefDetails UpdateXref(HtmlNode node, IDocumentBuildContext context, string language)
+        private static bool UpdateXref(HtmlNode node, IDocumentBuildContext context, string language, out XRefDetails xref)
         {
-            var xref = XRefDetails.From(node);
+            xref = XRefDetails.From(node);
             XRefSpec xrefSpec = null;
             if (!string.IsNullOrEmpty(xref.Uid))
             {
@@ -391,7 +391,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             var convertedNode = xref.ConvertToHtmlNode(language);
             node.ParentNode.ReplaceChild(convertedNode, node);
-            return xref;
+            if (xrefSpec == null && xref.ThrowIfNotResolved == true)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void UpdateHref(HtmlNode link, string attribute, IDocumentBuildContext context, string sourceFilePath, string destFilePath)
