@@ -90,15 +90,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                 options.LegacyMode = provider.LegacyMode;
                 options.ShouldFixId = provider.ShouldFixId;
                 options.ShouldExportSourceInfo = true;
+                options.XHtml = true;
                 _builder = new DfmEngineBuilder(
                     options,
                     baseDir,
                     templateDir,
                     fallbackFolders,
-                    container);
-                _builder.TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(provider.TokenTreeValidator);
+                    container)
+                {
+                    TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(provider.TokenTreeValidator)
+                };
                 _tokens = tokens;
-                _renderer = CustomizedRendererCreator.CreateRenderer(new DfmRenderer { Tokens = _tokens }, provider.DfmRendererPartProviders, parameters);
+                _renderer = CustomizedRendererCreator.CreateRenderer(
+                    new DfmRenderer { Tokens = _tokens },
+                    provider.DfmRendererPartProviders,
+                    parameters);
                 foreach (var c in provider.DfmEngineCustomizers)
                 {
                     c.Customize(_builder, parameters);
@@ -106,7 +112,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 _incrementalContextHash = ComputeIncrementalContextHash(baseDir, templateDir, provider.TokenTreeValidator, parameters);
             }
 
-            private static string ComputeIncrementalContextHash(string baseDir, string templateDir, IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator, IReadOnlyDictionary<string, object> parameters)
+            private static string ComputeIncrementalContextHash(
+                string baseDir,
+                string templateDir,
+                IEnumerable<IMarkdownTokenTreeValidator> tokenTreeValidator,
+                IReadOnlyDictionary<string, object> parameters)
             {
                 var content = (StringBuffer)"dfm";
                 if (baseDir != null)
