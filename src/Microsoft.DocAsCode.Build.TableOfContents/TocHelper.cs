@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     public static class TocHelper
     {
         private static readonly YamlDeserializerWithFallback _deserializer =
-            YamlDeserializerWithFallback.Create<TocItemViewModel>()
+            YamlDeserializerWithFallback.Create<TocViewModel>()
             .WithFallback<TocRootViewModel>();
 
         public static IEnumerable<FileModel> Resolve(ImmutableList<FileModel> models, IHostService host)
@@ -92,9 +92,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 throw new NotSupportedException($"{file} is not a valid TOC file.", ex);
             }
-            if (obj is TocItemViewModel vm)
+            if (obj is TocViewModel vm)
             {
-                return vm;
+                return new TocItemViewModel
+                {
+                    Items = vm,
+                };
             }
             if (obj is TocRootViewModel root)
             {
