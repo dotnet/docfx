@@ -1,12 +1,15 @@
-## Current Version **0.0.24**
+## Current Version **0.0.25**
 ### new features
-* Bug fix: fix broken image on the homepage
+* Improve: rename extension from "DocFXPreview" to "DocFX" because more features will be added to this extension
 
 ## Known Issues
 * When markdown use *file include* feature or there are multiple opened editors, preview match can't provide a good performance
 * Should kill child process when extension shutdown
 
 ## Verison History
+* **0.0.24**
+  * Bug fix: fix broken image on the homepage
+
 * **0.0.23**
   * Feature add: DocFX default template support
 
