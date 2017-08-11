@@ -14,7 +14,7 @@ DocfxVersion          | string                  | DocFX version
 PluginHash            | string                  | The hash of plugins plugged in DocFX
 TemplateHash          | string                  | The hash of specified Templates
 Versions              | List<[BuildVersionInfo](#buildversioninfo-model)>  | entry point of the cache files per version
-PostProcessInfo       | PostProcessInfo         | The entry point of the cache files for postprocessor
+PostProcessInfo       | [PostProcessInfo](#postprocessinfo-model)    | The entry point of the cache files for postprocessor
 
 ### BuildVersionInfo model
 
@@ -49,3 +49,19 @@ Property                       | Type                    | Description
 Name                           | string                  | The name of the step
 IncrementalContextHash         | string                  | The context hash of the step
 ContextInfoFile                | string                  | The file link for the context info for the step
+
+### PostProcessInfo model
+
+Property                       | Type                    | Description
+---------------------          | ---------------------   | ---------------------
+MessageInfoFile                | string                  | The file link for the log message file, to restore the warning message
+ManifestItemsFile              | string                  | The file link for the manifest items file, to restore the manifest items
+PostProcessOutputsFile         | string                  | The file link for post processing outputs
+PostProcessorInfos             | List<[PostProcessorInfo](#postprocessorinfo-model)>  | The information of post processors
+
+### PostProcessorInfo model
+Property                       | Type                    | Description
+---------------------          | ---------------------   | ---------------------
+Name                           | string                  | The name of the step
+IncrementalContextHash         | string                  | The context hash of the step
+ContextInfoFile                | string                  | The file link for the context info 

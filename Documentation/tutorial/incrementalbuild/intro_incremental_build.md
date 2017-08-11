@@ -88,3 +88,36 @@ articles/test.md       Deleted
 The first two lines denote that the changelist is compared between the commit `<from>` and the commit `<to>`. The two lines could be omitted if you don't want to check the commit match. Otherwise, `DocFX` would check whether the changesFile's `<from>` is same with last build's `<to>`.
 
 You can specify the changesFile from option: `--changesFile "<path of changes.tsv relative to docfx.json>"`, or you can update `docfx.json` to add `"changesFile": "<path of changes.tsv relative to docfx.json>"`.
+
+Check the incremental information
+---------------
+
+The information of incremental build and post processing is saved in `incremental_info` of `manifest.json`, which describes the incremental status and processors information. For example:
+```json
+	"incremental_info": [{
+		"status": {
+			"can_incremental": false,
+			"details": "Cannot build incrementally because config changed.",
+			"incrementalPhase": "build"
+		},
+		"processors": {
+			"TocDocumentProcessor": {
+				"can_incremental": false,
+				"details": "Processor TocDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+				"incrementalPhase": "build"
+			},
+			"ManagedReferenceDocumentProcessor": {
+				"can_incremental": false,
+				"incrementalPhase": "build"
+			}
+		}
+	},
+	{
+		"status": {
+			"can_incremental": false,
+			"details": "Cannot support incremental post processing, the reason is: last post processor info is null.",
+			"incrementalPhase": "postProcessing"
+		},
+		"processors": {}
+	}]
+```
