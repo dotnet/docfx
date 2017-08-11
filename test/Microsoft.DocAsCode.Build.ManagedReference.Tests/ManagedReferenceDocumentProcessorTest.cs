@@ -222,18 +222,18 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         }
 
         [Fact]
-        public void ProcessMrefWithNotInvalidCrossReferenceShouldWarn()
+        public void ProcessMrefWithInvalidCrossReferenceShouldWarn()
         {
             var files = new FileCollection(Directory.GetCurrentDirectory());
             files.Add(DocumentType.Article, new[] { "TestData/mref/System.String.yml" }, "TestData/");
             files.Add(DocumentType.Overwrite, new[] { "TestData/overwrite/mref.overwrite.invalid.ref.md" });
 
-            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(nameof(ProcessMrefWithNotInvalidCrossReferenceShouldWarn), LogLevel.Info);
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter(nameof(ProcessMrefWithInvalidCrossReferenceShouldWarn), LogLevel.Info);
             try
             {
                 Logger.RegisterListener(listener);
 
-                using (new LoggerPhaseScope(nameof(ProcessMrefWithNotInvalidCrossReferenceShouldWarn)))
+                using (new LoggerPhaseScope(nameof(ProcessMrefWithInvalidCrossReferenceShouldWarn)))
                 {
                     BuildDocument(files);
                 }
@@ -241,12 +241,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 var warnings = listener.GetItemsByLogLevel(LogLevel.Warning);
                 Assert.Equal(1, warnings.Count());
                 var warning = warnings.Single();
-                Assert.Equal("Invalid cross reference \"&lt;xref:invalidXref1&gt;\", \"&lt;xref:invalidXref2&gt;\".", warning.Message);
+                Assert.Equal("2 invalid cross reference(s) \"<xref:invalidXref1>\", \"<xref:invalidXref2>\".", warning.Message);
                 Assert.Equal("TestData/mref/System.String.yml", warning.File);
 
-                var infos = listener.GetItemsByLogLevel(LogLevel.Info).Where(i => i.Message.Contains("Invalid cross reference details")).ToList();
+                var infos = listener.GetItemsByLogLevel(LogLevel.Info).Where(i => i.Message.Contains("Details for invalid cross reference(s)")).ToList();
                 Assert.Equal(1, infos.Count());
-                Assert.Equal("Invalid cross reference details: \"&lt;xref:invalidXref1&gt;\" in line 6, \"&lt;xref:invalidXref2&gt;\" in line 8", infos[0].Message);
+                Assert.Equal("Details for invalid cross reference(s): \"<xref:invalidXref1>\" in line 6, \"<xref:invalidXref2>\" in line 8", infos[0].Message);
                 Assert.Equal("TestData/overwrite/mref.overwrite.invalid.ref.md", infos[0].File);
                 Assert.Null(infos[0].Line);
             }

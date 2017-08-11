@@ -10,16 +10,16 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Plugins;
 
     [Serializable]
-    public class CrossReferenceNotResolvedException : DocumentException
+    public class InvalidCrossReferenceException : DocumentException
     {
         public XRefDetails XRefDetails { get; }
 
-        public CrossReferenceNotResolvedException(XRefDetails xrefDetails) : base()
+        public InvalidCrossReferenceException(XRefDetails xrefDetails) : base()
         {
             XRefDetails = xrefDetails;
         }
 
-        protected CrossReferenceNotResolvedException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected InvalidCrossReferenceException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
             XRefDetails = (XRefDetails)info.GetValue(nameof(XRefDetails), typeof(XRefDetails));
         }
