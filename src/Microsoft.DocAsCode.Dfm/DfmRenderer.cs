@@ -114,7 +114,7 @@ namespace Microsoft.DocAsCode.Dfm
             }
             else
             {
-                content += "<h5>";
+                content += "<h5 class='no-anchor'>";
                 content += noteToken.NoteType.ToUpper();
                 content += "</h5>";
             }

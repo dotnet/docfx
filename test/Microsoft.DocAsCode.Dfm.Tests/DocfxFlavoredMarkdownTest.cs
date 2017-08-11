@@ -411,7 +411,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
 
             var expected = @"<p>The following is video mixed with note.</p>
 <div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
-<div class=""NOTE""><h5>NOTE</h5><p>this is note text</p>
+<div class=""NOTE""><h5 class='no-anchor'>NOTE</h5><p>this is note text</p>
 </div>
 <div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
@@ -448,10 +448,10 @@ hello world";
 > [!WARNING]     Hello world
 this is also warning";
             var expected = @"<h1 id=""note-not-in-one-line"">Note not in one line</h1>
-<div class=""NOTE""><h5>NOTE</h5><p>hello
+<div class=""NOTE""><h5 class='no-anchor'>NOTE</h5><p>hello
 world</p>
 </div>
-<div class=""WARNING""><h5>WARNING</h5><p>Hello world
+<div class=""WARNING""><h5 class='no-anchor'>WARNING</h5><p>Hello world
 this is also warning</p>
 </div>
 ";
@@ -469,10 +469,10 @@ this is also warning</p>
 > [!WARNING]     Hello world
 this is also warning";
             var expected = @"<h1 id=""note-not-in-one-line"">Note not in one line</h1>
-<div class=""NOTE""><h5>注意</h5><p>hello
+<div class=""NOTE""><h5 class='no-anchor'>注意</h5><p>hello
 world</p>
 </div>
-<div class=""WARNING""><h5>警告</h5><p>Hello world
+<div class=""WARNING""><h5 class='no-anchor'>警告</h5><p>Hello world
 this is also warning</p>
 </div>
 ";
@@ -480,8 +480,8 @@ this is also warning</p>
                 null,
                 new Dictionary<string, string>
                 {
-                    {"note", "<h5>注意</h5>"},
-                    {"warning", "<h5>警告</h5>" }
+                    {"note", "<h5 class='no-anchor'>注意</h5>"},
+                    {"warning", "<h5 class='no-anchor'>警告</h5>" }
                 }.ToImmutableDictionary());
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
         }
@@ -511,16 +511,16 @@ this is also warning</p>
 > [!IMPORTANT]
 > Hello world this IMPORTANT";
             var expected = @"<h1 id=""note-not-in-one-line"">Note not in one line</h1>
-<div class=""NOTE""><h5>NOTE</h5><p>hello
+<div class=""NOTE""><h5 class='no-anchor'>NOTE</h5><p>hello
 world</p>
 </div>
-<div class=""WARNING""><h5>WARNING</h5><p>Hello world</p>
+<div class=""WARNING""><h5 class='no-anchor'>WARNING</h5><p>Hello world</p>
 </div>
-<div class=""WARNING""><h5>WARNING</h5><p>Hello world this is also warning</p>
+<div class=""WARNING""><h5 class='no-anchor'>WARNING</h5><p>Hello world this is also warning</p>
 </div>
-<div class=""WARNING""><h5>WARNING</h5><p>Hello world this is also warning</p>
+<div class=""WARNING""><h5 class='no-anchor'>WARNING</h5><p>Hello world this is also warning</p>
 </div>
-<div class=""IMPORTANT""><h5>IMPORTANT</h5><p>Hello world this IMPORTANT</p>
+<div class=""IMPORTANT""><h5 class='no-anchor'>IMPORTANT</h5><p>Hello world this IMPORTANT</p>
 </div>
 ";
             var marked = DocfxFlavoredMarked.Markup(source);
@@ -577,7 +577,7 @@ This is also note with br
 
 Skip the note
 ", @"<p>the following is note type</p>
-<div class=""NOTE""><h5>NOTE</h5><p>note text 1-1
+<div class=""NOTE""><h5 class='no-anchor'>NOTE</h5><p>note text 1-1
 note text 1-2<br/>note text 2-1
 This is also note<br/>This is also note with br</p>
 </div>
@@ -591,7 +591,7 @@ This is also note<br/>This is also note with br</p>
 ", @"<p>the following is not note type</p>
 <blockquote><p>no-note text 1-1</p>
 </blockquote>
-<div class=""NOTE""><h5>NOTE</h5><p>no-note text 1-2<br/>no-note text 2-1</p>
+<div class=""NOTE""><h5 class='no-anchor'>NOTE</h5><p>no-note text 1-2<br/>no-note text 2-1</p>
 </div>
 ")]
         [InlineData(@"the following is not note type
@@ -603,7 +603,7 @@ This is also note<br/>This is also note with br</p>
 ", @"<p>the following is not note type</p>
 <blockquote><p>no-note text 1-1</p>
 </blockquote>
-<div class=""NOTE""><h5>NOTE</h5><p>no-note text 2-1<br/>no-note text 2-2</p>
+<div class=""NOTE""><h5 class='no-anchor'>NOTE</h5><p>no-note text 2-1<br/>no-note text 2-2</p>
 </div>
 ")]
         [InlineData(@"the following is code
@@ -706,7 +706,7 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
         public void TestSectionNoteMixture(string source)
         {
             var content = DocfxFlavoredMarked.Markup(source);
-            Assert.Equal("<blockquote><p>this is blockquote</p>\n<p>this line is also in the before blockquote</p>\n</blockquote>\n<div class=\"NOTE\"><h5>NOTE</h5><p>This is note text</p>\n</div>\n<div class=\"WARNING\"><h5>WARNING</h5><p>This is warning text</p>\n</div>\n<div class=\"a\" id=\"diva\"><p>this is div with class a and id diva\ntext also in div</p>\n</div>\n<div class=\"b\" cause=\"divb\"><p>this is div with class b and cause divb</p>\n</div>\n<div class=\"IMPORTANT\"><h5>IMPORTANT</h5><p>This is imoprtant text follow div</p>\n</div>\n", content);
+            Assert.Equal("<blockquote><p>this is blockquote</p>\n<p>this line is also in the before blockquote</p>\n</blockquote>\n<div class=\"NOTE\"><h5 class='no-anchor'>NOTE</h5><p>This is note text</p>\n</div>\n<div class=\"WARNING\"><h5 class='no-anchor'>WARNING</h5><p>This is warning text</p>\n</div>\n<div class=\"a\" id=\"diva\"><p>this is div with class a and id diva\ntext also in div</p>\n</div>\n<div class=\"b\" cause=\"divb\"><p>this is div with class b and cause divb</p>\n</div>\n<div class=\"IMPORTANT\"><h5 class='no-anchor'>IMPORTANT</h5><p>This is imoprtant text follow div</p>\n</div>\n", content);
         }
 
         [Theory]
