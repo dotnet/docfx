@@ -57,7 +57,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             CreateFile("ManagedReference.html.primary.tmpl", "managed content", templateFolder);
             CreateFile("ManagedReference.txt.tmpl", "{{summary}}{{remarks}}{{example.0}}", templateFolder);
             CreateFile("toc.html.tmpl", "toc", templateFolder);
-
             var tocFile = CreateFile("toc.md",
                 new[]
                 {
@@ -188,6 +187,11 @@ tagRules : [
                     var subFolders = Directory.GetDirectories(intermediateFolder, "*");
                     Assert.Equal(1, subFolders.Length);
                     cacheFolderName = Path.GetFileName(subFolders[0]);
+                }
+                {
+                    // check logs.
+                    var logs = Listener.Items.Where(i => i.Phase.StartsWith("IncrementalBuild.TestBasic")).ToList();
+                    Assert.Equal(7, logs.Count);
                 }
 
                 ClearListener();
@@ -1853,6 +1857,95 @@ tagRules : [
                     Assert.Equal(
                         GetLogMessages("IncrementalBuild.TestServerFileCaseChange-forcebuild-second"),
                         GetLogMessages(new[] { "IncrementalBuild.TestServerFileCaseChange-second", "IncrementalBuild.TestServerFileCaseChange-first" }));
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
+        [Fact]
+        public void TestCaseNotMatchIncludeFileWithInvalidBookmarkReplayLog()
+        {
+            #region Prepare test data
+
+            var inputFolder = GetRandomFolder();
+            var outputFolder = GetRandomFolder();
+            var templateFolder = GetRandomFolder();
+            var intermediateFolder = GetRandomFolder();
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", templateFolder);
+
+            var includeFile = CreateFile("include.md",
+                @"[link](#invalid)",
+                inputFolder);
+
+            var conceptualFile1 = CreateFile("test.md",
+                @"[!INCLUDE [Include](INCLUDE.md)]",
+                inputFolder);
+            var conceptualFile2 = CreateFile("test1.md",
+                @"[!INCLUDE [Include](include.md)]",
+                inputFolder);
+            var conceptualFile3 = CreateFile("test2.md",
+                "hey",
+                inputFolder);
+
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { conceptualFile1, conceptualFile2, conceptualFile3 });
+            #endregion
+            var phaseName = "IncrementalBuild.TestIncludeFileCaseChangeWithInvalidBookmark";
+            Init(phaseName);
+            try
+            {
+                using (new LoggerPhaseScope(phaseName))
+                {
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolder,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+                    Assert.Equal(2, Listener.Items.Count);
+                    Assert.NotNull(Listener.Items.FirstOrDefault(s => s.Message.StartsWith("Illegal link: `[link](#invalid)` -- missing bookmark"))); 
+                    ClearListener();
+
+                    // update conceptualFile2
+                    UpdateFile("test2.md", new string[] { "hello" }, inputFolder);
+
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolder,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+                    Assert.Equal(2, Listener.Items.Count);
+                    Assert.NotNull(Listener.Items.FirstOrDefault(s => s.Message.StartsWith("Illegal link: `[link](#invalid)` -- missing bookmark"))); 
+                    ClearListener();
+
+                    // update conceptualFile2
+                    UpdateFile("test2.md", new string[] { "hello world" }, inputFolder);
+
+                    BuildDocument(
+                        files,
+                        inputFolder,
+                        outputFolder,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello world!",
+                        },
+                        templateFolder: templateFolder,
+                        intermediateFolder: intermediateFolder);
+                    Assert.Equal(2, Listener.Items.Count);
+                    Assert.NotNull(Listener.Items.FirstOrDefault(s => s.Message.StartsWith("Illegal link: `[link](#invalid)` -- missing bookmark"))); 
+                    ClearListener();
                 }
             }
             finally
@@ -5030,7 +5123,7 @@ tagRules : [
                     TemplateManager = new TemplateManager(null, null, new List<string> { templateFolder }, null, null),
                     TemplateDir = templateFolder,
                     Changes = changes?.ToImmutableDictionary(FilePathComparer.OSPlatformSensitiveStringComparer),
-                    ForcePostProcess = true,
+                    ForcePostProcess = false,
                     ForceRebuild = forceRebuild,
                 };
                 builder.Build(parameters);

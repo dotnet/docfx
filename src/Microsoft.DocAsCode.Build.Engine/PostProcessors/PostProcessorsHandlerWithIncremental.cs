@@ -179,7 +179,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private HashSet<string> GetFilesToReplayMessages(List<ManifestItem> increItems)
         {
-            var files = new HashSet<string>();
+            var files = new HashSet<string>(FilePathComparer.OSPlatformSensitiveStringComparer);
             var sourcePaths = (from increItem in increItems
                                select increItem.SourceRelativePath).Distinct();
             foreach (var sourceRelativePath in sourcePaths)
