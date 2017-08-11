@@ -10,7 +10,7 @@ The path of the configuration file is specified in the following two ways. Optio
 
 1. docfx.exe metadata command argument.
 
-   `docfx.exe metadata -filter <path relative to baseDir or absolutepath>`
+   `docfx.exe metadata --filter <path relative to baseDir or absolutepath>`
 
 2. docfx.json metadata section `filter` property.
  
