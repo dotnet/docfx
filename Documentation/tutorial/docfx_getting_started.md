@@ -53,7 +53,7 @@ It add itself to the build targets and add the `docfx.json` configuration file a
 > [!NOTE]
 > *Possible warning*:
 > - *Cache is corrupted*: if your project targets multiple frameworks, you have to indicate one to be the main for the documentation, through the [`TargetFramework` property](https://github.com/dotnet/docfx/issues/1254#issuecomment-294080535) in `docfx.json`:
-
+>
 >      "metadata": [
 >        {
 >          "src": "...",
