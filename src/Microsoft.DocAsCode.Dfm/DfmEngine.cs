@@ -19,7 +19,6 @@ namespace Microsoft.DocAsCode.Dfm
             : this(engine.Context, engine.Rewriter, engine.RendererImpl, engine.Options)
         {
             TokenTreeValidator = engine.TokenTreeValidator;
-            TokenAggregator = engine.TokenAggregator;
             TokenAggregators = engine.TokenAggregators;
         }
 
