@@ -3,19 +3,19 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
-    using System.IO;
+    using System;
+    using System.Collections.Generic;
 
     using Newtonsoft.Json.Schema;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using System;
-    using System.Collections.Generic;
 
     public class HrefInterpreter : IInterpreter
     {
         private readonly bool _exportFileLink;
         private readonly bool _updateValue;
+
         public HrefInterpreter(bool exportFileLink, bool updateValue)
         {
             _exportFileLink = exportFileLink;
@@ -34,8 +34,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return value;
             }
 
-            var val = value as string;
-            if (val == null)
+            if (!(value is string val))
             {
                 throw new ArgumentException($"{value.GetType()} is not supported type string.");
             }

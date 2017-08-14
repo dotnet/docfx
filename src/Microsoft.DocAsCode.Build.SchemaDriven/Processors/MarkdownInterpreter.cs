@@ -27,8 +27,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return value;
             }
 
-            var val = value as string;
-            if (val == null)
+            if (!(value is string val))
             {
                 throw new ArgumentException($"{value.GetType()} is not supported type string.");
             }

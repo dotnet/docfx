@@ -4,9 +4,9 @@
 namespace Microsoft.DocAsCode.Tests.Common
 {
     using System;
+    using System.Collections.Generic;
 
     using Microsoft.DocAsCode.Common;
-    using System.Collections.Generic;
 
     public class TestListenerScope : IDisposable
     {
