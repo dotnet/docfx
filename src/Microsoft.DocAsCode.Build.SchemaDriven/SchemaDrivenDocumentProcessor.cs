@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Newtonsoft.Json;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Build.SchemaDriven.Processors;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
@@ -139,6 +140,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             }
 
             return result;
+        }
+
+        public override void UpdateHref(FileModel model, IDocumentBuildContext context)
+        {
+            var content = model.Content;
+            var pc = new ProcessContext(null, model, context);
+            DocumentSchema schema = model.Properties.Schema;
+            model.Content = new SchemaProcessor(new HrefInterpreter(false, true)).Process(content, schema, pc);
         }
 
         #endregion

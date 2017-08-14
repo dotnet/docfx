@@ -36,6 +36,24 @@ namespace Microsoft.DocAsCode.Common
             return result;
         }
 
+        public static void Merge<T>(this Dictionary<string, List<T>> left, IEnumerable<KeyValuePair<string, ImmutableList<T>>> right)
+        {
+            if (right != null && left != null)
+            {
+                foreach (var pair in right)
+                {
+                    if (left.TryGetValue(pair.Key, out List<T> list))
+                    {
+                        list.AddRange(pair.Value);
+                    }
+                    else
+                    {
+                        left[pair.Key] = new List<T>(pair.Value);
+                    }
+                }
+            }
+        }
+
         public static ImmutableDictionary<string, ImmutableList<T>> Merge<T>(this ImmutableDictionary<string, ImmutableList<T>> left, IEnumerable<KeyValuePair<string, List<T>>> right)
         {
             if (right == null)

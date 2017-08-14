@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
@@ -12,6 +13,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Build.SchemaDriven.Processors;
+    using Microsoft.DocAsCode.Build.TableOfContents;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
@@ -54,31 +56,89 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
         [Fact]
         public void TestCaseFromSchemaSpec()
         {
-            var listener = new TestLoggerListener(s => s.LogLevel > LogLevel.Info);
-            Logger.RegisterListener(listener);
+            using (var listener = new TestListenerScope("TestCaseFromSchemaSpec"))
+            {
+                var spec = File.ReadAllText(SpecPath);
+                var input = InputMatcher.Match(spec).Groups[2].Value;
+                var inputFileName = "landingPage1.yml";
+                var inputFile = CreateFile(inputFileName, input, _inputFolder);
+                File.WriteAllText(_inputFolder + "/landingPage1.yml", input);
 
-            var spec = File.ReadAllText(SpecPath);
-            var input = InputMatcher.Match(spec).Groups[2].Value;
-            var inputFileName = "landingPage1.yml";
-            var inputFile = CreateFile(inputFileName, input, _inputFolder);
-            File.WriteAllText(_inputFolder + "/landingPage1.yml", input);
+                var schema = SchemaMatcher.Match(spec).Groups[1].Value;
+                var schemaFile = CreateFile("template/schemas/landingpage.schema.json", schema, _templateFolder);
+                FileCollection files = new FileCollection(_defaultFiles);
+                files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+                BuildDocument(files);
 
-            var schema = SchemaMatcher.Match(spec).Groups[1].Value;
-            var schemaFile = CreateFile("template/schemas/landingpage.schema.json", schema, _templateFolder);
-            FileCollection files = new FileCollection(_defaultFiles);
-            files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
-            BuildDocument(files);
+                Assert.Equal(13, listener.Items.Count);
+                Assert.Equal("There is no template processing document type(s): LandingPage", listener.Items.FirstOrDefault(s => s.Message.StartsWith("There")).Message);
+                Assert.Equal(10, listener.Items.Count(s => s.Message.StartsWith("Invalid file link")));
 
-            Assert.Equal(3, listener.Items.Count);
-            Assert.Equal("There is no template processing document type(s): LandingPage", listener.Items.FirstOrDefault(s => s.Message.StartsWith("There")).Message);
+                var rawModelFilePath = GetRawModelFilePath(inputFileName);
+                Assert.True(File.Exists(rawModelFilePath));
+                var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
 
-            var rawModelFilePath = GetRawModelFilePath(inputFileName);
-            Assert.True(File.Exists(rawModelFilePath));
-            var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
-            
-            Assert.Equal("world", rawModel["metadata"]["hello"].ToString());
-            Assert.Equal("/metadata", rawModel["metadata"]["path"].ToString());
-            Assert.Equal("/sections/0/children/1", rawModel["sections"][0]["children"][1]["path"].ToString());
+                Assert.Equal("world", rawModel["metadata"]["hello"].ToString());
+                Assert.Equal("/metadata", rawModel["metadata"]["path"].ToString());
+                Assert.Equal("/sections/0/children/1", rawModel["sections"][0]["children"][1]["path"].ToString());
+                Assert.Equal($"<p sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Create an application using <a href=\"app-service-web-tutorial-dotnet-sqldatabase.md\" data-raw-source=\"[.NET with Azure SQL DB](app-service-web-tutorial-dotnet-sqldatabase.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">.NET with Azure SQL DB</a> or <a href=\"app-service-web-tutorial-nodejs-mongodb-app.md\" data-raw-source=\"[Node.js with MongoDB](app-service-web-tutorial-nodejs-mongodb-app.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Node.js with MongoDB</a></p>\n"
+                                , rawModel["sections"][1]["children"][0]["content"].ToString());
+
+            }
+        }
+
+        [Fact]
+        public void TestContextObjectSDP()
+        {
+            using (var listener = new TestListenerScope("TestContextObjectSDP"))
+            {
+
+                var schemaFile = CreateFile("template/schemas/contextobject.schema.json", File.ReadAllText("TestData/schemas/contextobject.test.schema.json"), _templateFolder);
+                var tocTemplate = CreateFile("template/toc.json.tmpl", "toc template", _templateFolder);
+                var inputFileName = "co/active.yml";
+                var inputFile = CreateFile(inputFileName, @"### YamlMime:ContextObject
+breadcrumb_path: /absolute/toc.json
+toc_rel: ../a b/toc.md
+uhfHeaderId: MSDocsHeader-DotNet
+searchScope:
+  - .NET
+", _inputFolder);
+                FileCollection files = new FileCollection(_defaultFiles);
+                files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+                BuildDocument(files);
+
+                Assert.Equal(3, listener.Items.Count);
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): ContextObject")));
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Invalid file link")));
+                listener.Items.Clear();
+
+                var rawModelFilePath = GetRawModelFilePath(inputFileName);
+                Assert.True(File.Exists(rawModelFilePath));
+                var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
+
+                Assert.Equal("/absolute/toc.json", rawModel["breadcrumb_path"].ToString());
+                Assert.Equal("../a b/toc.md", rawModel["toc_rel"].ToString());
+                Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].ToString());
+                Assert.Equal($".NET", rawModel["searchScope"][0].ToString());
+
+                files = new FileCollection(_defaultFiles);
+                files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+                var tocFile = CreateFile("a b/toc.md", "### hello", _inputFolder);
+                files.Add(DocumentType.Article, new[] { tocFile }, _inputFolder);
+
+                BuildDocument(files);
+
+                Assert.Equal(2, listener.Items.Count);
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): ContextObject")));
+
+                Assert.True(File.Exists(rawModelFilePath));
+                rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
+
+                Assert.Equal("/absolute/toc.json", rawModel["breadcrumb_path"].ToString());
+                Assert.Equal("../a%20b/toc.json", rawModel["toc_rel"].ToString());
+                Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].ToString());
+                Assert.Equal($".NET", rawModel["searchScope"][0].ToString());
+            }
         }
 
         private void BuildDocument(FileCollection files)
@@ -104,6 +164,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
         private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()
         {
             yield return typeof(SchemaDrivenDocumentProcessor).Assembly;
+            yield return typeof(TocDocumentProcessor).Assembly;
             yield return typeof(SchemaDrivenProcessorTest).Assembly;
         }
 

@@ -12,10 +12,12 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
         public IHostService Host { get; }
         public FileModel Model { get; }
         public dynamic Properties { get; } = new ExpandoObject();
-        public ProcessContext(IHostService hs, FileModel fm)
+        public IDocumentBuildContext BuildContext { get; }
+        public ProcessContext(IHostService hs, FileModel fm, IDocumentBuildContext bc = null)
         {
             Host = hs;
             Model = fm;
+            BuildContext = bc;
         }
     }
 }
