@@ -12,10 +12,12 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    using YamlDotNet.Core;
-
     public static class TocHelper
     {
+        private static readonly YamlDeserializerWithFallback _deserializer =
+            YamlDeserializerWithFallback.Create<TocViewModel>()
+            .WithFallback<TocRootViewModel>();
+
         public static IEnumerable<FileModel> Resolve(ImmutableList<FileModel> models, IHostService host)
         {
             var tocCache = new Dictionary<string, TocItemInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
@@ -81,33 +83,31 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 throw new ArgumentNullException(nameof(file));
             }
 
+            object obj;
             try
+            {
+                obj = _deserializer.Deserialize(file);
+            }
+            catch (Exception ex)
+            {
+                throw new NotSupportedException($"{file} is not a valid TOC file.", ex);
+            }
+            if (obj is TocViewModel vm)
             {
                 return new TocItemViewModel
                 {
-                    Items = YamlUtility.Deserialize<TocViewModel>(file)
+                    Items = vm,
                 };
             }
-            catch (YamlException exForList)
+            if (obj is TocRootViewModel root)
             {
-                try
+                return new TocItemViewModel
                 {
-                    var tocWithMetadata = YamlUtility.Deserialize<TocRootViewModel>(file);
-                    return new TocItemViewModel
-                    {
-                        Items = tocWithMetadata.Items,
-                        Metadata = tocWithMetadata.Metadata
-                    };
-                }
-                catch (YamlException exForObject)
-                {
-                    if (exForList.Start.Index < exForObject.Start.Index)
-                    {
-                        throw;
-                    }
-                }
-                throw;
+                    Items = root.Items,
+                    Metadata = root.Metadata,
+                };
             }
+            throw new NotSupportedException($"{file} is not a valid TOC file.");
         }
     }
 }
