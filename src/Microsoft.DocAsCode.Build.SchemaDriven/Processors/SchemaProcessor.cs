@@ -99,9 +99,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
         private object Interpret(object value, BaseSchema schema, string path, IProcessContext context)
         {
-            var interpreters = _interpreters.OrderBy(s => s.Order);
             var val = value;
-            foreach (var i in interpreters.Where(s => s.CanInterpret(schema)))
+            foreach (var i in _interpreters.Where(s => s.CanInterpret(schema)))
             {
                 val = i.Interpret(schema, val, context, path);
             }

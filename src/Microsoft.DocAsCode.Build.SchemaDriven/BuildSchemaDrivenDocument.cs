@@ -15,7 +15,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     public class BuildSchemaBasedDocument : BuildReferenceDocumentBase, ISupportIncrementalBuildStep
     {
         private const string DocumentTypeKey = "documentType";
-        private readonly SchemaProcessor _schemaProcessor = new SchemaProcessor();
+        private readonly SchemaProcessor _schemaProcessor = new SchemaProcessor(
+            new FileIncludeInterpreter(),
+            new MarkdownInterpreter(),
+            new UidInterpreter(),
+            new FileInterpreter(true, false),
+            new HrefInterpreter(true, false),
+            new XrefInterpreter()
+            );
 
         public override string Name => nameof(BuildSchemaBasedDocument);
 
@@ -28,12 +35,25 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             context.Properties.Uids = new List<UidDefinition>();
             context.Properties.UidLinkSources = new Dictionary<string, List<LinkSourceInfo>>();
             context.Properties.FileLinkSources = new Dictionary<string, List<LinkSourceInfo>>();
+            context.Properties.Dependency = new HashSet<string>();
             DocumentSchema schema = model.Properties.Schema;
             content = _schemaProcessor.Process(content, schema, context);
             model.LinkToUids = model.LinkToUids.Union(((Dictionary<string, List<LinkSourceInfo>>)context.Properties.UidLinkSources).Keys);
             model.LinkToFiles = model.LinkToFiles.Union(((Dictionary<string, List<LinkSourceInfo>>)context.Properties.FileLinkSources).Keys);
             model.FileLinkSources = model.FileLinkSources.Merge((Dictionary<string, List<LinkSourceInfo>>)context.Properties.FileLinkSources);
             model.UidLinkSources = model.UidLinkSources.Merge((Dictionary<string, List<LinkSourceInfo>>)context.Properties.UidLinkSources);
+            foreach(var d in context.Properties.Dependency)
+            {
+                host.ReportDependencyTo(model, d, DependencyTypeName.Include);
+            }
+
+            if (content is IDictionary<string, object> eo)
+            {
+                if (eo.TryGetValue(DocumentTypeKey, out object documentType) && documentType is string dt)
+                {
+                    model.DocumentType = dt;
+                }
+            }
         }
 
         #region ISupportIncrementalBuildStep Members

@@ -3,6 +3,8 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System;
+
     using Newtonsoft.Json;
 
     public class UidDefinition
@@ -15,9 +17,21 @@ namespace Microsoft.DocAsCode.Plugins
         public int? Line { get; }
         [JsonProperty("column")]
         public int? Column { get; }
+        [JsonProperty("path")]
+        public string Path { get; }
 
         [JsonConstructor]
-        public UidDefinition(string name, string file, int? line = null, int? column = null)
+        public UidDefinition(string name, string file, int? line = null, int? column = null, string path = null)
+        {
+            Name = name;
+            File = file;
+            Line = line;
+            Column = column;
+            Path = path;
+        }
+
+        [Obsolete]
+        public UidDefinition(string name, string file, int? line, int? column)
         {
             Name = name;
             File = file;
