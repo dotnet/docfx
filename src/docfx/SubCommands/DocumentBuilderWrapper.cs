@@ -14,12 +14,13 @@ namespace Microsoft.DocAsCode.SubCommands
 
     using Microsoft.DocAsCode;
     using Microsoft.DocAsCode.Build.ConceptualDocuments;
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
     using Microsoft.DocAsCode.Build.ManagedReference;
     using Microsoft.DocAsCode.Build.ResourceFiles;
     using Microsoft.DocAsCode.Build.RestApi;
+    using Microsoft.DocAsCode.Build.SchemaDriven;
     using Microsoft.DocAsCode.Build.TableOfContents;
-    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
@@ -137,6 +138,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 typeof(ResourceDocumentProcessor).Assembly,
                 typeof(RestApiDocumentProcessor).Assembly,
                 typeof(TocDocumentProcessor).Assembly,
+                typeof(SchemaDrivenDocumentProcessor).Assembly,
             };
             foreach (var assem in defaultPluggedAssemblies)
             {

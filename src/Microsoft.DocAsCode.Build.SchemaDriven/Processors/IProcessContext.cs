@@ -10,5 +10,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
         IHostService Host { get; }
         FileModel Model { get; }
         dynamic Properties { get; }
+        IDocumentBuildContext BuildContext { get; }
     }
 }

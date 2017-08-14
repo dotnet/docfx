@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
     public interface IInterpreter
     {
-        int Order { get; }
         bool CanInterpret(BaseSchema schema);
         object Interpret(BaseSchema schema, object value, IProcessContext context, string path);
     }
