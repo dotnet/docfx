@@ -3,14 +3,12 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
-    using System.IO;
+    using System;
+    using System.Collections.Generic;
 
     using Newtonsoft.Json.Schema;
 
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using System;
-    using System.Collections.Generic;
 
     public class XrefInterpreter : IInterpreter
     {

@@ -3,15 +3,13 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
+    using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
 
     using Newtonsoft.Json.Schema;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
-    using System;
 
     public class MarkdownInterpreter : IInterpreter
     {

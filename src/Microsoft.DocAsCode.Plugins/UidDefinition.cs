@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Plugins
 {
     using System;
+
     using Newtonsoft.Json;
 
     public class UidDefinition
