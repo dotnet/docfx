@@ -3,7 +3,10 @@
 
 v2.23 (Pre-release)
 -----------
-1. Bug fixed:
+1. Improve error message for invalid toc yaml file.
+2. Use xhtml for dfm default setting.
+3. Add language support for aspx-cs and aspx-vb in code snippet.
+4. Bug fixed:
    1. Fix #1825: ArgumentNullException when EII implements a member with EditorBrowsableState.Never.
 
 v2.22
