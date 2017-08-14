@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
     {
         private readonly bool _exportFileLink;
         private readonly bool _updateValue;
+
         public FileInterpreter(bool exportFileLink, bool updateValue)
         {
             _exportFileLink = exportFileLink;
@@ -33,17 +34,12 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return value;
             }
 
-            var val = value as string;
-            if (val == null)
+            if (!(value is string val))
             {
                 throw new ArgumentException($"{value.GetType()} is not supported type string.");
             }
 
-            var relPath = RelativePath.TryParse(val);
-            if (relPath == null)
-            {
-                throw new DocumentException($"{val} is not a valid relative file path that supported by contentType file ");
-            }
+            var relPath = RelativePath.TryParse(val) ?? throw new DocumentException($"{val} is not a valid relative file path that supported by contentType file ");
 
             var currentFile = (RelativePath)context.Model.OriginalFileAndType.File;
             relPath = (currentFile + relPath).GetPathFromWorkingFolder();
