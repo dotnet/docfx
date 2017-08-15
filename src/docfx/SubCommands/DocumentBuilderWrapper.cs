@@ -226,6 +226,10 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 parameters.XRefMaps = config.XRefMaps.ToImmutableArray();
             }
+            if(config.XRefServiceUrls != null)
+            {
+                parameters.XRefServiceUrls = config.XRefServiceUrls.ToImmutableArray();
+            }
             if (!config.NoLangKeyword)
             {
                 parameters.XRefMaps = parameters.XRefMaps.Add("embedded:docfx/langwordMapping.yml");

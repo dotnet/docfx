@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Net.Http;
+    using System.Net.Http.Headers;
     using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
@@ -18,11 +19,12 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
-
     public sealed class DocumentBuildContext : IDocumentBuildContext
     {
         private readonly ConcurrentDictionary<string, TocInfo> _tableOfContents = new ConcurrentDictionary<string, TocInfo>(FilePathComparer.OSPlatformSensitiveStringComparer);
         private readonly Task<IXRefContainerReader> _reader;
+        private ImmutableArray<string> _xrefMapUrls { get; }
+        private ImmutableArray<string> _xrefServiceUrls { get; }
 
         public DocumentBuildContext(string buildOutputFolder)
             : this(buildOutputFolder, Enumerable.Empty<FileAndType>(), ImmutableArray<string>.Empty, ImmutableArray<string>.Empty, 1, Directory.GetCurrentDirectory(), string.Empty, null, null) { }
@@ -31,7 +33,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, string.Empty, null, null) { }
 
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath)
-            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null) { }
+            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null, ImmutableArray<string>.Empty) { }
 
         public DocumentBuildContext(
             string buildOutputFolder,
@@ -43,14 +45,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             string versionName,
             ApplyTemplateSettings applyTemplateSetting,
             string rootTocPath,
-            string versionFolder)
+            string versionFolder,
+            ImmutableArray<string> xrefServiceUrls)
         {
             BuildOutputFolder = buildOutputFolder;
             VersionName = versionName;
             ApplyTemplateSettings = applyTemplateSetting;
             AllSourceFiles = GetAllSourceFiles(allSourceFiles);
             ExternalReferencePackages = externalReferencePackages;
-            XRefMapUrls = xrefMaps;
+            _xrefMapUrls = xrefMaps;
+            _xrefServiceUrls = xrefServiceUrls;
             MaxParallelism = maxParallelism;
             if (xrefMaps.Length > 0)
             {
@@ -83,8 +87,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 
         public ImmutableArray<string> ExternalReferencePackages { get; }
-
-        public ImmutableArray<string> XRefMapUrls { get; }
 
         public ImmutableDictionary<string, FileAndType> AllSourceFiles { get; }
 
@@ -157,6 +159,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 uidList = ResolveByExternalReferencePackages(uidList, ExternalXRefSpec);
             }
+            if (uidList.Count > 0)
+            {
+                uidList = ResolveByXRefServiceAsync(uidList, ExternalXRefSpec).Result;
+            }
 
             foreach (var uid in uidList)
             {
@@ -193,6 +199,80 @@ namespace Microsoft.DocAsCode.Build.Engine
             return list;
         }
 
+        private async Task<List<string>> ResolveByXRefServiceAsync(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
+        {
+            if (_xrefServiceUrls == null || _xrefServiceUrls.Length == 0)
+            {
+                return uidList;
+            }
+
+            var unresolvedUidList = new List<string>();
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                int pieceSize = 1000;
+                for(int i = 0; i < uidList.Count; i += pieceSize)
+                {
+                    List<string> smallPiece = uidList.GetRange(i, Math.Min(pieceSize, uidList.Count - i));
+                    foreach(string requestUrl in _xrefServiceUrls)
+                    {
+                        IList<Task<IList<XRefSpec>>> queryUidTasks = new List<Task<IList<XRefSpec>>>();
+                        foreach(string uid in smallPiece)
+                        {
+                            queryUidTasks.Add(QueryByHttpRequestAsync(client, requestUrl, uid));
+                        }
+                        var results = await Task.WhenAll(queryUidTasks);
+                        List<string> stillNeedQueryList = new List<string>();
+                        for(int j = 0; j < results.Length; j++)
+                        {
+                            if(results[j] != null && results[j].Count > 0 && results[j][0].Uid == smallPiece[j])
+                            {
+                                externalXRefSpec.AddOrUpdate(smallPiece[j], results[j][0], (_, old) => old + results[j][0]);
+                            }
+                            else
+                            {
+                                stillNeedQueryList.Add(smallPiece[j]);
+                            }
+                        }
+                        smallPiece = stillNeedQueryList;
+                    }
+                    unresolvedUidList.AddRange(smallPiece);
+                }
+            }
+            Logger.LogInfo($"{uidList.Count - unresolvedUidList.Count} uids found in xrefservice.");
+            return unresolvedUidList;
+        }
+
+        internal async Task<IList<XRefSpec>> QueryByHttpRequestAsync(HttpClient client, string requestUrl, string uid)
+        {
+            string url = requestUrl.Replace("{uid}", Uri.EscapeDataString(uid));
+            try
+            {
+                var data = await client.GetStreamAsync(url);
+                using (var sr = new StreamReader(data))
+                {
+                    IList<XRefSpec> xsList = JsonUtility.Deserialize<List<XRefSpec>>(sr);
+                    return xsList;
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                Logger.LogWarning($"Error occurs when resolve {uid} from {requestUrl}.{e.InnerException.Message}");
+                return null;
+            }
+            catch (Newtonsoft.Json.JsonReaderException e)
+            {
+                Logger.LogWarning($"Response from {requestUrl} is not in valid JSON format.{e.Message}");
+                return null;
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning($"Error occurs when resolve {uid} from {requestUrl}.{e.Message}");
+                return null;
+            }
+        }
+
         private List<string> ResolveByXRefMaps(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
         {
             if (_reader == null)
@@ -213,7 +293,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     list.Add(uid);
                 }
             }
-            Logger.LogInfo($"{uidList.Count - list.Count} external references found in {XRefMapUrls.Length} xref maps.");
+            Logger.LogInfo($"{uidList.Count - list.Count} external references found in {_xrefMapUrls.Length} xref maps.");
             return list;
         }
 
@@ -221,8 +301,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (var client = new HttpClient())
             {
-                Logger.LogInfo($"Downloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, XRefMapUrls)}");
-                var mapTasks = (from url in XRefMapUrls
+                Logger.LogInfo($"Downloading xref maps from:{Environment.NewLine}{string.Join(Environment.NewLine, _xrefMapUrls)}");
+                var mapTasks = (from url in _xrefMapUrls
                                 select LoadXRefMap(url, client)).ToArray();
                 Task.WaitAll(mapTasks);
                 return (from t in mapTasks

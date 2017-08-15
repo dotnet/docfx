@@ -6,9 +6,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Net;
+    using System.Net.Http;
+    using System.Threading.Tasks;
     using System.IO;
     using System.Reflection;
-
+    
     using Newtonsoft.Json.Linq;
     using Xunit;
 
@@ -812,6 +815,52 @@ exports.getOptions = function (){
                         "<a href=\"../b/invalid-b.md\">link b</a></p>", ""),
                     File.ReadAllText(conceptualOutputPath));
             }
+        }
+
+        private class FakeResponseHandler : DelegatingHandler
+        {
+            private readonly Dictionary<Uri, HttpResponseMessage> _fakeResponses = new Dictionary<Uri, HttpResponseMessage>();
+
+            public void AddFakeResponse(Uri uri, HttpResponseMessage responseMessage)
+            {
+                _fakeResponses.Add(uri, responseMessage);
+            }
+
+            protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+            {
+                if (_fakeResponses.ContainsKey(request.RequestUri))
+                {
+                    return _fakeResponses[request.RequestUri];
+                }
+                else
+                {
+                    return new HttpResponseMessage(HttpStatusCode.NotFound) { RequestMessage = request };
+                }
+            }
+        }
+
+        [Fact]
+        public void TestBuildWithXrefService()
+        {
+            var fakeResponseHandler = new FakeResponseHandler();
+            fakeResponseHandler.AddFakeResponse(new Uri("http://example.org/test1"), new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("[]")
+            });
+            fakeResponseHandler.AddFakeResponse(new Uri("http://example.org/test2"), new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("[{'uid':'csharp_coding_standards', 'name':'C# Coding Standards', 'href':'http://dotnet.github.io/docfx/guideline/csharp_coding_standards.html'}]")
+            });
+
+            var httpClient = new HttpClient(fakeResponseHandler);
+            var dbc= new DocumentBuildContext("");
+
+            var result = dbc.QueryByHttpRequestAsync(httpClient, "http://example.org/test1", "xx").Result;
+            Assert.Equal(0, result.Count);
+            result = dbc.QueryByHttpRequestAsync(httpClient, "http://example.org/test2", "xx").Result;
+            Assert.Equal("csharp_coding_standards", result[0].Uid);
         }
 
         [Fact]
