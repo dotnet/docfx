@@ -79,8 +79,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
                 var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
 
                 Assert.Equal("world", rawModel["metadata"]["hello"].ToString());
+                Assert.Equal("Hello world!", rawModel["meta"].ToString());
                 Assert.Equal("/metadata", rawModel["metadata"]["path"].ToString());
-                Assert.Equal("/sections/0/children/1", rawModel["sections"][0]["children"][1]["path"].ToString());
                 Assert.Equal($"<p sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Create an application using <a href=\"app-service-web-tutorial-dotnet-sqldatabase.md\" data-raw-source=\"[.NET with Azure SQL DB](app-service-web-tutorial-dotnet-sqldatabase.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">.NET with Azure SQL DB</a> or <a href=\"app-service-web-tutorial-nodejs-mongodb-app.md\" data-raw-source=\"[Node.js with MongoDB](app-service-web-tutorial-nodejs-mongodb-app.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Node.js with MongoDB</a></p>\n"
                                 , rawModel["sections"][1]["children"][0]["content"].ToString());
 
@@ -116,6 +116,7 @@ searchScope:
                 Assert.True(File.Exists(rawModelFilePath));
                 var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
 
+                Assert.Equal("Hello world!", rawModel["meta"].ToString());
                 Assert.Equal("/absolute/toc.json", rawModel["breadcrumb_path"].ToString());
                 Assert.Equal("../a b/toc.md", rawModel["toc_rel"].ToString());
                 Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].ToString());
@@ -134,6 +135,7 @@ searchScope:
                 Assert.True(File.Exists(rawModelFilePath));
                 rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
 
+                Assert.Equal("Hello world!", rawModel["meta"].ToString());
                 Assert.Equal("/absolute/toc.json", rawModel["breadcrumb_path"].ToString());
                 Assert.Equal("../a%20b/toc.json", rawModel["toc_rel"].ToString());
                 Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].ToString());

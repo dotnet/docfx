@@ -62,8 +62,7 @@ namespace Microsoft.DocAsCode.Common
 
         public static object ConvertToDynamic(object obj)
         {
-            var dict = obj as Dictionary<object, object>;
-            if (dict != null)
+            if (obj is Dictionary<object, object> dict)
             {
                 var result = new ExpandoObject();
 
@@ -81,8 +80,19 @@ namespace Microsoft.DocAsCode.Common
                 return result;
             }
 
-            var array = obj as List<object>;
-            if (array != null)
+            if (obj is Dictionary<string, object> sdict)
+            {
+                var result = new ExpandoObject();
+
+                foreach (var pair in sdict)
+                {
+                    ((IDictionary<string, Object>)result).Add(pair.Key, ConvertToDynamic(pair.Value));
+                }
+
+                return result;
+            }
+
+            if (obj is List<object> array)
             {
                 for (int i = 0; i < array.Count; i++)
                 {
