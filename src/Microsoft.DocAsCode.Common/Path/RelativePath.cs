@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.Common
 
         #region Consts/Fields
         public const char WorkingFolderChar = '~';
-        public const char WorkingFolderString = WorkingFolderChar.ToString();
+        public const string WorkingFolderString = "~";
         public static readonly char[] InvalidChars = Path.GetInvalidPathChars().Concat(":*").ToArray();
         public static readonly string NormalizedWorkingFolder = "~/";
         public static readonly string AltWorkingFolder = "~\\";
