@@ -14,12 +14,12 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
     public class SchemaValidator
     {
-        private const string SupportedMetaSchemaUrl = "http://dotnet.github.io/docfx/schemas/v1.0/schema.json#";
+        private static readonly Uri SupportedMetaSchemaUri = new Uri("https://dotnet.github.io/docfx/schemas/v1.0/schema.json#");
         public static void Validate(DocumentSchema schema)
         {
-            if (!schema.Schema.Equals(SupportedMetaSchemaUrl, StringComparison.Ordinal))
+            if (!ValidateSchemaUrl(schema.Schema))
             {
-                throw new InvalidSchemaException($"Schema {schema.Schema} is not supported. Current supported schemas are: {SupportedMetaSchemaUrl}.");
+                throw new InvalidSchemaException($"Schema {schema.Schema} is not supported. Current supported schemas are: {SupportedMetaSchemaUri.OriginalString}.");
             }
 
             using (var stream = typeof(SchemaValidator).Assembly.GetManifestResourceStream("Microsoft.DocAsCode.Build.SchemaDriven.schemas.v1._0.schema.json"))
@@ -30,9 +30,23 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 var isValid = o.IsValid(metaSchema, out IList<string> errors);
                 if (!isValid)
                 {
-                    throw new InvalidSchemaException($"Schema {schema.Title} is not a valid one according to {SupportedMetaSchemaUrl}: \n{errors.ToDelimitedString("\n")}");
+                    throw new InvalidSchemaException($"Schema {schema.Title} is not a valid one according to {SupportedMetaSchemaUri.OriginalString}: \n{errors.ToDelimitedString("\n")}");
                 }
             }
+        }
+
+        public static bool ValidateSchemaUrl(string url)
+        {
+            if (url == null || !Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
+            {
+                return false;
+            }
+            if (uri.Host == SupportedMetaSchemaUri.Host && uri.LocalPath == SupportedMetaSchemaUri.LocalPath && (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment == "#"))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
