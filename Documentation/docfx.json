@@ -30,6 +30,10 @@
       {
         "files": [ "**/images/**", "**/artifacts/**", "codesnippet/**", "langwordmapping/**" ],
         "exclude": [ "_site/**", "**/obj/**", "**.meta" ]
+      },
+      {
+        "files": "schemas/**schema.json",
+        "src": ".."
       }
     ],
     "overwrite": "apispec/*.md",
