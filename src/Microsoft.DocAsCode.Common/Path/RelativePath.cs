@@ -40,6 +40,10 @@ namespace Microsoft.DocAsCode.Common
         #endregion
 
         #region Public Members
+        public static RelativePath FromUrl(string path)
+        {
+            return (RelativePath)Uri.UnescapeDataString(path);
+        }
 
         public static bool IsRelativePath(string path)
         {
@@ -236,6 +240,12 @@ namespace Microsoft.DocAsCode.Common
             {
                 parts[i] = Uri.UnescapeDataString(_parts[i]);
             }
+
+            if (_parts.Length > 0 && parts[0] == "~")
+            {
+                return new RelativePath(true, _parentDirectoryCount, parts.Skip(1).ToArray());
+            }
+
             return new RelativePath(_isFromWorkingFolder, _parentDirectoryCount, parts);
         }
 
@@ -323,7 +333,7 @@ namespace Microsoft.DocAsCode.Common
                 return null;
             }
             bool isFromWorkingFolder = false;
-            var parts = path.Replace('\\', '/').Split('/');
+            var parts = path.Split('/', '\\');
             var stack = new Stack<string>();
             int parentCount = 0;
             for (int i = 0; i < parts.Length; i++)

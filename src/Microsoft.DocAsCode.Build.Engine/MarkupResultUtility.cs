@@ -104,8 +104,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 if (RelativePath.IsRelativePath(linkFile))
                 {
-                    var path = (RelativePath)currentFile + (RelativePath)linkFile;
-                    var file = path.GetPathFromWorkingFolder().UrlDecode();
+                    var path = (RelativePath)currentFile + RelativePath.FromUrl(linkFile);
+                    var file = path.GetPathFromWorkingFolder();
                     if (sourceFiles.ContainsKey(file))
                     {
                         string anchorInHref;
