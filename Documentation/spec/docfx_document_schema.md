@@ -121,13 +121,13 @@ It defines how applications interpret the property. If not defined, the behavior
 |------------|-------------
 | `default`  | It means that no interpretion will be done to the property.
 | `uid`      | `type` MUST be `string`. With this value, the property name MUST be `uid`. It means the property defines a unique identifier inside current document model.
-| `xref`     | `type` MUST be `string`. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.
-| `href`     | `type` MUST be `string`. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output link.
+| `href`     | `type` MUST be `string`. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.
+| `xref`     | `type` MUST be `string`. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output link.
 | `file`     | `type` MUST be `string`. It means the property defines a file path inside current document model. Application CAN help to validate if the linked file exists, and resolve the path to the corresponding file output path. The difference between `file` and `href` is that `href` is always URL encoded while `file` is not.
 | `markdown` | `type` MUST be `string`. It means the property is in [DocFX flavored Markdown](..\spec\docfx_flavored_markdown.md) syntax. Application CAN help to transform it into HTML format.
 
 ### 6.4 tags
-The value of this keyword MUST be an `array`, elements of the array MUST be strings and MUST be unique. It provides hints for applications to decide how to interpret the property, for example, `localizable` tag can help Localization team to interpret the property as *localizable*; `metadata` tag can help DocFX to fill in additional metadata, e.g. github commit information.
+The value of this keyword MUST be an `array`, elements of the array MUST be strings and MUST be unique. It provides hints for applications to decide how to interpret the property, for example, `localizable` tag can help Localization team to interpret the property as *localizable*.
 
 ### 6.5 mergeType
 The value of this keyword MUST be a string. It specifies how to merge two values of the given property. One use scenario is how DocFX uses the [overwrite files](..\tutorial\intro_overwrite_files.md) to overwrite the existing values. In the below table, we use `source` and `target` to stands for the two values for merging.
@@ -219,8 +219,7 @@ Here's the schema to describe these operations:
                                     "type": "string",
                                     "contentType": "markdown"
                                 }
-                            },
-                            "tags": [ "metadata" ]
+                            }
                         }
                     },
                     "title": {
