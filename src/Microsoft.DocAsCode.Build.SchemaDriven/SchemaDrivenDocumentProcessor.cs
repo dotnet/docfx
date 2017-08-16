@@ -95,21 +95,36 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             {
                 case DocumentType.Article:
                     // TODO: Support dynamic in YAML deserializer
-                    var content = YamlUtility.Deserialize<object>(file.File);
-                    content = ConvertToObjectHelper.ConvertToDynamic(content);
-
-                    var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
-
-                    var fm = new FileModel(
-                        file,
-                        content,
-                        serializer: new BinaryFormatter())
+                    try
                     {
-                        LocalPathFromRoot = localPathFromRoot,
-                    };
+                        // MUST be a dictionary
+                        var obj = YamlUtility.Deserialize<Dictionary<string, object>>(file.File);
+                        foreach(var pair in metadata)
+                        {
+                            if (!obj.ContainsKey(pair.Key))
+                            {
+                                obj[pair.Key] = pair.Value;
+                            }
+                        }
+                        var content = ConvertToObjectHelper.ConvertToDynamic(obj);
 
-                    fm.Properties.Schema = _schema;
-                    return fm;
+                        var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
+
+                        var fm = new FileModel(
+                            file,
+                            content,
+                            serializer: new BinaryFormatter())
+                        {
+                            LocalPathFromRoot = localPathFromRoot,
+                        };
+
+                        fm.Properties.Schema = _schema;
+                        return fm;
+                    }
+                    catch (YamlDotNet.Core.YamlException e)
+                    {
+                        throw new DocumentException($"{file.File} is not in supported format: {e.Message}", e);
+                    }
                 case DocumentType.Overwrite:
                     return OverwriteDocumentReader.Read(file);
                 default:
