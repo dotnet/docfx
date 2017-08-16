@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Common
             foreach (var item in ((Dictionary<string, object>)value))
             {
                 writer.WritePropertyName(item.Key);
-                writer.WriteValue(item.Value);
+                serializer.Serialize(writer, item.Value); 
             }
             writer.WriteEndObject();
         }

@@ -3,11 +3,16 @@
 
 namespace Microsoft.DocAsCode.Tests
 {
-    using System.Collections.Generic;
+    using System;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
+    using System.Collections;
+    using System.Collections.Generic;
 
+    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using Newtonsoft.Json.Serialization;
     using Xunit;
 
     using Microsoft.DocAsCode.Common;
@@ -15,6 +20,45 @@ namespace Microsoft.DocAsCode.Tests
 
     public class JsonConverterTest
     {
+        [Fact]
+        [Trait("Related", "docfx")]
+        public void TestJObjectDictionaryToObjectDictionaryConverterSerializeAndDeserialize()
+        {
+            string jsonString = "{" +
+                "\"globalMetadata\":{" +
+                    "\"layout\":\"Conceptual\"," +
+                    "\"breadcrumb_path\":\"/enterprise-mobility/toc.json\"," +
+                    "\"product_feedback_displaytext\":\"IntuneFeedback\"," +
+                    "\"product_feedback_url\":\"https://microsoftintune.uservoice.com/\"," +
+                    "\"contributors_to_exclude\":" +
+                        "[\"herohua\",\"fenxu\"]," +
+                    "\"searchScope\":[\"Intune\"]," +
+                    "\"_op_documentIdPathDepotMapping\":{" +
+                        "\"./\":{" +
+                            "\"depot_name\":\"Azure.EndUser\"," +
+                            "\"folder_relative_path_in_docset\":\".\"" +
+                        "}" +
+                    "}" +
+                "}," +
+                "\"noLangKeyword\":false," +
+                "\"keepFileLink\":false," +
+                "\"cleanupCacheHistory\":false" +
+            "}";
+
+            BuildJsonConfig buildOptions = JsonConvert.DeserializeObject<BuildJsonConfig>(jsonString);
+
+            Assert.Equal(buildOptions.GlobalMetadata.Count(), 7);
+
+            JsonSerializerSettings settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                Formatting = Formatting.None,
+                ContractResolver = new SkipEmptyOrNullContractResolver()
+            };
+
+            Assert.Equal(jsonString, JsonConvert.SerializeObject(buildOptions, settings));
+        }
+
         [Fact]
         [Trait("Related", "docfx")]
         public void TestFileMetadataPairsConverterCouldSerializeAndDeserialize()
@@ -121,6 +165,34 @@ namespace Microsoft.DocAsCode.Tests
                 return jObject.ToObject<Dictionary<string, object>>().ToDictionary(p => p.Key, p => ConvertJObjectToObject(p.Value));
             }
             return raw;
+        }
+    }
+
+    internal class SkipEmptyOrNullContractResolver : DefaultContractResolver
+    {
+        public SkipEmptyOrNullContractResolver(bool shareCache = false) : base() { }
+
+        protected override JsonProperty CreateProperty(MemberInfo member,
+            MemberSerialization memberSerialization)
+        {
+            JsonProperty property = base.CreateProperty(member, memberSerialization);
+            bool isDefaultValueIgnored =
+            ((property.DefaultValueHandling ?? DefaultValueHandling.Ignore)
+             & DefaultValueHandling.Ignore) != 0;
+            if (isDefaultValueIgnored
+                && !typeof(string).IsAssignableFrom(property.PropertyType)
+                && typeof(IEnumerable).IsAssignableFrom(property.PropertyType))
+            {
+                Predicate<object> newShouldSerialize = obj => {
+                    var collection = property.ValueProvider.GetValue(obj) as ICollection;
+                    return collection == null || collection.Count != 0;
+                };
+                Predicate<object> oldShouldSerialize = property.ShouldSerialize;
+                property.ShouldSerialize = oldShouldSerialize != null
+                    ? o => oldShouldSerialize(o) && newShouldSerialize(o)
+                    : newShouldSerialize;
+            }
+            return property;
         }
     }
 }
