@@ -1,8 +1,11 @@
-﻿using System;
-using System.IO;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace TocMarkdownConverter
 {
+    using System;
+    using System.IO;
+
     internal sealed class Program
     {
         private static readonly string MarkdownExtension = ".md";
@@ -20,6 +23,7 @@ namespace TocMarkdownConverter
             if (!string.Equals(extension, MarkdownExtension, StringComparison.OrdinalIgnoreCase))
             {
                 Console.WriteLine("Only support to convert toc markdown file.");
+
                 return 1;
             }
 
@@ -29,7 +33,7 @@ namespace TocMarkdownConverter
                 tocYml = TocConverter.Convert(tocMarkdown, tocYml);
                 Console.WriteLine($"Successfully convert {tocMarkdown} to {tocYml}.");
 
-                return 1;
+                return 0;
             }
             catch (Exception ex)
             {
