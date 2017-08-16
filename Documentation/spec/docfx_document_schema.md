@@ -186,7 +186,7 @@ Here's the schema to describe these operations:
 
 ```json
 {
-    "$schema": "https://github.com/dotnet/docfx/schemas/v1.0/schema.json#",
+    "$schema": "http://dotnet.github.io/docfx/schemas/v1.0/schema.json#",
     "version": "1.0.0",
     "id": "https://github.com/dotnet/docfx/schemas/landingpage.schema.json",
     "title": "LandingPage",
