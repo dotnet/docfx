@@ -75,7 +75,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SplitRestApi", "SplitRestAp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SchemaDriven", "SchemaDriven", "{7CFCAAFD-622D-4FCA-BBCB-1481867AA505}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TocMarkdownConverter", "TocMarkdownConverter", "{50A820F5-E05A-45BD-ADD0-8B73886A0E18}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TocConverter", "TocConverter", "{50A820F5-E05A-45BD-ADD0-8B73886A0E18}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Glob", "src\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj", "{7E877810-DC13-4A6C-8DFC-184C00A20B7C}"
 EndProject
@@ -183,7 +183,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.O
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.SchemaDriven", "src\Microsoft.DocAsCode.Build.SchemaDriven\Microsoft.DocAsCode.Build.SchemaDriven.csproj", "{2978E4CC-7D67-43DA-B6C9-09559C530EFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TocMarkdownConverter", "tools\TocMarkdownConverter\TocMarkdownConverter.csproj", "{1ECCA70A-56A4-4365-9FDA-B1D1F3C5FDFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TocConverter", "tools\TocConverter\TocConverter.csproj", "{2342F190-F8CE-4C8F-8FEF-8E65C725F8B0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.SchemaDriven.Tests", "test\Microsoft.DocAsCode.Build.SchemaDriven.Tests\Microsoft.DocAsCode.Build.SchemaDriven.Tests.csproj", "{298FBFBA-F535-4C29-AB70-A1041F50098C}"
 EndProject
@@ -627,14 +627,14 @@ Global
 		{298FBFBA-F535-4C29-AB70-A1041F50098C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{298FBFBA-F535-4C29-AB70-A1041F50098C}.Release|x86.ActiveCfg = Release|Any CPU
 		{298FBFBA-F535-4C29-AB70-A1041F50098C}.Release|x86.Build.0 = Release|Any CPU
-		{1ECCA70A-56A4-4365-9FDA-B1D1F3C5FDFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1ECCA70A-56A4-4365-9FDA-B1D1F3C5FDFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1ECCA70A-56A4-4365-9FDA-B1D1F3C5FDFB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1ECCA70A-56A4-4365-9FDA-B1D1F3C5FDFB}.Debug|x86.Build.0 = Debug|Any CPU
-		{1ECCA70A-56A4-4365-9FDA-B1D1F3C5FDFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1ECCA70A-56A4-4365-9FDA-B1D1F3C5FDFB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1ECCA70A-56A4-4365-9FDA-B1D1F3C5FDFB}.Release|x86.ActiveCfg = Release|Any CPU
-		{1ECCA70A-56A4-4365-9FDA-B1D1F3C5FDFB}.Release|x86.Build.0 = Release|Any CPU
+		{2342F190-F8CE-4C8F-8FEF-8E65C725F8B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2342F190-F8CE-4C8F-8FEF-8E65C725F8B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2342F190-F8CE-4C8F-8FEF-8E65C725F8B0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2342F190-F8CE-4C8F-8FEF-8E65C725F8B0}.Debug|x86.Build.0 = Debug|Any CPU
+		{2342F190-F8CE-4C8F-8FEF-8E65C725F8B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2342F190-F8CE-4C8F-8FEF-8E65C725F8B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2342F190-F8CE-4C8F-8FEF-8E65C725F8B0}.Release|x86.ActiveCfg = Release|Any CPU
+		{2342F190-F8CE-4C8F-8FEF-8E65C725F8B0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -723,7 +723,7 @@ Global
 		{CB8D3397-E338-4801-B3E7-42FE65F535AE} = {2EBDC7B1-6C85-4E32-A059-27370C240CBE}
 		{2978E4CC-7D67-43DA-B6C9-09559C530EFC} = {7CFCAAFD-622D-4FCA-BBCB-1481867AA505}
 		{298FBFBA-F535-4C29-AB70-A1041F50098C} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
-		{1ECCA70A-56A4-4365-9FDA-B1D1F3C5FDFB} = {50A820F5-E05A-45BD-ADD0-8B73886A0E18}
+		{2342F190-F8CE-4C8F-8FEF-8E65C725F8B0} = {50A820F5-E05A-45BD-ADD0-8B73886A0E18}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C12271F-8093-4D5D-8BEE-3318BFE40E23}

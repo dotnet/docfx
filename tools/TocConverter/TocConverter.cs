@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace TocMarkdownConverter
+namespace TocConverter
 {
     using System;
     using System.IO;
@@ -25,14 +25,7 @@ namespace TocMarkdownConverter
                 throw new FileNotFoundException($"{tocMarkdownFilePath} can't be found.");
             }
 
-            if (string.IsNullOrEmpty(tocYmlPath))
-            {
-                var tocName = Path.GetFileNameWithoutExtension(tocMarkdownFilePath);
-                var tocDir = Path.GetDirectoryName(tocMarkdownFilePath);
-
-                tocYmlPath = Path.Combine(tocDir, tocName + YmlExtension);
-            }
-
+            tocYmlPath = tocYmlPath ?? Path.ChangeExtension(tocMarkdownFilePath, YmlExtension);
             ConvertCore(tocMarkdownFilePath, tocYmlPath);
 
             return tocYmlPath;

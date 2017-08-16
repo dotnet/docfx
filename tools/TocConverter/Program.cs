@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace TocMarkdownConverter
+namespace TocConverter
 {
     using System;
     using System.IO;
@@ -22,7 +22,7 @@ namespace TocMarkdownConverter
             var extension = Path.GetExtension(tocMarkdown);
             if (!string.Equals(extension, MarkdownExtension, StringComparison.OrdinalIgnoreCase))
             {
-                Console.WriteLine("Only support to convert toc markdown file.");
+                Console.WriteLine("Currently only support to convert toc markdown file.");
 
                 return 1;
             }
