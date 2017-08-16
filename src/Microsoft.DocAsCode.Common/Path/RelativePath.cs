@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.Common
 
         #region Consts/Fields
         public const char WorkingFolderChar = '~';
+        public const char WorkingFolderString = WorkingFolderChar.ToString();
         public static readonly char[] InvalidChars = Path.GetInvalidPathChars().Concat(":*").ToArray();
         public static readonly string NormalizedWorkingFolder = "~/";
         public static readonly string AltWorkingFolder = "~\\";
@@ -241,7 +242,7 @@ namespace Microsoft.DocAsCode.Common
                 parts[i] = Uri.UnescapeDataString(_parts[i]);
             }
 
-            if (_parts.Length > 0 && parts[0] == "~")
+            if (_parts.Length > 0 && parts[0] == WorkingFolderString)
             {
                 return new RelativePath(true, _parentDirectoryCount, parts.Skip(1).ToArray());
             }
