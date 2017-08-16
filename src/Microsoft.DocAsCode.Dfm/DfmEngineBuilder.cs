@@ -197,7 +197,6 @@ namespace Microsoft.DocAsCode.Dfm
                 Options)
             {
                 TokenTreeValidator = TokenTreeValidator,
-                TokenAggregator = TokenAggregator,
                 TokenAggregators = TokenAggregators,
             };
         }
