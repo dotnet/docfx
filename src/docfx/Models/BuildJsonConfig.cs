@@ -28,6 +28,7 @@ namespace Microsoft.DocAsCode
         [JsonProperty("overwrite")]
         public FileMapping Overwrite { get; set; }
 
+        [Obsolete]
         [JsonProperty("externalReference")]
         public FileMapping ExternalReference { get; set; }
 

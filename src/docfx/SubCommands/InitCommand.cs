@@ -28,7 +28,8 @@ namespace Microsoft.DocAsCode.SubCommands
         private static readonly IEnumerable<IQuestion> _metadataQuestions = new IQuestion[]
         {
             new MultiAnswerQuestion(
-                "What are the locations of your source code files?", (s, m, c) =>
+                "What are the locations of your source code files?",
+                (s, m, c) =>
                 {
                     if (s != null)
                     {
@@ -46,7 +47,8 @@ namespace Microsoft.DocAsCode.SubCommands
                         m.Build.Content = new FileMapping(new FileMappingItem("api/**.yml", "api/index.md"));
                     }
                 },
-                new string[] { "src/**.csproj" }) {
+                new string[] { "src/**.csproj" })
+            {
                 Descriptions = new string[]
                 {
                     "Supported project files could be .sln, .csproj, .vbproj project files or .cs, .vb source files",
@@ -55,7 +57,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             },
             new MultiAnswerQuestion(
-                "What are the locations of your markdown files overwriting triple slash comments?", (s, m, c) =>
+                "What are the locations of your markdown files overwriting triple slash comments?",
+                (s, m, c) =>
                 {
                     if (s != null)
                     {
@@ -67,7 +70,8 @@ namespace Microsoft.DocAsCode.SubCommands
                         m.Build.Overwrite = new FileMapping(new FileMappingItem(s) { Exclude = exclude });
                     }
                 },
-                new string[] { "apidoc/**.md" }) {
+                new string[] { "apidoc/**.md" })
+            {
                 Descriptions = new string[]
                 {
                     "You can specify markdown files with a YAML header to overwrite summary, remarks and description for parameters",
@@ -80,10 +84,12 @@ namespace Microsoft.DocAsCode.SubCommands
         private static readonly IEnumerable<IQuestion> _overallQuestion = new IQuestion[]
         {
             new SingleAnswerQuestion(
-                "Where to save the generated documentation?", (s, m, c) => {
+                "Where to save the generated documentation?",
+                (s, m, c) => {
                     m.Build.Destination = s;
                 },
-                "_site") {
+                "_site")
+            {
                 Descriptions = new string[]
                 {
                     Hints.Enter,
@@ -96,7 +102,8 @@ namespace Microsoft.DocAsCode.SubCommands
             // TODO: Check if the input glob pattern matches any files
             // IF no matching: WARN [init]: There is no file matching this pattern.
             new MultiAnswerQuestion(
-                "What are the locations of your conceptual files?", (s, m, c) =>
+                "What are the locations of your conceptual files?",
+                (s, m, c) =>
                 {
                     if (s != null)
                     {
@@ -114,7 +121,8 @@ namespace Microsoft.DocAsCode.SubCommands
                         m.Build.Content.Add(new FileMappingItem(s) { Exclude = exclude });
                     }
                 },
-                new string[] { "articles/**.md", "articles/**/toc.yml", "toc.yml", "*.md" }) {
+                new string[] { "articles/**.md", "articles/**/toc.yml", "toc.yml", "*.md" })
+            {
                 Descriptions = new string[]
                 {
                     "Supported conceptual files could be any text files. Markdown format is also supported.",
@@ -123,7 +131,8 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             },
             new MultiAnswerQuestion(
-                "What are the locations of your resource files?", (s, m, c) =>
+                "What are the locations of your resource files?",
+                (s, m, c) =>
                 {
                     if (s != null)
                     {
@@ -135,7 +144,8 @@ namespace Microsoft.DocAsCode.SubCommands
                         m.Build.Resource = new FileMapping(new FileMappingItem(s) { Exclude = exclude });
                     }
                 },
-                new string[] { "images/**" }) {
+                new string[] { "images/**" })
+            {
                 Descriptions = new string[]
                 {
                     "The resource files which conceptual files are referencing, e.g. images.",
@@ -144,24 +154,27 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             },
             new MultiAnswerQuestion(
-                "Do you want to specify external API references?", (s, m, c) =>
+                "Do you want to specify external API references?",
+                (s, m, c) =>
                 {
                     if (s != null)
                     {
-                        m.Build.ExternalReference = new FileMapping(new FileMappingItem(s));
+                        m.Build.XRefMaps = new ListWithStringFallback(s);
                     }
                 },
-                null) {
+                null)
+            {
                 Descriptions = new string[]
                 {
                     "Supported external API references can be in either JSON or YAML format.",
-                    Hints.Glob,
                     Hints.Enter,
                 }
             },
             new MultiAnswerQuestion(
-                "What documentation templates do you want to use?", (s, m, c) => { if (s != null) m.Build.Templates.AddRange(s); },
-                new string[] { "default" }) {
+                "What documentation templates do you want to use?",
+                (s, m, c) => { if (s != null) m.Build.Templates.AddRange(s); },
+                new string[] { "default" })
+            {
                 Descriptions = new string[]
                 {
                     "You can define multiple templates in order. The latter one will overwrite the former one if names collide",
