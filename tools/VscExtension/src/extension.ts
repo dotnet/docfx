@@ -12,6 +12,7 @@ import { PreviewProcessor } from "./Processors/previewProcessor";
 import { ContentProvider } from "./ContentProvider/contentProvider";
 import * as ConstVariable from "./constVariables/commonVariables";
 import { PreviewType } from "./constVariables/previewType";
+import { connectServer, highlight} from './xrefIntellisenseServer_initialize';
 
 export function activate(context: ExtensionContext) {
     let dfmPreviewProcessor = new DfmPreviewProcessor(context);
@@ -115,7 +116,10 @@ export function activate(context: ExtensionContext) {
     server.on('listening', function () {
         docFXPreviewProcessor.navigationPort = server.address().port;
         ContentProvider.port = server.address().port;
-    })
+    });
+
+    connectServer(context);
+    highlight(context);
 }
 
 // This method is called when your extension is deactivated
