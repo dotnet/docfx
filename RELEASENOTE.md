@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.22.2)
+﻿Version Notes (Current Version: v2.22.3)
 =======================================
+v2.22.3
+-----------
+1. Upgrade Microsoft.Net.Compilers to 2.3.1
+
 v2.22.2
 -----------
 1. Bug fixed:
