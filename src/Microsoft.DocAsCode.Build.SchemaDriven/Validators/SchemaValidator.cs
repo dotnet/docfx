@@ -41,12 +41,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             {
                 return false;
             }
-            if (uri.Host == SupportedMetaSchemaUri.Host && uri.LocalPath == SupportedMetaSchemaUri.LocalPath && (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment == "#"))
-            {
-                return true;
-            }
-
-            return false;
+            
+            return uri.Host == SupportedMetaSchemaUri.Host
+                && uri.LocalPath == SupportedMetaSchemaUri.LocalPath
+                && (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment == "#");
         }
     }
 }
