@@ -47,15 +47,20 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <bugTrackerUrl>https://github.com/dotnet/docfx/issues</bugTrackerUrl>
     <tags>docfx markdown documentation codecomments GithubFlavoredMarkdown GFM DFM</tags>
     <summary>DocFX makes it extremely easy to generate your API reference, landing page, and how-to.</summary>
-    <description>DocFx is a documentation generation tool for api reference and markdown files!
+    <description>DocFx is a documentation generation tool for API reference and Markdown files!
 
-DocFX is an API documentation generator for .NET, currently supporting C# and VB, as similar to JSDoc or Sphinx. It has the ability to extract triple slash comments out from your source code. What's more, it has syntax to link additional files to API to add additional remarks. docfx will scan your source code and your additional conceptual files and generate a complete HTML documentation website for you. docfx provides the flexibility for you to customize the website through templates. We currently have several embedded templates, including websites containing pure static html pages and also website managed by AngularJS. Of cause, if you are interested in creating your own website with your own styles, you can follow [how to create custom template to create custom templates](http://dotnet.github.io/docfx/tutorial/howto_create_custom_template.html) to create custom templates.
+*DocFX* is an API documentation generator for .NET, and currently it supports C# and VB.
+It generates API reference documentation from triple-slash comments in your source code.
+It also allows you to use Markdown files to create additional topics such as tutorials and how-tos, and to customize the generated reference documentation.
+*DocFX* builds a static HTML website from your source code and Markdown files, which can be easily hosted on any web servers (for example, *github.io*).
+Also, *DocFX* provides you the flexibility to customize the layout and style of your website through templates.
+If you are interested in creating your own website with your own styles, you can follow [how to create custom template](howto_create_custom_template.md) to create custom templates.
 
 ### Features
 
-* Generate API Documentation - Able to generate API documentation from triple-slash-comments for .NET source code directly!
-* Generate Conceptual Documentation - Able to generate HTML from markdown files supporting DFM syntax.
-* Easy Customization - Able to customize templates and themes easily
+* Website from Source Code and Markdown - DocFX generates Documentation directly from source code (.NET, RESTful API, JavaScript, Java, etc...) and Markdown files.
+* Run Everywhere - DocFX runs on Linux, macOS, and Windows. The generated website can be deployed to any web host with no additional configurations, e.g. Github Pages, Azure Websites...
+* Easy Customization - DocFX provides a flexible way to customize templates and themes easily.
 </description>
     <releaseNotes>See https://github.com/dotnet/docfx/blob/master/RELEASENOTE.md</releaseNotes>
     <!-- =============================== -->
