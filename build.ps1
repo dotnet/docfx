@@ -185,6 +185,10 @@ $packages = @{
         "proj" = $null;
         "nuspecs" = @("src\nuspec\MergeSourceInfo\MergeSourceInfo.nuspec");
     };
+    "TocConverter" = @{
+        "proj" = $null;
+        "nuspecs" = @("src\nuspec\TocConverter\TocConverter.nuspec");
+    };
 }
 
 # Pack plugins and tools
