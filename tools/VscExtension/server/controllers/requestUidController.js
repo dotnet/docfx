@@ -14,29 +14,20 @@ class requestUidController {
     static getCompletionItem(partUid) {
         return __awaiter(this, void 0, void 0, function* () {
             let completionItems = [];
-            // var text = document.getText(document.lineAt(position).range);
-            // var tx = text.substring(text.lastIndexOf("@")+1);
-            // if(tx.length > 1 && tx[0] == ' '){
-            //     var completionItems = [];
-            // }
-            var re = yield this.getData('http://xrefservice0810.azurewebsites.net/intellisense/', partUid);
-            //console.log(re);
-            re.forEach(function (element) {
+            var xrefSpecs = yield this.getData(partUid);
+            xrefSpecs.forEach(element => {
                 let completionItem = vscode_languageserver_1.CompletionItem.create(element.uid);
                 completionItem.kind = element.type;
-                //completionItem.commitCharacters = ["c","s"];
                 completionItem.detail = element.href;
-                //completionItem.filterText = "bbb";
-                //completionItem.insertText = new vscode.SnippetString(element);
                 completionItems.push(completionItem);
             });
             return completionItems;
         });
     }
-    static getData(url, uid) {
+    static getData(uid) {
         return __awaiter(this, void 0, void 0, function* () {
             let encodeUid = encodeURIComponent(uid);
-            var data = yield httpRequestFactory_1.httpRequestFactory.getUids(url, encodeUid);
+            var data = yield httpRequestFactory_1.httpRequestFactory.getUids(encodeUid);
             return data;
         });
     }

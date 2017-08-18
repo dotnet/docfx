@@ -6,7 +6,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_languageserver_1 = require("vscode-languageserver");
 const requestHandler = require("./handlers/requestHandler");
-//import * as vscode from 'vscode';
+const httpRequestFactory_1 = require("./utilities/httpRequestFactory");
+const fs = require("fs");
+const path = require("path");
 // Create a connection for the server. The connection uses Node's IPC as a transport
 let connection = vscode_languageserver_1.createConnection(new vscode_languageserver_1.IPCMessageReader(process), new vscode_languageserver_1.IPCMessageWriter(process));
 // Create a simple text document manager. The text document manager
@@ -21,33 +23,44 @@ requestHandler.documents.listen(connection);
 let workspaceRoot;
 connection.onInitialize((params) => {
     workspaceRoot = params.rootPath;
+    if (workspaceRoot != null)
+        exports.docfxJson = JSON.parse(fs.readFileSync(path.join(workspaceRoot, 'docfx.json'), 'utf8'));
+    console.log("before");
+    if (exports.docfxJson != undefined) {
+        httpRequestFactory_1.httpRequestFactory.xrefService = exports.docfxJson.xrefService;
+        if (httpRequestFactory_1.httpRequestFactory.xrefService != undefined)
+            httpRequestFactory_1.httpRequestFactory.isDocfxProject = true;
+    }
+    if (httpRequestFactory_1.httpRequestFactory.isDocfxProject) {
+        // This handler provides the initial list of the completion items.
+        connection.onCompletion(requestHandler.completionHandler);
+        connection.onDocumentLinks(requestHandler.documentLinkHandler);
+        return {
+            capabilities: {
+                // Tell the client that the server works in FULL text document sync mode
+                textDocumentSync: documents.syncKind,
+                // Tell the client that the server support code complete
+                completionProvider: {
+                    resolveProvider: false
+                    //triggerCharacters:["M"]
+                },
+                documentLinkProvider: {
+                    resolveProvider: false
+                }
+            }
+        };
+    }
+    console.log("after");
     return {
         capabilities: {
             // Tell the client that the server works in FULL text document sync mode
-            textDocumentSync: documents.syncKind,
-            // Tell the client that the server support code complete
-            completionProvider: {
-                resolveProvider: true
-                //triggerCharacters:["*"]
-            },
-            documentHighlightProvider: true,
-            documentLinkProvider: {
-                resolveProvider: false
-            }
+            textDocumentSync: documents.syncKind
         }
     };
 });
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent((change) => {
-    validateTextDocument(change.document);
-    var tdx = {};
-    var tdi = {};
-    tdi.uri = change.document.uri;
-    tdx.textDocument = tdi;
-    //connection.sendRequest("completeHandler", tdx);
-    //completeHandler(tdx);
-    //console.log("text changed");
 });
 // hold the maxNumberOfProblems setting
 let maxNumberOfProblems;
@@ -87,24 +100,23 @@ connection.onDidChangeWatchedFiles((change) => {
     connection.console.log('We received an file change event');
     //connection.onCompletion
 });
-// This handler provides the initial list of the completion items.
-connection.onCompletion(requestHandler.completionHandler);
+// // This handler provides the initial list of the completion items.
+// connection.onCompletion(requestHandler.completionHandler);
 // This handler resolve additional information for the item selected in
 // the completion list.
-connection.onCompletionResolve((item) => {
-    if (item.data === 1) {
-        item.detail = 'TypeScript details',
-            item.documentation = 'TypeScript documentation';
-    }
-    else if (item.data === 2) {
-        item.detail = 'JavaScript details',
-            item.documentation = 'JavaScript documentation';
-    }
-    return item;
-});
+// connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
+// 	if (item.data === 1) {
+// 		item.detail = 'TypeScript details',
+// 		item.documentation = 'TypeScript documentation'
+// 	} else if (item.data === 2) {
+// 		item.detail = 'JavaScript details',
+// 		item.documentation = 'JavaScript documentation'
+// 	}
+// 	return item;
+// });
 //connection.onDocumentHighlight(requestHandler.highlightHandler);
-connection.onDocumentLinks(requestHandler.documentLinkHandler);
-let t;
+// connection.onDocumentLinks(requestHandler.documentLinkHandler);
+// let t: Thenable<string>;
 /*
 connection.onDidOpenTextDocument((params) => {
     // A text document got opened in VSCode.

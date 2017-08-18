@@ -14,8 +14,12 @@ import {
 } from 'vscode-languageserver';
 import {requestUidController} from './controllers/requestUidController';
 import * as requestHandler from './handlers/requestHandler';
+import {httpRequestFactory} from './utilities/httpRequestFactory';
+import * as fs from 'fs';
+import * as path from 'path';
 //import * as vscode from 'vscode';
 
+export let docfxJson;
 // Create a connection for the server. The connection uses Node's IPC as a transport
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
 
@@ -32,19 +36,37 @@ requestHandler.documents.listen(connection);
 let workspaceRoot: string;
 connection.onInitialize((params): InitializeResult => {
 	workspaceRoot = params.rootPath;
+	if(workspaceRoot != null) docfxJson = JSON.parse(fs.readFileSync(path.join(workspaceRoot,'docfx.json'), 'utf8'));
+	console.log("before");
+	if(docfxJson != undefined) {
+		httpRequestFactory.xrefService = docfxJson.xrefService;
+		if(httpRequestFactory.xrefService != undefined) httpRequestFactory.isDocfxProject = true;
+	}
+	if(httpRequestFactory.isDocfxProject) {
+		// This handler provides the initial list of the completion items.
+		connection.onCompletion(requestHandler.completionHandler);
+		connection.onDocumentLinks(requestHandler.documentLinkHandler);
+		return {
+			capabilities: {
+				// Tell the client that the server works in FULL text document sync mode
+				textDocumentSync: documents.syncKind,
+				// Tell the client that the server support code complete
+				completionProvider: {
+					resolveProvider: false
+					//triggerCharacters:["M"]
+				},
+				
+				documentLinkProvider: {
+					resolveProvider: false
+				}
+			}
+		}
+	}
+	console.log("after");
 	return {
 		capabilities: {
 			// Tell the client that the server works in FULL text document sync mode
-			textDocumentSync: documents.syncKind,
-			// Tell the client that the server support code complete
-			completionProvider: {
-				resolveProvider: true
-				//triggerCharacters:["*"]
-			},
-			documentHighlightProvider: true,
-			documentLinkProvider: {
-				resolveProvider: false
-			}
+			textDocumentSync: documents.syncKind
 		}
 	}
 });
@@ -52,14 +74,7 @@ connection.onInitialize((params): InitializeResult => {
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent((change) => {
-	validateTextDocument(change.document);
-	var tdx = <TextDocumentPositionParams>{};
-	var tdi = <TextDocumentIdentifier>{};
-	tdi.uri = change.document.uri;
-	tdx.textDocument = tdi;
-	//connection.sendRequest("completeHandler", tdx);
-	//completeHandler(tdx);
-	//console.log("text changed");
+	
 });
 
 // The settings interface describe the server relevant settings part
@@ -116,23 +131,23 @@ connection.onDidChangeWatchedFiles((change) => {
 });
 
 
-// This handler provides the initial list of the completion items.
-connection.onCompletion(requestHandler.completionHandler);
+// // This handler provides the initial list of the completion items.
+// connection.onCompletion(requestHandler.completionHandler);
         
         
 		
 // This handler resolve additional information for the item selected in
 // the completion list.
-connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
-	if (item.data === 1) {
-		item.detail = 'TypeScript details',
-		item.documentation = 'TypeScript documentation'
-	} else if (item.data === 2) {
-		item.detail = 'JavaScript details',
-		item.documentation = 'JavaScript documentation'
-	}
-	return item;
-});
+// connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
+// 	if (item.data === 1) {
+// 		item.detail = 'TypeScript details',
+// 		item.documentation = 'TypeScript documentation'
+// 	} else if (item.data === 2) {
+// 		item.detail = 'JavaScript details',
+// 		item.documentation = 'JavaScript documentation'
+// 	}
+// 	return item;
+// });
 
 
 
@@ -140,8 +155,8 @@ connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
 
 
 
-connection.onDocumentLinks(requestHandler.documentLinkHandler);
-let t: Thenable<string>;
+// connection.onDocumentLinks(requestHandler.documentLinkHandler);
+// let t: Thenable<string>;
 
 /*
 connection.onDidOpenTextDocument((params) => {

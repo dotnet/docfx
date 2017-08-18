@@ -10,20 +10,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = require("axios");
 class httpRequestFactory {
-    static getUids(url, uid) {
+    static getUids(uid) {
         return __awaiter(this, void 0, void 0, function* () {
-            //var data;
-            let promise = this._client.get(url + uid + "/");
-            let response = yield promise;
-            //= 
-            //console.log(response.data);
-            let data = yield response.data;
-            return data;
+            if (httpRequestFactory.xrefService != undefined) {
+                for (var i = 0; i < httpRequestFactory.xrefService.length; i++) {
+                    try {
+                        let promise = yield this._client.get(httpRequestFactory.xrefService[i] + uid);
+                        let data = promise.data;
+                        if (data != undefined)
+                            return data;
+                    }
+                    catch (error) {
+                        console.log(error);
+                    }
+                }
+            }
+            return [];
         });
     }
 }
+httpRequestFactory.isDocfxProject = false;
+httpRequestFactory.xrefService = [];
 httpRequestFactory._client = axios_1.default.create({
-    //baseURL: 'http://restfulapiwebservice0627.azurewebsites.net/',
     headers: { 'Content-type': 'application/json', 'Accept-type': 'application/json' }
 });
 exports.httpRequestFactory = httpRequestFactory;
