@@ -23,9 +23,11 @@ requestHandler.documents.listen(connection);
 let workspaceRoot;
 connection.onInitialize((params) => {
     workspaceRoot = params.rootPath;
-    if (workspaceRoot != null)
-        exports.docfxJson = JSON.parse(fs.readFileSync(path.join(workspaceRoot, 'docfx.json'), 'utf8'));
-    console.log("before");
+    if (workspaceRoot != null) {
+        let fullPath = path.join(workspaceRoot, 'docfx.json');
+        if (fs.existsSync(fullPath))
+            exports.docfxJson = JSON.parse(fs.readFileSync(fullPath, 'utf8'));
+    }
     if (exports.docfxJson != undefined) {
         httpRequestFactory_1.httpRequestFactory.xrefService = exports.docfxJson.xrefService;
         if (httpRequestFactory_1.httpRequestFactory.xrefService != undefined)
@@ -50,7 +52,6 @@ connection.onInitialize((params) => {
             }
         };
     }
-    console.log("after");
     return {
         capabilities: {
             // Tell the client that the server works in FULL text document sync mode
@@ -58,86 +59,6 @@ connection.onInitialize((params) => {
         }
     };
 });
-// The content of a text document has changed. This event is emitted
-// when the text document first opened or when its content has changed.
-documents.onDidChangeContent((change) => {
-});
-// hold the maxNumberOfProblems setting
-let maxNumberOfProblems;
-// The settings have changed. Is send on server activation
-// as well.
-connection.onDidChangeConfiguration((change) => {
-    let settings = change.settings;
-    maxNumberOfProblems = settings.languageServerExample.maxNumberOfProblems || 100;
-    // Revalidate any open text documents
-    documents.all().forEach(validateTextDocument);
-});
-function validateTextDocument(textDocument) {
-    let diagnostics = [];
-    let lines = textDocument.getText().split(/\r?\n/g);
-    let problems = 0;
-    for (var i = 0; i < lines.length && problems < maxNumberOfProblems; i++) {
-        let line = lines[i];
-        let index = line.indexOf('typescript');
-        if (index >= 0) {
-            problems++;
-            diagnostics.push({
-                severity: vscode_languageserver_1.DiagnosticSeverity.Warning,
-                range: {
-                    start: { line: i, character: index },
-                    end: { line: i, character: index + 10 }
-                },
-                message: `${line.substr(index, 10)} should be spelled TypeScript`,
-                source: 'ex'
-            });
-        }
-    }
-    // Send the computed diagnostics to VSCode.
-    connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-}
-connection.onDidChangeWatchedFiles((change) => {
-    // Monitored files have change in VSCode
-    connection.console.log('We received an file change event');
-    //connection.onCompletion
-});
-// // This handler provides the initial list of the completion items.
-// connection.onCompletion(requestHandler.completionHandler);
-// This handler resolve additional information for the item selected in
-// the completion list.
-// connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
-// 	if (item.data === 1) {
-// 		item.detail = 'TypeScript details',
-// 		item.documentation = 'TypeScript documentation'
-// 	} else if (item.data === 2) {
-// 		item.detail = 'JavaScript details',
-// 		item.documentation = 'JavaScript documentation'
-// 	}
-// 	return item;
-// });
-//connection.onDocumentHighlight(requestHandler.highlightHandler);
-// connection.onDocumentLinks(requestHandler.documentLinkHandler);
-// let t: Thenable<string>;
-/*
-connection.onDidOpenTextDocument((params) => {
-    // A text document got opened in VSCode.
-    // params.textDocument.uri uniquely identifies the document. For documents store on disk this is a file URI.
-    // params.textDocument.text the initial full content of the document.
-    connection.console.log(`${params.textDocument.uri} opened.`);
-});
-
-connection.onDidChangeTextDocument((params) => {
-    // The content of a text document did change in VSCode.
-    // params.textDocument.uri uniquely identifies the document.
-    // params.contentChanges describe the content changes to the document.
-    connection.console.log(`${params.textDocument.uri} changed: ${JSON.stringify(params.contentChanges)}`);
-});
-
-connection.onDidCloseTextDocument((params) => {
-    // A text document got closed in VSCode.
-    // params.textDocument.uri uniquely identifies the document.
-    connection.console.log(`${params.textDocument.uri} closed.`);
-});
-*/
 // Listen on the connection
 connection.listen();
 //# sourceMappingURL=server.js.map

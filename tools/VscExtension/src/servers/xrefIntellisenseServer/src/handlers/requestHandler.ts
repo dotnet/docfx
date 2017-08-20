@@ -4,7 +4,8 @@ import {
 	TextDocuments, TextDocument, Diagnostic, DiagnosticSeverity,
 	InitializeParams, InitializeResult, TextDocumentPositionParams,
 	CompletionItem, CompletionItemKind, TextDocumentIdentifier, 
-	DocumentHighlight, Range, DocumentLinkParams, DocumentLink
+	DocumentHighlight, Range, DocumentLinkParams, DocumentLink,
+	Position
 } from 'vscode-languageserver';
 import {requestUidController} from '../controllers/requestUidController';
 
@@ -14,17 +15,33 @@ export let documents: TextDocuments = new TextDocuments();
 export async function completionHandler(textDocumentPosition: TextDocumentPositionParams): Promise<CompletionItem[]>
 {
 	var text = documents.get(textDocumentPosition.textDocument.uri).getText();
-	var tx = text.substring(text.lastIndexOf("@")+1);
+	let lineStartPosition: Position = Position.create(textDocumentPosition.position.line, 0);
+	var startPos = documents.get(textDocumentPosition.textDocument.uri).offsetAt(lineStartPosition);
+	var endPos = documents.get(textDocumentPosition.textDocument.uri).offsetAt(textDocumentPosition.position);
+	var line = text.substring(startPos, endPos);
+	const regEx = /((@[^ \r\n>]+)$)|((<xref:[^ \r\n>]+)$)/g;
+	let match = regEx.exec(line);
+	let uid: string;
+	if(match != null)
+	{
+		if(match[0][0] == '@')
+		{
+			uid = match[0].substr(1);
+		} 
+		else
+		{
+			uid = match[0].substr(6);
+		}
+	}
+	
 	if(completionItem == undefined) {
-		completionItem = await requestUidController.getCompletionItem(tx);
-		console.log("completion == undefined " + tx);
+		completionItem = await requestUidController.getCompletionItem(uid);
 		return completionItem;
 	} else {
-		completionItem = completionItem.filter(item => item.label.includes(tx));
+		completionItem = completionItem.filter(item => item.label.includes(uid));
 		if(completionItem.length < 10) {
-			completionItem = await requestUidController.getCompletionItem(tx);
+			completionItem = await requestUidController.getCompletionItem(uid);
 		}
-		console.log("completion > 10 " + tx);
 		return completionItem;
 	}
 }
@@ -39,16 +56,14 @@ export async function documentLinkHandler(documentLinkParams: DocumentLinkParams
 	while(match = regEx.exec(text)) {
 		const startPos = textDocument.positionAt(match.index);
 		const endPos = textDocument.positionAt(match.index + match[0].length);
-		let tx = textDocument.getText();
 		let uid;
-		if(tx[match.index] == '@') {
-			uid = tx.substr(match.index + 1, match[0].length - 1);
+		if(text[match.index] == '@') {
+			uid = text.substr(match.index + 1, match[0].length - 1);
 		} else {
-			uid = tx.substr(match.index + 6, match[0].length - 7);
+			uid = text.substr(match.index + 6, match[0].length - 7);
 		}
-		console.log("docunmentLink:hh"+uid+":"+regEx.lastIndex);
         let xrefSpecs = await requestUidController.getData(uid);
-        if(xrefSpecs != undefined && xrefSpecs.length > 0)
+        if(xrefSpecs != undefined && xrefSpecs.length > 0 && xrefSpecs[0].uid == uid)
         {
             let documentLink: DocumentLink = DocumentLink.create(Range.create(startPos, endPos), xrefSpecs[0].href);
 		    documentLinks.push(documentLink);

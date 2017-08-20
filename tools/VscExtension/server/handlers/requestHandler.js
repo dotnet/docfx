@@ -15,18 +15,30 @@ exports.documents = new vscode_languageserver_1.TextDocuments();
 function completionHandler(textDocumentPosition) {
     return __awaiter(this, void 0, void 0, function* () {
         var text = exports.documents.get(textDocumentPosition.textDocument.uri).getText();
-        var tx = text.substring(text.lastIndexOf("@") + 1);
+        let lineStartPosition = vscode_languageserver_1.Position.create(textDocumentPosition.position.line, 0);
+        var startPos = exports.documents.get(textDocumentPosition.textDocument.uri).offsetAt(lineStartPosition);
+        var endPos = exports.documents.get(textDocumentPosition.textDocument.uri).offsetAt(textDocumentPosition.position);
+        var line = text.substring(startPos, endPos);
+        const regEx = /((@[^ \r\n>]+)$)|((<xref:[^ \r\n>]+)$)/g;
+        let match = regEx.exec(line);
+        let uid;
+        if (match != null) {
+            if (match[0][0] == '@') {
+                uid = match[0].substr(1);
+            }
+            else {
+                uid = match[0].substr(6);
+            }
+        }
         if (completionItem == undefined) {
-            completionItem = yield requestUidController_1.requestUidController.getCompletionItem(tx);
-            console.log("completion == undefined " + tx);
+            completionItem = yield requestUidController_1.requestUidController.getCompletionItem(uid);
             return completionItem;
         }
         else {
-            completionItem = completionItem.filter(item => item.label.includes(tx));
+            completionItem = completionItem.filter(item => item.label.includes(uid));
             if (completionItem.length < 10) {
-                completionItem = yield requestUidController_1.requestUidController.getCompletionItem(tx);
+                completionItem = yield requestUidController_1.requestUidController.getCompletionItem(uid);
             }
-            console.log("completion > 10 " + tx);
             return completionItem;
         }
     });
@@ -42,17 +54,15 @@ function documentLinkHandler(documentLinkParams) {
         while (match = regEx.exec(text)) {
             const startPos = textDocument.positionAt(match.index);
             const endPos = textDocument.positionAt(match.index + match[0].length);
-            let tx = textDocument.getText();
             let uid;
-            if (tx[match.index] == '@') {
-                uid = tx.substr(match.index + 1, match[0].length - 1);
+            if (text[match.index] == '@') {
+                uid = text.substr(match.index + 1, match[0].length - 1);
             }
             else {
-                uid = tx.substr(match.index + 6, match[0].length - 7);
+                uid = text.substr(match.index + 6, match[0].length - 7);
             }
-            console.log("docunmentLink:hh" + uid + ":" + regEx.lastIndex);
             let xrefSpecs = yield requestUidController_1.requestUidController.getData(uid);
-            if (xrefSpecs != undefined && xrefSpecs.length > 0) {
+            if (xrefSpecs != undefined && xrefSpecs.length > 0 && xrefSpecs[0].uid == uid) {
                 let documentLink = vscode_languageserver_1.DocumentLink.create(vscode_languageserver_1.Range.create(startPos, endPos), xrefSpecs[0].href);
                 documentLinks.push(documentLink);
             }

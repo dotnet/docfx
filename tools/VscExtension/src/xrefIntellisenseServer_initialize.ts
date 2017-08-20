@@ -5,7 +5,7 @@
 'use strict';
 
 import * as path from 'path';
-
+import * as fs from 'fs';
 import * as vscode from 'vscode';
 import { LanguageClient, LanguageClientOptions, SettingMonitor, ServerOptions, TransportKind } from 'vscode-languageclient';
 
@@ -16,7 +16,6 @@ export function connectServer(context: vscode.ExtensionContext)
 	// The debug options for the server
 	let debugOptions = { execArgv: ["--nolazy", "--debug=6009"] };
 	
-	console.log(process.pid);
 	// If the extension is launched in debug mode then the debug server options are used
 	// Otherwise the run options are used
 	let serverOptions: ServerOptions = {
@@ -29,44 +28,33 @@ export function connectServer(context: vscode.ExtensionContext)
 		// Register the server for markdown documents
 		documentSelector: ['markdown'],
 		synchronize: {
-			// Synchronize the setting section 'languageServerExample' to the server
-			configurationSection: 'languageServerExample',
 			// Notify the server about file changes to '.clientrc files contain in the workspace
 			fileEvents: vscode.workspace.createFileSystemWatcher('**/.clientrc')
 		}
 	};
 	
 	// Create the language client and start the client.
-	let disposable = new LanguageClient('languageServerExample', 'Language Server Example', serverOptions, clientOptions).start();
+	let disposable = new LanguageClient('xrefIntellisense', 'XRef Intellisense', serverOptions, clientOptions).start();
 	
 	// Push the disposable to the context's subscriptions so that the 
 	// client can be deactivated on extension deactivation
 	context.subscriptions.push(disposable);
+	isDocfxProject(context);
 }
 
-export function highlight(context: vscode.ExtensionContext)
+function isDocfxProject(context: vscode.ExtensionContext) 
 {
+	var workspaceRoot = vscode.workspace.rootPath;
+	if(workspaceRoot != undefined) {
+		let fullPath = path.join(workspaceRoot,'docfx.json');
+		if(fs.existsSync(fullPath)) highlight(context);
+	}
+}
 
-	console.log('decorator sample is activated');
-
-	// create a decorator type that we use to decorate small numbers
-	const smallNumberDecorationType = vscode.window.createTextEditorDecorationType({
-		borderWidth: '1px',
-		borderStyle: 'solid',
-		overviewRulerColor: 'blue',
-		overviewRulerLane: vscode.OverviewRulerLane.Right,
-		light: {
-			// this color will be used in light color themes
-			borderColor: 'darkblue'
-		},
-		dark: {
-			// this color will be used in dark color themes
-			borderColor: 'lightblue'
-		}
-	});
-
-	// create a decorator type that we use to decorate large numbers
-	const largeNumberDecorationType = vscode.window.createTextEditorDecorationType({
+function highlight(context: vscode.ExtensionContext)
+{
+	// create a decorator type that we use to decorate special words;
+	const specialWordsDecorationType = vscode.window.createTextEditorDecorationType({
 		cursor: 'crosshair',
 		color: 'rgba(255,255,0,1)',
 		border:"1px",
@@ -103,23 +91,16 @@ export function highlight(context: vscode.ExtensionContext)
 		if (!activeEditor) {
 			return;
 		}
-		//let keywordsPattern: RegExp = [/@[\w.#\*,\(\)]+/g];
 		const regEx = /(@([^ >]+))|(<xref:([^ >]+)>)/g;
 		const text = activeEditor.document.getText();
-		const smallNumbers: vscode.DecorationOptions[] = [];
-		const largeNumbers: vscode.DecorationOptions[] = [];
+		const specialWords: vscode.DecorationOptions[] = [];
 		let match;
 		while (match = regEx.exec(text)) {
 			const startPos = activeEditor.document.positionAt(match.index);
 			const endPos = activeEditor.document.positionAt(match.index + match[0].length);
-			const decoration = { range: new vscode.Range(startPos, endPos), hoverMessage: 'Number **' + match[0] + '**' };
-			if (match[0].length < 3) {
-				smallNumbers.push(decoration);
-			} else {
-				largeNumbers.push(decoration);
-			}
+			const decoration = { range: new vscode.Range(startPos, endPos), hoverMessage: 'Uid **' + match[0] + '**' };
+			specialWords.push(decoration);
 		}
-		activeEditor.setDecorations(smallNumberDecorationType, smallNumbers);
-		activeEditor.setDecorations(largeNumberDecorationType, largeNumbers);
+		activeEditor.setDecorations(specialWordsDecorationType, specialWords);
 	}
 }
