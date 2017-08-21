@@ -92,7 +92,7 @@ namespace Microsoft.DocAsCode.Dfm
 
             if (startLine > totalLines)
             {
-                ErrorMessage = $"Start line {startLine} execeeds total lines {totalLines}";
+                ErrorMessage = $"Start line {startLine} exceeds total lines {totalLines}";
                 return false;
             }
 
