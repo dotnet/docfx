@@ -101,6 +101,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             var contentBuilder = new StringBuilder();
 
+            if (html.DocumentNode.SelectNodes("//meta[contains(@content,'noindex')]") != null)
+                return null;
+
             // Select content between the data-searchable class tag
             var nodes = html.DocumentNode.SelectNodes("//*[contains(@class,'data-searchable')]") ?? Enumerable.Empty<HtmlNode>();
             // Select content between the article tag

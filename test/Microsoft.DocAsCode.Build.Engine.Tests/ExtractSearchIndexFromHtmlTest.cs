@@ -3,12 +3,12 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Tests
 {
-    using HtmlAgilityPack;
-    using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.Plugins;
-    using System.Collections.Generic;
     using System.IO;
     using System.Text;
+
+    using Microsoft.DocAsCode.Plugins;
+
+    using HtmlAgilityPack;
     using Xunit;
 
     [Collection("docfx STA")]
@@ -62,6 +62,30 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         }
 
         [Fact]
+        public void TestSearchDisableClass()
+        {
+            var rawHtml = @"
+<head>
+    <title>This is title in head metadata</title>
+    <meta name='searchdisable' content='noindex'>
+</head>
+<body>
+    <article>
+        <h1>
+            This is article title
+        </h1>
+        docfx can do anything...
+    </article>
+</body>
+";
+            var html = new HtmlDocument();
+            html.LoadHtml(rawHtml);
+            var href = "http://dotnet.github.io/docfx";
+            var item = _extractor.ExtractItem(html, href);
+            Assert.True(item == null);
+        }
+
+        [Fact]
         public void TestArticleTagWithSearchableClass()
         {
             var rawHtml = @"
@@ -79,6 +103,28 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var href = "http://dotnet.github.io/docfx";
             var item = _extractor.ExtractItem(html, href);
             Assert.True(item.Equals(new SearchIndexItem { Href = href, Title = "This is title in head metadata", Keywords = "Only index once."}));
+        }
+
+        [Fact]
+        public void TestDisableTagWithSearchableClass()
+        {
+            var rawHtml = @"
+<head>
+    <title>This is title in head metadata</title>
+    <meta name='searchdisable' content='noindex'>
+</head>
+<body>
+    <p class='data-searchable'>Cooooooool!</p>
+    <article class='data-searchable'>
+        Only index once.
+    </article>
+</body>
+";
+            var html = new HtmlDocument();
+            html.LoadHtml(rawHtml);
+            var href = "http://dotnet.github.io/docfx";
+            var item = _extractor.ExtractItem(html, href);
+            Assert.True(item == null);
         }
 
         [Fact]
