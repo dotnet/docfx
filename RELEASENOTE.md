@@ -1,7 +1,10 @@
-﻿Version Notes (Current Version: v2.23)
+﻿Version Notes (Current Version: v2.24)
 =======================================
 
-v2.23 (Pre-release)
+v2.24 (Pre-release)
+-----------
+
+v2.23
 -----------
 1. Improve error message for invalid toc yaml file.
 2. Use xhtml for dfm default setting.
@@ -9,6 +12,9 @@ v2.23 (Pre-release)
 4. Bug fixed:
    1. Fix #1825: ArgumentNullException when EII implements a member with EditorBrowsableState.Never.
    2. Fix #1937: Anchor icon overlays Note icon.
+   3. Fix #1951, #1905: Running DocFX from outside the folder fails
+   4. Fix #1915: Cannot generate docs of two assemblies
+   5. Fix #1900: Add back Microsoft.CodeAnalysis.Csharp.Features.dll dependency
 
 v2.22
 -----------
