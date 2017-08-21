@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class SplitToken
    | DocFX website ">
-    <meta name="generator" content="docfx 2.22.3.0">
+    <meta name="generator" content="docfx 2.23.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -87,6 +87,10 @@
     <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
     <div class="level1"><span class="xref">SplitToken</span></div>
   </div>
+      <div class="level2"><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmDefaultBlockQuoteBlockSplitToken.html">DfmDefaultBlockQuoteBlockSplitToken</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmNoteBlockSplitToken.html">DfmNoteBlockSplitToken</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmSectionBlockSplitToken.html">DfmSectionBlockSplitToken</a></div>
+      <div class="level2"><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmVideoBlockSplitToken.html">DfmVideoBlockSplitToken</a></div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
     <div>
@@ -115,7 +119,7 @@
   <h6><strong>Assembly</strong>: Microsoft.DocAsCode.Dfm.dll</h6>
   <h5 id="Microsoft_DocAsCode_Dfm_SplitToken_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class SplitToken</code></pre>
+    <pre><code class="lang-csharp hljs">public class SplitToken : IMarkdownToken</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
@@ -124,7 +128,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_SplitToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownToken_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.SplitToken.%23ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/SplitToken.cs/#L13">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/SplitToken.cs/#L16">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Dfm_SplitToken__ctor_" data-uid="Microsoft.DocAsCode.Dfm.SplitToken.#ctor*"></a>
   <h4 id="Microsoft_DocAsCode_Dfm_SplitToken__ctor_Microsoft_DocAsCode_MarkdownLite_IMarkdownToken_" data-uid="Microsoft.DocAsCode.Dfm.SplitToken.#ctor(Microsoft.DocAsCode.MarkdownLite.IMarkdownToken)">SplitToken(IMarkdownToken)</h4>
@@ -155,10 +159,42 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_SplitToken_Context.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.SplitToken.Context%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/SplitToken.cs/#L26">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Dfm_SplitToken_Context_" data-uid="Microsoft.DocAsCode.Dfm.SplitToken.Context*"></a>
+  <h4 id="Microsoft_DocAsCode_Dfm_SplitToken_Context" data-uid="Microsoft.DocAsCode.Dfm.SplitToken.Context">Context</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IMarkdownContext Context { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownContext.html">IMarkdownContext</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownToken_Context">IMarkdownToken.Context</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_SplitToken_InnerTokens.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.SplitToken.InnerTokens%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/SplitToken.cs/#L11">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/SplitToken.cs/#L14">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Dfm_SplitToken_InnerTokens_" data-uid="Microsoft.DocAsCode.Dfm.SplitToken.InnerTokens*"></a>
   <h4 id="Microsoft_DocAsCode_Dfm_SplitToken_InnerTokens" data-uid="Microsoft.DocAsCode.Dfm.SplitToken.InnerTokens">InnerTokens</h4>
@@ -185,10 +221,74 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_SplitToken_Rule.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.SplitToken.Rule%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/SplitToken.cs/#L25">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Dfm_SplitToken_Rule_" data-uid="Microsoft.DocAsCode.Dfm.SplitToken.Rule*"></a>
+  <h4 id="Microsoft_DocAsCode_Dfm_SplitToken_Rule" data-uid="Microsoft.DocAsCode.Dfm.SplitToken.Rule">Rule</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IMarkdownRule Rule { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownRule.html">IMarkdownRule</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownToken_Rule">IMarkdownToken.Rule</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_SplitToken_SourceInfo.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.SplitToken.SourceInfo%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/SplitToken.cs/#L27">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Dfm_SplitToken_SourceInfo_" data-uid="Microsoft.DocAsCode.Dfm.SplitToken.SourceInfo*"></a>
+  <h4 id="Microsoft_DocAsCode_Dfm_SplitToken_SourceInfo" data-uid="Microsoft.DocAsCode.Dfm.SplitToken.SourceInfo">SourceInfo</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public SourceInfo SourceInfo { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.SourceInfo.html">SourceInfo</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="Microsoft.DocAsCode.MarkdownLite.IMarkdownToken.html#Microsoft_DocAsCode_MarkdownLite_IMarkdownToken_SourceInfo">IMarkdownToken.SourceInfo</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_SplitToken_Token.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.SplitToken.Token%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/SplitToken.cs/#L9">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/SplitToken.cs/#L12">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Dfm_SplitToken_Token_" data-uid="Microsoft.DocAsCode.Dfm.SplitToken.Token*"></a>
   <h4 id="Microsoft_DocAsCode_Dfm_SplitToken_Token" data-uid="Microsoft.DocAsCode.Dfm.SplitToken.Token">Token</h4>
@@ -238,7 +338,7 @@
                     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_SplitToken.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.SplitToken%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/SplitToken.cs/#L7" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/SplitToken.cs/#L10" class="contribution-link">View Source</a>
                   </li>
                   <li>
                     <a href="#disqus_thread" class="contribution-link">0 Comments</a>

@@ -8,7 +8,7 @@
     <title>Getting Started with DocFX | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Getting Started with DocFX | DocFX website ">
-    <meta name="generator" content="docfx 2.22.3.0">
+    <meta name="generator" content="docfx 2.23.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -86,7 +86,7 @@ If you are interested in creating your own website with your own styles, you can
 <p><em>DocFX</em> also has the following cool features:</p>
 <ul>
 <li>Integration with your source code. You can click &quot;View Source&quot; on an API to navigate to the source code in GitHub (your source code must be pushed to GitHub).</li>
-<li>Cross-platform support. We have both exe version that runs under Windows and a .NET Core version that runs cross platform.</li>
+<li>Cross-platform support. We have exe version that runs under Windows. It can also runs cross platforms on Linux/macOS with Mono.</li>
 <li>Integration with Visual Studio. You can seamlessly use <em>DocFX</em> within Visual Studio.</li>
 <li>Markdown extensions. We introduced <em>DocFX Flavored Markdown(DFM)</em> to help you write API documentation. DFM is <em>100%</em> compatible with <em>GitHub Flavored Markdown(GFM)</em> with some useful extensions, like <em>file inclusion</em>, <em>code snippet</em>, <em>cross reference</em>, and <em>yaml header</em>.
 For detailed description about DFM, please refer to <a href="../spec/docfx_flavored_markdown.html">DFM</a>.</li>
@@ -107,19 +107,19 @@ It add itself to the build targets and add the <code>docfx.json</code> configura
 <p><em>Step2.</em> Compile, a <code>_site</code> folder is generated with the documentation.</p>
 <div class="NOTE"><h5>Note</h5><p><em>Possible warning</em>:</p>
 <ul>
-<li><em>Cache is corrupted</em>: if your project targets multiple frameworks, you have to indicate one to be the main for the documentation, through the <a href="https://github.com/dotnet/docfx/issues/1254#issuecomment-294080535"><code>TargetFramework</code> property</a> in <code>docfx.json</code>:</li>
+<li><p><em>Cache is corrupted</em>: if your project targets multiple frameworks, you have to indicate one to be the main for the documentation, through the <a href="https://github.com/dotnet/docfx/issues/1254#issuecomment-294080535"><code>TargetFramework</code> property</a> in <code>docfx.json</code>:</p>
+<p>   &quot;metadata&quot;: [
+     {
+       &quot;src&quot;: &quot;...&quot;,
+       &quot;dest&quot;: &quot;...&quot;,
+       &quot;properties&quot;: {
+         &quot;TargetFramework&quot;: <one_of_your_framework>
+       }
+     },
+   ]<p>
+</one_of_your_framework></li>
 </ul>
 </div>
-<blockquote><pre><code> &quot;metadata&quot;: [
-   {
-     &quot;src&quot;: &quot;...&quot;,
-     &quot;dest&quot;: &quot;...&quot;,
-     &quot;properties&quot;: {
-       &quot;TargetFramework&quot;: &lt;one_of_your_framework&gt;
-     }
-   },
- ]
-</code></pre></blockquote>
 <h2 id="4-use-docfx-with-a-build-server">4. Use <em>DocFX</em> with a Build Server</h2>
 <p><em>DocFX</em> can be used in a Continuous Integration environment.</p>
 <p>Most build systems do not checkout the branch that is being built, but

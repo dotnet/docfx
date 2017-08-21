@@ -8,7 +8,7 @@
     <title>&#128295; Walkthrough Advanced: Customize Your Website | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="&#128295; Walkthrough Advanced: Customize Your Website | DocFX website ">
-    <meta name="generator" content="docfx 2.22.3.0">
+    <meta name="generator" content="docfx 2.23.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -76,14 +76,42 @@
             <article class="content wrap" id="_content" data-uid="">
 <h1 id="-walkthrough-advanced-customize-your-website">🔧 Walkthrough Advanced: Customize Your Website</h1>
 
-<div class="NOTE"><h5>Note</h5><p>This topic hasn’t been written yet! You can track the status of this issue through our public GitHub issue tracker. Learn how you can contribute on GitHub.</p>
-</div>
-<ol>
-<li>Add more details to an API using a Markdown file.</li>
-<li>Add cross references.</li>
-<li>Apply your own styles to the website.</li>
-<li>Write your own plugins and your own template.</li>
-</ol>
+<h2 id="apply-your-own-styles-to-the-website">Apply your own styles to the website</h2>
+<h3 id="export-the-default-template">Export the default template</h3>
+<p>Open the command line at the root of the directory.</p>
+<p><code>docfx template export default</code></p>
+<p>A folder called <code>_exported_templates</code> is added.</p>
+<h3 id="create-a-new-template">Create a new template</h3>
+<p>Inside <code>_exported_templates</code>, copy/paste the <code>default</code> folder and then give it a new name. This is the name of your custom template.</p>
+<h3 id="customize-the-new-template">Customize the new template</h3>
+<p>Inside your new template folder is a <code>styles</code> folder. Edit <code>main.css</code> to change the look and feel of the website.</p>
+<p>Example of changing heading styles:</p>
+<pre><code>article h1 {
+  font-size: 40px;
+  font-weight: 300;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  color: #000000;
+}
+</code></pre><p>Example of preventing words from breaking across lines:</p>
+<pre><code>article h1, h2, h3, h4, h5, h6 {
+  word-break: keep-all;
+}
+</code></pre><h3 id="apply-the-new-template">Apply the new template</h3>
+<p>To apply it manually, append a <code>-t</code> with the template filepath to the build command:</p>
+<p><code>docfx build docfx.json -t C:\&lt;filepath&gt;\_exported_templates\&lt;name of your template folder&gt; --serve</code></p>
+<p>To apply the template permanently so you don&#39;t have to mention it in your build command, add a line to <code>docfx.json</code> at the root of the project inside <code>&quot;build&quot;: {</code>:</p>
+<p><code>&quot;template&quot;: &quot;_exported_templates/&lt;name of your template folder&quot;,</code></p>
+<h2 id="apply-your-own-styles-to-the-pdf">Apply your own styles to the PDF</h2>
+<p> Follow the same steps as above with these modifications:</p>
+<p> To export:</p>
+<p><code>docfx template export pdf.default</code></p>
+<p>To create the permanent template reference, add this code under the PDF section of <code>docfx.json</code> at the same level as <code>&quot;content&quot;</code>: </p>
+<p><code>&quot;template&quot;: &quot;_exported_templates/&lt;name of your pdf template folder&gt;&quot;,</code></p>
+<h2 id="see-a-list-of-all-your-templates">See a list of all your templates</h2>
+<p><code>docfx template list</code></p>
+<h2 id="see-template-commands">See template commands</h2>
+<p><code>docfx help template</code></p>
 <div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE

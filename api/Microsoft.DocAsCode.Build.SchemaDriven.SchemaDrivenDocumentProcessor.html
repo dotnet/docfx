@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class SchemaDrivenDocumentProcessor
    | DocFX website ">
-    <meta name="generator" content="docfx 2.22.3.0">
+    <meta name="generator" content="docfx 2.23.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -75,10 +75,10 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor">
+            <article class="content wrap" id="_content" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor">
   
   
-  <h1 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor" class="text-break">Class SchemaDrivenDocumentProcessor
+  <h1 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor" class="text-break">Class SchemaDrivenDocumentProcessor
   </h1>
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
@@ -92,9 +92,6 @@
     <h5>Inherited Members</h5>
     <div>
       <a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_Dispose">DisposableDocumentProcessor.Dispose()</a>
-    </div>
-    <div>
-      <a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_UpdateHref_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_">DisposableDocumentProcessor.UpdateHref(FileModel, IDocumentBuildContext)</a>
     </div>
     <div>
       <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">Object.ToString()</a>
@@ -118,9 +115,9 @@
       <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">Object.MemberwiseClone()</a>
     </div>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.html">Microsoft.DocAsCode.Build.SchemaDrivenProcessor</a></h6>
-  <h6><strong>Assembly</strong>: Microsoft.DocAsCode.Build.SchemaDrivenProcessor.dll</h6>
-  <h5 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_syntax">Syntax</h5>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.DocAsCode.Build.SchemaDriven.html">Microsoft.DocAsCode.Build.SchemaDriven</a></h6>
+  <h6><strong>Assembly</strong>: Microsoft.DocAsCode.Build.SchemaDriven.dll</h6>
+  <h5 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class SchemaDrivenDocumentProcessor : DisposableDocumentProcessor, IDisposable, ISupportIncrementalDocumentProcessor, IDocumentProcessor</code></pre>
   </div>
@@ -128,36 +125,57 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor__ctor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.%23ctor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor__ctor_Microsoft_DocAsCode_Build_SchemaDriven_DocumentSchema_Microsoft_DocAsCode_Plugins_ICompositionContainer_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.%23ctor(Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema%2CMicrosoft.DocAsCode.Plugins.ICompositionContainer)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L33">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L36">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor__ctor_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.#ctor*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor__ctor" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.#ctor">SchemaDrivenDocumentProcessor()</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor__ctor_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.#ctor*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor__ctor_Microsoft_DocAsCode_Build_SchemaDriven_DocumentSchema_Microsoft_DocAsCode_Plugins_ICompositionContainer_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.#ctor(Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema,Microsoft.DocAsCode.Plugins.ICompositionContainer)">SchemaDrivenDocumentProcessor(DocumentSchema, ICompositionContainer)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public SchemaDrivenDocumentProcessor()</code></pre>
+    <pre><code class="lang-csharp hljs">public SchemaDrivenDocumentProcessor(DocumentSchema schema, ICompositionContainer container)</code></pre>
   </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema.html">DocumentSchema</a></td>
+        <td><span class="parametername">schema</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.ICompositionContainer.html">ICompositionContainer</a></td>
+        <td><span class="parametername">container</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   <h3 id="properties">Properties
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_BuildSteps.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.BuildSteps%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_BuildSteps.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.BuildSteps%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L42">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L58">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_BuildSteps_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.BuildSteps*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_BuildSteps" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.BuildSteps">BuildSteps</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_BuildSteps_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.BuildSteps*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_BuildSteps" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.BuildSteps">BuildSteps</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[ImportMany(&quot;SchemaDrivenDocumentProcessor&quot;)]
-public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -180,13 +198,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
       <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentProcessor.html#Microsoft_DocAsCode_Plugins_IDocumentProcessor_BuildSteps">IDocumentProcessor.BuildSteps</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L45">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L60">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_Name_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.Name*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_Name" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.Name">Name</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_Name_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.Name*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_Name" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.Name">Name</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -216,13 +234,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_DeserializeModel_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.DeserializeModel(System.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_DeserializeModel_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.DeserializeModel(System.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L104">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L212">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_DeserializeModel_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.DeserializeModel*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_DeserializeModel_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.DeserializeModel(System.IO.Stream)">DeserializeModel(Stream)</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_DeserializeModel_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.DeserializeModel*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_DeserializeModel_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.DeserializeModel(System.IO.Stream)">DeserializeModel(Stream)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -263,13 +281,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_DeserializeProperties_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.DeserializeProperties(System.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_DeserializeProperties_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.DeserializeProperties(System.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L123">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L231">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_DeserializeProperties_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.DeserializeProperties*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_DeserializeProperties_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.DeserializeProperties(System.IO.Stream)">DeserializeProperties(Stream)</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_DeserializeProperties_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.DeserializeProperties*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_DeserializeProperties_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.DeserializeProperties(System.IO.Stream)">DeserializeProperties(Stream)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -310,13 +328,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_GetIncrementalContextHash.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.GetIncrementalContextHash%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_GetIncrementalContextHash.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.GetIncrementalContextHash%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L66">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L174">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_GetIncrementalContextHash_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.GetIncrementalContextHash*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_GetIncrementalContextHash" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.GetIncrementalContextHash">GetIncrementalContextHash()</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_GetIncrementalContextHash_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.GetIncrementalContextHash*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_GetIncrementalContextHash" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.GetIncrementalContextHash">GetIncrementalContextHash()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -342,13 +360,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
       <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalDocumentProcessor_GetIncrementalContextHash">ISupportIncrementalDocumentProcessor.GetIncrementalContextHash()</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L47">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L62">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_GetProcessingPriority_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.GetProcessingPriority*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)">GetProcessingPriority(FileAndType)</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_GetProcessingPriority_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.GetProcessingPriority*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.GetProcessingPriority(Microsoft.DocAsCode.Plugins.FileAndType)">GetProcessingPriority(FileAndType)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -393,13 +411,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
       <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentProcessor.html#Microsoft_DocAsCode_Plugins_IDocumentProcessor_GetProcessingPriority_Microsoft_DocAsCode_Plugins_FileAndType_">IDocumentProcessor.GetProcessingPriority(FileAndType)</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_GetSerializer.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.GetSerializer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_GetSerializer.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.GetSerializer%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L133">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L241">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_GetSerializer_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.GetSerializer*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_GetSerializer" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.GetSerializer">GetSerializer()</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_GetSerializer_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.GetSerializer*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_GetSerializer" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.GetSerializer">GetSerializer()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -423,13 +441,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.Load(Microsoft.DocAsCode.Plugins.FileAndType%2CSystem.Collections.Immutable.ImmutableDictionary%7BSystem.String%2CSystem.Object%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.Load(Microsoft.DocAsCode.Plugins.FileAndType%2CSystem.Collections.Immutable.ImmutableDictionary%7BSystem.String%2CSystem.Object%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L52">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L92">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_Load_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.Load*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.Load(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})">Load(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_Load_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.Load*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.Load(Microsoft.DocAsCode.Plugins.FileAndType,System.Collections.Immutable.ImmutableDictionary{System.String,System.Object})">Load(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -479,13 +497,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
       <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentProcessor.html#Microsoft_DocAsCode_Plugins_IDocumentProcessor_Load_Microsoft_DocAsCode_Plugins_FileAndType_System_Collections_Immutable_ImmutableDictionary_System_String_System_Object__">IDocumentProcessor.Load(FileAndType, ImmutableDictionary&lt;String, Object&gt;)</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_LoadIntermediateModel_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.LoadIntermediateModel(System.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_LoadIntermediateModel_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.LoadIntermediateModel(System.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L81">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L189">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_LoadIntermediateModel_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.LoadIntermediateModel*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_LoadIntermediateModel_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.LoadIntermediateModel(System.IO.Stream)">LoadIntermediateModel(Stream)</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_LoadIntermediateModel_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.LoadIntermediateModel*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_LoadIntermediateModel_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.LoadIntermediateModel(System.IO.Stream)">LoadIntermediateModel(Stream)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -528,13 +546,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
       <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalDocumentProcessor_LoadIntermediateModel_System_IO_Stream_">ISupportIncrementalDocumentProcessor.LoadIntermediateModel(Stream)</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.Save(Microsoft.DocAsCode.Plugins.FileModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.Save(Microsoft.DocAsCode.Plugins.FileModel)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L57">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L135">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_Save_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.Save*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.Save(Microsoft.DocAsCode.Plugins.FileModel)">Save(FileModel)</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_Save_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.Save*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.Save(Microsoft.DocAsCode.Plugins.FileModel)">Save(FileModel)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -579,13 +597,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
       <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentProcessor.html#Microsoft_DocAsCode_Plugins_IDocumentProcessor_Save_Microsoft_DocAsCode_Plugins_FileModel_">IDocumentProcessor.Save(FileModel)</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_SaveIntermediateModel_Microsoft_DocAsCode_Plugins_FileModel_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.SaveIntermediateModel(Microsoft.DocAsCode.Plugins.FileModel%2CSystem.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_SaveIntermediateModel_Microsoft_DocAsCode_Plugins_FileModel_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.SaveIntermediateModel(Microsoft.DocAsCode.Plugins.FileModel%2CSystem.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L71">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L179">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_SaveIntermediateModel_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.SaveIntermediateModel*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_SaveIntermediateModel_Microsoft_DocAsCode_Plugins_FileModel_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.SaveIntermediateModel(Microsoft.DocAsCode.Plugins.FileModel,System.IO.Stream)">SaveIntermediateModel(FileModel, Stream)</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_SaveIntermediateModel_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.SaveIntermediateModel*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_SaveIntermediateModel_Microsoft_DocAsCode_Plugins_FileModel_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.SaveIntermediateModel(Microsoft.DocAsCode.Plugins.FileModel,System.IO.Stream)">SaveIntermediateModel(FileModel, Stream)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -618,13 +636,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
       <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalDocumentProcessor.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalDocumentProcessor_SaveIntermediateModel_Microsoft_DocAsCode_Plugins_FileModel_System_IO_Stream_">ISupportIncrementalDocumentProcessor.SaveIntermediateModel(FileModel, Stream)</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_SerializeModel_System_Object_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.SerializeModel(System.Object%2CSystem.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_SerializeModel_System_Object_System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.SerializeModel(System.Object%2CSystem.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L95">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L203">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_SerializeModel_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.SerializeModel*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_SerializeModel_System_Object_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.SerializeModel(System.Object,System.IO.Stream)">SerializeModel(Object, Stream)</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_SerializeModel_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.SerializeModel*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_SerializeModel_System_Object_System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.SerializeModel(System.Object,System.IO.Stream)">SerializeModel(Object, Stream)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -655,13 +673,13 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_SerializeProperties_System_Collections_Generic_IDictionary_System_String_System_Object__System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.SerializeProperties(System.Collections.Generic.IDictionary%7BSystem.String%2CSystem.Object%7D%2CSystem.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_SerializeProperties_System_Collections_Generic_IDictionary_System_String_System_Object__System_IO_Stream_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.SerializeProperties(System.Collections.Generic.IDictionary%7BSystem.String%2CSystem.Object%7D%2CSystem.IO.Stream)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L114">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L222">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_SerializeProperties_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.SerializeProperties*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor_SerializeProperties_System_Collections_Generic_IDictionary_System_String_System_Object__System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor.SerializeProperties(System.Collections.Generic.IDictionary{System.String,System.Object},System.IO.Stream)">SerializeProperties(IDictionary&lt;String, Object&gt;, Stream)</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_SerializeProperties_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.SerializeProperties*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_SerializeProperties_System_Collections_Generic_IDictionary_System_String_System_Object__System_IO_Stream_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.SerializeProperties(System.Collections.Generic.IDictionary{System.String,System.Object},System.IO.Stream)">SerializeProperties(IDictionary&lt;String, Object&gt;, Stream)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -690,6 +708,47 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
       </tr>
     </tbody>
   </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_UpdateHref_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.UpdateHref(Microsoft.DocAsCode.Plugins.FileModel%2CMicrosoft.DocAsCode.Plugins.IDocumentBuildContext)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L160">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_UpdateHref_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.UpdateHref*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor_UpdateHref_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor.UpdateHref(Microsoft.DocAsCode.Plugins.FileModel,Microsoft.DocAsCode.Plugins.IDocumentBuildContext)">UpdateHref(FileModel, IDocumentBuildContext)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void UpdateHref(FileModel model, IDocumentBuildContext context)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
+        <td><span class="parametername">model</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildContext.html">IDocumentBuildContext</a></td>
+        <td><span class="parametername">context</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.DisposableDocumentProcessor.html#Microsoft_DocAsCode_Build_Common_DisposableDocumentProcessor_UpdateHref_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_">DisposableDocumentProcessor.UpdateHref(FileModel, IDocumentBuildContext)</a></div>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentProcessor.html#Microsoft_DocAsCode_Plugins_IDocumentProcessor_UpdateHref_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IDocumentBuildContext_">IDocumentProcessor.UpdateHref(FileModel, IDocumentBuildContext)</a></div>
   <h3 id="extensionmethods">Extension Methods</h3>
   <div>
       <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
@@ -712,10 +771,10 @@ public override IEnumerable&lt;IDocumentBuildStep&gt; BuildSteps { get; set; }</
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_SchemaDrivenDocumentProcessor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.SchemaDrivenDocumentProcessor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaDrivenDocumentProcessor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaDrivenDocumentProcessor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/SchemaDrivenDocumentProcessor.cs/#L22" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/SchemaDrivenDocumentProcessor.cs/#L24" class="contribution-link">View Source</a>
                   </li>
                   <li>
                     <a href="#disqus_thread" class="contribution-link">0 Comments</a>

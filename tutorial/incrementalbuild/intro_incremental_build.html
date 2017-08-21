@@ -8,7 +8,7 @@
     <title>Introduction to DocFX Incremental Build | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Introduction to DocFX Incremental Build | DocFX website ">
-    <meta name="generator" content="docfx 2.22.3.0">
+    <meta name="generator" content="docfx 2.23.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -172,7 +172,35 @@ articles/images/seed.jpg      Created
 articles/test.md       Deleted
 </code></pre><p>The first two lines denote that the changelist is compared between the commit <code>&lt;from&gt;</code> and the commit <code>&lt;to&gt;</code>. The two lines could be omitted if you don&#39;t want to check the commit match. Otherwise, <code>DocFX</code> would check whether the changesFile&#39;s <code>&lt;from&gt;</code> is same with last build&#39;s <code>&lt;to&gt;</code>.</p>
 <p>You can specify the changesFile from option: <code>--changesFile &quot;&lt;path of changes.tsv relative to docfx.json&gt;&quot;</code>, or you can update <code>docfx.json</code> to add <code>&quot;changesFile&quot;: &quot;&lt;path of changes.tsv relative to docfx.json&gt;&quot;</code>.</p>
-<div id="disqus_thread"></div>
+<h2 id="check-the-incremental-information">Check the incremental information</h2>
+<p>The information of incremental build and post processing is saved in <code>incremental_info</code> of <code>manifest.json</code>, which describes the incremental status and processors information. For example:</p>
+<pre><code class="lang-json">    &quot;incremental_info&quot;: [{
+        &quot;status&quot;: {
+            &quot;can_incremental&quot;: false,
+            &quot;details&quot;: &quot;Cannot build incrementally because config changed.&quot;,
+            &quot;incrementalPhase&quot;: &quot;build&quot;
+        },
+        &quot;processors&quot;: {
+            &quot;TocDocumentProcessor&quot;: {
+                &quot;can_incremental&quot;: false,
+                &quot;details&quot;: &quot;Processor TocDocumentProcessor cannot suppport incremental build because the processor doesn&#39;t implement ISupportIncrementalDocumentProcessor interface.&quot;,
+                &quot;incrementalPhase&quot;: &quot;build&quot;
+            },
+            &quot;ManagedReferenceDocumentProcessor&quot;: {
+                &quot;can_incremental&quot;: false,
+                &quot;incrementalPhase&quot;: &quot;build&quot;
+            }
+        }
+    },
+    {
+        &quot;status&quot;: {
+            &quot;can_incremental&quot;: false,
+            &quot;details&quot;: &quot;Cannot support incremental post processing, the reason is: last post processor info is null.&quot;,
+            &quot;incrementalPhase&quot;: &quot;postProcessing&quot;
+        },
+        &quot;processors&quot;: {}
+    }]
+</code></pre><div id="disqus_thread"></div>
                 <script>
                 (function() { // DON'T EDIT BELOW THIS LINE
                 var d = document, s = d.createElement('script');

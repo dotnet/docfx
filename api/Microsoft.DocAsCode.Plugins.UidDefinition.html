@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class UidDefinition
    | DocFX website ">
-    <meta name="generator" content="docfx 2.22.3.0">
+    <meta name="generator" content="docfx 2.23.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -124,7 +124,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_UidDefinition__ctor_System_String_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.UidDefinition.%23ctor(System.String%2CSystem.String%2CSystem.Nullable%7BSystem.Int32%7D%2CSystem.Nullable%7BSystem.Int32%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/UidDefinition.cs/#L19">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/UidDefinition.cs/#L33">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_UidDefinition__ctor_" data-uid="Microsoft.DocAsCode.Plugins.UidDefinition.#ctor*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_UidDefinition__ctor_System_String_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__" data-uid="Microsoft.DocAsCode.Plugins.UidDefinition.#ctor(System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32})">UidDefinition(String, String, Nullable&lt;Int32&gt;, Nullable&lt;Int32&gt;)</h4>
@@ -132,8 +132,8 @@
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonConstructor]
-public UidDefinition(string name, string file, int ? line = null, int ? column = null)</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete]
+public UidDefinition(string name, string file, int ? line, int ? column)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -167,6 +167,59 @@ public UidDefinition(string name, string file, int ? line = null, int ? column =
       </tr>
     </tbody>
   </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_UidDefinition__ctor_System_String_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.UidDefinition.%23ctor(System.String%2CSystem.String%2CSystem.Nullable%7BSystem.Int32%7D%2CSystem.Nullable%7BSystem.Int32%7D%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/UidDefinition.cs/#L23">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Plugins_UidDefinition__ctor_" data-uid="Microsoft.DocAsCode.Plugins.UidDefinition.#ctor*"></a>
+  <h4 id="Microsoft_DocAsCode_Plugins_UidDefinition__ctor_System_String_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_String_" data-uid="Microsoft.DocAsCode.Plugins.UidDefinition.#ctor(System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.String)">UidDefinition(String, String, Nullable&lt;Int32&gt;, Nullable&lt;Int32&gt;, String)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonConstructor]
+public UidDefinition(string name, string file, int ? line = null, int ? column = null, string path = null)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><span class="parametername">name</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><span class="parametername">file</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/b3h38hb0(v=vs.110).aspx">Nullable</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a>&gt;</td>
+        <td><span class="parametername">line</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/b3h38hb0(v=vs.110).aspx">Nullable</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.int32(v=vs.110).aspx">Int32</a>&gt;</td>
+        <td><span class="parametername">column</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td><span class="parametername">path</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   <h3 id="properties">Properties
   </h3>
   <span class="small pull-right mobile-hide">
@@ -174,7 +227,7 @@ public UidDefinition(string name, string file, int ? line = null, int ? column =
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_UidDefinition_Column.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.UidDefinition.Column%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/UidDefinition.cs/#L16">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/UidDefinition.cs/#L18">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_UidDefinition_Column_" data-uid="Microsoft.DocAsCode.Plugins.UidDefinition.Column*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_UidDefinition_Column" data-uid="Microsoft.DocAsCode.Plugins.UidDefinition.Column">Column</h4>
@@ -205,7 +258,7 @@ public int ? Column { get; }</code></pre>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_UidDefinition_File.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.UidDefinition.File%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/UidDefinition.cs/#L12">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/UidDefinition.cs/#L14">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_UidDefinition_File_" data-uid="Microsoft.DocAsCode.Plugins.UidDefinition.File*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_UidDefinition_File" data-uid="Microsoft.DocAsCode.Plugins.UidDefinition.File">File</h4>
@@ -236,7 +289,7 @@ public string File { get; }</code></pre>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_UidDefinition_Line.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.UidDefinition.Line%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/UidDefinition.cs/#L14">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/UidDefinition.cs/#L16">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_UidDefinition_Line_" data-uid="Microsoft.DocAsCode.Plugins.UidDefinition.Line*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_UidDefinition_Line" data-uid="Microsoft.DocAsCode.Plugins.UidDefinition.Line">Line</h4>
@@ -267,7 +320,7 @@ public int ? Line { get; }</code></pre>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_UidDefinition_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.UidDefinition.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/UidDefinition.cs/#L10">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/UidDefinition.cs/#L12">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Plugins_UidDefinition_Name_" data-uid="Microsoft.DocAsCode.Plugins.UidDefinition.Name*"></a>
   <h4 id="Microsoft_DocAsCode_Plugins_UidDefinition_Name" data-uid="Microsoft.DocAsCode.Plugins.UidDefinition.Name">Name</h4>
@@ -277,6 +330,37 @@ public int ? Line { get; }</code></pre>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonProperty(&quot;name&quot;)]
 public string Name { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_UidDefinition_Path.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.UidDefinition.Path%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/UidDefinition.cs/#L20">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Plugins_UidDefinition_Path_" data-uid="Microsoft.DocAsCode.Plugins.UidDefinition.Path*"></a>
+  <h4 id="Microsoft_DocAsCode_Plugins_UidDefinition_Path" data-uid="Microsoft.DocAsCode.Plugins.UidDefinition.Path">Path</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonProperty(&quot;path&quot;)]
+public string Path { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -318,7 +402,7 @@ public string Name { get; }</code></pre>
                     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Plugins_UidDefinition.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Plugins.UidDefinition%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/UidDefinition.cs/#L8" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Plugins/UidDefinition.cs/#L10" class="contribution-link">View Source</a>
                   </li>
                   <li>
                     <a href="#disqus_thread" class="contribution-link">0 Comments</a>

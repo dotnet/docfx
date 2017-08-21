@@ -8,7 +8,7 @@
     <title>&#128295; Advanced: Cache File Structure | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="&#128295; Advanced: Cache File Structure | DocFX website ">
-    <meta name="generator" content="docfx 2.22.3.0">
+    <meta name="generator" content="docfx 2.23.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -115,7 +115,7 @@
 </tr>
 <tr>
 <td>PostProcessInfo</td>
-<td>PostProcessInfo</td>
+<td><a href="#postprocessinfo-model">PostProcessInfo</a></td>
 <td>The entry point of the cache files for postprocessor</td>
 </tr>
 </tbody>
@@ -248,6 +248,65 @@
 <td>ContextInfoFile</td>
 <td>string</td>
 <td>The file link for the context info for the step</td>
+</tr>
+</tbody>
+</table>
+<h3 id="postprocessinfo-model">PostProcessInfo model</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MessageInfoFile</td>
+<td>string</td>
+<td>The file link for the log message file, to restore the warning message</td>
+</tr>
+<tr>
+<td>ManifestItemsFile</td>
+<td>string</td>
+<td>The file link for the manifest items file, to restore the manifest items</td>
+</tr>
+<tr>
+<td>PostProcessOutputsFile</td>
+<td>string</td>
+<td>The file link for post processing outputs</td>
+</tr>
+<tr>
+<td>PostProcessorInfos</td>
+<td>List&lt;<a href="#postprocessorinfo-model">PostProcessorInfo</a>&gt;</td>
+<td>The information of post processors</td>
+</tr>
+</tbody>
+</table>
+<h3 id="postprocessorinfo-model">PostProcessorInfo model</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Name</td>
+<td>string</td>
+<td>The name of the step</td>
+</tr>
+<tr>
+<td>IncrementalContextHash</td>
+<td>string</td>
+<td>The context hash of the step</td>
+</tr>
+<tr>
+<td>ContextInfoFile</td>
+<td>string</td>
+<td>The file link for the context info</td>
 </tr>
 </tbody>
 </table>

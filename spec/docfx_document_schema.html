@@ -8,7 +8,7 @@
     <title>DocFX Document Schema v1.0 Specification | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFX Document Schema v1.0 Specification | DocFX website ">
-    <meta name="generator" content="docfx 2.22.3.0">
+    <meta name="generator" content="docfx 2.23.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -209,12 +209,12 @@ For example, a property named <code>summary</code> contains value in Markdown fo
 <tr>
 <td>description</td>
 <td>string</td>
-<td>A lengthy explanation about the purpose of the data described by the schema</td>
+<td>A lengthy explanation about the purpose of the data described by the schema.</td>
 </tr>
 <tr>
 <td>default</td>
 <td>what <code>type</code> defined</td>
-<td>The default value for current field</td>
+<td>The default value for current field.</td>
 </tr>
 <tr>
 <td>type</td>
@@ -293,7 +293,7 @@ For example, a property named <code>summary</code> contains value in Markdown fo
 </tr>
 <tr>
 <td><code>file</code></td>
-<td>It means current property stands for a file path that contains content to be included</td>
+<td>It means current property stands for a file path that contains content to be included.</td>
 </tr>
 </tbody>
 </table>
@@ -313,14 +313,14 @@ For example, a property named <code>summary</code> contains value in Markdown fo
 </tr>
 <tr>
 <td><code>uid</code></td>
-<td><code>type</code> MUST be <code>string</code>. It means the property defines a unique identifier inside current document model</td>
-</tr>
-<tr>
-<td><code>xref</code></td>
-<td><code>type</code> MUST be <code>string</code>. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.</td>
+<td><code>type</code> MUST be <code>string</code>. With this value, the property name MUST be <code>uid</code>. It means the property defines a unique identifier inside current document model.</td>
 </tr>
 <tr>
 <td><code>href</code></td>
+<td><code>type</code> MUST be <code>string</code>. It means the property defines a file link inside current document model. Application CAN help to validate if the linked file exists, and update the file link if the linked file changes its output path.</td>
+</tr>
+<tr>
+<td><code>xref</code></td>
 <td><code>type</code> MUST be <code>string</code>. It means the property defines a UID link inside current document model. Application CAN help to validate if the linked UID exists, and resolve the UID link to the corresponding file output link.</td>
 </tr>
 <tr>
@@ -334,7 +334,7 @@ For example, a property named <code>summary</code> contains value in Markdown fo
 </tbody>
 </table>
 <h3 id="64-tags">6.4 tags</h3>
-<p>The value of this keyword MUST be an <code>array</code>, elements of the array MUST be strings and MUST be unique. It provides hints for applications to decide how to interpret the property, for example, <code>localizable</code> tag can help Localization team to interpret the property as <em>localizable</em>; <code>metadata</code> tag can help DocFX to fill in additional metadata, e.g. github commit information.</p>
+<p>The value of this keyword MUST be an <code>array</code>, elements of the array MUST be strings and MUST be unique. It provides hints for applications to decide how to interpret the property, for example, <code>localizable</code> tag can help Localization team to interpret the property as <em>localizable</em>.</p>
 <h3 id="65-mergetype">6.5 mergeType</h3>
 <p>The value of this keyword MUST be a string. It specifies how to merge two values of the given property. One use scenario is how DocFX uses the <a href="../tutorial/intro_overwrite_files.html">overwrite files</a> to overwrite the existing values. In the below table, we use <code>source</code> and <code>target</code> to stands for the two values for merging.</p>
 <p>The value MUST be one of the following:</p>
@@ -403,7 +403,7 @@ sections:
 </code></pre><p>In this sample, we want to use the JSON schema to describe the overall model structure. Further more, the <code>href</code> is a file link. It need to be resolved from the relative path to the final href. The <code>content</code> property need to be marked up as a Markdown string. The <code>metadata</code> need to be tagged for further custom operations. We want to use <code>section</code>&#39;s <code>title</code> as the key for overwrite <code>section</code> array.</p>
 <p>Here&#39;s the schema to describe these operations:</p>
 <pre><code class="lang-json">{
-    &quot;$schema&quot;: &quot;https://github.com/dotnet/docfx/schemas/v1.0/schema.json#&quot;,
+    &quot;$schema&quot;: &quot;https://dotnet.github.io/docfx/schemas/v1.0/schema.json#&quot;,
     &quot;version&quot;: &quot;1.0.0&quot;,
     &quot;id&quot;: &quot;https://github.com/dotnet/docfx/schemas/landingpage.schema.json&quot;,
     &quot;title&quot;: &quot;LandingPage&quot;,
@@ -487,6 +487,32 @@ sections:
 </ul>
 </li>
 <li>Decision: <em>Remove</em> <code>d-</code> prefix.</li>
+</ul>
+</li>
+<li>What&#39;s remaining work if to apply schema to the complex data model, for example, ManagedReference, or UniversalReference?<ul>
+<li><ol>
+<li>OPS plugin framework, to insert metadata into the data model, for example, git commit id, git contributers.
+Solution: A TagInterpreter plugin framework to insert metadata if the property contains <code>metadata</code> tag</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>The schema is able to support complex Json Schema syntax, such as definition reference <code>#/definiton/commonobject</code></li>
+</ol>
+</li>
+<li><ol start="3">
+<li>Support complex syntax in <code>&lt;xref&gt;</code> to support specify the html content to be rendered. Current <code>xref</code> always renders to <code>&lt;a/&gt; if</code>uid<code>can be resolved
+Idea: One idea is to support syntax similar to</code><span class="xref"><code>that template writer can specify the template used to render</code>xref`</span></li>
+</ol>
+</li>
+<li><ol start="4">
+<li>Support overwrite the object with given <code>uid</code>
+Challenge: The schema can define multiple <code>uid</code>s inside one document.</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>Support incremental build</li>
+</ol>
+</li>
 </ul>
 </li>
 </ol>

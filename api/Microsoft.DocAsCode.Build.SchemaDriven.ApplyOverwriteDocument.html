@@ -5,12 +5,12 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Class BuildSchemaBasedDocument
+    <title>Class ApplyOverwriteDocument
    | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Class BuildSchemaBasedDocument
+    <meta name="title" content="Class ApplyOverwriteDocument
    | DocFX website ">
-    <meta name="generator" content="docfx 2.22.3.0">
+    <meta name="generator" content="docfx 2.23.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -75,10 +75,10 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument">
+            <article class="content wrap" id="_content" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument">
   
   
-  <h1 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument" class="text-break">Class BuildSchemaBasedDocument
+  <h1 id="Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument" class="text-break">Class ApplyOverwriteDocument
   </h1>
   <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
@@ -86,7 +86,7 @@
     <h5>Inheritance</h5>
     <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
     <div class="level1"><a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html">BaseDocumentBuildStep</a></div>
-    <div class="level2"><span class="xref">BuildSchemaBasedDocument</span></div>
+    <div class="level2"><span class="xref">ApplyOverwriteDocument</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -94,7 +94,7 @@
       <a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Prebuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_">BaseDocumentBuildStep.Prebuild(ImmutableList&lt;FileModel&gt;, IHostService)</a>
     </div>
     <div>
-      <a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Postbuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_">BaseDocumentBuildStep.Postbuild(ImmutableList&lt;FileModel&gt;, IHostService)</a>
+      <a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_">BaseDocumentBuildStep.Build(FileModel, IHostService)</a>
     </div>
     <div>
       <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">Object.ToString()</a>
@@ -118,23 +118,24 @@
       <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">Object.MemberwiseClone()</a>
     </div>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.html">Microsoft.DocAsCode.Build.SchemaDrivenProcessor</a></h6>
-  <h6><strong>Assembly</strong>: Microsoft.DocAsCode.Build.SchemaDrivenProcessor.dll</h6>
-  <h5 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_syntax">Syntax</h5>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.DocAsCode.Build.SchemaDriven.html">Microsoft.DocAsCode.Build.SchemaDriven</a></h6>
+  <h6><strong>Assembly</strong>: Microsoft.DocAsCode.Build.SchemaDriven.dll</h6>
+  <h5 id="Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class BuildSchemaBasedDocument : BaseDocumentBuildStep, ISupportIncrementalBuildStep, IDocumentBuildStep</code></pre>
+    <pre><code class="lang-csharp hljs">[Export(&quot;SchemaDrivenDocumentProcessor&quot;, typeof (IDocumentBuildStep))]
+public class ApplyOverwriteDocument : BaseDocumentBuildStep, ISupportIncrementalBuildStep, IDocumentBuildStep</code></pre>
   </div>
   <h3 id="properties">Properties
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_BuildOrder.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.BuildOrder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_BuildOrder.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.BuildOrder%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/BuildSchemaBasedDocument.cs/#L25">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/ApplyOverwriteDocument.cs/#L21">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_BuildOrder_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.BuildOrder*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_BuildOrder" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.BuildOrder">BuildOrder</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_BuildOrder_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.BuildOrder*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_BuildOrder" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.BuildOrder">BuildOrder</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -162,13 +163,13 @@
       <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html#Microsoft_DocAsCode_Plugins_IDocumentBuildStep_BuildOrder">IDocumentBuildStep.BuildOrder</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_Name.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/BuildSchemaBasedDocument.cs/#L23">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/ApplyOverwriteDocument.cs/#L19">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_Name_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.Name*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_Name" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.Name">Name</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_Name_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.Name*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_Name" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.Name">Name</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -198,54 +199,13 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.Build(Microsoft.DocAsCode.Plugins.FileModel%2CMicrosoft.DocAsCode.Plugins.IHostService)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/BuildSchemaBasedDocument.cs/#L27">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/ApplyOverwriteDocument.cs/#L49">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_Build_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.Build*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.Build(Microsoft.DocAsCode.Plugins.FileModel,Microsoft.DocAsCode.Plugins.IHostService)">Build(FileModel, IHostService)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override void Build(FileModel model, IHostService host)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
-        <td><span class="parametername">model</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.IHostService.html">IHostService</a></td>
-        <td><span class="parametername">host</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_">BaseDocumentBuildStep.Build(FileModel, IHostService)</a></div>
-  <h5 class="implements">Implements</h5>
-      <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html#Microsoft_DocAsCode_Plugins_IDocumentBuildStep_Build_Microsoft_DocAsCode_Plugins_FileModel_Microsoft_DocAsCode_Plugins_IHostService_">IDocumentBuildStep.Build(FileModel, IHostService)</a></div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/BuildSchemaBasedDocument.cs/#L34">View Source</a>
-  </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_CanIncrementalBuild_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.CanIncrementalBuild*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)">CanIncrementalBuild(FileAndType)</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_CanIncrementalBuild_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.CanIncrementalBuild*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.CanIncrementalBuild(Microsoft.DocAsCode.Plugins.FileAndType)">CanIncrementalBuild(FileAndType)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -288,13 +248,13 @@
       <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_CanIncrementalBuild_Microsoft_DocAsCode_Plugins_FileAndType_">ISupportIncrementalBuildStep.CanIncrementalBuild(FileAndType)</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_GetDependencyTypesToRegister.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.GetDependencyTypesToRegister%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_GetDependencyTypesToRegister.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.GetDependencyTypesToRegister%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/BuildSchemaBasedDocument.cs/#L38">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/ApplyOverwriteDocument.cs/#L53">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_GetDependencyTypesToRegister_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.GetDependencyTypesToRegister*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_GetDependencyTypesToRegister" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.GetDependencyTypesToRegister">GetDependencyTypesToRegister()</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_GetDependencyTypesToRegister_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.GetDependencyTypesToRegister*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_GetDependencyTypesToRegister" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.GetDependencyTypesToRegister">GetDependencyTypesToRegister()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -320,13 +280,13 @@
       <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_GetDependencyTypesToRegister">ISupportIncrementalBuildStep.GetDependencyTypesToRegister()</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_GetIncrementalContextHash.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.GetIncrementalContextHash%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_GetIncrementalContextHash.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.GetIncrementalContextHash%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/BuildSchemaBasedDocument.cs/#L36">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/ApplyOverwriteDocument.cs/#L51">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_GetIncrementalContextHash_" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.GetIncrementalContextHash*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument_GetIncrementalContextHash" data-uid="Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument.GetIncrementalContextHash">GetIncrementalContextHash()</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_GetIncrementalContextHash_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.GetIncrementalContextHash*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_GetIncrementalContextHash" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.GetIncrementalContextHash">GetIncrementalContextHash()</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -350,6 +310,47 @@
   </table>
   <h5 class="implements">Implements</h5>
       <div><a class="xref" href="Microsoft.DocAsCode.Plugins.ISupportIncrementalBuildStep.html#Microsoft_DocAsCode_Plugins_ISupportIncrementalBuildStep_GetIncrementalContextHash">ISupportIncrementalBuildStep.GetIncrementalContextHash()</a></div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_Postbuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.Postbuild(System.Collections.Immutable.ImmutableList%7BMicrosoft.DocAsCode.Plugins.FileModel%7D%2CMicrosoft.DocAsCode.Plugins.IHostService)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/ApplyOverwriteDocument.cs/#L23">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_Postbuild_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.Postbuild*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument_Postbuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument.Postbuild(System.Collections.Immutable.ImmutableList{Microsoft.DocAsCode.Plugins.FileModel},Microsoft.DocAsCode.Plugins.IHostService)">Postbuild(ImmutableList&lt;FileModel&gt;, IHostService)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override void Postbuild(ImmutableList&lt;FileModel&gt; models, IHostService host)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Immutable.ImmutableList</span>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a>&gt;</td>
+        <td><span class="parametername">models</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.IHostService.html">IHostService</a></td>
+        <td><span class="parametername">host</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="overrides">Overrides</h5>
+  <div><a class="xref" href="Microsoft.DocAsCode.Build.Common.BaseDocumentBuildStep.html#Microsoft_DocAsCode_Build_Common_BaseDocumentBuildStep_Postbuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_">BaseDocumentBuildStep.Postbuild(ImmutableList&lt;FileModel&gt;, IHostService)</a></div>
+  <h5 class="implements">Implements</h5>
+      <div><a class="xref" href="Microsoft.DocAsCode.Plugins.IDocumentBuildStep.html#Microsoft_DocAsCode_Plugins_IDocumentBuildStep_Postbuild_System_Collections_Immutable_ImmutableList_Microsoft_DocAsCode_Plugins_FileModel__Microsoft_DocAsCode_Plugins_IHostService_">IDocumentBuildStep.Postbuild(ImmutableList&lt;FileModel&gt;, IHostService)</a></div>
   <h3 id="extensionmethods">Extension Methods</h3>
   <div>
       <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
@@ -372,10 +373,10 @@
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDrivenProcessor_BuildSchemaBasedDocument.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDrivenProcessor.BuildSchemaBasedDocument%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_ApplyOverwriteDocument.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.ApplyOverwriteDocument%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDrivenProcessor/BuildSchemaBasedDocument.cs/#L18" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/ApplyOverwriteDocument.cs/#L16" class="contribution-link">View Source</a>
                   </li>
                   <li>
                     <a href="#disqus_thread" class="contribution-link">0 Comments</a>

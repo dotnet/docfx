@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.22.3) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.23) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.22.3) | DocFX website ">
-    <meta name="generator" content="docfx 2.22.3.0">
+    <meta name="title" content="Version Notes (Current Version: v2.23) | DocFX website ">
+    <meta name="generator" content="docfx 2.23.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -67,23 +67,18 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="version-notes-current-version-v2223">Version Notes (Current Version: v2.22.3)</h1>
+<h1 id="version-notes-current-version-v223">Version Notes (Current Version: v2.23)</h1>
 
-<h2 id="v2223">v2.22.3</h2>
+<h2 id="v223">v2.23</h2>
 <ol>
-<li>Upgrade Microsoft.Net.Compilers to 2.3.1</li>
-</ol>
-<h2 id="v2222">v2.22.2</h2>
-<ol>
+<li>Improve error message for invalid toc yaml file.</li>
+<li>Use xhtml for dfm default setting.</li>
+<li>Add language support for aspx-cs and aspx-vb in code snippet.</li>
 <li>Bug fixed:<ol>
-<li>Fix incremental bug that ExtensionData in ReferenceViewModel is log in cache file</li>
-</ol>
-</li>
-</ol>
-<h2 id="v2221">v2.22.1</h2>
-<ol>
-<li>Bug fixed:<ol>
-<li>fix parsing inline code fences for legacy dfm.</li>
+<li>Fix #1825: ArgumentNullException when EII implements a member with EditorBrowsableState.Never.</li>
+<li>Fix #1951, #1905: Running DocFX from outside the folder fails</li>
+<li>Fix #1915: Cannot generate docs of two assemblies</li>
+<li>Fix #1900: Add back Microsoft.CodeAnalysis.Csharp.Features.dll dependency</li>
 </ol>
 </li>
 </ol>
