@@ -7,7 +7,8 @@ v2.23 (Pre-release)
 2. Use xhtml for dfm default setting.
 3. Add language support for aspx-cs and aspx-vb in code snippet.
 4. Bug fixed:
-   1. Fix #1825: ArgumentNullException when EII implements a member with EditorBrowsableState.Never.
+   1. Fix #1825: ArgumentNullException when EII implements a member with EditorBrowsableState.Never.
+   2. Fix #1937: Anchor icon overlays Note icon.
 
 v2.22
 -----------
