@@ -202,6 +202,19 @@
 {{/seealso.0}}
 {{/children}}
 {{/children}}
+{{#implements.0}}
+<h3 id="implements">{{__global.implements}}</h3>
+{{/implements.0}}
+{{#implements}}
+<div>
+  {{#definition}}
+    <xref uid="{{definition}}" altProperty="fullName" displayProperty="nameWithType"/>
+  {{/definition}}
+  {{^definition}}
+    <xref uid="{{uid}}" altProperty="fullName" displayProperty="nameWithType"/>
+  {{/definition}}
+</div>
+{{/implements}}
 {{#extensionMethods.0}}
 <h3 id="extensionmethods">{{__global.extensionMethods}}</h3>
 {{/extensionMethods.0}}
