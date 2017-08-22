@@ -18,8 +18,8 @@ Preparation
 1.  Create a new C# class library project in `Visual Studio`.
 
 2.  Add nuget packages:  
-    * `System.Collections.Immutable` with version 1.1.37
-    * `Microsoft.Composition` with version 1.0.27
+    * `System.Collections.Immutable` with version 1.3.1
+    * `Microsoft.Composition` with version 1.0.31
 
 3.  Add `Microsoft.DocAsCode.Plugins`  
     If building DocFX from source code then add a reference to the project,
