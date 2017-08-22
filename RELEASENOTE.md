@@ -1,5 +1,8 @@
-﻿Version Notes (Current Version: v2.23)
+﻿Version Notes (Current Version: v2.23.1)
 =======================================
+v2.23.1
+-----------
+1. Fix https://github.com/dotnet/docfx/issues/1982 to support new c# 7.1 feature
 
 v2.23
 -----------
