@@ -141,7 +141,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException(nameof(name));
+                return null;
             }
             return GetValue(name, Parameters);
         }
@@ -150,7 +150,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (string.IsNullOrEmpty(name))
             {
-                throw new ArgumentNullException(nameof(name));
+                return null;
             }
             return GetValue(name, TypeParameters);
         }
