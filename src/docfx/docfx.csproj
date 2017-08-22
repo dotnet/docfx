@@ -39,9 +39,4 @@
     <PackageReference Include="Microsoft.Owin.StaticFiles" Version="3.0.1" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
 </Project>

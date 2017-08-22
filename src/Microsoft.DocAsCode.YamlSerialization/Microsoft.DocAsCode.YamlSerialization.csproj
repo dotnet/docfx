@@ -4,9 +4,4 @@
   <ItemGroup>
     <PackageReference Include="YamlDotNet.Signed" Version="4.1.0" />
   </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
 </Project>

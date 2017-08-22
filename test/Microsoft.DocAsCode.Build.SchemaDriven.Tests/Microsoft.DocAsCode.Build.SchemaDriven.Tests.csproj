@@ -4,10 +4,8 @@
   </PropertyGroup>
   <Import Project="..\Shared\test.base.props" />
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
-    <Reference Include="System" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
     <Reference Include="System.Web" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
   <ItemGroup>

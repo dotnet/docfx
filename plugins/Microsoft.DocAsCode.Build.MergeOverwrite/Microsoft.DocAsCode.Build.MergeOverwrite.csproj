@@ -1,11 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\src\Shared\base.props" />
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.ManagedReference\Microsoft.DocAsCode.Build.ManagedReference.csproj" />

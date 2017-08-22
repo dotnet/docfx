@@ -3,9 +3,8 @@
   <PropertyGroup>
       <Description>Implements glob utility</Description>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46'  OR '$(TargetFramework)' == 'net452'">
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
     <Reference Include="System.Runtime" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 </Project>

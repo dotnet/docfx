@@ -11,11 +11,6 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\plugins\Microsoft.DocAsCode.Build.MemberLevelManagedReference\Microsoft.DocAsCode.Build.MemberLevelManagedReference.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj" />

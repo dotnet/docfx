@@ -34,13 +34,11 @@
     <PackageReference Include="Microsoft.VisualStudio.RemoteControl" Version="14.0.262-masterA5CACE98" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
     <Reference Include="System.Threading.Tasks" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime" />
   </ItemGroup>
-
 </Project>
