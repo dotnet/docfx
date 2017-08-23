@@ -51,14 +51,8 @@
   <ItemGroup>
     <Compile Condition="Exists($(VersionCSFile))" Include="$(VersionCSFile)" />
   </ItemGroup>
-
   <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Roslyn depends on this package, however official dotnet/sdk also contains another version of compiler, add the reference to base so that all the projects use this reference when compile-->
-    <PackageReference Include="Microsoft.Net.Compilers" Version="2.3.1" />
   </ItemGroup>
 </Project>

@@ -24,8 +24,8 @@ We currently support C# and VB projects.
 
 ## How to build?
 #### Prerequisites
-1. [Visual Studio 2017](https://www.visualstudio.com/downloads/) with *.NET Core cross-platform development* toolset installed
-2. [Node.js](https://nodejs.org)
+1. [Visual Studio 2017](https://www.visualstudio.com/downloads/), minimum installation is enough.
+2. [Node.js](https://nodejs.org), for building templates.
 
 #### Steps
 1. Option 1: Run `build.cmd` under *DocFX* code repo.

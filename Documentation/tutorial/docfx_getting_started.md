@@ -19,6 +19,8 @@ If you are interested in creating your own website with your own styles, you can
 * Markdown extensions. We introduced *DocFX Flavored Markdown(DFM)* to help you write API documentation. DFM is *100%* compatible with *GitHub Flavored Markdown(GFM)* with some useful extensions, like *file inclusion*, *code snippet*, *cross reference*, and *yaml header*.
 For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored_markdown.md).
 
+> [!Warning]
+> **Prerequisites** [Visual Studio 2017](https://www.visualstudio.com/downloads/) is needed for `docfx metadata` msbuild projects. It is not required when generating metadata directly from source code (`.cs`, `.vb`) or assemblies (`.dll`)
 
 2. Use *DocFX* as a command-line tool
 -----------------------
