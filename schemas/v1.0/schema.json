@@ -116,6 +116,10 @@
         },
         "default": {},
         "properties": { "$ref": "#/definitions/propertyDefinition" },
+        "metadata": {
+            "type": "string",
+            "format": "uri-reference"
+        },
         "patternProperties": {
             "^x_": { }
         }
