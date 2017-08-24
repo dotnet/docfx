@@ -316,7 +316,12 @@ Please refer to [How to Create Custom Templates](howto_create_custom_template.md
     "externalReference": [
     ],
     "globalMetadata": {
-      "_appTitle": "DocFX website"
+      "_appTitle": "DocFX website",
+      "_gitContribute": {
+        "repo": "https://github.com/org/repo",
+        "branch": "dev",
+        "apiSpecFolder": "docs-ref-overwrite"
+      }
     },
     "dest": "_site",
     "template": "default"
