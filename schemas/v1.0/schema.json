@@ -118,7 +118,7 @@
         "properties": { "$ref": "#/definitions/propertyDefinition" },
         "metadata": {
             "type": "string",
-            "format": "uri-reference"
+            "format": "JSON-pointer"
         },
         "patternProperties": {
             "^x_": { }
