@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
         private object InterpretCore(object value, BaseSchema schema, string path, IProcessContext context)
         {
-            if (value is Dictionary<object, object> dict)
+            if (value is IDictionary<object, object> dict)
             {
                 if (schema.Properties != null)
                 {
@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 }
             }
 
-            if (value is List<object> array)
+            if (value is IList<object> array)
             {
                 if (schema.Items != null)
                 {

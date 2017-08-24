@@ -6,11 +6,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Composition;
-    using System.Composition.Hosting;
+    using System.Dynamic;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
     using System.Runtime.Serialization.Formatters.Binary;
     using System.Text;
 
@@ -99,14 +97,21 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                     {
                         // MUST be a dictionary
                         var obj = YamlUtility.Deserialize<Dictionary<string, object>>(file.File);
+
+                        var content = ConvertToObjectHelper.ConvertToDynamic(obj);
+                        var pageMetadata = _schema.MetadataReference.GetValue(content) as IDictionary<string, object>;
+                        if (pageMetadata == null)
+                        {
+                            pageMetadata = new ExpandoObject();
+                            _schema.MetadataReference.SetValue(content, pageMetadata);
+                        }
                         foreach(var pair in metadata)
                         {
-                            if (!obj.ContainsKey(pair.Key))
+                            if (!pageMetadata.ContainsKey(pair.Key))
                             {
-                                obj[pair.Key] = pair.Value;
+                                pageMetadata[pair.Key] = pair.Value;
                             }
                         }
-                        var content = ConvertToObjectHelper.ConvertToDynamic(obj);
 
                         var localPathFromRoot = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(file.File));
 
@@ -119,6 +124,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         };
 
                         fm.Properties.Schema = _schema;
+                        fm.Properties.Metadata = pageMetadata;
                         return fm;
                     }
                     catch (YamlDotNet.Core.YamlException e)
