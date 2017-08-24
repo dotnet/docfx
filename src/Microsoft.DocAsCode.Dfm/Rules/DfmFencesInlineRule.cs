@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 Logger.LogWarning("Inline code snippet is only allowed inside tables.", line: sourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidInlineCodeSnippet);
             }
-            return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption, pathQueryOption == null ? match.Groups["option"].Value + match.Groups["optionValue"].Value : null);
+            return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption, pathQueryOption != null ? match.Groups["option"]?.Value + match.Groups["optionValue"]?.Value : null);
         }
     }
 }

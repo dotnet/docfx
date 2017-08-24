@@ -90,7 +90,7 @@ namespace Microsoft.DocAsCode.Dfm
             var title = match.Groups["title"]?.Value;
             var pathQueryOption = ParsePathQueryString(match.Groups["option"]?.Value, match.Groups["optionValue"]?.Value);
 
-            return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption, pathQueryOption == null ? match.Groups["option"].Value + match.Groups["optionValue"].Value : null);
+            return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption, pathQueryOption != null ? match.Groups["option"]?.Value + match.Groups["optionValue"]?.Value : null);
         }
 
     }

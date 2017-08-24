@@ -47,6 +47,11 @@ namespace Microsoft.DocAsCode.Dfm
                 throw new ArgumentNullException(nameof(codeContent));
             }
 
+            if (string.IsNullOrEmpty(queryStringAndFragment))
+            {
+                throw new ArgumentNullException(nameof(queryStringAndFragment));
+            }
+
             var pathQueryOption =
                 !string.IsNullOrEmpty(queryStringAndFragment)
                     ? DfmFencesRule.ParsePathQueryString(queryStringAndFragment.Remove(1), queryStringAndFragment.Substring(1))
