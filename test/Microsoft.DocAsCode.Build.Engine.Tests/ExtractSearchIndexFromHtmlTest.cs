@@ -3,12 +3,12 @@
 
 namespace Microsoft.DocAsCode.Build.Engine.Tests
 {
-    using HtmlAgilityPack;
-    using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.Plugins;
-    using System.Collections.Generic;
     using System.IO;
     using System.Text;
+
+    using Microsoft.DocAsCode.Plugins;
+
+    using HtmlAgilityPack;
     using Xunit;
 
     [Collection("docfx STA")]
@@ -20,21 +20,23 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         public void TestBasicFeature()
         {
             var rawHtml = @"
-<head>
-    <title>This is title in head metadata</title>
-</head>
-<body>
-    <h1> This is Title </h1>
-    <p class='data-searchable'> Hello World,
-    Microsoft
-    </p>
-    <article>
-        <h1>
-            This is article title
-        </h1>
-        docfx can do anything...
-    </article>
-</body>
+<html>
+    <head>
+        <title>This is title in head metadata</title>
+    </head>
+    <body>
+        <h1> This is Title </h1>
+        <p class='data-searchable'> Hello World,
+        Microsoft
+        </p>
+        <article>
+            <h1>
+                This is article title
+            </h1>
+            docfx can do anything...
+        </article>
+    </body>
+</html>
 ";
             var html = new HtmlDocument();
             html.LoadHtml(rawHtml);
@@ -47,12 +49,14 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         public void TestSearchableClass()
         {
             var rawHtml = @"
-<head>
-    <title>This is title in head metadata</title>
-</head>
-<body>
-    <p class='data-searchable'>Cooooooool!</p>
-</body>
+<html>
+    <head>
+        <title>This is title in head metadata</title>
+    </head>
+    <body>
+        <p class='data-searchable'>Cooooooool!</p>
+    </body>
+</html>
 ";
             var html = new HtmlDocument();
             html.LoadHtml(rawHtml);
@@ -62,17 +66,45 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         }
 
         [Fact]
+        public void TestSearchDisableClass()
+        {
+            var rawHtml = @"
+<html>
+    <head>
+        <title>This is title in head metadata</title>
+        <meta name='searchOption' content='noindex'>
+    </head>
+    <body>
+        <article>
+            <h1>
+                This is article title
+            </h1>
+            docfx can do anything...
+        </article>
+    </body>
+</html>
+";
+            var html = new HtmlDocument();
+            html.LoadHtml(rawHtml);
+            var href = "http://dotnet.github.io/docfx";
+            var item = _extractor.ExtractItem(html, href);
+            Assert.Null(item);
+        }
+
+        [Fact]
         public void TestArticleTagWithSearchableClass()
         {
             var rawHtml = @"
-<head>
-    <title>This is title in head metadata</title>
-</head>
-<body>
-    <article class='data-searchable'>
-        Only index once.
-    </article>
-</body>
+<html>
+    <head>
+        <title>This is title in head metadata</title>
+    </head>
+    <body>
+        <article class='data-searchable'>
+            Only index once.
+        </article>
+    </body>
+</html>
 ";
             var html = new HtmlDocument();
             html.LoadHtml(rawHtml);
@@ -82,14 +114,40 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         }
 
         [Fact]
+        public void TestDisableTagWithSearchableClass()
+        {
+            var rawHtml = @"
+<html>
+    <head>
+        <title>This is title in head metadata</title>
+        <meta name='searchOption' content='noindex'>
+    </head>
+    <body>
+        <p class='data-searchable'>Cooooooool!</p>
+        <article class='data-searchable'>
+            Only index once.
+        </article>
+    </body>
+</html>
+";
+            var html = new HtmlDocument();
+            html.LoadHtml(rawHtml);
+            var href = "http://dotnet.github.io/docfx";
+            var item = _extractor.ExtractItem(html, href);
+            Assert.Null(item);
+        }
+
+        [Fact]
         public void TestEmptyItem()
         {
             var rawHtml = @"
-<head>
-    <title>This is title in head metadata</title>
-</head>
-<body>
-</body>
+<html>
+    <head>
+        <title>This is title in head metadata</title>
+    </head>
+    <body>
+    </body>
+</html>
 ";
             var html = new HtmlDocument();
             html.LoadHtml(rawHtml);
