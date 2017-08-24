@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             html.LoadHtml(rawHtml);
             var href = "http://dotnet.github.io/docfx";
             var item = _extractor.ExtractItem(html, href);
-            Assert.True(item == null);
+            Assert.Null(item);
         }
 
         [Fact]
@@ -134,7 +134,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             html.LoadHtml(rawHtml);
             var href = "http://dotnet.github.io/docfx";
             var item = _extractor.ExtractItem(html, href);
-            Assert.True(item == null);
+            Assert.Null(item);
         }
 
         [Fact]

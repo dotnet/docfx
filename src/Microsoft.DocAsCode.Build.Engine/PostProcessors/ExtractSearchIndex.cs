@@ -102,7 +102,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             var contentBuilder = new StringBuilder();
 
             if (html.DocumentNode.SelectNodes("/html/head/meta[@name='searchOption' and @content='noindex']") != null)
+            {
                 return null;
+            }
 
             // Select content between the data-searchable class tag
             var nodes = html.DocumentNode.SelectNodes("//*[contains(@class,'data-searchable')]") ?? Enumerable.Empty<HtmlNode>();
