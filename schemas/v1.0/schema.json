@@ -118,7 +118,7 @@
         "properties": { "$ref": "#/definitions/propertyDefinition" },
         "metadata": {
             "type": "string",
-            "format": "JSON-pointer"
+            "format": "json-pointer"
         },
         "patternProperties": {
             "^x_": { }
