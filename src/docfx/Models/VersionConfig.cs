@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode
 
     using Newtonsoft.Json;
 
+    [Obsolete]
     [Serializable]
     public class VersionConfig
     {

@@ -75,19 +75,20 @@ namespace Microsoft.DocAsCode
         [JsonProperty("dest")]
         public string DestinationFolder { get; set; }
 
-        /// <summary>
-        /// Version name for the current file-mapping item.
-        /// If not set, treat the current file-mapping item as in default version.
-        /// Mappings with the same version name will be built together.
-        /// Cross reference doesn't support cross different versions.
-        /// </summary>
+        [Obsolete("use GroupName")]
         [JsonProperty("version")]
         public string VersionName { get; set; }
 
         /// <summary>
-        /// The Root TOC Path used for navbar in current version, relative to output root
-        /// If not set, will use the toc in output root in current version if exists.
+        /// Group name for the current file-mapping item.
+        /// If not set, treat the current file-mapping item as in default group.
+        /// Mappings with the same group name will be built together.
+        /// Cross reference doesn't support cross different groups.
         /// </summary>
+        [JsonProperty("group")]
+        public string GroupName { get; set; }
+
+        [Obsolete("use BuildJsonConfig.Groups.RootTocPath")]
         [JsonProperty("rootTocPath")]
         public string RootTocPath { get; set; }
 

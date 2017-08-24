@@ -131,8 +131,12 @@ namespace Microsoft.DocAsCode
         [JsonProperty("customLinkResolver")]
         public string CustomLinkResolver { get; set; }
 
+        [Obsolete]
         [JsonProperty("versions")]
         public Dictionary<string, VersionConfig> Versions { get; set; }
+
+        [JsonProperty("groups")]
+        public Dictionary<string, GroupConfig> Groups { get; set; }
 
         [JsonProperty("lruSize")]
         public int? LruSize { get; set; }
