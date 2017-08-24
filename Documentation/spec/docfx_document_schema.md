@@ -55,7 +55,7 @@ This is the root document object for *THIS schema*.
 | description     | string  | A short description of current schema.
 | type            | string | `*`The type of the root document model MUST be `object`.
 | properties      | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties.
-| metadata        | string | In `uri-reference` format, referencing to the metadata object. Metadata object is the object to define the metadata for current document, and can be also set through `globalMetadata` or `fileMetadata` in DocFX. The default value for metadata is `#`.
+| metadata        | string | In `JSON pointer` format as defined by https://tools.ietf.org/html/rfc6901, referencing to the metadata object. Metadata object is the object to define the metadata for current document, and can be also set through `globalMetadata` or `fileMetadata` in DocFX. The default value for metadata is empty which stands for the root object.
 
 ##### Patterned Field
 | Field Name | Type | Description
