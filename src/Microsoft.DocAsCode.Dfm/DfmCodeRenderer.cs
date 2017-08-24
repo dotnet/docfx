@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.IO;
 
     using Microsoft.DocAsCode.Common;
@@ -39,6 +40,25 @@ namespace Microsoft.DocAsCode.Dfm
             }
         }
 
+        public virtual StringBuffer RenderFencesFromCodeContent(string queryStringAndFragment, string codeContent)
+        {
+            if (string.IsNullOrEmpty(codeContent))
+            {
+                throw new ArgumentNullException(nameof(codeContent));
+            }
+
+            var pathQueryOption =
+                !string.IsNullOrEmpty(queryStringAndFragment)
+                    ? DfmFencesRule.ParsePathQueryString(queryStringAndFragment.Remove(1), queryStringAndFragment.Substring(1))
+                    : null;
+
+            var token = new DfmFencesBlockToken(null, null, null, null, new SourceInfo(), null, null, pathQueryOption, queryStringAndFragment);
+
+            var fencesCode = codeContent.Replace("\r\n", "\n").Split('\n');
+            var code = ExtractCode(token, fencesCode);
+            return RenderFencesCode(token, new Options{ShouldExportSourceInfo = false}, code.ErrorMessage, code.CodeLines);
+        }
+
         public virtual string FindFile(DfmFencesToken token, IMarkdownContext context)
         {
             return DfmFallbackHelper.GetFilePathWithFallback(token.Path, context).Item1;
@@ -47,6 +67,11 @@ namespace Microsoft.DocAsCode.Dfm
         public virtual DfmExtractCodeResult ExtractCode(DfmFencesToken token, string filePath)
         {
             return _dfmCodeExtractor.ExtractFencesCode(token, filePath);
+        }
+
+        public virtual DfmExtractCodeResult ExtractCode(DfmFencesToken token, string[] fencesCode)
+        {
+            return _dfmCodeExtractor.ExtractFencesCode(token, fencesCode);
         }
 
         public virtual StringBuffer RenderFencesCode(DfmFencesToken token, Options options, string errorMessage, string[] codeLines = null)
@@ -132,6 +157,5 @@ namespace Microsoft.DocAsCode.Dfm
         {
             return (StringBuffer)"<!-- " + StringHelper.HtmlEncode(errorMessage) + " -->\n";
         }
-
     }
 }

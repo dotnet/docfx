@@ -19,6 +19,12 @@ namespace Microsoft.DocAsCode.Dfm
             SourceInfo = sourceInfo;
         }
 
+        public DfmFencesToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo sourceInfo, string lang, string title, IDfmFencesBlockPathQueryOption pathQueryOption, string queryStringAndFragment)
+            : this(rule, context, name, path, sourceInfo, lang, title, pathQueryOption)
+        {
+            QueryStringAndFragment = queryStringAndFragment;
+        }
+
         public IMarkdownRule Rule { get; }
 
         public IMarkdownContext Context { get; }
@@ -30,6 +36,8 @@ namespace Microsoft.DocAsCode.Dfm
         public string Name { get; }
 
         public string Title { get; }
+
+        public string QueryStringAndFragment { get; }
 
         public IDfmFencesBlockPathQueryOption PathQueryOption { get; }
 

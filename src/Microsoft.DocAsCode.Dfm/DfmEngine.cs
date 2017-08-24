@@ -36,6 +36,15 @@ namespace Microsoft.DocAsCode.Dfm
             return InternalMarkup(src, ImmutableStack.Create(path), dependency);
         }
 
+        public string Markup(string src, IMarkdownContext context)
+        {
+            if (string.IsNullOrEmpty(src))
+            {
+                return string.Empty;
+            }
+            return InternalMarkup(src, context);
+        }
+
         internal string InternalMarkup(string src, ImmutableStack<string> parents, HashSet<string> dependency)
         {
             using (GetFileScope(parents))

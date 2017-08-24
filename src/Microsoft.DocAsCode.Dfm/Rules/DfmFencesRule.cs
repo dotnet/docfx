@@ -27,7 +27,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public abstract IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context);
 
-        protected static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
+        public static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
         {
             if (string.IsNullOrEmpty(queryOption) || string.IsNullOrEmpty(queryString))
             {

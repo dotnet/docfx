@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.Dfm
                     !string.IsNullOrEmpty(queryStringAndFragment) ?
                     ParsePathQueryString(queryStringAndFragment.Remove(1), queryStringAndFragment.Substring(1)) :
                     null;
-                return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption);
+                return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption, queryStringAndFragment);
             }
             return null;
         }
@@ -90,7 +90,7 @@ namespace Microsoft.DocAsCode.Dfm
             var title = match.Groups["title"]?.Value;
             var pathQueryOption = ParsePathQueryString(match.Groups["option"]?.Value, match.Groups["optionValue"]?.Value);
 
-            return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption);
+            return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption, pathQueryOption == null ? match.Groups["option"].Value + match.Groups["optionValue"].Value : null);
         }
 
     }
