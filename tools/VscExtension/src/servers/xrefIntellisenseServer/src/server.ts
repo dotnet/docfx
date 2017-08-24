@@ -43,6 +43,7 @@ connection.onInitialize((params): InitializeResult => {
 		httpRequestFactory.xrefService = docfxJson.xrefService;
 		if(httpRequestFactory.xrefService != undefined) httpRequestFactory.isDocfxProject = true;
 	}
+	console.log("xrefIntellisense enabled");
 	if(httpRequestFactory.isDocfxProject) {
 		// This handler provides the initial list of the completion items.
 		connection.onCompletion(requestHandler.completionHandler);

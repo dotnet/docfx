@@ -118,7 +118,6 @@ export function activate(context: ExtensionContext) {
         ContentProvider.port = server.address().port;
     });
 
-    console.log("work"+process.pid);
     connectServer(context);
 }
 

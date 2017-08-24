@@ -5,14 +5,14 @@ import {
 	InitializeParams, InitializeResult, TextDocumentPositionParams,
 	CompletionItem, CompletionItemKind, TextDocumentIdentifier, 
 	DocumentHighlight, Range, DocumentLinkParams, DocumentLink,
-	Position
+	Position, CompletionList
 } from 'vscode-languageserver';
 import {requestUidController} from '../controllers/requestUidController';
 
 let completionItem: CompletionItem[];
 export let documents: TextDocuments = new TextDocuments();
 
-export async function completionHandler(textDocumentPosition: TextDocumentPositionParams): Promise<CompletionItem[]>
+export async function completionHandler(textDocumentPosition: TextDocumentPositionParams): Promise<CompletionList>
 {
 	var text = documents.get(textDocumentPosition.textDocument.uri).getText();
 	let lineStartPosition: Position = Position.create(textDocumentPosition.position.line, 0);
@@ -36,14 +36,16 @@ export async function completionHandler(textDocumentPosition: TextDocumentPositi
 	
 	if(completionItem == undefined) {
 		completionItem = await requestUidController.getCompletionItem(uid);
-		return completionItem;
 	} else {
+		let len = completionItem.length;
 		completionItem = completionItem.filter(item => item.label.includes(uid));
-		if(completionItem.length < 10) {
+		if(completionItem.length == 0 || completionItem.length < len * 0.6) {
 			completionItem = await requestUidController.getCompletionItem(uid);
 		}
-		return completionItem;
 	}
+
+	let completionItemList = CompletionList.create(completionItem, true);
+	return completionItemList;
 }
 
 export async function documentLinkHandler(documentLinkParams: DocumentLinkParams): Promise<DocumentLink[]>
