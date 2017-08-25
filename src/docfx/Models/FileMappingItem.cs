@@ -88,7 +88,10 @@ namespace Microsoft.DocAsCode
         [JsonProperty("group")]
         public string GroupName { get; set; }
 
-        [Obsolete("use BuildJsonConfig.Groups.RootTocPath")]
+        /// <summary>
+        /// The Root TOC Path used for navbar in current group, relative to output root.
+        /// If not set, will use the toc in output root in current group if exists.
+        /// </summary>
         [JsonProperty("rootTocPath")]
         public string RootTocPath { get; set; }
 

@@ -133,7 +133,7 @@ namespace Microsoft.DocAsCode
 
         [Obsolete]
         [JsonProperty("versions")]
-        public Dictionary<string, VersionConfig> Versions { get; set; }
+        public Dictionary<string, GroupConfig> Versions { get; set; }
 
         [JsonProperty("groups")]
         public Dictionary<string, GroupConfig> Groups { get; set; }

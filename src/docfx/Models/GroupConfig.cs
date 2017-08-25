@@ -14,13 +14,6 @@ namespace Microsoft.DocAsCode
         [JsonProperty("dest")]
         public string Destination { get; set; }
 
-        /// <summary>
-        /// The Root TOC Path used for navbar in current group, relative to output root.
-        /// If not set, will use the toc in output root in current group if exists.
-        /// </summary>
-        [JsonProperty("rootTocPath")]
-        public string RootTocPath { get; set; }
-
         [JsonExtensionData]
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }

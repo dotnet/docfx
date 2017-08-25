@@ -66,6 +66,28 @@ namespace Microsoft.DocAsCode.SubCommands
             EnvironmentContext.Clean();
         }
 
+        private static void MergeVersionToGroup(BuildJsonConfig config)
+        {
+            config.Groups = config.Groups ?? config.Versions;
+            foreach (var item in config.Content?.Items ?? new List<FileMappingItem>())
+            {
+                MergeVersionToGroup(item);
+            }
+            foreach (var item in config.Overwrite?.Items ?? new List<FileMappingItem>())
+            {
+                MergeVersionToGroup(item);
+            }
+            foreach (var item in config.Resource?.Items ?? new List<FileMappingItem>())
+            {
+                MergeVersionToGroup(item);
+            }
+        }
+
+        private static void MergeVersionToGroup(FileMappingItem item)
+        {
+            item.GroupName = item.GroupName ?? item.VersionName;
+        }
+
         #region BuildCommand ctor related
 
         private void SetDefaultConfigValue(BuildJsonConfig config)
@@ -109,6 +131,7 @@ namespace Microsoft.DocAsCode.SubCommands
             }
 
             config = CommandUtility.GetConfig<BuildConfig>(configFile).Item;
+            MergeVersionToGroup(config);
             if (config == null) throw new DocumentException($"Unable to find build subcommand config in file '{configFile}'.");
             config.BaseDirectory = Path.GetDirectoryName(configFile);
 

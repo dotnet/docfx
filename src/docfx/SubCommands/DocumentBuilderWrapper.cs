@@ -307,25 +307,11 @@ namespace Microsoft.DocAsCode.SubCommands
             foreach (var pair in fileMappingParametersDictionary)
             {
                 var p = parameters.Clone();
-                if (config.Groups != null)
+                if (config.Groups != null && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
                 {
-                    if (config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
+                    if (!string.IsNullOrEmpty(gi.Destination))
                     {
-                        if (!string.IsNullOrEmpty(gi.Destination))
-                        {
-                            p.VersionDir = gi.Destination;
-                        }
-                        if (!string.IsNullOrEmpty(gi.RootTocPath))
-                        {
-                            p.RootTocPath = gi.RootTocPath;
-                        }
-                    }
-                }
-                else if (config.Versions != null && config.Versions.TryGetValue(pair.Key, out VersionConfig vi))
-                {
-                    if (!string.IsNullOrEmpty(vi.Destination))
-                    {
-                        p.VersionDir = vi.Destination;
+                        p.VersionDir = gi.Destination;
                     }
                 }
                 p.Files = GetFileCollectionFromFileMapping(
@@ -335,10 +321,7 @@ namespace Microsoft.DocAsCode.SubCommands
                     GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
                 p.VersionName = pair.Key;
                 p.Changes = GetIntersectChanges(p.Files, changeList);
-                if (string.IsNullOrEmpty(p.RootTocPath))
-                {
-                    p.RootTocPath = pair.Value.RootTocPath;
-                }
+                p.RootTocPath = pair.Value.RootTocPath;
                 yield return p;
             }
         }
