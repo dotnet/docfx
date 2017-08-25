@@ -1418,6 +1418,57 @@ public static void Foo()
         }
 
         [Fact]
+        public void TestDfmFencesRenderFromCodeContent()
+        {
+            // arrange
+            var content = @"namespace ConsoleApplication1
+{
+    // <namespace>
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    // </namespace>
+
+    // <snippetprogram>
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string s = ""\ntest"";
+            int i = 100;
+        }
+    }
+    // </snippetprogram>
+
+    #region Helper
+    internal static class Helper
+    {
+        #region Foo
+        public static void Foo()
+        {
+        }
+        #endregion Foo
+    }
+    #endregion
+}";
+
+            // act
+            var renderer = new DfmCodeRenderer();
+            var marked = renderer.RenderFencesFromCodeContent("?range=1-2,10,20-21,29-&dedent=0&highlight=1-2,7-", content);
+
+            // assert
+            var expected = @"<pre><code highlight-lines=""1-2,7-"">namespace ConsoleApplication1
+{
+    class Program
+    #region Helper
+    internal static class Helper
+    #endregion
+}
+</code></pre>";
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
         public void CodeSnippetTagsShouldMatchCaseInsensitive()
         {
             //arange
