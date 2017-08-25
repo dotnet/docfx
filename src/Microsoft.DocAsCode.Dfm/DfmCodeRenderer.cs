@@ -47,14 +47,9 @@ namespace Microsoft.DocAsCode.Dfm
                 throw new ArgumentNullException(nameof(codeContent));
             }
 
-            if (string.IsNullOrEmpty(queryStringAndFragment))
+            if (queryStringAndFragment != null && queryStringAndFragment.Length == 1)
             {
-                throw new ArgumentNullException(nameof(queryStringAndFragment));
-            }
-
-            if (queryStringAndFragment.Length <= 1)
-            {
-                throw new ArgumentException($"Length of {nameof(queryStringAndFragment)} must be bigger than 1");
+                throw new ArgumentException($"Length of {nameof(queryStringAndFragment)} can not be 1");
             }
 
             var pathQueryOption =
