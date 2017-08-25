@@ -52,6 +52,11 @@ namespace Microsoft.DocAsCode.Dfm
                 throw new ArgumentNullException(nameof(queryStringAndFragment));
             }
 
+            if (queryStringAndFragment.Length <= 1)
+            {
+                throw new ArgumentException($"Length of {nameof(queryStringAndFragment)} must be bigger than 1");
+            }
+
             var pathQueryOption =
                 !string.IsNullOrEmpty(queryStringAndFragment)
                     ? DfmFencesRule.ParsePathQueryString(queryStringAndFragment.Remove(1), queryStringAndFragment.Substring(1))
