@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Threading;
 
     using Newtonsoft.Json;
@@ -38,6 +39,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         public string Version { get; set; }
 
         public string Id { get; set; }
+
+        public string Metadata { get; set; }
+
+        [JsonIgnore]
+        public JsonPointer MetadataReference { get; set; }
 
         public JObject ToJObject()
         {
@@ -73,6 +79,19 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 {
                     throw new InvalidSchemaException("Type for the root schema object must be object");
                 }
+
+                if (!JsonPointer.TryCreate(schema.Metadata, out var pointer))
+                {
+                    throw new InvalidJsonPointerException($"Metadata's json pointer {schema.Metadata} is invalid.");
+                }
+
+                var metadataSchema = pointer.FindSchema(schema);
+                if (metadataSchema != null && metadataSchema.Type != JSchemaType.Object)
+                {
+                    throw new InvalidJsonPointerException($"The referenced object is in type: {metadataSchema.Type}, only object can be a metadata reference");
+                }
+
+                schema.MetadataReference = pointer;
 
                 return schema;
             }

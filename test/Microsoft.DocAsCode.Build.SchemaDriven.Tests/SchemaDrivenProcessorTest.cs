@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
     using Microsoft.DocAsCode.Build.SchemaDriven.Processors;
     using Microsoft.DocAsCode.Build.TableOfContents;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
@@ -83,7 +84,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
                 Assert.Equal("/metadata", rawModel["metadata"]["path"].ToString());
                 Assert.Equal($"<p sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Create an application using <a href=\"app-service-web-tutorial-dotnet-sqldatabase.md\" data-raw-source=\"[.NET with Azure SQL DB](app-service-web-tutorial-dotnet-sqldatabase.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">.NET with Azure SQL DB</a> or <a href=\"app-service-web-tutorial-nodejs-mongodb-app.md\" data-raw-source=\"[Node.js with MongoDB](app-service-web-tutorial-nodejs-mongodb-app.md)\" sourcefile=\"{_inputFolder}/landingPage1.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">Node.js with MongoDB</a></p>\n"
                                 , rawModel["sections"][1]["children"][0]["content"].ToString());
-
             }
         }
 
@@ -92,7 +92,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
         {
             using (var listener = new TestListenerScope("TestContextObjectSDP"))
             {
-
                 var schemaFile = CreateFile("template/schemas/contextobject.schema.json", File.ReadAllText("TestData/schemas/contextobject.test.schema.json"), _templateFolder);
                 var tocTemplate = CreateFile("template/toc.json.tmpl", "toc template", _templateFolder);
                 var inputFileName = "co/active.yml";
@@ -140,6 +139,115 @@ searchScope:
                 Assert.Equal("../a%20b/toc.json", rawModel["toc_rel"].ToString());
                 Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].ToString());
                 Assert.Equal($".NET", rawModel["searchScope"][0].ToString());
+            }
+        }
+
+        [Fact]
+        public void TestValidMetadataReference()
+        {
+            using (var listener = new TestListenerScope("TestGeneralFeaturesInSDP"))
+            {
+                var schemaFile = CreateFile("template/schemas/mta.reference.test.schema.json", @"
+{
+  ""$schema"": ""http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"",
+  ""version"": ""1.0.0"",
+  ""title"": ""MetadataReferenceTest"",
+  ""description"": ""A simple test schema for sdp"",
+  ""type"": ""object"",
+  ""properties"": {
+      ""metadata"": {
+            ""type"": ""object""
+      }
+            },
+  ""metadata"": ""/metadata""
+}
+", _templateFolder);
+                var inputFileName1 = "page1.yml";
+                var inputFile1 = CreateFile(inputFileName1, @"### YamlMime:MetadataReferenceTest
+title: Web Apps Documentation
+metadata:
+  title: Azure Web Apps Documentation - Tutorials, API Reference
+  meta.description: Learn how to use App Service Web Apps to build and host websites and web applications.
+  ms.service: app-service
+  ms.tgt_pltfrm: na
+  ms.author: carolz
+sections:
+- title: 5-Minute Quickstarts
+toc_rel: ../a b/toc.md
+uhfHeaderId: MSDocsHeader-DotNet
+searchScope:
+  - .NET
+", _inputFolder);
+                var inputFileName2 = "page2.yml";
+                var inputFile2 = CreateFile(inputFileName2, @"### YamlMime:MetadataReferenceTest
+title: Web Apps Documentation
+", _inputFolder);
+
+                FileCollection files = new FileCollection(_defaultFiles);
+                files.Add(DocumentType.Article, new[] { inputFile1, inputFile2 }, _inputFolder);
+                BuildDocument(files);
+
+                Assert.Equal(3, listener.Items.Count);
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): MetadataReferenceTest")));
+                listener.Items.Clear();
+
+                var rawModelFilePath = GetRawModelFilePath(inputFileName1);
+                Assert.True(File.Exists(rawModelFilePath));
+                var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
+
+                Assert.Equal("overwritten", rawModel["metadata"]["meta"].ToString());
+                Assert.Equal("1", rawModel["metadata"]["another"].ToString());
+                Assert.Equal("app-service", rawModel["metadata"]["ms.service"].ToString());
+
+                var rawModelFilePath2 = GetRawModelFilePath(inputFileName2);
+                Assert.True(File.Exists(rawModelFilePath2));
+                var rawModel2 = JsonUtility.Deserialize<JObject>(rawModelFilePath2);
+
+                Assert.Equal("Hello world!", rawModel2["metadata"]["meta"].ToString());
+                Assert.Equal("2", rawModel2["metadata"]["another"].ToString());
+            }
+        }
+
+        [Fact]
+        public void TestInvalidMetadataReference()
+        {
+            using (var listener = new TestListenerScope("TestGeneralFeaturesInSDP"))
+            {
+                var schemaFile = CreateFile("template/schemas/mta.reference.test.schema.json", @"
+{
+  ""$schema"": ""http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"",
+  ""version"": ""1.0.0"",
+  ""title"": ""MetadataReferenceTest"",
+  ""description"": ""A simple test schema for sdp"",
+  ""type"": ""object"",
+  ""properties"": {
+      ""metadata"": {
+            ""type"": ""string""
+      }
+            },
+  ""metadata"": ""/metadata""
+}
+", _templateFolder);
+                var inputFileName1 = "page1.yml";
+                var inputFile1 = CreateFile(inputFileName1, @"### YamlMime:MetadataReferenceTest
+title: Web Apps Documentation
+metadata:
+  title: Azure Web Apps Documentation - Tutorials, API Reference
+  meta.description: Learn how to use App Service Web Apps to build and host websites and web applications.
+  ms.service: app-service
+  ms.tgt_pltfrm: na
+  ms.author: carolz
+sections:
+- title: 5-Minute Quickstarts
+toc_rel: ../a b/toc.md
+uhfHeaderId: MSDocsHeader-DotNet
+searchScope:
+  - .NET
+", _inputFolder);
+
+                FileCollection files = new FileCollection(_defaultFiles);
+                files.Add(DocumentType.Article, new[] { inputFile1 }, _inputFolder);
+                Assert.Throws<InvalidJsonPointerException>(() => BuildDocument(files));
             }
         }
 
@@ -213,6 +321,36 @@ searchScope:
             public void Build(FileModel model, IHostService host)
             {
                 Logger.LogWarning(Name + " loaded");
+            }
+
+            public void Postbuild(ImmutableList<FileModel> models, IHostService host)
+            {
+            }
+
+            public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
+            {
+                return models;
+            }
+        }
+
+        [Export(nameof(SchemaDrivenDocumentProcessor) + ".MetadataReferenceTest", typeof(IDocumentBuildStep))]
+        public class MetadataAddTestProcessor : IDocumentBuildStep
+        {
+            public string Name => nameof(TestBuildStep1);
+
+            public int BuildOrder => 1;
+
+            public void Build(FileModel model, IHostService host)
+            {
+                if (Path.GetFileNameWithoutExtension(model.File) == "page1")
+                {
+                    ((dynamic)model.Properties.Metadata).meta = "overwritten";
+                    ((dynamic)model.Properties.Metadata).another = 1;
+                }
+                else
+                {
+                    ((dynamic)model.Properties.Metadata).another = 2;
+                }
             }
 
             public void Postbuild(ImmutableList<FileModel> models, IHostService host)
