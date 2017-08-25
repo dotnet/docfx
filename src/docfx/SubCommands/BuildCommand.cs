@@ -131,8 +131,8 @@ namespace Microsoft.DocAsCode.SubCommands
             }
 
             config = CommandUtility.GetConfig<BuildConfig>(configFile).Item;
-            MergeVersionToGroup(config);
             if (config == null) throw new DocumentException($"Unable to find build subcommand config in file '{configFile}'.");
+            MergeVersionToGroup(config);
             config.BaseDirectory = Path.GetDirectoryName(configFile);
 
             MergeOptionsToConfig(options, config);
