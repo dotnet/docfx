@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             };
             var result = ConvertToObjectHelper.ConvertStrongTypeToObject(complexType);
             Assert.Equal(typeof(Dictionary<string, object>), result.GetType());
-            Assert.Equal(typeof(object[]), ((Dictionary<string, object>)result)["List"].GetType());
+            Assert.Equal(typeof(List<object>), ((Dictionary<string, object>)result)["List"].GetType());
             Assert.Equal(typeof(Dictionary<string, object>), ((Dictionary<string, object>)result)["IntDictionary"].GetType());
         }
 
@@ -53,8 +53,26 @@ namespace Microsoft.DocAsCode.Common.Tests
             };
             var result = ConvertToObjectHelper.ConvertStrongTypeToObject(complexType);
             Assert.Equal(typeof(Dictionary<string, object>), result.GetType());
-            Assert.Equal(typeof(object[]), ((Dictionary<string, object>)result)["list"].GetType());
+            Assert.Equal(typeof(List<object>), ((Dictionary<string, object>)result)["list"].GetType());
             Assert.Equal(typeof(Dictionary<string, object>), ((Dictionary<string, object>)result)["dict"].GetType());
+        }
+
+        [Fact]
+        public void ConvertObjectWithCircularReferenceToDynamic()
+        {
+            var a = new Dictionary<string, object>
+            {
+                ["key"] = "value"
+            };
+            a["key1"] = a;
+
+            dynamic converted = ConvertToObjectHelper.ConvertToDynamic(a);
+            Assert.Equal(converted.key1, converted);
+            Assert.Equal("value", converted.key1.key);
+
+            Dictionary<string, object> obj = ConvertToObjectHelper.ConvertExpandoObjectToObject(converted);
+            Assert.True(ReferenceEquals(obj["key1"], obj));
+            Assert.Equal("value", ((Dictionary<string, object>)obj["key1"])["key"]);
         }
 
         private sealed class ComplexType

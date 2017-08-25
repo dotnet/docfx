@@ -17,15 +17,7 @@ namespace Microsoft.DocAsCode.Common
     {
         public static object ConvertExpandoObjectToObject(object raw)
         {
-            if (raw is ExpandoObject)
-            {
-                return ((IDictionary<string, object>)raw).ToDictionary(s => s.Key, s => ConvertExpandoObjectToObject(s.Value));
-            }
-            if (raw is IEnumerable<object> enumerable)
-            {
-                return enumerable.Select(s => ConvertExpandoObjectToObject(s)).ToArray();
-            }
-            return raw;
+            return ConvertExpandoObjectToObjectCore(raw, new Dictionary<object, object>());
         }
 
         public static object ConvertJObjectToObject(object raw)
@@ -62,9 +54,52 @@ namespace Microsoft.DocAsCode.Common
 
         public static object ConvertToDynamic(object obj)
         {
-            if (obj is Dictionary<object, object> dict)
+            return ConvertToDynamicCore(obj, new Dictionary<object, object>());
+        }
+
+        private static object ConvertExpandoObjectToObjectCore(object obj, Dictionary<object, object> cache)
+        {
+            if (cache.TryGetValue(obj, out var output))
             {
-                var result = new ExpandoObject();
+                return output;
+            }
+
+            var result = obj;
+
+            if (obj is ExpandoObject eo)
+            {
+                result = cache[obj] = new Dictionary<string, object>();
+                foreach(var pair in eo)
+                {
+                    ((Dictionary<string, object>)result)[pair.Key] = ConvertExpandoObjectToObjectCore(pair.Value, cache);
+                }
+            }
+            else if (obj is IEnumerable<object> enumerable)
+            {
+                result = cache[obj] = new List<string>();
+                foreach (var item in enumerable)
+                {
+                    ((List<object>)result).Add(ConvertExpandoObjectToObjectCore(item, cache));
+                }
+            }
+
+            return result;
+        }
+
+        private static object ConvertToDynamicCore(object obj, Dictionary<object, object> cache)
+        {
+            if (cache.TryGetValue(obj, out var output))
+            {
+                return output;
+            }
+            var result = obj;
+            if (obj is ExpandoObject)
+            {
+                result = cache[obj] = obj;
+            }
+            else if (obj is IDictionary<object, object> dict)
+            {
+                result = cache[obj] = new ExpandoObject();
 
                 foreach (var pair in dict)
                 {
@@ -74,33 +109,28 @@ namespace Microsoft.DocAsCode.Common
                         throw new NotSupportedException("Only string key is supported.");
                     }
 
-                    ((IDictionary<string, Object>)result).Add(key, ConvertToDynamic(pair.Value));
+                    ((IDictionary<string, Object>)result).Add(key, ConvertToDynamicCore(pair.Value, cache));
                 }
-
-                return result;
             }
-
-            if (obj is Dictionary<string, object> sdict)
+            else if (obj is IDictionary<string, object> sdict)
             {
-                var result = new ExpandoObject();
+                result = cache[obj] = new ExpandoObject();
 
                 foreach (var pair in sdict)
                 {
-                    ((IDictionary<string, Object>)result).Add(pair.Key, ConvertToDynamic(pair.Value));
+                    ((IDictionary<string, Object>)result).Add(pair.Key, ConvertToDynamicCore(pair.Value, cache));
                 }
-
-                return result;
             }
-
-            if (obj is List<object> array)
+            else if (obj is IList<object> array)
             {
+                result = cache[obj] = array;
                 for (int i = 0; i < array.Count; i++)
                 {
-                    array[i] = ConvertToDynamic(array[i]);
+                    ((IList<object>)result)[i] = ConvertToDynamicCore(array[i], cache);
                 }
             }
 
-            return obj;
+            return result;
         }
     }
 }
