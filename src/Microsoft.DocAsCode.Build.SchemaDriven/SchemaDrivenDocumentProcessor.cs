@@ -103,7 +103,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         if (pageMetadata == null)
                         {
                             pageMetadata = new ExpandoObject();
-                            _schema.MetadataReference.SetValue(content, pageMetadata);
+                            _schema.MetadataReference.SetValue(ref content, pageMetadata);
                         }
                         foreach(var pair in metadata)
                         {

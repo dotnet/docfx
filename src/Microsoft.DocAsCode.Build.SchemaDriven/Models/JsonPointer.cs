@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             BaseSchema schema = rootSchema;
             foreach(var part in _parts)
             {
-                schema = GetChildSchema(rootSchema, part);
+                schema = GetChildSchema(schema, part);
             }
 
             return schema;
@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             return val;
         }
 
-        public void SetValue(object root, object value)
+        public void SetValue(ref object root, object value)
         {
             if (_isRoot)
             {

@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 {
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Tests.Common;
 
     using Xunit;
@@ -41,6 +42,54 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
             Assert.Equal(6L, new JsonPointer("/k\"l").GetValue(root));
             Assert.Equal(7L, new JsonPointer("/ ").GetValue(root));
             Assert.Equal(8L, new JsonPointer("/m~0n").GetValue(root));
+        }
+
+        [Fact]
+        public void TestJsonPointerWithComplexObject()
+        {
+            var root = ConvertToObjectHelper.ConvertToDynamic(ConvertToObjectHelper.ConvertJObjectToObject(JsonUtility.FromJsonString<object>(@"
+{
+      ""dict"": {
+        ""key1"": ""value1"",
+        ""key2"": [""arr1"", ""arr2""],
+        ""key3"": {
+            ""key1"": ""value1"",
+            ""key2"": [""arr1"", ""arr2""],
+            ""key3"": {
+                ""key1"": ""value1"",
+                ""key2"": [""arr1"", ""arr2""],
+                ""key3"": {
+                   ""key1"": ""value1""
+                }
+            }
+        }
+    },
+      ""array"": [""bar"", ""baz""]
+   }
+")));
+
+            Assert.Equal(root, new JsonPointer("").GetValue(root));
+            Assert.Equal("value1", new JsonPointer("/dict/key1").GetValue(root));
+            Assert.Equal("arr2", new JsonPointer("/dict/key2/1").GetValue(root));
+            Assert.Equal("value1", new JsonPointer("/dict/key3/key3/key3/key1").GetValue(root));
+            Assert.Null(new JsonPointer("/dict/key4").GetValue(root));
+            Assert.Null(new JsonPointer("/dict/key4/key1").GetValue(root));
+            Assert.Null(new JsonPointer("/dict/key2/2").GetValue(root));
+
+            var jp = new JsonPointer("/dict/key1");
+            jp.SetValue(ref root, 1);
+            Assert.Equal(1, jp.GetValue(root));
+
+            jp = new JsonPointer("/dict/key3/key2/1");
+            jp.SetValue(ref root, 2);
+            Assert.Equal(2, jp.GetValue(root));
+
+            jp = new JsonPointer("");
+            jp.SetValue(ref root, 3);
+            Assert.Equal(3, root);
+            Assert.Equal(3, jp.GetValue(root));
+
+            Assert.Throws<InvalidJsonPointerException>(() => new JsonPointer("/dict/key2/2").SetValue(ref root, 1));
         }
     }
 }
