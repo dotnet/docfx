@@ -309,6 +309,12 @@ namespace Microsoft.DocAsCode.SubCommands
                 var p = parameters.Clone();
                 if (config.Groups != null && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
                 {
+                    p.GroupInfo = new GroupInfoModel()
+                    {
+                        Name = pair.Key,
+                        Destination = gi.Destination,
+                        Metadata = gi.Metadata,
+                    };
                     if (!string.IsNullOrEmpty(gi.Destination))
                     {
                         p.VersionDir = gi.Destination;

@@ -3,21 +3,26 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System;
     using System.Collections.Immutable;
 
     public interface IHostService
     {
         ImmutableList<TreeItemRestructure> TableOfContentRestructions { get; set; }
 
+        [Obsolete("use GroupInfo")]
         /// <summary>
         /// current version's name, String.Empty for default version
         /// </summary>
         string VersionName { get; }
 
+        [Obsolete("use GroupInfo")]
         /// <summary>
         /// current version's output base folder
         /// </summary>
         string VersionOutputFolder { get; }
+
+        GroupInfoModel GroupInfo { get; }
 
         MarkupResult Parse(MarkupResult markupResult, FileAndType ft);
         MarkupResult Markup(string markdown, FileAndType ft);

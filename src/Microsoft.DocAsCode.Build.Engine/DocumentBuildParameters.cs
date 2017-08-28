@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Immutable;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
+    using Microsoft.DocAsCode.Plugins;
 
     public sealed class DocumentBuildParameters : MarshalByRefObject
     {
@@ -48,6 +49,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         [IncrementalIgnore]
         public string VersionDir { get; set; }
+
+        [IncrementalIgnore]
+        public GroupInfoModel GroupInfo { get; set; }
 
         public string RootTocPath { get; set; }
 
