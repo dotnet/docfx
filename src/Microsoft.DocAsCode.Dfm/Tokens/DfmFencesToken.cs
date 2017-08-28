@@ -3,10 +3,13 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
+
     using Microsoft.DocAsCode.MarkdownLite;
 
     public abstract class DfmFencesToken : IMarkdownToken
     {
+        [Obsolete]
         public DfmFencesToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo sourceInfo, string lang, string title, IDfmFencesBlockPathQueryOption pathQueryOption)
             : this(rule, context, name, path, sourceInfo, lang, title, pathQueryOption, null) { }
 
