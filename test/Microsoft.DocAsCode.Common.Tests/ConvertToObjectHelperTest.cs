@@ -38,7 +38,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             };
             var result = ConvertToObjectHelper.ConvertStrongTypeToObject(complexType);
             Assert.Equal(typeof(Dictionary<string, object>), result.GetType());
-            Assert.Equal(typeof(List<object>), ((Dictionary<string, object>)result)["List"].GetType());
+            Assert.Equal(typeof(object[]), ((Dictionary<string, object>)result)["List"].GetType());
             Assert.Equal(typeof(Dictionary<string, object>), ((Dictionary<string, object>)result)["IntDictionary"].GetType());
         }
 
@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             };
             var result = ConvertToObjectHelper.ConvertStrongTypeToObject(complexType);
             Assert.Equal(typeof(Dictionary<string, object>), result.GetType());
-            Assert.Equal(typeof(List<object>), ((Dictionary<string, object>)result)["list"].GetType());
+            Assert.Equal(typeof(object[]), ((Dictionary<string, object>)result)["list"].GetType());
             Assert.Equal(typeof(Dictionary<string, object>), ((Dictionary<string, object>)result)["dict"].GetType());
         }
 
