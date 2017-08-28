@@ -76,7 +76,7 @@ namespace Microsoft.DocAsCode.Common
             }
             else if (obj is IEnumerable<object> enumerable)
             {
-                result = cache[obj] = new List<string>();
+                result = cache[obj] = new List<object>();
                 foreach (var item in enumerable)
                 {
                     ((List<object>)result).Add(ConvertExpandoObjectToObjectCore(item, cache));
