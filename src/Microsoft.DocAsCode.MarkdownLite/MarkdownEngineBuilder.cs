@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         /// Create markdown paring context.
         /// </summary>
         /// <returns>a instance of <see cref="IMarkdownContext"/></returns>
-        protected virtual IMarkdownContext CreateParseContext()
+        public virtual IMarkdownContext CreateParseContext()
         {
             return new MarkdownBlockContext(BlockRules, new MarkdownInlineContext(InlineRules));
         }

@@ -67,13 +67,13 @@ namespace Microsoft.DocAsCode.Build.Engine
         [Import]
         public ICompositionContainer Container { get; set; }
 
-        private sealed class DfmService : IMarkdownService, IHasIncrementalContext, IDisposable
+        public sealed class DfmService : IMarkdownService, IHasIncrementalContext, IDisposable
         {
-            private readonly DfmEngineBuilder _builder;
+            public DfmEngineBuilder Builder { get; }
+
+            public object Renderer { get; }
 
             private readonly ImmutableDictionary<string, string> _tokens;
-
-            private readonly object _renderer;
 
             private readonly string _incrementalContextHash;
 
@@ -91,7 +91,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 options.ShouldFixId = provider.ShouldFixId;
                 options.ShouldExportSourceInfo = true;
                 options.XHtml = true;
-                _builder = new DfmEngineBuilder(
+                Builder = new DfmEngineBuilder(
                     options,
                     baseDir,
                     templateDir,
@@ -101,13 +101,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                     TokenTreeValidator = MarkdownTokenTreeValidatorFactory.Combine(provider.TokenTreeValidator)
                 };
                 _tokens = tokens;
-                _renderer = CustomizedRendererCreator.CreateRenderer(
+                Renderer = CustomizedRendererCreator.CreateRenderer(
                     new DfmRenderer { Tokens = _tokens },
                     provider.DfmRendererPartProviders,
                     parameters);
                 foreach (var c in provider.DfmEngineCustomizers)
                 {
-                    c.Customize(_builder, parameters);
+                    c.Customize(Builder, parameters);
                 }
                 _incrementalContextHash = ComputeIncrementalContextHash(baseDir, templateDir, provider.TokenTreeValidator, parameters);
             }
@@ -157,7 +157,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             public MarkupResult Markup(string src, string path)
             {
                 var dependency = new HashSet<string>();
-                var html = _builder.CreateDfmEngine(_renderer).Markup(src, path, dependency);
+                var html = Builder.CreateDfmEngine(Renderer).Markup(src, path, dependency);
                 var result = new MarkupResult
                 {
                     Html = html,
@@ -173,7 +173,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             public void Dispose()
             {
-                (_renderer as IDisposable)?.Dispose();
+                (Renderer as IDisposable)?.Dispose();
             }
         }
     }
