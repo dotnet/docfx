@@ -76,11 +76,7 @@ namespace Microsoft.DocAsCode.Dfm
                 Logger.LogWarning(GenerateErrorMessage(token), line: token.SourceInfo.LineNumber.ToString());
             }
 
-            var includedLines = new List<string>();
-            foreach (var line in token.PathQueryOption.GetQueryLines(fencesCode))
-            {
-                includedLines.Add(line);
-            }
+            var includedLines = token.PathQueryOption.GetQueryLines(fencesCode).ToList();
 
             if (!token.PathQueryOption.ValidateHighlightLinesAndDedentLength(includedLines.Count))
             {
