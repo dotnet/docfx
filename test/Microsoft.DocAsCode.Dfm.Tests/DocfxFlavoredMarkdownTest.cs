@@ -350,14 +350,14 @@ uid: reference.md
             DfmServiceProvider provider = new DfmServiceProvider();
             var service = provider.CreateMarkdownService(new MarkdownServiceParameters());
 
-            var parents = ImmutableStack<string>.Empty;
-            parents = parents.Push("reference.md");
+            var parents = ImmutableStack.Create("reference.md");
 
-            var marked = ((DfmServiceProvider.DfmService) service)
+            var dfmservice = (DfmServiceProvider.DfmService) service;
+            var marked = dfmservice
                 .Builder
-                .CreateDfmEngine(((DfmServiceProvider.DfmService) service).Renderer)
+                .CreateDfmEngine(dfmservice.Renderer)
                 .Markup(reference,
-                    ((MarkdownBlockContext) ((DfmServiceProvider.DfmService) service).Builder.CreateParseContext())
+                    ((MarkdownBlockContext) dfmservice.Builder.CreateParseContext())
                     .GetInlineContext().SetFilePathStack(parents).SetIsInclude());
 
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
@@ -381,14 +381,14 @@ uid: reference.md
             DfmServiceProvider provider = new DfmServiceProvider();
             var service = provider.CreateMarkdownService(new MarkdownServiceParameters());
 
-            var parents = ImmutableStack<string>.Empty;
-            parents = parents.Push("reference.md");
+            var parents = ImmutableStack.Create("reference.md");
 
-            var marked = ((DfmServiceProvider.DfmService)service)
+            var dfmservice = (DfmServiceProvider.DfmService)service;
+            var marked = dfmservice
                 .Builder
-                .CreateDfmEngine(((DfmServiceProvider.DfmService)service).Renderer)
+                .CreateDfmEngine(dfmservice.Renderer)
                 .Markup(reference,
-                    ((MarkdownBlockContext)((DfmServiceProvider.DfmService)service).Builder.CreateParseContext())
+                    ((MarkdownBlockContext)dfmservice.Builder.CreateParseContext())
                     .SetFilePathStack(parents).SetIsInclude());
 
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
