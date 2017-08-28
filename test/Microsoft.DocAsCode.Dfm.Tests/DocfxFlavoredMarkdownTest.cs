@@ -1417,6 +1417,120 @@ public static void Foo()
             Assert.Equal(expectedContent.Replace("\r\n", "\n"), marked);
         }
 
+        [Theory]
+        [Trait("Related", "DfmMarkdown")]
+        [InlineData(null, @"<pre><code>namespace ConsoleApplication1
+{
+    // &lt;namespace&gt;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    // &lt;/namespace&gt;
+
+    // &lt;snippetprogram&gt;
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string s = &quot;\ntest&quot;;
+            int i = 100;
+        }
+    }
+    // &lt;/snippetprogram&gt;
+
+    #region Helper
+    internal static class Helper
+    {
+        #region Foo
+        public static void Foo()
+        {
+        }
+        #endregion Foo
+    }
+    #endregion
+}
+</code></pre>")]
+        [InlineData("", @"<pre><code>namespace ConsoleApplication1
+{
+    // &lt;namespace&gt;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    // &lt;/namespace&gt;
+
+    // &lt;snippetprogram&gt;
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string s = &quot;\ntest&quot;;
+            int i = 100;
+        }
+    }
+    // &lt;/snippetprogram&gt;
+
+    #region Helper
+    internal static class Helper
+    {
+        #region Foo
+        public static void Foo()
+        {
+        }
+        #endregion Foo
+    }
+    #endregion
+}
+</code></pre>")]
+        [InlineData("?", "<!-- Length of queryStringAndFragment can not be 1 -->\n")]
+        [InlineData("?range=1-2,10,20-21,29-&dedent=0&highlight=1-2,7-", @"<pre><code highlight-lines=""1-2,7-"">namespace ConsoleApplication1
+{
+    class Program
+    #region Helper
+    internal static class Helper
+    #endregion
+}
+</code></pre>")]
+        public void TestDfmFencesRenderFromCodeContent(string queryStringAndFragment, string expectedContent)
+        {
+            // arrange
+            var content = @"namespace ConsoleApplication1
+{
+    // <namespace>
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    // </namespace>
+
+    // <snippetprogram>
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string s = ""\ntest"";
+            int i = 100;
+        }
+    }
+    // </snippetprogram>
+
+    #region Helper
+    internal static class Helper
+    {
+        #region Foo
+        public static void Foo()
+        {
+        }
+        #endregion Foo
+    }
+    #endregion
+}";
+
+            // act
+            var renderer = new DfmCodeRenderer();
+            var marked = renderer.RenderFencesFromCodeContent(queryStringAndFragment, content);
+
+            Assert.Equal(expectedContent.Replace("\r\n", "\n"), marked);
+        }
+
         [Fact]
         public void CodeSnippetTagsShouldMatchCaseInsensitive()
         {
