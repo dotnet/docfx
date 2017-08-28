@@ -447,7 +447,7 @@ tagRules : [
                         Assert.Equal(8, logs.Count);
                         var errorLog = logs.First(s => s.LogLevel == LogLevel.Error);
                         Assert.NotNull(errorLog);
-                        Assert.Equal(mrefFile1, errorLog.File);
+                        Assert.Equal(mrefFile1, errorLog.File.Replace('\\', '/'));
                         Assert.True(errorLog.Message.StartsWith("Unable to resolve"));
                     }
                 }
