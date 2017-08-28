@@ -15,6 +15,8 @@ namespace Microsoft.DocAsCode
     {
         private string _sourceFolder;
         private string _cwd;
+        private string _version;
+        private string _group;
 
         /// <summary>
         /// The name of current item, the value is not used for now
@@ -75,9 +77,19 @@ namespace Microsoft.DocAsCode
         [JsonProperty("dest")]
         public string DestinationFolder { get; set; }
 
-        [Obsolete("use GroupName")]
         [JsonProperty("version")]
-        public string VersionName { get; set; }
+        [Obsolete("use GroupName")]
+        public string VersionName
+        {
+            get
+            {
+                return _version;
+            }
+            set
+            {
+                _version = value;
+            }
+        }
 
         /// <summary>
         /// Group name for the current file-mapping item.
@@ -86,7 +98,18 @@ namespace Microsoft.DocAsCode
         /// Cross reference doesn't support cross different groups.
         /// </summary>
         [JsonProperty("group")]
-        public string GroupName { get; set; }
+        public string GroupName
+        {
+            get
+            {
+                return _group ?? _version;
+            }
+            set
+            {
+                _group = value;
+                _version = value;
+            }
+        }
 
         /// <summary>
         /// The Root TOC Path used for navbar in current group, relative to output root.
