@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.Tests.Common
             dir = CreateDirectory(dir, baseFolder);
             var file = Path.Combine(baseFolder, fileName);
             File.WriteAllText(file, content);
-            return file;
+            return file.Replace('\\', '/');
         }
 
         protected static string UpdateFile(string fileName, string[] lines, string baseFolder)

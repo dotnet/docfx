@@ -95,9 +95,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
                 var schemaFile = CreateFile("template/schemas/contextobject.schema.json", File.ReadAllText("TestData/schemas/contextobject.test.schema.json"), _templateFolder);
                 var tocTemplate = CreateFile("template/toc.json.tmpl", "toc template", _templateFolder);
                 var inputFileName = "co/active.yml";
+                var includeFile = CreateFile("a b/inc.md", @"**Include**", _inputFolder);
                 var inputFile = CreateFile(inputFileName, @"### YamlMime:ContextObject
 breadcrumb_path: /absolute/toc.json
 toc_rel: ../a b/toc.md
+file_include: ../a b/inc.md
 uhfHeaderId: MSDocsHeader-DotNet
 searchScope:
   - .NET
@@ -118,6 +120,8 @@ searchScope:
                 Assert.Equal("Hello world!", rawModel["meta"].ToString());
                 Assert.Equal("/absolute/toc.json", rawModel["breadcrumb_path"].ToString());
                 Assert.Equal("../a b/toc.md", rawModel["toc_rel"].ToString());
+                Assert.Equal($"<p sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><strong>Include</strong></p>\n",
+                    rawModel["file_include"].ToString());
                 Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].ToString());
                 Assert.Equal($".NET", rawModel["searchScope"][0].ToString());
 
@@ -139,6 +143,54 @@ searchScope:
                 Assert.Equal("../a%20b/toc.json", rawModel["toc_rel"].ToString());
                 Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].ToString());
                 Assert.Equal($".NET", rawModel["searchScope"][0].ToString());
+            }
+        }
+
+        [Fact]
+        public void TestXrefResolver()
+        {
+            using (var listener = new TestListenerScope("TestXrefResolver"))
+            {
+                var schemaFile = CreateFile("template/schemas/mref.test.schema.json", File.ReadAllText("TestData/schemas/mref.test.schema.json"), _templateFolder);
+                var templateFile = CreateFile("template/ManagedReference.html.tmpl", @"
+{{#items}}
+{{#inheritedMembers}}
+<xref>{{.}}</xref>
+{{/inheritedMembers}}
+{{/items}}
+", _templateFolder);
+                var inputFileName = "inputs/CatLibrary.ICat.yml";
+                var inputFile = CreateFile(inputFileName, File.ReadAllText("TestData/inputs/CatLibrary.ICat.yml"), _inputFolder);
+                FileCollection files = new FileCollection(_defaultFiles);
+                files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+                BuildDocument(files);
+
+                Assert.Equal(1, listener.Items.Count);
+                listener.Items.Clear();
+
+                var xrefspec = Path.Combine(_outputFolder, "xrefmap.yml");
+                var xrefmap = YamlUtility.Deserialize<XRefMap>(xrefspec);
+                Assert.Equal(2, xrefmap.References.Count);
+                Assert.Equal(8, xrefmap.References[0].Keys.Count);
+                Assert.Equal(7, xrefmap.References[1].Keys.Count);
+
+                Assert.Equal("ICat", xrefmap.References[0].Name);
+                Assert.Equal("CatLibrary.ICat.CatLibrary.ICatExtension.Sleep(System.Int64)", xrefmap.References[0]["extensionMethods.0"]);
+                var outputFileName = Path.ChangeExtension(inputFileName, ".html");
+                Assert.Equal(outputFileName, xrefmap.References[0].Href);
+                Assert.NotNull(xrefmap.References[0]["summary"]);
+
+                var outputFilePath = Path.Combine(_outputFolder, outputFileName);
+                Assert.True(File.Exists(outputFilePath));
+
+                Assert.Equal(@"
+<span class=""xref"">CatLibrary.IAnimal.Name</span>
+<span class=""xref"">CatLibrary.IAnimal.Item(System.Int32)</span>
+<span class=""xref"">CatLibrary.IAnimal.Eat</span>
+<span class=""xref"">CatLibrary.IAnimal.Eat``1({Tool})</span>
+<span class=""xref"">CatLibrary.IAnimal.Eat(System.String)</span>"
+.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
+File.ReadAllLines(outputFilePath));
             }
         }
 

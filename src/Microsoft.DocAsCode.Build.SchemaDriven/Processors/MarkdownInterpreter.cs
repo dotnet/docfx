@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
         private static string MarkupCore(string content, IProcessContext context)
         {
             var host = context.Host;
-            var mr = host.Markup(content, context.Model.OriginalFileAndType);
+            var mr = host.Markup(content, (FileAndType)context.Properties.ContentOriginalFile);
             ((Dictionary<string, List<LinkSourceInfo>>)context.Properties.FileLinkSources).Merge(mr.FileLinkSources);
             ((Dictionary<string, List<LinkSourceInfo>>)context.Properties.UidLinkSources).Merge(mr.UidLinkSources);
             ((HashSet<string>)context.Properties.Dependency).UnionWith(mr.Dependency);

@@ -29,13 +29,18 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 throw new ArgumentException($"{value.GetType()} is not supported type string.");
             }
 
+            var filePath = val;
             var relPath = RelativePath.TryParse(val);
             if (relPath != null)
             {
                 var currentFile = (RelativePath)context.Model.OriginalFileAndType.File;
-                val = currentFile + relPath;
+                filePath = currentFile + relPath;
             }
-            return EnvironmentContext.FileAbstractLayer.ReadAllText(val);
+
+            context.Properties.ContentOriginalFile =
+                new FileAndType(context.Model.OriginalFileAndType.BaseDir, filePath, DocumentType.Article);
+
+            return EnvironmentContext.FileAbstractLayer.ReadAllText(filePath);
         }
     }
 }

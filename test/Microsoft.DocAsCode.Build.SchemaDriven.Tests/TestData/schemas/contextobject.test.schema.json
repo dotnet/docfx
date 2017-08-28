@@ -13,6 +13,11 @@
     "toc_rel": {
       "type": "string",
       "contentType": "href"
+    },
+    "file_include": {
+      "type": "string",
+      "contentType": "markdown",
+      "reference": "file"
     }
   }
 }
