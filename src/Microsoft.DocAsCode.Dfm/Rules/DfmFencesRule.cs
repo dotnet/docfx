@@ -29,6 +29,11 @@ namespace Microsoft.DocAsCode.Dfm
 
         public static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
         {
+            return ParsePathQueryString(queryOption, queryString, false);
+        }
+
+        public static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString, bool noCache = false)
+        {
             if (string.IsNullOrEmpty(queryOption) || string.IsNullOrEmpty(queryString))
             {
                 return null;
@@ -45,7 +50,7 @@ namespace Microsoft.DocAsCode.Dfm
                 }
                 else
                 {
-                    return new TagNameBlockPathQueryOption { TagName = queryString };
+                    return new TagNameBlockPathQueryOption { TagName = queryString, NoCache = noCache};
                 }
             }
             else if (queryOption == "?")
@@ -70,7 +75,7 @@ namespace Microsoft.DocAsCode.Dfm
                 }
                 if (tagName != null)
                 {
-                    return new TagNameBlockPathQueryOption { TagName = tagName , HighlightLines = highlight, DedentLength = dedent};
+                    return new TagNameBlockPathQueryOption { TagName = tagName , HighlightLines = highlight, DedentLength = dedent, NoCache = noCache};
                 }
                 else if (range != null)
                 {

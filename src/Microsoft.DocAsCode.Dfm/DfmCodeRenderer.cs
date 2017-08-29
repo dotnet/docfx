@@ -39,7 +39,7 @@ namespace Microsoft.DocAsCode.Dfm
             }
         }
 
-        public virtual StringBuffer RenderFencesFromCodeContent(string queryStringAndFragment, string codeContent)
+        public virtual StringBuffer RenderFencesFromCodeContent(string codeContent, string queryStringAndFragment = null, string name = null, string path = null, string lang = null, string title = null)
         {
             if (codeContent == null)
             {
@@ -53,10 +53,10 @@ namespace Microsoft.DocAsCode.Dfm
 
             var pathQueryOption =
                 !string.IsNullOrEmpty(queryStringAndFragment)
-                    ? DfmFencesRule.ParsePathQueryString(queryStringAndFragment.Remove(1), queryStringAndFragment.Substring(1))
+                    ? DfmFencesRule.ParsePathQueryString(queryStringAndFragment.Remove(1), queryStringAndFragment.Substring(1), true)
                     : null;
 
-            var token = new DfmFencesBlockToken(null, null, null, null, new SourceInfo(), null, null, pathQueryOption, queryStringAndFragment);
+            var token = new DfmFencesBlockToken(null, null, name, path, new SourceInfo(), lang, title, pathQueryOption, queryStringAndFragment);
 
             var fencesCode = codeContent.Replace("\r\n", "\n").Split('\n');
             var code = ExtractCode(token, fencesCode);

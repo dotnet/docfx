@@ -1419,7 +1419,7 @@ public static void Foo()
 
         [Theory]
         [Trait("Related", "DfmMarkdown")]
-        [InlineData(null, @"<pre><code>namespace ConsoleApplication1
+        [InlineData(null, @"<pre><code class=""lang-csharp"">namespace ConsoleApplication1
 {
     // &lt;namespace&gt;
     using System;
@@ -1450,7 +1450,7 @@ public static void Foo()
     #endregion
 }
 </code></pre>")]
-        [InlineData("", @"<pre><code>namespace ConsoleApplication1
+        [InlineData("", @"<pre><code class=""lang-csharp"">namespace ConsoleApplication1
 {
     // &lt;namespace&gt;
     using System;
@@ -1482,13 +1482,17 @@ public static void Foo()
 }
 </code></pre>")]
         [InlineData("?", "<!-- Length of queryStringAndFragment can not be 1 -->\n")]
-        [InlineData("?range=1-2,10,20-21,29-&dedent=0&highlight=1-2,7-", @"<pre><code highlight-lines=""1-2,7-"">namespace ConsoleApplication1
+        [InlineData("?range=1-2,10,20-21,29-&dedent=0&highlight=1-2,7-", @"<pre><code class=""lang-csharp"" highlight-lines=""1-2,7-"">namespace ConsoleApplication1
 {
     class Program
     #region Helper
     internal static class Helper
     #endregion
 }
+</code></pre>")]
+        [InlineData("#namespace", @"<pre><code class=""lang-csharp"">using System;
+using System.Collections.Generic;
+using System.IO;
 </code></pre>")]
         public void TestDfmFencesRenderFromCodeContent(string queryStringAndFragment, string expectedContent)
         {
@@ -1526,7 +1530,7 @@ public static void Foo()
 
             // act
             var renderer = new DfmCodeRenderer();
-            var marked = renderer.RenderFencesFromCodeContent(queryStringAndFragment, content);
+            var marked = renderer.RenderFencesFromCodeContent(content, queryStringAndFragment, null, "test.cs", "csharp");
 
             Assert.Equal(expectedContent.Replace("\r\n", "\n"), marked);
         }
