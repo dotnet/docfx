@@ -4,13 +4,17 @@
 namespace Microsoft.DocAsCode
 {
     using System;
+    using System.Collections.Generic;
 
     using Newtonsoft.Json;
 
     [Serializable]
-    public class VersionConfig
+    public class GroupConfig
     {
         [JsonProperty("dest")]
         public string Destination { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }
 }

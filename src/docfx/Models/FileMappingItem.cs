@@ -15,6 +15,8 @@ namespace Microsoft.DocAsCode
     {
         private string _sourceFolder;
         private string _cwd;
+        private string _version;
+        private string _group;
 
         /// <summary>
         /// The name of current item, the value is not used for now
@@ -75,18 +77,43 @@ namespace Microsoft.DocAsCode
         [JsonProperty("dest")]
         public string DestinationFolder { get; set; }
 
-        /// <summary>
-        /// Version name for the current file-mapping item.
-        /// If not set, treat the current file-mapping item as in default version.
-        /// Mappings with the same version name will be built together.
-        /// Cross reference doesn't support cross different versions.
-        /// </summary>
         [JsonProperty("version")]
-        public string VersionName { get; set; }
+        [Obsolete("use GroupName")]
+        public string VersionName
+        {
+            get
+            {
+                return _version;
+            }
+            set
+            {
+                _version = value;
+            }
+        }
 
         /// <summary>
-        /// The Root TOC Path used for navbar in current version, relative to output root
-        /// If not set, will use the toc in output root in current version if exists.
+        /// Group name for the current file-mapping item.
+        /// If not set, treat the current file-mapping item as in default group.
+        /// Mappings with the same group name will be built together.
+        /// Cross reference doesn't support cross different groups.
+        /// </summary>
+        [JsonProperty("group")]
+        public string GroupName
+        {
+            get
+            {
+                return _group ?? _version;
+            }
+            set
+            {
+                _group = value;
+                _version = value;
+            }
+        }
+
+        /// <summary>
+        /// The Root TOC Path used for navbar in current group, relative to output root.
+        /// If not set, will use the toc in output root in current group if exists.
         /// </summary>
         [JsonProperty("rootTocPath")]
         public string RootTocPath { get; set; }

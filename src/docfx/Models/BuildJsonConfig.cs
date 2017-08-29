@@ -14,6 +14,12 @@ namespace Microsoft.DocAsCode
     public class BuildJsonConfig
     {
         [JsonIgnore]
+        private Dictionary<string, GroupConfig> _versions;
+
+        [JsonIgnore]
+        private Dictionary<string, GroupConfig> _groups;
+
+        [JsonIgnore]
         public string BaseDirectory { get; set; }
 
         [JsonIgnore]
@@ -131,8 +137,34 @@ namespace Microsoft.DocAsCode
         [JsonProperty("customLinkResolver")]
         public string CustomLinkResolver { get; set; }
 
+        [Obsolete]
         [JsonProperty("versions")]
-        public Dictionary<string, VersionConfig> Versions { get; set; }
+        public Dictionary<string, GroupConfig> Versions
+        {
+            get
+            {
+                return _versions;
+            }
+            set
+            {
+                _versions = value;
+            }
+        }
+
+        [JsonProperty("groups")]
+        public Dictionary<string, GroupConfig> Groups
+        {
+            get
+            {
+                return _groups ?? _versions;
+            }
+            set
+            {
+                _groups = value;
+                _versions = value;
+            }
+
+        }
 
         [JsonProperty("lruSize")]
         public int? LruSize { get; set; }

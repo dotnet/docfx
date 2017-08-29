@@ -37,14 +37,14 @@ namespace Microsoft.DocAsCode.SubCommands
         private readonly TemplateManager _manager;
         private readonly LogLevel _logLevel;
 
-    public DocumentBuilderWrapper(
-            BuildJsonConfig config,
-            TemplateManager manager,
-            string baseDirectory,
-            string outputDirectory,
-            string pluginDirectory,
-            CrossAppDomainListener listener,
-            string templateDirectory)
+        public DocumentBuilderWrapper(
+                BuildJsonConfig config,
+                TemplateManager manager,
+                string baseDirectory,
+                string outputDirectory,
+                string pluginDirectory,
+                CrossAppDomainListener listener,
+                string templateDirectory)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
             _pluginDirectory = pluginDirectory;
@@ -226,7 +226,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 parameters.XRefMaps = config.XRefMaps.ToImmutableArray();
             }
-            if(config.XRefServiceUrls != null)
+            if (config.XRefServiceUrls != null)
             {
                 parameters.XRefServiceUrls = config.XRefServiceUrls.ToImmutableArray();
             }
@@ -307,11 +307,11 @@ namespace Microsoft.DocAsCode.SubCommands
             foreach (var pair in fileMappingParametersDictionary)
             {
                 var p = parameters.Clone();
-                if (config.Versions != null && config.Versions.TryGetValue(pair.Key, out VersionConfig vi))
+                if (config.Groups != null && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
                 {
-                    if (!string.IsNullOrEmpty(vi.Destination))
+                    if (!string.IsNullOrEmpty(gi.Destination))
                     {
-                        p.VersionDir = vi.Destination;
+                        p.VersionDir = gi.Destination;
                     }
                 }
                 p.Files = GetFileCollectionFromFileMapping(
@@ -321,7 +321,6 @@ namespace Microsoft.DocAsCode.SubCommands
                     GlobUtility.ExpandFileMapping(baseDirectory, pair.Value.GetFileMapping(FileMappingType.Resource)));
                 p.VersionName = pair.Key;
                 p.Changes = GetIntersectChanges(p.Files, changeList);
-                // TODO: move RootTocPath to VersionInfo
                 p.RootTocPath = pair.Value.RootTocPath;
                 yield return p;
             }
@@ -354,7 +353,7 @@ namespace Microsoft.DocAsCode.SubCommands
             if (fileMapping == null) return;
             foreach (var item in fileMapping.Items)
             {
-                var version = item.VersionName ?? string.Empty;
+                var version = item.GroupName ?? item.VersionName ?? string.Empty;
                 if (fileMappingsDictionary.TryGetValue(version, out FileMappingParameters parameters))
                 {
                     if (parameters.TryGetValue(type, out FileMapping mapping))
