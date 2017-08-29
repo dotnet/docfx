@@ -175,7 +175,7 @@ searchScope:
                 Assert.Equal(7, xrefmap.References[1].Keys.Count);
 
                 Assert.Equal("ICat", xrefmap.References[0].Name);
-                Assert.Equal("CatLibrary.ICat.CatLibrary.ICatExtension.Sleep(System.Int64)", xrefmap.References[0]["extensionMethods.0"]);
+                Assert.Equal("CatLibrary.ICat.CatLibrary.ICatExtension.Sleep(System.Int64)", xrefmap.References[0]["extensionMethods/0"]);
                 var outputFileName = Path.ChangeExtension(inputFileName, ".html");
                 Assert.Equal(outputFileName, xrefmap.References[0].Href);
                 Assert.NotNull(xrefmap.References[0]["summary"]);

@@ -4,18 +4,19 @@
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
     using System;
+    using System.Linq;
+
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json.Schema;
-
-    using Microsoft.DocAsCode.Plugins;
-    using System.Linq;
-    using Microsoft.DocAsCode.Common;
 
     public class XrefResolverInterpreter : IInterpreter
     {
         /// <summary>
         /// Report xrefSpec when
-        /// 1. ContentType = uid is defined => internal xref spec
+        /// 1. ContentType = uid is defined => xref spec to be exported to xrefspec.yml
         /// Or 2. XrefResolver is defined => external xref spec
         /// </summary>
         /// <param name="schema"></param>
@@ -29,7 +30,13 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
             if (!string.IsNullOrEmpty(schema.XrefResolver))
             {
-                return schema.XrefResolver.StartsWith("uid");
+                if (!schema.XrefResolver.StartsWith("uid"))
+                {
+                    // Should be validated in schema validation
+                    throw new InvalidSchemaException("Must be started with uid");
+                }
+
+                return true;
             }
 
             if (schema.Properties == null)
@@ -73,7 +80,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 var property = jsonPointer.GetValue(root);
                 if (property != null)
                 {
-                    xrefSpec[EncodeKey(part)] = property as string;
+                    xrefSpec[part] = property as string;
                 }
             }
 
@@ -88,16 +95,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 context.Properties.ExternalXRefSpecs.Add(xrefSpec);
             }
             return value;
-        }
-
-        /// <summary>
-        /// Part encode: /a/b/0 => .a.b.0
-        /// </summary>
-        /// <param name="part"></param>
-        /// <returns></returns>
-        private string EncodeKey(string part)
-        {
-            return part.Replace('/', '.');
         }
 
         private bool IsInternalXrefSpec(BaseSchema schema)
