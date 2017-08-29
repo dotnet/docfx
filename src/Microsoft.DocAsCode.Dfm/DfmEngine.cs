@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
@@ -34,6 +35,15 @@ namespace Microsoft.DocAsCode.Dfm
                 return string.Empty;
             }
             return InternalMarkup(src, ImmutableStack.Create(path), dependency);
+        }
+
+        public string Markup(string src, IMarkdownContext context)
+        {
+            if (string.IsNullOrEmpty(src))
+            {
+                return String.Empty;
+            }
+            return InternalMarkup(src, context);
         }
 
         internal string InternalMarkup(string src, ImmutableStack<string> parents, HashSet<string> dependency)

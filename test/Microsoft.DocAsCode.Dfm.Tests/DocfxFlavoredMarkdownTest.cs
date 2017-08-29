@@ -13,9 +13,11 @@ namespace Microsoft.DocAsCode.Dfm.Tests
     using Xunit;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
     public class DocfxFlavoredMarkdownTest
@@ -328,6 +330,68 @@ Inline [!include[ref3](ref3.md ""This is root"")]
             Assert.Equal(
                 new[] { "ref1.md", "ref2.md", "ref3.md", "root.md" },
                 dependency.OrderBy(x => x));
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestInInlineInclusionMarkupFromContent()
+        {
+            var reference = @"---
+uid: reference.md
+---
+## Inline inclusion do not parse header
+
+[link](testLink.md)";
+
+            var expected = @"## Inline inclusion do not parse header
+
+<a href=""testLink.md"" data-raw-source=""[link](testLink.md)"" sourceFile=""reference.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""6"">link</a>";
+
+            DfmServiceProvider provider = new DfmServiceProvider();
+            var service = provider.CreateMarkdownService(new MarkdownServiceParameters());
+
+            var parents = ImmutableStack.Create("reference.md");
+
+            var dfmservice = (DfmServiceProvider.DfmService) service;
+            var marked = dfmservice
+                .Builder
+                .CreateDfmEngine(dfmservice.Renderer)
+                .Markup(reference,
+                    ((MarkdownBlockContext) dfmservice.Builder.CreateParseContext())
+                    .GetInlineContext().SetFilePathStack(parents).SetIsInclude());
+
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestInBlockInclusionMarkupFromContent()
+        {
+            var reference = @"---
+uid: reference.md
+---
+## Block inclusion should parse header
+
+[link](testLink.md)";
+
+            var expected = @"<h2 id=""block-inclusion-should-parse-header"" sourceFile=""reference.md"" sourceStartLineNumber=""4"" sourceEndLineNumber=""4"">Block inclusion should parse header</h2>
+<p sourceFile=""reference.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""6""><a href=""testLink.md"" data-raw-source=""[link](testLink.md)"" sourceFile=""reference.md"" sourceStartLineNumber=""6"" sourceEndLineNumber=""6"">link</a></p>
+";
+
+            DfmServiceProvider provider = new DfmServiceProvider();
+            var service = provider.CreateMarkdownService(new MarkdownServiceParameters());
+
+            var parents = ImmutableStack.Create("reference.md");
+
+            var dfmservice = (DfmServiceProvider.DfmService)service;
+            var marked = dfmservice
+                .Builder
+                .CreateDfmEngine(dfmservice.Renderer)
+                .Markup(reference,
+                    ((MarkdownBlockContext)dfmservice.Builder.CreateParseContext())
+                    .SetFilePathStack(parents).SetIsInclude());
+
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
         }
 
         [Fact]
