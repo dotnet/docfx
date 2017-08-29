@@ -5,44 +5,48 @@
 
 ## Near-term
 
-### Schema based document processor
+### Schema-driven document processor
+**Status** In progress. As [Sepc](Documentation/spec/docfx_document_schema.md) indicates, schema-driven processor is to handle the multi-language support issues. With SDP, it is much easier than today to onboarding new languages such as TypeScript, SQL, GO, etc. A new language on-boarding will include the following steps:
+1. Generate the YAML file from the language
+2. Create the schema for the language YAML
+3. Create the template for the language based on the schema
 
-Currently every new language introduces in a new data model, and results in a new plugin and a new template. With schema based document processor, what needs for a new language is simply a schema file.
+### Docker investigation to setup environment to generate YAML file from multiple languages
+Take TypeScript as a start point
 
-This schema file can be possibly leveraged in Localization scenario, to define which property is localizable, etc.
-
-### Investigate more powerful templating system
-#### The problem with current templating system:
-1. `preprocessors`, aka, `js` files are heavily used
-2. For ManagedReference or other API who are referencing to other `uid`s, it depends on C# code to expand the model before hand.
-
-#### Solutions:
-1. Introduce in more powerful templating language other than the *logic-less* mustache.
-
-Looks like *logic* is important, and it is more convenient to allow using *logic* when writing template. With the popularity of [React](https://facebook.github.io/react/) and [Vue.js](http://cn.vuejs.org/), *declarative views* becomes intriguing with its predicatability and ease of use.
-
-2. Component based templates
-We can consider **partials** as **components** when **partials** accepts parameters. For example, with `> inheritance.partial uid='System.String'`, we can move the *expand* model logic from C# code to templates.
-
-#### Proposals:
-1. Mustache to handlebars
-
+### New template language
+- [ ] 1. Mustache to handlebars
     Handlebars keeps most compatibility with Mustache template syntax, and meanwhile it is more powerful. It supports partials with parameters, which makes componentization possible. It also contains [Built-In Helpers](http://handlebarsjs.com/#builtins) such as `if` conditional and `each` iterator.
 
-2. Support new syntax
-    1. React  
-[React](https://facebook.github.io/react/) is popularly used when developing web applications. If we support `JSX` and leverage `React.Component`, is it more convenient for front-end developers to integrate with docfx?
-
-    2. Razor  
-[RazorEngine](https://antaris.github.io/RazorEngine/) as the template engine for ASP.NET, is more friendly to C# developers. It also supports partials with parameters.
+- [ ] 2. Razor page support
+**Status** In design phase. 
+    [Razor page](https://docs.microsoft.com/en-us/aspnet/core/mvc/razor-pages/) is a new feature of ASP.NET Core. A Razor page contains a template file `A.cshtml` and a 'code-behind' file `A.cshtml.cs`. The design is pretty similar to DocFX's templating system which is a template file `A.tmpl` or `A.liquid` and a 'preprocessor' file `A.tmpl.js` or `A.liquid.js`. 
+    Razor page is quite familir to ASP.NET developers. Supporting it in DocFX sounds friendly to new comers.
+    
+### Single file build and docfx watch
+According to [Feature Proposals](http://feathub.com/docascode/docfx-feature-proposals), `docfx watch` wins far ahead.
+Watch => Changed file list => Build => File Accessor Layer
+File changes include:
+1. Source Code file change => Out of scope. (Hard to implement)
+2. `.md` and `.yml` file change => In scope.
+3. Template file change
+    1. Dependent style files change => In scope.
+    2. Template file change => In scope. (Could be slow)
 
 ### Performance
 * Performance benchmark
 * Performance improvement, including memory consumptions, refactor build steps to maximum parallelism, merge duplicate steps, etc.
 
-### docfx watch
-According to [Feature Proposals](http://feathub.com/docascode/docfx-feature-proposals), `docfx watch` wins far ahead.
-
+### Authoring experience
+* VSCode extension
+    * Preview
+        * TOC
+        * Schema based YAML files
+    * Intellisense
+        * DFM syntax: uid autocomplete, syntax detect
+        * docfx.json
+        * toc.yml
+        * schema based YAML documents
 ### Online API service for resolving cross reference
 With this API service, there is no need to download `msdn.zip` package or `xrefmap.yml` file anymore.
 
@@ -55,16 +59,7 @@ With this API service, there is no need to download `msdn.zip` package or `xrefm
 * Cross platform support
     * Dotnet-core migration
     * Docker
-### Usability
-* VSCode extension
-    * Preview
-        * TOC
-        * Landing Page
-    * Intellisense
-        * DFM syntax: uid autocomplete, syntax detect
-        * docfx.json
-        * toc.yml
-        * schema based yaml intellisense
+
 ### Feature
 * Highlighted clickable method declaration, e.g. *[String]() ToString([int]() a)*
 * Localization and versioning support
