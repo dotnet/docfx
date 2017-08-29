@@ -72,7 +72,7 @@
                     "type": "string",
                     "description": "Format: `uid,{propertyName1},{propertyName2},...,{propertyNameN}`. It MUST start with property name`uid`. Other `propertyName`s are joined by `,`. `propertyName`s are the property names of current object. It defines the properties of current xref object, which is used when others cross reference it.",
                     "default": "uid,name",
-                    "pattern": "^uid[,$]"
+                    "pattern": "^uid(,|$)"
                 }
             },
             "patternProperties": {
