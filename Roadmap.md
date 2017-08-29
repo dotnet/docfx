@@ -51,13 +51,22 @@ With this API service, there is no need to download `msdn.zip` package or `xrefm
 2. Easier installation, e.g. one script for copy
 
 ## Medium-term
-* Highlighted clickable method declaration, e.g. *[String]() ToString([int]() a)*
+### Infra
 * Cross platform support
     * Dotnet-core migration
     * Docker
+### Usability
 * VSCode extension
-    * TOC Preview
-    * Intellisense for docfx.json, toc.yml, and DFM syntax
+    * Preview
+        * TOC
+        * Landing Page
+    * Intellisense
+        * DFM syntax: uid autocomplete, syntax detect
+        * docfx.json
+        * toc.yml
+        * schema based yaml intellisense
+### Feature
+* Highlighted clickable method declaration, e.g. *[String]() ToString([int]() a)*
 * Localization and versioning support
 * More attractive themes
 * Sandcastle advanced features
