@@ -60,7 +60,17 @@ namespace Microsoft.DocAsCode.Dfm
 
         public string TagName { get; set; }
 
+        private readonly bool _noCache;
+
         private DfmTagNameResolveResult _resolveResult;
+
+        public TagNameBlockPathQueryOption()
+            : this(false) { }
+
+        public TagNameBlockPathQueryOption(bool nocache = false)
+        {
+            _noCache = nocache;
+        }
 
         private readonly ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>> _dfmTagNameLineRangeCache =
             new ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>>(StringComparer.OrdinalIgnoreCase);
@@ -167,19 +177,17 @@ namespace Microsoft.DocAsCode.Dfm
 
         private DfmTagNameResolveResult ResolveTagNamesFromPath(string fencesPath, string[] fencesCodeLines, string tagName, List<ICodeSnippetExtractor> codeSnippetExtractors)
         {
-            var lazyResolveResults =
-                _dfmTagNameLineRangeCache.GetOrAdd(fencesPath,
-                    path => new Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>(
-                            () =>
-                            {
-                                // TODO: consider different code snippet representation with same name
-                                return new ConcurrentDictionary<string, List<DfmTagNameResolveResult>>(
-                                    (from codeSnippetExtractor in codeSnippetExtractors
-                                     let resolveResults = codeSnippetExtractor.GetAll(fencesCodeLines)
-                                     from codeSnippet in resolveResults
-                                     group codeSnippet by codeSnippet.Key)
-                                     .ToDictionary(g => g.Key, g => g.Select(p => p.Value).ToList()), StringComparer.OrdinalIgnoreCase);
-                            }));
+            Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>> lazyResolveResults;
+            if (_noCache)
+            {
+                lazyResolveResults = GetLazyResolveResult(fencesCodeLines, codeSnippetExtractors);
+            }
+            else
+            {
+                lazyResolveResults =
+                    _dfmTagNameLineRangeCache.GetOrAdd(fencesPath,
+                        path => GetLazyResolveResult(fencesCodeLines, codeSnippetExtractors));
+            }
 
             ConcurrentDictionary<string, List<DfmTagNameResolveResult>> tagNamesDictionary;
             try
@@ -210,6 +218,20 @@ namespace Microsoft.DocAsCode.Dfm
             return result;
         }
 
+        private Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>> GetLazyResolveResult(string[] fencesCodeLines, List<ICodeSnippetExtractor> codeSnippetExtractors)
+        {
+           return new Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>(
+                () =>
+                {
+                    // TODO: consider different code snippet representation with same name
+                    return new ConcurrentDictionary<string, List<DfmTagNameResolveResult>>(
+                        (from codeSnippetExtractor in codeSnippetExtractors
+                         let resolveResults = codeSnippetExtractor.GetAll(fencesCodeLines)
+                         from codeSnippet in resolveResults
+                         group codeSnippet by codeSnippet.Key)
+                         .ToDictionary(g => g.Key, g => g.Select(p => p.Value).ToList()), StringComparer.OrdinalIgnoreCase);
+                });
+        }
 
         private static string GetCodeLanguageOrExtension(DfmFencesToken token)
         {

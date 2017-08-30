@@ -27,7 +27,12 @@ namespace Microsoft.DocAsCode.Dfm
 
         public abstract IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context);
 
-        protected static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
+        public static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
+        {
+            return ParsePathQueryString(queryOption, queryString, false);
+        }
+
+        public static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString, bool noCache = false)
         {
             if (string.IsNullOrEmpty(queryOption) || string.IsNullOrEmpty(queryString))
             {
@@ -45,7 +50,7 @@ namespace Microsoft.DocAsCode.Dfm
                 }
                 else
                 {
-                    return new TagNameBlockPathQueryOption { TagName = queryString };
+                    return new TagNameBlockPathQueryOption(noCache) { TagName = queryString};
                 }
             }
             else if (queryOption == "?")
@@ -70,7 +75,7 @@ namespace Microsoft.DocAsCode.Dfm
                 }
                 if (tagName != null)
                 {
-                    return new TagNameBlockPathQueryOption { TagName = tagName , HighlightLines = highlight, DedentLength = dedent};
+                    return new TagNameBlockPathQueryOption(noCache) { TagName = tagName , HighlightLines = highlight, DedentLength = dedent};
                 }
                 else if (range != null)
                 {

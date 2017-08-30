@@ -28,10 +28,28 @@ namespace Microsoft.DocAsCode.Dfm
                 throw new ArgumentNullException(nameof(fencesPath));
             }
 
-            using (new LoggerPhaseScope("Extract Dfm Code"))
+            using (new LoggerPhaseScope("Extract Dfm Code From Path"))
             {
                 var fencesCode = EnvironmentContext.FileAbstractLayer.ReadAllLines(fencesPath);
 
+                return ExtractFencesCode(token, fencesCode);
+            }
+        }
+
+        public DfmExtractCodeResult ExtractFencesCode(DfmFencesToken token, string[] fencesCode)
+        {
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
+
+            if (fencesCode == null)
+            {
+                throw new ArgumentNullException(nameof(fencesCode));
+            }
+
+            using (new LoggerPhaseScope("Extract Dfm Code"))
+            {
                 if (token.PathQueryOption == null)
                 {
                     // Add the full file when no query option is given
@@ -52,11 +70,7 @@ namespace Microsoft.DocAsCode.Dfm
                     Logger.LogWarning(GenerateErrorMessage(token), line: token.SourceInfo.LineNumber.ToString());
                 }
 
-                var includedLines = new List<string>();
-                foreach (var line in token.PathQueryOption.GetQueryLines(fencesCode))
-                {
-                    includedLines.Add(line);
-                }
+                var includedLines = token.PathQueryOption.GetQueryLines(fencesCode).ToList();
 
                 if (!token.PathQueryOption.ValidateHighlightLinesAndDedentLength(includedLines.Count))
                 {
