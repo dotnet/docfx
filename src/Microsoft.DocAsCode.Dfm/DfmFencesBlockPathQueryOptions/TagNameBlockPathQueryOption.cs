@@ -226,11 +226,10 @@ namespace Microsoft.DocAsCode.Dfm
                     // TODO: consider different code snippet representation with same name
                     return new ConcurrentDictionary<string, List<DfmTagNameResolveResult>>(
                         (from codeSnippetExtractor in codeSnippetExtractors
-                            let resolveResults = codeSnippetExtractor.GetAll(fencesCodeLines)
-                            from codeSnippet in resolveResults
-                            group codeSnippet by codeSnippet.Key)
-                        .ToDictionary(g => g.Key, g => g.Select(p => p.Value).ToList()),
-                        StringComparer.OrdinalIgnoreCase);
+                         let resolveResults = codeSnippetExtractor.GetAll(fencesCodeLines)
+                         from codeSnippet in resolveResults
+                         group codeSnippet by codeSnippet.Key)
+                         .ToDictionary(g => g.Key, g => g.Select(p => p.Value).ToList()), StringComparer.OrdinalIgnoreCase);
                 });
         }
 
