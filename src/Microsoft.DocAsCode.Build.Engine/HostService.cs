@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string VersionOutputFolder { get; }
 
-        public GroupInfoModel GroupInfo { get; }
+        public GroupInfo GroupInfo { get; }
 
         #endregion
 

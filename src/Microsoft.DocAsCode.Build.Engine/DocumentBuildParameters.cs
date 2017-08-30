@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string VersionDir { get; set; }
 
         [IncrementalIgnore]
-        public GroupInfoModel GroupInfo { get; set; }
+        public GroupInfo GroupInfo { get; set; }
 
         public string RootTocPath { get; set; }
 

@@ -309,7 +309,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 var p = parameters.Clone();
                 if (config.Groups != null && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
                 {
-                    p.GroupInfo = new GroupInfoModel()
+                    p.GroupInfo = new GroupInfo()
                     {
                         Name = pair.Key,
                         Destination = gi.Destination,

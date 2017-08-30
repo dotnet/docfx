@@ -10,19 +10,19 @@ namespace Microsoft.DocAsCode.Plugins
     {
         ImmutableList<TreeItemRestructure> TableOfContentRestructions { get; set; }
 
-        [Obsolete("use GroupInfo")]
         /// <summary>
         /// current version's name, String.Empty for default version
         /// </summary>
+        [Obsolete("use GroupInfo")]
         string VersionName { get; }
 
-        [Obsolete("use GroupInfo")]
         /// <summary>
         /// current version's output base folder
         /// </summary>
+        [Obsolete("use GroupInfo")]
         string VersionOutputFolder { get; }
 
-        GroupInfoModel GroupInfo { get; }
+        GroupInfo GroupInfo { get; }
 
         MarkupResult Parse(MarkupResult markupResult, FileAndType ft);
         MarkupResult Markup(string markdown, FileAndType ft);
