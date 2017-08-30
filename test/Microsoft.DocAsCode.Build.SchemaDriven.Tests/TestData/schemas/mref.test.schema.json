@@ -108,7 +108,7 @@
           }
         },
         "type": "object",
-        "xrefResolver": "uid,name,commentId,nameWithType,fullName,summary,extensionMethods/0"
+        "xrefProperties": [ "name", "commentId", "nameWithType", "fullName", "summary", "extensionMethods/0" ]
       },
       "type": "array"
     },
@@ -135,7 +135,7 @@
           }
         },
         "type": "object",
-        "xrefResolver": "uid,name,commentId,nameWithType,fullName,summary,href"
+        "xrefProperties": [ "uid", "name", "commentId", "nameWithType", "fullName", "summary", "href" ]
       },
       "type": "array"
     }

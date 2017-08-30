@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private readonly SchemaProcessor _schemaProcessor = new SchemaProcessor(
             new FileIncludeInterpreter(),
             new MarkdownInterpreter(),
-            new XrefResolverInterpreter(),
+            new XrefPropertiesInterpreter(),
             new FileInterpreter(true, false),
             new HrefInterpreter(true, false),
             new XrefInterpreter()

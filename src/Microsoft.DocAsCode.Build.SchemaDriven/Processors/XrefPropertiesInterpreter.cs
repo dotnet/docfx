@@ -3,16 +3,15 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
-    using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json.Schema;
 
-    public class XrefResolverInterpreter : IInterpreter
+    public class XrefPropertiesInterpreter : IInterpreter
     {
         /// <summary>
         /// Report xrefSpec when
@@ -28,14 +27,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return false;
             }
 
-            if (!string.IsNullOrEmpty(schema.XrefResolver))
+            if (schema.XrefProperties != null)
             {
-                if (!schema.XrefResolver.StartsWith("uid"))
-                {
-                    // Should be validated in schema validation
-                    throw new InvalidSchemaException("Must be started with uid");
-                }
-
                 return true;
             }
 
@@ -62,7 +55,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             var uid = JsonPointer.GetChild(value, "uid") as string;
             if (string.IsNullOrEmpty(uid))
             {
-                Logger.LogWarning($"Invalid xrefResolver for {path}: uid is not set.");
+                Logger.LogWarning($"Invalid xrefProperties for {path}: uid is not defined.");
                 return value;
             }
 
@@ -71,8 +64,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 Uid = uid
             };
 
-            // parts to skip uid
-            var parts = schema.XrefResolver?.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Skip(1) ?? new string[] { "name" };
+            var parts = schema.XrefProperties ?? new List<string> { "name", "fullName" };
             var root = context.Model.Content;
             foreach (var part in parts.Distinct())
             {
@@ -80,7 +72,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 var property = jsonPointer.GetValue(root);
                 if (property != null)
                 {
-                    xrefSpec[part] = property as string;
+                    if (property is string str)
+                    {
+                        xrefSpec[part] = str;
+                    }
+                    else
+                    {
+                        Logger.LogWarning($"Type {property.GetType()} from {jsonPointer} is not supported as the value of xref spec.");
+                    }
                 }
             }
 

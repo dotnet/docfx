@@ -68,11 +68,11 @@
                         "ignore"
                     ]
                 },
-                "xrefResolver": {
-                    "type": "string",
-                    "description": "Format: `uid,{propertyName1},{propertyName2},...,{propertyNameN}`. It MUST start with property name`uid`. Other `propertyName`s are joined by `,`. `propertyName`s are the property names of current object. It defines the properties of current xref object, which is used when others cross reference it.",
-                    "default": "uid,name",
-                    "pattern": "^uid(,|$)"
+                "xrefProperties": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "uniqueItems": true,
+                    "description": "Defines the properties of current object when it is cross referenced by others. Each item is the name of the property in the instance."
                 }
             },
             "patternProperties": {

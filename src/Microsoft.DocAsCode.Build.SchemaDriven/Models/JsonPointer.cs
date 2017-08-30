@@ -16,8 +16,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     {
         private readonly string[] _parts;
         private readonly bool _isRoot;
-
-        public string OriginalString { get; }
+        private readonly string _raw;
 
         public JsonPointer(string raw)
         {
@@ -30,7 +29,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             _parts = _isRoot ? new string[0] : raw.Substring(1).Split('/');
 
-            OriginalString = raw;
+            _raw = raw;
         }
 
         public static bool TryCreate(string raw, out JsonPointer pointer)
@@ -99,6 +98,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             }
 
             SetChild(val, _parts[_parts.Length - 1], value);
+        }
+
+        public override string ToString()
+        {
+            return _raw ?? string.Empty;
         }
 
         public static object GetChild(object root, string part)
