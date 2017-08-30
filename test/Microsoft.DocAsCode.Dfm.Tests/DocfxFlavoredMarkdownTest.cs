@@ -1594,7 +1594,7 @@ using System.IO;
 
             // act
             var renderer = new DfmCodeRenderer();
-            var marked = renderer.RenderFencesFromCodeContent(content, queryStringAndFragment, null, "test.cs", "csharp");
+            var marked = renderer.RenderFencesFromCodeContent(content, "test.cs", queryStringAndFragment, null, "csharp");
 
             Assert.Equal(expectedContent.Replace("\r\n", "\n"), marked);
         }
