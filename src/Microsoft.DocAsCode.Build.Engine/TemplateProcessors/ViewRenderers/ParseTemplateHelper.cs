@@ -15,15 +15,15 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private static readonly Regex IsRegexPatternRegex = new Regex(@"^\s*/(.*)/\s*$", RegexOptions.Compiled);
 
-        public static string ExpandMasterPage(ResourceCollection resource, TemplateRendererResource info, Regex masterRegex, Regex bodyRegex)
+        public static string ExpandMasterPage(IResourceFileReader reader, TemplateRendererResource info, Regex masterRegex, Regex bodyRegex)
         {
             var template = info.Content;
             var templateName = info.TemplateName;
-            var masterPageResourceName = ExtractMasterPageResourceName(resource, info, masterRegex).FirstOrDefault();
+            var masterPageResourceName = ExtractMasterPageResourceName(reader, info, masterRegex).FirstOrDefault();
             template = masterRegex.Replace(template, string.Empty);
             if (masterPageResourceName != null)
             {
-                using (var stream = resource.GetResourceStream(masterPageResourceName))
+                using (var stream = reader.GetResourceStream(masterPageResourceName))
                 {
                     if (stream != null)
                     {
@@ -47,14 +47,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             return template;
         }
 
-        private static IEnumerable<string> ExtractMasterPageResourceName(ResourceCollection resource, TemplateRendererResource info, Regex masterRegex)
+        private static IEnumerable<string> ExtractMasterPageResourceName(IResourceFileReader reader, TemplateRendererResource info, Regex masterRegex)
         {
             var template = info.Content;
             var templateName = info.TemplateName;
             foreach (Match match in masterRegex.Matches(template))
             {
                 var filePath = match.Groups["file"].Value;
-                foreach (var name in GetResourceName(filePath, templateName, resource))
+                foreach (var name in GetResourceName(filePath, templateName, reader))
                 {
                     yield return name;
                     Logger.LogWarning($"Multiple definitions for master page found, only the first one {match.Groups[0].Value} takes effect.");
@@ -68,7 +68,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public static IEnumerable<string> GetResourceName(string file, string templateName, ResourceCollection resource)
+        public static IEnumerable<string> GetResourceName(string file, string templateName, IResourceFileReader reader)
         {
             if (string.IsNullOrWhiteSpace(file) || file == "./")
             {
@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 file = regexPatternMatch.Groups[1].Value;
                 var resourceKey = GetRelativeResourceKey(templateName, file);
                 var regex = new Regex(resourceKey, RegexOptions.IgnoreCase);
-                foreach (var name in resource.Names)
+                foreach (var name in reader.Names)
                 {
                     if (regex.IsMatch(name))
                     {

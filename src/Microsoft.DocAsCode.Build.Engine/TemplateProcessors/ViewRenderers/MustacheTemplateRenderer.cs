@@ -18,11 +18,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         private static readonly Regex MasterPageBodyRegex = new Regex(@"{{\s*!\s*body\s*}}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private readonly ResourceTemplateLocator _resourceTemplateLocator;
-        private readonly ResourceCollection _resource;
+        private readonly IResourceFileReader _reader;
         private readonly Nustache.Core.Template _template;
         private readonly string _templateName;
 
-        public MustacheTemplateRenderer(ResourceCollection resourceProvider, TemplateRendererResource info)
+        public MustacheTemplateRenderer(IResourceFileReader reader, TemplateRendererResource info)
         {
             if (info == null)
             {
@@ -41,16 +41,16 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             _templateName = info.TemplateName;
 
-            _resource = resourceProvider;
-            _resourceTemplateLocator = new ResourceTemplateLocator(resourceProvider);
+            _reader = reader;
+            _resourceTemplateLocator = new ResourceTemplateLocator(reader);
 
             _template = new Nustache.Core.Template();
-            var processedTemplate = ParseTemplateHelper.ExpandMasterPage(resourceProvider, info, MasterPageRegex, MasterPageBodyRegex);
-            using (var reader = new StringReader(processedTemplate))
+            var processedTemplate = ParseTemplateHelper.ExpandMasterPage(reader, info, MasterPageRegex, MasterPageBodyRegex);
+            using (var sr = new StringReader(processedTemplate))
             {
                 try
                 {
-                    _template.Load(reader);
+                    _template.Load(sr);
                 }
                 catch (Nustache.Core.NustacheException e)
                 {
@@ -85,7 +85,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (Match match in IncludeRegex.Matches(template))
             {
                 var filePath = match.Groups["file"].Value;
-                foreach (var name in ParseTemplateHelper.GetResourceName(filePath, _templateName, _resource))
+                foreach (var name in ParseTemplateHelper.GetResourceName(filePath, _templateName, _reader))
                 {
                     yield return name;
                 }

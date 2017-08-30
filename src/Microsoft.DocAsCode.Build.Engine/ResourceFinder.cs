@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// </summary>
         /// <param name="name">The resource name provided</param>
         /// <returns>If found, return the resource collection; if not, return null</returns>
-        public ResourceCollection Find(string name)
+        public ResourceFileReader Find(string name)
         {
             if (string.IsNullOrEmpty(name)) return null;
 
@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (resourceName != null)
             {
                 Logger.LogDiagnostic($"Resource {name} is found in embedded resources.");
-                return new ArchiveResourceCollection(_assembly.GetManifestResourceStream(resourceName),
+                return new ArchiveResourceReader(_assembly.GetManifestResourceStream(resourceName),
                     $"embedded resource {resourceName}");
             }
 
@@ -62,14 +62,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (Directory.Exists(directory))
             {
                 Logger.LogDiagnostic($"Resource {name} is found from {directory}.");
-                return new FileResourceCollection(directory);
+                return new LocalFileResourceReader(directory);
             }
 
             var fileName = Path.Combine(_baseDirectory, $"{name}.zip");
             if (File.Exists(fileName))
             {
                 Logger.LogDiagnostic($"Resource {name} is found from {fileName}.");
-                return new ArchiveResourceCollection(new FileStream(fileName, FileMode.Open, FileAccess.Read), fileName);
+                return new ArchiveResourceReader(new FileStream(fileName, FileMode.Open, FileAccess.Read), fileName);
             }
 
             Logger.LogWarning($"Unable to find matching resource {name}.");
