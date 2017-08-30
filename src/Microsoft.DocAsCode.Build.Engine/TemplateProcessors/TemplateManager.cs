@@ -64,10 +64,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             return StringExtension.GetMd5String(sb.ToString());
         }
 
-        public CompositeResourceCollectionWithOverridden CreateTemplateResource() => CreateTemplateResource(_templates);
+        public CompositeResourceReader CreateTemplateResource() => CreateTemplateResource(_templates);
 
-        private CompositeResourceCollectionWithOverridden CreateTemplateResource(IEnumerable<string> resources) =>
-            new CompositeResourceCollectionWithOverridden(
+        private CompositeResourceReader CreateTemplateResource(IEnumerable<string> resources) =>
+            new CompositeResourceReader(
                 resources.Select(s => _finder.Find(s)).Where(s => s != null));
 
         public void ProcessTheme(string outputDirectory, bool overwrite)

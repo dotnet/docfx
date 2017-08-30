@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public bool ContainsModelTransformation { get; }
         public bool ContainsTemplateRenderer { get; }
 
-        public Template(string name, DocumentBuildContext context, TemplateRendererResource templateResource, TemplatePreprocessorResource scriptResource, ResourceCollection resourceCollection, int maxParallelism)
+        public Template(string name, DocumentBuildContext context, TemplateRendererResource templateResource, TemplatePreprocessorResource scriptResource, IResourceFileReader reader, int maxParallelism)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (!string.IsNullOrWhiteSpace(_script))
             {
                 ScriptName = Name + ".js";
-                _preprocessorPool = ResourcePool.Create(() => CreatePreprocessor(resourceCollection, scriptResource, context), maxParallelism);
+                _preprocessorPool = ResourcePool.Create(() => CreatePreprocessor(reader, scriptResource, context), maxParallelism);
                 try
                 {
                     using (var preprocessor = _preprocessorPool.Rent())
@@ -65,9 +65,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
-            if (!string.IsNullOrEmpty(templateResource?.Content) && resourceCollection != null)
+            if (!string.IsNullOrEmpty(templateResource?.Content) && reader != null)
             {
-                _rendererPool = ResourcePool.Create(() => CreateRenderer(resourceCollection, templateResource), maxParallelism);
+                _rendererPool = ResourcePool.Create(() => CreateRenderer(reader, templateResource), maxParallelism);
                 ContainsTemplateRenderer = true;
             }
 
@@ -216,20 +216,20 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static ITemplatePreprocessor CreatePreprocessor(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
+        private static ITemplatePreprocessor CreatePreprocessor(IResourceFileReader resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
         {
             return new TemplateJintPreprocessor(resourceCollection, scriptResource, context);
         }
 
-        private static ITemplateRenderer CreateRenderer(ResourceCollection resourceCollection, TemplateRendererResource templateResource)
+        private static ITemplateRenderer CreateRenderer(IResourceFileReader reader, TemplateRendererResource templateResource)
         {
             if (templateResource.Type == TemplateRendererType.Liquid)
             {
-                return LiquidTemplateRenderer.Create(resourceCollection, templateResource);
+                return LiquidTemplateRenderer.Create(reader, templateResource);
             }
             else
             {
-                return new MustacheTemplateRenderer(resourceCollection, templateResource);
+                return new MustacheTemplateRenderer(reader, templateResource);
             }
         }
 

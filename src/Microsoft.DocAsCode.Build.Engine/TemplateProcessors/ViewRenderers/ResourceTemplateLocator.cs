@@ -10,21 +10,21 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private const string PartialTemplateExtension = ".tmpl.partial";
         private readonly ConcurrentDictionary<string, Nustache.Core.Template> _templateCache = new ConcurrentDictionary<string, Nustache.Core.Template>();
-        private readonly ResourceCollection _resourceProvider;
-        public ResourceTemplateLocator(ResourceCollection resourceProvider)
+        private readonly IResourceFileReader _reader;
+        public ResourceTemplateLocator(IResourceFileReader reader)
         {
-            _resourceProvider = resourceProvider;
+            _reader = reader;
         }
 
         public Nustache.Core.Template GetTemplate(string name)
         {
-            if (_resourceProvider == null) return null;
+            if (_reader == null) return null;
             var resourceName = name + PartialTemplateExtension;
             return _templateCache.GetOrAdd(resourceName, s =>
                 {
-                    lock (_resourceProvider)
+                    lock (_reader)
                     {
-                        using (var stream = _resourceProvider.GetResourceStream(s))
+                        using (var stream = _reader.GetResourceStream(s))
                         {
                             if (stream == null)
                             {

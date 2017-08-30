@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public Func<object, object> GetOptionsFunc { get; private set; }
 
-        public TemplateJintPreprocessor(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
+        public TemplateJintPreprocessor(IResourceFileReader resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
         {
             if (!string.IsNullOrWhiteSpace(scriptResource.Content))
             {
@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private Engine SetupEngine(ResourceCollection resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
+        private Engine SetupEngine(IResourceFileReader resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
         {
             var rootPath = (RelativePath)scriptResource.ResourceName;
             var engineCache = new Dictionary<string, Engine>();

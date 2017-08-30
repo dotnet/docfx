@@ -33,16 +33,16 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public TemplateCollection(ResourceCollection provider, DocumentBuildContext context, int maxParallelism) : base(ReadTemplate(provider, context, maxParallelism), StringComparer.OrdinalIgnoreCase)
+        public TemplateCollection(ResourceFileReader provider, DocumentBuildContext context, int maxParallelism) : base(ReadTemplate(provider, context, maxParallelism), StringComparer.OrdinalIgnoreCase)
         {
             base.TryGetValue("default", out _defaultTemplate);
         }
 
-        private static Dictionary<string, TemplateBundle> ReadTemplate(ResourceCollection resource, DocumentBuildContext context, int maxParallelism)
+        private static Dictionary<string, TemplateBundle> ReadTemplate(ResourceFileReader reader, DocumentBuildContext context, int maxParallelism)
         {
             // type <=> list of template with different extension
             var dict = new Dictionary<string, List<Template>>(StringComparer.OrdinalIgnoreCase);
-            if (resource == null || resource.IsEmpty)
+            if (reader == null || reader.IsEmpty)
             {
                 return new Dictionary<string, TemplateBundle>();
             }
@@ -50,18 +50,18 @@ namespace Microsoft.DocAsCode.Build.Engine
             // Template file ends with .tmpl(Mustache) or .liquid(Liquid)
             // Template file naming convention: {template file name}.{file extension}.(tmpl|liquid)
             // Only files under root folder is searched
-            var templates = resource.GetResources(@"[^/]*\.(tmpl|liquid|js)$").ToList();
+            var templates = reader.GetResources(@"[^/]*\.(tmpl|liquid|js)$").ToList();
             if (templates != null)
             {
-                foreach (var group in templates.GroupBy(s => Path.GetFileNameWithoutExtension(s.Key), StringComparer.OrdinalIgnoreCase))
+                foreach (var group in templates.GroupBy(s => Path.GetFileNameWithoutExtension(s.Name), StringComparer.OrdinalIgnoreCase))
                 {
                     var currentTemplates =
                         (from i in @group
                          select new
                          {
-                             item = i.Value,
-                             extension = Path.GetExtension(i.Key),
-                             name = i.Key,
+                             item = i.Content,
+                             extension = Path.GetExtension(i.Name),
+                             name = i.Name,
                          } into item
                          where IsSupportedTemplateFile(item.extension)
                          select item).ToArray();
@@ -69,9 +69,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                          (from i in @group
                           select new
                           {
-                              item = i.Value,
-                              extension = Path.GetExtension(i.Key),
-                              name = i.Key,
+                              item = i.Content,
+                              extension = Path.GetExtension(i.Name),
+                              name = i.Name,
                           } into item
                           where IsSupportedScriptFile(item.extension)
                           select item).ToArray();
@@ -116,7 +116,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         currentScript == null ?
                         null :
                         new TemplatePreprocessorResource(currentScript.name, currentScript.item);
-                    var template = new Template(name, context, templateResource, templatePrepocessorResource, resource, maxParallelism);
+                    var template = new Template(name, context, templateResource, templatePrepocessorResource, reader, maxParallelism);
                     if (dict.TryGetValue(template.Type, out List<Template> templateList))
                     {
                         templateList.Add(template);

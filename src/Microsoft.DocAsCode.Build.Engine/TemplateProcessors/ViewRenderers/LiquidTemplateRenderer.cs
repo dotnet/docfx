@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private readonly DotLiquid.Template _template;
 
-        public static LiquidTemplateRenderer Create(ResourceCollection resourceProvider, TemplateRendererResource info)
+        public static LiquidTemplateRenderer Create(IResourceFileReader resourceProvider, TemplateRendererResource info)
         {
             if (info == null)
             {
@@ -62,17 +62,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private LiquidTemplateRenderer(DotLiquid.Template liquidTemplate, string template, string templateName, ResourceCollection resource, IEnumerable<string> dependencies)
+        private LiquidTemplateRenderer(DotLiquid.Template liquidTemplate, string template, string templateName, IResourceFileReader reader, IEnumerable<string> dependencies)
         {
             _template = liquidTemplate;
             Raw = template;
-            Dependencies = ParseDependencies(templateName, resource, dependencies).ToList();
+            Dependencies = ParseDependencies(templateName, reader, dependencies).ToList();
         }
 
-        private IEnumerable<string> ParseDependencies(string templateName, ResourceCollection resource, IEnumerable<string> raw)
+        private IEnumerable<string> ParseDependencies(string templateName, IResourceFileReader reader, IEnumerable<string> raw)
         {
             return from item in raw
-                   from name in ParseTemplateHelper.GetResourceName(item, templateName, resource)
+                   from name in ParseTemplateHelper.GetResourceName(item, templateName, reader)
                    select name;
         }
 
@@ -123,16 +123,16 @@ namespace Microsoft.DocAsCode.Build.Engine
         private sealed class ResourceFileSystem : DotLiquid.FileSystems.IFileSystem
         {
             private readonly ConcurrentDictionary<string, string> _templateCache = new ConcurrentDictionary<string, string>();
-            private readonly ResourceCollection _resourceProvider;
+            private readonly IResourceFileReader _reader;
 
-            public ResourceFileSystem(ResourceCollection resourceProvider)
+            public ResourceFileSystem(IResourceFileReader reader)
             {
-                _resourceProvider = resourceProvider;
+                _reader = reader;
             }
 
             public string ReadTemplateFile(DotLiquid.Context context, string templateName)
             {
-                if (_resourceProvider == null) return null;
+                if (_reader == null) return null;
 
                 return _templateCache.GetOrAdd(templateName, s =>
                 {
@@ -148,7 +148,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         resourceName = $"_{templateName}.liquid";
                     }
 
-                    return _resourceProvider.GetResource(resourceName);
+                    return _reader.GetResource(resourceName);
                 });
             }
         }

@@ -14,11 +14,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public class TemplateProcessor : IDisposable
     {
-        private readonly ResourceCollection _resourceProvider;
+        private readonly ResourceFileReader _resourceProvider;
 
         private readonly TemplateCollection _templateCollection;
 
-        public static readonly TemplateProcessor DefaultProcessor = new TemplateProcessor(new EmptyResourceCollection(), null, 1);
+        public static readonly TemplateProcessor DefaultProcessor = new TemplateProcessor(new EmptyResourceReader(), null, 1);
 
         public IDictionary<string, string> Tokens { get; }
 
@@ -29,7 +29,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// </summary>
         /// <param name="templateName"></param>
         /// <param name="resourceProvider"></param>
-        public TemplateProcessor(ResourceCollection resourceProvider, DocumentBuildContext context, int maxParallelism = 0)
+        public TemplateProcessor(ResourceFileReader resourceProvider, DocumentBuildContext context, int maxParallelism = 0)
         {
             if (maxParallelism <= 0)
             {
@@ -160,7 +160,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         }
 
-        private static IDictionary<string, string> LoadTokenJson(ResourceCollection resource)
+        private static IDictionary<string, string> LoadTokenJson(ResourceFileReader resource)
         {
             var tokenJson = resource.GetResource("token.json");
             if (string.IsNullOrEmpty(tokenJson))
