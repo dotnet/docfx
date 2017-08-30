@@ -369,11 +369,26 @@ Inline [!include[ref3](ref3.md ""This is root"")]
         {
             // 1. Prepare data
             var root = @"The following is video.
-> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4]
+> [!Video https://channel9.msdn.com/Shows/This+Week+On+Channel+9/TWC9-Mad-about-Mads-and-C-80-HoloLens-Wins-Award-3D-Printed-Warthog-and-more/player]
 ";
 
             var expected = @"<p>The following is video.</p>
-<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+<div class=""embeddedvideo""><iframe src=""https://channel9.msdn.com/Shows/This+Week+On+Channel+9/TWC9-Mad-about-Mads-and-C-80-HoloLens-Wins-Award-3D-Printed-Warthog-and-more/player?nocookie=true"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+";
+
+            var marked = DocfxFlavoredMarked.Markup(root);
+            Assert.Equal(expected.Replace("\r\n", "\n"), marked);
+        }
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestDfmVideo_YouTubeVideosUseNoCookie()
+        {
+            // 1. Prepare data
+            var root = @"The following is YT video.
+> [!Video https://www.youtube.com/embed/49CKGw8DXcw]";
+
+            var expected = @"<p>The following is YT video.</p>
+<div class=""embeddedvideo""><iframe src=""https://www.youtube-nocookie.com/embed/49CKGw8DXcw"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
 
             var marked = DocfxFlavoredMarked.Markup(root);
@@ -386,12 +401,12 @@ Inline [!include[ref3](ref3.md ""This is root"")]
         {
             // 1. Prepare data
             var root = @"The following is two videos.
-> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4]
-> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4]";
+> [!Video https://channel9.msdn.com/Shows/This+Week+On+Channel+9/TWC9-Mad-about-Mads-and-C-80-HoloLens-Wins-Award-3D-Printed-Warthog-and-more/player]
+> [!Video https://channel9.msdn.com/Shows/This+Week+On+Channel+9/TWC9-Mad-about-Mads-and-C-80-HoloLens-Wins-Award-3D-Printed-Warthog-and-more/player]";
 
             var expected = @"<p>The following is two videos.</p>
-<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
-<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+<div class=""embeddedvideo""><iframe src=""https://channel9.msdn.com/Shows/This+Week+On+Channel+9/TWC9-Mad-about-Mads-and-C-80-HoloLens-Wins-Award-3D-Printed-Warthog-and-more/player?nocookie=true"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+<div class=""embeddedvideo""><iframe src=""https://channel9.msdn.com/Shows/This+Week+On+Channel+9/TWC9-Mad-about-Mads-and-C-80-HoloLens-Wins-Award-3D-Printed-Warthog-and-more/player?nocookie=true"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
 
             var marked = DocfxFlavoredMarked.Markup(root);
@@ -404,16 +419,16 @@ Inline [!include[ref3](ref3.md ""This is root"")]
         {
             // 1. Prepare data
             var root = @"The following is video mixed with note.
-> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4]
+> [!Video https://channel9.msdn.com/Shows/This+Week+On+Channel+9/TWC9-Mad-about-Mads-and-C-80-HoloLens-Wins-Award-3D-Printed-Warthog-and-more/player]
 > [!NOTE]
 > this is note text
-> [!Video https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4]";
+> [!Video https://channel9.msdn.com/Shows/This+Week+On+Channel+9/TWC9-Mad-about-Mads-and-C-80-HoloLens-Wins-Award-3D-Printed-Warthog-and-more/player]";
 
             var expected = @"<p>The following is video mixed with note.</p>
-<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+<div class=""embeddedvideo""><iframe src=""https://channel9.msdn.com/Shows/This+Week+On+Channel+9/TWC9-Mad-about-Mads-and-C-80-HoloLens-Wins-Award-3D-Printed-Warthog-and-more/player?nocookie=true"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 <div class=""NOTE""><h5>NOTE</h5><p>this is note text</p>
 </div>
-<div class=""embeddedvideo""><iframe src=""https://sec.ch9.ms/ch9/4393/7d7c7df7-3f15-4a65-a2f7-3e4d0bea4393/Episode208_mid.mp4"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+<div class=""embeddedvideo""><iframe src=""https://channel9.msdn.com/Shows/This+Week+On+Channel+9/TWC9-Mad-about-Mads-and-C-80-HoloLens-Wins-Award-3D-Printed-Warthog-and-more/player?nocookie=true"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
 
             var marked = DocfxFlavoredMarked.Markup(root);

@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public IMarkdownContext Context { get; }
 
-        public string Link { get; }
+        public string Link { get; set; }
 
         public SourceInfo SourceInfo { get; }
 
