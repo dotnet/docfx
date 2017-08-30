@@ -41,10 +41,11 @@ namespace Microsoft.DocAsCode.Dfm
 
         public virtual StringBuffer RenderFencesFromCodeContent(string codeContent, string path, string queryStringAndFragment = null, string name = null, string lang = null, string title = null)
         {
-            if (string.IsNullOrEmpty(codeContent))
+            if (codeContent == null)
             {
-                return RenderCodeErrorString($"{nameof(codeContent)} can not be null or empty");
+                return RenderCodeErrorString($"{nameof(codeContent)} can not be null");
             }
+
             if (string.IsNullOrEmpty(path))
             {
                 return RenderCodeErrorString($"{nameof(path)} can not been null or empty");
