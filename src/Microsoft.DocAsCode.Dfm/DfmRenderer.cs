@@ -137,22 +137,28 @@ namespace Microsoft.DocAsCode.Dfm
             if (videoToken != null && !String.IsNullOrWhiteSpace(videoToken.Link))
             {
                 string link = videoToken.Link;
+                Uri videoLink;
+                if (Uri.TryCreate(link, UriKind.Absolute, out videoLink))
+                {
+                    string host = videoLink.Host;
 
-                if (link.IndexOf("channel9.msdn.com", StringComparison.InvariantCultureIgnoreCase) > -1)
-                {
-                    if (link.Contains("?"))
+                    if (host.Equals("channel9.msdn.com", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        link = link + "&nocookie=true";
+                        if (link.Contains("?"))
+                        {
+                            link = link + "&nocookie=true";
+                        }
+                        else
+                        {
+                            link = link + "?nocookie=true";
+                        }
                     }
-                    else
+                    else if (host.IndexOf("youtube.com", StringComparison.InvariantCultureIgnoreCase) > -1)
                     {
-                        link = link + "?nocookie=true";
+                        link = link.Replace("youtube.com", "youtube-nocookie.com");
                     }
-                } else if (link.IndexOf("youtube.com", StringComparison.InvariantCultureIgnoreCase) > -1)
-                {
-                    link = link.Replace("youtube.com", "youtube-nocookie.com");
+                    videoToken.Link = link;
                 }
-                videoToken.Link = link;
             }
 
             content += "<div class=\"embeddedvideo\"><iframe src=\"";
