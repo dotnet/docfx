@@ -1605,7 +1605,7 @@ line4
             File.WriteAllText("Program.cs", content.Replace("\r\n", "\n"));
 
             // act
-            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("Extract Dfm Code");
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseStartFilter("Extract Dfm Code");
             Logger.RegisterListener(listener);
             var marked = DocfxFlavoredMarked.Markup("[!code[tag1](Program.cs#Tag1)]", "Program.cs");
             Logger.UnregisterListener(listener);

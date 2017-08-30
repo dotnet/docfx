@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.Dfm
                 throw new ArgumentNullException(nameof(fencesPath));
             }
 
-            using (new LoggerPhaseScope("Extract Dfm Code"))
+            using (new LoggerPhaseScope("Extract Dfm Code From Path"))
             {
                 var fencesCode = EnvironmentContext.FileAbstractLayer.ReadAllLines(fencesPath);
 
@@ -48,39 +48,42 @@ namespace Microsoft.DocAsCode.Dfm
                 throw new ArgumentNullException(nameof(fencesCode));
             }
 
-            if (token.PathQueryOption == null)
+            using (new LoggerPhaseScope("Extract Dfm Code"))
             {
-                // Add the full file when no query option is given
+                if (token.PathQueryOption == null)
+                {
+                    // Add the full file when no query option is given
+                    return new DfmExtractCodeResult
+                    {
+                        IsSuccessful = true,
+                        CodeLines = Dedent(fencesCode),
+                    };
+                }
+
+                if (!token.PathQueryOption.ValidateAndPrepare(fencesCode, token))
+                {
+                    Logger.LogWarning(GenerateErrorMessage(token), line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidCodeSnippet);
+                    return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = token.PathQueryOption.ErrorMessage, CodeLines = fencesCode };
+                }
+                if (!string.IsNullOrEmpty(token.PathQueryOption.ErrorMessage))
+                {
+                    Logger.LogWarning(GenerateErrorMessage(token), line: token.SourceInfo.LineNumber.ToString());
+                }
+
+                var includedLines = token.PathQueryOption.GetQueryLines(fencesCode).ToList();
+
+                if (!token.PathQueryOption.ValidateHighlightLinesAndDedentLength(includedLines.Count))
+                {
+                    Logger.LogWarning(GenerateErrorMessage(token), line: token.SourceInfo.LineNumber.ToString());
+                }
+
                 return new DfmExtractCodeResult
                 {
                     IsSuccessful = true,
-                    CodeLines = Dedent(fencesCode),
+                    ErrorMessage = token.PathQueryOption.ErrorMessage,
+                    CodeLines = Dedent(includedLines, token.PathQueryOption.DedentLength)
                 };
             }
-
-            if (!token.PathQueryOption.ValidateAndPrepare(fencesCode, token))
-            {
-                Logger.LogWarning(GenerateErrorMessage(token), line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidCodeSnippet);
-                return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = token.PathQueryOption.ErrorMessage, CodeLines = fencesCode };
-            }
-            if (!string.IsNullOrEmpty(token.PathQueryOption.ErrorMessage))
-            {
-                Logger.LogWarning(GenerateErrorMessage(token), line: token.SourceInfo.LineNumber.ToString());
-            }
-
-            var includedLines = token.PathQueryOption.GetQueryLines(fencesCode).ToList();
-
-            if (!token.PathQueryOption.ValidateHighlightLinesAndDedentLength(includedLines.Count))
-            {
-                Logger.LogWarning(GenerateErrorMessage(token), line: token.SourceInfo.LineNumber.ToString());
-            }
-
-            return new DfmExtractCodeResult
-            {
-                IsSuccessful = true,
-                ErrorMessage = token.PathQueryOption.ErrorMessage,
-                CodeLines = Dedent(includedLines, token.PathQueryOption.DedentLength)
-            };
         }
 
         private static string[] Dedent(IEnumerable<string> lines, int? dedentLength = null)

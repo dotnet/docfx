@@ -64,6 +64,9 @@ namespace Microsoft.DocAsCode.Dfm
 
         private DfmTagNameResolveResult _resolveResult;
 
+        public TagNameBlockPathQueryOption()
+            : this(false) { }
+
         public TagNameBlockPathQueryOption(bool nocache = false)
         {
             _noCache = nocache;
