@@ -39,11 +39,16 @@ namespace Microsoft.DocAsCode.Dfm
             }
         }
 
-        public virtual StringBuffer RenderFencesFromCodeContent(string codeContent, string queryStringAndFragment = null, string name = null, string path = null, string lang = null, string title = null)
+        public virtual StringBuffer RenderFencesFromCodeContent(string codeContent, string path, string queryStringAndFragment = null, string name = null, string lang = null, string title = null)
         {
             if (codeContent == null)
             {
-                return RenderCodeErrorString($"{nameof(codeContent)} can not be Null");
+                return RenderCodeErrorString($"{nameof(codeContent)} can not be null");
+            }
+
+            if (string.IsNullOrEmpty(path))
+            {
+                return RenderCodeErrorString($"{nameof(path)} can not been null or empty");
             }
 
             if (queryStringAndFragment != null && queryStringAndFragment.Length == 1)
