@@ -4,7 +4,7 @@ Introduction to REST API Documentation
 Introduction
 -------------
 
-DocFX now supports generating documentation from REST APIs following [Swagger specification](http://swagger.io/specification/) version 2.0.
+DocFX supports generating documentation from REST APIs following [Swagger specification](http://swagger.io/specification/) version 2.0.
 
 The Swagger RESTful API files *MUST* end with `.json`.
 
