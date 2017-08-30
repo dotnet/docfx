@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 var fencesCode = EnvironmentContext.FileAbstractLayer.ReadAllLines(fencesPath);
 
-                return ExtractFencesCodeCore(token, fencesCode);
+                return ExtractFencesCode(token, fencesCode);
             }
         }
 
@@ -48,14 +48,6 @@ namespace Microsoft.DocAsCode.Dfm
                 throw new ArgumentNullException(nameof(fencesCode));
             }
 
-            using (new LoggerPhaseScope("Extract Dfm Code"))
-            {
-                return ExtractFencesCodeCore(token, fencesCode);
-            }
-        }
-
-        private DfmExtractCodeResult ExtractFencesCodeCore(DfmFencesToken token, string[] fencesCode)
-        {
             if (token.PathQueryOption == null)
             {
                 // Add the full file when no query option is given

@@ -60,9 +60,14 @@ namespace Microsoft.DocAsCode.Dfm
 
         public string TagName { get; set; }
 
-        public bool NoCache { get; set; }
+        private readonly bool _noCache;
 
         private DfmTagNameResolveResult _resolveResult;
+
+        public TagNameBlockPathQueryOption(bool nocache = false)
+        {
+            _noCache = nocache;
+        }
 
         private readonly ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>> _dfmTagNameLineRangeCache =
             new ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>>(StringComparer.OrdinalIgnoreCase);
@@ -170,7 +175,7 @@ namespace Microsoft.DocAsCode.Dfm
         private DfmTagNameResolveResult ResolveTagNamesFromPath(string fencesPath, string[] fencesCodeLines, string tagName, List<ICodeSnippetExtractor> codeSnippetExtractors)
         {
             Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>> lazyResolveResults;
-            if (NoCache)
+            if (_noCache)
             {
                 lazyResolveResults = GetLazyResolveResult(fencesCodeLines, codeSnippetExtractors);
             }

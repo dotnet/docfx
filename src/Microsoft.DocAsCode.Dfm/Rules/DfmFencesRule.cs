@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.Dfm
                 }
                 else
                 {
-                    return new TagNameBlockPathQueryOption { TagName = queryString, NoCache = noCache};
+                    return new TagNameBlockPathQueryOption(noCache) { TagName = queryString};
                 }
             }
             else if (queryOption == "?")
@@ -75,7 +75,7 @@ namespace Microsoft.DocAsCode.Dfm
                 }
                 if (tagName != null)
                 {
-                    return new TagNameBlockPathQueryOption { TagName = tagName , HighlightLines = highlight, DedentLength = dedent, NoCache = noCache};
+                    return new TagNameBlockPathQueryOption(noCache) { TagName = tagName , HighlightLines = highlight, DedentLength = dedent};
                 }
                 else if (range != null)
                 {
