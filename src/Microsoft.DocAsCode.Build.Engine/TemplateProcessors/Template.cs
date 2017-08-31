@@ -17,7 +17,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         private const string Auxiliary = ".aux";
 
         private readonly object _locker = new object();
-        private readonly string _script;
 
         public string Name { get; }
         public string ScriptName { get; }
@@ -47,8 +46,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             TemplateType = templateInfo.TemplateType;
 
             Preprocessor = CreatePreprocessor(reader, scriptResource, context, maxParallelism);
-            ContainsGetOptions = Preprocessor?.GetOptionsFunc != null;
-            ContainsModelTransformation = Preprocessor?.TransformModelFunc != null;
+            ContainsGetOptions = Preprocessor?.ContainsGetOptions == true;
+            ContainsModelTransformation = Preprocessor?.ContainsModelTransformation == true;
 
             Renderer = CreateRenderer(reader, templateResource, maxParallelism);
 
@@ -75,7 +74,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <returns></returns>
         public TransformModelOptions GetOptions(object model)
         {
-            object obj = Preprocessor?.GetOptionsFunc(model) ?? model;
+            object obj = Preprocessor?.GetOptions(model) ?? null;
             if (obj == null)
             {
                 return null;
@@ -93,7 +92,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <returns>The view model</returns>
         public object TransformModel(object model)
         {
-            return Preprocessor?.TransformModelFunc(model) ?? model;
+            return Preprocessor?.TransformModel(model) ?? model;
         }
 
         /// <summary>

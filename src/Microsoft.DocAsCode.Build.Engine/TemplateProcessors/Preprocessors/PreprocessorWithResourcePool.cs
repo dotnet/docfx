@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal class PreprocessorWithResourcePool : ITemplatePreprocessor
     {
-        private readonly ITemplatePreprocessor _inner;
         private readonly ResourcePoolManager<ITemplatePreprocessor> _preprocessorPool;
 
         public PreprocessorWithResourcePool(Func<ITemplatePreprocessor> creater, int maxParallelism)
@@ -19,7 +18,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 using (var preprocessor = _preprocessorPool.Rent())
                 {
-                    _inner = preprocessor.Resource;
+                    var inner = preprocessor.Resource;
+                    ContainsGetOptions = inner.ContainsGetOptions;
+                    ContainsModelTransformation = inner.ContainsModelTransformation;
                 }
             }
             catch (Exception e)
@@ -29,22 +30,22 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public Func<object, object> GetOptionsFunc => GetOptions;
+        public bool ContainsGetOptions { get; }
 
-        public Func<object, object> TransformModelFunc => TransformModel;
+        public bool ContainsModelTransformation { get; }
 
         public object GetOptions(object model)
         {
-            if (_inner?.GetOptionsFunc == null)
+            if (!ContainsGetOptions)
             {
-                return model;
+                return null;
             }
 
             using (var lease = _preprocessorPool.Rent())
             {
                 try
                 {
-                    return lease.Resource.GetOptionsFunc(model);
+                    return lease.Resource.GetOptions(model);
                 }
                 catch (Exception e)
                 {
@@ -55,7 +56,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public object TransformModel(object model)
         {
-            if (_inner?.TransformModelFunc == null)
+            if (!ContainsModelTransformation)
             {
                 return model;
             }
@@ -64,7 +65,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 try
                 {
-                    return lease.Resource.TransformModelFunc(model);
+                    return lease.Resource.TransformModel(model);
                 }
                 catch (Exception e)
                 {

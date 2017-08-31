@@ -10,7 +10,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal class RendererWithResourcePool : ITemplateRenderer
     {
-        private readonly ITemplateRenderer _inner;
         private readonly ResourcePoolManager<ITemplateRenderer> _rendererPool;
         public RendererWithResourcePool(Func<ITemplateRenderer> creater, int maxParallelism)
         {
@@ -18,24 +17,26 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             using (var lease = _rendererPool.Rent())
             {
-                _inner = lease.Resource;
+                var inner = lease.Resource;
+                Raw = inner.Raw;
+                Dependencies = inner.Dependencies;
             }
         }
 
-        public IEnumerable<string> Dependencies => _inner?.Dependencies;
+        public IEnumerable<string> Dependencies { get; }
 
-        public string Raw => _inner?.Raw;
+        public string Raw { get; }
 
         public string Render(object model)
         {
-            if (model == null || _inner == null)
+            if (model == null)
             {
                 return null;
             }
 
             using (var lease = _rendererPool.Rent())
             {
-                return lease.Resource.Render(model);
+                return lease.Resource?.Render(model);
             }
         }
     }
