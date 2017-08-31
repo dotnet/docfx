@@ -315,7 +315,6 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                     UserStyleSheet = _pdfOptions.CssFilePath,
                     LoadErrorHandling = _pdfOptions.LoadErrorHandling,
                     AdditionalArguments = _pdfOptions.AdditionalPdfCommandArgs
-
                 });
 
             converter.Save(Path.Combine(_pdfOptions.DestDirectory, pdfFileName));
