@@ -37,6 +37,11 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         public string ExternalLinkFormat => $"{Normalize(Host)}{Normalize(Locale)}{Normalize(BasePath)}{{0}}";
 
         /// <summary>
+        /// Specify additional command line arguments that should be passed to the pdf command.
+        /// </summary>
+        public string AdditionalPdfCommandArgs { get; set; }
+
+        /// <summary>
         /// If the path only with '/' or null or empty, will skip and return empty. Others will trim and return with as 'a/'
         /// </summary>
         /// <param name="path">the path</param>

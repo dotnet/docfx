@@ -119,6 +119,13 @@ namespace Microsoft.DocAsCode.HtmlToPdf
 
         private void ConvertToStreamCore(string arguments, Stream stream)
         {
+            // In advanced scenarios where the user is passing additional arguments directly to the command line,
+            // disable the quiet mode so problems can be diagnosed.
+            if (!string.IsNullOrEmpty(this._htmlToPdfOptions.AdditionalArguments))
+            {
+                this._htmlToPdfOptions.IsQuiet = false;
+            }
+
             using (var process = new Process
             {
                 StartInfo = new ProcessStartInfo
