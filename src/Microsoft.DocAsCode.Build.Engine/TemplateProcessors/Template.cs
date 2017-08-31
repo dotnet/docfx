@@ -6,12 +6,10 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Text.RegularExpressions;
 
     using Newtonsoft.Json.Linq;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Exceptions;
 
     public class Template
     {
@@ -19,8 +17,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         private const string Auxiliary = ".aux";
 
         private readonly object _locker = new object();
-        private readonly ResourcePoolManager<ITemplateRenderer> _rendererPool = null;
-        private readonly ResourcePoolManager<ITemplatePreprocessor> _preprocessorPool = null;
         private readonly string _script;
 
         public string Name { get; }
@@ -31,7 +27,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         public IEnumerable<TemplateResourceInfo> Resources { get; }
         public bool ContainsGetOptions { get; }
         public bool ContainsModelTransformation { get; }
-        public bool ContainsTemplateRenderer { get; }
+
+        public ITemplateRenderer Renderer { get; }
+        public ITemplatePreprocessor Preprocessor { get; }
 
         public Template(string name, DocumentBuildContext context, TemplateRendererResource templateResource, TemplatePreprocessorResource scriptResource, IResourceFileReader reader, int maxParallelism)
         {
@@ -41,42 +39,25 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             Name = name;
+            ScriptName = Name + ".js";
+
             var templateInfo = GetTemplateInfo(Name);
             Extension = templateInfo.Extension;
             Type = templateInfo.DocumentType;
             TemplateType = templateInfo.TemplateType;
-            _script = scriptResource?.Content;
-            if (!string.IsNullOrWhiteSpace(_script))
-            {
-                ScriptName = Name + ".js";
-                _preprocessorPool = ResourcePool.Create(() => CreatePreprocessor(reader, scriptResource, context), maxParallelism);
-                try
-                {
-                    using (var preprocessor = _preprocessorPool.Rent())
-                    {
-                        ContainsGetOptions = preprocessor.Resource.GetOptionsFunc != null;
-                        ContainsModelTransformation = preprocessor.Resource.TransformModelFunc != null;
-                    }
-                }
-                catch (Exception e)
-                {
-                    _preprocessorPool = null;
-                    Logger.LogWarning($"{ScriptName} is not a valid template preprocessor, ignored: {e.Message}");
-                }
-            }
 
-            if (!string.IsNullOrEmpty(templateResource?.Content) && reader != null)
-            {
-                _rendererPool = ResourcePool.Create(() => CreateRenderer(reader, templateResource), maxParallelism);
-                ContainsTemplateRenderer = true;
-            }
+            Preprocessor = CreatePreprocessor(reader, scriptResource, context, maxParallelism);
+            ContainsGetOptions = Preprocessor?.GetOptionsFunc != null;
+            ContainsModelTransformation = Preprocessor?.TransformModelFunc != null;
 
-            if (!ContainsGetOptions && !ContainsModelTransformation && !ContainsTemplateRenderer)
+            Renderer = CreateRenderer(reader, templateResource, maxParallelism);
+
+            Resources = ExtractDependentResources(Name);
+
+            if (Renderer == null && !ContainsGetOptions && !ContainsModelTransformation)
             {
                 Logger.LogWarning($"Template {name} contains neither preprocessor to process model nor template to render model. Please check if the template is correctly defined. Allowed preprocessor functions are [exports.getOptions] and [exports.transform].");
             }
-
-            Resources = ExtractDependentResources(Name);
         }
 
         /// <summary>
@@ -94,28 +75,13 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <returns></returns>
         public TransformModelOptions GetOptions(object model)
         {
-            if (_preprocessorPool == null || !ContainsGetOptions)
-            {
-                return null;
-            }
-            object obj;
-            using (var lease = _preprocessorPool.Rent())
-            {
-                try
-                {
-                    obj = lease.Resource.GetOptionsFunc(model);
-                }
-                catch (Exception e)
-                {
-                    throw new InvalidPreprocessorException($"Error running GetOptions function inside template preprocessor: {e.Message}");
-                }
-            }
+            object obj = Preprocessor?.GetOptionsFunc(model) ?? model;
             if (obj == null)
             {
                 return null;
             }
-            var config = JObject.FromObject(obj).ToObject<TransformModelOptions>();
-            return config;
+
+            return JObject.FromObject(obj).ToObject<TransformModelOptions>();
         }
 
         /// <summary>
@@ -127,21 +93,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <returns>The view model</returns>
         public object TransformModel(object model)
         {
-            if (_preprocessorPool == null || !ContainsModelTransformation)
-            {
-                return model;
-            }
-            using (var lease = _preprocessorPool.Rent())
-            {
-                try
-                {
-                    return lease.Resource.TransformModelFunc(model);
-                }
-                catch (Exception e)
-                {
-                    throw new InvalidPreprocessorException($"Error running Transform function inside template preprocessor: {e.Message}");
-                }
-            }
+            return Preprocessor?.TransformModelFunc(model) ?? model;
         }
 
         /// <summary>
@@ -152,14 +104,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <returns>The output after applying template</returns>
         public string Transform(object model)
         {
-            if (_rendererPool == null || !ContainsTemplateRenderer || model == null)
+            if (Renderer == null || model == null)
             {
                 return null;
             }
-            using (var lease = _rendererPool.Rent())
-            {
-                return lease.Resource.Render(model);
-            }
+
+            return Renderer.Render(model);
         }
 
         private static TemplateInfo GetTemplateInfo(string templateName)
@@ -197,39 +147,41 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <param name="template"></param>
         private IEnumerable<TemplateResourceInfo> ExtractDependentResources(string templateName)
         {
-            if (_rendererPool == null)
+            if (Renderer == null || Renderer.Dependencies == null)
             {
                 yield break;
             }
-            using (var lease = _rendererPool.Rent())
-            {
-                var _renderer = lease.Resource;
-                if (_renderer.Dependencies == null)
-                {
-                    yield break;
-                }
 
-                foreach (var dependency in _renderer.Dependencies)
-                {
-                    yield return new TemplateResourceInfo(dependency);
-                }
+            foreach (var dependency in Renderer.Dependencies)
+            {
+                yield return new TemplateResourceInfo(dependency);
             }
         }
 
-        private static ITemplatePreprocessor CreatePreprocessor(IResourceFileReader resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
+        private static ITemplatePreprocessor CreatePreprocessor(IResourceFileReader reader, TemplatePreprocessorResource scriptResource, DocumentBuildContext context, int maxParallelism)
         {
-            return new TemplateJintPreprocessor(resourceCollection, scriptResource, context);
+            if (reader == null || scriptResource?.Content == null)
+            {
+                return null;
+            }
+
+            return new PreprocessorWithResourcePool(() => new TemplateJintPreprocessor(reader, scriptResource, context), maxParallelism);
         }
 
-        private static ITemplateRenderer CreateRenderer(IResourceFileReader reader, TemplateRendererResource templateResource)
+        private static ITemplateRenderer CreateRenderer(IResourceFileReader reader, TemplateRendererResource templateResource, int maxParallelism)
         {
+            if (reader == null || templateResource?.Content == null)
+            {
+                return null;
+            }
+
             if (templateResource.Type == TemplateRendererType.Liquid)
             {
-                return LiquidTemplateRenderer.Create(reader, templateResource);
+                return new RendererWithResourcePool(() => LiquidTemplateRenderer.Create(reader, templateResource), maxParallelism);
             }
             else
             {
-                return new MustacheTemplateRenderer(reader, templateResource);
+                return new RendererWithResourcePool(() => new MustacheTemplateRenderer(reader, templateResource), maxParallelism);
             }
         }
 
