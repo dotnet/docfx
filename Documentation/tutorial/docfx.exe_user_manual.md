@@ -438,7 +438,7 @@ wkthmltopdf              | Contains additional option specific to wkhtmltopdf wh
 
 Key                      | Description
 -------------------------|-----------------------------
-additionalArguments      | Additional arguments that should be passed the wkthmltopdf executable.
+additionalArguments      | Additional arguments that should be passed to the wkthmltopdf executable.
 
 4. Supported File Mapping Format
 ---------------------------------------------
