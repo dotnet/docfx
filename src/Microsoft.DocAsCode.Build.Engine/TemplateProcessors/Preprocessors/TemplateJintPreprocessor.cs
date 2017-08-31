@@ -67,10 +67,9 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private readonly Engine _engine;
 
-        public Func<object, object> TransformModelFunc { get; private set; }
+        private Func<object, object> _transformFunc;
 
-        public Func<object, object> GetOptionsFunc { get; private set; }
-
+        private Func<object, object> _getOptionsFunc;
         public TemplateJintPreprocessor(IResourceFileReader resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
         {
             if (!string.IsNullOrWhiteSpace(scriptResource.Content))
@@ -81,6 +80,32 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 _engine = null;
             }
+
+            ContainsGetOptions = _getOptionsFunc != null;
+            ContainsModelTransformation = _transformFunc != null;
+        }
+
+        public bool ContainsGetOptions { get; }
+        public bool ContainsModelTransformation { get; }
+
+        public object GetOptions(object model)
+        {
+            if (_getOptionsFunc != null)
+            {
+                return _getOptionsFunc(model);
+            }
+
+            return null;
+        }
+
+        public object TransformModel(object model)
+        {
+            if (_transformFunc != null)
+            {
+                return _transformFunc(model);
+            }
+
+            return model;
         }
 
         private Engine SetupEngine(IResourceFileReader resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
@@ -132,8 +157,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (value.IsObject())
             {
                 var exports = value.AsObject();
-                GetOptionsFunc = GetFunc(GetOptionsFuncVariableName, exports);
-                TransformModelFunc = GetFunc(TransformFuncVariableName, exports);
+                _getOptionsFunc = GetFunc(GetOptionsFuncVariableName, exports);
+                _transformFunc = GetFunc(TransformFuncVariableName, exports);
             }
             else
             {

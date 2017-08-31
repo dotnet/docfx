@@ -84,7 +84,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             // Must convert to JObject first as we leverage JsonProperty as the property name for the model
             foreach (var template in templateBundle.Templates)
             {
-                if (!template.ContainsTemplateRenderer)
+                if (template.Renderer == null)
                 {
                     continue;
                 }

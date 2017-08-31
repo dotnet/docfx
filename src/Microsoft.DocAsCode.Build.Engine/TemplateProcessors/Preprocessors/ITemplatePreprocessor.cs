@@ -3,11 +3,12 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using System;
-
     public interface ITemplatePreprocessor
     {
-        Func<object, object> GetOptionsFunc { get; }
-        Func<object, object> TransformModelFunc { get; }
+        bool ContainsGetOptions { get; }
+        bool ContainsModelTransformation { get; }
+
+        object GetOptions(object model);
+        object TransformModel(object model);
     }
 }
