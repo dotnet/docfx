@@ -65,9 +65,13 @@ namespace Microsoft.DocAsCode.Build.Engine
             : this(baseDir, models, null, null, 0) { }
 
         public HostService(string baseDir, IEnumerable<FileModel> models, string versionName, string versionDir, int lruSize)
+            : this(baseDir, models, versionName, versionDir, lruSize, null) { }
+
+        public HostService(string baseDir, IEnumerable<FileModel> models, string versionName, string versionDir, int lruSize, GroupInfo groupInfo)
         {
             VersionName = versionName;
             VersionOutputFolder = versionDir;
+            GroupInfo = groupInfo;
 
             // Disable LRU, when Content.get, it is possible that the value is Serialized before the modification on the content does not complete yet
             //if (lruSize > 0)
