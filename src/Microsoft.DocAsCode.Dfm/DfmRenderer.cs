@@ -134,7 +134,7 @@ namespace Microsoft.DocAsCode.Dfm
             //TODO: fix video link
             //if youtube.com, change to youtube-nocookie.com
             //if channel9.msdn.com, add ?nocookie=true at end
-            if (videoToken != null && !String.IsNullOrWhiteSpace(videoToken.Link))
+            if (videoToken != null && !string.IsNullOrWhiteSpace(videoToken.Link))
             {
                 string link = videoToken.Link;
                 Uri videoLink;

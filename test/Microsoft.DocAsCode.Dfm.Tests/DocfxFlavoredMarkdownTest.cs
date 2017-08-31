@@ -379,6 +379,7 @@ Inline [!include[ref3](ref3.md ""This is root"")]
             var marked = DocfxFlavoredMarked.Markup(root);
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
         }
+
         [Fact]
         [Trait("Related", "DfmMarkdown")]
         public void TestDfmVideo_YouTubeVideosUseNoCookie()
