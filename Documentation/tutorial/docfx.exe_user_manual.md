@@ -432,7 +432,7 @@ Key                      | Description
 -------------------------|-----------------------------
 name                     | Specifies the prefix of the generated PDF files, e.g. PDF generated from `testproject\toc.yml` is named as `{name}.pdf`, `testproject\api\toc.yml` is named as `{name}_api.pdf`. If not specified, the value of `name` is the folder name `testproject`.
 generatesAppendices      | If specified, an `appendices.pdf` file is generated containing all the not-in-TOC articles.
-wkthmltopdf              | Contains additional option specific to wkhtmltopdf which is used internally to generate the PDF files.
+wkthmltopdf              | Contains additional options specific to wkhtmltopdf which is used internally to generate the PDF files.
 
 #### 4.3.1 Properties for the `wkhtmltopdf` Key
 
