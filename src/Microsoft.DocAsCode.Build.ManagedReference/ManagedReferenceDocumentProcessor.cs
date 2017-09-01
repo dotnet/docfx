@@ -133,6 +133,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                         {
                             case YamlMime.ManagedReference:
                                 return ProcessingPriority.Normal;
+                            case null:
+                                return ProcessingPriority.BelowNormal;
                             default:
                                 return ProcessingPriority.NotSupported;
                         }
