@@ -313,7 +313,8 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                 {
                     BasePath = basePath,
                     UserStyleSheet = _pdfOptions.CssFilePath,
-                    LoadErrorHandling = _pdfOptions.LoadErrorHandling
+                    LoadErrorHandling = _pdfOptions.LoadErrorHandling,
+                    AdditionalArguments = _pdfOptions.AdditionalPdfCommandArgs
                 });
 
             converter.Save(Path.Combine(_pdfOptions.DestDirectory, pdfFileName));

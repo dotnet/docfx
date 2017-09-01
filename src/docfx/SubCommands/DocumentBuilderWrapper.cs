@@ -307,7 +307,7 @@ namespace Microsoft.DocAsCode.SubCommands
             foreach (var pair in fileMappingParametersDictionary)
             {
                 var p = parameters.Clone();
-                if (config.Groups != null && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
+                if (config.Groups != null && !string.IsNullOrEmpty(pair.Key) && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
                 {
                     p.GroupInfo = new GroupInfo()
                     {

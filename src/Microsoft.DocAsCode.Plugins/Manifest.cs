@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.ComponentModel;
@@ -45,8 +46,12 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("incremental_info")]
         public List<IncrementalInfo> IncrementalInfo { get; set; }
 
+        [Obsolete("use groups")]
         [JsonProperty("version_info")]
         public Dictionary<string, VersionInfo> VersionInfo { get; set; }
+
+        [JsonProperty("groups")]
+        public List<ManifestGroupInfo> Groups { get; set; }
 
         #region Public Methods
 
