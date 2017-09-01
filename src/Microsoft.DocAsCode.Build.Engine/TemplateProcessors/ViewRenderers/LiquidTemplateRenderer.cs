@@ -15,13 +15,15 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal class LiquidTemplateRenderer : ITemplateRenderer
     {
+        public const string Extension = ".liquid";
+
         private static readonly object _locker = new object();
         private static readonly Regex MasterPageRegex = new Regex(@"{%\-?\s*master\s*:?(:?['""]?)\s*(?<file>(.+?))\1\s*\-?%}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex MasterPageBodyRegex = new Regex(@"{%\-?\s*body\s*\-?%}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private readonly DotLiquid.Template _template;
 
-        public static LiquidTemplateRenderer Create(IResourceFileReader resourceProvider, TemplateRendererResource info)
+        public static LiquidTemplateRenderer Create(IResourceFileReader resourceProvider, ResourceInfo info, string name = null)
         {
             if (info == null)
             {
@@ -33,9 +35,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(info.Content));
             }
 
-            if (info.TemplateName == null)
+            if (info.Path == null)
             {
-                throw new ArgumentNullException(nameof(info.TemplateName));
+                throw new ArgumentNullException(nameof(info.Path));
             }
 
             var processedTemplate = ParseTemplateHelper.ExpandMasterPage(resourceProvider, info, MasterPageRegex, MasterPageBodyRegex);
@@ -53,32 +55,38 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                     liquidTemplate.Registers.Add("file_system", new ResourceFileSystem(resourceProvider));
 
-                    return new LiquidTemplateRenderer(liquidTemplate, processedTemplate, info.TemplateName, resourceProvider, dependencies);
+                    return new LiquidTemplateRenderer(liquidTemplate, processedTemplate, info.Path, resourceProvider, dependencies, name);
                 }
                 catch (DotLiquid.Exceptions.SyntaxException e)
                 {
-                    throw new DocfxException($"Syntax error for template {info.TemplateName}: {e.Message}", e);
+                    throw new DocfxException($"Syntax error for template {info.Path}: {e.Message}", e);
                 }
             }
         }
 
-        private LiquidTemplateRenderer(DotLiquid.Template liquidTemplate, string template, string templateName, IResourceFileReader reader, IEnumerable<string> dependencies)
+        private LiquidTemplateRenderer(DotLiquid.Template liquidTemplate, string template, string path, IResourceFileReader reader, IEnumerable<string> dependencies, string name)
         {
             _template = liquidTemplate;
             Raw = template;
-            Dependencies = ParseDependencies(templateName, reader, dependencies).ToList();
+            Dependencies = ParseDependencies(path, reader, dependencies).ToList();
+            Path = path;
+            Name = name ?? System.IO.Path.GetFileNameWithoutExtension(Path);
         }
 
-        private IEnumerable<string> ParseDependencies(string templateName, IResourceFileReader reader, IEnumerable<string> raw)
+        private IEnumerable<string> ParseDependencies(string path, IResourceFileReader reader, IEnumerable<string> raw)
         {
             return from item in raw
-                   from name in ParseTemplateHelper.GetResourceName(item, templateName, reader)
+                   from name in ParseTemplateHelper.GetResourceName(item, path, reader)
                    select name;
         }
 
         public string Raw { get; }
 
         public IEnumerable<string> Dependencies { get; }
+
+        public string Path { get; }
+
+        public string Name { get; }
 
         public string Render(object model)
         {

@@ -5,7 +5,6 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     using Jint;
     using Jint.Native;
@@ -15,6 +14,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public class TemplateJintPreprocessor : ITemplatePreprocessor
     {
+        public const string Extension = ".js";
+
+        // If template file does not exists, while a js script ends with .tmpl.js exists
+        // we consider .tmpl.js file as a standalone preprocess file
+        public const string StandaloneExtension = ".tmpl.js";
+
         /// <summary>
         /// Support
         ///     console.log
@@ -70,7 +75,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         private Func<object, object> _transformFunc;
 
         private Func<object, object> _getOptionsFunc;
-        public TemplateJintPreprocessor(IResourceFileReader resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
+
+        public TemplateJintPreprocessor(IResourceFileReader resourceCollection, ResourceInfo scriptResource, DocumentBuildContext context, string name = null)
         {
             if (!string.IsNullOrWhiteSpace(scriptResource.Content))
             {
@@ -83,10 +89,17 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             ContainsGetOptions = _getOptionsFunc != null;
             ContainsModelTransformation = _transformFunc != null;
+            Path = scriptResource.Path;
+            Name = name ?? System.IO.Path.GetFileNameWithoutExtension(Path);
         }
 
         public bool ContainsGetOptions { get; }
+
         public bool ContainsModelTransformation { get; }
+
+        public string Path { get; }
+
+        public string Name { get; }
 
         public object GetOptions(object model)
         {
@@ -108,9 +121,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             return model;
         }
 
-        private Engine SetupEngine(IResourceFileReader resourceCollection, TemplatePreprocessorResource scriptResource, DocumentBuildContext context)
+        private Engine SetupEngine(IResourceFileReader resourceCollection, ResourceInfo scriptResource, DocumentBuildContext context)
         {
-            var rootPath = (RelativePath)scriptResource.ResourceName;
+            var rootPath = (RelativePath)scriptResource.Path;
             var engineCache = new Dictionary<string, Engine>();
 
             var utility = new TemplateUtility(context);
