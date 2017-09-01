@@ -133,6 +133,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                         {
                             case YamlMime.ManagedReference:
                                 return ProcessingPriority.Normal;
+                            case null:
+                                Logger.LogWarning("Please add yamlmime.", file.File);
+                                return ProcessingPriority.BelowNormal;
                             default:
                                 return ProcessingPriority.NotSupported;
                         }
