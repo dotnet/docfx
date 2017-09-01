@@ -50,6 +50,9 @@ namespace Microsoft.DocAsCode.Common
             var incrementalInfos = (from manifest in manifests
                                     from i in manifest.IncrementalInfo ?? Enumerable.Empty<IncrementalInfo>()
                                     select i).ToList();
+            var manifestGroupInfos = (from manifest in manifests
+                                      from g in manifest.Groups ?? Enumerable.Empty<ManifestGroupInfo>()
+                                      select g).ToList();
             return new Manifest(
                 (from manifest in manifests
                  from file in manifest.Files ?? Enumerable.Empty<ManifestItem>()
@@ -61,6 +64,7 @@ namespace Microsoft.DocAsCode.Common
                 XRefMap = xrefMaps.Count <= 1 ? xrefMaps.FirstOrDefault() : xrefMaps,
                 SourceBasePath = manifests.FirstOrDefault()?.SourceBasePath,
                 IncrementalInfo = incrementalInfos.Count > 0 ? incrementalInfos : null,
+                Groups = manifestGroupInfos.Count > 0 ? manifestGroupInfos : null,
                 VersionInfo = manifests.Where(m => m.VersionInfo != null).SelectMany(m => m.VersionInfo).ToDictionary(p => p.Key, p => p.Value)
             };
         }
