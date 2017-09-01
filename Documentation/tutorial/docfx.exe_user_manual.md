@@ -39,7 +39,7 @@ docfx <command> [<args>]
 `docfx help -a` list available subcommands.
 
 `docfx help <command>` to read about a specific subcommand
-    
+
 ### 2.2 Extract language metadata command `docfx metadata`
 
 **Syntax**
@@ -65,7 +65,7 @@ docfx metadata [<projects>] [--property <n1>=<v1>;<n2>=<v2>]
    Supported file extensions include `.csproj`, `.vbproj`, `.sln`, `project.json`, `dll` assembly file, `.cs` source file and `.vb` source file.
 
    Multiple files are seperated by whitespace, e.g. `docfx metadata Class1.cs a.csproj`
-   
+
 > [!Note]
 > Glob pattern is **NOT** supported in command line options.
 
@@ -102,7 +102,7 @@ If `toc.yml` or `toc.md` is found in current folder, it will be rendered as the 
 `toc.yml` is an array of items. Each item can have following properties:
 
 Property | Description
----------|----------------------------- 
+---------|-----------------------------
 name     | **Required**. The title of the navigation page.
 href     | **Required**. Can be a folder or a file *UNDER* current folder. A folder must end with `/`. In case of a folder, TOC.md inside the folder will be rendered as second level TABLE-OF-CONTENT. As in website, it will be rendered as a sidebar.
 homepage | The default content shown when no article is selected.
@@ -124,11 +124,11 @@ homepage | The default content shown when no article is selected.
 ## [Roslyn API](api_roslyn/)
 ```
 #### 2.3.1 Optional `<output_path>` argument
-    
+
 The default output folder is `_site/` folder
 
 #### 2.3.2 Optional `<template folder>` argument
-    
+
 If specified, use the template from template folder
 
 **Template Folder Structure**
@@ -160,7 +160,7 @@ Current design is that each TOC file generates a corresponding PDF file. Walk th
 
 3. `docfx.json` Format
 ------------------------
-Top level `docfx.json` structure is key-value pair. `key` is the name of the subcommand, current supported subcommands are `metadata` and `build`. 
+Top level `docfx.json` structure is key-value pair. `key` is the name of the subcommand, current supported subcommands are `metadata` and `build`.
 
 ### 3.1 Properties for `metadata`
 
@@ -184,7 +184,7 @@ properties               |  Defines an optional set of MSBuild properties used w
       "src": [
         {
           "files": ["**/*.csproj"],
-          "exclude": [ "**/bin/**", "**/obj/**" ], 
+          "exclude": [ "**/bin/**", "**/obj/**" ],
           "src": "../src"
         }
       ],
@@ -248,34 +248,34 @@ keepFileLink             | If set to true, docfx does not dereference (aka. copy
 
 *Theme* is to provide general styles for all the generated *page*s. Files inside a *theme* will be generally **COPIED** to the output folder. A typical usage is, after *YAML* files are transformed to *HTML* pages, well-designed *CSS* style files in a *Theme* can then overwrite the default styles defined in *template*, e.g. *main.css*.
 
-There are two ways to use custom templates and themes. 
+There are two ways to use custom templates and themes.
 
 To use a custom template, one way is to specify template path with `--template` (or `-t`) command option, multiple templates must be separated by `,` with no spaces. The other way is to set key-value mapping in `docfx.json`:
 
 ```json
 {
   ...
-  { 
-    "build" : 
+  {
+    "build" :
     {
       ...
       "template": "custom",
       ...
     }
-  ... 
+  ...
 }
 ```
 ```json
 {
   ...
-  { 
-    "build" : 
+  {
+    "build" :
     {
       ...
       "template": ["default", "X:/template/custom"],
       ...
     }
-  ... 
+  ...
 }
 ```
 
@@ -364,7 +364,7 @@ Here we will show you how to set global metadata and file metadata using separat
 
 There're some metadata file examples:
 
-+ globalMetadata file example 
++ globalMetadata file example
     ```json
     {
         "_appTitle": "DocFX website",
@@ -412,14 +412,14 @@ There're some examples about how to use separated metadata files.
     docfx build --fileMetadataFiles file1.json,file2.json
     ```
 
-Note that, metadata set in command line will merge with metadata set in `docfx.json`. 
+Note that, metadata set in command line will merge with metadata set in `docfx.json`.
 
-+ If same key for global metadata was set, the order to be overwritten would be(the later one will overwrite the former one): 
++ If same key for global metadata was set, the order to be overwritten would be(the later one will overwrite the former one):
     1. global metadata from docfx config file
     2. global metadata from global metadata files
     3. global metadata from command line
 
-+ If same file pattern for file metadata was set, the order to be overwritten would be(the later one will overwrite the former one): 
++ If same file pattern for file metadata was set, the order to be overwritten would be(the later one will overwrite the former one):
     1. file metadata from docfx config file
     2. file metadata from file metadata files
 
@@ -432,13 +432,13 @@ Key                      | Description
 -------------------------|-----------------------------
 name                     | Specifies the prefix of the generated PDF files, e.g. PDF generated from `testproject\toc.yml` is named as `{name}.pdf`, `testproject\api\toc.yml` is named as `{name}_api.pdf`. If not specified, the value of `name` is the folder name `testproject`.
 generatesAppendices      | If specified, an `appendices.pdf` file is generated containing all the not-in-TOC articles.
-wkthmltopdf              | Contains additional options specific to wkhtmltopdf which is used internally to generate the PDF files.
+wkhtmltopdf              | Contains additional options specific to wkhtmltopdf which is used internally to generate the PDF files.
 
 #### 4.3.1 Properties for the `wkhtmltopdf` Key
 
 Key                      | Description
 -------------------------|-----------------------------
-additionalArguments      | Additional arguments that should be passed to the wkthmltopdf executable.
+additionalArguments      | Additional arguments that should be passed to the wkhtmltopdf executable.
 
 4. Supported File Mapping Format
 ---------------------------------------------
@@ -449,7 +449,7 @@ This form supports multiple file mappings, and also allows additional properties
 Supported properties:
 
 Property Name      | Description
--------------------|----------------------------- 
+-------------------|-----------------------------
 files              | **REQUIRED**. The file or file array, `glob` pattern is supported.
 ~~name~~           | **Obsoleted**, please use `dest`.
 exclude            | The files to be excluded, `glob` pattern is supported.
