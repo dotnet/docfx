@@ -71,6 +71,11 @@ namespace Microsoft.DocAsCode.HtmlToPdf
         public int MaxDegreeOfParallelism { get; set; } = 8;
 
         /// <summary>
+        /// Additional arguments.
+        /// </summary>
+        public string AdditionalArguments { get; set; }
+
+        /// <summary>
         /// Get the string of the html to pdf options.
         /// </summary>
         /// <returns>The configuration of html to pdf options.</returns>
@@ -108,7 +113,14 @@ namespace Microsoft.DocAsCode.HtmlToPdf
             {
                 sb.Append($" --load-error-handling {LoadErrorHandling}"); 
             }
-            sb.Append(IsReadArgsFromStdin ? " --read-args-from-stdin" : string.Empty);
+            if (IsReadArgsFromStdin)
+            {
+                sb.Append(" --read-args-from-stdin");
+            }
+            if (!string.IsNullOrEmpty(AdditionalArguments))
+            {
+                sb.Append($" {AdditionalArguments}");
+            }
 
             return sb.ToString();
         }
