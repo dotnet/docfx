@@ -16,8 +16,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     {
         private readonly string[] _parts;
         private readonly bool _isRoot;
-
-        public string OriginalString { get; }
+        private readonly string _raw;
 
         public JsonPointer(string raw)
         {
@@ -30,7 +29,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             _parts = _isRoot ? new string[0] : raw.Substring(1).Split('/');
 
-            OriginalString = raw;
+            _raw = raw;
         }
 
         public static bool TryCreate(string raw, out JsonPointer pointer)
@@ -66,6 +65,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             foreach (var part in _parts)
             {
                 val = GetChild(val, part);
+                if (val == null)
+                {
+                    return null;
+                }
             }
 
             return val;
@@ -73,6 +76,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         public void SetValue(ref object root, object value)
         {
+            if (root == null)
+            {
+                throw new ArgumentNullException(nameof(root));
+            }
+
             if (_isRoot)
             {
                 root = value;
@@ -83,18 +91,27 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             foreach (var part in _parts.Take(_parts.Length - 1))
             {
                 val = GetChild(val, part);
-            }
-
-            if (val == null)
-            {
-                throw new InvalidJsonPointerException($"Unable to set value to null parent");
+                if (val == null)
+                {
+                    throw new InvalidJsonPointerException($"Unable to set value to null parent");
+                }
             }
 
             SetChild(val, _parts[_parts.Length - 1], value);
         }
 
-        private object GetChild(object root, string part)
+        public override string ToString()
         {
+            return _raw ?? string.Empty;
+        }
+
+        public static object GetChild(object root, string part)
+        {
+            if (part == null)
+            {
+                throw new ArgumentNullException(nameof(part));
+            }
+
             if (root == null)
             {
                 return null;
@@ -126,8 +143,18 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             return null;
         }
 
-        private void SetChild(object parent, string part, object value)
+        public static void SetChild(object parent, string part, object value)
         {
+            if (part == null)
+            {
+                throw new ArgumentNullException(nameof(part));
+            }
+
+            if (parent == null)
+            {
+                throw new ArgumentNullException(nameof(parent));
+            }
+
             var unescapedPart = UnescapeReference(part);
             if (int.TryParse(unescapedPart, out int index))
             {
@@ -157,8 +184,18 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             }
         }
 
-        private BaseSchema GetChildSchema(BaseSchema parent, string part)
+        public static BaseSchema GetChildSchema(BaseSchema parent, string part)
         {
+            if (part == null)
+            {
+                throw new ArgumentNullException(nameof(part));
+            }
+
+            if (parent == null)
+            {
+                return null;
+            }
+
             if (part == null)
             {
                 return null;

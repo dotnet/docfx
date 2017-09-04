@@ -22,5 +22,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         public List<string> Tags { get; set; }
 
         public MergeType MergeType { get; set; }
+        public List<string> XrefProperties { get; set; }
     }
 }

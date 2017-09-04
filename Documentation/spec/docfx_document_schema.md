@@ -88,6 +88,7 @@ An object to describe the schema of the value of the property.
 | contentType  | string | Defines the content type of the property. Refer to [contentType](#63-contenttype) for detailed explanation.
 | tags       | array  | Defines the tags of the property. Refer to [tags](#64-tags) for detailed explanation.
 | mergeType      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [mergeType](#65-mergetype) for detailed explanation.
+| xrefProperties  | array | Defines the properties of current object when it is cross referenced by others. Each item is the name of the property in the instance.
 
 ##### Patterned Field
 | Field Name | Type | Description

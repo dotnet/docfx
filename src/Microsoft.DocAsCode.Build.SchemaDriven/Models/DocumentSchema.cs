@@ -32,10 +32,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                });
 
         [JsonProperty("$schema")]
-        [JsonRequired]
         public string Schema { get; set; }
 
-        [JsonRequired]
         public string Version { get; set; }
 
         public string Id { get; set; }
