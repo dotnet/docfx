@@ -98,7 +98,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
                 Assert.True(template.ContainsModelTransformation);
 
                 var output = template.TransformModel(new { a = 1 });
-                Assert.Equal(null, output);
+                Assert.Null(output);
             }
         }
 
