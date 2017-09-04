@@ -59,7 +59,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             throw new FileNotFoundException($"File not found: {file}", file);
                         }
-                        fs = File.Open(file, FileMode.Open, isReadOnly ? FileAccess.Read : FileAccess.ReadWrite);
+
+                        fs = isReadOnly 
+                            ? File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read) 
+                            : File.Open(file, FileMode.Open, FileAccess.ReadWrite);
+
                         archive = new ZipArchive(fs, isReadOnly ? ZipArchiveMode.Read : ZipArchiveMode.Update);
                         entries = (from entry in archive.Entries
                                    select entry.FullName).ToList();
