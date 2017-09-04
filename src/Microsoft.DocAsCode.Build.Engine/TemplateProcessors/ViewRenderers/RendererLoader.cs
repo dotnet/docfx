@@ -54,11 +54,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             using (new LoggerFileScope(res.Path))
             {
                 var extension = Path.GetExtension(res.Path);
-                if (extension.Equals(MustacheTemplateRenderer.Extension))
+                if (extension.Equals(MustacheTemplateRenderer.Extension, System.StringComparison.OrdinalIgnoreCase))
                 {
                     return new RendererWithResourcePool(() => new MustacheTemplateRenderer(_reader, res), _maxParallelism);
                 }
-                else if (extension.Equals(LiquidTemplateRenderer.Extension))
+                else if (extension.Equals(LiquidTemplateRenderer.Extension, System.StringComparison.OrdinalIgnoreCase))
                 {
                     return new RendererWithResourcePool(() => LiquidTemplateRenderer.Create(_reader, res), _maxParallelism);
                 }
