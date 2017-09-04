@@ -153,6 +153,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 LinkToUids = model.LinkToUids,
                 FileLinkSources = model.FileLinkSources,
                 UidLinkSources = model.UidLinkSources,
+                XRefSpecs = ImmutableArray.CreateRange(model.Properties.XRefSpecs),
+                ExternalXRefSpecs = ImmutableArray.CreateRange(model.Properties.ExternalXRefSpecs)
             };
 
             if (((IDictionary<string, object>)model.Properties).ContainsKey("XrefSpec"))
