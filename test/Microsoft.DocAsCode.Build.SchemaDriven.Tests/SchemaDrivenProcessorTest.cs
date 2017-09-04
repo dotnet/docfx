@@ -152,11 +152,12 @@ searchScope:
             using (var listener = new TestListenerScope("TestXrefResolver"))
             {
                 var schemaFile = CreateFile("template/schemas/mref.test.schema.json", File.ReadAllText("TestData/schemas/mref.test.schema.json"), _templateFolder);
+                var templateXref = CreateFile("template/partials/overview.tmpl", @"{{name}}:{{summary}}", _templateFolder);
                 var templateFile = CreateFile("template/ManagedReference.html.tmpl", @"
 {{#items}}
-{{#inheritedMembers}}
-<xref>{{.}}</xref>
-{{/inheritedMembers}}
+{{#children}}
+<xref uid={{.}} template=""partials/overview.tmpl""/>
+{{/children}}
 {{/items}}
 ", _templateFolder);
                 var inputFileName = "inputs/CatLibrary.ICat.yml";
@@ -183,13 +184,10 @@ searchScope:
                 var outputFilePath = Path.Combine(_outputFolder, outputFileName);
                 Assert.True(File.Exists(outputFilePath));
 
-                Assert.Equal(@"
-<span class=""xref"">CatLibrary.IAnimal.Name</span>
-<span class=""xref"">CatLibrary.IAnimal.Item(System.Int32)</span>
-<span class=""xref"">CatLibrary.IAnimal.Eat</span>
-<span class=""xref"">CatLibrary.IAnimal.Eat``1({Tool})</span>
-<span class=""xref"">CatLibrary.IAnimal.Eat(System.String)</span>"
-.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
+                Assert.Equal($@"
+eat:&lt;p sourcefile=&quot;{_inputFolder}/inputs/CatLibrary.ICat.yml&quot; sourcestartlinenumber=&quot;2&quot; sourceendlinenumber=&quot;2&quot;&gt;eat event of cat. Every cat must implement this event.&lt;/p&gt;
+"
+                    .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
 File.ReadAllLines(outputFilePath));
             }
         }

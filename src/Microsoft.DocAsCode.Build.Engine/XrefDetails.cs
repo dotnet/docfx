@@ -40,6 +40,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string SourceFile { get; private set; }
         public int SourceStartLineNumber { get; private set; }
         public int SourceEndLineNumber { get; private set; }
+        public string TemplatePath { get; private set; }
 
         private XRefDetails() { }
 
@@ -111,6 +112,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             xref.ThrowIfNotResolved = node.GetAttributeValue("data-throw-if-not-resolved", false);
+            xref.TemplatePath = node.GetAttributeValue("template", null);
 
             return xref;
         }
@@ -138,8 +140,21 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// TODO: multi-lang support
         /// </summary>
         /// <returns></returns>
-        public HtmlAgilityPack.HtmlNode ConvertToHtmlNode(string language)
+        public HtmlAgilityPack.HtmlNode ConvertToHtmlNode(string language, ITemplateRenderer renderer)
         {
+            if (!string.IsNullOrEmpty(TemplatePath) && renderer != null && Spec != null)
+            {
+                if (Spec != null)
+                {
+                    var conterted = renderer.Render(Spec);
+                    return HtmlAgilityPack.HtmlNode.CreateNode(conterted);
+                }
+                else
+                {
+                    Logger.LogWarning($"Invalid xref definition \"{Raw}\", XrefSpec is not defined.");
+                }
+            }
+
             // If href exists, return anchor else return text
             if (!string.IsNullOrEmpty(Href))
             {
