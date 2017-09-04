@@ -30,32 +30,33 @@ namespace Microsoft.DocAsCode.Build.Engine
         public ITemplateRenderer Renderer { get; }
         public ITemplatePreprocessor Preprocessor { get; }
 
-        public Template(string name, DocumentBuildContext context, TemplateRendererResource templateResource, TemplatePreprocessorResource scriptResource, IResourceFileReader reader, int maxParallelism)
+        public Template(ITemplateRenderer renderer, ITemplatePreprocessor preprocessor)
         {
-            if (string.IsNullOrEmpty(name))
+            if (renderer == null && preprocessor == null)
             {
-                throw new ArgumentNullException(nameof(name));
+                throw new ArgumentNullException("Both renderer and preprocessor are null");
             }
 
-            Name = name;
-            ScriptName = Name + ".js";
+            Renderer = renderer;
+            Preprocessor = preprocessor;
+
+            Name = renderer?.Name ?? preprocessor?.Name;
+            ScriptName = preprocessor?.Path;
+
 
             var templateInfo = GetTemplateInfo(Name);
             Extension = templateInfo.Extension;
             Type = templateInfo.DocumentType;
             TemplateType = templateInfo.TemplateType;
 
-            Preprocessor = CreatePreprocessor(reader, scriptResource, context, maxParallelism);
             ContainsGetOptions = Preprocessor?.ContainsGetOptions == true;
             ContainsModelTransformation = Preprocessor?.ContainsModelTransformation == true;
-
-            Renderer = CreateRenderer(reader, templateResource, maxParallelism);
 
             Resources = ExtractDependentResources(Name);
 
             if (Renderer == null && !ContainsGetOptions && !ContainsModelTransformation)
             {
-                Logger.LogWarning($"Template {name} contains neither preprocessor to process model nor template to render model. Please check if the template is correctly defined. Allowed preprocessor functions are [exports.getOptions] and [exports.transform].");
+                Logger.LogWarning($"Template {Name} contains neither preprocessor to process model nor template to render model. Please check if the template is correctly defined. Allowed preprocessor functions are [exports.getOptions] and [exports.transform].");
             }
         }
 
@@ -92,7 +93,12 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// <returns>The view model</returns>
         public object TransformModel(object model)
         {
-            return Preprocessor?.TransformModel(model) ?? model;
+            if (Preprocessor == null)
+            {
+                return model;
+            }
+
+            return Preprocessor.TransformModel(model);
         }
 
         /// <summary>
@@ -109,6 +115,25 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             return Renderer.Render(model);
+        }
+
+        /// <summary>
+        /// Dependent files are defined in following syntax in Mustache template leveraging Mustache Comments
+        /// {{! include('file') }}
+        /// file path can be wrapped by quote ' or double quote " or none
+        /// </summary>
+        /// <param name="template"></param>
+        private IEnumerable<TemplateResourceInfo> ExtractDependentResources(string templateName)
+        {
+            if (Renderer == null || Renderer.Dependencies == null)
+            {
+                yield break;
+            }
+
+            foreach (var dependency in Renderer.Dependencies)
+            {
+                yield return new TemplateResourceInfo(dependency);
+            }
         }
 
         private static TemplateInfo GetTemplateInfo(string templateName)
@@ -136,52 +161,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             return new TemplateInfo(type, extension, templateType);
-        }
-
-        /// <summary>
-        /// Dependent files are defined in following syntax in Mustache template leveraging Mustache Comments
-        /// {{! include('file') }}
-        /// file path can be wrapped by quote ' or double quote " or none
-        /// </summary>
-        /// <param name="template"></param>
-        private IEnumerable<TemplateResourceInfo> ExtractDependentResources(string templateName)
-        {
-            if (Renderer == null || Renderer.Dependencies == null)
-            {
-                yield break;
-            }
-
-            foreach (var dependency in Renderer.Dependencies)
-            {
-                yield return new TemplateResourceInfo(dependency);
-            }
-        }
-
-        private static ITemplatePreprocessor CreatePreprocessor(IResourceFileReader reader, TemplatePreprocessorResource scriptResource, DocumentBuildContext context, int maxParallelism)
-        {
-            if (reader == null || scriptResource?.Content == null)
-            {
-                return null;
-            }
-
-            return new PreprocessorWithResourcePool(() => new TemplateJintPreprocessor(reader, scriptResource, context), maxParallelism);
-        }
-
-        private static ITemplateRenderer CreateRenderer(IResourceFileReader reader, TemplateRendererResource templateResource, int maxParallelism)
-        {
-            if (reader == null || templateResource?.Content == null)
-            {
-                return null;
-            }
-
-            if (templateResource.Type == TemplateRendererType.Liquid)
-            {
-                return new RendererWithResourcePool(() => LiquidTemplateRenderer.Create(reader, templateResource), maxParallelism);
-            }
-            else
-            {
-                return new RendererWithResourcePool(() => new MustacheTemplateRenderer(reader, templateResource), maxParallelism);
-            }
         }
 
         private sealed class TemplateInfo

@@ -21,6 +21,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var inner = preprocessor.Resource;
                     ContainsGetOptions = inner.ContainsGetOptions;
                     ContainsModelTransformation = inner.ContainsModelTransformation;
+                    Path = inner.Path;
+                    Name = inner.Name;
                 }
             }
             catch (Exception e)
@@ -33,6 +35,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         public bool ContainsGetOptions { get; }
 
         public bool ContainsModelTransformation { get; }
+
+        public string Path { get; }
+
+        public string Name { get; }
 
         public object GetOptions(object model)
         {
