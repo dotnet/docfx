@@ -868,6 +868,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             if (value == null)
             {
+                if (type.IsValueType)
+                {
+                    return SyntaxFactory.DefaultExpression(GetTypeSyntax(type));
+                }
                 return SyntaxFactory.LiteralExpression(
                     SyntaxKind.NullLiteralExpression,
                     SyntaxFactory.Token(SyntaxKind.NullKeyword));
