@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             using (new LoggerFileScope(res.Path))
             {
                 var extension = Path.GetExtension(res.Path);
-                if (extension.Equals(TemplateJintPreprocessor.Extension))
+                if (extension.Equals(TemplateJintPreprocessor.Extension, System.StringComparison.OrdinalIgnoreCase))
                 {
                     return new PreprocessorWithResourcePool(() => new TemplateJintPreprocessor(_reader, res, _context, name), _maxParallelism);
                 }
