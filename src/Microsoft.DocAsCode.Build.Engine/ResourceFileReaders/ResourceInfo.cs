@@ -5,11 +5,11 @@ namespace Microsoft.DocAsCode.Build.Engine
 {
     public class ResourceInfo
     {
-        public string Name { get; }
+        public string Path { get; }
         public string Content { get; }
-        public ResourceInfo(string name, string content)
+        public ResourceInfo(string path, string content)
         {
-            Name = name;
+            Path = path;
             Content = content;
         }
     }

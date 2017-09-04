@@ -13,6 +13,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     internal class MustacheTemplateRenderer : ITemplateRenderer
     {
+        public const string Extension = ".tmpl";
+
         private static readonly Regex IncludeRegex = new Regex(@"{{\s*!\s*include\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex MasterPageRegex = new Regex(@"{{\s*!\s*master\s*\(:?(:?['""]?)\s*(?<file>(.+?))\1\s*\)\s*}}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex MasterPageBodyRegex = new Regex(@"{{\s*!\s*body\s*}}\s*\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -20,9 +22,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly ResourceTemplateLocator _resourceTemplateLocator;
         private readonly IResourceFileReader _reader;
         private readonly Nustache.Core.Template _template;
-        private readonly string _templateName;
 
-        public MustacheTemplateRenderer(IResourceFileReader reader, TemplateRendererResource info)
+        public MustacheTemplateRenderer(IResourceFileReader reader, ResourceInfo info, string name = null)
         {
             if (info == null)
             {
@@ -34,13 +35,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                 throw new ArgumentNullException(nameof(info.Content));
             }
 
-            if (info.TemplateName == null)
+            if (info.Path == null)
             {
-                throw new ArgumentNullException(nameof(info.TemplateName));
+                throw new ArgumentNullException(nameof(info.Path));
             }
 
-            _templateName = info.TemplateName;
-
+            Path = info.Path;
+            Name = name ?? System.IO.Path.GetFileNameWithoutExtension(Path);
             _reader = reader;
             _resourceTemplateLocator = new ResourceTemplateLocator(reader);
 
@@ -54,7 +55,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 catch (Nustache.Core.NustacheException e)
                 {
-                    throw new DocfxException($"Error in mustache template {info.TemplateName}: {e.Message}", e);
+                    throw new DocfxException($"Error in mustache template {info.Path}: {e.Message}", e);
                 }
             }
 
@@ -64,6 +65,10 @@ namespace Microsoft.DocAsCode.Build.Engine
         public IEnumerable<string> Dependencies { get; }
 
         public string Raw { get; }
+
+        public string Path { get; }
+
+        public string Name { get; }
 
         public string Render(object model)
         {
@@ -85,7 +90,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             foreach (Match match in IncludeRegex.Matches(template))
             {
                 var filePath = match.Groups["file"].Value;
-                foreach (var name in ParseTemplateHelper.GetResourceName(filePath, _templateName, _reader))
+                foreach (var name in ParseTemplateHelper.GetResourceName(filePath, Path, _reader))
                 {
                     yield return name;
                 }

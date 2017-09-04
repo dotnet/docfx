@@ -20,12 +20,18 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var inner = lease.Resource;
                 Raw = inner.Raw;
                 Dependencies = inner.Dependencies;
+                Path = inner.Path;
+                Name = inner.Name;
             }
         }
 
         public IEnumerable<string> Dependencies { get; }
 
         public string Raw { get; }
+
+        public string Path { get; }
+
+        public string Name { get; }
 
         public string Render(object model)
         {

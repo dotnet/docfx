@@ -7,11 +7,12 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Xunit;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
+
+    using Xunit;
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "TemplateManager")]
@@ -437,7 +438,7 @@ exports.transform = function (model){
             };
             ProcessTemplate(templateName, inputFolder, new[] { item1, item2 }, model, _outputFolder,
                 Tuple.Create("default.html.tmpl", defaultTemplate),
-                Tuple.Create($"{templateName}/conceptual.md.tmpl", conceptualTemplate),
+                Tuple.Create("conceptual.md.tmpl", conceptualTemplate),
                 Tuple.Create("default.html.js", script),
                 Tuple.Create("conceptual.md.js", script)
                 );
@@ -784,7 +785,7 @@ exports.transform = function (model){
             };
             ProcessTemplate(templateName, inputFolder, new[] { item1, item2 }, model, _outputFolder,
                 Tuple.Create("default.html.liquid", defaultTemplate),
-                Tuple.Create($"{templateName}/conceptual.md.liquid", conceptualTemplate),
+                Tuple.Create("conceptual.md.liquid", conceptualTemplate),
                 Tuple.Create("default.html.js", script),
                 Tuple.Create("conceptual.md.js", script)
                 );
