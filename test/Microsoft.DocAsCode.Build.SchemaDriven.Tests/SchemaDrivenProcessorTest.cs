@@ -185,7 +185,7 @@ searchScope:
                 Assert.True(File.Exists(outputFilePath));
 
                 Assert.Equal($@"
-eat:<p sourcefile=""{_inputFolder}/inputs/CatLibrary.ICat.yml"" sourcestartlinenumber=""2"" sourceendlinenumber=""2"">eat event of cat. Every cat must implement this event.</p>
+eat:<p>eat event of cat. Every cat must implement this event.</p>
 "
                     .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
 File.ReadAllLines(outputFilePath));
