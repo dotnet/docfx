@@ -1,4 +1,4 @@
-﻿Version Notes (Current Version: v2.24)
+﻿giVersion Notes (Current Version: v2.24)
 =======================================
 
 v2.24 (Pre-release)
@@ -6,6 +6,11 @@ v2.24 (Pre-release)
 1. Log warning for manage reference yaml file without yaml mime.
 2. Obsolete external reference. Please use xref instead.
 3. Add xref query client.
+4. Upgrade Roslyn's CodeAnalysis assemblies to latest 2.3.1
+5. Schema-driven document processor related
+    1. support `metadata` keyword
+    2. support all the functionalities defined in the spec
+6. Advanced `xref` syntax support: `<xref uid="System.String" template="partials/layout_section.tmpl">`
 
 
 v2.23
