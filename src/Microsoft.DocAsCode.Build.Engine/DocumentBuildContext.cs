@@ -212,21 +212,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 int pieceSize = 1000;
-                for(int i = 0; i < uidList.Count; i += pieceSize)
+                for (int i = 0; i < uidList.Count; i += pieceSize)
                 {
                     List<string> smallPiece = uidList.GetRange(i, Math.Min(pieceSize, uidList.Count - i));
-                    foreach(string requestUrl in _xrefServiceUrls)
+                    foreach (string requestUrl in _xrefServiceUrls)
                     {
                         IList<Task<IList<XRefSpec>>> queryUidTasks = new List<Task<IList<XRefSpec>>>();
-                        foreach(string uid in smallPiece)
+                        foreach (string uid in smallPiece)
                         {
                             queryUidTasks.Add(QueryByHttpRequestAsync(client, requestUrl, uid));
                         }
                         var results = await Task.WhenAll(queryUidTasks);
                         List<string> stillNeedQueryList = new List<string>();
-                        for(int j = 0; j < results.Length; j++)
+                        for (int j = 0; j < results.Length; j++)
                         {
-                            if(results[j] != null && results[j].Count > 0 && results[j][0].Uid == smallPiece[j])
+                            if (results[j] != null && results[j].Count > 0 && results[j][0].Uid == smallPiece[j])
                             {
                                 externalXRefSpec.AddOrUpdate(smallPiece[j], results[j][0], (_, old) => old + results[j][0]);
                             }
@@ -252,8 +252,19 @@ namespace Microsoft.DocAsCode.Build.Engine
                 var data = await client.GetStreamAsync(url);
                 using (var sr = new StreamReader(data))
                 {
-                    IList<XRefSpec> xsList = JsonUtility.Deserialize<List<XRefSpec>>(sr);
-                    return xsList;
+                    var xsList = JsonUtility.Deserialize<List<Dictionary<string, object>>>(sr);
+                    return xsList.ConvertAll(item =>
+                    {
+                        var spec = new XRefSpec();
+                        foreach (var pair in item)
+                        {
+                            if (pair.Value is string s)
+                            {
+                                spec[pair.Key] = s;
+                            }
+                        }
+                        return spec;
+                    });
                 }
             }
             catch (HttpRequestException e)
