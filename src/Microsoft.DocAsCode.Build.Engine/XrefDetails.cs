@@ -13,6 +13,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Common;
 
+    using HtmlAgilityPack;
+
     [Serializable]
     public sealed class XRefDetails
     {
@@ -44,7 +46,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private XRefDetails() { }
 
-        public static XRefDetails From(HtmlAgilityPack.HtmlNode node)
+        public static XRefDetails From(HtmlNode node)
         {
             if (node.Name != "xref") throw new NotSupportedException("Only xref node is supported!");
             var xref = new XRefDetails();
@@ -140,14 +142,20 @@ namespace Microsoft.DocAsCode.Build.Engine
         /// TODO: multi-lang support
         /// </summary>
         /// <returns></returns>
-        public HtmlAgilityPack.HtmlNode ConvertToHtmlNode(string language, ITemplateRenderer renderer)
+        public HtmlNode ConvertToHtmlNode(string language, ITemplateRenderer renderer)
         {
             if (!string.IsNullOrEmpty(TemplatePath) && renderer != null && Spec != null)
             {
                 if (Spec != null)
                 {
-                    var conterted = renderer.Render(Spec);
-                    return HtmlAgilityPack.HtmlNode.CreateNode(conterted);
+                    var converted = renderer.Render(Spec);
+                    if (string.IsNullOrWhiteSpace(converted))
+                    {
+                        Logger.LogWarning($"{Spec.Uid} is rendered to empty with template {TemplatePath} for {Raw ?? RawSource}.");
+                    }
+                    var node = new HtmlDocument();
+                    node.LoadHtml(converted);
+                    return node.DocumentNode;
                 }
                 else
                 {
@@ -180,7 +188,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 if (!string.IsNullOrEmpty(Raw))
                 {
-                    return HtmlAgilityPack.HtmlNode.CreateNode(Raw);
+                    return HtmlNode.CreateNode(Raw);
                 }
                 if (!string.IsNullOrEmpty(InnerHtml))
                 {
@@ -202,7 +210,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private static HtmlAgilityPack.HtmlNode GetAnchorNode(string href, string anchor, string title, string value, string rawSource, string sourceFile, int sourceStartLineNumber, int sourceEndLineNumber)
+        private static HtmlNode GetAnchorNode(string href, string anchor, string title, string value, string rawSource, string sourceFile, int sourceStartLineNumber, int sourceEndLineNumber)
         {
             var anchorNode = $"<a class=\"xref\" href=\"{href}\"";
             if (!string.IsNullOrEmpty(anchor))
@@ -232,13 +240,13 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             anchorNode += $">{value}</a>";
 
-            return HtmlAgilityPack.HtmlNode.CreateNode(anchorNode);
+            return HtmlNode.CreateNode(anchorNode);
         }
 
-        private static HtmlAgilityPack.HtmlNode GetDefaultPlainTextNode(string value)
+        private static HtmlNode GetDefaultPlainTextNode(string value)
         {
             var spanNode = $"<span class=\"xref\">{value}</span>";
-            return HtmlAgilityPack.HtmlNode.CreateNode(spanNode);
+            return HtmlNode.CreateNode(spanNode);
         }
 
         private static string GetLanguageSpecificAttribute(XRefSpec spec, string language, params string[] keyInFallbackOrder)
@@ -267,7 +275,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             return null;
         }
 
-        public static HtmlAgilityPack.HtmlNode ConvertXrefLinkNodeToXrefNode(HtmlAgilityPack.HtmlNode node)
+        public static HtmlNode ConvertXrefLinkNodeToXrefNode(HtmlNode node)
         {
             var href = node.GetAttributeValue("href", null);
             if (node.Name != "a" || string.IsNullOrEmpty(href) || !href.StartsWith("xref:"))
@@ -278,7 +286,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var raw = StringHelper.HtmlEncode(node.OuterHtml);
 
             var xrefNode = $"<xref href=\"{href}\" data-throw-if-not-resolved=\"True\" data-raw-html=\"{raw}\"";
-            foreach (var attr in node.Attributes ?? Enumerable.Empty<HtmlAgilityPack.HtmlAttribute>())
+            foreach (var attr in node.Attributes ?? Enumerable.Empty<HtmlAttribute>())
             {
                 if (attr.Name == "href" || attr.Name == "data-throw-if-not-resolved" || attr.Name == "data-raw-html")
                 {
@@ -288,7 +296,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             xrefNode += $">{node.InnerHtml}</xref>";
 
-            return HtmlAgilityPack.HtmlNode.CreateNode(xrefNode);
+            return HtmlNode.CreateNode(xrefNode);
         }
     }
 }

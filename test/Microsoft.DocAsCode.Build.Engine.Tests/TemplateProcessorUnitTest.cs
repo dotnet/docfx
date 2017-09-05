@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         [Fact]
         public void TestXrefWithTemplate()
         {
-            var xrefTmpl = CreateFile("partials/xref.html.tmpl", @"{{uid}}:{{summary}}", _templateFolder);
+            var xrefTmpl = CreateFile("partials/xref.html.tmpl", @"<h2>{{uid}}</h2><p>{{summary}}</p>", _templateFolder);
             var tmpl = CreateFile("index.html.tmpl", @"
 <xref uid=""{{reference}}"" template=""partials/xref.html.tmpl"" />
 ", _templateFolder);
@@ -47,7 +47,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
             Assert.Equal($"{_outputFolder}/input.html", output.OutputFiles[".html"].RelativePath.ToNormalizedPath());
             Assert.Equal(@"
-reference:hello world
+<h2>reference</h2><p>hello world</p>
 ", File.ReadAllText(Path.Combine(_outputFolder, "input.html")));
 
         }
