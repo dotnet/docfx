@@ -11,6 +11,10 @@ namespace Microsoft.DocAsCode.Build.Engine
     {
         private TemplateBundle _defaultTemplate = null;
 
+        public IResourceFileReader Reader { get; }
+
+        public int MaxParallelism { get; }
+
         public new TemplateBundle this[string key]
         {
             get
@@ -30,6 +34,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public TemplateCollection(ResourceFileReader provider, DocumentBuildContext context, int maxParallelism) : base(ReadTemplate(provider, context, maxParallelism), StringComparer.OrdinalIgnoreCase)
         {
+            Reader = provider;
+            MaxParallelism = maxParallelism;
             base.TryGetValue("default", out _defaultTemplate);
         }
 

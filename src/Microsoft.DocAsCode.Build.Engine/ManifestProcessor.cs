@@ -218,7 +218,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             // processor to add global variable to the model
-            return _templateProcessor.Process(_manifestWithContext.Select(s => s.Item).ToList(), _context, _context.ApplyTemplateSettings, globalVariables);
+            return _templateProcessor.Process(_manifestWithContext.Select(s => s.Item).ToList(), _context.ApplyTemplateSettings, globalVariables);
         }
 
         #endregion
