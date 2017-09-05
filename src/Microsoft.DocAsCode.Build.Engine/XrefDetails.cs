@@ -114,7 +114,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             xref.ThrowIfNotResolved = node.GetAttributeValue("data-throw-if-not-resolved", false);
-            xref.TemplatePath = node.GetAttributeValue("template", null);
+            var templatePath = node.GetAttributeValue("template", null);
+            if (templatePath != null)
+            {
+                xref.TemplatePath = StringHelper.HtmlDecode(templatePath);
+            }
 
             return xref;
         }

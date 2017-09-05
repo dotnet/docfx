@@ -152,7 +152,7 @@ searchScope:
             using (var listener = new TestListenerScope("TestXrefResolver"))
             {
                 var schemaFile = CreateFile("template/schemas/mref.test.schema.json", File.ReadAllText("TestData/schemas/mref.test.schema.json"), _templateFolder);
-                var templateXref = CreateFile("template/partials/overview.tmpl", @"{{name}}:{{summary}}", _templateFolder);
+                var templateXref = CreateFile("template/partials/overview.tmpl", @"{{name}}:{{{summary}}}", _templateFolder);
                 var templateFile = CreateFile("template/ManagedReference.html.tmpl", @"
 {{#items}}
 {{#children}}
@@ -185,7 +185,7 @@ searchScope:
                 Assert.True(File.Exists(outputFilePath));
 
                 Assert.Equal($@"
-eat:&lt;p sourcefile=&quot;{_inputFolder}/inputs/CatLibrary.ICat.yml&quot; sourcestartlinenumber=&quot;2&quot; sourceendlinenumber=&quot;2&quot;&gt;eat event of cat. Every cat must implement this event.&lt;/p&gt;
+eat:<p sourcefile=""{_inputFolder}/inputs/CatLibrary.ICat.yml"" sourcestartlinenumber=""2"" sourceendlinenumber=""2"">eat event of cat. Every cat must implement this event.</p>
 "
                     .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None),
 File.ReadAllLines(outputFilePath));

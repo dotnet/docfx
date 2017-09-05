@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             };
             var output = Process("index", "input", new { reference = "reference" }, xref);
 
-            Assert.Equal($"{_outputFolder}/input.html", output.OutputFiles[".html"].RelativePath.ToNormalizedPath());
+            Assert.Equal($"{_outputFolder}/input.html".ToNormalizedFullPath(), output.OutputFiles[".html"].RelativePath.ToNormalizedPath());
             Assert.Equal(@"
 <h2>reference</h2><p>hello world</p>
 ", File.ReadAllText(Path.Combine(_outputFolder, "input.html")));
@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             {
                 DocumentType = documentType,
                 Extension = "html",
-                FileWithoutExtension = Path.Combine(_outputFolder, Path.GetFileNameWithoutExtension(fileName)),
+                FileWithoutExtension = Path.GetFullPath(Path.Combine(_outputFolder, Path.GetFileNameWithoutExtension(fileName))),
                 LocalPathFromRoot = fileName,
                 Model = new ModelWithCache(content),
             };
