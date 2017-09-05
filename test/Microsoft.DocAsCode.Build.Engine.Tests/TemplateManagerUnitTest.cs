@@ -816,8 +816,8 @@ test2
             WriteTemplate(templateFolder, templateFiles);
             using (var resource = new ResourceFinder(null, null).Find(templateFolder))
             {
-                var processor = new TemplateProcessor(resource, null, 4);
                 var context = new DocumentBuildContext(inputFolder);
+                var processor = new TemplateProcessor(resource, context, 4);
                 foreach (var item in items)
                 {
                     if (item.ResourceFile != null)
@@ -834,7 +834,7 @@ test2
                 EnvironmentContext.SetOutputDirectory(outputFolder);
                 try
                 {
-                    processor.Process(items.ToList(), context, settings);
+                    processor.Process(items.ToList(), settings);
                 }
                 finally
                 {
