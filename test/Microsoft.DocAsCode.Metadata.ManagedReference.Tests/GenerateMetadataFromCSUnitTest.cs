@@ -2660,6 +2660,31 @@ namespace Test1
             Assert.Equal("Test1.I1`1.M1(`0)", r1.Definition);
         }
 
+        [Fact]
+        public void TestCSharpFeature_Default_7_1Class()
+        {
+            string code = @"
+namespace Test1
+{
+    public class Foo
+    {
+        public int Bar(int x = default) => 1;
+    }
+}
+";
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
+            Assert.Equal(1, output.Items.Count);
+            var ns = output.Items[0];
+            Assert.NotNull(ns);
+            var foo = ns.Items[0];
+            Assert.NotNull(foo);
+            Assert.Equal("Test1.Foo", foo.Name);
+            Assert.Equal(1, foo.Items.Count);
+            var bar = foo.Items[0];
+            Assert.Equal("Test1.Foo.Bar(System.Int32)", bar.Name);
+            Assert.Equal("public int Bar(int x = default (int))", bar.Syntax.Content[SyntaxLanguage.CSharp]);
+        }
+
         private static Compilation CreateCompilationFromCSharpCode(string code, params MetadataReference[] references)
         {
             return CreateCompilationFromCSharpCode(code, "test.dll", references);
