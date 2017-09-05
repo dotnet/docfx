@@ -105,7 +105,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 PhaseProcessor phaseProcessor = null;
                 try
                 {
-                    using (var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism) ?? TemplateProcessor.DefaultProcessor)
+                    using (var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
+                        ?? new TemplateProcessor(new EmptyResourceReader(), context, 16))
                     {
                         using (new LoggerPhaseScope("Prepare", LogLevel.Verbose))
                         {

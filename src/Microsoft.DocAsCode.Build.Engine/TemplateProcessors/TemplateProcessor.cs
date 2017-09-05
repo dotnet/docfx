@@ -19,8 +19,6 @@ namespace Microsoft.DocAsCode.Build.Engine
         private readonly DocumentBuildContext _context;
         private readonly int _maxParallelism;
 
-        public static readonly TemplateProcessor DefaultProcessor = new TemplateProcessor(new EmptyResourceReader(), null, 1);
-
         public IDictionary<string, string> Tokens { get; }
 
         /// <summary>
