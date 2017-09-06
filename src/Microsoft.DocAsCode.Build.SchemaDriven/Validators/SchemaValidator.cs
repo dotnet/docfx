@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         public void Validate(object obj)
         {
-            IList<string> errors = new List<string>();
+            var errors = new List<string>();
 
             ValidateObject(obj, (sender, args) => errors.Add(args.Message));
 
@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         private void ValidateObject(object obj, SchemaValidationEventHandler validationEventHandler)
         {
-            using (JSchemaValidatingReader reader = new JSchemaValidatingReader(new ObjectJsonReader(obj)))
+            using (var reader = new JSchemaValidatingReader(new ObjectJsonReader(obj)))
             {
                 reader.Schema = _jSchema;
                 if (validationEventHandler != null)

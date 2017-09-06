@@ -95,32 +95,45 @@ namespace Microsoft.DocAsCode.Common
                 return JsonToken.Null;
             }
 
-            if (obj is string)
+            if (obj is IConvertible ct)
             {
-                return JsonToken.String;
+                return GetJsonToken(ct.GetTypeCode());
             }
 
-            if (obj is bool)
-            {
-                return JsonToken.Boolean;
-            }
+            return GetJsonToken(Type.GetTypeCode(obj.GetType()));
+        }
 
-            if (obj is int || obj is long)
+        private JsonToken? GetJsonToken(TypeCode code)
+        {
+            switch (code)
             {
-                return JsonToken.Integer;
+                case TypeCode.Empty:
+                case TypeCode.DBNull:
+                    return JsonToken.Null;
+                case TypeCode.Boolean:
+                    return JsonToken.Boolean;
+                case TypeCode.SByte:
+                case TypeCode.Byte:
+                    return JsonToken.Bytes;
+                case TypeCode.Int16:
+                case TypeCode.UInt16:
+                case TypeCode.Int32:
+                case TypeCode.UInt32:
+                case TypeCode.Int64:
+                case TypeCode.UInt64:
+                    return JsonToken.Integer;
+                case TypeCode.Single:
+                case TypeCode.Double:
+                case TypeCode.Decimal:
+                    return JsonToken.Float;
+                case TypeCode.DateTime:
+                    return JsonToken.Date;
+                case TypeCode.Char:
+                case TypeCode.String:
+                    return JsonToken.String;
+                default:
+                    throw new NotSupportedException($"{code} is not supported in {nameof(ObjectJsonReader)}");
             }
-
-            if (obj is double || obj is float)
-            {
-                return JsonToken.Float;
-            }
-
-            if (obj is DateTime)
-            {
-                return JsonToken.Date;
-            }
-
-            throw new NotSupportedException($"{obj.GetType()} is not supported in {nameof(ObjectJsonReader)}");
         }
 
         private class Node
@@ -146,7 +159,6 @@ namespace Microsoft.DocAsCode.Common
             public EmptyNode(Node parent, JsonToken token) : base(null, parent)
             {
                 Token = token;
-                Parent = parent;
             }
 
             public override Node NextChild()
