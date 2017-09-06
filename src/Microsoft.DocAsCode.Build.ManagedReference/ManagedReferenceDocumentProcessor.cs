@@ -81,7 +81,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         {
             if (YamlMime.ReadMime(file.File) == null)
             {
-                Logger.LogWarning("Please add yamlmime.", file.File);
+                Logger.LogWarning("Please add yamlmime.", file: file.File);
             }
 
             var page = YamlUtility.Deserialize<PageViewModel>(file.File);
