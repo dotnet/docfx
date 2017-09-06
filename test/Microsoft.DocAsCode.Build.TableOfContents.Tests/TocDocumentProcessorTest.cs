@@ -690,6 +690,7 @@ items:
             Assert.True(File.Exists(outputRawModelPath));
             var model = JsonUtility.Deserialize<Dictionary<string, object>>(outputRawModelPath);
             Assert.Equal("../toc.md", model["_tocRel"]);
+            Assert.Equal("Hello world!", model["meta"]);
         }
 
         [Fact]
@@ -766,6 +767,10 @@ items:
                 Files = files,
                 OutputBaseDir = _outputFolder,
                 ApplyTemplateSettings = _applyTemplateSettings,
+                Metadata = new Dictionary<string, object>
+                {
+                    ["meta"] = "Hello world!",
+                }.ToImmutableDictionary(),
             };
 
             using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))

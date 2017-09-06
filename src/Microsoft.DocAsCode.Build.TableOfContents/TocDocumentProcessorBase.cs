@@ -30,7 +30,15 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             var repoDetail = GitUtility.TryGetFileDetail(filePath);
             var displayLocalPath = PathUtility.MakeRelativePath(EnvironmentContext.BaseDirectory, file.FullPath);
 
-            // todo : metadata.
+            // Apply metadata to TOC
+            foreach (var pair in metadata)
+            {
+                if (!toc.Metadata.TryGetValue(pair.Key, out var val))
+                {
+                    toc.Metadata[pair.Key] = pair.Value;
+                }
+            }
+
             return new FileModel(file, toc)
             {
                 Uids = new[] { new UidDefinition(file.File, displayLocalPath) }.ToImmutableArray(),
