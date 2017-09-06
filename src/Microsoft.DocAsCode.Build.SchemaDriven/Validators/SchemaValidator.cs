@@ -7,15 +7,55 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using System.Collections.Generic;
     using System.IO;
 
-    using Newtonsoft.Json.Schema;
-
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
+
+    using Newtonsoft.Json.Linq;
+    using Newtonsoft.Json.Schema;
 
     public class SchemaValidator
     {
         private static readonly Uri SupportedMetaSchemaUri = new Uri("https://dotnet.github.io/docfx/schemas/v1.0/schema.json#");
-        public static void Validate(DocumentSchema schema)
+        private readonly DocumentSchema _schema;
+        private readonly JObject _schemaObject;
+        private readonly JSchema _jSchema;
+
+        public SchemaValidator(DocumentSchema schema)
+        {
+            _schema = schema;
+            _schemaObject = schema.ToJObject();
+            Validate(schema, _schemaObject);
+            _jSchema = JSchema.Load(_schemaObject.CreateReader());
+        }
+
+        public void Validate(object obj)
+        {
+            IList<string> errors = new List<string>();
+
+            ValidateObject(obj, (sender, args) => errors.Add(args.Message));
+
+            if (errors.Count > 0)
+            {
+                throw new InvalidSchemaException($"Validation against {SupportedMetaSchemaUri.OriginalString} failed: \n{errors.ToDelimitedString("\n")}");
+            }
+        }
+
+        private void ValidateObject(object obj, SchemaValidationEventHandler validationEventHandler)
+        {
+            using (JSchemaValidatingReader reader = new JSchemaValidatingReader(new ObjectJsonReader(obj)))
+            {
+                reader.Schema = _jSchema;
+                if (validationEventHandler != null)
+                {
+                    reader.ValidationEventHandler += validationEventHandler;
+                }
+                while (reader.Read())
+                {
+                }
+            }
+        }
+
+        private static void Validate(DocumentSchema schema, JObject obj)
         {
             if (!ValidateSchemaUrl(schema.Schema))
             {
@@ -26,8 +66,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             using (var sr = new StreamReader(stream))
             {
                 var metaSchema = JSchema.Parse(sr.ReadToEnd());
-                var o = schema.ToJObject();
-                var isValid = o.IsValid(metaSchema, out IList<string> errors);
+                var isValid = obj.IsValid(metaSchema, out IList<string> errors);
                 if (!isValid)
                 {
                     throw new InvalidSchemaException($"Schema {schema.Title} is not a valid one according to {SupportedMetaSchemaUri.OriginalString}: \n{errors.ToDelimitedString("\n")}");
@@ -35,7 +74,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             }
         }
 
-        public static bool ValidateSchemaUrl(string url)
+        private static bool ValidateSchemaUrl(string url)
         {
             if (url == null || !Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
             {

@@ -43,6 +43,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         [JsonIgnore]
         public JsonPointer MetadataReference { get; set; }
 
+        [JsonIgnore]
+        public SchemaValidator SchemaValidator { get; set; }
+
         public JObject ToJObject()
         {
             return JObject.FromObject(this, DefaultSerializer.Value);
@@ -62,7 +65,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                     throw new InvalidSchemaException($"Not a valid schema: {e.Message}", e);
                 }
 
-                SchemaValidator.Validate(schema);
+                schema.SchemaValidator = new SchemaValidator(schema);
 
                 if (string.IsNullOrWhiteSpace(schema.Title))
                 {

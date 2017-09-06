@@ -259,6 +259,37 @@ title: Web Apps Documentation
         }
 
         [Fact]
+        public void TestInvalidObjectAgainstSchema()
+        {
+            using (var listener = new TestListenerScope("TestInvalidMetadataReference"))
+            {
+                var schemaFile = CreateFile("template/schemas/mta.reference.test.schema.json", @"
+{
+  ""$schema"": ""http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"",
+  ""version"": ""1.0.0"",
+  ""title"": ""MetadataReferenceTest"",
+  ""description"": ""A simple test schema for sdp"",
+  ""type"": ""object"",
+  ""properties"": {
+      ""metadata"": {
+            ""type"": ""object""
+      }
+            },
+  ""metadata"": ""/metadata""
+}
+", _templateFolder);
+
+                var inputFile = CreateFile("invalid.yml", @"### YamlMime:MetadataReferenceTest
+metadata: Web Apps Documentation
+", _inputFolder);
+
+                FileCollection files = new FileCollection(_defaultFiles);
+                files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+                Assert.Throws<InvalidSchemaException>(() => BuildDocument(files));
+            }
+        }
+
+        [Fact]
         public void TestInvalidMetadataReference()
         {
             using (var listener = new TestListenerScope("TestGeneralFeaturesInSDP"))
