@@ -541,6 +541,7 @@ exports.getOptions = function (){
                                         topicHref = "test.html"
                                     }
                                 },
+                                ["meta"] = "Hello world!",
                             },
                             [$"~/{_inputFolder}/test/toc.md"] = new Dictionary<string, object>
                             {
@@ -559,9 +560,11 @@ exports.getOptions = function (){
                                         topicHref = "test.html"
                                     }
                                 },
+                                ["meta"] = "Hello world!",
                             }
                         }
-                    }
+                    },
+                    ["meta"] = "Hello world!",
                 };
                 AssertMetadataEqual(expected, model);
             }
@@ -622,6 +625,7 @@ exports.getOptions = function (){
                                         topicHref = "test.html"
                                     }
                                 },
+                                ["meta"] = "Hello world!",
                             },
                             [$"~/{_inputFolder}/test/toc.md"] = new Dictionary<string, object>
                             {
@@ -640,6 +644,7 @@ exports.getOptions = function (){
                                         topicHref = "test.html"
                                     }
                                 },
+                                ["meta"] = "Hello world!",
                             }
                         }
                     }
