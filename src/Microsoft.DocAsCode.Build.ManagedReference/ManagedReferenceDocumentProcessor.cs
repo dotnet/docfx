@@ -79,6 +79,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         protected override FileModel LoadArticle(FileAndType file, ImmutableDictionary<string, object> metadata)
         {
+            if (YamlMime.ReadMime(file.File) == null)
+            {
+                Logger.LogWarning("Please add yamlmime in the first line of file, e.g.: `### YamlMime:ManagedReference`, we will decline yaml files without yamlmime in next release.", file: file.File);
+            }
+
             var page = YamlUtility.Deserialize<PageViewModel>(file.File);
             if (page.Items == null || page.Items.Count == 0)
             {
@@ -134,7 +139,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                             case YamlMime.ManagedReference:
                                 return ProcessingPriority.Normal;
                             case null:
-                                Logger.LogWarning("Please add yamlmime.", file.File);
                                 return ProcessingPriority.BelowNormal;
                             default:
                                 return ProcessingPriority.NotSupported;
