@@ -61,11 +61,14 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             using (new LoggerFileScope(file.File))
             {
+                // isDependency always is false for full build
+                bool isDependency = false;
                 if (CanProcessorIncremental(processor))
                 {
                     string fileKey = ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
                     if (IncrementalContext.ChangeDict.TryGetValue(fileKey, out ChangeKindWithDependency ck))
                     {
+                        isDependency = ck == ChangeKindWithDependency.DependencyUpdated;
                         Logger.LogDiagnostic($"Processor {processor.Name}, File {file.FullPath}, ChangeType {ck}.");
                         if (ck == ChangeKindWithDependency.Deleted)
                         {
@@ -83,6 +86,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                         }
                     }
                 }
+
+                var fmetadata = metadata == null ? new Dictionary<string, object>() : new Dictionary<string, object>(metadata);
+                fmetadata.Add(DataContracts.Common.Constants.PropertyName.IsDependency, isDependency);
+                metadata = fmetadata.ToImmutableDictionary();
+
                 return base.Load(processor, metadata, fileMetadata, file);
             }
         }
