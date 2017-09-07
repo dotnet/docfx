@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "TemplatePage")]
+    [Collection("docfx STA")]
     public class TemplatePageLoaderUnitTest : TestBase
     {
         private readonly string _inputFolder;

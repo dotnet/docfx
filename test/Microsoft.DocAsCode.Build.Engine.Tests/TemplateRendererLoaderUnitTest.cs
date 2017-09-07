@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "TemplateRenderer")]
+    [Collection("docfx STA")]
     public class TemplateRendererLoaderUnitTest : TestBase
     {
         private readonly string _inputFolder;
