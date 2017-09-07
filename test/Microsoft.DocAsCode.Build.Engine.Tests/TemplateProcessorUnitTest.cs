@@ -16,6 +16,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "TemplateProcessor")]
+    [Collection("docfx STA")]
     public class TemplateProcessorUnitTest : TestBase
     {
         private readonly string _inputFolder;
