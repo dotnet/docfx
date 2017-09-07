@@ -51,7 +51,7 @@ This is the root document object for *THIS schema*.
 | $schema         | string | `*`The version of the schema specification, for example, `https://github.com/dotnet/docfx/v1.0/schema#`.
 | version         | string | `*`The version of current schema object.
 | id              | string | It is best practice to include an `id` property as an unique identifier for each schema.
-| title           | string | The title of current schema, `LandingPage`, for example. In DocFX, this value can be used to determine what kind of documents apply to this schema, If not specified, file name before `schema.json` of this schema is used.
+| title           | string | The title of current schema, `LandingPage`, for example. In DocFX, this value can be used to determine what kind of documents apply to this schema, If not specified, file name before `schema.json` of this schema is used. Note that `.` is not allowed.
 | description     | string  | A short description of current schema.
 | type            | string | `*`The type of the root document model MUST be `object`.
 | properties      | [Property Definitions Object](#property-definitions-object) | An object to hold the schema of all the properties.

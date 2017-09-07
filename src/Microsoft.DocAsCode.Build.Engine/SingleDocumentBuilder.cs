@@ -240,7 +240,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             catch (AggregateException ex)
             {
-                throw new DocfxException(ex.InnerException?.Message, ex);
+                throw ex.GetBaseException();
             }
         }
 

@@ -98,6 +98,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         // MUST be a dictionary
                         var obj = YamlUtility.Deserialize<Dictionary<string, object>>(file.File);
 
+                        // Validate against the schema first
+                        _schema.SchemaValidator.Validate(obj);
+
                         var content = ConvertToObjectHelper.ConvertToDynamic(obj);
                         var pageMetadata = _schema.MetadataReference.GetValue(content) as IDictionary<string, object>;
                         if (pageMetadata == null)
@@ -105,7 +108,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                             pageMetadata = new ExpandoObject();
                             _schema.MetadataReference.SetValue(ref content, pageMetadata);
                         }
-                        foreach(var pair in metadata)
+                        foreach (var pair in metadata)
                         {
                             if (!pageMetadata.ContainsKey(pair.Key))
                             {
