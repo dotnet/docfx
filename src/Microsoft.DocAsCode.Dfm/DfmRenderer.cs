@@ -131,6 +131,36 @@ namespace Microsoft.DocAsCode.Dfm
             StringBuffer content = string.Empty;
 
             var videoToken = splitToken.Token as DfmVideoBlockToken;
+            //TODO: fix video link
+            //if youtube.com, change to youtube-nocookie.com
+            //if channel9.msdn.com, add ?nocookie=true at end
+            if (videoToken != null && !string.IsNullOrWhiteSpace(videoToken.Link))
+            {
+                string link = videoToken.Link;
+                Uri videoLink;
+                if (Uri.TryCreate(link, UriKind.Absolute, out videoLink))
+                {
+                    string host = videoLink.Host;
+
+                    if (host.Equals("channel9.msdn.com", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (link.Contains("?"))
+                        {
+                            link = link + "&nocookie=true";
+                        }
+                        else
+                        {
+                            link = link + "?nocookie=true";
+                        }
+                    }
+                    else if (host.IndexOf("youtube.com", StringComparison.InvariantCultureIgnoreCase) > -1)
+                    {
+                        link = link.Replace("youtube.com", "youtube-nocookie.com");
+                    }
+                    videoToken.Link = link;
+                }
+            }
+
             content += "<div class=\"embeddedvideo\"><iframe src=\"";
             content += videoToken.Link;
             content += "\" frameborder=\"0\" allowfullscreen=\"true\"";
