@@ -45,6 +45,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             model.LinkToFiles = model.LinkToFiles.Union(((Dictionary<string, List<LinkSourceInfo>>)context.Properties.FileLinkSources).Keys);
             model.FileLinkSources = model.FileLinkSources.Merge((Dictionary<string, List<LinkSourceInfo>>)context.Properties.FileLinkSources);
             model.UidLinkSources = model.UidLinkSources.Merge((Dictionary<string, List<LinkSourceInfo>>)context.Properties.UidLinkSources);
+            model.Uids = model.Uids.AddRange(context.Properties.Uids);
             model.Properties.XRefSpecs = context.Properties.XRefSpecs;
             model.Properties.ExternalXRefSpecs = context.Properties.ExternalXRefSpecs;
 
