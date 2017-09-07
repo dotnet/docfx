@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "TemplatePreprocessor")]
+    [Collection("docfx STA")]
     public class TemplatePreprocessorLoaderUnitTest : TestBase
     {
         private readonly string _inputFolder;
