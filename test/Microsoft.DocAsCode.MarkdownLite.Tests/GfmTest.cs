@@ -821,6 +821,8 @@ a</pre
 ")]
         [InlineData(@"a<x:y>", @"<p>a&lt;x:y&gt;</p>
 ")]
+        [InlineData(@"a<x y>", @"<p>a<x y></p>
+")]
         [InlineData(@"a<中文>", @"<p>a&lt;中文&gt;</p>
 ")]
         [InlineData(@"a<x中文>", @"<p>a&lt;x中文&gt;</p>

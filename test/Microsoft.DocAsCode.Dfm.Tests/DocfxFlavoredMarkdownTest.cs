@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
         [InlineData("", "")]
         [InlineData("<address@example.com>", "<p><a href=\"mailto:address@example.com\" data-raw-source=\"&lt;address@example.com&gt;\">address@example.com</a></p>\n")]
         [InlineData(" https://github.com/dotnet/docfx/releases ", "<p> <a href=\"https://github.com/dotnet/docfx/releases\" data-raw-source=\"https://github.com/dotnet/docfx/releases\">https://github.com/dotnet/docfx/releases</a> </p>\n")]
-        [InlineData(@"<Insert OneGet Details - meeting on 10/30 for details.>", @"<Insert OneGet Details - meeting on 10/30 for details.>")]
+        [InlineData(@"<Insert OneGet Details - meeting on 10/30 for details.>", @"&lt;Insert OneGet Details - meeting on 10/30 for details.&gt;")]
         [InlineData("<http://example.com/>", "<p><a href=\"http://example.com/\" data-raw-source=\"&lt;http://example.com/&gt;\">http://example.com/</a></p>\n")]
         [InlineData("# Hello World", "<h1 id=\"hello-world\">Hello World</h1>\n")]
         [InlineData("Hot keys: <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd>", "<p>Hot keys: <kbd>Ctrl+[</kbd> and <kbd>Ctrl+]</kbd></p>\n")]
@@ -856,11 +856,11 @@ outlookClient.me.events.getEvents().fetch().then(function(result) {
         [Trait("Related", "DfmMarkdown")]
         public void TestDfm_EncodeInStrongEM()
         {
-            var source = @"tag started with non-alphabet should be encoded <1-100>, <_hello>, <?world>, <1_2 href=""good"">, <1 att='bcd'>.
-tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b href=""good""> <AC att='bcd'>";
+            var source = @"tag started with non-alphabet should be encoded <1-100>, <_hello>, <?world>, <1_2 href=""good"">, <1 att='bcd'>, <a?world> <a_b href=""good"">.
+tag started with alphabet should not be encode: <abc> <a-hello> <AC att='bcd'>";
 
-            var expected = @"<p>tag started with non-alphabet should be encoded &lt;1-100&gt;, &lt;_hello&gt;, &lt;?world&gt;, &lt;1_2 href=&quot;good&quot;&gt;, &lt;1 att=&#39;bcd&#39;&gt;.
-tag started with alphabet should not be encode: <abc> <a-hello> <a?world> <a_b href=""good""> <AC att='bcd'></p>
+            var expected = @"<p>tag started with non-alphabet should be encoded &lt;1-100&gt;, &lt;_hello&gt;, &lt;?world&gt;, &lt;1_2 href=&quot;good&quot;&gt;, &lt;1 att=&#39;bcd&#39;&gt;, &lt;a?world&gt; &lt;a_b href=&quot;good&quot;&gt;.
+tag started with alphabet should not be encode: <abc> <a-hello> <AC att='bcd'></p>
 ";
             var marked = DocfxFlavoredMarked.Markup(source);
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
