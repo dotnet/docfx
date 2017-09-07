@@ -804,6 +804,56 @@ a</pre
 
         [Theory]
         [Trait("Related", "Markdown")]
+        #region InlineData
+        [InlineData(@"a<x>", @"<p>a<x></p>
+")]
+        [InlineData(@"a</x>", @"<p>a</x></p>
+")]
+        [InlineData(@"a<x/>", @"<p>a<x/></p>
+")]
+        [InlineData(@"a<-x>", @"<p>a&lt;-x&gt;</p>
+")]
+        [InlineData(@"a<x-x>", @"<p>a<x-x></p>
+")]
+        [InlineData(@"a<_x>", @"<p>a&lt;_x&gt;</p>
+")]
+        [InlineData(@"a<x_x>", @"<p>a&lt;x_x&gt;</p>
+")]
+        [InlineData(@"a<x:y>", @"<p>a&lt;x:y&gt;</p>
+")]
+        [InlineData(@"a<中文>", @"<p>a&lt;中文&gt;</p>
+")]
+        [InlineData(@"a<x中文>", @"<p>a&lt;x中文&gt;</p>
+")]
+        [InlineData(@"a<x 中文>", @"<p>a&lt;x 中文&gt;</p>
+")]
+        [InlineData(@"a<x y='中文'>", @"<p>a<x y='中文'></p>
+")]
+        [InlineData(@"a<x y:z='中文'>", @"<p>a<x y:z='中文'></p>
+")]
+        [InlineData(@"a<x-x y-y:z-z='中文'>", @"<p>a<x-x y-y:z-z='中文'></p>
+")]
+        [InlineData(@"a<x-x y_y:z_z='中文'>", @"<p>a<x-x y_y:z_z='中文'></p>
+")]
+        [InlineData(@"a<x _:_='中文'>", @"<p>a<x _:_='中文'></p>
+")]
+        [InlineData(@"a<x y='中文' z='中文'>", @"<p>a<x y='中文' z='中文'></p>
+")]
+        [InlineData(@"a<x
+y='中文'
+z='中文'>", @"<p>a<x
+y='中文'
+z='中文'></p>
+")]
+        #endregion
+        public void TestTag_MoreCase(string markdown, string html)
+        {
+            TestGfmInGeneral(markdown, html);
+            TestLegacyGfmInGeneral(markdown, html);
+        }
+
+        [Theory]
+        [Trait("Related", "Markdown")]
         [InlineData("\ta")]
         [InlineData(" \ta")]
         [InlineData("  \ta")]
