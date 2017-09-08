@@ -41,7 +41,13 @@ namespace Microsoft.DocAsCode.Common
             }
             if (getResult && pm.PhysicalPath.StartsWith(OutputFolder))
             {
-                return File.Create(Environment.ExpandEnvironmentVariables(pm.PhysicalPath));
+                try
+                {
+                    return File.Create(Environment.ExpandEnvironmentVariables(pm.PhysicalPath));
+                }
+                catch (IOException)
+                {
+                }
             }
             var pair = CreateRandomFileStream();
             pm = new PathMapping(key, Path.Combine(OutputFolder, pair.Item1));
