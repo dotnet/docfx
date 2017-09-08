@@ -115,7 +115,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 var newFileName = GetNewFileName(primaryItem.Uid, newPrimaryItem);
                 var newModel = GenerateNewFileModel(model, newPage, newFileName, newFileNames);
 
-                newPrimaryItem.Metadata[SplitReferencePropertyName] = true;
+                newPage.Metadata[SplitReferencePropertyName] = true;
+
                 splittedModels.Add(newModel);
                 AddToTree(newPrimaryItem, children);
             }
@@ -123,10 +124,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             // Convert children to references
             page.References = itemsToSplit.Select(ConvertToReference).Concat(page.References).ToList();
 
-            primaryItem.Metadata[SplitReferencePropertyName] = true;
-            primaryItem.Metadata[SplitFromPropertyName] = true;
-
             page.Items = new List<ItemViewModel> { primaryItem };
+            page.Metadata[SplitReferencePropertyName] = true;
+            page.Metadata[SplitFromPropertyName] = true;
 
             // Regenerate uids
             model.Uids = CalculateUids(page, model.LocalPathFromRoot);
@@ -186,8 +186,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 NamespaceName = firstMember.NamespaceName,
                 Metadata = new Dictionary<string, object>
                 {
-                    [IsOverloadPropertyName] = true,
-                    [SplitReferencePropertyName] = true
+                    [IsOverloadPropertyName] = true
                 },
                 Platform = MergeList(overload, s => s.Platform ?? EmptyList),
                 SupportedLanguages = MergeList(overload, s => s.SupportedLanguages ?? EmptyArray).ToArray(),
