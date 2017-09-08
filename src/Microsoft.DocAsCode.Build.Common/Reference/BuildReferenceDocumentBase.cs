@@ -50,6 +50,7 @@ namespace Microsoft.DocAsCode.Build.Common
             model.FileLinkSources = overwrites.SelectMany(o => o.FileLinkSources).GroupBy(i => i.Key, i => i.Value).ToImmutableDictionary(i => i.Key, i => i.SelectMany(l => l).ToImmutableList());
             model.UidLinkSources = overwrites.SelectMany(o => o.UidLinkSources).GroupBy(i => i.Key, i => i.Value).ToImmutableDictionary(i => i.Key, i => i.SelectMany(l => l).ToImmutableList());
             model.Uids = (from item in overwrites
+                          where !string.IsNullOrEmpty(item.Uid)
                           select new UidDefinition(
                               item.Uid,
                               model.LocalPathFromRoot,
