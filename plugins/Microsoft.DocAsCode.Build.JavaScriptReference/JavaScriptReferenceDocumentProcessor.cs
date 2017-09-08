@@ -79,8 +79,7 @@ namespace Microsoft.DocAsCode.Build.JavaScriptReference
 
             return new FileModel(file, page, serializer: new BinaryFormatter())
             {
-                Uids = (from item
-                        in page.Items
+                Uids = (from item in page.Items
                         where !string.IsNullOrEmpty(item.Uid)
                         select new UidDefinition(item.Uid, localPathFromRoot)).ToImmutableArray(),
                 LocalPathFromRoot = localPathFromRoot

@@ -146,12 +146,10 @@ namespace Microsoft.DocAsCode.Build.RestApi
             return new FileModel(file, vm, serializer: new BinaryFormatter())
             {
                 Uids = new[] { new UidDefinition(vm.Uid, displayLocalPath) }
-                    .Concat(from item
-                            in vm.Children
+                    .Concat(from item in vm.Children
                             where !string.IsNullOrEmpty(item.Uid)
                             select new UidDefinition(item.Uid, displayLocalPath))
-                    .Concat(from tag
-                            in vm.Tags
+                    .Concat(from tag in vm.Tags
                             where !string.IsNullOrEmpty(tag.Uid)
                             select new UidDefinition(tag.Uid, displayLocalPath)).ToImmutableArray(),
                 LocalPathFromRoot = displayLocalPath
