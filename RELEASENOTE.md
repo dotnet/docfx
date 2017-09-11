@@ -1,7 +1,10 @@
-﻿Version Notes (Current Version: v2.24)
+﻿Version Notes (Current Version: v2.25)
 =======================================
 
-v2.24 (Pre-release)
+v2.25 (Pre-release)
+-----------
+
+v2.24
 -----------
 1. Log warning for manage reference yaml file without yaml mime.
 2. Obsolete external reference. Please use xref instead.
