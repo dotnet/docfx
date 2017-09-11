@@ -164,7 +164,17 @@ namespace Microsoft.DocAsCode.Build.TagLevelRestApi
 
         private IEnumerable<string> CalculateUids(RestApiRootItemViewModel root)
         {
-            return new[] { root.Uid }.Concat(root.Children.Select(child => child.Uid));
+            if (!string.IsNullOrEmpty(root.Uid))
+            {
+                yield return root.Uid;
+            }
+            foreach (var child in root.Children ?? Enumerable.Empty<RestApiChildItemViewModel>())
+            {
+                if (!string.IsNullOrEmpty(child.Uid))
+                {
+                    yield return child.Uid;
+                }
+            }
         }
 
         private TreeItem ConvertToTreeItem(RestApiRootItemViewModel root, string fileKey)

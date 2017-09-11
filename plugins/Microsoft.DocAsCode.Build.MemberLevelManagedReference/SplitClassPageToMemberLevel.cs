@@ -525,7 +525,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private ImmutableArray<UidDefinition> CalculateUids(PageViewModel page, string file)
         {
-            return (from item in page.Items select new UidDefinition(item.Uid, file)).ToImmutableArray();
+            return (from item in page.Items
+                    where !string.IsNullOrEmpty(item.Uid)
+                    select new UidDefinition(item.Uid, file)).ToImmutableArray();
         }
 
         private List<string> GetListFromObject(object value)
