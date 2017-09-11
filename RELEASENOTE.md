@@ -1,4 +1,4 @@
-﻿giVersion Notes (Current Version: v2.24)
+﻿Version Notes (Current Version: v2.24)
 =======================================
 
 v2.24 (Pre-release)
@@ -12,7 +12,9 @@ v2.24 (Pre-release)
     2. support all the functionalities defined in the spec
 6. Advanced `xref` syntax support: `<xref uid="System.String" template="partials/layout_section.tmpl">`
 7. Support global metadata and file metadata for TOC files
-8. Bug fixed:
+8. Add class level implements to default template. https://github.com/dotnet/docfx/issues/1223
+9. Obsolete `version` and use `group` instead.
+10. Bug fixed:
    1. Fix #1982: c# 7.1 feature `default` is not correctly handled
 
 v2.23
