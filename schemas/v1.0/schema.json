@@ -67,6 +67,12 @@
                         "replace",
                         "ignore"
                     ]
+                },
+                "xrefProperties": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "uniqueItems": true,
+                    "description": "Defines the properties of current object when it is cross referenced by others. Each item is the name of the property in the instance."
                 }
             },
             "patternProperties": {
@@ -116,9 +122,16 @@
         },
         "default": {},
         "properties": { "$ref": "#/definitions/propertyDefinition" },
+        "metadata": {
+            "type": "string",
+            "format": "json-pointer"
+        },
         "patternProperties": {
             "^x_": { }
         }
     },
+    "required": [
+        "$schema", "version"
+    ],
     "default": {}
 }

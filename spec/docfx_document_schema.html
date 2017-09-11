@@ -8,7 +8,7 @@
     <title>DocFX Document Schema v1.0 Specification | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFX Document Schema v1.0 Specification | DocFX website ">
-    <meta name="generator" content="docfx 2.23.1.0">
+    <meta name="generator" content="docfx 2.24.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../styles/main.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    
     <meta property="docfx:rel" content="../">
     
   </head>
@@ -151,6 +152,11 @@ For example, a property named <code>summary</code> contains value in Markdown fo
 <td><a href="#property-definitions-object">Property Definitions Object</a></td>
 <td>An object to hold the schema of all the properties.</td>
 </tr>
+<tr>
+<td>metadata</td>
+<td>string</td>
+<td>In <code>json-pointer</code> format as defined in <a href="http://json-schema.org/latest/json-schema-validation.html#rfc.section.8.3.9">http://json-schema.org/latest/json-schema-validation.html#rfc.section.8.3.9</a>. The format for JSON pointer is defined by <a href="https://tools.ietf.org/html/rfc6901">https://tools.ietf.org/html/rfc6901</a>, referencing to the metadata object. Metadata object is the object to define the metadata for current document, and can be also set through <code>globalMetadata</code> or <code>fileMetadata</code> in DocFX. The default value for metadata is empty which stands for the root object.</td>
+</tr>
 </tbody>
 </table>
 <h5 id="patterned-field">Patterned Field</h5>
@@ -250,6 +256,11 @@ For example, a property named <code>summary</code> contains value in Markdown fo
 <td>mergeType</td>
 <td>string</td>
 <td>Defines how to merge the property. Omitting this keyword has the same behavior as <code>merge</code>. Refer to <a href="#65-mergetype">mergeType</a> for detailed explanation.</td>
+</tr>
+<tr>
+<td>xrefProperties</td>
+<td>array</td>
+<td>Defines the properties of current object when it is cross referenced by others. Each item is the name of the property in the instance.</td>
 </tr>
 </tbody>
 </table>

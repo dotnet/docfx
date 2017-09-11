@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.23.1) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.24) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.23.1) | DocFX website ">
-    <meta name="generator" content="docfx 2.23.1.0">
+    <meta name="title" content="Version Notes (Current Version: v2.24) | DocFX website ">
+    <meta name="generator" content="docfx 2.24.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <meta property="docfx:navrel" content="toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    
     <meta property="docfx:rel" content="">
     
   </head>
@@ -67,11 +68,27 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="version-notes-current-version-v2231">Version Notes (Current Version: v2.23.1)</h1>
+<h1 id="version-notes-current-version-v224">Version Notes (Current Version: v2.24)</h1>
 
-<h2 id="v2231">v2.23.1</h2>
+<h2 id="v224">v2.24</h2>
 <ol>
-<li>Fix <a href="https://github.com/dotnet/docfx/issues/1982">https://github.com/dotnet/docfx/issues/1982</a> to support new c# 7.1 feature</li>
+<li>Log warning for manage reference yaml file without yaml mime.</li>
+<li>Obsolete external reference. Please use xref instead.</li>
+<li>Add xref query client.</li>
+<li>Upgrade Roslyn&#39;s CodeAnalysis assemblies to latest 2.3.1</li>
+<li>Schema-driven document processor related<ol>
+<li>support <code>metadata</code> keyword</li>
+<li>support all the functionalities defined in the spec</li>
+</ol>
+</li>
+<li>Advanced <code>xref</code> syntax support: <code>&lt;xref uid=&quot;System.String&quot; template=&quot;partials/layout_section.tmpl&quot;&gt;</code></li>
+<li>Support global metadata and file metadata for TOC files</li>
+<li>Add class level implements to default template. <a href="https://github.com/dotnet/docfx/issues/1223">https://github.com/dotnet/docfx/issues/1223</a></li>
+<li>Obsolete <code>version</code> and use <code>group</code> instead.</li>
+<li>Bug fixed:<ol>
+<li>Fix #1982: c# 7.1 feature <code>default</code> is not correctly handled</li>
+</ol>
+</li>
 </ol>
 <h2 id="v223">v2.23</h2>
 <ol>
@@ -80,6 +97,7 @@
 <li>Add language support for aspx-cs and aspx-vb in code snippet.</li>
 <li>Bug fixed:<ol>
 <li>Fix #1825: ArgumentNullException when EII implements a member with EditorBrowsableState.Never.</li>
+<li>Fix #1937: Anchor icon overlays Note icon.</li>
 <li>Fix #1951, #1905: Running DocFX from outside the folder fails</li>
 <li>Fix #1915: Cannot generate docs of two assemblies</li>
 <li>Fix #1900: Add back Microsoft.CodeAnalysis.Csharp.Features.dll dependency</li>

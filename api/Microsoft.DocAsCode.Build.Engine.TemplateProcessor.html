@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class TemplateProcessor
    | DocFX website ">
-    <meta name="generator" content="docfx 2.23.1.0">
+    <meta name="generator" content="docfx 2.24.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../styles/main.css">
     <meta property="docfx:navrel" content="../toc.html">
     <meta property="docfx:tocrel" content="toc.html">
+    
     <meta property="docfx:rel" content="../">
     
   </head>
@@ -87,6 +88,10 @@
     <div class="level0"><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></div>
     <div class="level1"><span class="xref">TemplateProcessor</span></div>
   </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a></div>
+  </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
     <div>
@@ -121,13 +126,13 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateProcessor__ctor_Microsoft_DocAsCode_Build_Engine_ResourceCollection_Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_System_Int32_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateProcessor.%23ctor(Microsoft.DocAsCode.Build.Engine.ResourceCollection%2CMicrosoft.DocAsCode.Build.Engine.DocumentBuildContext%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateProcessor__ctor_Microsoft_DocAsCode_Build_Engine_ResourceFileReader_Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_System_Int32_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateProcessor.%23ctor(Microsoft.DocAsCode.Build.Engine.ResourceFileReader%2CMicrosoft.DocAsCode.Build.Engine.DocumentBuildContext%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplateProcessor.cs/#L32">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplateProcessors/TemplateProcessor.cs/#L31">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_Engine_TemplateProcessor__ctor_" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateProcessor.#ctor*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateProcessor__ctor_Microsoft_DocAsCode_Build_Engine_ResourceCollection_Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_System_Int32_" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateProcessor.#ctor(Microsoft.DocAsCode.Build.Engine.ResourceCollection,Microsoft.DocAsCode.Build.Engine.DocumentBuildContext,System.Int32)">TemplateProcessor(ResourceCollection, DocumentBuildContext, Int32)</h4>
+  <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateProcessor__ctor_Microsoft_DocAsCode_Build_Engine_ResourceFileReader_Microsoft_DocAsCode_Build_Engine_DocumentBuildContext_System_Int32_" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateProcessor.#ctor(Microsoft.DocAsCode.Build.Engine.ResourceFileReader,Microsoft.DocAsCode.Build.Engine.DocumentBuildContext,System.Int32)">TemplateProcessor(ResourceFileReader, DocumentBuildContext, Int32)</h4>
   <div class="markdown level1 summary"><p>TemplateName can be either file or folder</p>
 <ol>
 <li>If TemplateName is file, it is considered as the default template</li>
@@ -137,7 +142,7 @@
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TemplateProcessor(ResourceCollection resourceProvider, DocumentBuildContext context, int maxParallelism = 0)</code></pre>
+    <pre><code class="lang-csharp hljs">public TemplateProcessor(ResourceFileReader resourceProvider, DocumentBuildContext context, int maxParallelism = 0)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -150,7 +155,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.ResourceCollection.html">ResourceCollection</a></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.ResourceFileReader.html">ResourceFileReader</a></td>
         <td><span class="parametername">resourceProvider</span></td>
         <td></td>
       </tr>
@@ -166,37 +171,6 @@
       </tr>
     </tbody>
   </table>
-  <h3 id="fields">Fields
-  </h3>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateProcessor_DefaultProcessor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateProcessor.DefaultProcessor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplateProcessor.cs/#L21">View Source</a>
-  </span>
-  <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateProcessor_DefaultProcessor" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateProcessor.DefaultProcessor">DefaultProcessor</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static readonly TemplateProcessor DefaultProcessor</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Build.Engine.TemplateProcessor.html">TemplateProcessor</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
   <h3 id="properties">Properties
   </h3>
   <span class="small pull-right mobile-hide">
@@ -204,7 +178,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateProcessor_Tokens.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateProcessor.Tokens%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplateProcessor.cs/#L23">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplateProcessors/TemplateProcessor.cs/#L22">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_Engine_TemplateProcessor_Tokens_" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateProcessor.Tokens*"></a>
   <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateProcessor_Tokens" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateProcessor.Tokens">Tokens</h4>
@@ -236,7 +210,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateProcessor_Dispose.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateProcessor.Dispose%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplateProcessor.cs/#L180">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplateProcessors/TemplateProcessor.cs/#L182">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_Engine_TemplateProcessor_Dispose_" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateProcessor.Dispose*"></a>
   <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateProcessor_Dispose" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateProcessor.Dispose">Dispose()</h4>
@@ -246,14 +220,12 @@
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public void Dispose()</code></pre>
   </div>
-  <h5 class="implements">Implements</h5>
-      <div><a class="xref" href="https://msdn.microsoft.com/en-us/library/es4s3w1d(v=vs.110).aspx">IDisposable.Dispose()</a></div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateProcessor_GetTemplateBundle_System_String_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateProcessor.GetTemplateBundle(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplateProcessor.cs/#L44">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplateProcessors/TemplateProcessor.cs/#L45">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_Engine_TemplateProcessor_GetTemplateBundle_" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateProcessor.GetTemplateBundle*"></a>
   <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateProcessor_GetTemplateBundle_System_String_" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateProcessor.GetTemplateBundle(System.String)">GetTemplateBundle(String)</h4>
@@ -300,7 +272,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateProcessor_TryGetFileExtension_System_String_System_String__.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateProcessor.TryGetFileExtension(System.String%2CSystem.String%40)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplateProcessor.cs/#L50">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplateProcessors/TemplateProcessor.cs/#L51">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_Engine_TemplateProcessor_TryGetFileExtension_" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateProcessor.TryGetFileExtension*"></a>
   <h4 id="Microsoft_DocAsCode_Build_Engine_TemplateProcessor_TryGetFileExtension_System_String_System_String__" data-uid="Microsoft.DocAsCode.Build.Engine.TemplateProcessor.TryGetFileExtension(System.String,System.String@)">TryGetFileExtension(String, out String)</h4>
@@ -347,6 +319,10 @@
       </tr>
     </tbody>
   </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.idisposable(v=vs.110).aspx">IDisposable</a>
+  </div>
   <h3 id="extensionmethods">Extension Methods</h3>
   <div>
       <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
@@ -372,7 +348,7 @@
                     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_Engine_TemplateProcessor.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.Engine.TemplateProcessor%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplateProcessor.cs/#L15" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.Engine/TemplateProcessors/TemplateProcessor.cs/#L15" class="contribution-link">View Source</a>
                   </li>
                   <li>
                     <a href="#disqus_thread" class="contribution-link">0 Comments</a>
