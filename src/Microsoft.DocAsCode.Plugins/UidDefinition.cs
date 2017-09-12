@@ -23,6 +23,11 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonConstructor]
         public UidDefinition(string name, string file, int? line = null, int? column = null, string path = null)
         {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentNullException(name, nameof(name));
+            }
+
             Name = name;
             File = file;
             Line = line;
