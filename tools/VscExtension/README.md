@@ -1,9 +1,9 @@
 # DocFX Flavored Markdown Preview
 ------------
 
-[![Current Version](https://vsmarketplacebadge.apphb.com/version/docfxsvc.DocFX.svg)](https://marketplace.visualstudio.com/items?itemName=docfxsvc.DocFX)
-[![Install Count](https://vsmarketplacebadge.apphb.com/installs/docfxsvc.DocFX.svg)](https://marketplace.visualstudio.com/items?itemName=docfxsvc.DocFX)
-[![Open Issues](https://vsmarketplacebadge.apphb.com/rating/docfxsvc.DocFX.svg) ](https://marketplace.visualstudio.com/items?itemName=docfxsvc.DocFX)
+[![Current Version](https://vsmarketplacebadge.apphb.com/version/ms-docfx.DocFX.svg)](https://marketplace.visualstudio.com/items?itemName=ms-docfx.DocFX)
+[![Install Count](https://vsmarketplacebadge.apphb.com/installs/ms-docfx.DocFX.svg)](https://marketplace.visualstudio.com/items?itemName=ms-docfx.DocFX)
+[![Open Issues](https://vsmarketplacebadge.apphb.com/rating/ms-docfx.DocFX.svg) ](https://marketplace.visualstudio.com/items?itemName=ms-docfx.DocFX)
 
 An extension to support [**DFM**](https://dotnet.github.io/docfx/spec/docfx_flavored_markdown.html) for Visual Studio Code! The preview provides the following features:
 

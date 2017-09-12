@@ -13,7 +13,7 @@ $ErrorActionPreference = 'Stop'
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptHome = Split-Path $scriptPath
 $configuration = "Release"
-$framework = "net46"
+$framework = "net461"
 $httpServiceFolder = "DfmHttpService"
 $httpServiceFolderPath = "..\$httpServiceFolder"
 
