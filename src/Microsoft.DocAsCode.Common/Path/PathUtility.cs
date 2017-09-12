@@ -336,7 +336,8 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new ArgumentException($"{nameof(path)} should not be null or empty string");
             }
-            return File.GetAttributes(path).HasFlag(FileAttributes.Directory);
+
+            return Directory.Exists(path);
         }
     }
 }

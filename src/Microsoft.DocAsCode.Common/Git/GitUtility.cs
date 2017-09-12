@@ -20,6 +20,8 @@ namespace Microsoft.DocAsCode.Common.Git
         private static readonly string GetLocalBranchCommand = "rev-parse --abbrev-ref HEAD";
         private static readonly string GetLocalBranchCommitIdCommand = "rev-parse HEAD";
         private static readonly string GetRemoteBranchCommand = "rev-parse --abbrev-ref @{u}";
+        private static readonly string GetDeletedFileContentCommand = "show {0}^:{1}";
+        private static readonly string GetFileLastCommitIdCommand = "rev-list --max-count=1 --all -- {0}";
         // TODO: only get default remote's url currently.
         private static readonly string GetOriginUrlCommand = "config --get remote.origin.url";
         private static readonly string GetLocalHeadIdCommand = "rev-parse HEAD";
@@ -73,17 +75,34 @@ namespace Microsoft.DocAsCode.Common.Git
             return detail;
         }
 
-        #region Private Methods
-        private static bool IsGitRoot(string directory)
+        public static string GetDeletedFileContent(string filePath)
         {
-            var gitPath = Path.Combine(directory, ".git");
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return null;
+            }
 
-            // git submodule contains only a .git file instead of a .git folder
-            return Directory.Exists(gitPath) || File.Exists(gitPath);
+            if (!Path.IsPathRooted(filePath))
+            {
+                throw new GitException($"{nameof(filePath)} should be an absolute path");
+            }
+
+            if (!ExistGitCommand())
+            {
+                throw new GitException("Can't find git command in current environment");
+            }
+
+            filePath = PathUtility.NormalizePath(filePath);
+            return GetDeletedFileContentCore(filePath);
         }
 
-        private static GitRepoInfo GetRepoInfo(string directory)
+        public static GitRepoInfo GetRepoInfo(string directory)
         {
+            if (directory == null)
+            {
+                return null;
+            }
+
             if (IsGitRoot(directory))
             {
                 return Cache.GetOrAdd(directory, GetRepoInfoCore);
@@ -96,6 +115,46 @@ namespace Microsoft.DocAsCode.Common.Git
             }
 
             return Cache.GetOrAdd(directory, d => GetRepoInfo(parentDirInfo.FullName));
+        }
+
+        #region Private Methods
+        private static string GetDeletedFileContentCore(string filePath)
+        {
+            string directory;
+            if (PathUtility.IsDirectory(filePath))
+            {
+                directory = filePath;
+            }
+            else
+            {
+                directory = Path.GetDirectoryName(filePath);
+            }
+
+            var repoInfo = Cache.GetOrAdd(directory, GetRepoInfo);
+
+            if (repoInfo == null)
+            {
+                return null;
+            }
+
+            var getFileLastCommitIdCommand = string.Format(GetFileLastCommitIdCommand, PathUtility.MakeRelativePath(repoInfo.RepoRootPath, filePath));
+            var lastCommitId = TryRunGitCommandAndGetLastLine(repoInfo.RepoRootPath, getFileLastCommitIdCommand);
+
+            if (lastCommitId == null)
+            {
+                return null;
+            }
+
+            var getDeletedFileContentCommand = string.Format(GetDeletedFileContentCommand, lastCommitId, PathUtility.MakeRelativePath(repoInfo.RepoRootPath, filePath));
+            return TryRunGitCommand(repoInfo.RepoRootPath, getDeletedFileContentCommand);
+        }
+
+        private static bool IsGitRoot(string directory)
+        {
+            var gitPath = Path.Combine(directory, ".git");
+
+            // git submodule contains only a .git file instead of a .git folder
+            return Directory.Exists(gitPath) || File.Exists(gitPath);
         }
 
         private static GitDetail GetFileDetailCore(string filePath)
@@ -124,14 +183,14 @@ namespace Microsoft.DocAsCode.Common.Git
 
         private static GitRepoInfo GetRepoInfoCore(string directory)
         {
-            var repoRootPath = RunGitCommandAndGetFirstLine(directory, GetRepoRootCommand);
+            var repoRootPath = RunGitCommandAndGetLastLine(directory, GetRepoRootCommand);
 
             // the path of repo root got from git config file should be the same with path got from git command
             Debug.Assert(FilePathComparer.OSPlatformSensitiveComparer.Equals(repoRootPath, directory));
 
             var branchNames = GetBranchNames(repoRootPath);
 
-            var originUrl = RunGitCommandAndGetFirstLine(repoRootPath, GetOriginUrlCommand);
+            var originUrl = RunGitCommandAndGetLastLine(repoRootPath, GetOriginUrlCommand);
             var repoInfo = new GitRepoInfo
             {
                 // TODO: remove commit id to avoid config hash changed
@@ -156,17 +215,17 @@ namespace Microsoft.DocAsCode.Common.Git
                 return Tuple.Create(localBranch, localBranch);
             }
 
-            var isDetachedHead = "HEAD" == RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
+            var isDetachedHead = "HEAD" == RunGitCommandAndGetLastLine(repoRootPath, GetLocalBranchCommand);
             if (isDetachedHead)
             {
                 return GetBranchNamesFromDetachedHead(repoRootPath);
             }
 
-            localBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommand);
+            localBranch = RunGitCommandAndGetLastLine(repoRootPath, GetLocalBranchCommand);
             string remoteBranch;
             try
             {
-                remoteBranch = RunGitCommandAndGetFirstLine(repoRootPath, GetRemoteBranchCommand);
+                remoteBranch = RunGitCommandAndGetLastLine(repoRootPath, GetRemoteBranchCommand);
                 var index = remoteBranch.IndexOf('/');
                 if (index > 0)
                 {
@@ -196,7 +255,7 @@ namespace Microsoft.DocAsCode.Common.Git
             }
 
             // Use the comment id as the branch name.
-            var commitId = RunGitCommandAndGetFirstLine(repoRootPath, GetLocalBranchCommitIdCommand);
+            var commitId = RunGitCommandAndGetLastLine(repoRootPath, GetLocalBranchCommitIdCommand);
             Logger.LogInfo($"For git repo <{repoRootPath}>, using commit id {commitId} as the branch name.");
             return Tuple.Create(commitId, commitId);
         }
@@ -206,12 +265,26 @@ namespace Microsoft.DocAsCode.Common.Git
             throw new GitException(message);
         }
 
-        private static string TryRunGitCommandAndGetFirstLine(string repoPath, string arguments)
+        private static string TryRunGitCommand(string repoPath, string arguments)
+        {
+            var content = new StringBuilder();
+            try
+            {
+                RunGitCommand(repoPath, arguments, output => content.AppendLine(output));
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+            return content.Length == 0 ? null : content.ToString();
+        }
+
+        private static string TryRunGitCommandAndGetLastLine(string repoPath, string arguments)
         {
             string content = null;
             try
             {
-                content = RunGitCommandAndGetFirstLine(repoPath, arguments);
+                content = RunGitCommandAndGetLastLine(repoPath, arguments);
             }
             catch (Exception)
             {
@@ -220,7 +293,7 @@ namespace Microsoft.DocAsCode.Common.Git
             return content;
         }
 
-        private static string RunGitCommandAndGetFirstLine(string repoPath, string arguments)
+        private static string RunGitCommandAndGetLastLine(string repoPath, string arguments)
         {
             string content = null;
             RunGitCommand(repoPath, arguments, output => content = output);

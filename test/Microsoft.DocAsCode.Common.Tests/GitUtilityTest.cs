@@ -12,23 +12,40 @@ namespace Microsoft.DocAsCode.Common.Tests
 
     [Collection("docfx STA")]
     [Trait("Owner", "makaretu")]
-    public class GitUtilityTest
+    public class GitUtilityTest : IDisposable
     {
+        private string _originalBranchName;
+        private const string envName = "DOCFX_SOURCE_BRANCH_NAME";
+        public GitUtilityTest()
+        {
+            _originalBranchName = Environment.GetEnvironmentVariable(envName);
+            Environment.SetEnvironmentVariable(envName, "special-branch");
+        }
+
+        public void Dispose()
+        {
+            Environment.SetEnvironmentVariable(envName, _originalBranchName);
+        }
+
         [Fact]
         public void Environment_ForBranchName()
         {
-            const string envName = "DOCFX_SOURCE_BRANCH_NAME";
-            var original = Environment.GetEnvironmentVariable(envName);
-            try
-            {
-                Environment.SetEnvironmentVariable(envName, "special-branch");
-                var info = GitUtility.GetFileDetail(Directory.GetCurrentDirectory());
-                Assert.Equal("special-branch", info.RemoteBranch);
-            }
-            finally
-            {
-                Environment.SetEnvironmentVariable(envName, original);
-            }
+            var info = GitUtility.GetFileDetail(Directory.GetCurrentDirectory());
+            Assert.Equal("special-branch", info.RemoteBranch);
+        }
+
+        [Fact]
+        public void GetDeletedFile()
+        {
+            var repoInfo = GitUtility.GetRepoInfo(Directory.GetCurrentDirectory());
+            var deletedExistingFile = Path.Combine(repoInfo.RepoRootPath, @"src/docfx.website.themes/angular/README.md");
+            var deletedNotExistingFile = Path.Combine(repoInfo.RepoRootPath, @"NOTEXISTING.md");
+
+            var content = GitUtility.GetDeletedFileContent(deletedExistingFile);
+            Assert.NotNull(content);
+
+            content = GitUtility.GetDeletedFileContent(deletedNotExistingFile);
+            Assert.Null(content);
         }
     }
 }
