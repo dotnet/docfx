@@ -1,10 +1,14 @@
-## Current Version **0.0.26**
+## Current Version **0.1.0**
 ### new features
 * Publish extension under Microsoft
 
 ## Known Issues
 * When markdown use *file include* feature or there are multiple opened editors, preview match can't provide a good performance
 * Should kill child process when extension shutdown
+
+## Features Coming
+* Intellicense
+* Docs template preview support
 
 ## Verison History
 * **0.0.25**
