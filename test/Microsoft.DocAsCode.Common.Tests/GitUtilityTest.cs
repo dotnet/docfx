@@ -30,7 +30,6 @@ namespace Microsoft.DocAsCode.Common.Tests
         [Fact]
         public void Environment_ForBranchName()
         {
-
             var info = GitUtility.GetFileDetail(Directory.GetCurrentDirectory());
             Assert.Equal("special-branch", info.RemoteBranch);
         }
