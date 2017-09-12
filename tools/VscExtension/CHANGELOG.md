@@ -7,7 +7,7 @@
 * Should kill child process when extension shutdown
 
 ## Features Coming
-* Intellicense
+* IntelliSense
 * Docs template preview support
 
 ## Verison History
