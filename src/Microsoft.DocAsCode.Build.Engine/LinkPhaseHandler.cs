@@ -130,7 +130,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             Context.SetFilePath(model.Key, ((RelativePath)model.File).GetPathFromWorkingFolder());
             DocumentException.RunAll(
-                () => CheckFileLink(hostService, result),
+                () => CheckFileLink(model, hostService, result),
                 () => HandleUids(result),
                 () => HandleToc(result),
                 () => RegisterXRefSpec(result));
@@ -138,12 +138,28 @@ namespace Microsoft.DocAsCode.Build.Engine
             return GetManifestItem(model, result);
         }
 
-        private void CheckFileLink(HostService hostService, SaveResult result)
+        private void CheckFileLink(FileModel model, HostService hostService, SaveResult result)
         {
             result.LinkToFiles.RunAll(fileLink =>
             {
                 if (!hostService.SourceFiles.ContainsKey(fileLink))
                 {
+                    if (Context.ApplyTemplateSettings.HrefGenerator != null)
+                    {
+                        var path = ((RelativePath)model.OriginalFileAndType.File) - ((RelativePath)fileLink).RemoveWorkingFolder();
+                        var fli = new FileLinkInfo
+                        {
+                            FromFileInSource = model.OriginalFileAndType.File,
+                            ToFileInDest = model.File,
+                            ToFileInSource = fileLink,
+                            FileLinkInSource = path,
+                        };
+                        fli.Href = path.UrlEncode();
+                        if (Context.ApplyTemplateSettings.HrefGenerator.GenerateHref(fli) != null)
+                        {
+                            return;
+                        }
+                    }
                     if (result.FileLinkSources.TryGetValue(fileLink, out ImmutableList<LinkSourceInfo> list))
                     {
                         foreach (var fileLinkSourceFile in list)

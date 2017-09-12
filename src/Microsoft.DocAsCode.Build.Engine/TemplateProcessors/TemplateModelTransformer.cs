@@ -453,24 +453,5 @@ namespace Microsoft.DocAsCode.Build.Engine
             var href = _settings.HrefGenerator?.GenerateHref(fli) ?? fli.Href;
             link.SetAttributeValue(attribute, href + UriUtility.GetQueryString(originalHref) + (anchor ?? UriUtility.GetFragment(originalHref)));
         }
-
-        private struct FileLinkInfo : IFileLinkInfo
-        {
-            public string Href { get; set; }
-
-            public string FromFileInDest { get; set; }
-
-            public string FromFileInSource { get; set; }
-
-            public string ToFileInDest { get; set; }
-
-            public string ToFileInSource { get; set; }
-
-            public string FileLinkInSource { get; set; }
-
-            public string FileLinkInDest { get; set; }
-
-            public bool IsResolved => ToFileInDest != null;
-        }
     }
 }

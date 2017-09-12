@@ -123,6 +123,27 @@ namespace Microsoft.DocAsCode.Common
             });
         }
 
+        public static ILogItem GetLogItem(LogLevel level, string message, string phase = null, string file = null, string line = null, string code = null)
+        {
+            return new LogItem
+            {
+#if NetCore
+                File = file,
+#else
+                File = file ?? LoggerFileScope.GetFileName(),
+#endif
+                Line = line,
+                LogLevel = level,
+                Message = message,
+                Code = code,
+#if NetCore
+                Phase = phase,
+#else
+                Phase = phase ?? LoggerPhaseScope.GetPhaseName(),
+#endif
+            };
+        }
+
         [Obsolete]
         public static void LogDiagnostic(string message, string phase, string file, string line)
         {
