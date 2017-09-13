@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Composition.Hosting;
     using System.Collections.Immutable;
@@ -1839,9 +1840,13 @@ markdown token1.md content end.";
                 Assert.True(GitUtility.ApplyChange(fallbackFolder, "delete fallback files"));
             }
 
-            var dependency = new HashSet<string>();
-            var marked = DocfxFlavoredMarked.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder_{uniqueFolderName}"), root, fallbackFolders, $"root_{uniqueFolderName}.md", dependency: dependency);
-            Assert.Equal($@"<p>1markdown root.md main content start.</p>
+            var original = Environment.GetEnvironmentVariable("FALL_BACK_TO_GIT");
+            try
+            {
+                Environment.SetEnvironmentVariable("FALL_BACK_TO_GIT", "true");
+                var dependency = new HashSet<string>();
+                var marked = DocfxFlavoredMarked.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder_{uniqueFolderName}"), root, fallbackFolders, $"root_{uniqueFolderName}.md", dependency: dependency);
+                Assert.Equal($@"<p>1markdown root.md main content start.</p>
 <p>1markdown a.md main content start.</p>
 <p>1markdown token1.md content start.</p>
 <p><strong>1markdown token2.md main content</strong></p>
@@ -1850,9 +1855,14 @@ markdown token1.md content end.";
 <p>markdown a.md main content end.</p>
 <p>markdown root.md main content end.</p>
 ".Replace("\r\n", "\n"), marked);
-            Assert.Equal(
-                new[] { $"../fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md", $"a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md" },
-                dependency.OrderBy(x => x));
+                Assert.Equal(
+                    new[] { $"../fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md", $"a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md" },
+                    dependency.OrderBy(x => x));
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("FALL_BACK_TO_GIT", original);
+            }
         }
 
         [Fact]

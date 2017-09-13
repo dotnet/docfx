@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Dfm
         /// <param name="relativePath">original relative path in markdown.</param>
         /// <param name="context">markdown context</param>
         /// <returns>item1: acutal file path. item: true if it hit fallback file. Otherwise false</returns>
-        public static Tuple<string, bool> GetFilePathWithFallback(string relativePath, IMarkdownContext context, bool falbackToGit = true)
+        public static Tuple<string, bool> GetFilePathWithFallback(string relativePath, IMarkdownContext context)
         {
             if (context == null)
             {
@@ -63,7 +63,11 @@ namespace Microsoft.DocAsCode.Dfm
                     }
                     else
                     {
-                        if (falbackToGit && GitUtility.TryGetDeletedFileContent(fallbackFilePath, out string deletedContent) && deletedContent != null)
+                        var fallbackToGitStr = Environment.GetEnvironmentVariable("FALL_BACK_TO_GIT");
+                        if (bool.TryParse(fallbackToGitStr, out var fallbackToGit) &&
+                            fallbackToGit &&
+                            GitUtility.TryGetDeletedFileContent(fallbackFilePath, out string deletedContent) &&
+                            deletedContent != null)
                         {
                             EnvironmentContext.FileAbstractLayer.WriteAllText(fallbackFilePath, deletedContent);
                             actualFilePath = fallbackFilePath;
