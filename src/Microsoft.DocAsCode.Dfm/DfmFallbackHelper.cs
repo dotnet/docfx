@@ -5,9 +5,9 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using System;
     using System.IO;
-    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Common.Git;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Dfm
         /// <param name="relativePath">original relative path in markdown.</param>
         /// <param name="context">markdown context</param>
         /// <returns>item1: acutal file path. item: true if it hit fallback file. Otherwise false</returns>
-        public static Tuple<string, bool> GetFilePathWithFallback(string relativePath, IMarkdownContext context)
+        public static Tuple<string, bool> GetFilePathWithFallback(string relativePath, IMarkdownContext context, bool falbackToGit = true)
         {
             if (context == null)
             {
@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Dfm
             var filePathToDocset = relativePath;
             string parentFileDirectoryToDocset = context.GetBaseFolder();
             var parents = context.GetFilePathStack();
-            if(parents != null)
+            if (parents != null)
             {
                 var parent = parents.Peek();
                 filePathToDocset = ((RelativePath)parent + (RelativePath)filePathToDocset).RemoveWorkingFolder();
@@ -60,6 +60,16 @@ namespace Microsoft.DocAsCode.Dfm
                         actualFilePath = fallbackFilePath;
                         hitFallback = true;
                         break;
+                    }
+                    else
+                    {
+                        if (falbackToGit && GitUtility.TryGetDeletedFileContent(fallbackFilePath, out string deletedContent) && deletedContent != null)
+                        {
+                            EnvironmentContext.FileAbstractLayer.WriteAllText(fallbackFilePath, deletedContent);
+                            actualFilePath = fallbackFilePath;
+                            hitFallback = true;
+                            break;
+                        }
                     }
                 }
 
