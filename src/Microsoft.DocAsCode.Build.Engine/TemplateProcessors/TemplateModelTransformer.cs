@@ -59,6 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 SourceRelativePath = item.LocalPathFromRoot,
                 Metadata = item.Metadata,
                 Version = _context.VersionName,
+                Group = _context.GroupInfo?.Name,
             };
             var outputDirectory = _settings.OutputFolder ?? Directory.GetCurrentDirectory();
 
