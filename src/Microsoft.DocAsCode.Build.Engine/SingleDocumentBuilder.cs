@@ -95,7 +95,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                     parameters.ApplyTemplateSettings,
                     parameters.RootTocPath,
                     parameters.VersionDir,
-                    parameters.XRefServiceUrls);
+                    parameters.XRefServiceUrls,
+                    parameters.GroupInfo);
 
                 Logger.LogVerbose("Start building document...");
 

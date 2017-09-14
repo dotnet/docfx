@@ -35,6 +35,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath)
             : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null, ImmutableArray<string>.Empty) { }
 
+        public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath, string versionFolder, ImmutableArray<string> xrefServiceUrls)
+            : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null, ImmutableArray<string>.Empty, null) { }
+
         public DocumentBuildContext(
             string buildOutputFolder,
             IEnumerable<FileAndType> allSourceFiles,
@@ -46,7 +49,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             ApplyTemplateSettings applyTemplateSetting,
             string rootTocPath,
             string versionFolder,
-            ImmutableArray<string> xrefServiceUrls)
+            ImmutableArray<string> xrefServiceUrls,
+            GroupInfo groupInfo)
         {
             BuildOutputFolder = buildOutputFolder;
             VersionName = versionName;
@@ -55,6 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             ExternalReferencePackages = externalReferencePackages;
             _xrefMapUrls = xrefMaps;
             _xrefServiceUrls = xrefServiceUrls;
+            GroupInfo = groupInfo;
             MaxParallelism = maxParallelism;
             if (xrefMaps.Length > 0)
             {
@@ -80,9 +85,13 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string BuildOutputFolder { get; }
 
+        [Obsolete("use GroupInfo")]
         public string VersionName { get; }
 
+        [Obsolete("use GroupInfo")]
         public string VersionFolder { get; }
+
+        public GroupInfo GroupInfo { get; }
 
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 

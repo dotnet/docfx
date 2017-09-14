@@ -160,7 +160,7 @@ namespace Microsoft.DocAsCode.HtmlToPdf
                                 {
                                     DocsetName = _pdfOptions.PdfDocsetName,
                                     TocFiles = new string[] { tocFile.SourceRelativePath },
-                                    Version = tocFile.Version,
+                                    Version = tocFile.Group,
                                     AssetId = tocAssetId,
                                 });
                         }
