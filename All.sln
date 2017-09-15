@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6A65A769-DAC3-4E99-96F9-991F4CE8D164}"
 EndProject
@@ -189,9 +189,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XRefService", "XRefService", "{6241C3CE-51DB-4CAB-B04B-2EE6DBC10496}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XRefService", "tools\XRefService\XRefService\XRefService.csproj", "{FAD166CA-AADD-4AB0-A08A-614707922B4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XRefService.Get", "tools\XRefService\XRefService\XRefService.Get.csproj", "{FAD166CA-AADD-4AB0-A08A-614707922B4B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManageXRefService", "tools\XRefService\ManageXRefService\ManageXRefService.csproj", "{401FE126-222D-4D58-B03D-B0322C30DFC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XRefService.Manage", "tools\XRefService\ManageXRefService\XRefService.Manage.csproj", "{401FE126-222D-4D58-B03D-B0322C30DFC4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XRefService.Common", "tools\XRefService\XRefService.Common\XRefService.Common.csproj", "{A1EF5A35-D6C8-438F-9820-8889278BC847}"
 EndProject
