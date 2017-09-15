@@ -101,6 +101,7 @@ breadcrumb_path: /absolute/toc.json
 toc_rel: ../a b/toc.md
 file_include: ../a b/inc.md
 uhfHeaderId: MSDocsHeader-DotNet
+empty:
 searchScope:
   - .NET
 ", _inputFolder);
