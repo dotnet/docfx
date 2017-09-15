@@ -59,6 +59,11 @@ namespace Microsoft.DocAsCode.Common
 
         private static object ConvertExpandoObjectToObjectCore(object obj, Dictionary<object, object> cache)
         {
+            if (obj == null)
+            {
+                return null;
+            }
+
             if (cache.TryGetValue(obj, out var output))
             {
                 return output;
@@ -88,6 +93,11 @@ namespace Microsoft.DocAsCode.Common
 
         private static object ConvertToDynamicCore(object obj, Dictionary<object, object> cache)
         {
+            if (obj == null)
+            {
+                return null;
+            }
+
             if (cache.TryGetValue(obj, out var output))
             {
                 return output;
