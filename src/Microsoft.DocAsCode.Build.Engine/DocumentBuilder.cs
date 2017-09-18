@@ -314,14 +314,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                 foreach (var pair in resource.GetResourceStreams(@"^schemas/.*\.schema\.json"))
                 {
                     var fileName = Path.GetFileName(pair.Key);
-                    using (var stream = pair.Value)
+                    using (new LoggerFileScope(fileName))
                     {
-                        using (var sr = new StreamReader(stream))
+                        using (var stream = pair.Value)
                         {
-                            var schema = DocumentSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
-                            var sdp = new SchemaDrivenDocumentProcessor(schema, new CompositionContainer(CompositionContainer.DefaultContainer));
-                            Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
-                            yield return sdp;
+                            using (var sr = new StreamReader(stream))
+                            {
+                                var schema = DocumentSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
+                                var sdp = new SchemaDrivenDocumentProcessor(schema, new CompositionContainer(CompositionContainer.DefaultContainer));
+                                Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
+                                yield return sdp;
+                            }
                         }
                     }
                 }

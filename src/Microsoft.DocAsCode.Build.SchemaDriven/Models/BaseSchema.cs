@@ -11,17 +11,25 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     public class BaseSchema
     {
         public string Title { get; set; }
+
         public string Description { get; set; }
+
         public JSchemaType? Type { get; set; }
+
         public JToken Default { get; set; }
+
         public Dictionary<string, BaseSchema> Properties { get; set; }
+
         public BaseSchema Items { get; set; }
+
         public ReferenceType Reference { get; set; }
+
         public ContentType ContentType { get; set; }
 
         public List<string> Tags { get; set; }
 
         public MergeType MergeType { get; set; }
+
         public List<string> XrefProperties { get; set; }
     }
 }
