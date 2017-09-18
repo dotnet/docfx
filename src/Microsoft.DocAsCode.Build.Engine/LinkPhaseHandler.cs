@@ -151,7 +151,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             FromFileInSource = model.OriginalFileAndType.File,
                             ToFileInDest = model.File,
-                            ToFileInSource = fileLink,
+                            ToFileInSource = ((RelativePath)fileLink).RemoveWorkingFolder().ToString(),
                             FileLinkInSource = path,
                         };
                         fli.Href = path.UrlEncode();
