@@ -38,8 +38,8 @@ $(function () {
     $(".xref").addClass("text-break");
     var texts = $(".text-break");
     texts.each(function () {
-      $(this).text(function (index, text) {
-        return util.breakText(text);
+      $(this).html(function (index, oldHtml) {
+        return util.breakText(oldHtml);
       })
     });
   }
@@ -500,8 +500,8 @@ $(function () {
             $(e).addClass(active);
           }
 
-          $(e).text(function (index, text) {
-            return util.breakText(text);
+          $(e).html(function (index, oldHtml) {
+            return util.breakText(oldHtml);
           })
         });
 
@@ -776,9 +776,13 @@ $(function () {
       }
     }
 
+    /**
+     * usage: $("query").html(function(index, oldhtml) {return breakText(oldhtml)})
+     * @param {String} text - The word to break. It should be in plain text without HTML tags.
+     */
     function breakText(text) {
       if (!text) return text;
-      return text.replace(/([a-z])([A-Z])|(\.)(\w)/g, '$1$3\u200B$2$4')
+      return text.replace(/([a-z])([A-Z])|(\.)(\w)/g, '$1$3<wbr>$2$4')
     }
   }
 })
