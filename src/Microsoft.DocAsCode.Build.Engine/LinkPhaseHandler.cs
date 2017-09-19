@@ -150,7 +150,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         var fli = new FileLinkInfo
                         {
                             FromFileInSource = model.OriginalFileAndType.File,
-                            ToFileInDest = model.File,
+                            FromFileInDest = model.File,
                             ToFileInSource = ((RelativePath)fileLink).RemoveWorkingFolder().ToString(),
                             FileLinkInSource = path,
                         };
