@@ -150,7 +150,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             {
                 if (schema.Items.Count > 1)
                 {
-                    throw new SchemaFeatureNotSupported("Multiple item definition is not supported in current schema driven document processor");
+                    throw new SchemaFeatureNotSupportedException("Multiple item definition is not supported in current schema driven document processor");
                 }
 
                 bs.Items = LoadSchema<BaseSchema>(schema.Items[0], cache);
@@ -181,20 +181,20 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             {
                 if (list.Count > 0)
                 {
-                    throw new SchemaKeywordNotSupported(name);
+                    throw new SchemaKeywordNotSupportedException(name);
                 }
             }
             else if (keyword is IDictionary<string, JSchema> dict)
             {
                 if (dict.Count > 0)
                 {
-                    throw new SchemaKeywordNotSupported(name);
+                    throw new SchemaKeywordNotSupportedException(name);
 
                 }
             }
             else
             {
-                throw new SchemaKeywordNotSupported(name);
+                throw new SchemaKeywordNotSupportedException(name);
             }
         }
     }
