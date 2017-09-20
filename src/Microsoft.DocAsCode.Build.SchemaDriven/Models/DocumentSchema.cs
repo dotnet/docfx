@@ -189,7 +189,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 if (dict.Count > 0)
                 {
                     throw new SchemaKeywordNotSupportedException(name);
-
                 }
             }
             else
