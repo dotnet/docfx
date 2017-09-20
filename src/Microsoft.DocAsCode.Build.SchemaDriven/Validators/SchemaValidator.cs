@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         public SchemaValidator(DocumentSchema schema)
         {
             _schema = schema;
-            _schemaObject = schema.ToJObject();
+            _schemaObject = schema.InnerJObject;
             Validate(schema, _schemaObject);
             _jSchema = JSchema.Load(_schemaObject.CreateReader());
         }
@@ -57,9 +57,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         private static void Validate(DocumentSchema schema, JObject obj)
         {
-            if (!ValidateSchemaUrl(schema.Schema))
+            if (!ValidateSchemaUrl(schema.SchemaVersion))
             {
-                throw new InvalidSchemaException($"Schema {schema.Schema} is not supported. Current supported schemas are: {SupportedMetaSchemaUri.OriginalString}.");
+                throw new InvalidSchemaException($"Schema {schema.SchemaVersion} is not supported. Current supported schemas are: {SupportedMetaSchemaUri.OriginalString}.");
             }
 
             using (var stream = typeof(SchemaValidator).Assembly.GetManifestResourceStream("Microsoft.DocAsCode.Build.SchemaDriven.schemas.v1._0.schema.json"))
@@ -74,13 +74,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             }
         }
 
-        private static bool ValidateSchemaUrl(string url)
+        private static bool ValidateSchemaUrl(Uri uri)
         {
-            if (url == null || !Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
-            {
-                return false;
-            }
-            
             return uri.Host == SupportedMetaSchemaUri.Host
                 && uri.LocalPath == SupportedMetaSchemaUri.LocalPath
                 && (string.IsNullOrEmpty(uri.Fragment) || uri.Fragment == "#");

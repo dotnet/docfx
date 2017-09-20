@@ -24,12 +24,12 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
         public bool CanInterpret(BaseSchema schema)
         {
-            return schema.ContentType == ContentType.Href && schema.Type == JSchemaType.String;
+            return schema.ContentType == ContentType.Href;
         }
 
         public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
         {
-            if (!CanInterpret(schema) || value == null)
+            if (value == null || !CanInterpret(schema))
             {
                 return value;
             }

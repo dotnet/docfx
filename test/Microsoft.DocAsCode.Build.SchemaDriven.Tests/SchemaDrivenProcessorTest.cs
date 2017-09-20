@@ -148,6 +148,80 @@ searchScope:
         }
 
         [Fact]
+        public void TestRef()
+        {
+            using (var listener = new TestListenerScope("TestRef"))
+            {
+                var schemaFile = CreateFile("template/schemas/general.test.schema.json", File.ReadAllText("TestData/schemas/general.test.schema.json"), _templateFolder);
+                var templateFile = CreateFile("template/General.html.tmpl", @"{{#items}}
+{{#aggregatedExceptions}}
+   {{{message}}}
+   {{{inner.message}}}
+   {{{inner.inner.message}}}
+{{/aggregatedExceptions}}
+{{#exception}}
+   {{{message}}}
+{{/exception}}
+{{{description}}}
+{{/items}}
+", _templateFolder);
+                var inputFileName = "inputs/exp1.yml";
+                var inputFile = CreateFile(inputFileName, @"### YamlMime:General
+items:
+  - exception:
+      message: ""**Hello**""
+  - aggregatedExceptions:
+      - message: ""1**Hello**""
+        inner:
+          message: ""1.1**Hello**""
+          inner:
+            message: ""1.1.1**Hello**""
+      - message: ""2**Hello**""
+        inner:
+          message: ""2.1**Hello**""
+          inner:
+            message: ""2.1.1**Hello**""
+      - message: ""3**Hello**""
+        inner:
+          message: ""3.1**Hello**""
+          inner:
+            message: ""3.1.1**Hello**""
+  - description: ""**outside**""
+", _inputFolder);
+                FileCollection files = new FileCollection(_defaultFiles);
+                files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
+                BuildDocument(files);
+
+                Assert.Equal(1, listener.Items.Count);
+
+                var xrefspec = Path.Combine(_outputFolder, "xrefmap.yml");
+                var xrefmap = YamlUtility.Deserialize<XRefMap>(xrefspec);
+                Assert.Equal(0, xrefmap.References.Count);
+
+                var outputFileName = Path.ChangeExtension(inputFileName, ".html");
+
+                var outputFilePath = Path.Combine(_outputFolder, outputFileName);
+                Assert.True(File.Exists(outputFilePath));
+
+                Assert.Equal($@"
+<p><strong>Hello</strong></p>
+<p>1<strong>Hello</strong></p>
+<p>1.1<strong>Hello</strong></p>
+<p>1.1.1<strong>Hello</strong></p>
+<p>2<strong>Hello</strong></p>
+<p>2.1<strong>Hello</strong></p>
+<p>2.1.1<strong>Hello</strong></p>
+<p>3<strong>Hello</strong></p>
+<p>3.1<strong>Hello</strong></p>
+<p>3.1.1<strong>Hello</strong></p>
+<p><strong>outside</strong></p>
+"
+                    .Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries),
+File.ReadAllLines(outputFilePath).Where(s => !string.IsNullOrWhiteSpace(s)).Select(s=>s.Trim()).ToArray());
+            }
+        }
+
+        [Fact]
         public void TestXrefResolver()
         {
             using (var listener = new TestListenerScope("TestXrefResolver"))

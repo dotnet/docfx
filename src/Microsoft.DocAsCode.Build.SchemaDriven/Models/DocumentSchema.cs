@@ -4,68 +4,54 @@
 namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
-    using System.Threading;
 
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Converters;
     using Newtonsoft.Json.Linq;
     using Newtonsoft.Json.Schema;
-    using Newtonsoft.Json.Serialization;
 
     using Microsoft.DocAsCode.Exceptions;
 
     public class DocumentSchema : BaseSchema
     {
         private const string SchemaFileEnding = ".schema.json";
-        public static readonly ThreadLocal<JsonSerializer> DefaultSerializer = new ThreadLocal<JsonSerializer>(
-               () => new JsonSerializer
-               {
-                   NullValueHandling = NullValueHandling.Ignore,
-                   ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
-                   ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                   Converters =
-                   {
-                       new StringEnumConverter { CamelCaseText = true },
-                   },
-               });
 
-        [JsonProperty("$schema")]
-        public string Schema { get; set; }
+        public Uri SchemaVersion { get; set; }
 
         public string Version { get; set; }
 
-        public string Id { get; set; }
+        public Uri Id { get; set; }
 
         public string Metadata { get; set; }
 
-        [JsonIgnore]
-        public JsonPointer MetadataReference { get; set; }
+        public JsonPointer MetadataReference { get; private set; }
 
-        [JsonIgnore]
-        public SchemaValidator SchemaValidator { get; set; }
+        public JSchema InnerJSchema { get; private set; }
 
-        public JObject ToJObject()
-        {
-            return JObject.FromObject(this, DefaultSerializer.Value);
-        }
+        public JObject InnerJObject { get; private set; }
 
         public static DocumentSchema Load(TextReader reader, string title)
         {
-            using (var json = new JsonTextReader(reader))
+            using (var jtr = new JsonTextReader(reader))
             {
+                var jObject = JObject.Load(jtr);
                 DocumentSchema schema;
                 try
                 {
-                    schema = DefaultSerializer.Value.Deserialize<DocumentSchema>(json);
+                    var jschema = JSchema.Load(jObject.CreateReader());
+                    schema = LoadSchema<DocumentSchema>(jschema, new Dictionary<JSchema, BaseSchema>());
+                    schema.InnerJSchema = jschema;
+                    schema.InnerJObject = jObject;
+                    schema.SchemaVersion = jschema.SchemaVersion;
+                    schema.Id = jschema.Id;
+                    schema.Version = GetValueFromJSchemaExtensionData<string>(jschema, "version");
+                    schema.Metadata = GetValueFromJSchemaExtensionData<string>(jschema, "metadata");
                 }
                 catch (Exception e)
                 {
                     throw new InvalidSchemaException($"Not a valid schema: {e.Message}", e);
                 }
-
-                schema.SchemaValidator = new SchemaValidator(schema);
 
                 if (string.IsNullOrWhiteSpace(schema.Title))
                 {
@@ -119,6 +105,95 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             using (var fr = new StreamReader(schemaPath))
             {
                 return Load(fr, name);
+            }
+        }
+
+        private static T LoadSchema<T>(JSchema schema, Dictionary<JSchema, BaseSchema> cache) where T : BaseSchema, new()
+        {
+            if (cache.TryGetValue(schema, out var bs))
+            {
+                return (T)bs;
+            }
+
+            bs = new T
+            {
+                Title = schema.Title,
+                Description = schema.Description,
+                Type = schema.Type,
+                Default = schema.Default,
+                ContentType = GetValueFromJSchemaExtensionData<ContentType>(schema, "contentType"),
+                Tags = GetValueFromJSchemaExtensionData<List<string>>(schema, "tags"),
+                MergeType = GetValueFromJSchemaExtensionData<MergeType>(schema, "mergeType"),
+                Reference = GetValueFromJSchemaExtensionData<ReferenceType>(schema, "reference"),
+                XrefProperties = GetValueFromJSchemaExtensionData<List<string>>(schema, "xrefProperties"),
+            };
+
+            cache[schema] = bs;
+
+            CheckForNotSupportedKeyword(schema.OneOf, nameof(schema.OneOf));
+            CheckForNotSupportedKeyword(schema.AllOf, nameof(schema.AllOf));
+            CheckForNotSupportedKeyword(schema.AnyOf, nameof(schema.AnyOf));
+            CheckForNotSupportedKeyword(schema.AdditionalItems, nameof(schema.AdditionalItems));
+            CheckForNotSupportedKeyword(schema.AdditionalProperties, nameof(schema.AdditionalProperties));
+            CheckForNotSupportedKeyword(schema.PatternProperties, nameof(schema.PatternProperties));
+
+            if (schema.Properties != null)
+            {
+                bs.Properties = new Dictionary<string, BaseSchema>();
+                foreach (var pair in schema.Properties)
+                {
+                    bs.Properties[pair.Key] = LoadSchema<BaseSchema>(pair.Value, cache);
+                }
+            }
+
+            if (schema.Items != null && schema.Items.Count > 0)
+            {
+                if (schema.Items.Count > 1)
+                {
+                    throw new SchemaFeatureNotSupportedException("Multiple item definition is not supported in current schema driven document processor");
+                }
+
+                bs.Items = LoadSchema<BaseSchema>(schema.Items[0], cache);
+            }
+
+            return (T)bs;
+        }
+
+        private static T GetValueFromJSchemaExtensionData<T>(JSchema schema, string key)
+        {
+            if (schema.ExtensionData != null
+                && schema.ExtensionData.TryGetValue(key, out var value))
+            {
+                return value.ToObject<T>();
+            }
+
+            return default(T);
+        }
+
+        private static void CheckForNotSupportedKeyword(object keyword, string name)
+        {
+            if (keyword == null)
+            {
+                return;
+            }
+
+            if (keyword is IList<JSchema> list)
+            {
+                if (list.Count > 0)
+                {
+                    throw new SchemaKeywordNotSupportedException(name);
+                }
+            }
+            else if (keyword is IDictionary<string, JSchema> dict)
+            {
+                if (dict.Count > 0)
+                {
+                    throw new SchemaKeywordNotSupportedException(name);
+                }
+            }
+            else
+            {
+                throw new SchemaKeywordNotSupportedException(name);
             }
         }
     }

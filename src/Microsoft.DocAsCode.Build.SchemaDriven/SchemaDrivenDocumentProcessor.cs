@@ -27,6 +27,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private readonly ResourcePoolManager<JsonSerializer> _serializerPool;
         private readonly string _schemaName;
         private readonly DocumentSchema _schema;
+        private readonly SchemaValidator _schemaValidator;
         #endregion
 
         #region Constructors
@@ -40,6 +41,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             _schemaName = schema.Title;
             _schema = schema;
+            _schemaValidator = new SchemaValidator(_schema);
+
             _serializerPool = new ResourcePoolManager<JsonSerializer>(GetSerializer, 0x10);
             if (container != null)
             {
@@ -99,7 +102,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         var obj = YamlUtility.Deserialize<Dictionary<string, object>>(file.File);
 
                         // Validate against the schema first
-                        _schema.SchemaValidator.Validate(obj);
+                        _schemaValidator.Validate(obj);
 
                         var content = ConvertToObjectHelper.ConvertToDynamic(obj);
                         var pageMetadata = _schema.MetadataReference.GetValue(content) as IDictionary<string, object>;
