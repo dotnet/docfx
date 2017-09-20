@@ -5,9 +5,9 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using System;
     using System.IO;
-    using System.Linq;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Common.Git;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Dfm
             var filePathToDocset = relativePath;
             string parentFileDirectoryToDocset = context.GetBaseFolder();
             var parents = context.GetFilePathStack();
-            if(parents != null)
+            if (parents != null)
             {
                 var parent = parents.Peek();
                 filePathToDocset = ((RelativePath)parent + (RelativePath)filePathToDocset).RemoveWorkingFolder();
@@ -60,6 +60,20 @@ namespace Microsoft.DocAsCode.Dfm
                         actualFilePath = fallbackFilePath;
                         hitFallback = true;
                         break;
+                    }
+                    else
+                    {
+                        var fallbackToGitStr = Environment.GetEnvironmentVariable("FALL_BACK_TO_GIT");
+                        if (bool.TryParse(fallbackToGitStr, out var fallbackToGit) &&
+                            fallbackToGit &&
+                            GitUtility.TryGetDeletedFileContent(fallbackFilePath, out string deletedContent) &&
+                            deletedContent != null)
+                        {
+                            EnvironmentContext.FileAbstractLayer.WriteAllText(fallbackFilePath, deletedContent);
+                            actualFilePath = fallbackFilePath;
+                            hitFallback = true;
+                            break;
+                        }
                     }
                 }
 

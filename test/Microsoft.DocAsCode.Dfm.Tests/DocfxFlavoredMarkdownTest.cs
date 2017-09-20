@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Composition.Hosting;
     using System.Collections.Immutable;
@@ -19,6 +20,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
+    using Microsoft.DocAsCode.Common.Git;
 
     public class DocfxFlavoredMarkdownTest
     {
@@ -352,12 +354,12 @@ uid: reference.md
 
             var parents = ImmutableStack.Create("reference.md");
 
-            var dfmservice = (DfmServiceProvider.DfmService) service;
+            var dfmservice = (DfmServiceProvider.DfmService)service;
             var marked = dfmservice
                 .Builder
                 .CreateDfmEngine(dfmservice.Renderer)
                 .Markup(reference,
-                    ((MarkdownBlockContext) dfmservice.Builder.CreateParseContext())
+                    ((MarkdownBlockContext)dfmservice.Builder.CreateParseContext())
                     .GetInlineContext().SetFilePathStack(parents).SetIsInclude());
 
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
@@ -1785,6 +1787,82 @@ markdown token1.md content end.";
             Assert.Equal(
                 new[] { $"../fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md", $"a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md" },
                 dependency.OrderBy(x => x));
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestFallbaclk_Inclusion_Token_Git()
+        {
+            // -root_folder (this is also docset folder)
+            //  |- root.md
+            //  |- a_folder
+            //  |  |- a.md
+            //  |- token_folder
+            //  |  |- token1.md
+            // -fallback_folder
+            //  |- token_folder
+            //     |- token2.md
+
+            // 1. Prepare data
+            var uniqueFolderName = Path.GetRandomFileName();
+            var root = $@"1markdown root.md main content start.
+
+[!include[a](a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md ""This is a.md"")]
+
+markdown root.md main content end.";
+
+            var a = $@"1markdown a.md main content start.
+
+[!include[token1](../token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md ""This is token1.md"")]
+[!include[token1](../token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md ""This is token2.md"")]
+
+markdown a.md main content end.";
+
+            var token1 = $@"1markdown token1.md content start.
+
+[!include[token2](token2_{uniqueFolderName}.md ""This is token2.md"")]
+
+markdown token1.md content end.";
+
+            var token2 = @"**1markdown token2.md main content**";
+
+            WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/root_{uniqueFolderName}.md", root);
+            WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md", a);
+            WriteToFile($"{uniqueFolderName}/root_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md", token1);
+            WriteToFile($"{uniqueFolderName}/fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md", token2);
+
+            var fallbackFolders = new List<string> { { Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/fallback_folder_{uniqueFolderName}") } };
+            foreach (var fallbackFolder in fallbackFolders)
+            {
+                Assert.True(GitUtility.InitRepo(fallbackFolder, $"https://github.com/docfxtest{uniqueFolderName}"));
+                Assert.True(GitUtility.ApplyChange(fallbackFolder, "add fallback files"));
+                File.Delete($"{uniqueFolderName}/fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md");
+                Assert.True(GitUtility.ApplyChange(fallbackFolder, "delete fallback files"));
+            }
+
+            var original = Environment.GetEnvironmentVariable("FALL_BACK_TO_GIT");
+            try
+            {
+                Environment.SetEnvironmentVariable("FALL_BACK_TO_GIT", "true");
+                var dependency = new HashSet<string>();
+                var marked = DocfxFlavoredMarked.Markup(Path.Combine(Directory.GetCurrentDirectory(), $"{uniqueFolderName}/root_folder_{uniqueFolderName}"), root, fallbackFolders, $"root_{uniqueFolderName}.md", dependency: dependency);
+                Assert.Equal($@"<p>1markdown root.md main content start.</p>
+<p>1markdown a.md main content start.</p>
+<p>1markdown token1.md content start.</p>
+<p><strong>1markdown token2.md main content</strong></p>
+<p>markdown token1.md content end.</p>
+<p><strong>1markdown token2.md main content</strong></p>
+<p>markdown a.md main content end.</p>
+<p>markdown root.md main content end.</p>
+".Replace("\r\n", "\n"), marked);
+                Assert.Equal(
+                    new[] { $"../fallback_folder_{uniqueFolderName}/token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md", $"a_folder_{uniqueFolderName}/a_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token1_{uniqueFolderName}.md", $"token_folder_{uniqueFolderName}/token2_{uniqueFolderName}.md" },
+                    dependency.OrderBy(x => x));
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("FALL_BACK_TO_GIT", original);
+            }
         }
 
         [Fact]

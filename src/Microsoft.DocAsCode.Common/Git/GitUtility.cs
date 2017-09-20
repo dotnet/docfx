@@ -22,6 +22,11 @@ namespace Microsoft.DocAsCode.Common.Git
         private static readonly string GetRemoteBranchCommand = "rev-parse --abbrev-ref @{u}";
         private static readonly string GetDeletedFileContentCommand = "show {0}^:{1}";
         private static readonly string GetFileLastCommitIdCommand = "rev-list --max-count=1 --all -- {0}";
+        private static readonly string InitGitCommand = "init";
+        private static readonly string InitCommitCommand = "commit --allow-empty -m \"init\"";
+        private static readonly string AddCommand = "add --all";
+        private static readonly string CommitCommand = "commit -m \"{0}\"";
+        private static readonly string AddRemoteCommand = "remote add origin {0}";
         // TODO: only get default remote's url currently.
         private static readonly string GetOriginUrlCommand = "config --get remote.origin.url";
         private static readonly string GetLocalHeadIdCommand = "rev-parse HEAD";
@@ -75,6 +80,22 @@ namespace Microsoft.DocAsCode.Common.Git
             return detail;
         }
 
+        public static bool TryGetDeletedFileContent(string filePath, out string content)
+        {
+            content = null;
+            try
+            {
+                content = GetDeletedFileContent(filePath);
+                return true;
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return false;
+        }
+
         public static string GetDeletedFileContent(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
@@ -115,6 +136,69 @@ namespace Microsoft.DocAsCode.Common.Git
             }
 
             return Cache.GetOrAdd(directory, d => GetRepoInfo(parentDirInfo.FullName));
+        }
+
+        public static bool InitRepo(string repoRootDirectory, string remote = null)
+        {
+            if (repoRootDirectory == null)
+            {
+                return false;
+            }
+
+            if (!PathUtility.IsDirectory(repoRootDirectory))
+            {
+                return false;
+            }
+
+            repoRootDirectory = PathUtility.NormalizePath(repoRootDirectory);
+            try
+            {
+                RunGitCommand(repoRootDirectory, InitGitCommand);
+                RunGitCommand(repoRootDirectory, InitCommitCommand);
+                if (remote != null)
+                {
+                    RunGitCommand(repoRootDirectory, string.Format(AddRemoteCommand, remote));
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return false;
+        }
+
+        public static bool ApplyChange(string repoRootDirectory, string message)
+        {
+            if (repoRootDirectory == null || message == null)
+            {
+                return false;
+            }
+
+            if (!PathUtility.IsDirectory(repoRootDirectory))
+            {
+                return false;
+            }
+
+            if (!IsGitRoot(repoRootDirectory))
+            {
+                return false;
+            }
+
+            repoRootDirectory = PathUtility.NormalizePath(repoRootDirectory);
+            try
+            {
+                RunGitCommand(repoRootDirectory, AddCommand);
+                RunGitCommand(repoRootDirectory, string.Format(CommitCommand, message));
+                return true;
+            }
+            catch (Exception e)
+            {
+                // ignored
+            }
+
+            return false;
         }
 
         #region Private Methods
@@ -305,7 +389,7 @@ namespace Microsoft.DocAsCode.Common.Git
             return content;
         }
 
-        private static void RunGitCommand(string repoPath, string arguments, Action<string> processOutput)
+        private static void RunGitCommand(string repoPath, string arguments, Action<string> processOutput = null)
         {
             var encoding = Encoding.UTF8;
             const int bufferSize = 4096;
@@ -344,10 +428,13 @@ namespace Microsoft.DocAsCode.Common.Git
                     outputStream.Position = 0;
                     using (var streamReader = new StreamReader(outputStream, encoding, false, bufferSize, true))
                     {
-                        string line;
-                        while ((line = streamReader.ReadLine()) != null)
+                        if (processOutput != null)
                         {
-                            processOutput(line);
+                            string line;
+                            while ((line = streamReader.ReadLine()) != null)
+                            {
+                                processOutput(line);
+                            }
                         }
                     }
                 }
