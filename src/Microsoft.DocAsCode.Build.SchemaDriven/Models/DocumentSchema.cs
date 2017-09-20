@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
 
     using Newtonsoft.Json;
@@ -11,7 +12,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Newtonsoft.Json.Schema;
 
     using Microsoft.DocAsCode.Exceptions;
-    using System.Collections.Generic;
 
     public class DocumentSchema : BaseSchema
     {
@@ -31,7 +31,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         public JObject InnerJObject { get; private set; }
 
-        public static DocumentSchema Load(StreamReader reader, string title)
+        public static DocumentSchema Load(TextReader reader, string title)
         {
             using (var jtr = new JsonTextReader(reader))
             {
