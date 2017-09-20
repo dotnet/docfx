@@ -38,9 +38,7 @@ $(function () {
     $(".xref").addClass("text-break");
     var texts = $(".text-break");
     texts.each(function () {
-      $(this).html(function (index, oldHtml) {
-        return util.breakText(oldHtml);
-      })
+      $(this).breakWord();
     });
   }
 
@@ -500,9 +498,7 @@ $(function () {
             $(e).addClass(active);
           }
 
-          $(e).html(function (index, oldHtml) {
-            return util.breakText(oldHtml);
-          })
+          $(e).breakWord();
         });
 
         renderSidebar();
@@ -721,7 +717,6 @@ $(function () {
     this.isAbsolutePath = isAbsolutePath;
     this.getDirectory = getDirectory;
     this.formList = formList;
-    this.breakText = breakText;
 
     function getAbsolutePath(href) {
       // Use anchor to normalize href
@@ -777,12 +772,25 @@ $(function () {
     }
 
     /**
-     * usage: $("query").html(function(index, oldhtml) {return breakText(oldhtml)})
+     * Add <wbr> into long word.
      * @param {String} text - The word to break. It should be in plain text without HTML tags.
      */
-    function breakText(text) {
+    function breakPlainText(text) {
       if (!text) return text;
       return text.replace(/([a-z])([A-Z])|(\.)(\w)/g, '$1$3<wbr>$2$4')
+    }
+
+    /**
+     * Add <wbr> into long word. The jQuery element should contain no html tags.
+     * If the jQuery element contains tags, this function will not change the element.
+     */
+    $.fn.breakWord = function() {
+      if (this.html() == this.text()) {
+        this.html(function (index, text) {
+          return breakPlainText(text);
+        })
+      }
+      return this;
     }
   }
 })
