@@ -64,5 +64,9 @@ namespace Microsoft.DocAsCode.Plugins
             Path.Combine(
                 Environment.ExpandEnvironmentVariables(EnvironmentContext.OutputDirectory),
                 file);
+
+        public IEnumerable<string> GetExpectedPhysicalPath(string file) =>
+            new[] { Path.Combine(EnvironmentContext.OutputDirectory, file) };
+
     }
 }

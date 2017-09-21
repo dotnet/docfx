@@ -48,6 +48,20 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
+        public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file)
+        {
+            OutputFileInfo entry;
+            lock (Manifest)
+            {
+                entry = FindEntryInManifest(file.RemoveWorkingFolder());
+            }
+            if (entry == null)
+            {
+                return Enumerable.Empty<string>();
+            }
+            return new[] { entry.LinkToPath ?? Path.Combine(ManifestFolder, entry.RelativePath) };
+        }
+
         #endregion
 
         private OutputFileInfo FindEntryInManifest(string file)

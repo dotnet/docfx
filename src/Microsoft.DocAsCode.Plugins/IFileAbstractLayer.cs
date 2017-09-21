@@ -26,5 +26,7 @@ namespace Microsoft.DocAsCode.Plugins
         ImmutableDictionary<string, string> GetProperties(string file);
 
         string GetPhysicalPath(string file);
+
+        IEnumerable<string> GetExpectedPhysicalPath(string file);
     }
 }
