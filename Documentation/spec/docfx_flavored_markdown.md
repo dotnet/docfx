@@ -201,7 +201,7 @@ DFM currently supports the following __`<language>`__ values to be able to retri
     .vba
 * Markup language family
   - Start with: `<!-- <{name}> -->`
-  - End with: `'<!-- </{name}> -->`
+  - End with: `<!-- </{name}> -->`
   - Languages:
     cshtml,
     html,
