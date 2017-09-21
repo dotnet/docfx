@@ -7,6 +7,7 @@ namespace Microsoft.DocAsCode
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
 
     using Newtonsoft.Json;
 
@@ -174,5 +175,8 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("cleanupCacheHistory")]
         public bool CleanupCacheHistory { get; set; }
+
+        [JsonProperty("sitemap")]
+        public SitemapOptions SitemapOptions { get; set; }
     }
 }
