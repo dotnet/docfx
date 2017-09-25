@@ -146,7 +146,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     if (Context.ApplyTemplateSettings.HrefGenerator != null)
                     {
-                        var path = ((RelativePath)model.OriginalFileAndType.File) - ((RelativePath)fileLink).RemoveWorkingFolder();
+                        var path = ((RelativePath)fileLink).RemoveWorkingFolder() - ((RelativePath)model.OriginalFileAndType.File);
                         var fli = new FileLinkInfo
                         {
                             FromFileInSource = model.OriginalFileAndType.File,
