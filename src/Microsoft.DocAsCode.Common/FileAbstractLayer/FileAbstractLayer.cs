@@ -89,8 +89,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 throw new InvalidOperationException();
             }
-            var mapping = FindPhysicalPath(sourceFileName);
-            Writer.Copy(mapping, destFileName);
+            Writer.Copy(FindPhysicalPath(sourceFileName), destFileName);
         }
 
         public ImmutableDictionary<string, string> GetProperties(RelativePath file)
@@ -100,8 +99,7 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(file));
             }
             EnsureNotDisposed();
-            var mapping = FindPhysicalPath(file);
-            return mapping.Properties;
+            return FindPhysicalPath(file).Properties;
         }
 
         public string GetPhysicalPath(RelativePath file)
@@ -111,8 +109,17 @@ namespace Microsoft.DocAsCode.Common
                 throw new ArgumentNullException(nameof(file));
             }
             EnsureNotDisposed();
-            var pp = FindPhysicalPath(file);
-            return pp.PhysicalPath;
+            return FindPhysicalPath(file).PhysicalPath;
+        }
+
+        public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file)
+        {
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+            EnsureNotDisposed();
+            return Reader.GetExpectedPhysicalPath(file);
         }
 
         public string CreateRandomFileName()
@@ -149,23 +156,30 @@ namespace Microsoft.DocAsCode.Common
 
         #region IFileAbstractLayer Members
 
-        IEnumerable<string> IFileAbstractLayer.GetAllInputFiles()
-        {
-            return from r in GetAllInputFiles()
-                   select (string)r.RemoveWorkingFolder();
-        }
+        IEnumerable<string> IFileAbstractLayer.GetAllInputFiles() =>
+            from r in GetAllInputFiles()
+            select (string)r.RemoveWorkingFolder();
 
-        public bool Exists(string file) => Exists((RelativePath)file);
+        public bool Exists(string file) =>
+            Exists((RelativePath)file);
 
-        public Stream OpenRead(string file) => OpenRead((RelativePath)file);
+        public Stream OpenRead(string file) =>
+            OpenRead((RelativePath)file);
 
-        public Stream Create(string file) => Create((RelativePath)file);
+        public Stream Create(string file) =>
+            Create((RelativePath)file);
 
-        public void Copy(string sourceFileName, string destFileName) => Copy((RelativePath)sourceFileName, (RelativePath)destFileName);
+        public void Copy(string sourceFileName, string destFileName) =>
+            Copy((RelativePath)sourceFileName, (RelativePath)destFileName);
 
-        public ImmutableDictionary<string, string> GetProperties(string file) => GetProperties((RelativePath)file);
+        public ImmutableDictionary<string, string> GetProperties(string file) =>
+            GetProperties((RelativePath)file);
 
-        public string GetPhysicalPath(string file) => GetPhysicalPath((RelativePath)file);
+        public string GetPhysicalPath(string file) =>
+            GetPhysicalPath((RelativePath)file);
+
+        public IEnumerable<string> GetExpectedPhysicalPath(string file) =>
+            GetExpectedPhysicalPath((RelativePath)file);
 
         #endregion
 

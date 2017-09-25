@@ -29,6 +29,11 @@ namespace Microsoft.DocAsCode.Common
              from f in r.EnumerateFiles()
              select f).Distinct();
 
+        public IEnumerable<string> GetExpectedPhysicalPath(RelativePath file) =>
+            from r in Readers
+            from f in r.GetExpectedPhysicalPath(file)
+            select f;
+
         #endregion
     }
 }
