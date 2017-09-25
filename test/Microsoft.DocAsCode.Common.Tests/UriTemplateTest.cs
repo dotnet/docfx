@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Common.Tests
             var template = UriTemplate<string>.Parse(
                 " a |>trim",
                 s => s,
-                s => new TrimPipeline());
+                CreatePipeline);
             var actual = template.Evaluate(new Dictionary<string, string>());
             Assert.Equal("a", actual);
         }
@@ -60,9 +60,33 @@ namespace Microsoft.DocAsCode.Common.Tests
             var template = UriTemplate<string>.Parse(
                 "a bc d |>warpWord < >",
                 s => s,
-                s => new WrapWordPipeline());
+                CreatePipeline);
             var actual = template.Evaluate(new Dictionary<string, string>());
             Assert.Equal("<a> <bc> <d> ", actual);
+        }
+
+        [Fact]
+        public void TestUriTemplate_Multipipeline()
+        {
+            var template = UriTemplate<string>.Parse(
+                " a bc d |>trim|>warpWord < >",
+                s => s,
+                CreatePipeline);
+            var actual = template.Evaluate(new Dictionary<string, string>());
+            Assert.Equal("<a> <bc> <d>", actual);
+        }
+
+        [Fact]
+        public void TestUriTemplate_PipelineInEnviroment()
+        {
+            Environment.SetEnvironmentVariable("pipeline", "|>trim|>warpWord < >");
+            var template = UriTemplate<string>.Parse(
+                " a bc d {%pipeline%}",
+                s => s,
+                CreatePipeline);
+            Environment.SetEnvironmentVariable("pipeline", null);
+            var actual = template.Evaluate(new Dictionary<string, string>());
+            Assert.Equal("<a> <bc> <d>", actual);
         }
 
         [Fact]
@@ -74,6 +98,19 @@ namespace Microsoft.DocAsCode.Common.Tests
                 s => new WrapWordPipeline());
             var actual = template.Evaluate(new Dictionary<string, string>());
             Assert.Equal(new[] { "<a>", "<bc>", "<d>" }, await actual);
+        }
+
+        private IUriTemplatePipeline<string> CreatePipeline(string name)
+        {
+            switch (name)
+            {
+                case "trim":
+                    return new TrimPipeline();
+                case "warpWord":
+                    return new WrapWordPipeline();
+                default:
+                    throw new NotSupportedException();
+            }
         }
 
         private sealed class TrimPipeline : IUriTemplatePipeline<string>
