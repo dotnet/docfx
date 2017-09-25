@@ -1545,7 +1545,6 @@ public static void Foo()
     #endregion
 }
 </code></pre>")]
-        [InlineData("?", "<!-- Length of queryStringAndFragment can not be 1 -->\n")]
         [InlineData("?range=1-2,10,20-21,29-&dedent=0&highlight=1-2,7-", @"<pre><code class=""lang-csharp"" highlight-lines=""1-2,7-"">namespace ConsoleApplication1
 {
     class Program
@@ -1594,7 +1593,12 @@ using System.IO;
 
             // act
             var renderer = new DfmCodeRenderer();
-            var marked = renderer.RenderFencesFromCodeContent(content, "test.cs", queryStringAndFragment, null, "csharp");
+            var pathQueryOption =
+                !string.IsNullOrEmpty(queryStringAndFragment)
+                    ? DfmFencesRule.ParsePathQueryString(queryStringAndFragment.Remove(1), queryStringAndFragment.Substring(1), true)
+                    : null;
+            var token = new DfmFencesBlockToken(null, null, null, "test.cs", new SourceInfo(), "csharp", null, pathQueryOption, queryStringAndFragment);
+            var marked = renderer.RenderFencesFromCodeContent(content, token);
 
             Assert.Equal(expectedContent.Replace("\r\n", "\n"), marked);
         }

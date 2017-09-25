@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.IO;
 
     using Microsoft.DocAsCode.Common;
@@ -39,6 +40,7 @@ namespace Microsoft.DocAsCode.Dfm
             }
         }
 
+        [Obsolete]
         public virtual StringBuffer RenderFencesFromCodeContent(string codeContent, string path, string queryStringAndFragment = null, string name = null, string lang = null, string title = null)
         {
             if (codeContent == null)
@@ -62,6 +64,28 @@ namespace Microsoft.DocAsCode.Dfm
                     : null;
 
             var token = new DfmFencesBlockToken(null, null, name, path, new SourceInfo(), lang, title, pathQueryOption, queryStringAndFragment);
+
+            var fencesCode = codeContent.Replace("\r\n", "\n").Split('\n');
+            var code = ExtractCode(token, fencesCode);
+            return RenderFencesCode(token, new Options { ShouldExportSourceInfo = false }, code.ErrorMessage, code.CodeLines);
+        }
+
+        public virtual StringBuffer RenderFencesFromCodeContent(string codeContent, DfmFencesBlockToken token)
+        {
+            if (codeContent == null)
+            {
+                return RenderCodeErrorString($"{nameof(codeContent)} can not be null");
+            }
+
+            if (string.IsNullOrEmpty(token.Path))
+            {
+                return RenderCodeErrorString($"{nameof(token.Path)} can not been null or empty");
+            }
+
+            if (token.QueryStringAndFragment != null && token.QueryStringAndFragment.Length == 1)
+            {
+                return RenderCodeErrorString($"Length of {nameof(token.QueryStringAndFragment)} can not be 1");
+            }
 
             var fencesCode = codeContent.Replace("\r\n", "\n").Split('\n');
             var code = ExtractCode(token, fencesCode);
