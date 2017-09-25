@@ -3,6 +3,10 @@
 
 v2.25 (Pre-release)
 -----------
+1. Use wbr instead of zero width space
+2. Remove warning invalid file link when customized href generator can resolve it.
+2. Bug fixed:
+   1. Multithreads issue for reading xref zip file.
 
 v2.24
 -----------
