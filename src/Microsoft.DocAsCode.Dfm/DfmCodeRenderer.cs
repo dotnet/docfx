@@ -39,29 +39,22 @@ namespace Microsoft.DocAsCode.Dfm
             }
         }
 
-        public virtual StringBuffer RenderFencesFromCodeContent(string codeContent, string path, string queryStringAndFragment = null, string name = null, string lang = null, string title = null)
+        public virtual StringBuffer RenderFencesFromCodeContent(string codeContent, DfmFencesBlockToken token)
         {
             if (codeContent == null)
             {
                 return RenderCodeErrorString($"{nameof(codeContent)} can not be null");
             }
 
-            if (string.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(token.Path))
             {
-                return RenderCodeErrorString($"{nameof(path)} can not been null or empty");
+                return RenderCodeErrorString($"{nameof(token.Path)} can not been null or empty");
             }
 
-            if (queryStringAndFragment != null && queryStringAndFragment.Length == 1)
+            if (token.QueryStringAndFragment != null && token.QueryStringAndFragment.Length == 1)
             {
-                return RenderCodeErrorString($"Length of {nameof(queryStringAndFragment)} can not be 1");
+                return RenderCodeErrorString($"Length of {nameof(token.QueryStringAndFragment)} can not be 1");
             }
-
-            var pathQueryOption =
-                !string.IsNullOrEmpty(queryStringAndFragment)
-                    ? DfmFencesRule.ParsePathQueryString(queryStringAndFragment.Remove(1), queryStringAndFragment.Substring(1), true)
-                    : null;
-
-            var token = new DfmFencesBlockToken(null, null, name, path, new SourceInfo(), lang, title, pathQueryOption, queryStringAndFragment);
 
             var fencesCode = codeContent.Replace("\r\n", "\n").Split('\n');
             var code = ExtractCode(token, fencesCode);
