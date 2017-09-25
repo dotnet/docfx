@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+using System;
+
 namespace Microsoft.DocAsCode.Dfm
 {
     using System.IO;
@@ -37,6 +39,36 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 return RenderReferenceNotFoundErrorMessage(renderer, token);
             }
+        }
+
+        [Obsolete]
+        public virtual StringBuffer RenderFencesFromCodeContent(string codeContent, string path, string queryStringAndFragment = null, string name = null, string lang = null, string title = null)
+        {
+            if (codeContent == null)
+            {
+                return RenderCodeErrorString($"{nameof(codeContent)} can not be null");
+            }
+
+            if (string.IsNullOrEmpty(path))
+            {
+                return RenderCodeErrorString($"{nameof(path)} can not been null or empty");
+            }
+
+            if (queryStringAndFragment != null && queryStringAndFragment.Length == 1)
+            {
+                return RenderCodeErrorString($"Length of {nameof(queryStringAndFragment)} can not be 1");
+            }
+
+            var pathQueryOption =
+                !string.IsNullOrEmpty(queryStringAndFragment)
+                    ? DfmFencesRule.ParsePathQueryString(queryStringAndFragment.Remove(1), queryStringAndFragment.Substring(1), true)
+                    : null;
+
+            var token = new DfmFencesBlockToken(null, null, name, path, new SourceInfo(), lang, title, pathQueryOption, queryStringAndFragment);
+
+            var fencesCode = codeContent.Replace("\r\n", "\n").Split('\n');
+            var code = ExtractCode(token, fencesCode);
+            return RenderFencesCode(token, new Options { ShouldExportSourceInfo = false }, code.ErrorMessage, code.CodeLines);
         }
 
         public virtual StringBuffer RenderFencesFromCodeContent(string codeContent, DfmFencesBlockToken token)
