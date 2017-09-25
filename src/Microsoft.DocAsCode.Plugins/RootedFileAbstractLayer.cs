@@ -68,6 +68,5 @@ namespace Microsoft.DocAsCode.Plugins
 
         public IEnumerable<string> GetExpectedPhysicalPath(string file) =>
             Path.IsPathRooted(file) ? new[] { file } : _impl.GetExpectedPhysicalPath(file);
-
     }
 }
