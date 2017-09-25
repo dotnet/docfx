@@ -73,7 +73,7 @@ It add itself to the build targets and add the `docfx.json` configuration file a
 *DocFX* can be used in a Continuous Integration environment.
 
 Most build systems do not checkout the branch that is being built, but
-use a `detached head` for the specific commit.  DoxFX needs the the branch name to implement the `View Source` link in the API documentation.
+use a `detached head` for the specific commit.  DocFX needs the the branch name to implement the `View Source` link in the API documentation.
 
 Setting the environment variable `DOCFX_SOURCE_BRANCH_NAME` tells DocFX which branch name to use.
 
