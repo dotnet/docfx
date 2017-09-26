@@ -11,8 +11,8 @@ namespace Microsoft.DocAsCode.Common
 
     public class UriTemplate<T>
     {
-        private static readonly Regex _marcoRegex = new Regex(@"{%\s*([\S]+?)\s*%}");
-        private static readonly Regex _pipelineRegex = new Regex(@"\|>\s*([^|\s]+)\s*(.*?)\s*(?:$|(?=\|>))");
+        private static readonly Regex _marcoRegex = new Regex(@"{%\s*([\S]+?)\s*%}", RegexOptions.Compiled);
+        private static readonly Regex _pipelineRegex = new Regex(@"\|>\s*([^|\s]+)\s*(.*?)\s*(?:$|(?=\|>))", RegexOptions.Compiled);
 
         private readonly string _template;
         private readonly Func<string, T> _func;
