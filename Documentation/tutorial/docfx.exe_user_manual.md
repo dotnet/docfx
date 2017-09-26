@@ -435,7 +435,7 @@ Property Name         | Type    | Description
 `lastmod`             | DateTime| Specifies the date of last modification of the file. If not specified, docfx automatically set the value to the time the file is built.
 `changefreq`          | enum    | Specifies the value of [changefreq](https://www.sitemaps.org/protocol.html#changefreqdef) in sitemap.xml. Valid values are `always`, `hourly`, `daily`, `weekly`, `monthly`, `yearly`, `never`. If not specified, the default value is `daily`
 `priority`            | double  | Specifies the value of [priority](https://www.sitemaps.org/protocol.html#prioritydef) in sitemap.xml. Valid values between `0.0` and `1.0`. If not specified, the default value is `0.5`
-`fileOptions`         | SitemapOptions | This property is used when different files have different sitemap settings. It is a set of key-value pairs, where key is the [*glob* pattern](#43-glob-pattern) for input files, and value is the sitemap options. Order matters and the latter matching option overwrites the former ones.
+`fileOptions`         | SitemapOptions | Optional. This property can be used when some specific files have different sitemap settings. It is a set of key-value pairs, where key is the [*glob* pattern](#43-glob-pattern) for input files, and value is the sitemap options. Order matters and the latter matching option overwrites the former ones.
 
 In the following sample settings, the yml files inside `api` folder are with priority 0.3 while Markdown files are with priority 0.8 and with a different baseUrl.
 
