@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Dfm
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.MarkdownLite.Matchers;
+    using YamlDotNet.Core;
 
     public class DfmYamlHeaderBlockRule : IMarkdownRule
     {
@@ -58,9 +59,14 @@ namespace Microsoft.DocAsCode.Dfm
                         }
                     }
                 }
+                catch (YamlException invalidYamlHeaderException)
+                {
+                    Logger.LogWarning($"Invalid yaml header: {invalidYamlHeaderException.Message}", file: context.File, line: context.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidYamlHeader);
+                    return null;
+                }
                 catch (Exception)
                 {
-                    Logger.LogInfo("Invalid yaml header.", file: context.File, line: context.LineNumber.ToString());
+                    Logger.LogWarning("Invalid yaml header.", file: context.File, line: context.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidYamlHeader);
                     return null;
                 }
                 var sourceInfo = context.Consume(match.Length);
@@ -92,9 +98,14 @@ namespace Microsoft.DocAsCode.Dfm
                     }
                 }
             }
+            catch (YamlException invalidYamlHeaderException)
+            {
+                Logger.LogWarning($"Invalid yaml header: {invalidYamlHeaderException.Message}", file: context.File, line: context.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidYamlHeader);
+                return null;
+            }
             catch (Exception)
             {
-                Logger.LogInfo("Invalid yaml header.", file: context.File, line: context.LineNumber.ToString());
+                Logger.LogWarning("Invalid yaml header.", file: context.File, line: context.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidYamlHeader);
                 return null;
             }
             var sourceInfo = context.Consume(match.Length);

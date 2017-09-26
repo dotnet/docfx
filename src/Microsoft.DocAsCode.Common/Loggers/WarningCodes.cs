@@ -24,6 +24,7 @@ namespace Microsoft.DocAsCode.Common
             public const string InvalidInclude = "InvalidInclude";
             public const string InvalidCodeSnippet = "InvalidCodeSnippet";
             public const string InvalidInlineCodeSnippet = "InvalidInlineCodeSnippet";
+            public const string InvalidYamlHeader = "InvalidYamlHeader";
             public const string NoVisibleTab = "NoVisibleTab";
         }
     }
