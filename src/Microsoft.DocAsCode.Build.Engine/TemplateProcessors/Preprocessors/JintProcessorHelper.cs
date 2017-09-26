@@ -3,115 +3,37 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using System;
-    using System.IO;
-    using System.Threading;
+    using System.Collections.Generic;
 
     using Jint;
-
-    using Microsoft.DocAsCode.Common;
-
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
 
     public static class JintProcessorHelper
     {
         private static readonly Engine DefaultEngine = new Engine();
-        private static readonly ThreadLocal<JsonSerializer> _toJsValueSerializer = new ThreadLocal<JsonSerializer>(
-            () =>
-            {
-                var jsonSerializer = new JsonSerializer();
-                jsonSerializer.NullValueHandling = NullValueHandling.Ignore;
-                jsonSerializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
-                jsonSerializer.Converters.Add(new JObjectToJsValueConverter());
-                return jsonSerializer;
-            });
 
-        public static Jint.Native.JsValue ConvertStrongTypeToJsValue(object raw)
+        public static Jint.Native.JsValue ConvertObjectToJsValue(object raw)
         {
-            var token = raw as JToken;
-            if (token != null)
-            {
-                return ConvertJTokenToJsValue(token);
-            }
-
-            using (MemoryStream ms = new MemoryStream())
-            {
-                using (StreamWriter sw = new StreamWriter(ms))
-                {
-                    JsonUtility.Serialize(sw, raw);
-                    sw.Flush();
-                    ms.Seek(0, SeekOrigin.Begin);
-                    using (StreamReader sr = new StreamReader(ms))
-                    {
-                        return JsonUtility.Deserialize<Jint.Native.JsValue>(sr, _toJsValueSerializer.Value);
-                    }
-                }
-            }
-        }
-
-        public static Jint.Native.JsValue ConvertJTokenToJsValue(JToken raw)
-        {
-            var jArray = raw as JArray;
-            if (jArray != null)
-            {
-                var jsArray = DefaultEngine.Array.Construct(Jint.Runtime.Arguments.Empty);
-                foreach (var item in jArray)
-                {
-                    DefaultEngine.Array.PrototypeObject.Push(jsArray, Jint.Runtime.Arguments.From(ConvertJTokenToJsValue(item)));
-                }
-                return jsArray;
-            }
-            var jObject = raw as JObject;
-            if (jObject != null)
+            if (raw is IDictionary<string, object> idict)
             {
                 var jsObject = DefaultEngine.Object.Construct(Jint.Runtime.Arguments.Empty);
-                foreach (var pair in jObject)
+                foreach (var pair in idict)
                 {
-                    jsObject.Put(pair.Key, ConvertJTokenToJsValue(pair.Value), true);
+                    jsObject.Put(pair.Key, ConvertObjectToJsValue(pair.Value), true);
                 }
                 return jsObject;
             }
-
-            var jValue = raw as JValue;
-            if (jValue != null)
+            else if (raw is IList<object> list)
             {
-                return Jint.Native.JsValue.FromObject(DefaultEngine, jValue.Value);
-            }
-
-            return Jint.Native.JsValue.FromObject(DefaultEngine, raw);
-        }
-
-        private sealed class JObjectToJsValueConverter : JsonConverter
-        {
-            public override bool CanConvert(Type objectType)
-            {
-                return objectType == typeof(Jint.Native.JsValue);
-            }
-
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            {
-                if (reader.TokenType == JsonToken.StartArray)
+                var jsArray = DefaultEngine.Array.Construct(Jint.Runtime.Arguments.Empty);
+                foreach (var item in list)
                 {
-                    var jArray = JArray.Load(reader);
-                    return ConvertJTokenToJsValue(jArray);
+                    DefaultEngine.Array.PrototypeObject.Push(jsArray, Jint.Runtime.Arguments.From(ConvertObjectToJsValue(item)));
                 }
-                else if (reader.TokenType == JsonToken.StartObject)
-                {
-                    var jObject = JObject.Load(reader);
-                    var converted = ConvertJTokenToJsValue(jObject);
-                    return converted;
-                }
-                else
-                {
-                    var jValue = JValue.Load(reader);
-                    return ConvertJTokenToJsValue(jValue);
-                }
+                return jsArray;
             }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            else
             {
-                throw new NotImplementedException();
+                return Jint.Native.JsValue.FromObject(DefaultEngine, raw);
             }
         }
     }

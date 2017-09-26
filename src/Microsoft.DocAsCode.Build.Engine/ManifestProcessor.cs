@@ -6,26 +6,29 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.IO;
     using System.Linq;
 
-    using Newtonsoft.Json.Linq;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
     internal class ManifestProcessor
     {
-        private List<ManifestItemWithContext> _manifestWithContext;
-        private DocumentBuildContext _context;
-        private TemplateProcessor _templateProcessor;
+        private readonly List<ManifestItemWithContext> _manifestWithContext;
+        private readonly DocumentBuildContext _context;
+        private readonly TemplateProcessor _templateProcessor;
+        private readonly IDictionary<string, object> _globalMetadata;
 
         public ManifestProcessor(List<ManifestItemWithContext> manifestWithContext, DocumentBuildContext context, TemplateProcessor templateProcessor)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _templateProcessor = templateProcessor ?? throw new ArgumentNullException(nameof(templateProcessor));
             _manifestWithContext = manifestWithContext ?? throw new ArgumentNullException(nameof(manifestWithContext));
+
+            // E.g. we can set TOC model to be globally shared by every data model
+            // Make sure it is single thread
+            _globalMetadata = _templateProcessor.Tokens?.ToDictionary(pair => pair.Key, pair => (object)pair.Value)
+                ?? new Dictionary<string, object>();
         }
 
         public void Process()
@@ -35,16 +38,17 @@ namespace Microsoft.DocAsCode.Build.Engine
                 UpdateContext();
             }
 
-            // Run getOptions from Template
+            // Afterwards, m.Item.Model.Content is always IDictionary
+            using (new LoggerPhaseScope("NormalizeToObject", LogLevel.Verbose))
+            {
+                NormalizeToObject();
+            }
+
+            // Run getOptions from Template and feed options back to context
+            // Template can feed back xref map, actually, the anchor # location can only be determined in template
             using (new LoggerPhaseScope("FeedOptions", LogLevel.Verbose))
             {
                 FeedOptions();
-            }
-
-            // Template can feed back xref map, actually, the anchor # location can only be determined in template
-            using (new LoggerPhaseScope("FeedXRefMap", LogLevel.Verbose))
-            {
-                FeedXRefMap();
             }
 
             using (new LoggerPhaseScope("UpdateHref", LogLevel.Verbose))
@@ -71,6 +75,44 @@ namespace Microsoft.DocAsCode.Build.Engine
             _context.ResolveExternalXRefSpec();
         }
 
+        private void NormalizeToObject()
+        {
+            Logger.LogVerbose("Normalizing all the object to week type");
+
+            _manifestWithContext.RunAll(m =>
+            {
+                if (m.FileModel.Type == DocumentType.Resource)
+                {
+                    return;
+                }
+                using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
+                {
+                    var model = m.Item.Model.Content;
+                    if (model is IDictionary<string, object>)
+                    {
+                        // already normalized
+                        return;
+                    }
+
+                    // Change file model to weak type
+                    var modelAsObject = ConvertToObjectHelper.ConvertStrongTypeToObject(model);
+                    if (modelAsObject is IDictionary<string, object>)
+                    {
+                        m.Item.Model.Content = modelAsObject;
+                    }
+                    else
+                    {
+                        Logger.LogWarning("Input model is not an Object model, it will be wrapped into an Object model. Please use --exportRawModel to view the wrapped model");
+                        m.Item.Model.Content = new Dictionary<string, object>
+                        {
+                            ["model"] = modelAsObject
+                        };
+                    }
+                }
+            },
+            _context.MaxParallelism);
+        }
+
         private void FeedOptions()
         {
             Logger.LogVerbose("Feeding options from template...");
@@ -85,28 +127,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     Logger.LogDiagnostic($"Feed options from template for {m.Item.DocumentType}...");
                     m.Options = m.TemplateBundle.GetOptions(m.Item, _context);
-                }
-            },
-            _context.MaxParallelism);
-        }
-
-        private void FeedXRefMap()
-        {
-            Logger.LogVerbose("Feeding xref map...");
-            _manifestWithContext.RunAll(m =>
-            {
-                if (m.TemplateBundle == null)
-                {
-                    return;
-                }
-
-                using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
-                {
-                    Logger.LogDiagnostic($"Feed xref map from template for {m.Item.DocumentType}...");
-                    if (m.Options.Bookmarks == null) return;
-                    foreach (var pair in m.Options.Bookmarks)
+                    if (m.Options?.Bookmarks != null)
                     {
-                        _context.RegisterInternalXrefSpecBookmark(pair.Key, pair.Value);
+                        foreach (var pair in m.Options.Bookmarks)
+                        {
+                            _context.RegisterInternalXrefSpecBookmark(pair.Key, pair.Value);
+                        }
                     }
                 }
             },
@@ -137,6 +163,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             // Add system attributes
             var systemMetadataGenerator = new SystemMetadataGenerator(_context);
 
+            var sharedObjects = new ConcurrentDictionary<string, object>();
+
             _manifestWithContext.RunAll(m =>
             {
                 if (m.FileModel.Type == DocumentType.Resource)
@@ -149,76 +177,36 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                     // TODO: use weak type for system attributes from the beginning
                     var systemAttrs = systemMetadataGenerator.Generate(m.Item);
-                    var metadata = (JObject)ConvertToObjectHelper.ConvertStrongTypeToJObject(systemAttrs);
-                    // Change file model to weak type
-                    var model = m.Item.Model.Content;
-                    var modelAsObject = (JToken)ConvertToObjectHelper.ConvertStrongTypeToJObject(model);
-                    if (modelAsObject is JObject)
+                    var metadata = (IDictionary<string, object>)ConvertToObjectHelper.ConvertStrongTypeToObject(systemAttrs);
+
+                    var model = (IDictionary<string, object>)m.Item.Model.Content;
+
+                    foreach (var pair in metadata)
                     {
-                        foreach (var pair in (JObject)modelAsObject)
+                        if (!model.ContainsKey(pair.Key))
                         {
-                            // Overwrites the existing system metadata if the same key is defined in document model
-                            metadata[pair.Key] = pair.Value;
+                            model[pair.Key] = pair.Value;
                         }
                     }
-                    else
-                    {
-                        Logger.LogWarning("Input model is not an Object model, it will be wrapped into an Object model. Please use --exportRawModel to view the wrapped model");
-                        metadata["model"] = modelAsObject;
-                    }
 
-                    // Append system metadata to model
-                    m.Item.Model.Serializer = null;
-                    m.Item.Model.Content = metadata;
-                }
-            },
-            _context.MaxParallelism);
-        }
-
-        private IDictionary<string, object> FeedGlobalVariables()
-        {
-            Logger.LogVerbose("Feeding global variables from template...");
-
-            // E.g. we can set TOC model to be globally shared by every data model
-            // Make sure it is single thread
-            var initialGlobalVariables = _templateProcessor.Tokens;
-            IDictionary<string, object> metadata = initialGlobalVariables == null ?
-                new Dictionary<string, object>() :
-                initialGlobalVariables.ToDictionary(pair => pair.Key, pair => (object)pair.Value);
-            var sharedObjects = new ConcurrentDictionary<string, object>();
-            _manifestWithContext.RunAll(m =>
-            {
-                if (m.TemplateBundle == null)
-                {
-                    return;
-                }
-
-                using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
-                {
                     Logger.LogDiagnostic($"Load shared model from template for {m.Item.DocumentType}...");
-                    if (m.Options.IsShared)
+                    if (m.Options?.IsShared == true)
                     {
-                        sharedObjects[m.Item.Key] = m.Item.Model.Content;
+                        // Take a snapshot of current model as shared object
+                        sharedObjects[m.Item.Key] = new Dictionary<string, object>(model);
                     }
+                    
                 }
             },
             _context.MaxParallelism);
 
-            metadata["_shared"] = sharedObjects;
-            return metadata;
+            _globalMetadata["_shared"] = sharedObjects;
         }
 
         private List<ManifestItem> ProcessTemplate()
         {
-            // Register global variables after href are all updated
-            IDictionary<string, object> globalVariables;
-            using (new LoggerPhaseScope("FeedGlobalVariables", LogLevel.Verbose))
-            {
-                globalVariables = FeedGlobalVariables();
-            }
-
             // processor to add global variable to the model
-            return _templateProcessor.Process(_manifestWithContext.Select(s => s.Item).ToList(), _context.ApplyTemplateSettings, globalVariables);
+            return _templateProcessor.Process(_manifestWithContext.Select(s => s.Item).ToList(), _context.ApplyTemplateSettings, _globalMetadata);
         }
 
         #endregion

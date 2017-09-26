@@ -9,17 +9,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Xunit;
 
     [Trait("Owner", "lianwei")]
-    public class ConvertStrongTypeToJsValueTest
+    public class JintProcessorHelperTest
     {
         [Trait("Related", "JintProcessor")]
         [Fact]
         public void TestJObjectConvertWithJToken()
         {
-            var testDataJson = JsonUtility.Serialize(new TestData());
-            using (var sr = new StringReader(testDataJson))
+            var testData = ConvertToObjectHelper.ConvertStrongTypeToObject(new TestData());
             {
-                var jObject = JsonUtility.Deserialize<object>(sr);
-                var jsValue = JintProcessorHelper.ConvertStrongTypeToJsValue(jObject);
+                var jsValue = JintProcessorHelper.ConvertObjectToJsValue(testData);
                 Assert.True(jsValue.IsObject());
                 dynamic value = jsValue.ToObject();
                 Assert.Equal(2, value.ValueA);
@@ -42,7 +40,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
         [InlineData(true, true)]
         public void TestJObjectConvertWithPrimaryType(object input, object expected)
         {
-            var jsValue = JintProcessorHelper.ConvertStrongTypeToJsValue(input);
+            var jsValue = JintProcessorHelper.ConvertObjectToJsValue(input);
             Assert.Equal(expected, jsValue.ToObject());
         }
 
