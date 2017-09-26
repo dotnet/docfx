@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     [Export(nameof(SitemapGenerator), typeof(IPostProcessor))]
     public class SitemapGenerator : IPostProcessor
     {
-        private static readonly string NamespaceName = "http://www.sitemaps.org/schemas/sitemap/0.9";
+        private static readonly XNamespace Namespace = "http://www.sitemaps.org/schemas/sitemap/0.9";
         private const string HtmlExtension = ".html";
         private const string SitemapName = "sitemap.xml";
 
@@ -54,25 +54,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 manifest.SitemapOptions.Priority = 0.5;
             }
 
-            XElement urlset = new XElement(XName.Get("urlset", NamespaceName));
-            XDocument sitemapDocument = new XDocument(urlset);
-
-            foreach (var file in GetHtmlOutputFiles(manifest).OrderBy(s => s.Item1))
-            {
-                var options = GetOptions(manifest.SitemapOptions, file.Item1);
-
-                var currentBaseUri = baseUri;
-                if (options.BaseUrl != manifest.SitemapOptions.BaseUrl)
-                {
-                    if (!Uri.TryCreate(options.BaseUrl, UriKind.Absolute, out currentBaseUri))
-                    {
-                        Logger.LogWarning($"Base url {options.BaseUrl} is not in a valid uri format, use base url from the default setting {manifest.SitemapOptions.BaseUrl} instead.");
-                        currentBaseUri = baseUri;
-                    }
-                }
-
-                urlset.Add(GetElement(file.Item2.RelativePath, currentBaseUri, options));
-            }
+            var sitemapDocument = new XStreamingElement(Namespace + "urlset", GetElements(manifest, baseUri));
 
             var sitemapOutputFile = Path.Combine(outputFolder, SitemapName);
             Logger.LogInfo($"Sitemap file is successfully exported to {sitemapOutputFile}");
@@ -98,16 +80,44 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
+        private IEnumerable<XElement> GetElements(Manifest manifest, Uri baseUri)
+        {
+            if (manifest.Files == null)
+            {
+                yield break;
+            }
+
+            foreach (var file in (from f in manifest.Files where f.DocumentType != "Toc" orderby f.SourceRelativePath select f))
+            {
+                if (file.OutputFiles.TryGetValue(HtmlExtension, out var info) && !string.IsNullOrEmpty(info.RelativePath))
+                {
+                    var options = GetOptions(manifest.SitemapOptions, file.SourceRelativePath);
+
+                    var currentBaseUri = baseUri;
+                    if (options.BaseUrl != manifest.SitemapOptions.BaseUrl)
+                    {
+                        if (!Uri.TryCreate(options.BaseUrl, UriKind.Absolute, out currentBaseUri))
+                        {
+                            Logger.LogWarning($"Base url {options.BaseUrl} is not in a valid uri format, use base url from the default setting {manifest.SitemapOptions.BaseUrl} instead.");
+                            currentBaseUri = baseUri;
+                        }
+                    }
+
+                    yield return GetElement(info.RelativePath, currentBaseUri, options);
+                }
+            }
+        }
+
         private XElement GetElement(string relativePath, Uri baseUri, SitemapElementOptions options)
         {
             var uri = new Uri(baseUri, relativePath);
 
             return new XElement
-                 (XName.Get("url", NamespaceName),
-                 new XElement(XName.Get("loc", NamespaceName), uri.AbsoluteUri),
-                 new XElement(XName.Get("lastmod", NamespaceName), (options.LastModified ?? DateTime.Now).ToString("yyyy-MM-ddThh:mm:ssK")),
-                 new XElement(XName.Get("changefreq", NamespaceName), (options.ChangeFrequency ?? PageChangeFrequency.Daily).ToString().ToLowerInvariant()),
-                 new XElement(XName.Get("priority", NamespaceName), options.Priority ?? 0.5)
+                 (Namespace + "url",
+                 new XElement(Namespace + "loc", uri.AbsoluteUri),
+                 new XElement(Namespace + "lastmod", (options.LastModified ?? DateTime.Now).ToString("yyyy-MM-ddThh:mm:ssK")),
+                 new XElement(Namespace + "changefreq", (options.ChangeFrequency ?? PageChangeFrequency.Daily).ToString().ToLowerInvariant()),
+                 new XElement(Namespace + "priority", options.Priority ?? 0.5)
                  );
         }
 
