@@ -3,15 +3,15 @@
 
 namespace Microsoft.DocAsCode.Build.Engine
 {
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
+
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
 
     public class XrefServiceResolver
     {
