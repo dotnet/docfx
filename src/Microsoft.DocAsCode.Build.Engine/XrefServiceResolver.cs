@@ -15,28 +15,29 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public class XrefServiceResolver
     {
-        private readonly ImmutableArray<string> _xrefServiceUrls;
+        private readonly List<UriTemplate<Task<XRefSpec[]>>> _uriTemplates;
 
         public XrefServiceResolver(ImmutableArray<string> xrefServiceUrls)
         {
-            _xrefServiceUrls = xrefServiceUrls;
+            _uriTemplates =
+                (from url in xrefServiceUrls
+                 select UriTemplate.Create(url, XrefClient.Default.ResloveAsync, GetPipeline)).ToList();
         }
 
         private async Task<List<string>> ResolveByXRefServiceAsync(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
         {
-            if (_xrefServiceUrls == null || _xrefServiceUrls.Length == 0)
+            if (_uriTemplates.Count == 0)
             {
                 return uidList;
             }
 
             var unresolvedUidList = new List<string>();
-            var resolve = GetResolver();
 
             // todo : parallel.
             foreach (var uid in uidList)
             {
-                var result = await resolve(uid);
-                if (resolve == null)
+                var result = await ResolveAsync(uid);
+                if (result == null)
                 {
                     unresolvedUidList.Add(uid);
                 }
@@ -48,31 +49,26 @@ namespace Microsoft.DocAsCode.Build.Engine
             return unresolvedUidList;
         }
 
-        private Func<string, Task<XRefSpec>> GetResolver()
+        private async Task<XRefSpec> ResolveAsync(string uid)
         {
-            var uriTemplates =
-                (from url in _xrefServiceUrls
-                 select UriTemplate.Create(url, XrefClient.Default.ResloveAsync, GetPipeline)).ToList();
-            return async uid =>
+            var d = new Dictionary<string, string> { ["uid"] = uid };
+            foreach (var t in _uriTemplates)
             {
-                var d = new Dictionary<string, string> { ["uid"] = uid };
-                foreach (var t in uriTemplates)
+                XRefSpec[] value = null;
+                try
                 {
-                    XRefSpec[] value = null;
-                    try
-                    {
-                        value = await t.Evaluate(d);
-                    }
-                    catch (Exception)
-                    {
-                    }
-                    if (value != null && value.Length > 0)
-                    {
-                        return value[0];
-                    }
+                    value = await t.Evaluate(d);
                 }
-                return null;
-            };
+                catch (Exception)
+                {
+                    // todo : log.
+                }
+                if (value?.Length > 0)
+                {
+                    return value[0];
+                }
+            }
+            return null;
         }
 
         private IUriTemplatePipeline<Task<XRefSpec[]>> GetPipeline(string name)
