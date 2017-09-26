@@ -68,6 +68,10 @@ namespace Microsoft.DocAsCode.Common
         /// </summary>
         public T Evaluate(IDictionary<string, string> variables)
         {
+            if (variables == null)
+            {
+                throw new ArgumentNullException(nameof(variables));
+            }
             var uri = EvaluateUri(variables);
             var value = _func(uri);
             return RunPostPipeline(value);
