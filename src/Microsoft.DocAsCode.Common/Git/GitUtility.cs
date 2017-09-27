@@ -46,9 +46,9 @@ namespace Microsoft.DocAsCode.Common.Git
             {
                 detail = GetFileDetail(filePath);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Logger.LogWarning(ex.ToString());
             }
             return detail;
         }
@@ -272,9 +272,9 @@ namespace Microsoft.DocAsCode.Common.Git
             {
                 RunGitCommand(repoPath, arguments, output => content.AppendLine(output));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Logger.LogWarning(ex.ToString());
             }
             return content.Length == 0 ? null : content.ToString();
         }
@@ -286,9 +286,9 @@ namespace Microsoft.DocAsCode.Common.Git
             {
                 content = RunGitCommandAndGetLastLine(repoPath, arguments);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Logger.LogWarning(ex.ToString());
             }
             return content;
         }
