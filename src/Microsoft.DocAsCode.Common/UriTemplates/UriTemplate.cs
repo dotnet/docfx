@@ -14,7 +14,7 @@ namespace Microsoft.DocAsCode.Common
         private static readonly Regex _marcoRegex = new Regex(@"{%\s*([\S]+?)\s*%}", RegexOptions.Compiled);
         private static readonly Regex _pipelineRegex = new Regex(@"\|>\s*([^|\s]+)\s*(.*?)\s*(?:$|(?=\|>))", RegexOptions.Compiled);
 
-        private readonly string _template;
+        public string Template { get; }
         private readonly Func<string, T> _func;
         private readonly IUriTemplatePipeline<T>[] _pipeline;
         private readonly string[][] _parameters;
@@ -57,7 +57,7 @@ namespace Microsoft.DocAsCode.Common
 
         private UriTemplate(string template, Func<string, T> func, IUriTemplatePipeline<T>[] pipeline, string[][] parameters)
         {
-            _template = template;
+            Template = template;
             _func = func;
             _pipeline = pipeline;
             _parameters = parameters;
@@ -79,7 +79,7 @@ namespace Microsoft.DocAsCode.Common
 
         private string EvaluateUri(IDictionary<string, string> variables)
         {
-            var result = _template;
+            var result = Template;
             foreach (var variable in variables)
             {
                 result = result.Replace("{" + variable.Key + "}", variable.Value);

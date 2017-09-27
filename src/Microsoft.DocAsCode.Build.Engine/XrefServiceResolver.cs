@@ -12,19 +12,26 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
+    using System.Net.Http;
 
     public class XrefServiceResolver
     {
-        private readonly List<UriTemplate<Task<XRefSpec[]>>> _uriTemplates;
+        private readonly List<UriTemplate<Task<List<XRefSpec>>>> _uriTemplates;
 
-        public XrefServiceResolver(ImmutableArray<string> xrefServiceUrls)
+        public XrefServiceResolver(ImmutableArray<string> xrefServiceUrls, int maxParallelism)
+            : this(null, xrefServiceUrls, maxParallelism) { }
+
+        public XrefServiceResolver(HttpClient client, ImmutableArray<string> xrefServiceUrls, int maxParallelism)
         {
             _uriTemplates =
                 (from url in xrefServiceUrls
-                 select UriTemplate.Create(url, XrefClient.Default.ResloveAsync, GetPipeline)).ToList();
+                 select UriTemplate.Create(
+                     url,
+                     new XrefClient(client, maxParallelism).ResolveAsync,
+                     GetPipeline)).ToList();
         }
 
-        private async Task<List<string>> ResolveByXRefServiceAsync(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
+        public async Task<List<string>> ResolveAsync(List<string> uidList, ConcurrentDictionary<string, XRefSpec> externalXRefSpec)
         {
             if (_uriTemplates.Count == 0)
             {
@@ -33,37 +40,38 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             var unresolvedUidList = new List<string>();
 
-            // todo : parallel.
-            foreach (var uid in uidList)
+            var xrefObjects = await Task.WhenAll(
+                from uid in uidList
+                select ResolveAsync(uid));
+            foreach (var tuple in uidList.Zip(xrefObjects, Tuple.Create))
             {
-                var result = await ResolveAsync(uid);
-                if (result == null)
+                if (tuple.Item2 == null)
                 {
-                    unresolvedUidList.Add(uid);
+                    unresolvedUidList.Add(tuple.Item1);
                 }
                 else
                 {
-                    externalXRefSpec.TryAdd(uid, result);
+                    externalXRefSpec.TryAdd(tuple.Item1, tuple.Item2);
                 }
             }
             return unresolvedUidList;
         }
 
-        private async Task<XRefSpec> ResolveAsync(string uid)
+        public async Task<XRefSpec> ResolveAsync(string uid)
         {
-            var d = new Dictionary<string, string> { ["uid"] = uid };
+            var d = new Dictionary<string, string> { ["uid"] = Uri.EscapeDataString(uid) };
             foreach (var t in _uriTemplates)
             {
-                XRefSpec[] value = null;
+                List<XRefSpec> value = null;
                 try
                 {
                     value = await t.Evaluate(d);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // todo : log.
+                    Logger.LogInfo($"Unable to resolve uid ({uid}) from {t.Template}, details: {ex.Message}");
                 }
-                if (value?.Length > 0)
+                if (value?.Count > 0)
                 {
                     return value[0];
                 }
@@ -71,17 +79,17 @@ namespace Microsoft.DocAsCode.Build.Engine
             return null;
         }
 
-        private IUriTemplatePipeline<Task<XRefSpec[]>> GetPipeline(string name)
+        private IUriTemplatePipeline<Task<List<XRefSpec>>> GetPipeline(string name)
         {
             // todo : add pipeline.
             return EmptyUriTemplatePipeline.Default;
         }
 
-        private sealed class EmptyUriTemplatePipeline : IUriTemplatePipeline<Task<XRefSpec[]>>
+        private sealed class EmptyUriTemplatePipeline : IUriTemplatePipeline<Task<List<XRefSpec>>>
         {
             public static readonly EmptyUriTemplatePipeline Default = new EmptyUriTemplatePipeline();
 
-            public Task<XRefSpec[]> Handle(Task<XRefSpec[]> value, string[] parameters)
+            public Task<List<XRefSpec>> Handle(Task<List<XRefSpec>> value, string[] parameters)
             {
                 return value;
             }
