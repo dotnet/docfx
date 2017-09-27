@@ -88,13 +88,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
                 {
                     var model = m.Item.Model.Content;
-                    if (model is IDictionary<string, object>)
-                    {
-                        // already normalized
-                        return;
-                    }
-
                     // Change file model to weak type
+                    // Go through the convert even if it is IDictionary as the inner object might be of strong type
                     var modelAsObject = ConvertToObjectHelper.ConvertStrongTypeToObject(model);
                     if (modelAsObject is IDictionary<string, object>)
                     {
