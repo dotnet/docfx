@@ -10,8 +10,8 @@ namespace Microsoft.DocAsCode.DataContracts.Common
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;
 
+    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.YamlSerialization;
-    using DocAsCode.Common;
 
     [Serializable]
     public class TocItemViewModel
@@ -60,24 +60,24 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonProperty(Constants.PropertyName.Href)]
         public string Href { get; set; }
 
-        [YamlIgnore]
-        [JsonIgnore]
+        [YamlMember(Alias = "originalHref")]
+        [JsonProperty("originalHref")]
         public string OriginalHref { get; set; }
 
         [YamlMember(Alias = Constants.PropertyName.TocHref)]
         [JsonProperty(Constants.PropertyName.TocHref)]
         public string TocHref { get; set; }
 
-        [YamlIgnore]
-        [JsonIgnore]
+        [YamlMember(Alias = "originalTocHref")]
+        [JsonProperty("originalTocHref")]
         public string OriginalTocHref { get; set; }
 
         [YamlMember(Alias = Constants.PropertyName.TopicHref)]
         [JsonProperty(Constants.PropertyName.TopicHref)]
         public string TopicHref { get; set; }
 
-        [YamlIgnore]
-        [JsonIgnore]
+        [YamlMember(Alias = "originalTopicHref")]
+        [JsonProperty("originalTopicHref")]
         public string OriginalTopicHref { get; set; }
 
         [YamlIgnore]
@@ -88,8 +88,8 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         [JsonProperty("homepage")]
         public string Homepage { get; set; }
 
-        [YamlIgnore]
-        [JsonIgnore]
+        [YamlMember(Alias = "originallHomepage")]
+        [JsonProperty("originallHomepage")]
         public string OriginalHomepage { get; set; }
 
         [YamlMember(Alias = "homepageUid")]
