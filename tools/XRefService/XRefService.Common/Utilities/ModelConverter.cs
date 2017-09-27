@@ -4,6 +4,10 @@
 namespace XRefService.Common.Utilities
 {
     using System;
+
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
+
     using XRefService.Common.Models;
 
     public static class ModelConverter

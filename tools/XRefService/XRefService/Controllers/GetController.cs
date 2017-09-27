@@ -27,23 +27,26 @@ namespace XRefService.Get.Controllers
         public async Task<IActionResult> GetByUid(string uid)
         {
             string hashedUid = MD5Encryption.CalculateMD5Hash(uid);
-            var ut = await (from o in _db.XRefSpecObjects
+            var results = await (from o in _db.XRefSpecObjects
                             where o.HashedUid == hashedUid
                             orderby o.Uid
                             select o.XRefSpecJson).ToListAsync();
-            
-            return StatusCode(200, "[" + string.Join(",", ut) + "]");
+            return Json(results);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetByPattern([FromQuery]string pattern, [FromQuery]int count = 100)
         {
-            var xrefs = await (from o in _db.XRefSpecObjects
+            var results = await (from o in _db.XRefSpecObjects
                                where o.Uid.Contains(pattern)
                                orderby o.Uid
                                select o.XRefSpecJson).Take(count).ToListAsync();
 
-            return StatusCode(200, "[" + string.Join(",", xrefs) + "]");
+            return Json(new {
+                count = results.Count,
+                pattern = pattern,
+                items = results,
+            });
         }
     }
 }

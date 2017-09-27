@@ -10,6 +10,8 @@ namespace XRefService.Manage.Controllers
     using System.Net;
 
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Common;
 
     using XRefService.Common.Dao;
     using XRefService.Common.Models;
