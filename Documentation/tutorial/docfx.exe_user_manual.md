@@ -241,6 +241,7 @@ markdownEngineName       | Set the name of markdown engine, default is `dfm`, an
 markdownEngineProperties | Set the parameters for markdown engine, value should be a JSON string.
 noLangKeyword            | Disable default lang keyword, it can be downloaded from [here](http://dotnet.github.io/docfx/langwordmapping/langwordMapping.yml).
 keepFileLink             | If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a `link_to_path` property inside `manifest.json` to indicate the physical location of that file. A file link will be created by incremental build and copy resouce file.
+sitemap                  | In format [SitemapOptions](324-Sitemap-options) Specifies the options for the sitemap.xml file.
 
 #### 3.2.1 `Template`s and `Theme`s
 
@@ -424,6 +425,68 @@ Note that, metadata set in command line will merge with metadata set in `docfx.j
     2. file metadata from file metadata files
 
 Given multiple metadata files, the behavior would be **undetermined**, if same key is set in these files.
+
+#### 3.2.4 SitemapOptions
+The SitemapOptions is to configure the values for generating [sitemap.xml](https://www.sitemaps.org/protocol.html) file.
+
+Property Name         | Type    | Description
+----------------------|---------|---------------------------
+`baseUrl`             | string  | Specifies the base url for the website to be published. It MUST begin with the protocol (such as http) and end with a trailing slash. For example, `https://dotnet.github.io/docfx/`. If the value is not specified, sitemap.xml will NOT be generated.
+`lastmod`             | DateTime| Specifies the date of last modification of the file. If not specified, docfx automatically set the value to the time the file is built.
+`changefreq`          | enum    | Specifies the value of [changefreq](https://www.sitemaps.org/protocol.html#changefreqdef) in sitemap.xml. Valid values are `always`, `hourly`, `daily`, `weekly`, `monthly`, `yearly`, `never`. If not specified, the default value is `daily`
+`priority`            | double  | Specifies the value of [priority](https://www.sitemaps.org/protocol.html#prioritydef) in sitemap.xml. Valid values between `0.0` and `1.0`. If not specified, the default value is `0.5`
+`fileOptions`         | SitemapOptions | Optional. This property can be used when some specific files have different sitemap settings. It is a set of key-value pairs, where key is the [*glob* pattern](#43-glob-pattern) for input files, and value is the sitemap options. Order matters and the latter matching option overwrites the former ones.
+
+In the following sample settings, the yml files inside `api` folder are with priority 0.3 while Markdown files are with priority 0.8 and with a different baseUrl.
+
+Sample settings:
+```json
+"build": {
+    "sitemap":{
+        "baseUrl": "https://dotnet.github.io/docfx",
+        "priority": 0.1,
+        "changefreq": "monthly",
+        "fileOptions":{
+            "**/api/**.yml": {
+                "priority": 0.3,
+                "lastmod": "2001-01-01",
+            },
+            "**/GettingStarted.md": {
+                "baseUrl": "https://dotnet.github.io/docfx/conceptual",
+                "priority": 0.8,
+                "changefreq": "daily"
+            }
+        }
+    }
+}
+
+```
+
+Possible generated sitemap.xml:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://dotnet.github.io/docfx/api/System.String.html</loc>
+    <lastmod>2001-01-01T00:00:00.00+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://dotnet.github.io/docfx/conceptual/GettingStarted.html</loc>
+    <lastmod>2017-09-21T10:00:00.00+08:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://dotnet.github.io/docfx/ReadMe.html</loc>
+    <lastmod>2017-09-21T10:00:00.00+08:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.1</priority>
+  </url>
+</urlset>
+```
+
 
 ###3.3 Properties for `pdf`
 `pdf` supports **ALL** the [properties for `build`](#32-properties-for-build), besides that, the following table lists additional properties specified for `pdf` only.

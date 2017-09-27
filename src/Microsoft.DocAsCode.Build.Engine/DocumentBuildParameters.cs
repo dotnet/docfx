@@ -75,6 +75,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         [IncrementalIgnore]
         public bool KeepFileLink { get; set; }
 
+        [IncrementalIgnore]
+        public SitemapOptions SitemapOptions { get; set; }
+
         public DocumentBuildParameters Clone() =>
             (DocumentBuildParameters)MemberwiseClone();
     }
