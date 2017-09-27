@@ -100,6 +100,7 @@ namespace Microsoft.DocAsCode.Common
                     }
                     else
                     {
+                        Logger.LogWarning($"Timeout ({timeoutInMilliseconds}ms) exceeded. Killing process.");
                         process.Kill();
                         process.WaitForExit();
                     }
@@ -116,21 +117,35 @@ namespace Microsoft.DocAsCode.Common
         public static bool ExistCommand(string commandName)
         {
             int exitCode;
-            if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
+            var errorStream = new MemoryStream();
+            var outputStream = new MemoryStream();
+            using (var outputWriter = new StreamWriter(outputStream))
+            using (var errorWriter = new StreamWriter(errorStream))
             {
-                exitCode = RunCommand(new CommandInfo
+                if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
                 {
-                    Name = "type",
-                    Arguments = commandName
-                }, timeoutInMilliseconds: 1000);
-            }
-            else
-            {
-                exitCode = RunCommand(new CommandInfo
+                    exitCode = RunCommand(new CommandInfo
+                    {
+                        // type is a bash command, hence should be an argument to 'bash'
+                        Name = "bash",
+                        Arguments = $"-c \"type {commandName}\""
+                    }, outputWriter, errorWriter, timeoutInMilliseconds: 1000);
+                }
+                else
                 {
-                    Name = "where",
-                    Arguments = commandName
-                }, timeoutInMilliseconds: 1000);
+                    exitCode = RunCommand(new CommandInfo
+                    {
+                        Name = "where",
+                        Arguments = commandName
+                    }, outputWriter, errorWriter, timeoutInMilliseconds: 1000);
+                }
+
+                String resultError = System.Text.Encoding.UTF8.GetString(errorStream.ToArray(), 0, (int)errorStream.Length);
+                String resultOutput = System.Text.Encoding.UTF8.GetString(outputStream.ToArray(), 0, (int)outputStream.Length);
+                if (!string.IsNullOrEmpty(resultError) || !string.IsNullOrEmpty(resultOutput))
+                {
+                    Logger.LogWarning($"RunCommand exitCode: {exitCode}, output: \"{resultOutput}\", error: \"{exitCode}\"");
+                }
             }
             return exitCode == 0;
         }
