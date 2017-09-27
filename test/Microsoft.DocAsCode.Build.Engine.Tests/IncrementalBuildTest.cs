@@ -445,7 +445,7 @@ tagRules : [
                         // check logs.
                         var logs = Listener.Items.Where(i => i.Phase.StartsWith("IncrementalBuild.TestBasic")).ToList();
                         Assert.Equal(8, logs.Count);
-                        var errorLog = logs.First(s => s.LogLevel == LogLevel.Error);
+                        var errorLog = logs.First(s => s.LogLevel == LogLevel.Warning);
                         Assert.NotNull(errorLog);
                         Assert.Equal(mrefFile1, errorLog.File.Replace('\\', '/'));
                         Assert.True(errorLog.Message.StartsWith("Unable to resolve"));
