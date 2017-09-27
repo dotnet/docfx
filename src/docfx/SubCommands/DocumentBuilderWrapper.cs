@@ -203,7 +203,8 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 OutputBaseDir = outputDirectory,
                 ForceRebuild = config.Force ?? false,
-                ForcePostProcess = config.ForcePostProcess ?? false
+                ForcePostProcess = config.ForcePostProcess ?? false,
+                SitemapOptions = config.SitemapOptions
             };
             if (config.GlobalMetadata != null)
             {

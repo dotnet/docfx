@@ -28,6 +28,9 @@ namespace Microsoft.DocAsCode.Plugins
             Files.AddRange(files);
         }
 
+        [JsonProperty("sitemap")]
+        public SitemapOptions SitemapOptions { get; set; }
+
         [JsonProperty("templates")]
         public List<string> Templates { get; set; }
 
