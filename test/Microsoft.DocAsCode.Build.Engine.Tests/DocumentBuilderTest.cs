@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System.Threading.Tasks;
     using System.IO;
     using System.Reflection;
-    
+
     using Newtonsoft.Json.Linq;
     using Xunit;
 
@@ -845,7 +845,7 @@ exports.getOptions = function (){
         }
 
         [Fact]
-        public void TestBuildWithXrefService()
+        public async Task TestBuildWithXrefService()
         {
             var fakeResponseHandler = new FakeResponseHandler();
             fakeResponseHandler.AddFakeResponse(new Uri("http://example.org/test1"), new HttpResponseMessage
@@ -860,12 +860,10 @@ exports.getOptions = function (){
             });
 
             var httpClient = new HttpClient(fakeResponseHandler);
-            var dbc= new DocumentBuildContext("");
-
-            var result = dbc.QueryByHttpRequestAsync(httpClient, "http://example.org/test1", "xx").Result;
-            Assert.Equal(0, result.Count);
-            result = dbc.QueryByHttpRequestAsync(httpClient, "http://example.org/test2", "xx").Result;
-            Assert.Equal("csharp_coding_standards", result[0].Uid);
+            var result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test1"), 1).ResolveAsync("xx");
+            Assert.Null(result);
+            result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test2"), 1).ResolveAsync("xx");
+            Assert.Equal("csharp_coding_standards", result.Uid);
         }
 
         [Fact]
