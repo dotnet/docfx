@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using System.Web;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -81,8 +82,73 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private IUriTemplatePipeline<Task<List<XRefSpec>>> GetPipeline(string name)
         {
-            // todo : add pipeline.
-            return EmptyUriTemplatePipeline.Default;
+            // todo: pluggable.
+            switch (name)
+            {
+                case "removeHost":
+                    return RemoveHostUriTemplatePipeline.Default;
+                case "addQueryString":
+                    return AddQueryStringUriTemplatePipeline.Default;
+                default:
+                    Logger.LogWarning($"Unknown uri template pipeline: {name}.", code: WarningCodes.Build.UnknownUriTemplatePipeline);
+                    return EmptyUriTemplatePipeline.Default;
+            }
+        }
+
+        private sealed class RemoveHostUriTemplatePipeline : IUriTemplatePipeline<Task<List<XRefSpec>>>
+        {
+            public static readonly RemoveHostUriTemplatePipeline Default = new RemoveHostUriTemplatePipeline();
+
+            public async Task<List<XRefSpec>> Handle(Task<List<XRefSpec>> value, string[] parameters)
+            {
+                var list = await value;
+                foreach (var item in list)
+                {
+                    if (string.IsNullOrEmpty(item.Href))
+                    {
+                        continue;
+                    }
+                    if (Uri.TryCreate(item.Href, UriKind.Absolute, out var uri))
+                    {
+                        item.Href = uri.GetLeftPart(UriPartial.Path);
+                    }
+                }
+                return list;
+            }
+        }
+
+        private sealed class AddQueryStringUriTemplatePipeline : IUriTemplatePipeline<Task<List<XRefSpec>>>
+        {
+            public static readonly AddQueryStringUriTemplatePipeline Default = new AddQueryStringUriTemplatePipeline();
+
+            public Task<List<XRefSpec>> Handle(Task<List<XRefSpec>> value, string[] parameters)
+            {
+                if (parameters.Length == 2 &&
+                    !string.IsNullOrEmpty(parameters[0]) &&
+                    !string.IsNullOrEmpty(parameters[1]))
+                {
+                    return HandleCoreAsync(value, parameters[0], parameters[1]);
+                }
+                return value;
+            }
+
+            private async Task<List<XRefSpec>> HandleCoreAsync(Task<List<XRefSpec>> task, string name, string value)
+            {
+                var list = await task;
+                foreach (var item in list)
+                {
+                    if (string.IsNullOrEmpty(item.Href))
+                    {
+                        continue;
+                    }
+                    var mvc = HttpUtility.ParseQueryString(UriUtility.GetQueryString(item.Href));
+                    mvc["x"] = "y";
+                    item.Href = UriUtility.GetPath(item.Href) +
+                        "?" + mvc.ToString() +
+                        UriUtility.GetFragment(item.Href);
+                }
+                return list;
+            }
         }
 
         private sealed class EmptyUriTemplatePipeline : IUriTemplatePipeline<Task<List<XRefSpec>>>
