@@ -6,7 +6,8 @@ v2.25 (Pre-release)
 1. Use wbr instead of zero width space
 2. Remove warning invalid file link when customized href generator can resolve it.
 3. Support generating sitemap with at least `"sitemap": { "baseUrl": "https://yourwebsite.com/" }` defined in `"build"` section of `docfx.json` (https://github.com/dotnet/docfx/issues/1979)
-4. Bug fixed:
+4. Support responsive table: https://github.com/dotnet/docfx/issues/2024
+5. Bug fixed:
    1. Multithreads issue for reading xref zip file.
 
 v2.24
