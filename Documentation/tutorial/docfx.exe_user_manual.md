@@ -241,7 +241,7 @@ markdownEngineName       | Set the name of markdown engine, default is `dfm`, an
 markdownEngineProperties | Set the parameters for markdown engine, value should be a JSON string.
 noLangKeyword            | Disable default lang keyword, it can be downloaded from [here](http://dotnet.github.io/docfx/langwordmapping/langwordMapping.yml).
 keepFileLink             | If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a `link_to_path` property inside `manifest.json` to indicate the physical location of that file. A file link will be created by incremental build and copy resouce file.
-sitemap                  | In format [SitemapOptions](324-sitemapoptions) Specifies the options for the sitemap.xml file.
+sitemap                  | In format [SitemapOptions](#324-sitemapoptions) Specifies the options for the sitemap.xml file.
 
 #### 3.2.1 `Template`s and `Theme`s
 
