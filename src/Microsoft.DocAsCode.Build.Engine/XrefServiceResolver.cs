@@ -142,7 +142,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         continue;
                     }
                     var mvc = HttpUtility.ParseQueryString(UriUtility.GetQueryString(item.Href));
-                    mvc["x"] = "y";
+                    mvc[name] = value;
                     item.Href = UriUtility.GetPath(item.Href) +
                         "?" + mvc.ToString() +
                         UriUtility.GetFragment(item.Href);
