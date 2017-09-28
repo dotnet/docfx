@@ -24,9 +24,9 @@ namespace Microsoft.DocAsCode.Common.Tests
             var actual = template.Evaluate(
                 new Dictionary<string, string>
                 {
-                    ["var"] = "!!"
+                    ["var"] = "--"
                 });
-            Assert.Equal("*!!*", actual);
+            Assert.Equal("*--*", actual);
         }
 
         [Fact]
@@ -38,9 +38,9 @@ namespace Microsoft.DocAsCode.Common.Tests
             var actual = template.Evaluate(
                 new Dictionary<string, string>
                 {
-                    ["var"] = "!!"
+                    ["var"] = "--"
                 });
-            Assert.Equal("*@!!@*", actual);
+            Assert.Equal("*@--@*", actual);
         }
 
         [Fact]
