@@ -59,7 +59,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public async Task<XRefSpec> ResolveAsync(string uid)
         {
-            var d = new Dictionary<string, string> { ["uid"] = Uri.EscapeDataString(uid) };
+            var d = new Dictionary<string, string> { ["uid"] = uid };
             foreach (var t in _uriTemplates)
             {
                 List<XRefSpec> value = null;

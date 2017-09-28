@@ -82,7 +82,7 @@ namespace Microsoft.DocAsCode.Common
             var result = Template;
             foreach (var variable in variables)
             {
-                result = result.Replace("{" + variable.Key + "}", variable.Value);
+                result = result.Replace("{" + variable.Key + "}", Uri.EscapeDataString(variable.Value));
             }
             return result;
         }
