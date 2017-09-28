@@ -862,8 +862,9 @@ exports.getOptions = function (){
             var httpClient = new HttpClient(fakeResponseHandler);
             var result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test1"), 1).ResolveAsync("xx");
             Assert.Null(result);
-            result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test2"), 1).ResolveAsync("xx");
+            result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test2|> removeHost |> addQueryString x y"), 1).ResolveAsync("xx");
             Assert.Equal("csharp_coding_standards", result.Uid);
+            Assert.Equal("/docfx/guideline/csharp_coding_standards.html?x=y", result.Href);
         }
 
         [Fact]
