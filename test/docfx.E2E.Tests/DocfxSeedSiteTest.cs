@@ -181,7 +181,7 @@ namespace Microsoft.DocAsCode.E2E.Tests
             Assert.Contains(results[0].Text, title);
 
             // check spec name in parameters' type
-            element = FindElement(By.XPath("//h4[@id='CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_']/following-sibling::table/tbody/tr/td"));
+            element = FindElement(By.XPath("//h4[@id='CatLibrary_Cat_2_op_Addition_CatLibrary_Cat__0__1__System_Int32_']/following-sibling::div/table/tbody/tr/td"));
             Assert.NotNull(element);
             Assert.Equal("Cat<T, K>", element.Text);
 
