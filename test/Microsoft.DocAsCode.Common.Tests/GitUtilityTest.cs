@@ -33,19 +33,5 @@ namespace Microsoft.DocAsCode.Common.Tests
             var info = GitUtility.GetFileDetail(Directory.GetCurrentDirectory());
             Assert.Equal("special-branch", info.RemoteBranch);
         }
-
-        [Fact]
-        public void GetDeletedFile()
-        {
-            var repoInfo = GitUtility.GetRepoInfo(Directory.GetCurrentDirectory());
-            var deletedExistingFile = Path.Combine(repoInfo.RepoRootPath, @"src/docfx.website.themes/angular/README.md");
-            var deletedNotExistingFile = Path.Combine(repoInfo.RepoRootPath, @"NOTEXISTING.md");
-
-            var content = GitUtility.GetDeletedFileContent(deletedExistingFile);
-            Assert.NotNull(content);
-
-            content = GitUtility.GetDeletedFileContent(deletedNotExistingFile);
-            Assert.Null(content);
-        }
     }
 }
