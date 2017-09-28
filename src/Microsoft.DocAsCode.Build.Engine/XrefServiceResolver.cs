@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     if (Uri.TryCreate(item.Href, UriKind.Absolute, out var uri))
                     {
-                        item.Href = uri.GetLeftPart(UriPartial.Path);
+                        item.Href = item.Href.Remove(uri.GetLeftPart(UriPartial.Path).Length);
                     }
                 }
                 return list;
