@@ -46,8 +46,10 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 throw new ArgumentNullException("Content for item.Model should not be null!");
             }
+
             var model = ConvertObjectToDictionary(item.Model.Content);
-            model = AppendGlobalMetadata(model);
+            AppendGlobalMetadata(model);
+
             if (_settings.Options.HasFlag(ApplyTemplateOptions.ExportRawModel))
             {
                 ExportModel(model, item.FileWithoutExtension, _settings.RawModelExportSettings);
@@ -176,6 +178,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
             }
 
+            item.Model = null;
+
             LogInvalidXRefs(unresolvedXRefs);
 
             return manifestItem;
@@ -237,11 +241,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private IDictionary<string, object> AppendGlobalMetadata(IDictionary<string, object> model)
+        private void AppendGlobalMetadata(IDictionary<string, object> model)
         {
             if (_globalVariables == null)
             {
-                return model;
+                return;
             }
 
             if (model.ContainsKey(GlobalVariableKey))
@@ -249,12 +253,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogWarning($"Data model contains key {GlobalVariableKey}, {GlobalVariableKey} is to keep system level global metadata and is not allowed to overwrite. The {GlobalVariableKey} property inside data model will be ignored.");
             }
 
-            // Create a new object with __global property, the shared model does not contain __global property
-            var appended = new Dictionary<string, object>(model)
-            {
-                [GlobalVariableKey] = _globalVariables
-            };
-            return appended;
+            model[GlobalVariableKey] = new Dictionary<string, object>(_globalVariables);
         }
 
         private static IDictionary<string, object> ConvertObjectToDictionary(object model)

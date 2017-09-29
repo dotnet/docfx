@@ -217,7 +217,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 return s =>
                 {
-                    var model = JintProcessorHelper.ConvertStrongTypeToJsValue(s);
+                    var model = JintProcessorHelper.ConvertObjectToJsValue(s);
                     return func.Invoke(model).ToObject();
                 };
             }

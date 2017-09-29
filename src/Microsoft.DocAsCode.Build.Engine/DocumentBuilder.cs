@@ -202,6 +202,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 using (new LoggerPhaseScope("Postprocess", LogLevel.Verbose))
                 {
                     var generatedManifest = ManifestUtility.MergeManifest(manifests);
+                    generatedManifest.SitemapOptions = parameters.FirstOrDefault()?.SitemapOptions;
                     ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
                     ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
 

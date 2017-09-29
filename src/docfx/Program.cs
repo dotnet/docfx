@@ -10,6 +10,8 @@ namespace Microsoft.DocAsCode
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.SubCommands;
 
+    using Newtonsoft.Json;
+
     internal class Program
     {
         static int Main(string[] args)
@@ -42,7 +44,7 @@ namespace Microsoft.DocAsCode
                 controller = ArgsParser.Instance.Parse(args);
                 command = controller.Create();
             }
-            catch (Exception e) when (e is System.IO.FileNotFoundException fe || e is DocfxException)
+            catch (Exception e) when (e is System.IO.FileNotFoundException fe || e is DocfxException || e is JsonSerializationException)
             {
                 Logger.LogError(e.Message);
                 return 1;

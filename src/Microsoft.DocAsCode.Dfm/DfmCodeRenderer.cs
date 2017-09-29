@@ -182,7 +182,7 @@ namespace Microsoft.DocAsCode.Dfm
         {
             var errorMessageInMarkdown = $"Can not find reference {token.Path}";
             var errorMessage = $"Unable to resolve {token.SourceInfo.Markdown}. {errorMessageInMarkdown}.";
-            Logger.LogError(errorMessage, line: token.SourceInfo.LineNumber.ToString());
+            Logger.LogWarning(errorMessage, line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidCodeSnippet);
             return RenderCodeErrorString(errorMessageInMarkdown);
         }
 

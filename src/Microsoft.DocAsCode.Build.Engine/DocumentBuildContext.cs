@@ -215,41 +215,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return uidList;
             }
 
-            var unresolvedUidList = new List<string>();
-            using (var client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                int pieceSize = 1000;
-                for (int i = 0; i < uidList.Count; i += pieceSize)
-                {
-                    List<string> smallPiece = uidList.GetRange(i, Math.Min(pieceSize, uidList.Count - i));
-                    foreach (string requestUrl in _xrefServiceUrls)
-                    {
-                        IList<Task<IList<XRefSpec>>> queryUidTasks = new List<Task<IList<XRefSpec>>>();
-                        foreach (string uid in smallPiece)
-                        {
-                            queryUidTasks.Add(QueryByHttpRequestAsync(client, requestUrl, uid));
-                        }
-                        var results = await Task.WhenAll(queryUidTasks);
-                        List<string> stillNeedQueryList = new List<string>();
-                        for (int j = 0; j < results.Length; j++)
-                        {
-                            if (results[j] != null && results[j].Count > 0 && results[j][0].Uid == smallPiece[j])
-                            {
-                                externalXRefSpec.AddOrUpdate(smallPiece[j], results[j][0], (_, old) => old + results[j][0]);
-                            }
-                            else
-                            {
-                                stillNeedQueryList.Add(smallPiece[j]);
-                            }
-                        }
-                        smallPiece = stillNeedQueryList;
-                    }
-                    unresolvedUidList.AddRange(smallPiece);
-                }
-            }
-            Logger.LogInfo($"{uidList.Count - unresolvedUidList.Count} uids found in xrefservice.");
+            var unresolvedUidList = await new XrefServiceResolver(_xrefServiceUrls, MaxParallelism).ResolveAsync(uidList, externalXRefSpec);
+            Logger.LogInfo($"{uidList.Count - unresolvedUidList.Count} uids found in {_xrefServiceUrls.Length} xrefservice(s).");
             return unresolvedUidList;
         }
 

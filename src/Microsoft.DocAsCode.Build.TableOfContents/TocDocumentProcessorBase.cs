@@ -13,6 +13,8 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
+    using Newtonsoft.Json;
+
     /// <summary>
     /// Base document processor for table of contents.
     /// </summary>
@@ -59,10 +61,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         public override void UpdateHref(FileModel model, IDocumentBuildContext context)
         {
-            var toc = (TocItemViewModel)model.Content;
+            var toc = ConvertFromObject(model.Content);
             UpdateTocItemHref(toc, model, context);
 
             RegisterTocToContext(toc, model, context);
+            model.Content = ConvertToObject(toc);
         }
 
         #endregion
@@ -77,6 +80,19 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         #region Private methods
 
+        private TocItemViewModel ConvertFromObject(object model)
+        {
+            using (var jr = new ObjectJsonReader(model))
+            {
+                return JsonUtility.DefaultSerializer.Value.Deserialize<TocItemViewModel>(jr);
+            }
+        }
+
+        private object ConvertToObject(TocItemViewModel model)
+        {
+            return ConvertToObjectHelper.ConvertStrongTypeToObject(model);
+        }
+
         private void UpdateTocItemHref(TocItemViewModel toc, FileModel model, IDocumentBuildContext context)
         {
             if (toc.IsHrefUpdated) return;
@@ -87,9 +103,13 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             RegisterTocMapToContext(toc, model, context);
 
             toc.Homepage = ResolveHref(toc.Homepage, toc.OriginalHomepage, model, context, nameof(toc.Homepage));
+            toc.OriginalHomepage = null;
             toc.Href = ResolveHref(toc.Href, toc.OriginalHref, model, context, nameof(toc.Href));
+            toc.OriginalHref = null;
             toc.TocHref = ResolveHref(toc.TocHref, toc.OriginalTocHref, model, context, nameof(toc.TocHref));
+            toc.OriginalTocHref = null;
             toc.TopicHref = ResolveHref(toc.TopicHref, toc.OriginalTopicHref, model, context, nameof(toc.TopicHref));
+            toc.OriginalTopicHref = null;
 
             if (toc.Items != null && toc.Items.Count > 0)
             {
