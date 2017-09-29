@@ -274,25 +274,30 @@ namespace Microsoft.DocAsCode.Common.Git
                         Arguments = arguments,
                         WorkingDirectory = repoPath,
                     }, outputStreamWriter, errorStreamWriter, GitTimeOut);
-                }
 
-                if (exitCode != 0)
-                {
-                    errorStream.Position = 0;
-                    using (var errorStreamReader = new StreamReader(errorStream, encoding, false, bufferSize, true))
+                    // writer streams have to be flushed before reading from memory streams
+                    // make sure that streamwriter is not closed before reading from memory stream
+                    outputStreamWriter.Flush();
+                    errorStreamWriter.Flush();
+
+                    if (exitCode != 0)
                     {
-                        ProcessErrorMessage(errorStreamReader.ReadToEnd());
-                    }
-                }
-                else
-                {
-                    outputStream.Position = 0;
-                    using (var streamReader = new StreamReader(outputStream, encoding, false, bufferSize, true))
-                    {
-                        string line;
-                        while ((line = streamReader.ReadLine()) != null)
+                        errorStream.Position = 0;
+                        using (var errorStreamReader = new StreamReader(errorStream, encoding, false, bufferSize, true))
                         {
-                            processOutput(line);
+                            ProcessErrorMessage(errorStreamReader.ReadToEnd());
+                        }
+                    }
+                    else
+                    {
+                        outputStream.Position = 0;
+                        using (var streamReader = new StreamReader(outputStream, encoding, false, bufferSize, true))
+                        {
+                            string line;
+                            while ((line = streamReader.ReadLine()) != null)
+                            {
+                                processOutput(line);
+                            }
                         }
                     }
                 }
