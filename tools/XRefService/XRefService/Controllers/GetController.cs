@@ -34,13 +34,21 @@ namespace XRefService.Get.Controllers
             return Json(results);
         }
 
+        /// <summary>
+        /// TODO: https://sqlblogcasts.com/blogs/simons/archive/2008/12/18/LINQ-to-SQL---Enabling-Fulltext-searching.aspx
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetByPattern([FromQuery]string pattern, [FromQuery]int count = 100)
         {
-            var results = await (from o in _db.XRefSpecObjects
-                               where o.Uid.Contains(pattern)
-                               orderby o.Uid
-                               select o.XRefSpecJson).Take(count).ToListAsync();
+            var query = (from o in _db.XRefSpecObjects
+                         where o.Uid.Contains(pattern)
+                         orderby o.Uid
+                         select o.XRefSpecJson).Take(count).AsQueryable();
+            var sql = ((System.Data.Entity.Core.Objects.ObjectQuery)query).ToTraceString();
+            var results = await query.ToListAsync();
 
             return Json(new {
                 count = results.Count,

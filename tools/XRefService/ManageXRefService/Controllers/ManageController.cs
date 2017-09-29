@@ -17,6 +17,7 @@ namespace XRefService.Manage.Controllers
     using XRefService.Common.Models;
     using XRefService.Common.Utilities;
     using XRefService.Manage.Models;
+    using System;
 
     [Route("xrefs")]
     public class ManageController : Controller
@@ -29,35 +30,36 @@ namespace XRefService.Manage.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddXrefs([FromBody]IEnumerable<XRefSpec> specList)
+        public async Task<IActionResult> AddXrefs([FromBody]IList<XRefSpec> specList)
         {
             if (specList == null)
             {
-                return BadRequest();
+                return BadRequest("Please provide list of xref specs in the request body.");
             }
 
             _db.XRefSpecObjects.AddRange(specList.Select(s => s.ToXRefSpecObject()));
             await _db.SaveChangesAsync();
-            return Ok();
+            return Ok($"Successfully uploaded {specList.Count} xref specs.");
         }
 
         [HttpPost("uploads")]
         public async Task<IActionResult> UploadXRefMap([FromBody]UploadXRefMapRequest request)
         {
             var url = request.url;
-            if (url == null)
+            if (string.IsNullOrEmpty(url))
             {
-                return BadRequest();
+                return BadRequest("Please provide the url of the xrefmap.yml file in request body: { \"url\". \"{url}\"");
             }
 
-            var tasks = new List<Task>();
             using (var client = new WebClient())
             {
-                var result = await client.DownloadStringTaskAsync(new System.Uri(url));
-                using (var sr = new StringReader(result))
+                using (var stream = await client.OpenReadTaskAsync(url))
                 {
-                    var xm = YamlUtility.Deserialize<XRefMap>(sr);
-                    return await AddXrefs(xm?.References);
+                    using (var sr = new StreamReader(stream))
+                    {
+                        var xm = YamlUtility.Deserialize<XRefMap>(sr);
+                        return await AddXrefs(xm?.References);
+                    }
                 }
             }
         }
