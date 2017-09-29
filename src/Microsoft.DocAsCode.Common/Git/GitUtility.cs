@@ -307,7 +307,7 @@ namespace Microsoft.DocAsCode.Common.Git
                         GitCommandExists = CommandUtility.ExistCommand(CommandName);
                         if (GitCommandExists != true)
                         {
-                            Logger.LogInfo("Looks like Git is not installed globally. We depends on Git to extract repository information for source code and files.");
+                            Logger.LogInfo("Looks like Git is not installed globally. We depend on Git to extract repository information for source code and files.");
                         }
                     }
                 }
