@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Shared/base.props" />
+  <Import Project="../Shared/base.netstandard.props" />
 
   <ItemGroup>
-    <PackageReference Include="YamlDotNet.Signed" Version="4.1.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+    <PackageReference Include="YamlDotNet.Signed" Version="4.2.2" />
   </ItemGroup>
 </Project>

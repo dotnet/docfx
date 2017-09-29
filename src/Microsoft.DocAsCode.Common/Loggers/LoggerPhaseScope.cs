@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Runtime.Remoting.Messaging;
 
     public sealed class LoggerPhaseScope : IDisposable
     {
@@ -75,12 +74,12 @@ namespace Microsoft.DocAsCode.Common
 
         internal static string GetPhaseName()
         {
-            return CallContext.LogicalGetData(nameof(LoggerPhaseScope)) as string;
+            return LogicalCallContext.GetData(nameof(LoggerPhaseScope)) as string;
         }
 
         private void SetPhaseName(string phaseName)
         {
-            CallContext.LogicalSetData(nameof(LoggerPhaseScope), phaseName);
+            LogicalCallContext.SetData(nameof(LoggerPhaseScope), phaseName);
         }
 
         public static object Capture()
