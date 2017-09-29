@@ -48,7 +48,8 @@ namespace Microsoft.DocAsCode.Common.Git
             }
             catch (Exception ex)
             {
-                Logger.LogWarning(ex.ToString());
+                Logger.LogWarning($"Skipping GetFileDetail. Exception found: {ex.GetType()}, Message: {ex.Message}");
+                Logger.LogVerbose(ex.ToString());
             }
             return detail;
         }
@@ -274,7 +275,8 @@ namespace Microsoft.DocAsCode.Common.Git
             }
             catch (Exception ex)
             {
-                Logger.LogWarning(ex.ToString());
+                Logger.LogWarning($"Skipping RunGitCommand. Exception found: {ex.GetType()}, Message: {ex.Message}");
+                Logger.LogVerbose(ex.ToString());
             }
             return content.Length == 0 ? null : content.ToString();
         }
@@ -288,7 +290,8 @@ namespace Microsoft.DocAsCode.Common.Git
             }
             catch (Exception ex)
             {
-                Logger.LogWarning(ex.ToString());
+                Logger.LogWarning($"Skipping RunGitCommandAndGetLastLine. Exception found: {ex.GetType()}, Message: {ex.Message}");
+                Logger.LogVerbose(ex.ToString());
             }
             return content;
         }

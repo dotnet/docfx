@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace Microsoft.DocAsCode.Common
@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode.Common
                     }
                     else
                     {
-                        Logger.LogWarning($"Timeout ({timeoutInMilliseconds}ms) exceeded. Killing process.");
+                        Logger.LogWarning($"Timeout ({timeoutInMilliseconds}ms) exceeded. Killing process {process.ProcessName}.");
                         process.Kill();
                         process.WaitForExit();
                     }
@@ -144,7 +144,7 @@ namespace Microsoft.DocAsCode.Common
                 String resultOutput = System.Text.Encoding.UTF8.GetString(outputStream.ToArray(), 0, (int)outputStream.Length);
                 if (!string.IsNullOrEmpty(resultError) || !string.IsNullOrEmpty(resultOutput))
                 {
-                    Logger.LogWarning($"RunCommand exitCode: {exitCode}, output: \"{resultOutput}\", error: \"{exitCode}\"");
+                    Logger.LogWarning($"RunCommand exitCode: {exitCode}, output: \"{resultOutput}\", error: \"{resultError}\"");
                 }
             }
             return exitCode == 0;
