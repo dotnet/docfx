@@ -24,8 +24,10 @@ namespace Microsoft.DocAsCode.Build.Engine
 
     public class DocumentBuilder : IDisposable
     {
+        internal List<IDocumentProcessor> Processors { get; set; }
+
         [ImportMany]
-        internal IEnumerable<IDocumentProcessor> Processors { get; set; }
+        internal IEnumerable<IDocumentProcessor> ImportedProcessors { get; set; }
 
         [ImportMany]
         internal IEnumerable<IInputMetadataValidator> MetadataValidators { get; set; }
@@ -57,8 +59,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 _container.SatisfyImports(this);
                 _assemblyList = assemblyList;
             }
-            Logger.LogInfo($"{Processors.Count()} plug-in(s) loaded.");
-            foreach (var processor in Processors)
+            Logger.LogInfo($"{ImportedProcessors.Count()} plug-in(s) loaded.");
+            foreach (var processor in ImportedProcessors)
             {
                 Logger.LogVerbose($"\t{processor.Name} with build steps ({string.Join(", ", from bs in processor.BuildSteps orderby bs.BuildOrder select bs.Name)})");
             }
@@ -104,7 +106,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (sdps.Count > 0)
             {
                 Logger.LogInfo($"{sdps.Count()} schema driven document processor plug-in(s) loaded.");
-                Processors = Processors.Union(sdps);
+                Processors = ImportedProcessors.Concat(sdps).ToList();
             }
 
             var currentBuildInfo =
