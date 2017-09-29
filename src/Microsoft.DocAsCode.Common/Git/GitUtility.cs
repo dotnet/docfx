@@ -9,12 +9,12 @@ namespace Microsoft.DocAsCode.Common.Git
     using System.IO;
     using System.Text;
 
+    using Microsoft.DocAsCode.Plugins;
+
     public static class GitUtility
     {
         private static readonly string CommandName = "git";
         private static readonly int GitTimeOut = 1000;
-        private static readonly Lazy<bool> _existGitCommand =
-            new Lazy<bool>(() => CommandUtility.ExistCommand(CommandName));
 
         private static readonly string GetRepoRootCommand = "rev-parse --show-toplevel";
         private static readonly string GetLocalBranchCommand = "rev-parse --abbrev-ref HEAD";
@@ -22,10 +22,9 @@ namespace Microsoft.DocAsCode.Common.Git
         private static readonly string GetRemoteBranchCommand = "rev-parse --abbrev-ref @{u}";
         private static readonly string GetDeletedFileContentCommand = "show {0}^:{1}";
         private static readonly string GetFileLastCommitIdCommand = "rev-list --max-count=1 --all -- {0}";
+
         // TODO: only get default remote's url currently.
         private static readonly string GetOriginUrlCommand = "config --get remote.origin.url";
-        private static readonly string GetLocalHeadIdCommand = "rev-parse HEAD";
-        private static readonly string GetRemoteHeadIdCommand = "rev-parse @{u}";
 
         private static readonly string[] BuildSystemBranchName = new[]
         {
@@ -38,6 +37,9 @@ namespace Microsoft.DocAsCode.Common.Git
         };
 
         private static readonly ConcurrentDictionary<string, GitRepoInfo> Cache = new ConcurrentDictionary<string, GitRepoInfo>();
+
+        private static bool? GitCommandExists = null;
+        private static object SyncRoot = new object();
 
         public static GitDetail TryGetFileDetail(string filePath)
         {
@@ -56,45 +58,15 @@ namespace Microsoft.DocAsCode.Common.Git
 
         public static GitDetail GetFileDetail(string filePath)
         {
-            if (string.IsNullOrEmpty(filePath))
+            if (string.IsNullOrEmpty(filePath) || !ExistGitCommand())
             {
                 return null;
             }
 
-            if (!Path.IsPathRooted(filePath))
-            {
-                throw new GitException($"{nameof(filePath)} should be an absolute path");
-            }
+            var path = Path.Combine(EnvironmentContext.BaseDirectory, filePath).ToNormalizedPath();
 
-            if (!ExistGitCommand())
-            {
-                throw new GitException("Can't find git command in current environment");
-            }
-
-            filePath = PathUtility.NormalizePath(filePath);
-            var detail = GetFileDetailCore(filePath);
+            var detail = GetFileDetailCore(path);
             return detail;
-        }
-
-        public static string GetDeletedFileContent(string filePath)
-        {
-            if (string.IsNullOrEmpty(filePath))
-            {
-                return null;
-            }
-
-            if (!Path.IsPathRooted(filePath))
-            {
-                throw new GitException($"{nameof(filePath)} should be an absolute path");
-            }
-
-            if (!ExistGitCommand())
-            {
-                throw new GitException("Can't find git command in current environment");
-            }
-
-            filePath = PathUtility.NormalizePath(filePath);
-            return GetDeletedFileContentCore(filePath);
         }
 
         public static GitRepoInfo GetRepoInfo(string directory)
@@ -119,36 +91,6 @@ namespace Microsoft.DocAsCode.Common.Git
         }
 
         #region Private Methods
-        private static string GetDeletedFileContentCore(string filePath)
-        {
-            string directory;
-            if (PathUtility.IsDirectory(filePath))
-            {
-                directory = filePath;
-            }
-            else
-            {
-                directory = Path.GetDirectoryName(filePath);
-            }
-
-            var repoInfo = Cache.GetOrAdd(directory, GetRepoInfo);
-
-            if (repoInfo == null)
-            {
-                return null;
-            }
-
-            var getFileLastCommitIdCommand = string.Format(GetFileLastCommitIdCommand, PathUtility.MakeRelativePath(repoInfo.RepoRootPath, filePath));
-            var lastCommitId = TryRunGitCommandAndGetLastLine(repoInfo.RepoRootPath, getFileLastCommitIdCommand);
-
-            if (lastCommitId == null)
-            {
-                return null;
-            }
-
-            var getDeletedFileContentCommand = string.Format(GetDeletedFileContentCommand, lastCommitId, PathUtility.MakeRelativePath(repoInfo.RepoRootPath, filePath));
-            return TryRunGitCommand(repoInfo.RepoRootPath, getDeletedFileContentCommand);
-        }
 
         private static bool IsGitRoot(string directory)
         {
@@ -359,8 +301,24 @@ namespace Microsoft.DocAsCode.Common.Git
 
         private static bool ExistGitCommand()
         {
-            return _existGitCommand.Value;
+            if (GitCommandExists == null)
+            {
+                lock (SyncRoot)
+                {
+                    if (GitCommandExists == null)
+                    {
+                        GitCommandExists = CommandUtility.ExistCommand(CommandName);
+                        if (GitCommandExists != true)
+                        {
+                            Logger.LogInfo("Looks like Git is not installed globally. We depend on Git to extract repository information for source code and files.");
+                        }
+                    }
+                }
+            }
+
+            return GitCommandExists.Value;
         }
+
         #endregion
     }
 }
