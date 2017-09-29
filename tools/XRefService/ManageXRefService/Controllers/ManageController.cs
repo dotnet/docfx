@@ -43,7 +43,7 @@ namespace XRefService.Manage.Controllers
         }
 
         [HttpPost("uploads")]
-        public async Task<IActionResult> UploadXRefMap([FromBody]UploadXRefMapRequest request)
+        public IActionResult UploadXRefMap([FromBody]UploadXRefMapRequest request)
         {
             var url = request.url;
             if (string.IsNullOrEmpty(url))
@@ -51,6 +51,14 @@ namespace XRefService.Manage.Controllers
                 return BadRequest("Please provide the url of the xrefmap.yml file in request body: { \"url\". \"{url}\"");
             }
 
+            // Start uploading
+            // TODO: track status
+            Task.Run(() => Upload(url));
+            return Accepted();
+        }
+
+        private async Task<IActionResult> Upload(string url)
+        {
             using (var client = new WebClient())
             {
                 using (var stream = await client.OpenReadTaskAsync(url))
