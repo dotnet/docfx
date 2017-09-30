@@ -15,9 +15,9 @@ namespace Microsoft.DocAsCode.Common
     {
         #region Constructors
 
-        internal FileAbstractLayer(IFileReader reader, IFileWriter writer)
+        public FileAbstractLayer(IFileReader reader, IFileWriter writer)
         {
-            Reader = reader;
+            Reader = reader ?? throw new ArgumentNullException(nameof(reader));
             Writer = writer;
         }
 
