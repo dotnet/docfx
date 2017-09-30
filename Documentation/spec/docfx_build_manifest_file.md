@@ -7,7 +7,7 @@ Before *DocFX* version 1.7, the manifest file is an Array of items. Then *DocFX*
 
 For backward compatibility, in version 1.8, *DocFX* generates both Array model to-be-obsoleted and the new Object model. 
 
-In version 1.9, manifest file in Array model will be **removed**.
+In version 1.9, manifest file in Array model is **removed**.
 
 In version 2.24, `version` is obsolete and `group` is used instead.
 
