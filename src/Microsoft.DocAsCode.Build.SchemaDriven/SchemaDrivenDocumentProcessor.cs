@@ -102,7 +102,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         var obj = YamlUtility.Deserialize<Dictionary<string, object>>(file.File);
 
                         // Validate against the schema first
-                        _schemaValidator.Validate(obj);
+                        // Temporarily disable schema validation as Json.NET schema has limitation of 1000 calls per hour
+                        // TODO: Reenable schema validation
+                        // _schemaValidator.Validate(obj);
 
                         var content = ConvertToObjectHelper.ConvertToDynamic(obj);
                         var pageMetadata = _schema.MetadataReference.GetValue(content) as IDictionary<string, object>;
