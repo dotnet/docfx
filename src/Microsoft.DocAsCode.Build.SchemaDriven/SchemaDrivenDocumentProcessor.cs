@@ -79,6 +79,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
                     break;
                 // temporarily disable loading of overwrite documents in SDP
+                // TODO: reenable processing of overwrite documents in SDP
                 //case DocumentType.Overwrite:
                 //    if (".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
                 //    {
