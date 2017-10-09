@@ -721,7 +721,7 @@ items:
       href: x2.md";
             var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
             var ex = Assert.Throws<DocumentException>(() => TocHelper.LoadSingleToc(toc));
-            Assert.Equal("toc.yml is not a valid TOC File: toc.yml is not a valid TOC file, detail: (Line: 3, Col: 10, Idx: 22) - (Line: 3, Col: 10, Idx: 22): Mapping values are not allowed in this context.", ex.Message);
+            Assert.Equal("toc.yml is not a valid TOC File: toc.yml is not a valid TOC file, detail: (Line: 3, Col: 10, Idx: 22) - (Line: 3, Col: 10, Idx: 22): Mapping values are not allowed in this context..", ex.Message);
         }
 
         #region Helper methods
