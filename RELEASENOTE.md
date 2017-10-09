@@ -1,5 +1,10 @@
-﻿Version Notes (Current Version: v2.25)
+﻿Version Notes (Current Version: v2.25.1)
 =======================================
+
+v2.25.1
+-----------
+1. Disable schema validation in schema-driven document processor temporarily.
+2. Disable loading overwrite documents in schema-driven document processor temporarily.
 
 v2.25
 -----------
