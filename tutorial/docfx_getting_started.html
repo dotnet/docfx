@@ -8,7 +8,7 @@
     <title>Getting Started with DocFX | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Getting Started with DocFX | DocFX website ">
-    <meta name="generator" content="docfx 2.24.0.0">
+    <meta name="generator" content="docfx 2.25.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -116,17 +116,17 @@ It add itself to the build targets and add the <code>docfx.json</code> configura
        &quot;src&quot;: &quot;...&quot;,
        &quot;dest&quot;: &quot;...&quot;,
        &quot;properties&quot;: {
-         &quot;TargetFramework&quot;: <one_of_your_framework>
+         &quot;TargetFramework&quot;: &lt;one_of_your_framework&gt;
        }
      },
-   ]<p>
-</one_of_your_framework></li>
+   ]</p>
+</li>
 </ul>
 </div>
 <h2 id="4-use-docfx-with-a-build-server">4. Use <em>DocFX</em> with a Build Server</h2>
 <p><em>DocFX</em> can be used in a Continuous Integration environment.</p>
 <p>Most build systems do not checkout the branch that is being built, but
-use a <code>detached head</code> for the specific commit.  DoxFX needs the the branch name to implement the <code>View Source</code> link in the API documentation.</p>
+use a <code>detached head</code> for the specific commit.  DocFX needs the the branch name to implement the <code>View Source</code> link in the API documentation.</p>
 <p>Setting the environment variable <code>DOCFX_SOURCE_BRANCH_NAME</code> tells DocFX which branch name to use.</p>
 <p>Many build systems set an environment variable with the branch name.  DocFX uses the following:</p>
 <ul>

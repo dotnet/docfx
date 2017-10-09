@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.24.0.0">
+    <meta name="generator" content="docfx 2.25.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -374,7 +374,11 @@ And if <code>href</code> is referencing to a <strong>folder</strong>, it must en
 </tr>
 <tr>
 <td>keepFileLink</td>
-<td>If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a <code>link_to_path</code> property inside <code>mainfiest.json</code> to indicate the physical location of that file. A file link will be created by incremental build and copy resouce file.</td>
+<td>If set to true, docfx does not dereference (aka. copy) file to the output folder, instead, it saves a <code>link_to_path</code> property inside <code>manifest.json</code> to indicate the physical location of that file. A file link will be created by incremental build and copy resouce file.</td>
+</tr>
+<tr>
+<td>sitemap</td>
+<td>In format <a href="#324-sitemapoptions">SitemapOptions</a> Specifies the options for the sitemap.xml file.</td>
 </tr>
 </tbody>
 </table>
@@ -593,7 +597,87 @@ Reserved metadatas:</p>
 </li>
 </ul>
 <p>Given multiple metadata files, the behavior would be <strong>undetermined</strong>, if same key is set in these files.</p>
-<h3 id="33-properties-for-pdf">3.3 Properties for <code>pdf</code></h3>
+<h4 id="324-sitemapoptions">3.2.4 SitemapOptions</h4>
+<p>The SitemapOptions is to configure the values for generating <a href="https://www.sitemaps.org/protocol.html">sitemap.xml</a> file.</p>
+<table>
+<thead>
+<tr>
+<th>Property Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>baseUrl</code></td>
+<td>string</td>
+<td>Specifies the base url for the website to be published. It MUST begin with the protocol (such as http) and end with a trailing slash. For example, <code>https://dotnet.github.io/docfx/</code>. If the value is not specified, sitemap.xml will NOT be generated.</td>
+</tr>
+<tr>
+<td><code>lastmod</code></td>
+<td>DateTime</td>
+<td>Specifies the date of last modification of the file. If not specified, docfx automatically set the value to the time the file is built.</td>
+</tr>
+<tr>
+<td><code>changefreq</code></td>
+<td>enum</td>
+<td>Specifies the value of <a href="https://www.sitemaps.org/protocol.html#changefreqdef">changefreq</a> in sitemap.xml. Valid values are <code>always</code>, <code>hourly</code>, <code>daily</code>, <code>weekly</code>, <code>monthly</code>, <code>yearly</code>, <code>never</code>. If not specified, the default value is <code>daily</code></td>
+</tr>
+<tr>
+<td><code>priority</code></td>
+<td>double</td>
+<td>Specifies the value of <a href="https://www.sitemaps.org/protocol.html#prioritydef">priority</a> in sitemap.xml. Valid values between <code>0.0</code> and <code>1.0</code>. If not specified, the default value is <code>0.5</code></td>
+</tr>
+<tr>
+<td><code>fileOptions</code></td>
+<td>SitemapOptions</td>
+<td>Optional. This property can be used when some specific files have different sitemap settings. It is a set of key-value pairs, where key is the <a href="#43-glob-pattern"><em>glob</em> pattern</a> for input files, and value is the sitemap options. Order matters and the latter matching option overwrites the former ones.</td>
+</tr>
+</tbody>
+</table>
+<p>In the following sample settings, the yml files inside <code>api</code> folder are with priority 0.3 while Markdown files are with priority 0.8 and with a different baseUrl.</p>
+<p>Sample settings:</p>
+<pre><code class="lang-json">&quot;build&quot;: {
+    &quot;sitemap&quot;:{
+        &quot;baseUrl&quot;: &quot;https://dotnet.github.io/docfx&quot;,
+        &quot;priority&quot;: 0.1,
+        &quot;changefreq&quot;: &quot;monthly&quot;,
+        &quot;fileOptions&quot;:{
+            &quot;**/api/**.yml&quot;: {
+                &quot;priority&quot;: 0.3,
+                &quot;lastmod&quot;: &quot;2001-01-01&quot;,
+            },
+            &quot;**/GettingStarted.md&quot;: {
+                &quot;baseUrl&quot;: &quot;https://dotnet.github.io/docfx/conceptual&quot;,
+                &quot;priority&quot;: 0.8,
+                &quot;changefreq&quot;: &quot;daily&quot;
+            }
+        }
+    }
+}
+</code></pre><p>Possible generated sitemap.xml:</p>
+<pre><code class="lang-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;urlset xmlns=&quot;http://www.sitemaps.org/schemas/sitemap/0.9&quot;&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://dotnet.github.io/docfx/api/System.String.html&lt;/loc&gt;
+    &lt;lastmod&gt;2001-01-01T00:00:00.00+08:00&lt;/lastmod&gt;
+    &lt;changefreq&gt;monthly&lt;/changefreq&gt;
+    &lt;priority&gt;0.3&lt;/priority&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://dotnet.github.io/docfx/conceptual/GettingStarted.html&lt;/loc&gt;
+    &lt;lastmod&gt;2017-09-21T10:00:00.00+08:00&lt;/lastmod&gt;
+    &lt;changefreq&gt;daily&lt;/changefreq&gt;
+    &lt;priority&gt;0.3&lt;/priority&gt;
+  &lt;/url&gt;
+  &lt;url&gt;
+    &lt;loc&gt;https://dotnet.github.io/docfx/ReadMe.html&lt;/loc&gt;
+    &lt;lastmod&gt;2017-09-21T10:00:00.00+08:00&lt;/lastmod&gt;
+    &lt;changefreq&gt;monthly&lt;/changefreq&gt;
+    &lt;priority&gt;0.1&lt;/priority&gt;
+  &lt;/url&gt;
+&lt;/urlset&gt;
+</code></pre><h3 id="33-properties-for-pdf">3.3 Properties for <code>pdf</code></h3>
 <p><code>pdf</code> supports <strong>ALL</strong> the <a href="#32-properties-for-build">properties for <code>build</code></a>, besides that, the following table lists additional properties specified for <code>pdf</code> only.</p>
 <table>
 <thead>
@@ -610,6 +694,10 @@ Reserved metadatas:</p>
 <tr>
 <td>generatesAppendices</td>
 <td>If specified, an <code>appendices.pdf</code> file is generated containing all the not-in-TOC articles.</td>
+</tr>
+<tr>
+<td>keepRawFiles</td>
+<td>If specified, the intermediate html files used to generate the PDF are not deleted after the PDF has been generated.</td>
 </tr>
 <tr>
 <td>wkhtmltopdf</td>
