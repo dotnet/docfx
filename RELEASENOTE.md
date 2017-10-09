@@ -9,6 +9,7 @@ v2.25 (Pre-release)
 4. Support responsive table: https://github.com/dotnet/docfx/issues/2024
 5. Bug fixed:
    1. Multithreads issue for reading xref zip file.
+   2. 404 issue for generated site. https://github.com/dotnet/docfx/issues/1858
 
 v2.24
 -----------
