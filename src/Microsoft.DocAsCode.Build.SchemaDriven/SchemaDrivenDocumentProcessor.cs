@@ -78,12 +78,13 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                     }
 
                     break;
-                case DocumentType.Overwrite:
-                    if (".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
-                    {
-                        return ProcessingPriority.Normal;
-                    }
-                    break;
+                // temporarily disable loading of overwrite documents in SDP
+                //case DocumentType.Overwrite:
+                //    if (".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
+                //    {
+                //        return ProcessingPriority.Normal;
+                //    }
+                //    break;
                 default:
                     break;
             }
