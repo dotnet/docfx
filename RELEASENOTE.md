@@ -1,7 +1,7 @@
 ﻿Version Notes (Current Version: v2.25)
 =======================================
 
-v2.25 (Pre-release)
+v2.25
 -----------
 1. Use wbr instead of zero width space
 2. Remove warning invalid file link when customized href generator can resolve it.
