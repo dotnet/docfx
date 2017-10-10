@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.25.1)
+﻿Version Notes (Current Version: v2.25.2)
 =======================================
+
+v2.25.2
+-----------
+1. Fix post-processor incremental bug that incremental post-processor is always disabled
 
 v2.25.1
 -----------
