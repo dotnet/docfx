@@ -152,6 +152,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Logger.LogWarning($"Custom href generator({parameter.CustomLinkResolver}) is not found.");
                         }
                     }
+                    // todo: IInputFileAbstractLayerBuilderProvider
                     if (_intermediateFolder == null)
                     {
                         EnvironmentContext.FileAbstractLayerImpl =

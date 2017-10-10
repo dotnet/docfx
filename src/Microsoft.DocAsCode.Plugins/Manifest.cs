@@ -31,15 +31,14 @@ namespace Microsoft.DocAsCode.Plugins
         [JsonProperty("sitemap")]
         public SitemapOptions SitemapOptions { get; set; }
 
-        [JsonProperty("templates")]
-        public List<string> Templates { get; set; }
-
+        [Obsolete]
         [JsonProperty("homepages")]
         public List<HomepageInfo> Homepages { get; set; }
 
         [JsonProperty("source_base_path")]
         public string SourceBasePath { get; set; }
 
+        [Obsolete]
         [JsonProperty("xrefmap")]
         public object XRefMap { get; set; }
 

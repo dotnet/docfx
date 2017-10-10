@@ -1,7 +1,10 @@
-﻿Version Notes (Current Version: v2.25)
+﻿Version Notes (Current Version: v2.26)
 =======================================
 
-v2.25 (Pre-release)
+v2.26 (Pre-release)
+-----------
+
+v2.25
 -----------
 1. Use wbr instead of zero width space
 2. Remove warning invalid file link when customized href generator can resolve it.
@@ -9,6 +12,7 @@ v2.25 (Pre-release)
 4. Support responsive table: https://github.com/dotnet/docfx/issues/2024
 5. Bug fixed:
    1. Multithreads issue for reading xref zip file.
+   2. 404 issue for generated site. https://github.com/dotnet/docfx/issues/1858
 
 v2.24
 -----------

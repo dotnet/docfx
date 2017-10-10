@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.TableOfContents
 {
+    using System;
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.Common;
@@ -298,8 +299,18 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 return href;
             }
+            RelativePath relativeToTargetFile;
+            try
+            {
+                relativeToTargetFile= RelativePath.Parse(href);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex.Message, code: WarningCodes.Build.InvalidFileLink);
+                return href;
+            }
 
-            return (relativeToFile + (RelativePath)href).GetPathFromWorkingFolder();
+            return (relativeToFile + relativeToTargetFile).GetPathFromWorkingFolder();
         }
 
         private TocItemViewModel GetDefaultHomepageItem(TocItemViewModel toc)
