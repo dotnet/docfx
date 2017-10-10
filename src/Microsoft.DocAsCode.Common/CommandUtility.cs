@@ -146,10 +146,8 @@ namespace Microsoft.DocAsCode.Common
                     outputStreamWriter.Flush();
                     errorStreamWriter.Flush();
 
-                    outputStream.Position = 0;
-                    errorStream.Position = 0;
-                    var outputString = System.Text.Encoding.UTF8.GetString(outputStream.GetBuffer(), 0, (int)outputStream.Length);
-                    var errorString = System.Text.Encoding.UTF8.GetString(errorStream.GetBuffer(), 0, (int)errorStream.Length);
+                    var outputString = System.Text.Encoding.UTF8.GetString(outputStream.ToArray());
+                    var errorString = System.Text.Encoding.UTF8.GetString(errorStream.ToArray());
 
                     // Allow caller to decide what to do with the output and error logs 
                     processOutput?.Invoke(outputString);
