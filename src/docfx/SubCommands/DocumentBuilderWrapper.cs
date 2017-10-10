@@ -116,6 +116,11 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
 
+            if (!string.IsNullOrEmpty(config.SitemapOptions?.BaseUrl))
+            {
+                postProcessorNames = postProcessorNames.Add("SitemapGenerator");
+            }
+
             ChangeList changeList = null;
             if (config.ChangesFile != null)
             {

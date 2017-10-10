@@ -103,14 +103,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                         },
                     }
                 });
-            var sitemapGenerator = new SitemapGenerator();
-            processorList.Add(
-                new PostProcessor
-                {
-                    ContractName = sitemapGenerator.Name,
-                    Processor = sitemapGenerator,
-                }
-            );
         }
 
         public void Dispose()
