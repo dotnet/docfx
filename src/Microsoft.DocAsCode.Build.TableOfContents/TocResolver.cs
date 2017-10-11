@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             {
                 Logger.LogWarning(
                     $"TOC item ({item.ToString()}) with empty name found. Missing a name?",
-                    code: WarningCodes.Build.EmptyNameTocNode);
+                    code: WarningCodes.Build.EmptyTocItemName);
             }
 
             // HomepageUid and Uid is deprecated, unified to TopicUid
