@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             if (!isRoot && string.IsNullOrEmpty(item.Name))
             {
                 Logger.LogWarning(
-                    $"TOC item with empty name found. Missing a name? {item.ToString()}",
+                    $"TOC item ({item.ToString()}) with empty name found. Missing a name?",
                     code: WarningCodes.Build.EmptyNameTocNode);
             }
 

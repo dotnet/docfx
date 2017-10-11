@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Common
             public const string DuplicateUids = "DuplicateUids";
             public const string DuplicateOutputFiles = "DuplicateOutputFiles";
             public const string UnknownUriTemplatePipeline = "UnknownUriTemplatePipeline";
-            public const string EmptyNameTocNode = "EmptyTocItemName";
+            public const string EmptyTocItemName = "EmptyTocItemName";
         }
 
         public static class Markdown
