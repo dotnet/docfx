@@ -24,18 +24,18 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         public TocItemInfo Resolve(string file)
         {
-            return ResolveItem(_collection[file], new Stack<FileAndType>(), true);
+            return ResolveItem(_collection[file], new Stack<FileAndType>());
         }
 
-        private TocItemInfo ResolveItem(TocItemInfo wrapper, Stack<FileAndType> stack, bool isRootedItem = false)
+        private TocItemInfo ResolveItem(TocItemInfo wrapper, Stack<FileAndType> stack, bool isRoot = true)
         {
             using (new LoggerFileScope(wrapper.File.File))
             {
-                return ResolveItemCore(wrapper, stack, isRootedItem);
+                return ResolveItemCore(wrapper, stack, isRoot);
             }
         }
 
-        private TocItemInfo ResolveItemCore(TocItemInfo wrapper, Stack<FileAndType> stack, bool isRootedItem = false)
+        private TocItemInfo ResolveItemCore(TocItemInfo wrapper, Stack<FileAndType> stack, bool isRoot)
         {
             if (wrapper.IsResolved)
             {
@@ -50,15 +50,11 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             var item = wrapper.Content;
 
-            if (!isRootedItem && string.IsNullOrEmpty(item.Name))
+            if (!isRoot && string.IsNullOrEmpty(item.Name))
             {
-                var message = "TOC item with empty name found. Missing a name?";
-                message += TocItemPropertyInfo("Href", item.Href);
-                message += TocItemPropertyInfo("TopicHref", item.TopicHref);
-                message += TocItemPropertyInfo("TocHref", item.TocHref);
-                message += TocItemPropertyInfo("Uid", item.Uid);
-                message += TocItemPropertyInfo("TopicUid", item.TopicUid);
-                Logger.LogWarning(message, code: WarningCodes.Build.EmptyNameTocNode);
+                Logger.LogWarning(
+                    $"TOC item with empty name found. Missing a name? {item.ToString()}",
+                    code: WarningCodes.Build.EmptyNameTocNode);
             }
 
             // HomepageUid and Uid is deprecated, unified to TopicUid
@@ -130,7 +126,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                     {
                         for (int i = 0; i < item.Items.Count; i++)
                         {
-                            item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack).Content;
+                            item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack, false).Content;
                         }
                         if (string.IsNullOrEmpty(item.TopicHref) && string.IsNullOrEmpty(item.TopicUid))
                         {
@@ -206,7 +202,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         {
                             for (int i = 0; i < item.Items.Count; i++)
                             {
-                                item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack).Content;
+                                item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack, false).Content;
                             }
                         }
                     }
@@ -254,15 +250,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
 
             return wrapper;
-        }
-
-        private string TocItemPropertyInfo(string name, string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return string.Empty;
-            }
-            return $" {name}: {value}";
         }
 
         private TocItemViewModel GetReferencedToc(FileAndType tocFile, Stack<FileAndType> stack)

@@ -135,5 +135,26 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             }
             return cloned;
         }
+
+        public override string ToString()
+        {
+            var result = string.Empty;
+            result += PropertyInfo(nameof(Name), Name);
+            result += PropertyInfo(nameof(Href), Href);
+            result += PropertyInfo(nameof(TopicHref), TopicHref);
+            result += PropertyInfo(nameof(TocHref), TocHref);
+            result += PropertyInfo(nameof(Uid), Uid);
+            result += PropertyInfo(nameof(TopicUid), TopicUid);
+            return result;
+
+            string PropertyInfo(string name, string value)
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    return string.Empty;
+                }
+                return $"{name}:{value} ";
+            }
+        }
     }
 }
