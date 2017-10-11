@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         protected virtual bool LegacyMode => false;
 
-        protected virtual bool ShouldFixId { get; set; }
+        protected virtual bool ShouldFixId { get; set; } = true;
 
         [ImportMany]
         public IEnumerable<IMarkdownTokenTreeValidator> TokenTreeValidator { get; set; } = Enumerable.Empty<IMarkdownTokenTreeValidator>();
