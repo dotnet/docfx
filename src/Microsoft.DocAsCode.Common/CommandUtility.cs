@@ -153,8 +153,6 @@ namespace Microsoft.DocAsCode.Common
                     processOutput?.Invoke(outputString);
                     processError?.Invoke(errorString);
                 }
-
-                
             }
             return exitCode == 0;
         }
