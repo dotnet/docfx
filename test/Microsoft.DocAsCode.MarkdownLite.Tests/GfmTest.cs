@@ -676,6 +676,10 @@ B", @"<p>A<br>B</p>
         [InlineData(@"A  
 B", @"<p>A<br>B</p>
 ")]
+        [InlineData(@"a*b\*c", @"<p>a*b*c</p>
+")]
+        [InlineData(@"a*b\*c*d", @"<p>a<em>b*c</em>d</p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
