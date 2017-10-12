@@ -27,15 +27,15 @@ namespace Microsoft.DocAsCode.Common
 
         public static FileLinkInfo Create(string fromFileInSource, string fromFileInDest, string href, IDocumentBuildContext context)
         {
-            if (string.IsNullOrEmpty(fromFileInSource))
+            if (fromFileInSource == null)
             {
                 throw new ArgumentNullException(nameof(fromFileInSource));
             }
-            if (string.IsNullOrEmpty(fromFileInDest))
+            if (fromFileInDest == null)
             {
                 throw new ArgumentNullException(nameof(fromFileInDest));
             }
-            if (string.IsNullOrEmpty(href))
+            if (href == null)
             {
                 throw new ArgumentNullException(nameof(href));
             }
