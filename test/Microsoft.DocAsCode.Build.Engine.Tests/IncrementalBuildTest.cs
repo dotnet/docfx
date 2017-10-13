@@ -456,6 +456,10 @@ tagRules : [
             {
                 Environment.SetEnvironmentVariable("cache", null);
                 CleanUp();
+                if (File.Exists(MarkdownSytleConfig.MarkdownStyleFileName))
+                {
+                    File.Delete(MarkdownSytleConfig.MarkdownStyleFileName);
+                }
             }
         }
 
@@ -647,6 +651,10 @@ tagRules : [
             finally
             {
                 CleanUp();
+                if (File.Exists(MarkdownSytleConfig.MarkdownStyleFileName))
+                {
+                    File.Delete(MarkdownSytleConfig.MarkdownStyleFileName);
+                }
             }
         }
 
@@ -840,6 +848,10 @@ tagRules : [
             finally
             {
                 CleanUp();
+                if (File.Exists(MarkdownSytleConfig.MarkdownStyleFileName))
+                {
+                    File.Delete(MarkdownSytleConfig.MarkdownStyleFileName);
+                }
             }
         }
 
@@ -1057,6 +1069,10 @@ tagRules : [
             finally
             {
                 CleanUp();
+                if (File.Exists(MarkdownSytleConfig.MarkdownStyleFileName))
+                {
+                    File.Delete(MarkdownSytleConfig.MarkdownStyleFileName);
+                }
             }
         }
 
@@ -1263,6 +1279,10 @@ tagRules : [
             finally
             {
                 CleanUp();
+                if (File.Exists(MarkdownSytleConfig.MarkdownStyleFileName))
+                {
+                    File.Delete(MarkdownSytleConfig.MarkdownStyleFileName);
+                }
             }
         }
 

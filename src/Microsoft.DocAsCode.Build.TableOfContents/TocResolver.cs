@@ -27,15 +27,15 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             return ResolveItem(_collection[file], new Stack<FileAndType>());
         }
 
-        private TocItemInfo ResolveItem(TocItemInfo wrapper, Stack<FileAndType> stack)
+        private TocItemInfo ResolveItem(TocItemInfo wrapper, Stack<FileAndType> stack, bool isRoot = true)
         {
             using (new LoggerFileScope(wrapper.File.File))
             {
-                return ResolveItemCore(wrapper, stack);
+                return ResolveItemCore(wrapper, stack, isRoot);
             }
         }
 
-        private TocItemInfo ResolveItemCore(TocItemInfo wrapper, Stack<FileAndType> stack)
+        private TocItemInfo ResolveItemCore(TocItemInfo wrapper, Stack<FileAndType> stack, bool isRoot)
         {
             if (wrapper.IsResolved)
             {
@@ -49,6 +49,13 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
 
             var item = wrapper.Content;
+
+            if (!isRoot && string.IsNullOrEmpty(item.Name))
+            {
+                Logger.LogWarning(
+                    $"TOC item ({item.ToString()}) with empty name found. Missing a name?",
+                    code: WarningCodes.Build.EmptyTocItemName);
+            }
 
             // HomepageUid and Uid is deprecated, unified to TopicUid
             if (string.IsNullOrEmpty(item.TopicUid))
@@ -119,7 +126,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                     {
                         for (int i = 0; i < item.Items.Count; i++)
                         {
-                            item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack).Content;
+                            item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack, false).Content;
                         }
                         if (string.IsNullOrEmpty(item.TopicHref) && string.IsNullOrEmpty(item.TopicUid))
                         {
@@ -195,7 +202,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                         {
                             for (int i = 0; i < item.Items.Count; i++)
                             {
-                                item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack).Content;
+                                item.Items[i] = ResolveItem(new TocItemInfo(file, item.Items[i]), stack, false).Content;
                             }
                         }
                     }
