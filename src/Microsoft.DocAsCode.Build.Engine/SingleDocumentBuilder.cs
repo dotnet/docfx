@@ -135,7 +135,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             var files = (from file in parameters.Files.EnumerateFiles().AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                                          where overwriteProcessor.GetProcessingPriority(file) != ProcessingPriority.NotSupported select file);
                             var overwriteHostService = hostServiceCreator.CreateHostService(parameters, templateProcessor, MarkdownService, MetadataValidators, overwriteProcessor, files);
-                            phaseProcessor.Process(new List<HostService> { overwriteHostService }, context.MaxParallelism);
+                            phaseProcessor.Handlers.First().Handle(new List<HostService> { overwriteHostService }, context.MaxParallelism);
                             overwrites = overwriteHostService.GetModels(DocumentType.Overwrite).ToImmutableDictionary(s => s.FileAndType, s => s);
                         }
 
