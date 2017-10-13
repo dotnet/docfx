@@ -184,16 +184,9 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
                 return originalPathToFile;
             }
 
-            var relativePath = GetRelativePath(href, model.File);
-            var resolvedHref = ((RelativePath)relativePath).UrlEncode().ToString() + segments;
-            return resolvedHref;
+            var fli = FileLinkInfo.Create(model.LocalPathFromRoot, model.File, path, context);
+            return context.HrefGenerator?.GenerateHref(fli) ?? fli.Href;
         }
-
-        private string GetRelativePath(string pathFromWorkingFolder, string relativeToPath)
-        {
-            return ((RelativePath)pathFromWorkingFolder).MakeRelativeTo((((RelativePath)relativeToPath).UrlDecode()).GetPathFromWorkingFolder());
-        }
-
         #endregion
     }
 }

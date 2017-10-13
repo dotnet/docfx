@@ -55,6 +55,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             BuildOutputFolder = buildOutputFolder;
             VersionName = versionName;
             ApplyTemplateSettings = applyTemplateSetting;
+            HrefGenerator = applyTemplateSetting?.HrefGenerator;
             AllSourceFiles = GetAllSourceFiles(allSourceFiles);
             ExternalReferencePackages = externalReferencePackages;
             _xrefMapUrls = xrefMaps;
@@ -112,6 +113,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public string RootTocPath { get; }
 
         public IMarkdownService MarkdownService { get; set; }
+
+        public ICustomHrefGenerator HrefGenerator { get; }
 
         internal IncrementalBuildContext IncrementalBuildContext { get; set; }
 

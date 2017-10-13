@@ -84,5 +84,10 @@ namespace Microsoft.DocAsCode.Plugins
         /// Current file's version root path from ~ ROOT
         /// </summary>
         string VersionFolder { get; }
+
+        /// <summary>
+        /// Custom href generator
+        /// </summary>
+        ICustomHrefGenerator HrefGenerator { get; }
     }
 }
