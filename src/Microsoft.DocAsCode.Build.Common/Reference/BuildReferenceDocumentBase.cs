@@ -43,22 +43,7 @@ namespace Microsoft.DocAsCode.Build.Common
 
         protected virtual void BuildOverwrite(IHostService host, FileModel model)
         {
-            var overwrites = MarkdownReader.ReadMarkdownAsOverwrite(host, model.FileAndType).ToList();
-            model.Content = overwrites;
-            model.LinkToFiles = overwrites.SelectMany(o => o.LinkToFiles).ToImmutableHashSet();
-            model.LinkToUids = overwrites.SelectMany(o => o.LinkToUids).ToImmutableHashSet();
-            model.FileLinkSources = overwrites.SelectMany(o => o.FileLinkSources).GroupBy(i => i.Key, i => i.Value).ToImmutableDictionary(i => i.Key, i => i.SelectMany(l => l).ToImmutableList());
-            model.UidLinkSources = overwrites.SelectMany(o => o.UidLinkSources).GroupBy(i => i.Key, i => i.Value).ToImmutableDictionary(i => i.Key, i => i.SelectMany(l => l).ToImmutableList());
-            model.Uids = (from item in overwrites
-                          where !string.IsNullOrEmpty(item.Uid)
-                          select new UidDefinition(
-                              item.Uid,
-                              model.LocalPathFromRoot,
-                              item.Documentation.StartLine + 1)).ToImmutableArray();
-            foreach (var d in overwrites.SelectMany(s => s.Dependency))
-            {
-                host.ReportDependencyTo(model, d, DependencyTypeName.Include);
-            }
+            // overwrite model is now shared
         }
 
         protected virtual void BuildArticleCore(IHostService host, FileModel model, IModelAttributeHandler handlers = null, HandleModelAttributesContext handlerContext = null, bool shouldSkipMarkup = false)

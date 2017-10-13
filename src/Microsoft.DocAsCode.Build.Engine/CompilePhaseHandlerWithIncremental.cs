@@ -68,14 +68,14 @@ namespace Microsoft.DocAsCode.Build.Engine
                     hostService.IncrementalInfos = IncrementalContext.GetModelIncrementalInfo(hostService, Phase);
                 }
             }
-            var fileSet = new HashSet<string>(from h in hostServices
-                                              where !h.CanIncrementalBuild
-                                              from f in h.Models
-                                              select IncrementalUtility.GetDependencyKey(f.OriginalFileAndType),
+            var incrementalFiles = new HashSet<string>(from h in hostServices
+                                              where h.CanIncrementalBuild
+                                              from f in h.IncrementalInfos.Keys
+                                              select IncrementalUtility.GetDependencyKey(f),
                                                   FilePathComparer.OSPlatformSensitiveStringComparer);
-            ReloadDependency(fileSet);
+            ReloadDependency(incrementalFiles);
             LoadContextInfo(hostServices);
-            RegisterUnloadedTocRestructions(fileSet);
+            RegisterUnloadedTocRestructions(incrementalFiles);
             Logger.RegisterListener(CurrentBuildMessageInfo.GetListener());
         }
 
@@ -124,7 +124,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void ReloadDependency(HashSet<string> nonIncreSet)
+        private void ReloadDependency(HashSet<string> incrementalFiles)
         {
             // restore dependency graph from last dependency graph for unchanged files
             using (new LoggerPhaseScope("ReportDependencyFromLastBuild", LogLevel.Verbose))
@@ -133,13 +133,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 if (ldg != null)
                 {
                     CurrentBuildVersionInfo.Dependency.ReportReference(from r in ldg.ReferenceReportedBys
-                                                                       where !IncrementalContext.ChangeDict.ContainsKey(r) || IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
-                                                                       where !nonIncreSet.Contains(r)
+                                                                       where incrementalFiles.Contains(r) && IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
                                                                        from reference in ldg.GetReferenceReportedBy(r)
                                                                        select reference);
                     CurrentBuildVersionInfo.Dependency.ReportDependency(from r in ldg.ReportedBys
-                                                                        where !IncrementalContext.ChangeDict.ContainsKey(r) || IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
-                                                                        where !nonIncreSet.Contains(r)
+                                                                        where incrementalFiles.Contains(r) && IncrementalContext.ChangeDict[r] == ChangeKindWithDependency.None
                                                                         from i in ldg.GetDependencyReportedBy(r)
                                                                         select i);
                 }
@@ -147,7 +145,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         }
 
         // TO-DO: move to plugins
-        private void RegisterUnloadedTocRestructions(HashSet<string> nonIncreSet)
+        private void RegisterUnloadedTocRestructions(HashSet<string> incrementalFiles)
         {
             using (new LoggerPhaseScope("RegisterUnloadedTocRestructionsFromLastBuild", LogLevel.Verbose))
             {
@@ -159,11 +157,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 foreach (var pair in restructions)
                 {
                     var pathFromWorkingFolder = ((RelativePath)pair.Key).GetPathFromWorkingFolder();
-                    if (nonIncreSet.Contains(pathFromWorkingFolder))
-                    {
-                        continue;
-                    }
-                    if (!IncrementalContext.ChangeDict.ContainsKey(pathFromWorkingFolder) || IncrementalContext.ChangeDict[pathFromWorkingFolder] == ChangeKindWithDependency.None)
+                    if (incrementalFiles.Contains(pathFromWorkingFolder) && IncrementalContext.ChangeDict[pathFromWorkingFolder] == ChangeKindWithDependency.None)
                     {
                         _inner.Restructions.AddRange(pair.Value);
                     }

@@ -46,13 +46,14 @@ namespace Microsoft.DocAsCode.Build.Engine
             IMarkdownService markdownService,
             IEnumerable<IInputMetadataValidator> metadataValidator,
             IDocumentProcessor processor,
-            IEnumerable<FileAndType> files)
+            IEnumerable<FileAndType> files,
+            ImmutableDictionary<FileAndType, FileModel> preloadOverwrites = null)
         {
             if (ShouldProcessorTraceInfo(processor))
             {
                 IncrementalContext.CreateProcessorInfo(processor);
             }
-            var hs = base.CreateHostService(parameters, templateProcessor, markdownService, metadataValidator, processor, files);
+            var hs = base.CreateHostService(parameters, templateProcessor, markdownService, metadataValidator, processor, files, preloadOverwrites);
             PostCreate(hs, files);
             return hs;
         }
