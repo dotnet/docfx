@@ -22,10 +22,14 @@ namespace Microsoft.DocAsCode.Dfm
     /// </summary>
     public class DfmXrefShortcutInlineRule : IMarkdownRule
     {
-        public static readonly string XrefShortcutRegexWithQuoteString = @"@(?:(['""])(\s*?\S+?[\s\S]*?)\1)";
-        public static readonly string XrefShortcutRegexString = @"@((?:([a-z]+?[\S]*?))(?=[.,;:!?~\s]{2,}|[.,;:!?~]*$|\s))";
+        private const string ContinuableCharacters = ".,;:!?~";
+        private const string StopCharacters = @"\s<>";
+
+        public static readonly string XrefShortcutRegexWithQuoteString = @"@(?:(['""])(?<uid>\s*?\S+?[\s\S]*?)\1)";
+        public static readonly string XrefShortcutRegexString = $@"@(?<uid>[a-zA-Z](?:[{ContinuableCharacters}]?[^{StopCharacters}{ContinuableCharacters}])*)";
+
         private static readonly Regex XrefShortcutRegexWithQuote = new Regex("^" + XrefShortcutRegexWithQuoteString, RegexOptions.Compiled, TimeSpan.FromSeconds(10));
-        private static readonly Regex XrefShortcutRegex = new Regex("^" + XrefShortcutRegexString, RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
+        private static readonly Regex XrefShortcutRegex = new Regex("^" + XrefShortcutRegexString, RegexOptions.Compiled, TimeSpan.FromSeconds(10));
 
         public string Name => "DfmXrefShortcut";
 
@@ -49,7 +53,7 @@ namespace Microsoft.DocAsCode.Dfm
 
             // @String=>cap[2]=String, @'string'=>cap[2]=string
             // For cross-reference, add ~/ prefix
-            var content = match.Groups[2].Value;
+            var content = match.Groups["uid"].Value;
             return new DfmXrefInlineToken(this, parser.Context, content, ImmutableArray<IMarkdownToken>.Empty, null, false, sourceInfo);
         }
     }

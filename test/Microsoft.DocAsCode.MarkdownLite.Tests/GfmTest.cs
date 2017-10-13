@@ -795,6 +795,18 @@ a</pre
             TestGfmInGeneral(source, expected);
         }
 
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestEscape()
+        {
+            // 1. Prepare data
+            var source = @"\@";
+            var expected = @"<p>@</p>
+";
+            TestGfmInGeneral(source, expected);
+            TestLegacyGfmInGeneral(source, expected);
+        }
+
         [Theory]
         [Trait("Related", "Markdown")]
         [InlineData(@"<div a:b=""c"">")]
