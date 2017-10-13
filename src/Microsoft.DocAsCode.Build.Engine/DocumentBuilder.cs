@@ -177,7 +177,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var versionMessageSuffix = string.IsNullOrEmpty(parameter.VersionName) ? string.Empty : $" in version \"{parameter.VersionName}\"";
                     if (parameter.Files.Count == 0)
                     {
-                        Logger.LogWarning($"No file found, nothing will be generated{versionMessageSuffix}. Please make sure docfx.json is correctly configured.");
                         manifests.Add(new Manifest());
                     }
                     else
@@ -204,8 +203,15 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     var generatedManifest = ManifestUtility.MergeManifest(manifests);
                     generatedManifest.SitemapOptions = parameters.FirstOrDefault()?.SitemapOptions;
-                    ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
-                    ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
+                    if (generatedManifest.Files == null || generatedManifest.Files.Count == 0)
+                    {
+                        Logger.LogWarning($"No file found, nothing will be generated. Please make sure docfx.json is correctly configured.");
+                    }
+                    else
+                    {
+                        ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
+                        ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
+                    }
 
                     EnvironmentContext.FileAbstractLayerImpl =
                         FileAbstractLayerBuilder.Default
