@@ -117,8 +117,8 @@ namespace Microsoft.DocAsCode.Common.Git
             {
                 // TODO: remove commit id to avoid config hash changed
                 // CommitId = repoInfo.RemoteHeadCommitId,
-                RemoteBranch = repoInfo.RemoteBranch,
-                RemoteRepositoryUrl = repoInfo.RemoteOriginUrl,
+                RemoteBranch = repoInfo?.RemoteBranch,
+                RemoteRepositoryUrl = repoInfo?.RemoteOriginUrl,
                 RelativePath = PathUtility.MakeRelativePath(repoInfo.RepoRootPath, filePath)
             };
         }
