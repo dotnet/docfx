@@ -65,7 +65,8 @@ b:
         #endregion
         public void TestDfmInGeneral(string source, string expected)
         {
-            Assert.Equal(expected.Replace("\r\n", "\n"), DocfxFlavoredMarked.Markup(source));
+            var result = DocfxFlavoredMarked.Markup(source);
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
         [Fact]

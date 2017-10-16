@@ -110,7 +110,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static readonly Regex Em = new Regex(@"^_((?:__|[\s\S])+?)_\b|^\*((?:\*{2,}|[^\\*]|\\[\s\S])+?)\*(?!\*)", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex Code = new Regex(@"^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex Br = new Regex(@"^ {2,}\n(?!\s*$)", RegexOptionCompiled, RegexTimeOut);
-            public static readonly Regex EscapedText = new Regex(@"^\\([`~!#^&*_=+?.<>(){}\-\\\[\]])", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex EscapedText = new Regex(@"^\\([!""#$%&'()*+,.:;<=>?@[^_`{|}~\-\/\\\]])", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex Text = new Regex(@"^[\s\S]+?(?=[\\<!\[*`]|\b_| {2,}\n|$)", RegexOptionCompiled, RegexTimeOut);
 
             public static class Pedantic
@@ -178,11 +178,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static readonly Regex HtmlUnescape = new Regex(@"&([#\w]+);", RegexOptionCompiled);
 
             public static readonly Regex MarkdownUnescape = new Regex(@"\\([!""#$%&'()*+,.:;<=>?@[^_`{|}~\-\/\\\]])", RegexOptionCompiled);
-            public static readonly Regex MarkdownEscape = new Regex(@"[!""'()*+:<>[^_`{|}~\-\]]", RegexOptionCompiled);
+            public static readonly Regex MarkdownEscape = new Regex(@"[!""'()*+:<>@[^_`{|}~\-\]]", RegexOptionCompiled);
             public static readonly Regex MarkdownHrefEscape = new Regex(@"[()\\\""\']", RegexOptionCompiled);
 
             [Obsolete]
-            public static readonly Regex LegacyMarkdownUnescape = new Regex(@"\\([\\`*{}\[\]()#+\-.!_>])", RegexOptionCompiled);
+            public static readonly Regex LegacyMarkdownUnescape = new Regex(@"\\([\\`*{}\[\]()#+\-.!_>@])", RegexOptionCompiled);
             [Obsolete]
             public static readonly Regex LegacyMarkdownEscape = new Regex(@"[\\()\[\]]", RegexOptionCompiled);
         }
