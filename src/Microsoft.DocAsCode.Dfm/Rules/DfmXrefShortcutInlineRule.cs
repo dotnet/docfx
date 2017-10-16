@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Dfm
     public class DfmXrefShortcutInlineRule : IMarkdownRule
     {
         private const string ContinuableCharacters = ".,;:!?~";
-        private const string StopCharacters = @"\s<>";
+        private const string StopCharacters = @"\s\""\'<>";
 
         public static readonly string XrefShortcutRegexWithQuoteString = @"@(?:(['""])(?<uid>\s*?\S+?[\s\S]*?)\1)";
         public static readonly string XrefShortcutRegexString = $@"@(?<uid>[a-zA-Z](?:[{ContinuableCharacters}]?[^{StopCharacters}{ContinuableCharacters}])*)";
