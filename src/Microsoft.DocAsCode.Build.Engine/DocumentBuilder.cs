@@ -139,6 +139,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 var manifests = new List<Manifest>();
                 bool transformDocument = false;
+                if (parameters.All(p => p.Files.Count == 0))
+                {
+                    Logger.LogWarning(
+                        $"No file found, nothing will be generated. Please make sure docfx.json is correctly configured.",
+                        code: WarningCodes.Build.EmptyInputFiles);
+                }
                 foreach (var parameter in parameters)
                 {
                     if (parameter.CustomLinkResolver != null)
@@ -203,15 +209,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     var generatedManifest = ManifestUtility.MergeManifest(manifests);
                     generatedManifest.SitemapOptions = parameters.FirstOrDefault()?.SitemapOptions;
-                    if (generatedManifest.Files == null || generatedManifest.Files.Count == 0)
-                    {
-                        Logger.LogWarning($"No file found, nothing will be generated. Please make sure docfx.json is correctly configured.");
-                    }
-                    else
-                    {
-                        ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
-                        ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
-                    }
+                    ManifestUtility.RemoveDuplicateOutputFiles(generatedManifest.Files);
+                    ManifestUtility.ApplyLogCodes(generatedManifest.Files, logCodesLogListener.Codes);
 
                     EnvironmentContext.FileAbstractLayerImpl =
                         FileAbstractLayerBuilder.Default
