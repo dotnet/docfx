@@ -324,13 +324,13 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 foreach (var filePath in fileMetadataFilePaths)
                 {
-                    fileMetadata = MergeMetadataFromFile("fileMetadata", fileMetadata, filePath, path => JsonUtility.Deserialize<Dictionary<string, FileMetadataPairs>>(path), MergeFileMetadataPairs);
+                    fileMetadata = MergeMetadataFromFile("fileMetadata", fileMetadata, filePath, path => JsonUtility.Deserialize<Dictionary<string, FileMetadataPairs>>(path, GetToObjectSerializer()), MergeFileMetadataPairs);
                 }
             }
 
             if (fileMetadataFilePath != null)
             {
-                fileMetadata = MergeMetadataFromFile("fileMetadata", fileMetadata, fileMetadataFilePath, path => JsonUtility.Deserialize<BuildJsonConfig>(path)?.FileMetadata, MergeFileMetadataPairs);
+                fileMetadata = MergeMetadataFromFile("fileMetadata", fileMetadata, fileMetadataFilePath, path => JsonUtility.Deserialize<BuildJsonConfig>(path, GetToObjectSerializer())?.FileMetadata, MergeFileMetadataPairs);
             }
 
             return OptionMerger.MergeDictionary(
@@ -361,7 +361,7 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 foreach (var filePath in globalMetadataFilePaths)
                 {
-                    globalMetadata = MergeMetadataFromFile("globalMetadata", globalMetadata, filePath, path => JsonUtility.Deserialize<Dictionary<string, object>>(path), MergeGlobalMetadataItem);
+                    globalMetadata = MergeMetadataFromFile("globalMetadata", globalMetadata, filePath, path => JsonUtility.Deserialize<Dictionary<string, object>>(path, GetToObjectSerializer()), MergeGlobalMetadataItem);
                 }
             }
 
