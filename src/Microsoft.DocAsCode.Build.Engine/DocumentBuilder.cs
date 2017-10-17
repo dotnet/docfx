@@ -139,6 +139,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                 var manifests = new List<Manifest>();
                 bool transformDocument = false;
+                if (parameters.All(p => p.Files.Count == 0))
+                {
+                    Logger.LogWarning(
+                        $"No file found, nothing will be generated. Please make sure docfx.json is correctly configured.",
+                        code: WarningCodes.Build.EmptyInputFiles);
+                }
                 foreach (var parameter in parameters)
                 {
                     if (parameter.CustomLinkResolver != null)
@@ -177,7 +183,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     var versionMessageSuffix = string.IsNullOrEmpty(parameter.VersionName) ? string.Empty : $" in version \"{parameter.VersionName}\"";
                     if (parameter.Files.Count == 0)
                     {
-                        Logger.LogWarning($"No file found, nothing will be generated{versionMessageSuffix}. Please make sure docfx.json is correctly configured.");
                         manifests.Add(new Manifest());
                     }
                     else
