@@ -456,7 +456,7 @@ It will run as following steps
 2. Extract post pipelines, `http://hello.contoso.com/?uid={uid}`, and append a post pipeline `removeHost`.
 3. Runtime replace variables, `http://hello.contoso.com/?uid=testuid`.
 4. Send request to `http://hello.contoso.com/?uid=testuid`, and get response from site.
-5. Run post pipeline `reomoveHost`.
+5. Run post pipeline `removeHost`.
 
 #### 3.2.5 SitemapOptions
 The SitemapOptions is to configure the values for generating [sitemap.xml](https://www.sitemaps.org/protocol.html) file.
