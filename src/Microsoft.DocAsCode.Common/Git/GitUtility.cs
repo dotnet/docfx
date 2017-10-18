@@ -119,7 +119,7 @@ namespace Microsoft.DocAsCode.Common.Git
                 // CommitId = repoInfo.RemoteHeadCommitId,
                 RemoteBranch = repoInfo?.RemoteBranch,
                 RemoteRepositoryUrl = repoInfo?.RemoteOriginUrl,
-                RelativePath = PathUtility.MakeRelativePath(repoInfo.RepoRootPath, filePath)
+                RelativePath = PathUtility.MakeRelativePath(repoInfo?.RepoRootPath, filePath)
             };
         }
 
