@@ -119,6 +119,15 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             return ((RelativePath)file.File).GetPathFromWorkingFolder().ToString();
         }
 
+        public static string GetDependencyKey(string file)
+        {
+            if (file == null)
+            {
+                return null;
+            }
+            return ((RelativePath)file).GetPathFromWorkingFolder().ToString();
+        }
+
         public static string GetRandomEntry(string baseDir)
         {
             var dir = Environment.ExpandEnvironmentVariables(baseDir);

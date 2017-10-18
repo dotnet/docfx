@@ -19,6 +19,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             IMarkdownService markdownService,
             IEnumerable<IInputMetadataValidator> metadataValidator,
             IDocumentProcessor processor,
-            IEnumerable<FileAndType> files);
+            IEnumerable<FileAndType> files,
+            ImmutableDictionary<FileAndType, FileModel> preloadOverwrites = null);
     }
 }

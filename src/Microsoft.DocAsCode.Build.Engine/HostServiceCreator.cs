@@ -37,16 +37,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             IMarkdownService markdownService,
             IEnumerable<IInputMetadataValidator> metadataValidator,
             IDocumentProcessor processor,
-            IEnumerable<FileAndType> files)
+            IEnumerable<FileAndType> files,
+            ImmutableDictionary<FileAndType, FileModel> preloadOverwrites = null)
         {
             var hostService = new HostService(
                 parameters.Files.DefaultBaseDir,
-                files == null
-                    ? Enumerable.Empty<FileModel>()
-                    : from file in files
-                      select Load(processor, parameters.Metadata, parameters.FileMetadata, file) into model
-                      where model != null
-                      select model,
+                LoadFileModels(processor, parameters, files, preloadOverwrites),
                 parameters.VersionName,
                 parameters.VersionDir,
                 parameters.LruSize,
@@ -78,6 +74,40 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     Logger.LogError($"Unable to load file: {file.File} via processor: {processor.Name}.");
                     throw;
+                }
+            }
+        }
+        private IEnumerable<FileModel> LoadFileModels(
+            IDocumentProcessor processor,
+            DocumentBuildParameters parameters,
+            IEnumerable<FileAndType> files,
+            ImmutableDictionary<FileAndType, FileModel> preloadOverwrites)
+        {
+            if (files == null)
+            {
+                yield break;
+            }
+
+            foreach (var file in files)
+            {
+                if (preloadOverwrites != null && file.Type == DocumentType.Overwrite)
+                {
+                    if (preloadOverwrites.TryGetValue(file, out var model))
+                    {
+                        yield return model;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"{file.Type}:{file.FullPath} should exist but it is not.");
+                    }
+                }
+                else
+                {
+                    var model = Load(processor, parameters.Metadata, parameters.FileMetadata, file);
+                    if (model != null)
+                    {
+                        yield return model;
+                    }
                 }
             }
         }

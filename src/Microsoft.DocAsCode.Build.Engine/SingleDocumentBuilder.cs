@@ -127,9 +127,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 out hostServiceCreator,
                                 out phaseProcessor);
                         }
+
+                        ImmutableDictionary<FileAndType, FileModel> overwrites;
+                        using (new LoggerPhaseScope("BuildOverwriteDocuments", LogLevel.Verbose))
+                        {
+                            var overwriteProcessor = new OverwriteDocumentProcessor();
+                            var files = (from file in parameters.Files.EnumerateFiles().AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
+                                         where overwriteProcessor.GetProcessingPriority(file) != ProcessingPriority.NotSupported select file);
+                            var overwriteHostService = hostServiceCreator.CreateHostService(parameters, templateProcessor, MarkdownService, MetadataValidators, overwriteProcessor, files);
+                            phaseProcessor.Handlers.First().Handle(new List<HostService> { overwriteHostService }, context.MaxParallelism);
+                            overwrites = overwriteHostService.GetModels(DocumentType.Overwrite).ToImmutableDictionary(s => s.FileAndType, s => s);
+                        }
+
                         using (new LoggerPhaseScope("Load", LogLevel.Verbose))
                         {
-                            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator);
+                            hostServices = GetInnerContexts(parameters, Processors, templateProcessor, hostServiceCreator, overwrites);
                         }
 
                         BuildCore(phaseProcessor, hostServices, context);
@@ -197,7 +209,9 @@ namespace Microsoft.DocAsCode.Build.Engine
             DocumentBuildParameters parameters,
             IEnumerable<IDocumentProcessor> processors,
             TemplateProcessor templateProcessor,
-            IHostServiceCreator creator)
+            IHostServiceCreator creator,
+            ImmutableDictionary<FileAndType, FileModel> preloadOverwrites
+            )
         {
             var files = (from file in parameters.Files.EnumerateFiles().AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                          from p in (from processor in processors
@@ -236,7 +250,8 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 MarkdownService,
                                 MetadataValidators,
                                 processor,
-                                item)
+                                item,
+                                preloadOverwrites)
                                 )).ToList();
             }
             catch (AggregateException ex)
