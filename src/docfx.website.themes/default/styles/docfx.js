@@ -949,7 +949,7 @@ function renderTabs(){
     }
 
     function isRelativePath(href) {
-      if (t === undefined || t === '' || href[0] === '/') {
+      if (href === undefined || href === '' || href[0] === '/') {
         return false;
       }
       return !isAbsolutePath(href);
