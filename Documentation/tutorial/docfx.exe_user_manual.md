@@ -450,7 +450,7 @@ Available Pipeline: removeHost\
 Variable: uid = testuid1\
 Url pattern: `http://{%test%}.contoso.com/?uid={uid}|> removeHost`
 
-It will run as following steps
+It will run as following steps:
 
 1. Replace environment variables, `http://hello.contoso.com/?uid={uid}|> removeHost`.
 2. Extract post pipelines, `http://hello.contoso.com/?uid={uid}`, and append a post pipeline `removeHost`.
