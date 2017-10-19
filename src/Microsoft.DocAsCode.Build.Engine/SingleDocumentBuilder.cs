@@ -227,6 +227,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return (from processor in processors.AsParallel().WithDegreeOfParallelism(parameters.MaxParallelism)
                         join item in toHandleItems.AsParallel() on processor equals item.Key into g
                         from item in g.DefaultIfEmpty()
+                        where item != null && item.Any(s => s.Type != DocumentType.Overwrite) // when normal file exists then processing is needed
                         select LoggerPhaseScope.WithScope(
                             processor.Name,
                             LogLevel.Verbose,

@@ -3064,7 +3064,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -3229,7 +3229,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -3398,7 +3398,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -3559,7 +3559,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -3726,7 +3726,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -3893,7 +3893,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -4071,7 +4071,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -4353,7 +4353,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -4589,7 +4589,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -4815,7 +4815,7 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
                     Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
                 }
                 {
@@ -4939,8 +4939,9 @@ tagRules : [
                     var incrementalStatus = incrementalInfo[0].Status;
                     Assert.True(incrementalStatus.CanIncremental);
                     var processorsStatus = incrementalInfo[0].Processors;
-                    Assert.True(processorsStatus[nameof(ConceptualDocumentProcessor)].CanIncremental);
-                    Assert.True(processorsStatus[nameof(ManagedReferenceDocumentProcessor)].CanIncremental);
+                    Assert.False(processorsStatus.ContainsKey(nameof(ConceptualDocumentProcessor)));
+                    Assert.False(processorsStatus.ContainsKey(nameof(ManagedReferenceDocumentProcessor)));
+                    Assert.False(processorsStatus[nameof(RestApiDocumentProcessor)].CanIncremental);
                 }
                 {
                     // compare with force build
