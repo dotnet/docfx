@@ -120,6 +120,12 @@ table p {
 table a {
   display: inline-block;
 }
+
+/* Make hidden attribute compatible with old browser.*/
+[hidden] {
+  display: none !important;
+}
+
 h1,
 .h1,
 h2,
