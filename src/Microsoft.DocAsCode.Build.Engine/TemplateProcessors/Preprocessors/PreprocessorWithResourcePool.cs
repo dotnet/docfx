@@ -75,7 +75,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 catch (Exception e)
                 {
-                    throw new InvalidPreprocessorException($"Error running GetOptions function inside template preprocessor: {e.Message}");
+                    throw new InvalidPreprocessorException($"Error running Transform function inside template preprocessor: {e.Message}");
                 }
             }
         }

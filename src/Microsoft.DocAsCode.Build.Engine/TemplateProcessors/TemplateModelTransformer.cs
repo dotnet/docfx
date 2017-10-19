@@ -420,36 +420,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return;
             }
 
-            var fli = new FileLinkInfo
-            {
-                FromFileInSource = sourceFilePath,
-                FromFileInDest = destFilePath,
-            };
-
-            if (path.IsFromWorkingFolder())
-            {
-                var targetInSource = path.UrlDecode();
-                fli.ToFileInSource = targetInSource.RemoveWorkingFolder();
-                fli.ToFileInDest = RelativePath.GetPathWithoutWorkingFolderChar(context.GetFilePath(targetInSource));
-                fli.FileLinkInSource = targetInSource - (RelativePath)sourceFilePath;
-                if (fli.ToFileInDest != null)
-                {
-                    var resolved = (RelativePath)fli.ToFileInDest - (RelativePath)destFilePath;
-                    fli.FileLinkInDest = resolved;
-                    fli.Href = resolved.UrlEncode();
-                }
-                else
-                {
-                    fli.Href = (targetInSource.RemoveWorkingFolder() - ((RelativePath)sourceFilePath).RemoveWorkingFolder()).UrlEncode();
-                }
-            }
-            else
-            {
-                fli.FileLinkInSource = path.UrlDecode();
-                fli.ToFileInSource = ((RelativePath)sourceFilePath + path).RemoveWorkingFolder();
-                fli.FileLinkInDest = fli.FileLinkInSource;
-                fli.Href = originalPath;
-            }
+            var fli = FileLinkInfo.Create(sourceFilePath, destFilePath, originalPath, context);
             var href = _settings.HrefGenerator?.GenerateHref(fli) ?? fli.Href;
             link.SetAttributeValue(attribute, href + UriUtility.GetQueryString(originalHref) + (anchor ?? UriUtility.GetFragment(originalHref)));
         }

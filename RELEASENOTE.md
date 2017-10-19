@@ -3,6 +3,9 @@
 
 v2.26 (Pre-release)
 -----------
+1. Fix bugs:
+   1. Update DFM XREF short format.
+   2. Update Markdown EM rule.
 
 v2.25
 -----------
