@@ -67,7 +67,7 @@ Inline file inclusion is in the following syntax, in which `<title>` stands for 
 
 > [!NOTE] 
 > For inline file inclusion, the file included will be considered as containing only inline tags, for example,
-> `###header` inside the file will not transfer since `<h3>` is a block tag, while `[a](b)` will transform to
+> `### header` inside the file will not transfer since `<h3>` is a block tag, while `[a](b)` will transform to
 > `<a href='b'>a</a>` since `<a>` is an inline tag.
 > Also, ending white spaces will be **trimmed**, considering ending white spaces in inline inclusion in most cases are typos.
 
@@ -355,6 +355,205 @@ Here are all the supported note types with the styling of the default theme appl
 >
 > [!CAUTION]
 > This is a warning containing some important message.
+
+### Tabbed content
+
+#### Syntax
+
+* Start a tab by a special markdown title (any level).
+  * Title content should be a markdown link.
+  * Link target is `#tab/{tabid}` or `#tab/{tabid}/{condition}`
+* Continue by any other content.
+* End by a markdown hr.
+
+#### Example
+
+```md
+Tab group 1:
+
+# [Tab Text 1](#tab/tabid-1)
+
+Tab content-1-1.
+
+# [Tab Text 2](#tab/tabid-2)
+
+Tab content-2-1.
+
+***
+
+Tab group 2:
+
+# [Tab Text A](#tab/tabid-a)
+
+Tab content-a-1.
+
+# [Tab Text B](#tab/tabid-b)
+
+Tab content-b-1.
+
+***
+
+Tab group 3:
+
+# [Tab Text 1](#tab/tabid-1)
+
+Tab content-1-1.
+
+# [Tab Text 2](#tab/tabid-2)
+
+Tab content-2-1.
+
+***
+
+Tab group 4:
+
+# [Tab Text A](#tab/tabid-a)
+
+Tab content-a-2.
+
+# [Tab Text B](#tab/tabid-b)
+
+Tab content-b-2.
+
+***
+```
+The result will be:
+
+Tab group 1:
+
+# [Tab Text 1](#tab/tabid-1)
+
+Tab content-1-1.
+
+# [Tab Text 2](#tab/tabid-2)
+
+Tab content-2-1.
+
+***
+
+Tab group 2:
+
+# [Tab Text A](#tab/tabid-a)
+
+Tab content-a-1.
+
+# [Tab Text B](#tab/tabid-b)
+
+Tab content-b-1.
+
+***
+
+Tab group 3:
+
+# [Tab Text 1](#tab/tabid-1)
+
+Tab content-1-1.
+
+# [Tab Text 2](#tab/tabid-2)
+
+Tab content-2-1.
+
+***
+
+Tab group 4:
+
+# [Tab Text A](#tab/tabid-a)
+
+Tab content-a-2.
+
+# [Tab Text B](#tab/tabid-b)
+
+Tab content-b-2.
+
+***
+
+#### Behavior
+
+Tab groups with a same set of id are linkable in one page.
+
+In example, tab group 1, 3 have same id set: `tabid-1`, `tabid-2`, tab group 2, 4 have same id set: `tabid-a`, `tabid-b`.
+
+So tab group 1, 3 are linked, tab group 2, 4 are linked.
+When tab `tabid-1` in tab group 1 is clicked, tab `tabid-1` in tab group 3 will be selected in same time.
+But tab group 2, 4 do not have any changed.
+
+#### Condition
+
+Condition is the tab id of other table groups.
+
+e.g.:
+
+```md
+Tab Group 1:
+
+# [Tab Text 1](#tab/tabid-1)
+
+Tab content-1.
+
+# [Tab Text 2](#tab/tabid-2)
+
+Tab content-2.
+
+***
+
+Tab Group 2:
+
+# [Tab Text A](#tab/tabid-a/tabid-1)
+
+Tab content-a for 1.
+
+# [Tab Text A](#tab/tabid-a/tabid-2)
+
+Tab content-a for 2.
+
+# [Tab Text B](#tab/tabid-b/tabid-1)
+
+Tab content-b for 1.
+
+# [Tab Text B](#tab/tabid-b/tabid-2)
+
+Tab content-b for 2.
+
+***
+```
+
+Result:
+
+Tab Group 1:
+
+# [Tab Text 1](#tab/tabid-1)
+
+Tab content-1.
+
+# [Tab Text 2](#tab/tabid-2)
+
+Tab content-2.
+
+***
+
+Tab Group 2:
+
+# [Tab Text A](#tab/tabid-a/tabid-1)
+
+Tab content-a for 1.
+
+# [Tab Text A](#tab/tabid-a/tabid-2)
+
+Tab content-a for 2.
+
+# [Tab Text B](#tab/tabid-b/tabid-1)
+
+Tab content-b for 1.
+
+# [Tab Text B](#tab/tabid-b/tabid-2)
+
+Tab content-b for 2.
+
+***
+
+When select `tabid-1` in tab group 1, you can get content-a or content-b for 1 in group 2.\
+When select `tabid-2` in tab group 1, you can get content-a or content-b for 2 in group 2.
+
 
 ## Differences between DFM and GFM
 
