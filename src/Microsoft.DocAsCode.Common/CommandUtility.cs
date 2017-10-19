@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace Microsoft.DocAsCode.Common
@@ -100,6 +100,7 @@ namespace Microsoft.DocAsCode.Common
                     }
                     else
                     {
+                        Logger.LogWarning($"Timeout ({timeoutInMilliseconds}ms) exceeded. Killing process {process.ProcessName}.");
                         process.Kill();
                         process.WaitForExit();
                     }
@@ -113,24 +114,45 @@ namespace Microsoft.DocAsCode.Common
             return 0;
         }
 
-        public static bool ExistCommand(string commandName)
+        public static bool ExistCommand(string commandName, Action<string> processOutput = null, Action<string> processError = null)
         {
             int exitCode;
-            if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
+            using (var outputStream = new MemoryStream())
+            using (var errorStream = new MemoryStream())
             {
-                exitCode = RunCommand(new CommandInfo
+                using (var outputStreamWriter = new StreamWriter(outputStream))
+                using (var errorStreamWriter = new StreamWriter(errorStream))
                 {
-                    Name = "type",
-                    Arguments = commandName
-                }, timeoutInMilliseconds: 1000);
-            }
-            else
-            {
-                exitCode = RunCommand(new CommandInfo
-                {
-                    Name = "where",
-                    Arguments = commandName
-                }, timeoutInMilliseconds: 1000);
+                    if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
+                    {
+                        exitCode = RunCommand(new CommandInfo
+                        {
+                            // type is a bash command, hence should be an argument to 'bash'
+                            Name = "bash",
+                            Arguments = $"-c \"type {commandName}\""
+                        }, outputStreamWriter, errorStreamWriter, timeoutInMilliseconds: 1000);
+                    }
+                    else
+                    {
+                        exitCode = RunCommand(new CommandInfo
+                        {
+                            Name = "where",
+                            Arguments = commandName
+                        }, outputStreamWriter, errorStreamWriter, timeoutInMilliseconds: 1000);
+                    }
+
+                    // writer streams have to be flushed before reading from memory streams
+                    // make sure that streamwriter is not closed before reading from memory stream
+                    outputStreamWriter.Flush();
+                    errorStreamWriter.Flush();
+
+                    var outputString = System.Text.Encoding.UTF8.GetString(outputStream.ToArray());
+                    var errorString = System.Text.Encoding.UTF8.GetString(errorStream.ToArray());
+
+                    // Allow caller to decide what to do with the output and error logs 
+                    processOutput?.Invoke(outputString);
+                    processError?.Invoke(errorString);
+                }
             }
             return exitCode == 0;
         }

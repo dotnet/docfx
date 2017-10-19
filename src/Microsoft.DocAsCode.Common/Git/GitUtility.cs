@@ -48,9 +48,10 @@ namespace Microsoft.DocAsCode.Common.Git
             {
                 detail = GetFileDetail(filePath);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Logger.LogWarning($"Skipping GetFileDetail. Exception found: {ex.GetType()}, Message: {ex.Message}");
+                Logger.LogVerbose(ex.ToString());
             }
             return detail;
         }
@@ -116,7 +117,7 @@ namespace Microsoft.DocAsCode.Common.Git
             return new GitDetail
             {
                 // TODO: remove commit id to avoid config hash changed
-                // CommitId = repoInfo.RemoteHeadCommitId,
+                // CommitId = repoInfo?.RemoteHeadCommitId,
                 RemoteBranch = repoInfo?.RemoteBranch,
                 RemoteRepositoryUrl = repoInfo?.RemoteOriginUrl,
                 RelativePath = PathUtility.MakeRelativePath(repoInfo?.RepoRootPath, filePath)
@@ -214,9 +215,10 @@ namespace Microsoft.DocAsCode.Common.Git
             {
                 RunGitCommand(repoPath, arguments, output => content.AppendLine(output));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Logger.LogWarning($"Skipping RunGitCommand. Exception found: {ex.GetType()}, Message: {ex.Message}");
+                Logger.LogVerbose(ex.ToString());
             }
             return content.Length == 0 ? null : content.ToString();
         }
@@ -228,9 +230,10 @@ namespace Microsoft.DocAsCode.Common.Git
             {
                 content = RunGitCommandAndGetLastLine(repoPath, arguments);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                Logger.LogWarning($"Skipping RunGitCommandAndGetLastLine. Exception found: {ex.GetType()}, Message: {ex.Message}");
+                Logger.LogVerbose(ex.ToString());
             }
             return content;
         }
@@ -271,25 +274,30 @@ namespace Microsoft.DocAsCode.Common.Git
                         Arguments = arguments,
                         WorkingDirectory = repoPath,
                     }, outputStreamWriter, errorStreamWriter, GitTimeOut);
-                }
 
-                if (exitCode != 0)
-                {
-                    errorStream.Position = 0;
-                    using (var errorStreamReader = new StreamReader(errorStream, encoding, false, bufferSize, true))
+                    // writer streams have to be flushed before reading from memory streams
+                    // make sure that streamwriter is not closed before reading from memory stream
+                    outputStreamWriter.Flush();
+                    errorStreamWriter.Flush();
+
+                    if (exitCode != 0)
                     {
-                        ProcessErrorMessage(errorStreamReader.ReadToEnd());
-                    }
-                }
-                else
-                {
-                    outputStream.Position = 0;
-                    using (var streamReader = new StreamReader(outputStream, encoding, false, bufferSize, true))
-                    {
-                        string line;
-                        while ((line = streamReader.ReadLine()) != null)
+                        errorStream.Position = 0;
+                        using (var errorStreamReader = new StreamReader(errorStream, encoding, false, bufferSize, true))
                         {
-                            processOutput(line);
+                            ProcessErrorMessage(errorStreamReader.ReadToEnd());
+                        }
+                    }
+                    else
+                    {
+                        outputStream.Position = 0;
+                        using (var streamReader = new StreamReader(outputStream, encoding, false, bufferSize, true))
+                        {
+                            string line;
+                            while ((line = streamReader.ReadLine()) != null)
+                            {
+                                processOutput(line);
+                            }
                         }
                     }
                 }
