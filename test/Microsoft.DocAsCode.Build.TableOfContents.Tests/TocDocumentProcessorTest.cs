@@ -709,6 +709,21 @@ items:
             Assert.Equal("TopicHref should be used to specify the homepage for /Topic1/ when tocHref is used.", e.Message);
         }
 
+        [Fact]
+        public void LoadBadTocYamlFileShouldGiveLineNumber()
+        {
+            var content = @"
+- name: x
+    items:
+    - name: x1
+      href: x1.md
+    - name: x2
+      href: x2.md";
+            var toc = _fileCreator.CreateFile(content, FileType.YamlToc);
+            var ex = Assert.Throws<DocumentException>(() => TocHelper.LoadSingleToc(toc));
+            Assert.Equal("toc.yml is not a valid TOC File: toc.yml is not a valid TOC file, detail: (Line: 3, Col: 10, Idx: 22) - (Line: 3, Col: 10, Idx: 22): Mapping values are not allowed in this context..", ex.Message);
+        }
+
         #region Helper methods
 
         private enum FileType

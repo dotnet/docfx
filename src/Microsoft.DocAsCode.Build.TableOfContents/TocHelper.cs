@@ -90,7 +90,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
             catch (Exception ex)
             {
-                throw new NotSupportedException($"{file} is not a valid TOC file.", ex);
+                throw new NotSupportedException($"{file} is not a valid TOC file, detail: {ex.Message}.", ex);
             }
             if (obj is TocViewModel vm)
             {
