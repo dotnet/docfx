@@ -33,9 +33,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
             var pageViewModel = (PageViewModel)model.Content;
 
-            foreach (var child in GetChildren(pageViewModel))
+            foreach (var uid in GetUidsToFill(pageViewModel))
             {
-                host.ReportDependencyTo(model, child, DependencyItemSourceType.Uid, DependencyTypeName.Children);
+                host.ReportDependencyTo(model, uid, DependencyItemSourceType.Uid, DependencyTypeName.Children);
             }
         }
 
@@ -111,10 +111,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             {
                 return;
             }
-            var children = new HashSet<string>(GetChildren(model));
+            var uids = new HashSet<string>(GetUidsToFill(model));
             foreach (var r in model.References)
             {
-                if (!children.Contains(r.Uid))
+                if (!uids.Contains(r.Uid))
                 {
                     continue;
                 }
@@ -200,11 +200,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             }
         }
 
-        private List<string> GetChildren(PageViewModel pageViewModel)
+        private IEnumerable<string> GetUidsToFill(PageViewModel pageViewModel)
         {
             return (from i in pageViewModel.Items
-                    from c in i.Children ?? Enumerable.Empty<string>()
-                    select c).ToList();
+                    from c in (i.Children ?? Enumerable.Empty<string>()).Concat(i.ExtensionMethods ?? Enumerable.Empty<string>())
+                    select c);
         }
 
         #endregion
