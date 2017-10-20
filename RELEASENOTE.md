@@ -3,7 +3,30 @@
 
 v2.26 (Pre-release)
 -----------
-1. Fix bugs:
+1. New feature:
+   1. Support new syntax in Markdown: [tabbed content](~/spec/docfx_flavored_markdown.md#tabbed-content)
+   ````
+   # [Csharp](#tab/csharp)
+   ```cs
+   Console.WriteLine("Hello world");
+   ```
+   # [JavaScript](#tab/js)
+   ```js
+   console.log('hello world');
+   ```
+   ````
+   Renders to:
+   
+   # [Csharp](#tab/csharp)
+   ```cs
+   Console.WriteLine("Hello world");
+   ```
+   # [JavaScript](#tab/js)
+   ```js
+   console.log('hello world');
+   ```
+   
+2. Fix bugs:
    1. Update DFM XREF short format.
    2. Update Markdown EM rule.
 

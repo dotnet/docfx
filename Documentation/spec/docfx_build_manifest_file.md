@@ -20,7 +20,7 @@ New Object Model | `manifest.json` | [Object model](#the-new-object-model)
 
 The obsoleted Array model
 -------------------------
-Array model contains a list of [Manifest Item](#manifest-item-model)s.
+Array model contains a list of [Manifest Item](#manifestitem)s.
 
 The new Object model
 -----------------------
