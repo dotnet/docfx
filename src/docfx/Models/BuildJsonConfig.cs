@@ -178,5 +178,8 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("sitemap")]
         public SitemapOptions SitemapOptions { get; set; }
+
+        [JsonProperty("inputFALBuilderName")]
+        public string InputFALBuilderName { get; set; }
     }
 }
