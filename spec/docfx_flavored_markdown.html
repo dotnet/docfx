@@ -8,7 +8,7 @@
     <title>DocFX Flavored Markdown | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFX Flavored Markdown | DocFX website ">
-    <meta name="generator" content="docfx 2.25.2.0">
+    <meta name="generator" content="docfx 2.26.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -116,7 +116,7 @@ to be <a href="https://en.wikipedia.org/wiki/Percent-encoding">encoded</a> to <c
 <h3 id="inline">Inline</h3>
 <p>Inline file inclusion is in the following syntax, in which <code>&lt;title&gt;</code> stands for the title of the included file, and <code>&lt;filepath&gt;</code> stands for the file path of the included file. The file path can be either absolute or relative.<code>&lt;filepath&gt;</code> can be wrapped by <code>&#39;</code> or <code>&quot;</code>.</p>
 <div class="NOTE"><h5>Note</h5><p>For inline file inclusion, the file included will be considered as containing only inline tags, for example,
-<code>###header</code> inside the file will not transfer since <code>&lt;h3&gt;</code> is a block tag, while <code>[a](b)</code> will transform to
+<code>### header</code> inside the file will not transfer since <code>&lt;h3&gt;</code> is a block tag, while <code>[a](b)</code> will transform to
 <code>&lt;a href=&#39;b&#39;&gt;a&lt;/a&gt;</code> since <code>&lt;a&gt;</code> is an inline tag.
 Also, ending white spaces will be <strong>trimmed</strong>, considering ending white spaces in inline inclusion in most cases are typos.</p>
 </div>
@@ -433,6 +433,222 @@ vb (alias: vbnet)</li>
 </div>
 <div class="CAUTION"><h5>Caution</h5><p>This is a warning containing some important message.</p>
 </div>
+<h3 id="tabbed-content">Tabbed content</h3>
+<h4 id="syntax">Syntax</h4>
+<ul>
+<li>Start a tab by a special markdown title (any level).<ul>
+<li>Title content should be a markdown link.</li>
+<li>Link target is <code>#tab/{tabid}</code> or <code>#tab/{tabid}/{condition}</code></li>
+</ul>
+</li>
+<li>Continue by any other content.</li>
+<li>End by a markdown hr.</li>
+</ul>
+<h4 id="example">Example</h4>
+<pre><code class="lang-md">Tab group 1:
+
+# [Tab Text 1](#tab/tabid-1)
+
+Tab content-1-1.
+
+# [Tab Text 2](#tab/tabid-2)
+
+Tab content-2-1.
+
+***
+
+Tab group 2:
+
+# [Tab Text A](#tab/tabid-a)
+
+Tab content-a-1.
+
+# [Tab Text B](#tab/tabid-b)
+
+Tab content-b-1.
+
+***
+
+Tab group 3:
+
+# [Tab Text 1](#tab/tabid-1)
+
+Tab content-1-1.
+
+# [Tab Text 2](#tab/tabid-2)
+
+Tab content-2-1.
+
+***
+
+Tab group 4:
+
+# [Tab Text A](#tab/tabid-a)
+
+Tab content-a-2.
+
+# [Tab Text B](#tab/tabid-b)
+
+Tab content-b-2.
+
+***
+</code></pre><p>The result will be:</p>
+<p>Tab group 1:</p>
+<div class="tabGroup" id="tabgroup_gmSS67lpAc">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_gmSS67lpAc_tabid-1" role="tab" aria-controls="tabpanel_gmSS67lpAc_tabid-1" data-tab="tabid-1" tabindex="0" aria-selected="true">Tab Text 1</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_gmSS67lpAc_tabid-2" role="tab" aria-controls="tabpanel_gmSS67lpAc_tabid-2" data-tab="tabid-2" tabindex="-1">Tab Text 2</a>
+</li>
+</ul>
+<section id="tabpanel_gmSS67lpAc_tabid-1" role="tabpanel" data-tab="tabid-1">
+<p>Tab content-1-1.</p>
+</section>
+<section id="tabpanel_gmSS67lpAc_tabid-2" role="tabpanel" data-tab="tabid-2" aria-hidden="true" hidden="hidden">
+<p>Tab content-2-1.</p>
+</section>
+</div>
+<p>Tab group 2:</p>
+<div class="tabGroup" id="tabgroup_gmSS67lpAc-1">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_gmSS67lpAc-1_tabid-a" role="tab" aria-controls="tabpanel_gmSS67lpAc-1_tabid-a" data-tab="tabid-a" tabindex="0" aria-selected="true">Tab Text A</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_gmSS67lpAc-1_tabid-b" role="tab" aria-controls="tabpanel_gmSS67lpAc-1_tabid-b" data-tab="tabid-b" tabindex="-1">Tab Text B</a>
+</li>
+</ul>
+<section id="tabpanel_gmSS67lpAc-1_tabid-a" role="tabpanel" data-tab="tabid-a">
+<p>Tab content-a-1.</p>
+</section>
+<section id="tabpanel_gmSS67lpAc-1_tabid-b" role="tabpanel" data-tab="tabid-b" aria-hidden="true" hidden="hidden">
+<p>Tab content-b-1.</p>
+</section>
+</div>
+<p>Tab group 3:</p>
+<div class="tabGroup" id="tabgroup_gmSS67lpAc-2">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_gmSS67lpAc-2_tabid-1" role="tab" aria-controls="tabpanel_gmSS67lpAc-2_tabid-1" data-tab="tabid-1" tabindex="0" aria-selected="true">Tab Text 1</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_gmSS67lpAc-2_tabid-2" role="tab" aria-controls="tabpanel_gmSS67lpAc-2_tabid-2" data-tab="tabid-2" tabindex="-1">Tab Text 2</a>
+</li>
+</ul>
+<section id="tabpanel_gmSS67lpAc-2_tabid-1" role="tabpanel" data-tab="tabid-1">
+<p>Tab content-1-1.</p>
+</section>
+<section id="tabpanel_gmSS67lpAc-2_tabid-2" role="tabpanel" data-tab="tabid-2" aria-hidden="true" hidden="hidden">
+<p>Tab content-2-1.</p>
+</section>
+</div>
+<p>Tab group 4:</p>
+<div class="tabGroup" id="tabgroup_gmSS67lpAc-3">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_gmSS67lpAc-3_tabid-a" role="tab" aria-controls="tabpanel_gmSS67lpAc-3_tabid-a" data-tab="tabid-a" tabindex="0" aria-selected="true">Tab Text A</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_gmSS67lpAc-3_tabid-b" role="tab" aria-controls="tabpanel_gmSS67lpAc-3_tabid-b" data-tab="tabid-b" tabindex="-1">Tab Text B</a>
+</li>
+</ul>
+<section id="tabpanel_gmSS67lpAc-3_tabid-a" role="tabpanel" data-tab="tabid-a">
+<p>Tab content-a-2.</p>
+</section>
+<section id="tabpanel_gmSS67lpAc-3_tabid-b" role="tabpanel" data-tab="tabid-b" aria-hidden="true" hidden="hidden">
+<p>Tab content-b-2.</p>
+</section>
+</div>
+<h4 id="behavior">Behavior</h4>
+<p>Tab groups with a same set of id are linkable in one page.</p>
+<p>In example, tab group 1, 3 have same id set: <code>tabid-1</code>, <code>tabid-2</code>, tab group 2, 4 have same id set: <code>tabid-a</code>, <code>tabid-b</code>.</p>
+<p>So tab group 1, 3 are linked, tab group 2, 4 are linked.
+When tab <code>tabid-1</code> in tab group 1 is clicked, tab <code>tabid-1</code> in tab group 3 will be selected in same time.
+But tab group 2, 4 do not have any changed.</p>
+<h4 id="condition">Condition</h4>
+<p>Condition is the tab id of other table groups.</p>
+<p>e.g.:</p>
+<pre><code class="lang-md">Tab Group 1:
+
+# [Tab Text 1](#tab/tabid-1)
+
+Tab content-1.
+
+# [Tab Text 2](#tab/tabid-2)
+
+Tab content-2.
+
+***
+
+Tab Group 2:
+
+# [Tab Text A](#tab/tabid-a/tabid-1)
+
+Tab content-a for 1.
+
+# [Tab Text A](#tab/tabid-a/tabid-2)
+
+Tab content-a for 2.
+
+# [Tab Text B](#tab/tabid-b/tabid-1)
+
+Tab content-b for 1.
+
+# [Tab Text B](#tab/tabid-b/tabid-2)
+
+Tab content-b for 2.
+
+***
+</code></pre><p>Result:</p>
+<p>Tab Group 1:</p>
+<div class="tabGroup" id="tabgroup_gmSS67lpAc-4">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_gmSS67lpAc-4_tabid-1" role="tab" aria-controls="tabpanel_gmSS67lpAc-4_tabid-1" data-tab="tabid-1" tabindex="0" aria-selected="true">Tab Text 1</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_gmSS67lpAc-4_tabid-2" role="tab" aria-controls="tabpanel_gmSS67lpAc-4_tabid-2" data-tab="tabid-2" tabindex="-1">Tab Text 2</a>
+</li>
+</ul>
+<section id="tabpanel_gmSS67lpAc-4_tabid-1" role="tabpanel" data-tab="tabid-1">
+<p>Tab content-1.</p>
+</section>
+<section id="tabpanel_gmSS67lpAc-4_tabid-2" role="tabpanel" data-tab="tabid-2" aria-hidden="true" hidden="hidden">
+<p>Tab content-2.</p>
+</section>
+</div>
+<p>Tab Group 2:</p>
+<div class="tabGroup" id="tabgroup_gmSS67lpAc-5">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_gmSS67lpAc-5_tabid-a_tabid-1" role="tab" aria-controls="tabpanel_gmSS67lpAc-5_tabid-a_tabid-1" data-tab="tabid-a" data-condition="tabid-1" tabindex="0" aria-selected="true">Tab Text A</a>
+</li>
+<li role="presentation" aria-hidden="true" hidden="hidden">
+<a href="#tabpanel_gmSS67lpAc-5_tabid-a_tabid-2" role="tab" aria-controls="tabpanel_gmSS67lpAc-5_tabid-a_tabid-2" data-tab="tabid-a" data-condition="tabid-2" tabindex="-1">Tab Text A</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_gmSS67lpAc-5_tabid-b_tabid-1" role="tab" aria-controls="tabpanel_gmSS67lpAc-5_tabid-b_tabid-1" data-tab="tabid-b" data-condition="tabid-1" tabindex="-1">Tab Text B</a>
+</li>
+<li role="presentation" aria-hidden="true" hidden="hidden">
+<a href="#tabpanel_gmSS67lpAc-5_tabid-b_tabid-2" role="tab" aria-controls="tabpanel_gmSS67lpAc-5_tabid-b_tabid-2" data-tab="tabid-b" data-condition="tabid-2" tabindex="-1">Tab Text B</a>
+</li>
+</ul>
+<section id="tabpanel_gmSS67lpAc-5_tabid-a_tabid-1" role="tabpanel" data-tab="tabid-a" data-condition="tabid-1">
+<p>Tab content-a for 1.</p>
+</section>
+<section id="tabpanel_gmSS67lpAc-5_tabid-a_tabid-2" role="tabpanel" data-tab="tabid-a" data-condition="tabid-2" aria-hidden="true" hidden="hidden">
+<p>Tab content-a for 2.</p>
+</section>
+<section id="tabpanel_gmSS67lpAc-5_tabid-b_tabid-1" role="tabpanel" data-tab="tabid-b" data-condition="tabid-1" aria-hidden="true" hidden="hidden">
+<p>Tab content-b for 1.</p>
+</section>
+<section id="tabpanel_gmSS67lpAc-5_tabid-b_tabid-2" role="tabpanel" data-tab="tabid-b" data-condition="tabid-2" aria-hidden="true" hidden="hidden">
+<p>Tab content-b for 2.</p>
+</section>
+</div>
+<p>When select <code>tabid-1</code> in tab group 1, you can get content-a or content-b for 1 in group 2.<br>When select <code>tabid-2</code> in tab group 1, you can get content-a or content-b for 2 in group 2.</p>
 <h2 id="differences-between-dfm-and-gfm">Differences between DFM and GFM</h2>
 <h3 id="list">List</h3>
 <p>DFM list item always uses the first character in the first line to decide whether it is in the list item, but GFM does not.<br>For example:</p>
@@ -533,7 +749,7 @@ vb (alias: vbnet)</li>
 <div class="WARNING"><h5>Warning</h5><p>Please note that DFM introduces more syntax to support more functionalities. When GFM does not support them, preview the
 Markdown file inside <em>GFM Preview</em> can lead to different results.</p>
 </div>
-<h3 id="yaml-header">YAML header</h3>
+<h3 id="yaml-header-1">YAML header</h3>
 <p>In GFM, YAML header must start at the very beginning of the Markdown file.
 In DFM, YAML header contains more powerful meanings. Refer to <a href="#yaml-header">Yaml Header</a> for details.</p>
 <pre><code class="lang-md">...some text...

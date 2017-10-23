@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.25.2) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.26) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.25.2) | DocFX website ">
-    <meta name="generator" content="docfx 2.25.2.0">
+    <meta name="title" content="Version Notes (Current Version: v2.26) | DocFX website ">
+    <meta name="generator" content="docfx 2.26.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -68,16 +68,46 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="version-notes-current-version-v2252">Version Notes (Current Version: v2.25.2)</h1>
+<h1 id="version-notes-current-version-v226">Version Notes (Current Version: v2.26)</h1>
 
-<h2 id="v2252">v2.25.2</h2>
+<h2 id="v226">v2.26</h2>
 <ol>
-<li>Fix post-processor incremental bug that incremental post-processor is always disabled</li>
+<li><p>New feature:</p>
+<ol>
+<li>Support new syntax in Markdown: <a href="spec/docfx_flavored_markdown.html#tabbed-content">tabbed content</a></li>
 </ol>
-<h2 id="v2251">v2.25.1</h2>
+<pre><code># [Csharp](#tab/csharp)
+```cs
+Console.WriteLine(&quot;Hello world&quot;);
+```
+# [JavaScript](#tab/js)
+```js
+console.log(&#39;hello world&#39;);
+```
+</code></pre><p>Renders to:</p>
+<div class="tabGroup" id="tabgroup_jFZgIoc+-G">
+<ul role="tablist">
+<li role="presentation">
+<a href="#tabpanel_jFZgIoc+-G_csharp" role="tab" aria-controls="tabpanel_jFZgIoc+-G_csharp" data-tab="csharp" tabindex="0" aria-selected="true">Csharp</a>
+</li>
+<li role="presentation">
+<a href="#tabpanel_jFZgIoc+-G_js" role="tab" aria-controls="tabpanel_jFZgIoc+-G_js" data-tab="js" tabindex="-1">JavaScript</a>
+</li>
+</ul>
+<section id="tabpanel_jFZgIoc+-G_csharp" role="tabpanel" data-tab="csharp">
+<pre><code class="lang-cs">Console.WriteLine(&quot;Hello world&quot;);
+</code></pre></section>
+<section id="tabpanel_jFZgIoc+-G_js" role="tabpanel" data-tab="js" aria-hidden="true" hidden="hidden">
+<pre><code class="lang-js">console.log(&#39;hello world&#39;);
+</code></pre></section>
+</div>
+</li>
+<li><p>Fix bugs:</p>
 <ol>
-<li>Disable schema validation in schema-driven document processor temporarily.</li>
-<li>Disable loading overwrite documents in schema-driven document processor temporarily.</li>
+<li>Update DFM XREF short format.</li>
+<li>Update Markdown EM rule.</li>
+</ol>
+</li>
 </ol>
 <h2 id="v225">v2.25</h2>
 <ol>
@@ -537,7 +567,7 @@
 <li>Support customized contribute repository and branch for &quot;Improve this Doc&quot; button. (<a href="https://github.com/dotnet/docfx/issues/482">https://github.com/dotnet/docfx/issues/482</a>)</li>
 <li>Improve message for <code>docfx.exe template</code> command.</li>
 </ol>
-<h2 id="v222">v2.2.2</h2>
+<h2 id="v222-1">v2.2.2</h2>
 <ol>
 <li>Fix bug in <code>.manifest</code> file.</li>
 </ol>

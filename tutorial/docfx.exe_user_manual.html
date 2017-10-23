@@ -8,7 +8,7 @@
     <title>docfx.exe User Manual | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="docfx.exe User Manual | DocFX website ">
-    <meta name="generator" content="docfx 2.25.2.0">
+    <meta name="generator" content="docfx 2.26.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -337,6 +337,10 @@ And if <code>href</code> is referencing to a <strong>folder</strong>, it must en
 <td>Specifies the urls of xrefmap used by content files. Currently, it supports following scheme: http, https, ftp, file, embedded.</td>
 </tr>
 <tr>
+<td>xrefService</td>
+<td>Specifies the url patterns of xref service. Please read <strong>Section3.2.4</strong> for detail.</td>
+</tr>
+<tr>
 <td>exportRawModel</td>
 <td>If set to true, data model to run template script will be extracted in <code>.raw.json</code> extension.</td>
 </tr>
@@ -378,7 +382,7 @@ And if <code>href</code> is referencing to a <strong>folder</strong>, it must en
 </tr>
 <tr>
 <td>sitemap</td>
-<td>In format <a href="#324-sitemapoptions">SitemapOptions</a> Specifies the options for the sitemap.xml file.</td>
+<td>In format <a href="#325-sitemapoptions">SitemapOptions</a> Specifies the options for the sitemap.xml file.</td>
 </tr>
 </tbody>
 </table>
@@ -597,7 +601,39 @@ Reserved metadatas:</p>
 </li>
 </ul>
 <p>Given multiple metadata files, the behavior would be <strong>undetermined</strong>, if same key is set in these files.</p>
-<h4 id="324-sitemapoptions">3.2.4 SitemapOptions</h4>
+<h4 id="324-xref-service-url-pattern">3.2.4 Xref service url pattern</h4>
+<p>Xref service url pattern will exact url by following steps:</p>
+<ol>
+<li><p>Replace environment variables.</p>
+<ul>
+<li>Syntax: <code>{%variableName%}</code></li>
+<li>Process: load variable value from enviroment variables, replace the source content.</li>
+</ul>
+</li>
+<li><p>Extract post pipelines.</p>
+<ul>
+<li>Syntax: <code>|&gt; pipelineName parameter1 parameter2 ...</code></li>
+<li>Process: load pipeline, and extract parameters, remove from url.</li>
+<li>Current pipeline only contains: <code>removeHost</code>, <code>addQueryString</code>, pluggable pipeline will be add later.</li>
+</ul>
+</li>
+<li><p>Runtime replace variables.</p>
+<ul>
+<li>Syntax: <code>{varName}</code></li>
+<li>Process: replace the source content to the value of variable (uri data encoded).</li>
+</ul>
+</li>
+</ol>
+<p>e.g.:<br>Environment variables: test = hello<br>Available Pipeline: removeHost<br>Variable: uid = testuid1<br>Url pattern: <code>http://{%test%}.contoso.com/?uid={uid}|&gt; removeHost</code></p>
+<p>It will run as following steps:</p>
+<ol>
+<li>Replace environment variables, <code>http://hello.contoso.com/?uid={uid}|&gt; removeHost</code>.</li>
+<li>Extract post pipelines, <code>http://hello.contoso.com/?uid={uid}</code>, and append a post pipeline <code>removeHost</code>.</li>
+<li>Runtime replace variables, <code>http://hello.contoso.com/?uid=testuid</code>.</li>
+<li>Send request to <code>http://hello.contoso.com/?uid=testuid</code>, and get response from site.</li>
+<li>Run post pipeline <code>removeHost</code>.</li>
+</ol>
+<h4 id="325-sitemapoptions">3.2.5 SitemapOptions</h4>
 <p>The SitemapOptions is to configure the values for generating <a href="https://www.sitemaps.org/protocol.html">sitemap.xml</a> file.</p>
 <table>
 <thead>
