@@ -30,6 +30,15 @@ v2.26 (Pre-release)
    1. Update DFM XREF short format.
    2. Update Markdown EM rule.
 
+v2.25.2
+-----------
+1. Fix post-processor incremental bug that incremental post-processor is always disabled
+
+v2.25.1
+-----------
+1. Disable schema validation in schema-driven document processor temporarily.
+2. Disable loading overwrite documents in schema-driven document processor temporarily.
+
 v2.25
 -----------
 1. Use wbr instead of zero width space
