@@ -1,7 +1,7 @@
 ﻿Version Notes (Current Version: v2.26)
 =======================================
 
-v2.26 (Pre-release)
+v2.26
 -----------
 1. New feature:
    1. Support new syntax in Markdown: [tabbed content](~/spec/docfx_flavored_markdown.md#tabbed-content)
