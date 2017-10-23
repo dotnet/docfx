@@ -356,9 +356,9 @@ Here are all the supported note types with the styling of the default theme appl
 > [!CAUTION]
 > This is a warning containing some important message.
 
-### Tabbed content
+## Tabbed content
 
-#### Syntax
+### Syntax
 
 * Start a tab by a special markdown title (any level).
   * Title content should be a markdown link.
@@ -366,7 +366,7 @@ Here are all the supported note types with the styling of the default theme appl
 * Continue by any other content.
 * End by a markdown hr.
 
-#### Example
+### Example
 
 ```md
 Tab group 1:
@@ -467,7 +467,7 @@ Tab content-b-2.
 
 ***
 
-#### Behavior
+### Behavior
 
 Tab groups with a same set of id are linkable in one page.
 
@@ -477,7 +477,7 @@ So tab group 1, 3 are linked, tab group 2, 4 are linked.
 When tab `tabid-1` in tab group 1 is clicked, tab `tabid-1` in tab group 3 will be selected in same time.
 But tab group 2, 4 do not have any changed.
 
-#### Condition
+### Condition
 
 Condition is the tab id of other table groups.
 
