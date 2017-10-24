@@ -61,12 +61,12 @@ namespace Microsoft.DocAsCode.Dfm
                 }
                 catch (YamlException invalidYamlHeaderException)
                 {
-                    Logger.LogWarning($"Invalid yaml header: {invalidYamlHeaderException.Message}", file: context.File, line: context.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidYamlHeader);
+                    LogMessage(invalidYamlHeaderException, context);
                     return null;
                 }
                 catch (Exception)
                 {
-                    Logger.LogWarning("Invalid yaml header.", file: context.File, line: context.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidYamlHeader);
+                    LogMessage(context);
                     return null;
                 }
                 var sourceInfo = context.Consume(match.Length);
@@ -100,16 +100,36 @@ namespace Microsoft.DocAsCode.Dfm
             }
             catch (YamlException invalidYamlHeaderException)
             {
-                Logger.LogWarning($"Invalid yaml header: {invalidYamlHeaderException.Message}", file: context.File, line: context.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidYamlHeader);
+                LogMessage(invalidYamlHeaderException, context);
                 return null;
             }
             catch (Exception)
             {
-                Logger.LogWarning("Invalid yaml header.", file: context.File, line: context.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidYamlHeader);
+                LogMessage(context);
                 return null;
             }
             var sourceInfo = context.Consume(match.Length);
             return new DfmYamlHeaderBlockToken(this, parser.Context, value, sourceInfo);
+        }
+
+        private static void LogMessage(YamlException exception, IMarkdownParsingContext context)
+        {
+            Logger.Log(
+                (context.LineNumber == 1 ? LogLevel.Warning : LogLevel.Info),
+                $"Invalid yaml header: {exception.Message}",
+                file: context.File,
+                line: context.LineNumber.ToString(),
+                code: WarningCodes.Markdown.InvalidYamlHeader);
+        }
+
+        private static void LogMessage(IMarkdownParsingContext context)
+        {
+            Logger.Log(
+                (context.LineNumber == 1 ? LogLevel.Warning : LogLevel.Info),
+                "Invalid yaml header.",
+                file: context.File,
+                line: context.LineNumber.ToString(),
+                code: WarningCodes.Markdown.InvalidYamlHeader);
         }
     }
 }
