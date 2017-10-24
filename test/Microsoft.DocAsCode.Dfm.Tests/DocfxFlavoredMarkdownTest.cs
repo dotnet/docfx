@@ -353,12 +353,12 @@ uid: reference.md
 
             var parents = ImmutableStack.Create("reference.md");
 
-            var dfmservice = (DfmServiceProvider.DfmService) service;
+            var dfmservice = (DfmServiceProvider.DfmService)service;
             var marked = dfmservice
                 .Builder
                 .CreateDfmEngine(dfmservice.Renderer)
                 .Markup(reference,
-                    ((MarkdownBlockContext) dfmservice.Builder.CreateParseContext())
+                    ((MarkdownBlockContext)dfmservice.Builder.CreateParseContext())
                     .GetInlineContext().SetFilePathStack(parents).SetIsInclude());
 
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
@@ -617,15 +617,40 @@ world</p>
 - Jon Schlinkert
 - Brian Woodward
 
----";
+---
+
+1
+===
+1.1
+---
+blabla
+
+1.2
+---
+blabla";
             var expected = @"<hr/>
 <ul>
 <li>Jon Schlinkert</li>
 <li>Brian Woodward</li>
 </ul>
 <hr/>
+<h1 id=""1"">1</h1>
+<h2 id=""11"">1.1</h2>
+<p>blabla</p>
+<h2 id=""12"">1.2</h2>
+<p>blabla</p>
 ";
-            var marked = DocfxFlavoredMarked.Markup(source);
+
+            var listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter("YamlHeader");
+            Logger.RegisterListener(listener);
+            string marked;
+            using (new LoggerPhaseScope("YamlHeader"))
+            {
+                marked = DocfxFlavoredMarked.Markup(source);
+            }
+            Logger.UnregisterListener(listener);
+
+            Assert.Equal(1, listener.Items.Count(i => i.LogLevel == LogLevel.Warning));
             Assert.Equal(expected.Replace("\r\n", "\n"), marked);
         }
 
