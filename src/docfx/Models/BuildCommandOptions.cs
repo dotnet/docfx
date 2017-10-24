@@ -121,7 +121,7 @@ namespace Microsoft.DocAsCode
         [Option("cleanupCacheHistory", HelpText = "If set to true, docfx create a new intermediate folder for cache files, historical cache data will be cleaned up")]
         public bool CleanupCacheHistory { get; set; }
 
-        [Option("inputFALBuilderName", HelpText = "Set the name of input file abstract layer builder.")]
-        public string InputFALBuilderName { get; set; }
+        [Option("falName", HelpText = "Set the name of input file abstract layer builder.")]
+        public string FALName { get; set; }
     }
 }

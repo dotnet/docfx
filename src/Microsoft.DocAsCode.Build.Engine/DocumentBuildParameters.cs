@@ -78,7 +78,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         [IncrementalIgnore]
         public SitemapOptions SitemapOptions { get; set; }
 
-        public string InputFALBuilderName { get; set; }
+        public string FALName { get; set; }
 
         public DocumentBuildParameters Clone() =>
             (DocumentBuildParameters)MemberwiseClone();

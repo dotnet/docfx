@@ -210,7 +210,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 ForceRebuild = config.Force ?? false,
                 ForcePostProcess = config.ForcePostProcess ?? false,
                 SitemapOptions = config.SitemapOptions,
-                InputFALBuilderName = config.InputFALBuilderName,
+                FALName = config.FALName,
             };
             if (config.GlobalMetadata != null)
             {

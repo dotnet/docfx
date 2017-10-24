@@ -171,16 +171,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                             .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
                             .WriteToLink(Path.Combine(_intermediateFolder, currentBuildInfo.DirectoryName));
                     }
-                    if (!string.IsNullOrEmpty(parameter.InputFALBuilderName))
+                    if (!string.IsNullOrEmpty(parameter.FALName))
                     {
                         if (_container.TryGetExport<IInputFileAbstractLayerBuilderProvider>(
-                            parameter.InputFALBuilderName, out var falbp))
+                            parameter.FALName, out var provider))
                         {
-                            falBuilder = falbp.Create(falBuilder, parameter);
+                            falBuilder = provider.Create(falBuilder, parameter);
                         }
                         else
                         {
-                            Logger.LogWarning($"Input fal builder provider not found, name: {parameter.InputFALBuilderName}.");
+                            Logger.LogWarning($"Input fal builder provider not found, name: {parameter.FALName}.");
                         }
                     }
                     EnvironmentContext.FileAbstractLayerImpl = falBuilder.Create();
