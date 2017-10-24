@@ -13,7 +13,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         private int _startIndex;
         private readonly List<int> _lineIndexer;
         private readonly string _file;
-        private readonly int _lineNumber;
+        private readonly int _lineOffset;
         private string _currentMarkdown;
 
         public MarkdownParsingContext(SourceInfo sourceInfo)
@@ -21,7 +21,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             _markdown = sourceInfo.Markdown;
             _currentMarkdown = _markdown;
             _file = sourceInfo.File;
-            _lineNumber = sourceInfo.LineNumber;
+            _lineOffset = sourceInfo.LineNumber;
             _lineIndexer = CreateLineIndexer(sourceInfo.Markdown);
         }
 
@@ -44,20 +44,19 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public bool IsInParagraph { get; set; }
 
-        public int LineNumber => _lineNumber;
+        public int LineNumber => _lineOffset + CalcLineNumber();
 
         public string File => _file;
 
         public SourceInfo ToSourceInfo()
         {
-            return SourceInfo.Create(CurrentMarkdown, _file, _lineNumber, _lineIndexer.Count - CalcLineNumber());
+            return SourceInfo.Create(CurrentMarkdown, _file, _lineOffset, _lineIndexer.Count - CalcLineNumber());
         }
 
         public SourceInfo Consume(int charCount)
         {
-            var offset = CalcLineNumber();
             string markdown = _markdown.Substring(_startIndex, charCount);
-            var result = SourceInfo.Create(markdown, _file, _lineNumber + offset, CalcLineNumber(charCount) - CalcLineNumber() + 1);
+            var result = SourceInfo.Create(markdown, _file, LineNumber, CalcLineNumber(charCount) - CalcLineNumber() + 1);
             _startIndex += charCount;
             _currentMarkdown = null;
             return result;
