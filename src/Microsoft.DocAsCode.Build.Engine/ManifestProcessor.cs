@@ -81,16 +81,12 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             _manifestWithContext.RunAll(m =>
             {
-                if (m.FileModel.Type == DocumentType.Resource)
-                {
-                    return;
-                }
                 using (new LoggerFileScope(m.FileModel.LocalPathFromRoot))
                 {
                     var model = m.Item.Model.Content;
                     // Change file model to weak type
                     // Go through the convert even if it is IDictionary as the inner object might be of strong type
-                    var modelAsObject = ConvertToObjectHelper.ConvertStrongTypeToObject(model);
+                    var modelAsObject = model == null ? new Dictionary<string, object>() : ConvertToObjectHelper.ConvertStrongTypeToObject(model);
                     if (modelAsObject is IDictionary<string, object>)
                     {
                         m.Item.Model.Content = modelAsObject;
