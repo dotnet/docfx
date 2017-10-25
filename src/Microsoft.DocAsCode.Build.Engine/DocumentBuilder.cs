@@ -158,23 +158,32 @@ namespace Microsoft.DocAsCode.Build.Engine
                             Logger.LogWarning($"Custom href generator({parameter.CustomLinkResolver}) is not found.");
                         }
                     }
-                    // todo: IInputFileAbstractLayerBuilderProvider
+                    FileAbstractLayerBuilder falBuilder;
                     if (_intermediateFolder == null)
                     {
-                        EnvironmentContext.FileAbstractLayerImpl =
-                            FileAbstractLayerBuilder.Default
+                        falBuilder = FileAbstractLayerBuilder.Default
                             .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                            .WriteToRealFileSystem(parameter.OutputBaseDir)
-                            .Create();
+                            .WriteToRealFileSystem(parameter.OutputBaseDir);
                     }
                     else
                     {
-                        EnvironmentContext.FileAbstractLayerImpl =
-                            FileAbstractLayerBuilder.Default
+                        falBuilder = FileAbstractLayerBuilder.Default
                             .ReadFromRealFileSystem(EnvironmentContext.BaseDirectory)
-                            .WriteToLink(Path.Combine(_intermediateFolder, currentBuildInfo.DirectoryName))
-                            .Create();
+                            .WriteToLink(Path.Combine(_intermediateFolder, currentBuildInfo.DirectoryName));
                     }
+                    if (!string.IsNullOrEmpty(parameter.FALName))
+                    {
+                        if (_container.TryGetExport<IInputFileAbstractLayerBuilderProvider>(
+                            parameter.FALName, out var provider))
+                        {
+                            falBuilder = provider.Create(falBuilder, parameter);
+                        }
+                        else
+                        {
+                            Logger.LogWarning($"Input fal builder provider not found, name: {parameter.FALName}.");
+                        }
+                    }
+                    EnvironmentContext.FileAbstractLayerImpl = falBuilder.Create();
                     if (parameter.ApplyTemplateSettings.TransformDocument)
                     {
                         transformDocument = true;
