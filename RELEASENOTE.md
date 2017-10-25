@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.26.1)
+﻿Version Notes (Current Version: v2.26.2)
 =======================================
+
+v2.26.2
+-----------
+1. Fix bug for resource metadata.
 
 v2.26.1
 -----------
