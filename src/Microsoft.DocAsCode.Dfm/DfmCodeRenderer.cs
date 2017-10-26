@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.Dfm
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.MarkdownLite;
+    using Microsoft.DocAsCode.Plugins;
 
     public class DfmCodeRenderer
     {
@@ -25,7 +26,7 @@ namespace Microsoft.DocAsCode.Dfm
             try
             {
                 // Always report original dependency
-                context.ReportDependency(token.Path);
+                context.ReportDependency(EnvironmentContext.FileAbstractLayer.GetExpectedPhysicalPath(token.Path));
                 var filePath = FindFile(token, context);
                 var code = ExtractCode(token, filePath);
                 return RenderFencesCode(token, renderer.Options, code.ErrorMessage, code.CodeLines);
@@ -94,7 +95,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public virtual string FindFile(DfmFencesToken token, IMarkdownContext context)
         {
-            return DfmFallbackHelper.GetFilePathWithFallback(token.Path, context).Item1;
+            return token.Path;
         }
 
         public virtual DfmExtractCodeResult ExtractCode(DfmFencesToken token, string filePath)

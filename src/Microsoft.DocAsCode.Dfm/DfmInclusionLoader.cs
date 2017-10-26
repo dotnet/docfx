@@ -75,6 +75,7 @@ namespace Microsoft.DocAsCode.Dfm
                 context.ReportDependency(
                     from d in dependency
                     select (string)((RelativePath)currentPath + (RelativePath)d - (RelativePath)parent));
+                context.ReportDependency(GetDependencyFiles(currentPath, context));
                 return result;
             }
             catch (Exception e)
@@ -85,8 +86,12 @@ namespace Microsoft.DocAsCode.Dfm
 
         protected virtual string GetIncludedContent(string filePath, IMarkdownContext context)
         {
-            var filePathWithStatus = DfmFallbackHelper.GetFilePathWithFallback(filePath, context);
-            return EnvironmentContext.FileAbstractLayer.ReadAllText(filePathWithStatus.Item1);
+            return EnvironmentContext.FileAbstractLayer.ReadAllText(filePath);
+        }
+
+        protected virtual IEnumerable<string> GetDependencyFiles(string filePath, IMarkdownContext context)
+        {
+            return EnvironmentContext.FileAbstractLayer.GetExpectedPhysicalPath(filePath);
         }
 
         private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, SourceInfo sourceInfo)
