@@ -91,7 +91,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         protected virtual IEnumerable<string> GetDependencyFiles(string filePath, IMarkdownContext context)
         {
-            return EnvironmentContext.FileAbstractLayer.GetExpectedPhysicalPath(filePath);
+            yield return filePath;
         }
 
         private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, SourceInfo sourceInfo)

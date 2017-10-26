@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Dfm
             try
             {
                 // Always report original dependency
-                context.ReportDependency(EnvironmentContext.FileAbstractLayer.GetExpectedPhysicalPath(token.Path));
+                context.ReportDependency(token.Path);
                 var filePath = FindFile(token, context);
                 var code = ExtractCode(token, filePath);
                 return RenderFencesCode(token, renderer.Options, code.ErrorMessage, code.CodeLines);
