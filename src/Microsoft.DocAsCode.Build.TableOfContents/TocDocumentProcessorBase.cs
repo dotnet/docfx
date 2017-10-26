@@ -185,7 +185,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
 
             var fli = FileLinkInfo.Create(model.LocalPathFromRoot, model.File, path, context);
-            return context.HrefGenerator?.GenerateHref(fli) ?? fli.Href;
+            return (context.HrefGenerator?.GenerateHref(fli) ?? fli.Href) + segments;
         }
         #endregion
     }
