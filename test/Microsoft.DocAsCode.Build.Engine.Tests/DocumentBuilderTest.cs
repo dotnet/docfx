@@ -64,7 +64,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
             var tocFile = CreateFile("toc.md",
                 new[]
                 {
-                    "# [test1](test.md)",
+                    "# [test1](test.md#bookmark)",
                     "## [test2](test/test.md)",
                     "# Api",
                     "## [Console](@System.Console)",
@@ -179,7 +179,7 @@ tagRules : [
                     var model = JsonUtility.Deserialize<TocItemViewModel>(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))).Items;
                     Assert.NotNull(model);
                     Assert.Equal("test1", model[0].Name);
-                    Assert.Equal("test.html", model[0].Href);
+                    Assert.Equal("test.html#bookmark", model[0].Href);
                     Assert.NotNull(model[0].Items);
                     Assert.Equal("test2", model[0].Items[0].Name);
                     Assert.Equal("test/test.html", model[0].Items[0].Href);
