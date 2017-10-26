@@ -75,7 +75,6 @@ namespace Microsoft.DocAsCode.Dfm
                 context.ReportDependency(
                     from d in dependency
                     select (string)((RelativePath)currentPath + (RelativePath)d - (RelativePath)parent));
-                context.ReportDependency(GetDependencyFiles(currentPath, context));
                 return result;
             }
             catch (Exception e)
@@ -86,6 +85,12 @@ namespace Microsoft.DocAsCode.Dfm
 
         protected virtual string GetIncludedContent(string filePath, IMarkdownContext context)
         {
+            var parents = context.GetFilePathStack();
+            if (parents != null)
+            {
+                var parent = parents.Peek();
+                filePath = ((RelativePath)parent + (RelativePath)filePath).RemoveWorkingFolder();
+            }
             return EnvironmentContext.FileAbstractLayer.ReadAllText(filePath);
         }
 

@@ -95,7 +95,14 @@ namespace Microsoft.DocAsCode.Dfm
 
         public virtual string FindFile(DfmFencesToken token, IMarkdownContext context)
         {
-            return token.Path;
+            var filePath = token.Path;
+            var parents = context.GetFilePathStack();
+            if (parents != null)
+            {
+                var parent = parents.Peek();
+                filePath = ((RelativePath)parent + (RelativePath)filePath).RemoveWorkingFolder();
+            }
+            return filePath;
         }
 
         public virtual DfmExtractCodeResult ExtractCode(DfmFencesToken token, string filePath)
