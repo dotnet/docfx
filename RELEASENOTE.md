@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.26.2)
+﻿Version Notes (Current Version: v2.26.3)
 =======================================
+
+v2.26.3
+-----------
+1. Fix missing bookmark in TOC's href.
 
 v2.26.2
 -----------
