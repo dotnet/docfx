@@ -26,9 +26,15 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 // Always report original dependency
                 context.ReportDependency(token.Path);
+
+
+                var pathQueryOption =
+                    !string.IsNullOrEmpty(token.QueryStringAndFragment) ?
+                    DfmFencesRule.ParsePathQueryString(token.QueryStringAndFragment.Remove(1), token.QueryStringAndFragment.Substring(1)) :
+                    null;
                 var filePath = FindFile(token, context);
-                var code = ExtractCode(token, filePath);
-                return RenderFencesCode(token, renderer.Options, code.ErrorMessage, code.CodeLines);
+                var code = ExtractCode(token, filePath, pathQueryOption);
+                return RenderFencesCode(token, renderer.Options, code.ErrorMessage, code.CodeLines, pathQueryOption);
             }
             catch (DirectoryNotFoundException)
             {
@@ -98,8 +104,11 @@ namespace Microsoft.DocAsCode.Dfm
         }
 
         public virtual DfmExtractCodeResult ExtractCode(DfmFencesToken token, string filePath)
+            => ExtractCode(token, filePath, null);
+
+        public virtual DfmExtractCodeResult ExtractCode(DfmFencesToken token, string filePath, IDfmFencesBlockPathQueryOption option)
         {
-            return _dfmCodeExtractor.ExtractFencesCode(token, filePath);
+            return _dfmCodeExtractor.ExtractFencesCode(token, filePath, option);
         }
 
         public virtual DfmExtractCodeResult ExtractCode(DfmFencesToken token, string[] fencesCode)
@@ -107,7 +116,11 @@ namespace Microsoft.DocAsCode.Dfm
             return _dfmCodeExtractor.ExtractFencesCode(token, fencesCode);
         }
 
-        public virtual StringBuffer RenderFencesCode(DfmFencesToken token, Options options, string errorMessage, string[] codeLines = null)
+        public virtual StringBuffer RenderFencesCode(DfmFencesToken token,
+            Options options,
+            string errorMessage,
+            string[] codeLines = null,
+            IDfmFencesBlockPathQueryOption pathQueryOption = null)
         {
             StringBuffer result;
             string renderedErrorMessage = string.Empty;
@@ -122,10 +135,10 @@ namespace Microsoft.DocAsCode.Dfm
                 result = StringBuffer.Empty;
             }
 
-            if (codeLines != null)
+            if (codeLines != null && pathQueryOption != null)
             {
                 result = RenderOpenPreTag(result, token, options);
-                result = RenderOpenCodeTag(result, token, options);
+                result = RenderOpenCodeTag(result, token, options, pathQueryOption);
                 foreach (var line in codeLines)
                 {
                     result += StringHelper.HtmlEncode(line);
@@ -150,7 +163,7 @@ namespace Microsoft.DocAsCode.Dfm
             return result + "</pre>";
         }
 
-        public virtual StringBuffer RenderOpenCodeTag(StringBuffer result, DfmFencesToken token, Options options)
+        public virtual StringBuffer RenderOpenCodeTag(StringBuffer result, DfmFencesToken token, Options options, IDfmFencesBlockPathQueryOption pathQueryOption)
         {
             result += "<code";
             if (!string.IsNullOrEmpty(token.Lang))
@@ -165,9 +178,9 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 result = result + " title=\"" + StringHelper.HtmlEncode(token.Title) + "\"";
             }
-            if (!string.IsNullOrEmpty(token.PathQueryOption?.HighlightLines))
+            if (!string.IsNullOrEmpty(pathQueryOption?.HighlightLines))
             {
-                result = result + " highlight-lines=\"" + StringHelper.HtmlEncode(token.PathQueryOption.HighlightLines) + "\"";
+                result = result + " highlight-lines=\"" + StringHelper.HtmlEncode(pathQueryOption.HighlightLines) + "\"";
             }
             result += ">";
             return result;

@@ -16,6 +16,9 @@ namespace Microsoft.DocAsCode.Dfm
         private static readonly string RemoveIndentSpacesRegexString = @"^[ \t]{{1,{0}}}";
 
         public DfmExtractCodeResult ExtractFencesCode(DfmFencesToken token, string fencesPath)
+            => ExtractFencesCode(token, fencesPath, null);
+
+        public DfmExtractCodeResult ExtractFencesCode(DfmFencesToken token, string fencesPath, IDfmFencesBlockPathQueryOption pathQueryOption)
         {
             if (token == null)
             {
@@ -31,11 +34,14 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 var fencesCode = EnvironmentContext.FileAbstractLayer.ReadAllLines(fencesPath);
 
-                return ExtractFencesCode(token, fencesCode);
+                return ExtractFencesCode(token, fencesCode, pathQueryOption);
             }
         }
 
         public DfmExtractCodeResult ExtractFencesCode(DfmFencesToken token, string[] fencesCode)
+            => ExtractFencesCode(token, fencesCode, null);
+
+        public DfmExtractCodeResult ExtractFencesCode(DfmFencesToken token, string[] fencesCode, IDfmFencesBlockPathQueryOption pathQueryOption)
         {
             if (token == null)
             {
@@ -47,10 +53,8 @@ namespace Microsoft.DocAsCode.Dfm
                 throw new ArgumentNullException(nameof(fencesCode));
             }
 
-            var pathQueryOption =
-                !string.IsNullOrEmpty(token.QueryStringAndFragment) ?
-                DfmFencesRule.ParsePathQueryString(token.QueryStringAndFragment.Remove(1), token.QueryStringAndFragment.Substring(1)) :
-                null;
+            pathQueryOption = pathQueryOption ??
+                DfmFencesRule.ParsePathQueryString(token.QueryStringAndFragment.Remove(1), token.QueryStringAndFragment.Substring(1));
 
             using (new LoggerPhaseScope("Extract Dfm Code"))
             {
