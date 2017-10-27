@@ -94,8 +94,13 @@ namespace Microsoft.DocAsCode.Dfm
             }
 
             var fencesCode = codeContent.Replace("\r\n", "\n").Split('\n');
-            var code = ExtractCode(token, fencesCode);
-            return RenderFencesCode(token, new Options { ShouldExportSourceInfo = false }, code.ErrorMessage, code.CodeLines);
+
+            var pathQueryOption = !string.IsNullOrEmpty(token.QueryStringAndFragment)
+                ? DfmFencesRule.ParsePathQueryString(token.QueryStringAndFragment.Remove(1), token.QueryStringAndFragment.Substring(1))
+                : null;
+
+            var code = ExtractCode(token, fencesCode, pathQueryOption);
+            return RenderFencesCode(token, new Options { ShouldExportSourceInfo = false }, code.ErrorMessage, code.CodeLines, pathQueryOption);
         }
 
         public virtual string FindFile(DfmFencesToken token, IMarkdownContext context)
@@ -103,6 +108,7 @@ namespace Microsoft.DocAsCode.Dfm
             return DfmFallbackHelper.GetFilePathWithFallback(token.Path, context).Item1;
         }
 
+        [Obsolete]
         public virtual DfmExtractCodeResult ExtractCode(DfmFencesToken token, string filePath)
             => ExtractCode(token, filePath, null);
 
@@ -111,9 +117,15 @@ namespace Microsoft.DocAsCode.Dfm
             return _dfmCodeExtractor.ExtractFencesCode(token, filePath, option);
         }
 
+        [Obsolete]
         public virtual DfmExtractCodeResult ExtractCode(DfmFencesToken token, string[] fencesCode)
         {
-            return _dfmCodeExtractor.ExtractFencesCode(token, fencesCode);
+            return _dfmCodeExtractor.ExtractFencesCode(token, fencesCode, null);
+        }
+
+        public virtual DfmExtractCodeResult ExtractCode(DfmFencesToken token, string[] fencesCode, IDfmFencesBlockPathQueryOption option)
+        {
+            return _dfmCodeExtractor.ExtractFencesCode(token, fencesCode, option);
         }
 
         public virtual StringBuffer RenderFencesCode(DfmFencesToken token,
@@ -135,7 +147,7 @@ namespace Microsoft.DocAsCode.Dfm
                 result = StringBuffer.Empty;
             }
 
-            if (codeLines != null && pathQueryOption != null)
+            if (codeLines != null)
             {
                 result = RenderOpenPreTag(result, token, options);
                 result = RenderOpenCodeTag(result, token, options, pathQueryOption);

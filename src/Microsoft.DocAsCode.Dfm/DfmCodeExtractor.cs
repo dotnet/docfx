@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.Dfm
     {
         private static readonly string RemoveIndentSpacesRegexString = @"^[ \t]{{1,{0}}}";
 
+        [Obsolete]
         public DfmExtractCodeResult ExtractFencesCode(DfmFencesToken token, string fencesPath)
             => ExtractFencesCode(token, fencesPath, null);
 
@@ -38,9 +39,6 @@ namespace Microsoft.DocAsCode.Dfm
             }
         }
 
-        public DfmExtractCodeResult ExtractFencesCode(DfmFencesToken token, string[] fencesCode)
-            => ExtractFencesCode(token, fencesCode, null);
-
         public DfmExtractCodeResult ExtractFencesCode(DfmFencesToken token, string[] fencesCode, IDfmFencesBlockPathQueryOption pathQueryOption)
         {
             if (token == null)
@@ -52,9 +50,6 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 throw new ArgumentNullException(nameof(fencesCode));
             }
-
-            pathQueryOption = pathQueryOption ??
-                DfmFencesRule.ParsePathQueryString(token.QueryStringAndFragment.Remove(1), token.QueryStringAndFragment.Substring(1));
 
             using (new LoggerPhaseScope("Extract Dfm Code"))
             {
