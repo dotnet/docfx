@@ -5,6 +5,13 @@
   "title": "ContextObject",
   "description": "The test schema for context object",
   "type": "object",
+  "definitions": {
+    "markdown_include": {
+      "type": "string",
+      "contentType": "markdown",
+      "reference": "file"
+    }
+  },
   "properties": {
     "breadcrumb_path": {
       "type": "string",
@@ -15,8 +22,11 @@
       "contentType": "href"
     },
     "file_include": {
+      "$ref": "#/definitions/markdown_include"
+    },
+    "file_include2": {
       "type": "string",
-      "contentType": "markdown",
+      "contentType": "href",
       "reference": "file"
     }
   }

@@ -6,8 +6,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
     using System;
     using System.Collections.Generic;
 
-    using Newtonsoft.Json.Schema;
-
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
@@ -24,7 +22,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
         public bool CanInterpret(BaseSchema schema)
         {
-            return schema.ContentType == ContentType.Href;
+            return schema != null && schema.ContentType == ContentType.Href;
         }
 
         public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
@@ -56,15 +54,16 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             var relPath = RelativePath.TryParse(filePath);
             if (relPath != null)
             {
-                var currentFile = (RelativePath)context.Model.OriginalFileAndType.File;
+                var originalFile = context.GetOriginalContentFile(path);
+                var currentFile = (RelativePath)originalFile.File;
                 relPath = (currentFile + relPath.UrlDecode()).GetPathFromWorkingFolder();
                 if (_exportFileLink)
                 {
-                    ((Dictionary<string, List<LinkSourceInfo>>)context.Properties.FileLinkSources).AddFileLinkSource(new LinkSourceInfo
+                    (context.FileLinkSources).AddFileLinkSource(new LinkSourceInfo
                     {
                         Target = relPath,
                         Anchor = UriUtility.GetFragment(val),
-                        SourceFile = context.Model.OriginalFileAndType.File
+                        SourceFile = originalFile.File
                     });
                 }
 
@@ -73,7 +72,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                     var resolved = (RelativePath)context.BuildContext.GetFilePath(relPath);
                     if (resolved != null)
                     {
-                        val = resolved.MakeRelativeTo(((RelativePath)context.Model.File).GetPathFromWorkingFolder()).UrlEncode() + fragments;
+                        val = resolved.MakeRelativeTo(((RelativePath)context.FileAndType.File).GetPathFromWorkingFolder()).UrlEncode() + fragments;
                     }
                 }
             }

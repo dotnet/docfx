@@ -16,85 +16,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             _interpreters = interpreters;
         }
 
-        public object Process(object raw, DocumentSchema schema, IProcessContext context)
+        public object Process(object raw, BaseSchema schema, IProcessContext context)
         {
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (context.Model == null)
-            {
-                throw new ArgumentNullException(nameof(context) + "." + nameof(context.Model));
-            }
-
             return InterpretCore(raw, schema, string.Empty, context);
-        }
-
-        private object InterpretCore(object value, BaseSchema schema, string path, IProcessContext context)
-        {
-            if (value is IDictionary<object, object> dict)
-            {
-                if (schema.Properties != null)
-                {
-                    foreach (var keyRaw in dict.Keys.ToList())
-                    {
-                        if (keyRaw is string key)
-                        {
-                            if (schema.Properties.TryGetValue(key, out var baseSchema))
-                            {
-                                var val = dict[keyRaw];
-                                var obj = InterpretCore(val, baseSchema, $"{path}/{key}", context);
-                                if (!ReferenceEquals(obj, val))
-                                {
-                                    dict[keyRaw] = obj;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            throw new NotSupportedException("Only support string as key");
-                        }
-                    }
-                }
-            }
-
-            if (value is IDictionary<string, object> idict)
-            {
-                if (schema.Properties != null)
-                {
-                    foreach (var key in idict.Keys.ToList())
-                    {
-                        if (schema.Properties.TryGetValue(key, out var baseSchema))
-                        {
-                            var val = idict[key];
-                            var obj = InterpretCore(val, baseSchema, $"{path}/{key}", context);
-                            if (!ReferenceEquals(obj, val))
-                            {
-                                idict[key] = obj;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (value is IList<object> array)
-            {
-                if (schema.Items != null)
-                {
-                    for (var i = 0; i < array.Count; i++)
-                    {
-                        var val = array[i];
-                        var obj = InterpretCore(val, schema.Items, $"{path}/{i}", context);
-                        if (!ReferenceEquals(obj, val))
-                        {
-                            array[i] = obj;
-                        }
-                    }
-                }
-            }
-
-            return Interpret(value, schema, path, context);
         }
 
         private object Interpret(object value, BaseSchema schema, string path, IProcessContext context)
@@ -106,6 +35,58 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             }
 
             return val;
+        }
+
+        private object InterpretCore(object value, BaseSchema schema, string path, IProcessContext context)
+        {
+            if (!DictionaryInterpret<object>(value, schema, path, context))
+            {
+                if (!DictionaryInterpret<string>(value, schema, path, context))
+                {
+                    if (value is IList<object> array)
+                    {
+                        for (var i = 0; i < array.Count; i++)
+                        {
+                            var val = array[i];
+                            var obj = InterpretCore(val, schema?.Items, $"{path}/{i}", context);
+                            if (!ReferenceEquals(obj, val))
+                            {
+                                array[i] = obj;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return Interpret(value, schema, path, context);
+        }
+
+        private bool DictionaryInterpret<TKey>(object value, BaseSchema schema, string path, IProcessContext context)
+        {
+            if (value is IDictionary<TKey, object> dict)
+            {
+                foreach (var keyRaw in dict.Keys.ToList())
+                {
+                    if (keyRaw is string key)
+                    {
+                        BaseSchema baseSchema = null;
+                        schema?.Properties?.TryGetValue(key, out baseSchema);
+                        var val = dict[keyRaw];
+                        var obj = InterpretCore(val, baseSchema, $"{path}/{key}", context);
+                        if (!ReferenceEquals(obj, val))
+                        {
+                            dict[keyRaw] = obj;
+                        }
+                    }
+                    else
+                    {
+                        throw new NotSupportedException("Only support string as key");
+                    }
+                }
+                return true;
+            }
+
+            return false;
         }
     }
 }

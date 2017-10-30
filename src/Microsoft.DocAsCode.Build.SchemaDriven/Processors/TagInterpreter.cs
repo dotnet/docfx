@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
         public bool CanInterpret(BaseSchema schema)
         {
-            return _tagInterpreters?.Count > 0 && schema.Tags?.Count > 0;
+            return _tagInterpreters?.Count > 0 && schema?.Tags?.Count > 0;
         }
 
         public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)

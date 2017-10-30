@@ -9,8 +9,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    using Newtonsoft.Json.Schema;
-
     public class XrefPropertiesInterpreter : IInterpreter
     {
         /// <summary>
@@ -22,6 +20,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
         /// <returns></returns>
         public bool CanInterpret(BaseSchema schema)
         {
+            if (schema == null)
+            {
+                return false;
+            }
+
             if (schema.XrefProperties != null)
             {
                 return true;
@@ -60,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             };
 
             var parts = schema.XrefProperties ?? new List<string> { "name", "fullName" };
-            var root = context.Model.Content;
+            var root = context.GetModel<object>();
             foreach (var part in parts.Distinct())
             {
                 var jsonPointer = new JsonPointer(path + "/" + part);
@@ -80,13 +83,13 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
             if (IsInternalXrefSpec(schema))
             {
-                context.Properties.Uids.Add(new UidDefinition(uid, context.Model.LocalPathFromRoot, path: path + "/uid"));
-                xrefSpec.Href = ((RelativePath)context.Model.Key).UrlEncode().ToString();
-                context.Properties.XRefSpecs.Add(xrefSpec);
+                context.Uids.Add(new UidDefinition(uid, context.OriginalFileAndType.FullPath, path: path + "/uid"));
+                xrefSpec.Href = ((RelativePath)context.OriginalFileAndType.File).GetPathFromWorkingFolder().UrlEncode().ToString();
+                context.XRefSpecs.Add(xrefSpec);
             }
             else
             {
-                context.Properties.ExternalXRefSpecs.Add(xrefSpec);
+                context.ExternalXRefSpecs.Add(xrefSpec);
             }
             return value;
         }
