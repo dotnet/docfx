@@ -64,11 +64,7 @@ namespace Microsoft.DocAsCode.Dfm
                 var title = StringHelper.UnescapeMarkdown(match.GetGroup("title")?.GetValue() ?? string.Empty);
                 var queryStringAndFragment = UriUtility.GetQueryStringAndFragment(href);
                 var path = UriUtility.GetPath(href);
-                var pathQueryOption =
-                    !string.IsNullOrEmpty(queryStringAndFragment) ?
-                    ParsePathQueryString(queryStringAndFragment.Remove(1), queryStringAndFragment.Substring(1)) :
-                    null;
-                return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption, queryStringAndFragment);
+                return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, queryStringAndFragment);
             }
             return null;
         }

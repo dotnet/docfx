@@ -13,7 +13,11 @@ namespace Microsoft.DocAsCode.Dfm
         public DfmFencesBlockToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo sourceInfo, string lang = null, string title = null, IDfmFencesBlockPathQueryOption pathQueryOption = null)
             : base(rule, context, name, path, sourceInfo, lang, title, pathQueryOption) { }
 
+        [Obsolete]
         public DfmFencesBlockToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo sourceInfo, string lang = null, string title = null, IDfmFencesBlockPathQueryOption pathQueryOption = null, string queryStringAndFragment = null)
             : base(rule, context, name, path, sourceInfo, lang, title, pathQueryOption, queryStringAndFragment) { }
+
+        public DfmFencesBlockToken(IMarkdownRule rule, IMarkdownContext context, string name, string path, SourceInfo sourceInfo, string lang = null, string title = null, string queryStringAndFragment = null)
+            : base(rule, context, name, path, sourceInfo, lang, title, queryStringAndFragment) { }
     }
 }
