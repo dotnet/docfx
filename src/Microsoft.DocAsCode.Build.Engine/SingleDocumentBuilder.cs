@@ -209,16 +209,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                          group file by p).ToList();
 
             var toHandleItems = files.Where(s => s.Key != null);
-            var notToHandleItems = files.Where(s => s.Key == null);
-            foreach (var item in notToHandleItems)
+            var notToHandleItems = files.Where(s => s.Key == null).SelectMany(s => s).Where(s => s.Type != DocumentType.Overwrite);
+            foreach (var f in notToHandleItems)
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("Cannot handle following file:");
-                foreach (var f in item)
-                {
-                    sb.Append("\t");
-                    sb.AppendLine(f.File);
-                }
+                sb.Append("\t");
+                sb.AppendLine(f.File);
                 Logger.LogWarning(sb.ToString());
             }
 
