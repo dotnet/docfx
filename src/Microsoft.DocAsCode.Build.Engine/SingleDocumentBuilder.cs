@@ -212,7 +212,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var notToHandleItems = files.Where(s => s.Key == null).SelectMany(s => s).Where(s => s.Type != DocumentType.Overwrite).ToList();
             if (notToHandleItems.Count > 0)
             {
-                Logger.LogWarning($"Unable to handle following files:\t {notToHandleItems.Select(s => s.File).ToDelimitedString()}");
+                Logger.LogWarning($"Unable to handle following files: {notToHandleItems.Select(s => s.File).ToDelimitedString()}");
             }
 
             try
