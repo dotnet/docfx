@@ -4,9 +4,11 @@
 namespace Microsoft.DocAsCode.Plugins
 {
     using System;
-
+    using System.Runtime.Serialization;
+    
     using Newtonsoft.Json;
 
+    [Serializable]
     public class SitemapElementOptions
     {
         [JsonProperty("baseUrl")]
