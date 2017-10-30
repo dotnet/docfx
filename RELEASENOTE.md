@@ -1,5 +1,10 @@
-﻿Version Notes (Current Version: v2.26.3)
+﻿Version Notes (Current Version: v2.26.4)
 =======================================
+
+v2.26.4
+-----------
+1. Improve performance for markdown parser with aggregator.
+2. Fix bug: SerializationException for `SitemapOptions`.
 
 v2.26.3
 -----------
