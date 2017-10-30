@@ -146,6 +146,7 @@ DFM currently supports the following __`<language>`__ values to be able to retri
     assembly (alias: nasm),
     c (alias: cpp, c++, objective-c, obj-c, objc, objectivec),
     csharp (alias: cs),
+    cshtml,
     cuda,
     d (alias: dlang),
     fsharp (alias: fs),
@@ -168,6 +169,7 @@ DFM currently supports the following __`<language>`__ values to be able to retri
     .cc,
     .cpp,
     .cs,
+    .cshtml
     .cu,
     .cuh,
     .d,
@@ -192,13 +194,15 @@ DFM currently supports the following __`<language>`__ values to be able to retri
   - End with: `' </{name}>`
   - Languages:
     vb,
+    vbhtml,
     vbnet,
     vbscript
   - File extensions:
-    .vb,
     .bas,
-    .vbs,
-    .vba
+    .vb,
+    .vba,
+    .vbhtml,
+    .vbs
 * Markup language family
   - Start with: `<!-- <{name}> -->`
   - End with: `<!-- </{name}> -->`
@@ -263,12 +267,13 @@ DFM currently supports the following __`<language>`__ values to be able to retri
       .bat
       .cmd
   * csharp
-    - Start with: `# region {name}`
+    - Start with: `#region {name}`
     - End with: `#endregion`
     - Languages:
       csharp (alias: cs)
     - File extensions:
       .cs
+      .cshtml
   * erlang
     - Start with: `% <{name}>`
     - End with: `% </{name}>`
@@ -312,6 +317,7 @@ DFM currently supports the following __`<language>`__ values to be able to retri
       vb (alias: vbnet)
     - File extensions:
       .vb
+      .vbhtml
 
 > [!Note]
 > If dev-lang is not specified, file extension will be used to determine the language.
