@@ -3,13 +3,35 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
+    using System.Collections.Generic;
+    using System.Dynamic;
+
     using Microsoft.DocAsCode.Plugins;
 
     public interface IProcessContext
     {
         IHostService Host { get; }
-        FileModel Model { get; }
-        dynamic Properties { get; }
+
         IDocumentBuildContext BuildContext { get; }
+
+        List<UidDefinition> Uids { get; }
+
+        Dictionary<string, List<LinkSourceInfo>> UidLinkSources { get; }
+
+        Dictionary<string, List<LinkSourceInfo>> FileLinkSources { get; }
+
+        HashSet<string> Dependency { get; }
+
+        List<XRefSpec> XRefSpecs { get; }
+
+        List<XRefSpec> ExternalXRefSpecs { get; }
+
+        FileAndType OriginalFileAndType { get; }
+
+        FileAndType FileAndType { get; }
+
+        Dictionary<string, Dictionary<string, object>> PathProperties { get; }
+
+        T GetModel<T>();
     }
 }

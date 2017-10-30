@@ -94,12 +94,15 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
             {
                 var schemaFile = CreateFile("template/schemas/contextobject.schema.json", File.ReadAllText("TestData/schemas/contextobject.test.schema.json"), _templateFolder);
                 var tocTemplate = CreateFile("template/toc.json.tmpl", "toc template", _templateFolder);
+                // var coTemplate = CreateFile("template/contextobject.json.tmpl", "{{file_include2}}", _templateFolder);
                 var inputFileName = "co/active.yml";
-                var includeFile = CreateFile("a b/inc.md", @"**Include**", _inputFolder);
+                var includeFile = CreateFile("a b/inc.md", @"[root](../co/active.yml)", _inputFolder);
+                var includeFile2 = CreateFile("c/d/inc.md", @"../../a b/toc.md", _inputFolder);
                 var inputFile = CreateFile(inputFileName, @"### YamlMime:ContextObject
 breadcrumb_path: /absolute/toc.json
 toc_rel: ../a b/toc.md
 file_include: ../a b/inc.md
+file_include2: ../c/d/inc.md
 uhfHeaderId: MSDocsHeader-DotNet
 empty:
 searchScope:
@@ -109,7 +112,8 @@ searchScope:
                 files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
                 BuildDocument(files);
 
-                Assert.Equal(3, listener.Items.Count);
+                Assert.Equal(4, listener.Items.Count);
+                Assert.Equal(2, listener.Items.Count(s => s.Message.StartsWith($"Invalid file link:(~/{_inputFolder}/a b/toc.md).")));
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): ContextObject")));
                 Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("Invalid file link")));
                 listener.Items.Clear();
@@ -118,13 +122,14 @@ searchScope:
                 Assert.True(File.Exists(rawModelFilePath));
                 var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
 
-                Assert.Equal("Hello world!", rawModel["meta"].ToString());
-                Assert.Equal("/absolute/toc.json", rawModel["breadcrumb_path"].ToString());
-                Assert.Equal("../a b/toc.md", rawModel["toc_rel"].ToString());
-                Assert.Equal($"<p sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><strong>Include</strong></p>\n",
-                    rawModel["file_include"].ToString());
-                Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].ToString());
-                Assert.Equal($".NET", rawModel["searchScope"][0].ToString());
+                Assert.Equal("Hello world!", rawModel["meta"].Value<string>());
+                Assert.Equal("/absolute/toc.json", rawModel["breadcrumb_path"].Value<string>());
+                Assert.Equal("../a b/toc.md", rawModel["toc_rel"].Value<string>());
+                Assert.Equal($"<p sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\"><a href=\"~/{inputFile}\" data-raw-source=\"[root](../co/active.yml)\" sourcefile=\"{includeFile}\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">root</a></p>\n",
+                    rawModel["file_include"].Value<string>());
+                Assert.Equal("../../a b/toc.md", rawModel["file_include2"].Value<string>());
+                Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].Value<string>());
+                Assert.Equal($".NET", rawModel["searchScope"][0].Value<string>());
 
                 files = new FileCollection(_defaultFiles);
                 files.Add(DocumentType.Article, new[] { inputFile }, _inputFolder);
@@ -139,11 +144,12 @@ searchScope:
                 Assert.True(File.Exists(rawModelFilePath));
                 rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
 
-                Assert.Equal("Hello world!", rawModel["meta"].ToString());
-                Assert.Equal("/absolute/toc.json", rawModel["breadcrumb_path"].ToString());
-                Assert.Equal("../a%20b/toc.json", rawModel["toc_rel"].ToString());
-                Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].ToString());
-                Assert.Equal($".NET", rawModel["searchScope"][0].ToString());
+                Assert.Equal("Hello world!", rawModel["meta"].Value<string>());
+                Assert.Equal("/absolute/toc.json", rawModel["breadcrumb_path"].Value<string>());
+                Assert.Equal("../a%20b/toc.json", rawModel["toc_rel"].Value<string>());
+                Assert.Equal("MSDocsHeader-DotNet", rawModel["uhfHeaderId"].Value<string>());
+                Assert.Equal($".NET", rawModel["searchScope"][0].Value<string>());
+                Assert.Equal("../a%20b/toc.json", rawModel["file_include2"].Value<string>());
             }
         }
 

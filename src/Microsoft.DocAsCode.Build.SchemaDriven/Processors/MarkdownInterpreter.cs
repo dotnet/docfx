@@ -4,9 +4,6 @@
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
     using System;
-    using System.Collections.Generic;
-
-    using Newtonsoft.Json.Schema;
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
@@ -15,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
     {
         public bool CanInterpret(BaseSchema schema)
         {
-            return schema.ContentType == ContentType.Markdown;
+            return schema != null && schema.ContentType == ContentType.Markdown;
         }
 
         public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
@@ -30,16 +27,17 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 throw new ArgumentException($"{value.GetType()} is not supported type string.");
             }
 
-            return MarkupCore(val, context);
+            return MarkupCore(val, context, path);
         }
 
-        private static string MarkupCore(string content, IProcessContext context)
+        private static string MarkupCore(string content, IProcessContext context, string path)
         {
             var host = context.Host;
-            var mr = host.Markup(content, (FileAndType)context.Properties.ContentOriginalFile);
-            ((Dictionary<string, List<LinkSourceInfo>>)context.Properties.FileLinkSources).Merge(mr.FileLinkSources);
-            ((Dictionary<string, List<LinkSourceInfo>>)context.Properties.UidLinkSources).Merge(mr.UidLinkSources);
-            ((HashSet<string>)context.Properties.Dependency).UnionWith(mr.Dependency);
+
+            var mr = host.Markup(content, context.GetOriginalContentFile(path));
+            (context.FileLinkSources).Merge(mr.FileLinkSources);
+            (context.UidLinkSources).Merge(mr.UidLinkSources);
+            (context.Dependency).UnionWith(mr.Dependency);
             return mr.Html;
         }
     }

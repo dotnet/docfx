@@ -31,25 +31,19 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         protected override void BuildArticle(IHostService host, FileModel model)
         {
             var content = model.Content;
+
             var context = new ProcessContext(host, model);
-            context.Properties.Uids = new List<UidDefinition>();
-            context.Properties.UidLinkSources = new Dictionary<string, List<LinkSourceInfo>>();
-            context.Properties.FileLinkSources = new Dictionary<string, List<LinkSourceInfo>>();
-            context.Properties.Dependency = new HashSet<string>();
-            context.Properties.XRefSpecs = new List<XRefSpec>();
-            context.Properties.ExternalXRefSpecs = new List<XRefSpec>();
-            context.Properties.ContentOriginalFile = context.Model.OriginalFileAndType;
             DocumentSchema schema = model.Properties.Schema;
             content = _schemaProcessor.Process(content, schema, context);
-            model.LinkToUids = model.LinkToUids.Union(((Dictionary<string, List<LinkSourceInfo>>)context.Properties.UidLinkSources).Keys);
-            model.LinkToFiles = model.LinkToFiles.Union(((Dictionary<string, List<LinkSourceInfo>>)context.Properties.FileLinkSources).Keys);
-            model.FileLinkSources = model.FileLinkSources.Merge((Dictionary<string, List<LinkSourceInfo>>)context.Properties.FileLinkSources);
-            model.UidLinkSources = model.UidLinkSources.Merge((Dictionary<string, List<LinkSourceInfo>>)context.Properties.UidLinkSources);
-            model.Uids = model.Uids.AddRange(context.Properties.Uids);
-            model.Properties.XRefSpecs = context.Properties.XRefSpecs;
-            model.Properties.ExternalXRefSpecs = context.Properties.ExternalXRefSpecs;
+            model.LinkToUids = model.LinkToUids.Union(context.UidLinkSources.Keys);
+            model.LinkToFiles = model.LinkToFiles.Union(context.FileLinkSources.Keys);
+            model.FileLinkSources = model.FileLinkSources.Merge(context.FileLinkSources);
+            model.UidLinkSources = model.UidLinkSources.Merge(context.UidLinkSources);
+            model.Uids = model.Uids.AddRange(context.Uids);
+            model.Properties.XRefSpecs = context.XRefSpecs;
+            model.Properties.ExternalXRefSpecs = context.ExternalXRefSpecs;
 
-            foreach (var d in context.Properties.Dependency)
+            foreach (var d in context.Dependency)
             {
                 host.ReportDependencyTo(model, d, DependencyTypeName.Include);
             }

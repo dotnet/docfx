@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
-
+    <LangVersion>latest</LangVersion>
     <!-- Note: by convention assembly should be named after the root namespace -->
     <AssemblyName Condition=" '$(AssemblyName)' == '' ">$(MSBuildProjectName)</AssemblyName>
     <AssemblyTitle Condition=" '$(AssemblyTitle)' == '' ">$(MSBuildProjectName)</AssemblyTitle>

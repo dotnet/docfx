@@ -5,8 +5,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
     using System;
 
-    using Newtonsoft.Json.Schema;
-
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
@@ -14,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
     {
         public bool CanInterpret(BaseSchema schema)
         {
-            return schema.Reference != ReferenceType.None;
+            return schema != null && schema.Reference != ReferenceType.None;
         }
 
         public object Interpret(BaseSchema schema, object value, IProcessContext context, string path)
@@ -33,12 +31,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
             var relPath = RelativePath.TryParse(val);
             if (relPath != null)
             {
-                var currentFile = (RelativePath)context.Model.OriginalFileAndType.File;
+                var currentFile = (RelativePath)context.OriginalFileAndType.File;
                 filePath = currentFile + relPath;
             }
 
-            context.Properties.ContentOriginalFile =
-                new FileAndType(context.Model.OriginalFileAndType.BaseDir, filePath, DocumentType.Article);
+            context.SetOriginalContentFile(path, new FileAndType(context.OriginalFileAndType.BaseDir, filePath, DocumentType.Article));
 
             return EnvironmentContext.FileAbstractLayer.ReadAllText(filePath);
         }
