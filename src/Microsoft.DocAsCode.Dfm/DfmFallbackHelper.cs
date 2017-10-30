@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Dfm
     using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Plugins;
 
+    [Obsolete]
     public static class DfmFallbackHelper
     {
         /// <summary>

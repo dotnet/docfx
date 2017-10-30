@@ -85,8 +85,18 @@ namespace Microsoft.DocAsCode.Dfm
 
         protected virtual string GetIncludedContent(string filePath, IMarkdownContext context)
         {
-            var filePathWithStatus = DfmFallbackHelper.GetFilePathWithFallback(filePath, context);
-            return EnvironmentContext.FileAbstractLayer.ReadAllText(filePathWithStatus.Item1);
+            var parents = context.GetFilePathStack();
+            if (parents != null)
+            {
+                var parent = parents.Peek();
+                filePath = ((RelativePath)parent + (RelativePath)filePath).RemoveWorkingFolder();
+            }
+            return EnvironmentContext.FileAbstractLayer.ReadAllText(filePath);
+        }
+
+        protected virtual IEnumerable<string> GetDependencyFiles(string filePath, IMarkdownContext context)
+        {
+            yield return filePath;
         }
 
         private static string GenerateErrorNodeWithCommentWrapper(string tag, string comment, SourceInfo sourceInfo)
