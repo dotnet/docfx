@@ -209,17 +209,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                          group file by p).ToList();
 
             var toHandleItems = files.Where(s => s.Key != null);
-            var notToHandleItems = files.Where(s => s.Key == null);
-            foreach (var item in notToHandleItems)
+            var notToHandleItems = files.Where(s => s.Key == null).SelectMany(s => s).Where(s => s.Type != DocumentType.Overwrite).ToList();
+            if (notToHandleItems.Count > 0)
             {
-                var sb = new StringBuilder();
-                sb.AppendLine("Cannot handle following file:");
-                foreach (var f in item)
-                {
-                    sb.Append("\t");
-                    sb.AppendLine(f.File);
-                }
-                Logger.LogWarning(sb.ToString());
+                Logger.LogWarning($"Unable to handle following files: {notToHandleItems.Select(s => s.File).ToDelimitedString()}");
             }
 
             try
