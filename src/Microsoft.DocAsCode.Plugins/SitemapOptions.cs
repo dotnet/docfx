@@ -4,9 +4,11 @@
 namespace Microsoft.DocAsCode.Plugins
 {
     using System.Collections.Generic;
-
+    using System.Runtime.Serialization;
+    
     using Newtonsoft.Json;
 
+    [Serializable]
     public class SitemapOptions : SitemapElementOptions
     {
         [JsonProperty("fileOptions")]
