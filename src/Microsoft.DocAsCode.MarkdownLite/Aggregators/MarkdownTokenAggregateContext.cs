@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
         public IMarkdownToken LookAhead(int offset)
         {
             var index = _currentTokenIndex + offset;
-            if (index >= Tokens.Length)
+            if (index >= Tokens.Count)
             {
                 return null;
             }
@@ -50,7 +50,10 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
         }
 
-        internal ImmutableArray<IMarkdownToken> Tokens =>
+        internal IList<IMarkdownToken> Tokens =>
+            (IList<IMarkdownToken>)_tokens ?? _sourceTokens;
+
+        internal ImmutableArray<IMarkdownToken> ImmutableTokens =>
             _tokens?.ToImmutableArray() ?? _sourceTokens;
 
         internal bool NextToken()
