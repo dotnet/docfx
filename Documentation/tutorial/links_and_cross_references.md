@@ -201,7 +201,7 @@ In Markdown link or auto link, you can add a hashtag (`#`) followed by the ancho
 ```markdown
 <xref:uid_to_file#anchor_name>
 
-[link_text](xref:uid_to_file#anchor_name]
+[link_text](xref:uid_to_file#anchor_name)
 
 @uid_to_file#anchor_name
 ```
