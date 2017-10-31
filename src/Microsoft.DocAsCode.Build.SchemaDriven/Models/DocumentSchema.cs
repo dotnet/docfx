@@ -31,6 +31,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         public JObject InnerJObject { get; private set; }
 
+        /// <summary>
+        /// Overwrites are only allowed when the schema contains "uid" definition
+        /// </summary>
+        public bool AllowOverwrite { get; private set; }
+
         public static DocumentSchema Load(TextReader reader, string title)
         {
             using (var jtr = new JsonTextReader(reader))
@@ -79,7 +84,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 }
 
                 schema.MetadataReference = pointer;
-
+                schema.AllowOverwrite = CheckOverwriteAbility(schema);
                 return schema;
             }
         }
@@ -195,6 +200,36 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             {
                 throw new SchemaKeywordNotSupportedException(name);
             }
+        }
+
+        private static bool CheckOverwriteAbility(BaseSchema schema)
+        {
+            if (schema == null)
+            {
+                return false;
+            }
+
+            if (schema.ContentType == ContentType.Uid)
+            {
+                return true;
+            }
+            if (CheckOverwriteAbility(schema.Items))
+            {
+                return true;
+            }
+
+            if (schema.Properties != null)
+            {
+                foreach (var value in schema.Properties.Values)
+                {
+                    if (CheckOverwriteAbility(value))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

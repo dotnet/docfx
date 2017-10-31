@@ -33,7 +33,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             foreach (var model in models)
             {
-                model.Content = schemaProcessor.Process(model.Content, model.Properties.Schema, new ProcessContext(host, model));
+                if (model.Type == DocumentType.Article)
+                {
+                    model.Content = schemaProcessor.Process(model.Content, model.Properties.Schema, new ProcessContext(host, model));
+                }
             }
         }
 

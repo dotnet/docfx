@@ -14,6 +14,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
         IDocumentBuildContext BuildContext { get; }
 
+        IContentAnchorParser ContentAnchorParser { get; }
+
         List<UidDefinition> Uids { get; }
 
         Dictionary<string, List<LinkSourceInfo>> UidLinkSources { get; }

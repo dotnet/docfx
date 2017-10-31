@@ -28,8 +28,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private readonly string _schemaName;
         private readonly DocumentSchema _schema;
         private readonly SchemaValidator _schemaValidator;
+        private readonly bool _allowOverwrite;
         #endregion
 
+        public SchemaValidator SchemaValidator => _schemaValidator;
         #region Constructors
 
         public SchemaDrivenDocumentProcessor(DocumentSchema schema, ICompositionContainer container)
@@ -42,7 +44,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             _schemaName = schema.Title;
             _schema = schema;
             _schemaValidator = new SchemaValidator(_schema);
-
+            _allowOverwrite = schema.AllowOverwrite;
             _serializerPool = new ResourcePoolManager<JsonSerializer>(GetSerializer, 0x10);
             if (container != null)
             {
@@ -78,14 +80,12 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                     }
 
                     break;
-                // temporarily disable loading of overwrite documents in SDP
-                // TODO: reenable processing of overwrite documents in SDP
-                //case DocumentType.Overwrite:
-                //    if (".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
-                //    {
-                //        return ProcessingPriority.Normal;
-                //    }
-                //    break;
+                case DocumentType.Overwrite:
+                    if (_allowOverwrite && ".md".Equals(Path.GetExtension(file.File), StringComparison.OrdinalIgnoreCase))
+                    {
+                        return ProcessingPriority.Normal;
+                    }
+                    break;
                 default:
                     break;
             }

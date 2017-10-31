@@ -34,6 +34,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
         public Dictionary<string, Dictionary<string, object>> PathProperties { get; }
 
+        public IContentAnchorParser ContentAnchorParser { get; set; }
+
         public T GetModel<T>()
         {
             return (T)_model.Content;
