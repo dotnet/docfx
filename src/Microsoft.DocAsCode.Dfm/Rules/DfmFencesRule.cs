@@ -27,11 +27,13 @@ namespace Microsoft.DocAsCode.Dfm
 
         public abstract IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context);
 
+        [Obsolete("use DfmCodeExtractor.ParsePathQueryString")]
         public static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
         {
             return ParsePathQueryString(queryOption, queryString, false);
         }
 
+        [Obsolete("use DfmCodeExtractor.ParsePathQueryString")]
         public static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString, bool noCache = false)
         {
             if (string.IsNullOrEmpty(queryOption) || string.IsNullOrEmpty(queryString))

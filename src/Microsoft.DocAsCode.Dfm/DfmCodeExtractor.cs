@@ -11,9 +11,40 @@ namespace Microsoft.DocAsCode.Dfm
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    internal class DfmCodeExtractor
+    public class DfmCodeExtractor
     {
         private static readonly string RemoveIndentSpacesRegexString = @"^[ \t]{{1,{0}}}";
+
+        private readonly IDfmFencesBlockPathQueryOptionCreator[] _pathQueryOptionCreaters;
+
+        public DfmCodeExtractor(IDfmFencesBlockPathQueryOptionCreator[] pathQueryOptionCreaters = null)
+        {
+            _pathQueryOptionCreaters = pathQueryOptionCreaters ?? new IDfmFencesBlockPathQueryOptionCreator[]
+            {
+                new FullFileBlockPathQueryOptionCreater(),
+                new TagNameBlockPathQueryOptionCreater(),
+                new MultipleLineRangeBlockPathQueryOptionCreater(),
+            };
+        }
+
+        public IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOrFragment, bool noCache = false)
+        {
+            if (string.IsNullOrEmpty(queryOrFragment))
+            {
+                return null;
+            }
+
+            var parameters = DfmFencesBlockPathQueryOptionParameters.Create(queryOrFragment);
+            foreach (var creater in _pathQueryOptionCreaters)
+            {
+                var option = creater.ParseQueryOrFragment(parameters, noCache);
+                if (option != null)
+                {
+                    return option;
+                }
+            }
+            throw new NotSupportedException($"Unable to parse query string: {queryOrFragment}");
+        }
 
         [Obsolete]
         public DfmExtractCodeResult ExtractFencesCode(DfmFencesToken token, string fencesPath)

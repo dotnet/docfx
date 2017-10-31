@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Dfm
     using System;
     using System.Collections.Generic;
 
+    [Obsolete("use MultipleLineRangeBlockPathQueryOption")]
     public class LineRangeBlockPathQueryOption : DfmFencesBlockPathQueryOption
     {
         public int? StartLine { get; set; }
