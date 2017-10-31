@@ -83,8 +83,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                                     model.LinkToFiles = model.LinkToFiles.Union(od.LinkToFiles);
                                     model.FileLinkSources = model.FileLinkSources.Merge(od.FileLinkSources);
                                     model.UidLinkSources = model.UidLinkSources.Merge(od.UidLinkSources);
-                                    ((List<XRefSpec>)model.Properties.XRefSpecs).AddRange((List<XRefSpec>)(od.Properties.XRefSpecs));
-                                    ((List<XRefSpec>)model.Properties.ExternalXRefSpecs).AddRange((List<XRefSpec>)(od.Properties.ExternalXRefSpecs));
                                 }
                             }
                         }
@@ -97,8 +95,20 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                     var context = new ProcessContext(host, model);
                     _xrefSpecUpdater.Process(model.Content, schema, context);
 
-                    ((List<XRefSpec>)model.Properties.XRefSpecs).AddRange((context.XRefSpecs));
-                    ((List<XRefSpec>)model.Properties.ExternalXRefSpecs).AddRange((context.ExternalXRefSpecs));
+                    UpdateXRefSpecs((List<XRefSpec>)model.Properties.XRefSpecs, context.XRefSpecs);
+                    UpdateXRefSpecs((List<XRefSpec>)model.Properties.ExternalXRefSpecs, context.ExternalXRefSpecs);
+                }
+            }
+        }
+
+        private void UpdateXRefSpecs(List<XRefSpec> original, List<XRefSpec> overwrite)
+        {
+            foreach (var xref in overwrite)
+            {
+                var index = original.FindIndex(s => s.Uid == xref.Uid);
+                if (index > -1)
+                {
+                    original[index] = xref;
                 }
             }
         }
