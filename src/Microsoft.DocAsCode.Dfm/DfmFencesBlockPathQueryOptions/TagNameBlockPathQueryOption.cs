@@ -90,7 +90,9 @@ namespace Microsoft.DocAsCode.Dfm
                 .AddAlias("fsharp", "fs", ".fs", ".fsi", ".fsx")
                 .AddAlias("go", "golang", ".go")
                 .AddAlias("haskell", ".hs")
-                .AddAlias("html", ".html", ".cshtml", "cshtml", ".vbhtml", "vbhtml", ".jsp", "aspx-cs", "aspx-csharp", "aspx-vb" ,".asp", ".aspx", ".ascx")
+                .AddAlias("html", ".html", ".jsp", ".asp", ".aspx", ".ascx")
+                .AddAlias("cshtml", ".cshtml", "aspx-cs", "aspx-csharp")
+                .AddAlias("vbhtml", ".vbhtml", "aspx-vb")
                 .AddAlias("java", ".java")
                 .AddAlias("javascript", "js", "node", ".js")
                 .AddAlias("lisp", ".lisp", ".lsp")
@@ -117,13 +119,13 @@ namespace Microsoft.DocAsCode.Dfm
                 // family
                 .Add(
                     new FlatNameCodeSnippetExtractor(BasicFamilyCodeSnippetCommentStartLineRegex, BasicFamilyCodeSnippetCommentEndLineRegex),
-                    "vb")
+                    "vb", "vbhtml")
                 .Add(
                     new FlatNameCodeSnippetExtractor(CFamilyCodeSnippetCommentStartLineRegex, CFamilyCodeSnippetCommentEndLineRegex),
-                    "actionscript", "arduino", "assembly", "cpp", "csharp", "cuda", "d", "fsharp", "go", "java", "javascript", "pascal", "php", "processing", "rust", "scala", "smalltalk", "swift", "typescript")
+                    "actionscript", "arduino", "assembly", "cpp", "csharp", "cshtml", "cuda", "d", "fsharp", "go", "java", "javascript", "pascal", "php", "processing", "rust", "scala", "smalltalk", "swift", "typescript")
                 .Add(
                     new FlatNameCodeSnippetExtractor(MarkupLanguageFamilyCodeSnippetCommentStartLineRegex, MarkupLanguageFamilyCodeSnippetCommentEndLineRegex),
-                    "xml", "xaml", "html")
+                    "xml", "xaml", "html", "cshtml", "vbhtml")
                 .Add(
                     new FlatNameCodeSnippetExtractor(SqlFamilyCodeSnippetCommentStartLineRegex, SqlFamilyCodeSnippetCommentEndLineRegex),
                     "haskell", "lua", "sql")
@@ -136,7 +138,7 @@ namespace Microsoft.DocAsCode.Dfm
                     "batchfile")
                 .Add(
                     new RecursiveNameCodeSnippetExtractor(CSharpCodeSnippetRegionStartLineRegex, CSharpCodeSnippetRegionEndLineRegex),
-                    "csharp")
+                    "csharp", "cshtml")
                 .Add(
                     new FlatNameCodeSnippetExtractor(ErlangCodeSnippetRegionStartLineRegex, ErlangCodeSnippetRegionEndLineRegex),
                     "erlang", "matlab")
@@ -145,7 +147,7 @@ namespace Microsoft.DocAsCode.Dfm
                     "lisp")
                 .Add(
                     new RecursiveNameCodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineRegex, VBCodeSnippetRegionRegionEndLineRegex),
-                    "vb")
+                    "vb", "vbhtml")
                 .ToDictionay();
         }
 
@@ -220,17 +222,17 @@ namespace Microsoft.DocAsCode.Dfm
 
         private Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>> GetLazyResolveResult(string[] fencesCodeLines, List<ICodeSnippetExtractor> codeSnippetExtractors)
         {
-           return new Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>(
-                () =>
-                {
+            return new Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>(
+                 () =>
+                 {
                     // TODO: consider different code snippet representation with same name
                     return new ConcurrentDictionary<string, List<DfmTagNameResolveResult>>(
-                        (from codeSnippetExtractor in codeSnippetExtractors
-                         let resolveResults = codeSnippetExtractor.GetAll(fencesCodeLines)
-                         from codeSnippet in resolveResults
-                         group codeSnippet by codeSnippet.Key)
-                         .ToDictionary(g => g.Key, g => g.Select(p => p.Value).ToList()), StringComparer.OrdinalIgnoreCase);
-                });
+                         (from codeSnippetExtractor in codeSnippetExtractors
+                          let resolveResults = codeSnippetExtractor.GetAll(fencesCodeLines)
+                          from codeSnippet in resolveResults
+                          group codeSnippet by codeSnippet.Key)
+                          .ToDictionary(g => g.Key, g => g.Select(p => p.Value).ToList()), StringComparer.OrdinalIgnoreCase);
+                 });
         }
 
         private static string GetCodeLanguageOrExtension(DfmFencesToken token)
