@@ -15,16 +15,11 @@ namespace Microsoft.DocAsCode.Dfm
     {
         private static readonly string RemoveIndentSpacesRegexString = @"^[ \t]{{1,{0}}}";
 
-        private readonly IDfmFencesBlockPathQueryOptionCreator[] _pathQueryOptionCreaters;
+        private readonly IDfmFencesBlockPathQueryOptionCreator _pathQueryOptionCreaters;
 
-        public DfmCodeExtractor(IDfmFencesBlockPathQueryOptionCreator[] pathQueryOptionCreaters = null)
+        public DfmCodeExtractor(IDfmFencesBlockPathQueryOptionCreator pathQueryOptionCreaters = null)
         {
-            _pathQueryOptionCreaters = pathQueryOptionCreaters ?? new IDfmFencesBlockPathQueryOptionCreator[]
-            {
-                new FullFileBlockPathQueryOptionCreater(),
-                new TagNameBlockPathQueryOptionCreater(),
-                new MultipleLineRangeBlockPathQueryOptionCreater(),
-            };
+            _pathQueryOptionCreaters = pathQueryOptionCreaters ?? new AggregateBlockPathQueryOptionCreator();
         }
 
         public IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOrFragment, bool noCache = false)
@@ -34,16 +29,7 @@ namespace Microsoft.DocAsCode.Dfm
                 return null;
             }
 
-            var parameters = DfmFencesBlockPathQueryOptionParameters.Create(queryOrFragment);
-            foreach (var creater in _pathQueryOptionCreaters)
-            {
-                var option = creater.ParseQueryOrFragment(parameters, noCache);
-                if (option != null)
-                {
-                    return option;
-                }
-            }
-            throw new NotSupportedException($"Unable to parse query string: {queryOrFragment}");
+            return _pathQueryOptionCreaters.ParseQueryOrFragment(DfmFencesBlockPathQueryOptionParameters.Create(queryOrFragment), noCache);
         }
 
         [Obsolete]

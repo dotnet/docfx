@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
-    public class MultipleLineRangeBlockPathQueryOptionCreater : IDfmFencesBlockPathQueryOptionCreator
+    public class MultipleLineRangeBlockPathQueryOptionCreator : IDfmFencesBlockPathQueryOptionCreator
     {
         public IDfmFencesBlockPathQueryOption ParseQueryOrFragment(
             DfmFencesBlockPathQueryOptionParameters parameters,

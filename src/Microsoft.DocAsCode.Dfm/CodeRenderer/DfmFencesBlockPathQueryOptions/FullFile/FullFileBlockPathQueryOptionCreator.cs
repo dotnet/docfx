@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
-    public class TagNameBlockPathQueryOptionCreater : IDfmFencesBlockPathQueryOptionCreator
+    public class FullFileBlockPathQueryOptionCreator : IDfmFencesBlockPathQueryOptionCreator
     {
         public IDfmFencesBlockPathQueryOption ParseQueryOrFragment(
             DfmFencesBlockPathQueryOptionParameters parameters,
@@ -11,16 +11,15 @@ namespace Microsoft.DocAsCode.Dfm
         {
             if (parameters == null)
             {
-                return null;
+                return new FullFileBlockPathQueryOption();
             }
 
-            if (!string.IsNullOrEmpty(parameters.TagName))
+            if (string.IsNullOrEmpty(parameters.TagName) && parameters.LinePairs.Count == 0)
             {
-                return new TagNameBlockPathQueryOption(noCache)
+                return new FullFileBlockPathQueryOption
                 {
                     HighlightLines = parameters.HighlightLines,
                     DedentLength = parameters.DedentLength,
-                    TagName = parameters.TagName,
                 };
             }
 
