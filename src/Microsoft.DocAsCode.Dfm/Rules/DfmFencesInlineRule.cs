@@ -36,13 +36,13 @@ namespace Microsoft.DocAsCode.Dfm
             var path = match.Groups["path"].Value;
             var lang = match.Groups["lang"]?.Value;
             var title = match.Groups["title"]?.Value;
-            var pathQueryOption = ParsePathQueryString(match.Groups["option"]?.Value, match.Groups["optionValue"]?.Value);
+            var queryStringAndFragment = match.Groups["option"]?.Value + match.Groups["optionValue"]?.Value;
 
             if (!parser.Context.GetIsInTable())
             {
                 Logger.LogWarning("Inline code snippet is only allowed inside tables.", line: sourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidInlineCodeSnippet);
             }
-            return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, pathQueryOption, pathQueryOption != null ? match.Groups["option"]?.Value + match.Groups["optionValue"]?.Value : null);
+            return new DfmFencesBlockToken(this, parser.Context, name, path, sourceInfo, lang, title, queryStringAndFragment);
         }
     }
 }

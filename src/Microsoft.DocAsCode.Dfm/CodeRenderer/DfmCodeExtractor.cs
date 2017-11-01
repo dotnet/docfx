@@ -11,9 +11,26 @@ namespace Microsoft.DocAsCode.Dfm
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    internal class DfmCodeExtractor
+    public class DfmCodeExtractor
     {
         private static readonly string RemoveIndentSpacesRegexString = @"^[ \t]{{1,{0}}}";
+
+        private readonly IDfmFencesBlockPathQueryOptionCreator _pathQueryOptionCreaters;
+
+        public DfmCodeExtractor(IDfmFencesBlockPathQueryOptionCreator pathQueryOptionCreaters = null)
+        {
+            _pathQueryOptionCreaters = pathQueryOptionCreaters ?? new AggregateBlockPathQueryOptionCreator();
+        }
+
+        public IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOrFragment, bool noCache = false)
+        {
+            if (string.IsNullOrEmpty(queryOrFragment))
+            {
+                return null;
+            }
+
+            return _pathQueryOptionCreaters.ParseQueryOrFragment(DfmFencesBlockPathQueryOptionParameters.Create(queryOrFragment), noCache);
+        }
 
         [Obsolete]
         public DfmExtractCodeResult ExtractFencesCode(DfmFencesToken token, string fencesPath)

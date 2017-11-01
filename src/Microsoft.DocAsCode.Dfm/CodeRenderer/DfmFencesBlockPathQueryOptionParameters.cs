@@ -4,14 +4,16 @@
 namespace Microsoft.DocAsCode.Dfm
 {
     using System;
+    using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using System.Web;
 
-    using Microsoft.DocAsCode.MarkdownLite;
     using Microsoft.DocAsCode.Common;
 
-    public abstract class DfmFencesRule : IMarkdownRule
+    public class DfmFencesBlockPathQueryOptionParameters
     {
+        private static readonly Regex _dfmFencesSharpQueryStringRegex = new Regex(@"^L(?<start>\d+)\-L(?<end>\d+)$", RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
+        private static readonly Regex _dfmFencesRangeQueryStringRegex = new Regex(@"^(?<start>\d+)\-(?<end>\d+)?$", RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
         private const string StartLineQueryStringKey = "start";
         private const string EndLineQueryStringKey = "end";
         private const string TagNameQueryStringKey = "name";
@@ -20,78 +22,71 @@ namespace Microsoft.DocAsCode.Dfm
         private const string DedentQueryStringKey = "dedent";
         private const char RegionSeparatorInRangeQueryString = ',';
 
-        public abstract string Name { get; }
+        public List<Tuple<int?, int?>> LinePairs { get; set; } = new List<Tuple<int?, int?>>();
 
-        private static readonly Regex _dfmFencesSharpQueryStringRegex = new Regex(@"^L(?<start>\d+)\-L(?<end>\d+)$", RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
-        internal static readonly Regex _dfmFencesRangeQueryStringRegex = new Regex(@"^(?<start>\d+)\-(?<end>\d+)?$", RegexOptions.Compiled | RegexOptions.IgnoreCase, TimeSpan.FromSeconds(10));
+        public string HighlightLines { get; set; }
 
-        public abstract IMarkdownToken TryMatch(IMarkdownParser parser, IMarkdownParsingContext context);
+        public int? DedentLength { get; set; }
 
-        [Obsolete("use DfmCodeExtractor.ParsePathQueryString")]
-        public static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString)
+        public string TagName { get; set; }
+
+        public static DfmFencesBlockPathQueryOptionParameters Create(string queryAndFragment)
         {
-            return ParsePathQueryString(queryOption, queryString, false);
-        }
+            var result = new DfmFencesBlockPathQueryOptionParameters();
 
-        [Obsolete("use DfmCodeExtractor.ParsePathQueryString")]
-        public static IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOption, string queryString, bool noCache = false)
-        {
-            if (string.IsNullOrEmpty(queryOption) || string.IsNullOrEmpty(queryString))
+            if (string.IsNullOrEmpty(queryAndFragment))
             {
-                return null;
+                return result;
             }
 
+            var queryOption = queryAndFragment.Remove(1);
+            var queryString = queryAndFragment.Substring(1);
             int startLine, endLine;
+
             if (queryOption == "#")
             {
                 // check if line number representation
                 var match = _dfmFencesSharpQueryStringRegex.Match(queryString);
                 if (match.Success && int.TryParse(match.Groups["start"].Value, out startLine) && int.TryParse(match.Groups["end"].Value, out endLine))
                 {
-                    return new LineRangeBlockPathQueryOption { StartLine = startLine, EndLine = endLine };
+                    result.LinePairs.Add(new Tuple<int?, int?>(startLine, endLine));
                 }
                 else
                 {
-                    return new TagNameBlockPathQueryOption(noCache) { TagName = queryString};
+                    result.TagName = queryString;
                 }
             }
             else if (queryOption == "?")
             {
                 var collection = HttpUtility.ParseQueryString(queryString);
-                var tagName = collection[TagNameQueryStringKey];
-                var start = collection[StartLineQueryStringKey];
-                var end = collection[EndLineQueryStringKey];
+                result.TagName = collection[TagNameQueryStringKey];
+                result.HighlightLines = collection[HighlightLinesQueryStringKey];
+                var start = int.TryParse(collection[StartLineQueryStringKey], out startLine) ? startLine : (int?)null;
+                var end = int.TryParse(collection[EndLineQueryStringKey], out endLine) ? endLine: (int?)null;
                 var range = collection[RangeQueryStringKey];
-                var highlight = collection[HighlightLinesQueryStringKey];
-                int? dedent = null;
                 if (collection[DedentQueryStringKey] != null)
                 {
                     if (int.TryParse(collection[DedentQueryStringKey], out int dedentTemp))
                     {
-                        dedent = dedentTemp;
+                        result.DedentLength = dedentTemp;
                     }
                     else
                     {
                         Logger.LogWarning($"Illegal dedent `{collection[DedentQueryStringKey]}` in query parameter `dedent`. Auto-dedent will be applied.");
                     }
                 }
-                if (tagName != null)
-                {
-                    return new TagNameBlockPathQueryOption(noCache) { TagName = tagName , HighlightLines = highlight, DedentLength = dedent};
-                }
-                else if (range != null)
+                if (range != null)
                 {
                     var regions = range.Split(RegionSeparatorInRangeQueryString);
                     if (regions != null)
                     {
-                        var option = new MultipleLineRangeBlockPathQueryOption { HighlightLines = highlight, DedentLength = dedent};
                         foreach (var region in regions)
                         {
                             var match = _dfmFencesRangeQueryStringRegex.Match(region);
                             if (match.Success)
                             {
                                 // consider region as `{startlinenumber}-{endlinenumber}`, in which {endlinenumber} is optional
-                                option.LinePairs.Add(new Tuple<int?, int?>(
+                                result.LinePairs.Add(new Tuple<int?, int?>(
                                     int.TryParse(match.Groups["start"].Value, out startLine) ? startLine : (int?)null,
                                     int.TryParse(match.Groups["end"].Value, out endLine) ? endLine : (int?)null
                                 ));
@@ -100,25 +95,18 @@ namespace Microsoft.DocAsCode.Dfm
                             {
                                 // consider region as a sigine line number
                                 var tempLine = int.TryParse(region, out int line) ? line : (int?)null;
-                                option.LinePairs.Add(new Tuple<int?, int?>(tempLine, tempLine));
+                                result.LinePairs.Add(new Tuple<int?, int?>(tempLine, tempLine));
                             }
                         }
-                        return option;
                     }
                 }
                 else if (start != null || end != null)
                 {
-                    return new LineRangeBlockPathQueryOption
-                    {
-                        StartLine = int.TryParse(start, out startLine) ? startLine : (int?)null,
-                        EndLine = int.TryParse(end, out endLine) ? endLine : (int?)null,
-                        HighlightLines = highlight,
-                        DedentLength = dedent,
-                    };
+                    result.LinePairs.Add(new Tuple<int?, int?>(start, end));
                 }
-                return new FullFileBlockPathQueryOption { HighlightLines = highlight, DedentLength = dedent };
             }
-            return new FullFileBlockPathQueryOption();
+
+            return result;
         }
     }
 }

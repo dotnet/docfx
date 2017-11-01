@@ -27,10 +27,9 @@ namespace Microsoft.DocAsCode.Dfm
                 // Always report original dependency
                 context.ReportDependency(token.Path);
 
-
                 var pathQueryOption =
                     !string.IsNullOrEmpty(token.QueryStringAndFragment) ?
-                    DfmFencesRule.ParsePathQueryString(token.QueryStringAndFragment.Remove(1), token.QueryStringAndFragment.Substring(1)) :
+                    _dfmCodeExtractor.ParsePathQueryString(token.QueryStringAndFragment) :
                     null;
                 var filePath = FindFile(token, context);
                 var code = ExtractCode(token, filePath, pathQueryOption);
@@ -95,9 +94,7 @@ namespace Microsoft.DocAsCode.Dfm
 
             var fencesCode = codeContent.Replace("\r\n", "\n").Split('\n');
 
-            var pathQueryOption = !string.IsNullOrEmpty(token.QueryStringAndFragment)
-                ? DfmFencesRule.ParsePathQueryString(token.QueryStringAndFragment.Remove(1), token.QueryStringAndFragment.Substring(1))
-                : null;
+            var pathQueryOption = _dfmCodeExtractor.ParsePathQueryString(token.QueryStringAndFragment);
 
             var code = ExtractCode(token, fencesCode, pathQueryOption);
             return RenderFencesCode(token, new Options { ShouldExportSourceInfo = false }, code.ErrorMessage, code.CodeLines, pathQueryOption);
