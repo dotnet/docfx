@@ -62,10 +62,10 @@ public void TestRendererCreator()
 ```cs-x
 public void TestRendererCreator()
 ```
-[!code-csharp[Main](Program.csdocfx#namespace ""This is root"")]", "a.md");
+[!code-csdocfx[Main](Program.csdocfx#namespace ""This is root"")]", "a.md");
             Assert.Equal(@"<pre><code class=""lang-cs"">public void TestRendererCreator()
 </code></pre><pre class=""x""><code class=""lang-cs"">public void TestRendererCreator()
-</code></pre><pre><code class=""lang-csharp"" name=""Main"" title=""This is root"">using System;
+</code></pre><pre><code class=""lang-csdocfx"" name=""Main"" title=""This is root"">using System;
 using System.Collections.Generic;
 using System.IO;
 </code></pre>".Replace("\r\n", "\n"), result);
@@ -81,9 +81,12 @@ using System.IO;
         {
             public CodeRendererPart CodeRendererPartInstance = new CodeRendererPart();
 
+            public FencesCodeRendererPart FencesCodeRendererPartInstance = new FencesCodeRendererPart();
+
             public IEnumerable<IDfmCustomizedRendererPart> CreateParts(IReadOnlyDictionary<string, object> parameters)
             {
                 yield return CodeRendererPartInstance;
+                yield return FencesCodeRendererPartInstance;
             }
 
             public sealed class CodeRendererPart : DfmCustomizedRendererPartBase<IMarkdownRenderer, MarkdownCodeBlockToken, MarkdownBlockContext>, IDisposable
@@ -142,7 +145,6 @@ using System.IO;
                 public override StringBuffer Render(IMarkdownRenderer renderer, DfmFencesToken token, MarkdownBlockContext context)
                 {
                     return _codeRenderer.Render(renderer, token, context);
-                    throw new NotImplementedException();
                 }
             }
         }

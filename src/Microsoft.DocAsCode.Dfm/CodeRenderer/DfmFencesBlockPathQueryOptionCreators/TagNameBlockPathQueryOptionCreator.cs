@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Dfm
 {
     public class TagNameBlockPathQueryOptionCreator : IDfmFencesBlockPathQueryOptionCreator
     {
-        CodeLanguageExtractorsBuilder _builder;
+        private readonly CodeLanguageExtractorsBuilder _builder;
 
         public TagNameBlockPathQueryOptionCreator(CodeLanguageExtractorsBuilder builder = null)
         {
