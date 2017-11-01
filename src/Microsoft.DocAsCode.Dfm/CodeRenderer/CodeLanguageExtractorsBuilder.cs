@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Dfm
 {
     using System.Collections.Generic;
 
-    internal sealed class CodeLanguageExtractorsBuilder
+    public sealed class CodeLanguageExtractorsBuilder
     {
         private readonly Dictionary<string, HashSet<string>> _alias = new Dictionary<string, HashSet<string>>();
         private readonly Dictionary<string, List<ICodeSnippetExtractor>> _dict = new Dictionary<string, List<ICodeSnippetExtractor>>();

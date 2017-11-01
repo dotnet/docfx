@@ -5,6 +5,13 @@ namespace Microsoft.DocAsCode.Dfm
 {
     public class TagNameBlockPathQueryOptionCreator : IDfmFencesBlockPathQueryOptionCreator
     {
+        CodeLanguageExtractorsBuilder _builder;
+
+        public TagNameBlockPathQueryOptionCreator(CodeLanguageExtractorsBuilder builder = null)
+        {
+            _builder = builder;
+        }
+
         public IDfmFencesBlockPathQueryOption ParseQueryOrFragment(
             DfmFencesBlockPathQueryOptionParameters parameters,
             bool noCache = false)
@@ -16,7 +23,7 @@ namespace Microsoft.DocAsCode.Dfm
 
             if (!string.IsNullOrEmpty(parameters.TagName))
             {
-                return new TagNameBlockPathQueryOption(noCache)
+                return new TagNameBlockPathQueryOption(_builder, noCache)
                 {
                     HighlightLines = parameters.HighlightLines,
                     DedentLength = parameters.DedentLength,

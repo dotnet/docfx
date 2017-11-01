@@ -56,7 +56,7 @@ namespace Microsoft.DocAsCode.Dfm
         // Language file extensions follow https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
         // Currently only supports parts of the language names, aliases and extensions
         // Later we can move the repository's supported/custom language names, aliases, extensions and corresponding comments regexes to docfx build configuration
-        private static readonly IReadOnlyDictionary<string, List<ICodeSnippetExtractor>> CodeLanguageExtractors = GetCodeLanguageExtractors();
+        private readonly IReadOnlyDictionary<string, List<ICodeSnippetExtractor>> _codeLanguageExtractors;
 
         public string TagName { get; set; }
 
@@ -67,15 +67,19 @@ namespace Microsoft.DocAsCode.Dfm
         public TagNameBlockPathQueryOption()
             : this(false) { }
 
-        public TagNameBlockPathQueryOption(bool nocache = false)
+        public TagNameBlockPathQueryOption(bool noCache = false)
+            : this(null, noCache) { }
+
+        public TagNameBlockPathQueryOption(CodeLanguageExtractorsBuilder codeLanguageExtractors, bool noCache)
         {
-            _noCache = nocache;
+            _codeLanguageExtractors = (codeLanguageExtractors ?? GetDefaultCodeLanguageExtractorsBuilder()).ToDictionay() ;
+            _noCache = noCache;
         }
 
         private readonly ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>> _dfmTagNameLineRangeCache =
             new ConcurrentDictionary<string, Lazy<ConcurrentDictionary<string, List<DfmTagNameResolveResult>>>>(StringComparer.OrdinalIgnoreCase);
 
-        private static Dictionary<string, List<ICodeSnippetExtractor>> GetCodeLanguageExtractors()
+        public static CodeLanguageExtractorsBuilder GetDefaultCodeLanguageExtractorsBuilder()
         {
             return new CodeLanguageExtractorsBuilder()
                 .AddAlias("actionscript", ".as")
@@ -147,15 +151,14 @@ namespace Microsoft.DocAsCode.Dfm
                     "lisp")
                 .Add(
                     new RecursiveNameCodeSnippetExtractor(VBCodeSnippetRegionRegionStartLineRegex, VBCodeSnippetRegionRegionEndLineRegex),
-                    "vb", "vbhtml")
-                .ToDictionay();
+                    "vb", "vbhtml");
         }
 
         public override bool ValidateAndPrepare(string[] lines, DfmFencesToken token)
         {
             // NOTE: Parsing language and removing comment lines only do for tag name representation
             var lang = GetCodeLanguageOrExtension(token);
-            if (!CodeLanguageExtractors.TryGetValue(lang, out List<ICodeSnippetExtractor> extractors))
+            if (!_codeLanguageExtractors.TryGetValue(lang, out List<ICodeSnippetExtractor> extractors))
             {
                 ErrorMessage = $"{lang} is not supported languaging name, alias or extension for parsing code snippet with tag name, you can use line numbers instead";
                 return false;

@@ -11,12 +11,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public AggregateBlockPathQueryOptionCreator(IDfmFencesBlockPathQueryOptionCreator[] pathQueryOptionCreaters = null)
         {
-            _pathQueryOptionCreaters = pathQueryOptionCreaters ?? new IDfmFencesBlockPathQueryOptionCreator[]
-            {
-                new FullFileBlockPathQueryOptionCreator(),
-                new TagNameBlockPathQueryOptionCreator(),
-                new MultipleLineRangeBlockPathQueryOptionCreator(),
-            };
+            _pathQueryOptionCreaters = pathQueryOptionCreaters ?? GetDefaultOptionCreaters();
         }
         public IDfmFencesBlockPathQueryOption ParseQueryOrFragment(DfmFencesBlockPathQueryOptionParameters parameters, bool noCache)
         {
@@ -30,6 +25,16 @@ namespace Microsoft.DocAsCode.Dfm
             }
 
             throw new NotSupportedException($"Unable to parse DfmFencesBlockPathQueryOptionParameters");
+        }
+
+        public static IDfmFencesBlockPathQueryOptionCreator[] GetDefaultOptionCreaters(CodeLanguageExtractorsBuilder builder = null)
+        {
+            return new IDfmFencesBlockPathQueryOptionCreator[]
+            {
+                new FullFileBlockPathQueryOptionCreator(),
+                new TagNameBlockPathQueryOptionCreator(builder),
+                new MultipleLineRangeBlockPathQueryOptionCreator(),
+            };
         }
     }
 }
