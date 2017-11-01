@@ -62,7 +62,7 @@ namespace Microsoft.DocAsCode.Dfm
                 result.TagName = collection[TagNameQueryStringKey];
                 result.HighlightLines = collection[HighlightLinesQueryStringKey];
                 var start = int.TryParse(collection[StartLineQueryStringKey], out startLine) ? startLine : (int?)null;
-                var end = int.TryParse(collection[EndLineQueryStringKey], out startLine) ? startLine : (int?)null;
+                var end = int.TryParse(collection[EndLineQueryStringKey], out endLine) ? endLine: (int?)null;
                 var range = collection[RangeQueryStringKey];
                 if (collection[DedentQueryStringKey] != null)
                 {
