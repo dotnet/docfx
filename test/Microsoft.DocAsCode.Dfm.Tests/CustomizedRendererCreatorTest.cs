@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
 
     using Xunit;
 
@@ -16,6 +17,37 @@ namespace Microsoft.DocAsCode.Dfm.Tests
         [Trait("Related", "dfm")]
         public void TestRendererCreator()
         {
+            var content = @"namespace ConsoleApplication1
+{
+    // <namespace>
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    // </namespace>
+
+    // <snippetprogram>
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string s = ""\ntest"";
+            int i = 100;
+        }
+    }
+    // </snippetprogram>
+
+    #region Helper
+    internal static class Helper
+    {
+        #region Foo
+        public static void Foo()
+        {
+        }
+        #endregion Foo
+    }
+    #endregion
+}";
+            File.WriteAllText("Program.csdocfx", content.Replace("\r\n", "\n"));
             var p = new TestDfmRendererPartProvider();
             var renderer = CustomizedRendererCreator.CreateRenderer(
                 new DfmRenderer(),
@@ -29,21 +61,32 @@ public void TestRendererCreator()
 ```
 ```cs-x
 public void TestRendererCreator()
-```", "a.md");
+```
+[!code-csdocfx[Main](Program.csdocfx#namespace ""This is root"")]", "a.md");
             Assert.Equal(@"<pre><code class=""lang-cs"">public void TestRendererCreator()
 </code></pre><pre class=""x""><code class=""lang-cs"">public void TestRendererCreator()
+</code></pre><pre><code class=""lang-csdocfx"" name=""Main"" title=""This is root"">using System;
+using System.Collections.Generic;
+using System.IO;
 </code></pre>".Replace("\r\n", "\n"), result);
             (renderer as IDisposable).Dispose();
             Assert.True(p.CodeRendererPartInstance.Disposed);
+            if (File.Exists("Program.csdocfx"))
+            {
+                File.Delete("Program.csdocfx");
+            }
         }
 
         private sealed class TestDfmRendererPartProvider : IDfmCustomizedRendererPartProvider
         {
             public CodeRendererPart CodeRendererPartInstance = new CodeRendererPart();
 
+            public FencesCodeRendererPart FencesCodeRendererPartInstance = new FencesCodeRendererPart();
+
             public IEnumerable<IDfmCustomizedRendererPart> CreateParts(IReadOnlyDictionary<string, object> parameters)
             {
                 yield return CodeRendererPartInstance;
+                yield return FencesCodeRendererPartInstance;
             }
 
             public sealed class CodeRendererPart : DfmCustomizedRendererPartBase<IMarkdownRenderer, MarkdownCodeBlockToken, MarkdownBlockContext>, IDisposable
@@ -71,6 +114,37 @@ public void TestRendererCreator()
                     result += token.Code;
                     result += "\n</code></pre>";
                     return result;
+                }
+            }
+
+            public sealed class FencesCodeRendererPart : DfmCustomizedRendererPartBase<IMarkdownRenderer, DfmFencesToken, MarkdownBlockContext>, IDisposable
+            {
+                private DfmCodeRenderer _codeRenderer;
+
+                public bool Disposed { get; private set; }
+
+                public override string Name => nameof(FencesCodeRendererPart);
+
+                public FencesCodeRendererPart()
+                {
+                    _codeRenderer = new DfmCodeRenderer(TagNameBlockPathQueryOption
+                        .GetDefaultCodeLanguageExtractorsBuilder()
+                        .AddAlias("csharp", "csdocfx", ".csdocfx"));
+                }
+
+                public void Dispose()
+                {
+                    Disposed = true;
+                }
+
+                public override bool Match(IMarkdownRenderer renderer, DfmFencesToken token, MarkdownBlockContext context)
+                {
+                    return true;
+                }
+
+                public override StringBuffer Render(IMarkdownRenderer renderer, DfmFencesToken token, MarkdownBlockContext context)
+                {
+                    return _codeRenderer.Render(renderer, token, context);
                 }
             }
         }

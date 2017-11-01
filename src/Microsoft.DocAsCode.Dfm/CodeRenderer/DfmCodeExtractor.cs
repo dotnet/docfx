@@ -22,6 +22,12 @@ namespace Microsoft.DocAsCode.Dfm
             _pathQueryOptionCreaters = pathQueryOptionCreaters ?? new AggregateBlockPathQueryOptionCreator();
         }
 
+        public DfmCodeExtractor(CodeLanguageExtractorsBuilder builder)
+        {
+            _pathQueryOptionCreaters = new AggregateBlockPathQueryOptionCreator(
+                AggregateBlockPathQueryOptionCreator.GetDefaultOptionCreaters(builder));
+        }
+
         public IDfmFencesBlockPathQueryOption ParsePathQueryString(string queryOrFragment, bool noCache = false)
         {
             if (string.IsNullOrEmpty(queryOrFragment))

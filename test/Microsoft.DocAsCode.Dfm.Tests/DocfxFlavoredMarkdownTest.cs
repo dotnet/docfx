@@ -1619,11 +1619,7 @@ using System.IO;
 
             // act
             var renderer = new DfmCodeRenderer();
-            var pathQueryOption =
-                !string.IsNullOrEmpty(queryStringAndFragment)
-                    ? DfmFencesRule.ParsePathQueryString(queryStringAndFragment.Remove(1), queryStringAndFragment.Substring(1), true)
-                    : null;
-            var token = new DfmFencesBlockToken(null, null, null, "test.cs", new SourceInfo(), "csharp", null, pathQueryOption, queryStringAndFragment);
+            var token = new DfmFencesBlockToken(null, null, null, "test.cs", new SourceInfo(), "csharp", null, queryStringAndFragment);
             var marked = renderer.RenderFencesFromCodeContent(content, token);
 
             Assert.Equal(expectedContent.Replace("\r\n", "\n"), marked);
