@@ -13,7 +13,12 @@ namespace Microsoft.DocAsCode.Dfm
     {
         private readonly DfmCodeExtractor _dfmCodeExtractor;
 
-        public DfmCodeRenderer(DfmCodeExtractor extractor = null)
+        public DfmCodeRenderer()
+            : this((DfmCodeExtractor)null)
+        {
+        }
+
+        public DfmCodeRenderer(DfmCodeExtractor extractor)
         {
             _dfmCodeExtractor = extractor ?? new DfmCodeExtractor();
         }
@@ -22,7 +27,6 @@ namespace Microsoft.DocAsCode.Dfm
         {
             _dfmCodeExtractor = new DfmCodeExtractor(builder);
         }
-
 
         public virtual StringBuffer Render(IMarkdownRenderer renderer, DfmFencesToken token, IMarkdownContext context)
         {
