@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace Microsoft.DocAsCode.Build.Engine.Tests
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
+    using System.Composition;
 
     [Trait("Owner", "zhyan")]
     [Trait("EntityType", "DocumentBuilder")]
@@ -822,6 +824,97 @@ exports.getOptions = function (){
             }
         }
 
+        [Fact]
+        public void TestBuildWithFallback()
+        {
+            #region Prepare test data
+            CreateFile("conceptual.html.primary.tmpl", "{{{conceptual}}}", _templateFolder);
+
+            var tocFile = CreateFile("toc.md",
+                new[]
+                {
+                    "# [test1](test.md)",
+                },
+                _inputFolder);
+            var conceptualFile = CreateFile("test.md",
+                new[]
+                {
+                    "[!include[](token-a.md)]",
+                    "[!include[](token-b.md)]",
+                },
+                _inputFolder);
+            var includeFile1 = CreateFile("token-a.md",
+                new[]
+                {
+                    "Standard token.",
+                },
+                _inputFolder);
+            var includeFile2 = CreateFile($"fb/{_inputFolder}/token-b.md",
+                new[]
+                {
+                    "Fallback token.",
+                },
+                _inputFolder);
+
+            CustomFALBuilderProvider.FallbackFolder = Path.Combine(Directory.GetCurrentDirectory(), _inputFolder, "fb");
+            FileCollection files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { tocFile, conceptualFile });
+            #endregion
+
+            Init(MarkdownValidatorBuilder.MarkdownValidatePhaseName);
+            try
+            {
+                using (new LoggerPhaseScope(nameof(DocumentBuilderTest)))
+                {
+                    BuildDocument(
+                        files,
+                        new Dictionary<string, object>
+                        {
+                            ["meta"] = "Hello fallback!",
+                        },
+                        templateFolder: _templateFolder,
+                        falName: "test");
+                }
+
+                {
+                    // check toc.
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))));
+                    var model = JsonUtility.Deserialize<TocItemViewModel>(Path.Combine(_outputFolder, Path.ChangeExtension(tocFile, RawModelFileExtension))).Items;
+                    Assert.NotNull(model);
+                    Assert.Equal("test1", model[0].Name);
+                    Assert.Equal("test.html", model[0].Href);
+                }
+
+                {
+                    // check conceptual.
+                    var conceptualOutputPath = Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, ".html"));
+                    Assert.True(File.Exists(conceptualOutputPath));
+                    Assert.True(File.Exists(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension))));
+                    var model = JsonUtility.Deserialize<Dictionary<string, object>>(Path.Combine(_outputFolder, Path.ChangeExtension(conceptualFile, RawModelFileExtension)));
+                    Assert.Equal(
+                        string.Join(
+                            "\n",
+                            $@"<p sourcefile=""{_inputFolder}/token-a.md"" sourcestartlinenumber=""1"" sourceendlinenumber=""1"">Standard token.</p>",
+                            $@"<p sourcefile=""{_inputFolder}/token-b.md"" sourcestartlinenumber=""1"" sourceendlinenumber=""1"">Fallback token.</p>",
+                            ""),
+                        model[Constants.PropertyName.Conceptual]);
+                    Assert.Equal(
+                        string.Join(
+                            "\n",
+                            $@"<p>Standard token.</p>",
+                            $@"<p>Fallback token.</p>",
+                            ""),
+                        File.ReadAllText(conceptualOutputPath));
+                    Assert.Equal("Conceptual", model["type"]);
+                    Assert.Equal("Hello fallback!", model["meta"]);
+                }
+            }
+            finally
+            {
+                CleanUp();
+            }
+        }
+
         private class FakeResponseHandler : DelegatingHandler
         {
             private readonly Dictionary<Uri, HttpResponseMessage> _fakeResponses = new Dictionary<Uri, HttpResponseMessage>();
@@ -904,7 +997,7 @@ exports.getOptions = function (){
             Assert.True(equal, $"Expected: {expectedJObject.ToJsonString()};{Environment.NewLine}Actual: {actualJObject.ToJsonString()}.");
         }
 
-        private void BuildDocument(FileCollection files, Dictionary<string, object> metadata = null, ApplyTemplateSettings applyTemplateSettings = null, string templateFolder = null, string versionDir = null)
+        private void BuildDocument(FileCollection files, Dictionary<string, object> metadata = null, ApplyTemplateSettings applyTemplateSettings = null, string templateFolder = null, string versionDir = null, string falName = null)
         {
             using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
             {
@@ -922,7 +1015,8 @@ exports.getOptions = function (){
                     TemplateManager = new TemplateManager(null, null, new List<string> { _templateFolder }, null, null),
                     TemplateDir = templateFolder,
                     VersionDir = versionDir,
-                    XRefMaps = ImmutableArray.Create("TestData/xrefmap.yml")
+                    XRefMaps = ImmutableArray.Create("TestData/xrefmap.yml"),
+                    FALName = falName,
                 };
                 builder.Build(parameters);
             }
@@ -934,6 +1028,7 @@ exports.getOptions = function (){
             yield return typeof(ManagedReferenceDocumentProcessor).Assembly;
             yield return typeof(ResourceDocumentProcessor).Assembly;
             yield return typeof(TocDocumentProcessor).Assembly;
+            yield return typeof(DocumentBuilderTest).Assembly;
         }
 
         private void Init(string phaseName)
@@ -946,6 +1041,22 @@ exports.getOptions = function (){
         {
             Logger.UnregisterListener(Listener);
             Listener = null;
+        }
+
+        [Export("test", typeof(IInputFileAbstractLayerBuilderProvider))]
+        public class CustomFALBuilderProvider : IInputFileAbstractLayerBuilderProvider
+        {
+            public static string FallbackFolder { get; set; }
+
+            public FileAbstractLayerBuilder Create(FileAbstractLayerBuilder defaultBuilder, DocumentBuildParameters parameters)
+            {
+                if (FallbackFolder == null)
+                {
+                    return defaultBuilder;
+                }
+                return defaultBuilder.FallbackReadFromInput(
+                    FileAbstractLayerBuilder.Default.ReadFromRealFileSystem(FallbackFolder).Create());
+            }
         }
     }
 }

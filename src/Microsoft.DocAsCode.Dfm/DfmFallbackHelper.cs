@@ -34,20 +34,24 @@ namespace Microsoft.DocAsCode.Dfm
 
             // var currentFileFolder = Path.Combine(context.GetBaseFolder(), Path.Combine(context.GetFilePathStack().Select(path => Path.GetDirectoryName(path)).ToArray()));
             // var originalFilePath = Path.Combine(context.GetBaseFolder(),  orginalRelativePath);
-            var filePathToDocset = relativePath;
+            RelativePath filePathToDocset = null;
             string parentFileDirectoryToDocset = context.GetBaseFolder();
             var parents = context.GetFilePathStack();
             if(parents != null)
             {
                 var parent = parents.Peek();
-                filePathToDocset = ((RelativePath)parent + (RelativePath)filePathToDocset).RemoveWorkingFolder();
+                filePathToDocset = ((RelativePath)parent + (RelativePath)relativePath).RemoveWorkingFolder();
                 parentFileDirectoryToDocset = Path.GetDirectoryName(Path.Combine(context.GetBaseFolder(), parent));
             }
 
-            var originalFilePath = Path.Combine(context.GetBaseFolder(), filePathToDocset);
-            var actualFilePath = originalFilePath;
+            var originalFullPath = Path.Combine(context.GetBaseFolder(), filePathToDocset);
+            string actualFilePath = null;
             bool hitFallback = false;
-            if (!EnvironmentContext.FileAbstractLayer.Exists(originalFilePath))
+            if (EnvironmentContext.FileAbstractLayer.Exists(filePathToDocset))
+            {
+                actualFilePath = filePathToDocset;
+            }
+            else
             {
                 var fallbackFolders = context.GetFallbackFolders();
                 foreach (var folder in fallbackFolders)
@@ -69,7 +73,7 @@ namespace Microsoft.DocAsCode.Dfm
                     {
                         throw new FileNotFoundException($"Couldn't find file {filePathToDocset}. Fallback folders: {string.Join(",", fallbackFolders)}", filePathToDocset);
                     }
-                    throw new FileNotFoundException($"Couldn't find file {filePathToDocset}.", originalFilePath);
+                    throw new FileNotFoundException($"Couldn't find file {filePathToDocset}.", originalFullPath);
                 }
             }
 
