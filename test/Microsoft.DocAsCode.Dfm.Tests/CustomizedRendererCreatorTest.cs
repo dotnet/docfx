@@ -62,12 +62,16 @@ public void TestRendererCreator()
 ```cs-x
 public void TestRendererCreator()
 ```
-[!code-csdocfx[Main](Program.csdocfx#namespace ""This is root"")]", "a.md");
+[!code-csdocfx[Main](Program.csdocfx#namespace ""This is root"")]
+[!code-cs-xyz[](Program.csdocfx#Foo)]", "a.md");
             Assert.Equal(@"<pre><code class=""lang-cs"">public void TestRendererCreator()
 </code></pre><pre class=""x""><code class=""lang-cs"">public void TestRendererCreator()
 </code></pre><pre><code class=""lang-csdocfx"" name=""Main"" title=""This is root"">using System;
 using System.Collections.Generic;
 using System.IO;
+</code></pre><pre><code class=""lang-cs-xyz"">public static void Foo()
+{
+}
 </code></pre>".Replace("\r\n", "\n"), result);
             (renderer as IDisposable).Dispose();
             Assert.True(p.CodeRendererPartInstance.Disposed);
@@ -129,7 +133,8 @@ using System.IO;
                 {
                     _codeRenderer = new DfmCodeRenderer(TagNameBlockPathQueryOption
                         .GetDefaultCodeLanguageExtractorsBuilder()
-                        .AddAlias("csharp", "csdocfx", ".csdocfx"));
+                        .AddAlias("csharp", "csdocfx", ".csdocfx")
+                        .AddAlias(x => x.StartsWith(".") ? null : x + "-xyz"));
                 }
 
                 public void Dispose()
