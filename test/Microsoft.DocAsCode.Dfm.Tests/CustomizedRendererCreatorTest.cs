@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
 
     using Microsoft.DocAsCode.MarkdownLite;
 
+    [Collection("docfx STA")]
     public class CustomizedRendererCreatorTest
     {
         [Fact]
