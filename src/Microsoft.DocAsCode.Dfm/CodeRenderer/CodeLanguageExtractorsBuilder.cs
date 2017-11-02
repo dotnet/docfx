@@ -3,7 +3,9 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public sealed class CodeLanguageExtractorsBuilder
     {
@@ -11,6 +13,37 @@ namespace Microsoft.DocAsCode.Dfm
         private readonly Dictionary<string, List<ICodeSnippetExtractor>> _dict = new Dictionary<string, List<ICodeSnippetExtractor>>();
 
         public CodeLanguageExtractorsBuilder AddAlias(string key, params string[] alias)
+        {
+            if (key == null)
+            {
+                throw new ArgumentNullException(nameof(key));
+            }
+            if (alias == null)
+            {
+                throw new ArgumentNullException(nameof(alias));
+            }
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentException("Cannot be empty or white space.", nameof(key));
+            }
+            AddAliasCore(key, alias);
+            return this;
+        }
+
+        public CodeLanguageExtractorsBuilder AddAlias(Func<string, string> func)
+        {
+            if (func == null)
+            {
+                throw new ArgumentNullException(nameof(func));
+            }
+            foreach (var g in GetAlias(func).ToLookup(pair => pair.Item1))
+            {
+                AddAliasCore(g.Key, from p in g select p.Item2);
+            }
+            return this;
+        }
+
+        private void AddAliasCore(string key, IEnumerable<string> alias)
         {
             if (_alias.TryGetValue(key, out var set))
             {
@@ -21,7 +54,21 @@ namespace Microsoft.DocAsCode.Dfm
                 set = new HashSet<string>(alias);
                 _alias[key] = set;
             }
-            return this;
+        }
+
+        private IEnumerable<Tuple<string, string>> GetAlias(Func<string, string> func)
+        {
+            foreach (var pair in _alias)
+            {
+                foreach (var item in new[] { pair.Key }.Concat(pair.Value))
+                {
+                    var value = func(item);
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        yield return Tuple.Create(pair.Key, value);
+                    }
+                }
+            }
         }
 
         public CodeLanguageExtractorsBuilder Add(ICodeSnippetExtractor extractor, params string[] keys)
