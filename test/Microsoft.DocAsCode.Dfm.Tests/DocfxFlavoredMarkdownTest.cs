@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
+    [Collection("docfx STA")]
     public class DocfxFlavoredMarkdownTest
     {
         [Theory]
