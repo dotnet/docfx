@@ -38,6 +38,44 @@ namespace Microsoft.DocAsCode.Build.Engine
         public DocumentBuildContext(string buildOutputFolder, IEnumerable<FileAndType> allSourceFiles, ImmutableArray<string> externalReferencePackages, ImmutableArray<string> xrefMaps, int maxParallelism, string baseFolder, string versionName, ApplyTemplateSettings applyTemplateSetting, string rootTocPath, string versionFolder, ImmutableArray<string> xrefServiceUrls)
             : this(buildOutputFolder, allSourceFiles, externalReferencePackages, xrefMaps, maxParallelism, baseFolder, versionName, applyTemplateSetting, rootTocPath, null, ImmutableArray<string>.Empty, null) { }
 
+        public DocumentBuildContext(DocumentBuildParameters parameters)
+        {
+            BuildOutputFolder = Path.Combine(Directory.GetCurrentDirectory(), parameters.OutputBaseDir);
+            VersionName = parameters.VersionName;
+            ApplyTemplateSettings = parameters.ApplyTemplateSettings;
+            HrefGenerator = parameters.ApplyTemplateSettings?.HrefGenerator;
+            AllSourceFiles = GetAllSourceFiles(parameters.Files.EnumerateFiles());
+            ExternalReferencePackages = parameters.ExternalReferencePackages;
+            _xrefMapUrls = parameters.XRefMaps;
+            _xrefServiceUrls = parameters.XRefServiceUrls;
+            GroupInfo = parameters.GroupInfo;
+            MaxParallelism = parameters.MaxParallelism;
+            MaxHttpParallelism = parameters.MaxHttpParallelism;
+
+            if (parameters.XRefMaps.Length > 0)
+            {
+                _reader = new XRefCollection(
+                    from u in parameters.XRefMaps
+                    select new Uri(u, UriKind.RelativeOrAbsolute)).GetReaderAsync(parameters.Files.DefaultBaseDir);
+            }
+            RootTocPath = parameters.RootTocPath;
+
+            if (!string.IsNullOrEmpty(parameters.VersionDir) && Path.IsPathRooted(parameters.VersionDir))
+            {
+                throw new ArgumentException("VersionDir cannot be rooted.", nameof(parameters));
+            }
+            var versionDir = parameters.VersionDir;
+            if (!string.IsNullOrEmpty(versionDir))
+            {
+                versionDir = versionDir.Replace('\\', '/');
+                if (!versionDir.EndsWith("/"))
+                {
+                    versionDir += "/";
+                }
+            }
+            VersionFolder = versionDir;
+        }
+
         public DocumentBuildContext(
             string buildOutputFolder,
             IEnumerable<FileAndType> allSourceFiles,
@@ -62,6 +100,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             _xrefServiceUrls = xrefServiceUrls;
             GroupInfo = groupInfo;
             MaxParallelism = maxParallelism;
+            MaxHttpParallelism = maxParallelism * 2;
             if (xrefMaps.Length > 0)
             {
                 _reader = new XRefCollection(
@@ -101,6 +140,8 @@ namespace Microsoft.DocAsCode.Build.Engine
         public ImmutableDictionary<string, FileAndType> AllSourceFiles { get; }
 
         public int MaxParallelism { get; }
+
+        public int MaxHttpParallelism { get; }
 
         public ConcurrentDictionary<string, string> FileMap { get; } = new ConcurrentDictionary<string, string>(FilePathComparer.OSPlatformSensitiveStringComparer);
 
@@ -218,7 +259,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 return uidList;
             }
 
-            var unresolvedUidList = await new XrefServiceResolver(_xrefServiceUrls, MaxParallelism).ResolveAsync(uidList, externalXRefSpec);
+            var unresolvedUidList = await new XrefServiceResolver(_xrefServiceUrls, MaxHttpParallelism).ResolveAsync(uidList, externalXRefSpec);
             Logger.LogInfo($"{uidList.Count - unresolvedUidList.Count} uids found in {_xrefServiceUrls.Length} xrefservice(s).");
             return unresolvedUidList;
         }

@@ -24,6 +24,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
+    using System.Net;
 
     [Serializable]
     internal sealed class DocumentBuilderWrapper
@@ -267,6 +268,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             parameters.ApplyTemplateSettings = applyTemplateSettings;
             parameters.TemplateManager = templateManager;
+
             if (config.MaxParallelism == null || config.MaxParallelism.Value <= 0)
             {
                 parameters.MaxParallelism = Environment.ProcessorCount;
@@ -280,6 +282,10 @@ namespace Microsoft.DocAsCode.SubCommands
                     ThreadPool.SetMinThreads(parameters.MaxParallelism, cpt);
                 }
             }
+
+            parameters.MaxHttpParallelism = Math.Max(64, parameters.MaxParallelism * 2);
+            ServicePointManager.DefaultConnectionLimit = parameters.MaxHttpParallelism;
+
             if (config.MarkdownEngineName != null)
             {
                 parameters.MarkdownEngineName = config.MarkdownEngineName;

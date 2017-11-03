@@ -84,19 +84,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Logger.LogInfo($"Max parallelism is {parameters.MaxParallelism}.");
                 Directory.CreateDirectory(parameters.OutputBaseDir);
 
-                var context = new DocumentBuildContext(
-                    Path.Combine(Directory.GetCurrentDirectory(), parameters.OutputBaseDir),
-                    parameters.Files.EnumerateFiles(),
-                    parameters.ExternalReferencePackages,
-                    parameters.XRefMaps,
-                    parameters.MaxParallelism,
-                    parameters.Files.DefaultBaseDir,
-                    parameters.VersionName,
-                    parameters.ApplyTemplateSettings,
-                    parameters.RootTocPath,
-                    parameters.VersionDir,
-                    parameters.XRefServiceUrls,
-                    parameters.GroupInfo);
+                var context = new DocumentBuildContext(parameters);
 
                 Logger.LogVerbose("Start building document...");
 

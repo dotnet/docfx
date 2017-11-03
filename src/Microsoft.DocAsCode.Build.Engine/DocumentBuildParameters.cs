@@ -39,6 +39,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         [IncrementalIgnore]
         public int MaxParallelism { get; set; }
 
+        [IncrementalIgnore]
+        public int MaxHttpParallelism { get; set; }
+
         public string MarkdownEngineName { get; set; } = "dfm";
 
         [IncrementalIgnore]
