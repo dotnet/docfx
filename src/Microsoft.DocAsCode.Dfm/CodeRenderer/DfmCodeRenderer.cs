@@ -187,6 +187,12 @@ namespace Microsoft.DocAsCode.Dfm
             return result + "</pre>";
         }
 
+        [Obsolete]
+        public virtual StringBuffer RenderOpenCodeTag(StringBuffer result, DfmFencesToken token, Options options)
+        {
+            return RenderOpenCodeTag(result, token, options, token.PathQueryOption);
+        }
+
         public virtual StringBuffer RenderOpenCodeTag(StringBuffer result, DfmFencesToken token, Options options, IDfmFencesBlockPathQueryOption pathQueryOption)
         {
             result += "<code";
