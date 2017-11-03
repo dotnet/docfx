@@ -3,6 +3,7 @@
 
 v2.27 (Pre-release)
 -----------
+1. Improve code snippet, add cs snippet for cshtml, add vb snippet for vbhtml.
 
 v2.26
 -----------
