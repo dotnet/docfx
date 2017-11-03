@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Dfm.Tests
     using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tests.Common;
 
-    public class DofmTest
+    public class DfmTest
     {
         [Theory]
         [Trait("Related", "DfmMarkdown")]
@@ -682,7 +682,7 @@ tag started with alphabet should not be encode: <abc> <a-hello> <AC att='bcd'></
             var mrb = new MarkdownValidatorBuilder(
                 new CompositionContainer(
                     new ContainerConfiguration()
-                        .WithAssembly(typeof(DofmTest).Assembly)
+                        .WithAssembly(typeof(DfmTest).Assembly)
                         .CreateContainer()));
             mrb.AddTagValidators(new[]
             {
