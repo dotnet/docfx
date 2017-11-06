@@ -362,7 +362,7 @@ Nice
                 BuildDocument(files);
 
                 // One plugin warning for yml and one plugin warning for overwrite file
-                Assert.Equal(0, listener.Items.Count);
+                Assert.True(listener.Items.Count == 0, listener.Items.Select(s => s.Message).ToDelimitedString());
 
                 var rawModelFilePath = GetRawModelFilePath(inputFileName);
                 Assert.True(File.Exists(rawModelFilePath));

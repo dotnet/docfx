@@ -58,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                             object refSo = so;
                             if (schema?.Properties != null && schema.Properties.TryGetValue(pair.Key, out var innerSchema))
                             {
-                                  Merge(ref refSo, pair.Value, uid, $"{path}/{pair.Key}", innerSchema);
+                                Merge(ref refSo, pair.Value, uid, $"{path}/{pair.Key}", innerSchema);
                             }
                             else
                             {
@@ -87,7 +87,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 {
                     // If match, modify
                     // If not match, do nothing
-                    for(int j =0;j<oarray.Count;j++)
+                    for (int j = 0; j < oarray.Count; j++)
                     {
                         var item = oarray[j];
                         bool matched = false;
