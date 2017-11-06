@@ -24,6 +24,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Tests
 
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "SchemaDrivenProcessorTest")]
+    [Collection("docfx STA")]
     public class SchemaDrivenProcessorTest : TestBase
     {
         private const string SpecPath = @"TestData\specs\docfx_document_schema.md";
