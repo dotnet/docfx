@@ -19,6 +19,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
     using Newtonsoft.Json.Linq;
     using Xunit;
 
+    [Collection("docfx STA")]
     [Trait("Owner", "lianwei")]
     [Trait("EntityType", "ConceptualDocumentProcessorTest")]
     public class ConceptualDocumentProcessorTest : TestBase

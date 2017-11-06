@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Runtime.Remoting.Lifetime;
     using System.Reflection;
     using System.Threading;
@@ -267,6 +268,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             parameters.ApplyTemplateSettings = applyTemplateSettings;
             parameters.TemplateManager = templateManager;
+
             if (config.MaxParallelism == null || config.MaxParallelism.Value <= 0)
             {
                 parameters.MaxParallelism = Environment.ProcessorCount;
@@ -280,6 +282,10 @@ namespace Microsoft.DocAsCode.SubCommands
                     ThreadPool.SetMinThreads(parameters.MaxParallelism, cpt);
                 }
             }
+
+            parameters.MaxHttpParallelism = Math.Max(64, parameters.MaxParallelism * 2);
+            ServicePointManager.DefaultConnectionLimit = parameters.MaxHttpParallelism;
+
             if (config.MarkdownEngineName != null)
             {
                 parameters.MarkdownEngineName = config.MarkdownEngineName;
