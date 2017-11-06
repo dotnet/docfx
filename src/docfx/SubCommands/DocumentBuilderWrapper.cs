@@ -8,6 +8,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Runtime.Remoting.Lifetime;
     using System.Reflection;
     using System.Threading;
@@ -24,7 +25,6 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
-    using System.Net;
 
     [Serializable]
     internal sealed class DocumentBuilderWrapper
