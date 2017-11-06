@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public DocumentBuildContext(DocumentBuildParameters parameters)
         {
-            BuildOutputFolder = Path.Combine(EnvironmentContext.BaseDirectory, parameters.OutputBaseDir);
+            BuildOutputFolder = Path.Combine(Path.GetFullPath(EnvironmentContext.BaseDirectory), parameters.OutputBaseDir);
             VersionName = parameters.VersionName;
             ApplyTemplateSettings = parameters.ApplyTemplateSettings;
             HrefGenerator = parameters.ApplyTemplateSettings?.HrefGenerator;
