@@ -10,6 +10,8 @@ namespace Microsoft.DocAsCode.Dfm
     using System.Linq;
     using System.Text.RegularExpressions;
 
+    using Microsoft.DocAsCode.Common;
+
     public class TagNameBlockPathQueryOption : DfmFencesBlockPathQueryOption
     {
         // C family code snippet comment block: // <[/]snippetname>
@@ -164,6 +166,12 @@ namespace Microsoft.DocAsCode.Dfm
             }
 
             _resolveResult = ResolveTagNamesFromPath(token.Path, lines, TagName, extractors);
+            if (!string.IsNullOrEmpty(_resolveResult.ErrorMessage))
+            {
+                Logger.LogWarning(
+                    DfmCodeExtractor.GenerateErrorMessage(token, _resolveResult.ErrorMessage),
+                    line: token.SourceInfo.LineNumber.ToString());
+            }
 
             for (int i = _resolveResult.StartLine; i <= Math.Min(_resolveResult.EndLine, lines.Length); i++)
             {

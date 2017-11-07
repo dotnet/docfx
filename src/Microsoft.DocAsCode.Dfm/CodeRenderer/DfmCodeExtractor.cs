@@ -124,12 +124,12 @@ namespace Microsoft.DocAsCode.Dfm
             return normalizedLines;
         }
 
-        private static string GenerateErrorMessage(DfmFencesToken token, IDfmFencesBlockPathQueryOption option)
+        public static string GenerateErrorMessage(DfmFencesToken token, IDfmFencesBlockPathQueryOption option)
         {
             return GenerateErrorMessage(token, option.ErrorMessage);
         }
 
-        private static string GenerateErrorMessage(DfmFencesToken token, string message)
+        public static string GenerateErrorMessage(DfmFencesToken token, string message)
         {
             return $"{message} when resolving \"{token.SourceInfo.Markdown.Trim()}\"";
         }
