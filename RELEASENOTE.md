@@ -4,6 +4,7 @@
 v2.27 (Pre-release)
 -----------
 1. Improve code snippet, add cs snippet for cshtml, add vb snippet for vbhtml.
+2. Support overwrite in SDP
 
 v2.26
 -----------
@@ -20,7 +21,7 @@ v2.26
    ```
    ````
    Renders to:
-   
+
    # [Csharp](#tab/csharp)
    ```cs
    Console.WriteLine("Hello world");
@@ -29,7 +30,7 @@ v2.26
    ```js
    console.log('hello world');
    ```
-   
+
 2. Fix bugs:
    1. Update DFM XREF short format.
    2. Update Markdown EM rule.
