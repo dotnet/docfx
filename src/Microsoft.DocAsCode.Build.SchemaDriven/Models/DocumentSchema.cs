@@ -31,6 +31,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         public JObject InnerJObject { get; private set; }
 
+        /// <summary>
+        /// Overwrites are only allowed when the schema contains "uid" definition
+        /// </summary>
+        public bool AllowOverwrite { get; private set; }
+
         public static DocumentSchema Load(TextReader reader, string title)
         {
             using (var jtr = new JsonTextReader(reader))
@@ -79,7 +84,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 }
 
                 schema.MetadataReference = pointer;
-
+                schema.AllowOverwrite = CheckOverwriteAbility(schema);
                 return schema;
             }
         }
@@ -195,6 +200,52 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             {
                 throw new SchemaKeywordNotSupportedException(name);
             }
+        }
+
+        private static bool CheckOverwriteAbility(BaseSchema schema)
+        {
+            return CheckOverwriteAbilityCore(schema, new Dictionary<BaseSchema, bool>());
+        }
+
+        private static bool CheckOverwriteAbilityCore(BaseSchema schema, Dictionary<BaseSchema, bool> cache)
+        {
+            if (schema == null)
+            {
+                return false;
+            }
+
+            if (cache.TryGetValue(schema, out var result))
+            {
+                return result;
+            }
+
+            if (schema.ContentType == ContentType.Uid)
+            {
+                cache[schema] = result = true;
+                return result;
+            }
+
+            cache[schema] = result = false;
+
+            if (CheckOverwriteAbilityCore(schema.Items, cache))
+            {
+                cache[schema] = result = true;
+                return result;
+            }
+
+            if (schema.Properties != null)
+            {
+                foreach (var value in schema.Properties.Values)
+                {
+                    if (CheckOverwriteAbilityCore(value, cache))
+                    {
+                        cache[schema] = result = true;
+                        return result;
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }
