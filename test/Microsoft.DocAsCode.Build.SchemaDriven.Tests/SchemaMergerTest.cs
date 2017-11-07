@@ -305,7 +305,6 @@ Overwrite with content
         {
             using (var listener = new TestListenerScope("TestSchemaOverwriteWithGeneralSchemaOptions"))
             {
-                Assert.True(listener.Items.Count == 0, listener.Items.Select(s => s.Message).ToDelimitedString());
                 var templateFile = CreateFile("template/testmerger2.html.tmpl", @"<xref uid=""{{xref}}""/>", _templateFolder);
                 var schema = new Dictionary<string, object>
                 {

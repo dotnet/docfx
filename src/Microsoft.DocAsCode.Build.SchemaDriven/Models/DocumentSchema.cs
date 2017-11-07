@@ -204,32 +204,48 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         private static bool CheckOverwriteAbility(BaseSchema schema)
         {
+            return CheckOverwriteAbilityCore(schema, new Dictionary<BaseSchema, bool>());
+        }
+
+        private static bool CheckOverwriteAbilityCore(BaseSchema schema, Dictionary<BaseSchema, bool> cache)
+        {
             if (schema == null)
             {
                 return false;
             }
 
+            if (cache.TryGetValue(schema, out var result))
+            {
+                return result;
+            }
+
             if (schema.ContentType == ContentType.Uid)
             {
-                return true;
+                cache[schema] = result = true;
+                return result;
             }
-            if (CheckOverwriteAbility(schema.Items))
+
+            cache[schema] = result = false;
+
+            if (CheckOverwriteAbilityCore(schema.Items, cache))
             {
-                return true;
+                cache[schema] = result = true;
+                return result;
             }
 
             if (schema.Properties != null)
             {
                 foreach (var value in schema.Properties.Values)
                 {
-                    if (CheckOverwriteAbility(value))
+                    if (CheckOverwriteAbilityCore(value, cache))
                     {
-                        return true;
+                        cache[schema] = result = true;
+                        return result;
                     }
                 }
             }
 
-            return false;
+            return result;
         }
     }
 }
