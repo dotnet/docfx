@@ -86,17 +86,19 @@ namespace Microsoft.DocAsCode.Dfm
                     };
                 }
 
-                if (!pathQueryOption.ValidateAndPrepare(fencesCode, token))
+                List<string> includedLines;
+                try
                 {
-                    Logger.LogWarning(GenerateErrorMessage(token, pathQueryOption), line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.InvalidCodeSnippet);
-                    return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = pathQueryOption.ErrorMessage, CodeLines = fencesCode };
+                    includedLines = pathQueryOption.GetQueryLines(fencesCode, token).ToList();
                 }
-                if (!string.IsNullOrEmpty(pathQueryOption.ErrorMessage))
+                catch (Exception e)
                 {
-                    Logger.LogWarning(GenerateErrorMessage(token, pathQueryOption), line: token.SourceInfo.LineNumber.ToString());
+                    Logger.LogWarning(
+                        GenerateErrorMessage(token, e.Message),
+                        line: token.SourceInfo.LineNumber.ToString(),
+                        code: WarningCodes.Markdown.InvalidCodeSnippet);
+                    return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = e.Message, CodeLines = fencesCode };
                 }
-
-                var includedLines = pathQueryOption.GetQueryLines(fencesCode).ToList();
 
                 if (!pathQueryOption.ValidateHighlightLinesAndDedentLength(includedLines.Count))
                 {
@@ -124,7 +126,12 @@ namespace Microsoft.DocAsCode.Dfm
 
         private static string GenerateErrorMessage(DfmFencesToken token, IDfmFencesBlockPathQueryOption option)
         {
-            return $"{option.ErrorMessage} when resolving \"{token.SourceInfo.Markdown.Trim()}\"";
+            return GenerateErrorMessage(token, option.ErrorMessage);
+        }
+
+        private static string GenerateErrorMessage(DfmFencesToken token, string message)
+        {
+            return $"{message} when resolving \"{token.SourceInfo.Markdown.Trim()}\"";
         }
     }
 }

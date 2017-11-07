@@ -154,23 +154,17 @@ namespace Microsoft.DocAsCode.Dfm
                     "vb", "vbhtml");
         }
 
-        public override bool ValidateAndPrepare(string[] lines, DfmFencesToken token)
+        public override IEnumerable<string> GetQueryLines(string[] lines, DfmFencesToken token)
         {
             // NOTE: Parsing language and removing comment lines only do for tag name representation
             var lang = GetCodeLanguageOrExtension(token);
             if (!_codeLanguageExtractors.TryGetValue(lang, out List<ICodeSnippetExtractor> extractors))
             {
-                ErrorMessage = $"{lang} is not supported languaging name, alias or extension for parsing code snippet with tag name, you can use line numbers instead";
-                return false;
+                throw new DfmCodeExtractorException($"{lang} is not supported languaging name, alias or extension for parsing code snippet with tag name, you can use line numbers instead");
             }
 
             _resolveResult = ResolveTagNamesFromPath(token.Path, lines, TagName, extractors);
-            ErrorMessage = _resolveResult.ErrorMessage;
-            return _resolveResult.IsSuccessful;
-        }
 
-        public override IEnumerable<string> GetQueryLines(string[] lines)
-        {
             for (int i = _resolveResult.StartLine; i <= Math.Min(_resolveResult.EndLine, lines.Length); i++)
             {
                 if (_resolveResult.ExcludesLines == null || !_resolveResult.ExcludesLines.Contains(i))
@@ -201,19 +195,11 @@ namespace Microsoft.DocAsCode.Dfm
             }
             catch (Exception e)
             {
-                return new DfmTagNameResolveResult
-                {
-                    IsSuccessful = false,
-                    ErrorMessage = $"error resolve tag names from {fencesPath}: {e.Message}",
-                };
+                throw new DfmCodeExtractorException($"error resolve tag names from {fencesPath}: {e.Message}", e);
             }
             if (!tagNamesDictionary.TryGetValue(tagName, out List<DfmTagNameResolveResult> results) && !tagNamesDictionary.TryGetValue($"snippet{tagName}", out results))
             {
-                return new DfmTagNameResolveResult
-                {
-                    IsSuccessful = false,
-                    ErrorMessage = $"Tag name {tagName} is not found",
-                };
+                throw new DfmCodeExtractorException($"Tag name {tagName} is not found");
             }
             var result = results[0];
             if (results.Count > 1)

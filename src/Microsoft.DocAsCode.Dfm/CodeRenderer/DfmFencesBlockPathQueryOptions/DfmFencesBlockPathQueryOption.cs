@@ -13,9 +13,7 @@ namespace Microsoft.DocAsCode.Dfm
 
         public string ErrorMessage { get; protected set; }
 
-        public abstract bool ValidateAndPrepare(string[] lines, DfmFencesToken token);
-
-        public abstract IEnumerable<string> GetQueryLines(string[] lines);
+        public abstract IEnumerable<string> GetQueryLines(string[] lines, DfmFencesToken token);
 
         public bool ValidateHighlightLinesAndDedentLength(int totalLines)
         {
@@ -51,7 +49,7 @@ namespace Microsoft.DocAsCode.Dfm
                             continue;
                         }
                     }
-                    if (!CheckLineRange(totalLines, startLine, endLine))
+                    if (!CheckLineRange(totalLines, startLine, endLine, false))
                     {
                         warningMessages.Add(ErrorMessage + " in query parameter `highlight`.");
                         result = false;
@@ -63,36 +61,48 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 warningMessages.Add($"Dedent length {DedentLength} should be positive. Auto-dedent will be applied.");
                 DedentLength = null;
-                result =  false;
+                result = false;
             }
 
             ErrorMessage = string.Join(" ", warningMessages);
             return result;
         }
 
-        protected bool CheckLineRange(int totalLines, int? startLine, int? endLine)
+        protected bool CheckLineRange(int totalLines, int? startLine, int? endLine, bool needThrow = true)
         {
             if (startLine == null && endLine == null)
             {
-                ErrorMessage = "Neither start line nor end line is specified correctly";
+                if (needThrow)
+                {
+                    throw new DfmCodeExtractorException("Neither start line nor end line is specified correctly");
+                }
                 return false;
             }
 
             if (startLine <= 0 || endLine <= 0)
             {
-                ErrorMessage = "Start/End line should be larger than zero";
+                if (needThrow)
+                {
+                    throw new DfmCodeExtractorException("Start/End line should be larger than zero");
+                }
                 return false;
             }
 
             if (startLine > endLine)
             {
-                ErrorMessage = $"Start line {startLine} shouldn't be larger than end line {endLine}";
+                if (needThrow)
+                {
+                    throw new DfmCodeExtractorException($"Start line {startLine} shouldn't be larger than end line {endLine}");
+                }
                 return false;
             }
 
             if (startLine > totalLines)
             {
-                ErrorMessage = $"Start line {startLine} exceeds total lines {totalLines}";
+                if (needThrow)
+                {
+                    throw new DfmCodeExtractorException($"Start line {startLine} exceeds total lines {totalLines}");
+                }
                 return false;
             }
 

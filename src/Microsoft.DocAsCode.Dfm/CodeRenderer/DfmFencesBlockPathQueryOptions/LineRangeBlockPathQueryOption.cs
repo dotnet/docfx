@@ -13,13 +13,10 @@ namespace Microsoft.DocAsCode.Dfm
 
         public int? EndLine { get; set; }
 
-        public override bool ValidateAndPrepare(string[] lines, DfmFencesToken token)
+        public override IEnumerable<string> GetQueryLines(string[] lines, DfmFencesToken token)
         {
-            return CheckLineRange(lines.Length, StartLine, EndLine);
-        }
+            CheckLineRange(lines.Length, StartLine, EndLine);
 
-        public override IEnumerable<string> GetQueryLines(string[] lines)
-        {
             int startLine = StartLine ?? 1;
             int endLine = EndLine ?? lines.Length;
 

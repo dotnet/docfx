@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Dfm
 {
+    using System;
     using System.Collections.Generic;
 
     public interface IDfmFencesBlockPathQueryOption
@@ -13,10 +14,8 @@ namespace Microsoft.DocAsCode.Dfm
 
         string ErrorMessage { get; }
 
-        bool ValidateAndPrepare(string[] lines, DfmFencesToken token);
-
         bool ValidateHighlightLinesAndDedentLength(int totalLines);
 
-        IEnumerable<string> GetQueryLines(string[] lines);
+        IEnumerable<string> GetQueryLines(string[] lines, DfmFencesToken token);
     }
 }
