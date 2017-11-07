@@ -54,15 +54,17 @@ namespace Microsoft.DocAsCode.Common
             }
         }
 
-        public static ImmutableDictionary<string, ImmutableList<T>> Merge<T>(this ImmutableDictionary<string, ImmutableList<T>> left, IEnumerable<KeyValuePair<string, List<T>>> right)
+        public static ImmutableDictionary<string, ImmutableList<T>> Merge<T, TRight>(this ImmutableDictionary<string, ImmutableList<T>> left, IEnumerable<KeyValuePair<string, TRight>> right)
+            where TRight: IEnumerable<T>
         {
             if (right == null)
             {
                 return left;
             }
+
             return left.ToDictionary(s => s.Key, s => s.Value.ToList())
-                .Merge(right.Select(s => new KeyValuePair<string, IEnumerable<T>>(s.Key, s.Value.ToList())))
-                .ToImmutableDictionary(s => s.Key, s => s.Value.ToImmutableList());
+               .Merge(right.Select(s => new KeyValuePair<string, IEnumerable<T>>(s.Key, s.Value)))
+               .ToImmutableDictionary(s => s.Key, s => s.Value.ToImmutableList());
         }
     }
 }

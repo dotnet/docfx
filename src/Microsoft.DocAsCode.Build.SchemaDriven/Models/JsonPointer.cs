@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     /// </summary>
     public class JsonPointer
     {
+        private const string Splitter = "/";
         private readonly string[] _parts;
         private readonly bool _isRoot;
         private readonly string _raw;
@@ -22,14 +23,31 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         {
             raw = raw ?? string.Empty;
             _isRoot = raw.Length == 0;
-            if (!_isRoot && raw[0] != '/')
+            if (!_isRoot && raw[0] != Splitter[0])
             {
                 throw new InvalidJsonPointerException($"Invalid json pointer \"{raw}\"");
             }
 
-            _parts = _isRoot ? new string[0] : raw.Substring(1).Split('/');
+            _parts = _isRoot ? new string[0] : raw.Substring(1).Split(Splitter[0]);
 
             _raw = raw;
+        }
+
+        public JsonPointer(string[] parts)
+        {
+            _isRoot = parts == null || parts.Length == 0;
+            _parts = parts == null ? new string[0] : parts;
+            _raw = Splitter + string.Join(Splitter, parts);
+        }
+
+        public JsonPointer GetParentPointer()
+        {
+            if (_isRoot)
+            {
+                return null;
+            }
+
+            return new JsonPointer(_parts.Take(_parts.Length - 1).ToArray());
         }
 
         public static bool TryCreate(string raw, out JsonPointer pointer)
