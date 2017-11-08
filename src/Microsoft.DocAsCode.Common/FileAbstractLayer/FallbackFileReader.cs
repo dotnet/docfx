@@ -18,11 +18,24 @@ namespace Microsoft.DocAsCode.Common
 
         #region IFileReader Members
 
-        public PathMapping? FindFile(RelativePath file) =>
-            (from r in Readers
-             select r.FindFile(file) into pm
-             where pm != null
-             select pm).FirstOrDefault();
+        public PathMapping? FindFile(RelativePath file)
+        {
+            bool isFallback = false;
+            foreach (var pm in from r in Readers
+                               select r.FindFile(file))
+            {
+                if (pm != null)
+                {
+                    if (isFallback)
+                    {
+                        Logger.LogVerbose($"Load file from fallback: {pm.Value.PhysicalPath}.", file: file);
+                    }
+                    return pm;
+                }
+                isFallback = true;
+            }
+            return null;
+        }
 
         public IEnumerable<RelativePath> EnumerateFiles() =>
             (from r in Readers
