@@ -14,7 +14,13 @@ namespace Microsoft.DocAsCode.Dfm
 
         string ErrorMessage { get; }
 
+        [Obsolete("merged into GetQueryLines(string[], DfmFencesToken)", true)]
+        bool ValidateAndPrepare(string[] lines, DfmFencesToken token);
+
         bool ValidateHighlightLinesAndDedentLength(int totalLines);
+
+        [Obsolete("merged into GetQueryLines(string[], DfmFencesToken)", true)]
+        IEnumerable<string> GetQueryLines(string[] lines);
 
         IEnumerable<string> GetQueryLines(string[] lines, DfmFencesToken token);
     }
