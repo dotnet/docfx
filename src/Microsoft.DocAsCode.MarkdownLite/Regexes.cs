@@ -104,8 +104,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
             /// ]]>
             /// </summary>
             public static readonly Regex Link = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\(\s*<?((?:[^()]|\((?<DEPTH>)|\)(?<-DEPTH>))*?(?(DEPTH)(?!)))>?(?:\s+(['""])([\s\S]*?)\3)?\s*\)", RegexOptionCompiled, RegexTimeOut);
-            public static readonly Regex RefLink = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\[([^\]]*)\]", RegexOptionCompiled, RegexTimeOut);
-            public static readonly Regex NoLink = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex RefLink = new Regex(@"^!?\[((?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*)\]\s*\[\s*([^\]]*?)\s*\]", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex NoLink = new Regex(@"^!?\[\s*((?:\[[^\]]*?\]|[^\[\]])*?)\s*\]", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex Strong = new Regex(@"^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex Em = new Regex(@"^_((?:__|[\s\S])+?)_\b|^\*((?:\*{2,}|[^\\*]|\\[\s\S])+?)\*(?!\*)", RegexOptionCompiled, RegexTimeOut);
             public static readonly Regex Code = new Regex(@"^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)", RegexOptionCompiled, RegexTimeOut);
