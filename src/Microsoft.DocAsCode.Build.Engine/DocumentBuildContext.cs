@@ -193,6 +193,23 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void ResolveExternalXRefSpec()
         {
+            Task.WaitAll(
+                Task.Run(() => ResolveExternalXRefSpecForDefinitions()),
+                Task.Run(() => ResolveExternalXRefSpecForNoneDefinitionsAsync()));
+        }
+
+        private void ResolveExternalXRefSpecForDefinitions()
+        {
+            foreach (var item in from spec in ExternalXRefSpec.Values
+                                 where spec.Href == null && spec.ContainsKey("definition")
+                                 select spec.Uid)
+            {
+                UnknownUids.TryAdd(item, null);
+            }
+        }
+
+        public async Task ResolveExternalXRefSpecForNoneDefinitionsAsync()
+        {
             // remove internal xref.
             var uidList =
                 (from uid in XRef
@@ -200,23 +217,25 @@ namespace Microsoft.DocAsCode.Build.Engine
                  select uid)
                 .Concat(
                  from spec in ExternalXRefSpec.Values
-                 where spec.Href == null
+                 where spec.Href == null && !spec.ContainsKey("definition")
                  select spec.Uid)
                 .ToList();
 
-            if (uidList.Count > 0)
+            if (uidList.Count == 0)
             {
-                uidList = ResolveByXRefMaps(uidList, ExternalXRefSpec);
+                return;
             }
+            uidList = ResolveByXRefMaps(uidList, ExternalXRefSpec);
             if (uidList.Count > 0)
             {
                 uidList = ResolveByExternalReferencePackages(uidList, ExternalXRefSpec);
             }
             if (uidList.Count > 0)
             {
-                uidList = ResolveByXRefServiceAsync(uidList, ExternalXRefSpec).Result;
+                uidList = await ResolveByXRefServiceAsync(uidList, ExternalXRefSpec);
             }
 
+            Logger.LogInfo($"{uidList.Count} uids is unresolved.");
             foreach (var uid in uidList)
             {
                 UnknownUids.TryAdd(uid, null);
