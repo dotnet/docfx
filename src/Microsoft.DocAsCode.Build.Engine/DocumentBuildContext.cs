@@ -201,7 +201,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         private void ResolveExternalXRefSpecForDefinitions()
         {
             foreach (var item in from spec in ExternalXRefSpec.Values
-                                 where spec.Href == null && spec.ContainsKey("definition")
+                                 where spec.Href == null && spec.Definition != null
                                  select spec.Uid)
             {
                 UnknownUids.TryAdd(item, null);
@@ -217,7 +217,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                  select uid)
                 .Concat(
                  from spec in ExternalXRefSpec.Values
-                 where spec.Href == null && !spec.ContainsKey("definition")
+                 where spec.Href == null && spec.Definition == null
                  select spec.Uid)
                 .ToList();
 
@@ -236,6 +236,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             Logger.LogInfo($"{uidList.Count} uids is unresolved.");
+            System.Diagnostics.Debugger.Break();
             foreach (var uid in uidList)
             {
                 UnknownUids.TryAdd(uid, null);

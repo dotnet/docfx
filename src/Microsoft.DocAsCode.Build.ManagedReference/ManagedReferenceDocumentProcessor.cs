@@ -300,6 +300,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 Name = item.Name,
                 Href = item.Href,
                 CommentId = item.CommentId,
+                Definition = item.Definition,
             };
             if (item.NameInDevLangs.Count > 0)
             {

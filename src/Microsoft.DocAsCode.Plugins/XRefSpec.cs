@@ -11,6 +11,7 @@
         public const string NameKey = "name";
         public const string HrefKey = "href";
         public const string CommentIdKey = "commentId";
+        public const string DefinitionKey = "definition";
 
         private Dictionary<string, string> _dict;
         private bool _isReadOnly;
@@ -84,6 +85,26 @@
                 else
                 {
                     _dict.Remove(CommentIdKey);
+                }
+            }
+        }
+
+        public string Definition
+        {
+            get
+            {
+                _dict.TryGetValue(DefinitionKey, out string value);
+                return value;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    _dict[DefinitionKey] = value;
+                }
+                else
+                {
+                    _dict.Remove(DefinitionKey);
                 }
             }
         }
