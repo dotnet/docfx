@@ -11,7 +11,7 @@
         public const string NameKey = "name";
         public const string HrefKey = "href";
         public const string CommentIdKey = "commentId";
-        public const string DefinitionKey = "definition";
+        public const string IsSpecKey = "isSpec";
 
         private Dictionary<string, string> _dict;
         private bool _isReadOnly;
@@ -89,22 +89,21 @@
             }
         }
 
-        public string Definition
+        public bool IsSpec
         {
             get
             {
-                _dict.TryGetValue(DefinitionKey, out string value);
-                return value;
+                return _dict.TryGetValue(IsSpecKey, out _);
             }
             set
             {
-                if (value != null)
+                if (value)
                 {
-                    _dict[DefinitionKey] = value;
+                    _dict[IsSpecKey] = bool.TrueString;
                 }
                 else
                 {
-                    _dict.Remove(DefinitionKey);
+                    _dict.Remove(IsSpecKey);
                 }
             }
         }
