@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Interface IProcessContext
    | DocFX website ">
-    <meta name="generator" content="docfx 2.26.4.0">
+    <meta name="generator" content="docfx 2.27.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -96,7 +96,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_BuildContext.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.BuildContext%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L13">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L15">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_BuildContext_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.BuildContext*"></a>
   <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_BuildContext" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.BuildContext">BuildContext</h4>
@@ -123,10 +123,160 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_ContentAnchorParser.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.ContentAnchorParser%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L17">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_ContentAnchorParser_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.ContentAnchorParser*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_ContentAnchorParser" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.ContentAnchorParser">ContentAnchorParser</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">IContentAnchorParser ContentAnchorParser { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.Build.SchemaDriven.IContentAnchorParser.html">IContentAnchorParser</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Dependency.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Dependency%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L25">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Dependency_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Dependency*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Dependency" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Dependency">Dependency</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">HashSet&lt;string&gt; Dependency { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/bb359438(v=vs.110).aspx">HashSet</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_ExternalXRefSpecs.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.ExternalXRefSpecs%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L29">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_ExternalXRefSpecs_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.ExternalXRefSpecs*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_ExternalXRefSpecs" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.ExternalXRefSpecs">ExternalXRefSpecs</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">List&lt;XRefSpec&gt; ExternalXRefSpecs { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/6sh2ey19(v=vs.110).aspx">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.XRefSpec.html">XRefSpec</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_FileAndType.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.FileAndType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L33">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_FileAndType_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.FileAndType*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_FileAndType" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.FileAndType">FileAndType</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">FileAndType FileAndType { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileAndType.html">FileAndType</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_FileLinkSources.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.FileLinkSources%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L23">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_FileLinkSources_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.FileLinkSources*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_FileLinkSources" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.FileLinkSources">FileLinkSources</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Dictionary&lt;string, List&lt;LinkSourceInfo&gt;&gt; FileLinkSources { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/xfhwa508(v=vs.110).aspx">Dictionary</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/6sh2ey19(v=vs.110).aspx">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.LinkSourceInfo.html">LinkSourceInfo</a>&gt;&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Host.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Host%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L10">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L13">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Host_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Host*"></a>
   <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Host" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Host">Host</h4>
@@ -153,18 +303,18 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Model.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Model%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_OriginalFileAndType.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.OriginalFileAndType%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L11">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L31">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Model_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Model*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Model" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Model">Model</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_OriginalFileAndType_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.OriginalFileAndType*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_OriginalFileAndType" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.OriginalFileAndType">OriginalFileAndType</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">FileModel Model { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">FileAndType OriginalFileAndType { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -176,25 +326,25 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileModel.html">FileModel</a></td>
+        <td><a class="xref" href="Microsoft.DocAsCode.Plugins.FileAndType.html">FileAndType</a></td>
         <td></td>
       </tr>
     </tbody>
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Properties.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Properties%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_PathProperties.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.PathProperties%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L12">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L35">View Source</a>
   </span>
-  <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Properties_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Properties*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Properties" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Properties">Properties</h4>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_PathProperties_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.PathProperties*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_PathProperties" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.PathProperties">PathProperties</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">dynamic Properties { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">Dictionary&lt;string, Dictionary&lt;string, object&gt;&gt; PathProperties { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -206,7 +356,144 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a></td>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/xfhwa508(v=vs.110).aspx">Dictionary</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/xfhwa508(v=vs.110).aspx">Dictionary</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/system.object(v=vs.110).aspx">Object</a>&gt;&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_UidLinkSources.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.UidLinkSources%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L21">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_UidLinkSources_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.UidLinkSources*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_UidLinkSources" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.UidLinkSources">UidLinkSources</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Dictionary&lt;string, List&lt;LinkSourceInfo&gt;&gt; UidLinkSources { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/xfhwa508(v=vs.110).aspx">Dictionary</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>, <a class="xref" href="https://msdn.microsoft.com/en-us/library/6sh2ey19(v=vs.110).aspx">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.LinkSourceInfo.html">LinkSourceInfo</a>&gt;&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Uids.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Uids%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L19">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Uids_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Uids*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_Uids" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.Uids">Uids</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">List&lt;UidDefinition&gt; Uids { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/6sh2ey19(v=vs.110).aspx">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.UidDefinition.html">UidDefinition</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_XRefSpecs.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.XRefSpecs%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L27">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_XRefSpecs_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.XRefSpecs*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_XRefSpecs" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.XRefSpecs">XRefSpecs</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">List&lt;XRefSpec&gt; XRefSpecs { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/6sh2ey19(v=vs.110).aspx">List</a>&lt;<a class="xref" href="Microsoft.DocAsCode.Plugins.XRefSpec.html">XRefSpec</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_GetModel__1.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.GetModel%60%601%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L37">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_GetModel_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.GetModel*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext_GetModel__1" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext.GetModel``1">GetModel&lt;T&gt;()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">T GetModel&lt;T&gt;()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">T</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="typeParameters">Type Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="parametername">T</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -236,7 +523,7 @@
                     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_Processors_IProcessContext.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.Processors.IProcessContext%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L8" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Processors/IProcessContext.cs/#L11" class="contribution-link">View Source</a>
                   </li>
                   <li>
                     <a href="#disqus_thread" class="contribution-link">0 Comments</a>

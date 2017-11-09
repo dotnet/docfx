@@ -8,7 +8,7 @@
     <title>DocFX Flavored Markdown | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFX Flavored Markdown | DocFX website ">
-    <meta name="generator" content="docfx 2.26.4.0">
+    <meta name="generator" content="docfx 2.27.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -210,6 +210,7 @@ arduino,
 assembly (alias: nasm),
 c (alias: cpp, c++, objective-c, obj-c, objc, objectivec),
 csharp (alias: cs),
+cshtml,
 cuda,
 d (alias: dlang),
 fsharp (alias: fs),
@@ -232,6 +233,7 @@ typescript (alias: ts)</li>
 .cc,
 .cpp,
 .cs,
+.cshtml
 .cu,
 .cuh,
 .d,
@@ -258,13 +260,15 @@ typescript (alias: ts)</li>
 <li>End with: <code>&#39; &lt;/{name}&gt;</code></li>
 <li>Languages:
 vb,
+vbhtml,
 vbnet,
 vbscript</li>
 <li>File extensions:
-.vb,
 .bas,
-.vbs,
-.vba</li>
+.vb,
+.vba,
+.vbhtml,
+.vbs</li>
 </ul>
 </li>
 <li>Markup language family<ul>
@@ -339,12 +343,13 @@ batchfile</li>
 </ul>
 </li>
 <li>csharp<ul>
-<li>Start with: <code># region {name}</code></li>
+<li>Start with: <code>#region {name}</code></li>
 <li>End with: <code>#endregion</code></li>
 <li>Languages:
 csharp (alias: cs)</li>
 <li>File extensions:
-.cs</li>
+.cs
+.cshtml</li>
 </ul>
 </li>
 <li>erlang<ul>
@@ -399,7 +404,8 @@ lua</li>
 <li>Languages:
 vb (alias: vbnet)</li>
 <li>File extensions:
-.vb</li>
+.vb
+.vbhtml</li>
 </ul>
 </li>
 </ul>
@@ -433,8 +439,8 @@ vb (alias: vbnet)</li>
 </div>
 <div class="CAUTION"><h5>Caution</h5><p>This is a warning containing some important message.</p>
 </div>
-<h3 id="tabbed-content">Tabbed content</h3>
-<h4 id="syntax">Syntax</h4>
+<h2 id="tabbed-content">Tabbed content</h2>
+<h3 id="syntax">Syntax</h3>
 <ul>
 <li>Start a tab by a special markdown title (any level).<ul>
 <li>Title content should be a markdown link.</li>
@@ -444,7 +450,7 @@ vb (alias: vbnet)</li>
 <li>Continue by any other content.</li>
 <li>End by a markdown hr.</li>
 </ul>
-<h4 id="example">Example</h4>
+<h3 id="example">Example</h3>
 <pre><code class="lang-md">Tab group 1:
 
 # [Tab Text 1](#tab/tabid-1)
@@ -561,13 +567,13 @@ Tab content-b-2.
 <p>Tab content-b-2.</p>
 </section>
 </div>
-<h4 id="behavior">Behavior</h4>
+<h3 id="behavior">Behavior</h3>
 <p>Tab groups with a same set of id are linkable in one page.</p>
 <p>In example, tab group 1, 3 have same id set: <code>tabid-1</code>, <code>tabid-2</code>, tab group 2, 4 have same id set: <code>tabid-a</code>, <code>tabid-b</code>.</p>
 <p>So tab group 1, 3 are linked, tab group 2, 4 are linked.
 When tab <code>tabid-1</code> in tab group 1 is clicked, tab <code>tabid-1</code> in tab group 3 will be selected in same time.
 But tab group 2, 4 do not have any changed.</p>
-<h4 id="condition">Condition</h4>
+<h3 id="condition">Condition</h3>
 <p>Condition is the tab id of other table groups.</p>
 <p>e.g.:</p>
 <pre><code class="lang-md">Tab Group 1:
