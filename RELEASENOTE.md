@@ -1,7 +1,10 @@
-﻿Version Notes (Current Version: v2.27)
+﻿Version Notes (Current Version: v2.28)
 =======================================
 
-v2.27 (Pre-release)
+v2.28 (Pre-release)
+-----------
+
+v2.27
 -----------
 1. Improve code snippet, add cs snippet for cshtml, add vb snippet for vbhtml.
 
