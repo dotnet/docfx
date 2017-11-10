@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.AzureMarkdownRewriters
 
     public class AzureMarked
     {
-        private static readonly AzureEngineBuilder _builder = new AzureEngineBuilder(new Options() { Mangle = false });
+        private static readonly AzureEngineBuilder _builder = new AzureEngineBuilder(new Options() { Mangle = false, LegacyMode = true });
         private static readonly AzureMarkdownRenderer _renderer = new AzureMarkdownRenderer();
 
         public static string Markup(
