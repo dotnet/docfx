@@ -267,7 +267,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                         EnvironmentContext.FileAbstractLayerImpl = null;
 
                         // overwrite intermediate cache files
-                        if (_intermediateFolder != null && transformDocument)
+                        if (_intermediateFolder != null &&
+                            transformDocument &&
+                            Logger.WarningCount < Logger.WarningThrottling)
                         {
                             try
                             {
