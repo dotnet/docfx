@@ -283,7 +283,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 }
             }
 
-            parameters.MaxHttpParallelism = Math.Max(64, parameters.MaxParallelism * 2);
+            parameters.MaxHttpParallelism = Math.Max(64, parameters.MaxParallelism * 4);
             ServicePointManager.DefaultConnectionLimit = parameters.MaxHttpParallelism;
 
             if (config.MarkdownEngineName != null)
