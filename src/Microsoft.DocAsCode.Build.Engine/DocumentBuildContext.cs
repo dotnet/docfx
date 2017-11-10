@@ -10,7 +10,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Net.Http;
-    using System.Net.Http.Headers;
     using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
@@ -193,29 +192,50 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public void ResolveExternalXRefSpec()
         {
+            Task.WaitAll(
+                Task.Run(() => ResolveExternalXRefSpecForSpecs()),
+                Task.Run(() => ResolveExternalXRefSpecForNoneSpecsAsync()));
+        }
+
+        private void ResolveExternalXRefSpecForSpecs()
+        {
+            foreach (var item in from spec in ExternalXRefSpec.Values
+                                 where spec.Href == null && spec.IsSpec
+                                 select spec.Uid)
+            {
+                UnknownUids.TryAdd(item, null);
+            }
+        }
+
+        public async Task ResolveExternalXRefSpecForNoneSpecsAsync()
+        {
             // remove internal xref.
             var uidList =
                 (from uid in XRef
                  where !XRefSpecMap.ContainsKey(uid)
+                 where !ExternalXRefSpec.ContainsKey(uid)
                  select uid)
                 .Concat(
                  from spec in ExternalXRefSpec.Values
-                 where spec.Href == null
+                 where spec.Href == null && !spec.IsSpec
                  select spec.Uid)
                 .ToList();
 
-            if (uidList.Count > 0)
+            if (uidList.Count == 0)
             {
-                uidList = ResolveByXRefMaps(uidList, ExternalXRefSpec);
+                return;
             }
+            uidList = ResolveByXRefMaps(uidList, ExternalXRefSpec);
             if (uidList.Count > 0)
             {
                 uidList = ResolveByExternalReferencePackages(uidList, ExternalXRefSpec);
             }
             if (uidList.Count > 0)
             {
-                uidList = ResolveByXRefServiceAsync(uidList, ExternalXRefSpec).Result;
+                uidList = await ResolveByXRefServiceAsync(uidList, ExternalXRefSpec);
             }
+
+            Logger.LogVerbose($"{uidList.Count} uids are unresolved.");
 
             foreach (var uid in uidList)
             {
