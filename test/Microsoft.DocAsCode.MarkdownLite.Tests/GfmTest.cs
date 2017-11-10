@@ -810,6 +810,18 @@ a</pre
             TestLegacyGfmInGeneral(source, expected);
         }
 
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestHeadingDifference()
+        {
+            // 1. Prepare data
+            var source = @"#aaaa";
+            TestGfmInGeneral(source, @"<p>#aaaa</p>
+");
+            TestLegacyGfmInGeneral(source, @"<h1 id=""aaaa"">aaaa</h1>
+");
+        }
+
         [Theory]
         [Trait("Related", "Markdown")]
         [InlineData(@"<div a:b=""c"">")]
