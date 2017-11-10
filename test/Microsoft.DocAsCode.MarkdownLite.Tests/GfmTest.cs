@@ -680,6 +680,9 @@ B", @"<p>A<br>B</p>
 ")]
         [InlineData(@"a*b\*c*d", @"<p>a<em>b*c</em>d</p>
 ")]
+        [InlineData(@"[a][ b] (c)
+[b]: x", @"<p><a href=""x"" data-raw-source=""[a][ b]"">a</a> (c)</p>
+")]
         #endregion
         public void TestGfmInGeneral(string source, string expected)
         {
