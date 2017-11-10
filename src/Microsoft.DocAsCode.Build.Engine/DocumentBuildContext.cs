@@ -193,11 +193,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         public void ResolveExternalXRefSpec()
         {
             Task.WaitAll(
-                Task.Run(() => ResolveExternalXRefSpecForDefinitions()),
-                Task.Run(() => ResolveExternalXRefSpecForNoneDefinitionsAsync()));
+                Task.Run(() => ResolveExternalXRefSpecForSpecs()),
+                Task.Run(() => ResolveExternalXRefSpecForNoneSpecsAsync()));
         }
 
-        private void ResolveExternalXRefSpecForDefinitions()
+        private void ResolveExternalXRefSpecForSpecs()
         {
             foreach (var item in from spec in ExternalXRefSpec.Values
                                  where spec.Href == null && spec.IsSpec
@@ -207,7 +207,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        public async Task ResolveExternalXRefSpecForNoneDefinitionsAsync()
+        public async Task ResolveExternalXRefSpecForNoneSpecsAsync()
         {
             // remove internal xref.
             var uidList =
