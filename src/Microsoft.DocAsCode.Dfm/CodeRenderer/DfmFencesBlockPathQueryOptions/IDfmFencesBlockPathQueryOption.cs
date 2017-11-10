@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Dfm
         [Obsolete("merged into GetQueryLines(string[], DfmFencesToken)", true)]
         bool ValidateAndPrepare(string[] lines, DfmFencesToken token);
 
+        [Obsolete("merged into GetQueryLines(string[], DfmFencesToken)", true)]
         bool ValidateHighlightLinesAndDedentLength(int totalLines);
 
         [Obsolete("merged into GetQueryLines(string[], DfmFencesToken)", true)]

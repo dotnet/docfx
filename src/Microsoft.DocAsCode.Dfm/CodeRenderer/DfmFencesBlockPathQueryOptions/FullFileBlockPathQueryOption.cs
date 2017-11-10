@@ -4,15 +4,13 @@
 namespace Microsoft.DocAsCode.Dfm
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     public class FullFileBlockPathQueryOption : DfmFencesBlockPathQueryOption
     {
         public override IEnumerable<string> GetQueryLines(string[] lines, DfmFencesToken token)
         {
-            foreach (var line in lines)
-            {
-                yield return line;
-            }
+            return ProcessIncludedLines(lines.ToList(), token);
         }
     }
 }

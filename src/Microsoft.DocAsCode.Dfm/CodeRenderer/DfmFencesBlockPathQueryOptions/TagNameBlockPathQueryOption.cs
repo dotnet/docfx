@@ -173,13 +173,16 @@ namespace Microsoft.DocAsCode.Dfm
                     line: token.SourceInfo.LineNumber.ToString());
             }
 
+            var included = new List<string>();
             for (int i = _resolveResult.StartLine; i <= Math.Min(_resolveResult.EndLine, lines.Length); i++)
             {
                 if (_resolveResult.ExcludesLines == null || !_resolveResult.ExcludesLines.Contains(i))
                 {
-                    yield return lines[i - 1];
+                    included.Add(lines[i - 1]);
                 }
             }
+
+            return ProcessIncludedLines(included, token);
         }
 
         private DfmTagNameResolveResult ResolveTagNamesFromPath(string fencesPath, string[] fencesCodeLines, string tagName, List<ICodeSnippetExtractor> codeSnippetExtractors)

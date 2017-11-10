@@ -86,10 +86,10 @@ namespace Microsoft.DocAsCode.Dfm
                     };
                 }
 
-                List<string> includedLines;
+                string[] includedLines;
                 try
                 {
-                    includedLines = pathQueryOption.GetQueryLines(fencesCode, token).ToList();
+                    includedLines = pathQueryOption.GetQueryLines(fencesCode, token).ToArray();
                 }
                 catch (Exception e)
                 {
@@ -100,21 +100,16 @@ namespace Microsoft.DocAsCode.Dfm
                     return new DfmExtractCodeResult { IsSuccessful = false, ErrorMessage = e.Message, CodeLines = fencesCode };
                 }
 
-                if (!pathQueryOption.ValidateHighlightLinesAndDedentLength(includedLines.Count))
-                {
-                    Logger.LogWarning(GenerateErrorMessage(token, pathQueryOption), line: token.SourceInfo.LineNumber.ToString());
-                }
-
                 return new DfmExtractCodeResult
                 {
                     IsSuccessful = true,
                     ErrorMessage = pathQueryOption.ErrorMessage,
-                    CodeLines = Dedent(includedLines, pathQueryOption.DedentLength)
+                    CodeLines = includedLines,
                 };
             }
         }
 
-        private static string[] Dedent(IEnumerable<string> lines, int? dedentLength = null)
+        public static string[] Dedent(IEnumerable<string> lines, int? dedentLength = null)
         {
             var length = dedentLength ??
                                (from line in lines
