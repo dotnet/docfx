@@ -21,7 +21,10 @@ namespace Microsoft.DocAsCode.MarkdownLite.Tests
             const string expected = "<h1 id=\"hello-world\">Hello World</h1>\n";
             const string expectedMessage = "a space is expected after '#'";
             string message = null;
-            var builder = new GfmEngineBuilder(new Options());
+            var builder = new GfmEngineBuilder(new Options
+            {
+                LegacyMode = true,
+            });
             builder.Rewriter =
                 MarkdownTokenRewriterFactory.FromValidators(
                     MarkdownTokenValidatorFactory.FromLambda(
