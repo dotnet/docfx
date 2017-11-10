@@ -10,7 +10,6 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.IO;
     using System.Linq;
     using System.Net.Http;
-    using System.Net.Http.Headers;
     using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Build.Engine.Incrementals;
@@ -236,7 +235,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 uidList = await ResolveByXRefServiceAsync(uidList, ExternalXRefSpec);
             }
 
-            Logger.LogInfo($"{uidList.Count} uids are unresolved.");
+            Logger.LogVerbose($"{uidList.Count} uids are unresolved.");
 
             foreach (var uid in uidList)
             {
