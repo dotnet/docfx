@@ -12,6 +12,7 @@ namespace Microsoft.DocAsCode.Common
 
         public static class Build
         {
+            public const string TooManyWarnings = "TooManyWarnings";
             public const string InvalidInternalBookmark = "InvalidInternalBookmark";
             public const string InvalidExternalBookmark = "InvalidExternalBookmark";
             public const string InvalidFileLink = "InvalidFileLink";

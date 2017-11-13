@@ -4,14 +4,18 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
+    using System.Threading;
 
     public static class Logger
     {
+        public const int WarningThrottling = 10000;
         public static bool HasError { get; private set; }
+        public static int WarningCount => _warningCount;
 
         private static readonly object _sync = new object();
         private static CompositeLogListener _syncListener = new CompositeLogListener();
         private static AsyncLogListener _asyncListener = new AsyncLogListener();
+        private static int _warningCount = 0;
         public volatile static LogLevel LogLevelThreshold = LogLevel.Info;
 
         public static void RegisterListener(ILoggerListener listener)
@@ -85,6 +89,26 @@ namespace Microsoft.DocAsCode.Common
             if (item.LogLevel < LogLevelThreshold)
             {
                 return;
+            }
+
+            if (item.LogLevel == LogLevel.Warning)
+            {
+                var count = Interlocked.Increment(ref _warningCount);
+                if (count > WarningThrottling)
+                {
+                    return;
+                }
+                else if (count == WarningThrottling)
+                {
+                    var msg = new LogItem
+                    {
+                        Code = WarningCodes.Build.TooManyWarnings,
+                        LogLevel = LogLevel.Warning,
+                        Message = "Too many warnings, no more warning will be logged."
+                    };
+                    _syncListener.WriteLine(msg);
+                    _asyncListener.WriteLine(msg);
+                }
             }
 
             if (item.LogLevel == LogLevel.Error)
