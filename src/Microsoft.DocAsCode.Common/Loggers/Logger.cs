@@ -94,11 +94,7 @@ namespace Microsoft.DocAsCode.Common
             if (item.LogLevel == LogLevel.Warning)
             {
                 var count = Interlocked.Increment(ref _warningCount);
-                if (count < WarningThrottling)
-                {
-
-                }
-                else if (count > WarningThrottling)
+                if (count > WarningThrottling)
                 {
                     return;
                 }
@@ -106,9 +102,9 @@ namespace Microsoft.DocAsCode.Common
                 {
                     var msg = new LogItem
                     {
-                        Code = WarningCodes.Build.TooManyWarning,
+                        Code = WarningCodes.Build.TooManyWarnings,
                         LogLevel = LogLevel.Warning,
-                        Message = "Too many warning..."
+                        Message = "Too many warnings, no more warning will be logged."
                     };
                     _syncListener.WriteLine(msg);
                     _asyncListener.WriteLine(msg);
