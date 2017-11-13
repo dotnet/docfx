@@ -191,7 +191,7 @@ properties               |  Defines an optional set of MSBuild properties used w
       "dest": "obj/docfx/api/dotnet",
       "shouldSkipMarkup": true,
       "properties": {
-          "TargetFramework": "netstardard1.3"
+          "TargetFramework": "netstandard1.3"
       }
     },
     {
