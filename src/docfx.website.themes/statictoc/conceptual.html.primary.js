@@ -8,8 +8,9 @@ exports.transform = function (model) {
   if (extension && extension.preTransform) {
     model = extension.preTransform(model);
   }
-
-  model._disableToc = model._disableToc || !model._tocPath || (model._navPath === model._tocPath);
+  
+  model._navRel = model._navRel === model._tocRel ? undefined : model._navRel;
+  model._disableToc = model._disableToc || !model._tocPath;
   model.docurl = model.docurl || common.getImproveTheDocHref(model, model._gitContribute, model._gitUrlPattern);
   model = util.setToc(model);
 

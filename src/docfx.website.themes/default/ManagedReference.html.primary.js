@@ -21,9 +21,9 @@ exports.transform = function (model) {
     model.isEnum = true;
   }
 
-  model._navRel = model._navRel === model._tocRel ? undefined : model._navRel
+  model._navRel = model._navRel === model._tocRel ? undefined : model._navRel;
   model._disableToc = model._disableToc || !model._tocPath;
-
+  
   if (extension && extension.postTransform) {
     model = extension.postTransform(model);
   }

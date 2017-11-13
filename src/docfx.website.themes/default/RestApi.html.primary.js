@@ -12,8 +12,8 @@ exports.transform = function (model) {
     model = restApiCommon.transform(model);
   }
 
+  model._navRel = model._navRel === model._tocRel ? undefined : model._navRel;
   model._disableToc = model._disableToc || !model._tocPath;
-  model._navRel = model._navRel === model._tocRel ? undefined : model._navRel
 
   if (extension && extension.postTransform) {
     model = extension.postTransform(model);

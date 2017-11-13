@@ -8,8 +8,8 @@ exports.transform = function (model) {
     model = extension.preTransform(model);
   }
 
+  model._navRel = model._navRel === model._tocRel ? undefined : model._navRel;
   model._disableToc = model._disableToc || !model._tocPath;
-  model._navRel = model._navRel === model._tocRel ? undefined : model._navRel
 
   model.docurl = model.docurl || common.getImproveTheDocHref(model, model._gitContribute, model._gitUrlPattern);
 
