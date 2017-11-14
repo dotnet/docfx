@@ -97,6 +97,28 @@ C: Good!
         }
 
         [Fact]
+        public void TestBigInteger()
+        {
+            var sw = new StringWriter();
+            YamlUtility.Serialize(sw, new object[] { 1234567890000L, 9876543210000L, long.MaxValue, ulong.MaxValue }, YamlMime.YamlMimePrefix + "Test-Yaml-Mime");
+            var yaml = sw.ToString();
+            Assert.Equal(@"### YamlMime:Test-Yaml-Mime
+- 1234567890000
+- 9876543210000
+- 9223372036854775807
+- 18446744073709551615
+".Replace("\r\n", "\n"), yaml.Replace("\r\n", "\n"));
+            Assert.Equal("YamlMime:Test-Yaml-Mime", YamlMime.ReadMime(new StringReader(yaml)));
+            var value = YamlUtility.Deserialize<object[]>(new StringReader(yaml));
+            Assert.NotNull(value);
+            Assert.Equal(4, value.Length);
+            Assert.Equal(1234567890000L, value[0]);
+            Assert.Equal(9876543210000L, value[1]);
+            Assert.Equal(long.MaxValue, value[2]);
+            Assert.Equal(ulong.MaxValue, value[3]);
+        }
+
+        [Fact]
         public void TestYamlMime_Success()
         {
             var sw = new StringWriter();
