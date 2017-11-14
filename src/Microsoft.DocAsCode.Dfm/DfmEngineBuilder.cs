@@ -98,12 +98,13 @@ namespace Microsoft.DocAsCode.Dfm
         private static Func<IMarkdownRewriteEngine, DfmTabGroupBlockToken, IMarkdownToken> GetTabGroupIdRewriter()
         {
             var dict = new Dictionary<string, int>();
+            var tabSelectionInfo = new List<string[]>();
             var selectedTabIds = new HashSet<string>();
             return (IMarkdownRewriteEngine engine, DfmTabGroupBlockToken token) =>
             {
                 var newToken = RewriteActiveAndVisible(
                     RewriteGroupId(token, dict),
-                    selectedTabIds);
+                    tabSelectionInfo);
                 if (token == newToken)
                 {
                     return null;
@@ -135,34 +136,84 @@ namespace Microsoft.DocAsCode.Dfm
             return new DfmTabGroupBlockToken(token.Rule, token.Context, groupId, token.Items, token.ActiveTabIndex, token.SourceInfo);
         }
 
-        private static DfmTabGroupBlockToken RewriteActiveAndVisible(DfmTabGroupBlockToken token, HashSet<string> selectedTabIds)
+        private static DfmTabGroupBlockToken RewriteActiveAndVisible(DfmTabGroupBlockToken token, List<string[]> tabSelectionInfo)
         {
-            var items = token.Items;
+            var items = token.Items.ToList();
+            int firstVisibleTab = ApplyTabVisible(tabSelectionInfo, items);
+            var idAndCountList = GetTabIdAndCountList(items).ToList();
+            if (idAndCountList.Any(g => g.Item2 > 1))
+            {
+                Logger.LogWarning($"Duplicate tab id: {string.Join(",", idAndCountList.Where(g => g.Item2 > 1))}.", line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.DuplicateTabId);
+            }
+            var active = GetTabActive(token, tabSelectionInfo, items, firstVisibleTab, idAndCountList);
+            return new DfmTabGroupBlockToken(token.Rule, token.Context, token.Id, items.ToImmutableArray(), active, token.SourceInfo);
+        }
+
+        private static int ApplyTabVisible(List<string[]> tabSelectionInfo, List<DfmTabItemBlockToken> items)
+        {
             int firstVisibleTab = -1;
-            int active = -1;
-            for (int i = 0; i < items.Length; i++)
+
+            for (int i = 0; i < items.Count; i++)
             {
                 var tab = items[i];
-                var visible = string.IsNullOrEmpty(tab.Condition) || selectedTabIds.Contains(tab.Condition);
+                var visible = string.IsNullOrEmpty(tab.Condition) || tabSelectionInfo.Any(t => t[0] == tab.Condition);
                 if (visible && firstVisibleTab == -1)
                 {
                     firstVisibleTab = i;
                 }
-                if (active == -1 && visible && selectedTabIds.Contains(tab.Id))
-                {
-                    active = i;
-                }
                 if (tab.Visible != visible)
                 {
-                    items = items.SetItem(i, new DfmTabItemBlockToken(tab.Rule, tab.Context, tab.Id, tab.Condition, tab.Title, tab.Content, visible, tab.SourceInfo));
+                    items[i] = new DfmTabItemBlockToken(tab.Rule, tab.Context, tab.Id, tab.Condition, tab.Title, tab.Content, visible, tab.SourceInfo);
                 }
             }
+
+            return firstVisibleTab;
+        }
+
+        private static IEnumerable<Tuple<string, int>> GetTabIdAndCountList(List<DfmTabItemBlockToken> items) =>
+            from tab in items
+            where tab.Visible
+            from id in tab.Id.Split('+')
+            group id by id into g
+            select Tuple.Create(g.Key, g.Count());
+
+        private static int GetTabActive(DfmTabGroupBlockToken token, List<string[]> tabSelectionInfo, List<DfmTabItemBlockToken> items, int firstVisibleTab, List<Tuple<string, int>> idAndCountList)
+        {
+            int active = -1;
+            bool hasDifferentSet = false;
+            foreach (var info in tabSelectionInfo)
+            {
+                var set = info.Intersect(from pair in idAndCountList select pair.Item1).ToList();
+                if (set.Count > 0)
+                {
+                    if (set.Count == info.Length && set.Count == idAndCountList.Count)
+                    {
+                        active = FindActiveIndex(items, info);
+                        break;
+                    }
+                    else
+                    {
+                        hasDifferentSet = true;
+                        active = FindActiveIndex(items, info);
+                        if (active != -1)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (hasDifferentSet)
+            {
+                Logger.LogWarning("Tab group with different tab id set.", line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.DifferentTabIdSet);
+            }
+
             if (active == -1)
             {
                 if (firstVisibleTab != -1)
                 {
                     active = firstVisibleTab;
-                    selectedTabIds.Add(items[firstVisibleTab].Id);
+                    tabSelectionInfo.Add((from pair in idAndCountList select pair.Item1).ToArray());
                 }
                 else
                 {
@@ -170,7 +221,25 @@ namespace Microsoft.DocAsCode.Dfm
                     Logger.LogWarning("All tabs are hidden in the tab group.", file: token.SourceInfo.File, line: token.SourceInfo.LineNumber.ToString(), code: WarningCodes.Markdown.NoVisibleTab);
                 }
             }
-            return new DfmTabGroupBlockToken(token.Rule, token.Context, token.Id, items, active, token.SourceInfo);
+
+            return active;
+        }
+
+        private static int FindActiveIndex(List<DfmTabItemBlockToken> items, string[] info)
+        {
+            for (int i = 0; i < items.Count; i++)
+            {
+                var item = items[i];
+                if (!item.Visible)
+                {
+                    continue;
+                }
+                if (Array.IndexOf(item.Id.Split('+'), info[0]) != -1)
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         private static IMarkdownTokenRewriter InitMarkdownStyle(ICompositionContainer container, string baseDir, string templateDir)

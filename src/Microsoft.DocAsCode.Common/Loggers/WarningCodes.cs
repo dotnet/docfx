@@ -30,6 +30,8 @@ namespace Microsoft.DocAsCode.Common
             public const string InvalidInlineCodeSnippet = "InvalidInlineCodeSnippet";
             public const string InvalidYamlHeader = "InvalidYamlHeader";
             public const string NoVisibleTab = "NoVisibleTab";
+            public const string DuplicateTabId = "DuplicateTabId";
+            public const string DifferentTabIdSet = "DifferentTabIdSet";
         }
     }
 }
