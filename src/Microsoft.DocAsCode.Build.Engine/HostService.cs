@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Composition;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using HtmlAgilityPack;
 
@@ -383,7 +384,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var lmm = incrementalContext.GetLastIntermediateModelManifest(this);
             var cmm = incrementalContext.GetCurrentIntermediateModelManifest(this);
 
-            foreach (var pair in mi)
+            Parallel.ForEach(mi, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, pair =>
             {
                 IncrementalUtility.RetryIO(() =>
                 {
@@ -434,9 +435,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                             items.Add(new ModelManifestItem() { SourceFilePath = model.FileAndType.File, FilePath = fileName });
                         }
                     }
-                    cmm.Models.Add(pair.Key, items);
+                    lock (cmm)
+                    {
+                        cmm.Models.Add(pair.Key, items);
+                    }
                 });
-            }
+            });
         }
 
         public IEnumerable<FileModel> LoadIntermediateModel(IncrementalBuildContext incrementalContext, string fileName)
