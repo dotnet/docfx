@@ -212,12 +212,11 @@ namespace Microsoft.DocAsCode.Build.Engine
             // remove internal xref.
             var uidList =
                 (from uid in XRef
-                 where !XRefSpecMap.ContainsKey(uid)
-                 where !ExternalXRefSpec.ContainsKey(uid)
+                 where !ExternalXRefSpec.ContainsKey(uid) && !XRefSpecMap.ContainsKey(uid)
                  select uid)
                 .Concat(
                  from spec in ExternalXRefSpec.Values
-                 where spec.Href == null && !spec.IsSpec
+                 where spec.Href == null && !spec.IsSpec && !XRefSpecMap.ContainsKey(spec.Uid)
                  select spec.Uid)
                 .ToList();
 
