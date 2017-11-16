@@ -225,11 +225,6 @@ namespace Microsoft.DocAsCode.SubCommands
             {
                 parameters.PostProcessors = config.PostProcessors.ToImmutableArray();
             }
-            parameters.ExternalReferencePackages =
-                GetFilesFromFileMapping(
-                    GlobUtility.ExpandFileMapping(baseDirectory, config.ExternalReference))
-                .ToImmutableArray();
-
             if (config.XRefMaps != null)
             {
                 parameters.XRefMaps = config.XRefMaps.ToImmutableArray();
