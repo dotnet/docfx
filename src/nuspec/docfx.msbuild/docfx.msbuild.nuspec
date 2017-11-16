@@ -1,3 +1,4 @@
+
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
   <metadata>
@@ -9,6 +10,7 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <licenseUrl>https://github.com/dotnet/docfx/blob/dev/LICENSE</licenseUrl>
     <projectUrl>https://github.com/dotnet/docfx</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>This is a tool to generate API documentation for .NET projects.</description>
     <releaseNotes>Support generating both CSHARP and VB projects.</releaseNotes>
     <copyright>Copyright 2015-2017</copyright>
