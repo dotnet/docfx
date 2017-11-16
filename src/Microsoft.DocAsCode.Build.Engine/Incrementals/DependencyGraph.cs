@@ -408,7 +408,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
             if (unresolved.Count > 0)
             {
-                Logger.LogVerbose($"Dependency graph failed to resolve {unresolved.Count} references, following is the top 100: {string.Join(Environment.NewLine, unresolved.Take(100))}.");
+                Logger.LogVerbose(
+                    $"Dependency graph: {unresolved.Count} unresolved references, following is the top 100: {Environment.NewLine}" +
+                    string.Join(Environment.NewLine, unresolved.Take(100)));
             }
         }
 
