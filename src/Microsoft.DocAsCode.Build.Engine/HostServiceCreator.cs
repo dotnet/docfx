@@ -100,7 +100,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     {
                         // override global metadata if metadata is defined in file metadata
                         result[item.Value[i].Key] = item.Value[i].Value;
-                        Logger.LogVerbose($"{relativePath} matches file metadata with glob pattern {item.Value[i].Glob.Raw} for property {item.Value[i].Key}");
+                        Logger.LogDiagnostic($"{relativePath} matches file metadata with glob pattern {item.Value[i].Glob.Raw} for property {item.Value[i].Key}");
                         break;
                     }
                 }
