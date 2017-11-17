@@ -198,19 +198,6 @@ namespace Microsoft.DocAsCode.SubCommands
                         SourceFolder = optionsBaseDirectory,
                     });
             }
-            if (options.ExternalReference != null)
-            {
-                if (config.ExternalReference == null)
-                {
-                    config.ExternalReference = new FileMapping(new FileMappingItem());
-                }
-                config.ExternalReference.Add(
-                    new FileMappingItem
-                    {
-                        Files = new FileItems(options.ExternalReference),
-                        SourceFolder = optionsBaseDirectory,
-                    });
-            }
 
             if (options.XRefMaps != null)
             {

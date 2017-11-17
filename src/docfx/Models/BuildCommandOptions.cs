@@ -28,9 +28,6 @@ namespace Microsoft.DocAsCode
         [OptionList("overwrite", Separator = ',', HelpText = "Specify overwrite files used by content files.")]
         public List<string> Overwrite { get; set; }
 
-        [OptionList("externalReference", Separator = ',', HelpText = "Specify external reference files used by content files.")]
-        public List<string> ExternalReference { get; set; }
-
         [OptionList('x', "xref", Separator = ',', HelpText = "Specify the urls of xrefmap used by content files.")]
         public List<string> XRefMaps { get; set; }
 

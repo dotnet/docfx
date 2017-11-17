@@ -44,7 +44,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             ApplyTemplateSettings = parameters.ApplyTemplateSettings;
             HrefGenerator = parameters.ApplyTemplateSettings?.HrefGenerator;
             AllSourceFiles = GetAllSourceFiles(parameters.Files.EnumerateFiles());
-            ExternalReferencePackages = parameters.ExternalReferencePackages;
             _xrefMapUrls = parameters.XRefMaps;
             _xrefServiceUrls = parameters.XRefServiceUrls;
             GroupInfo = parameters.GroupInfo;
@@ -134,7 +133,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public ApplyTemplateSettings ApplyTemplateSettings { get; set; }
 
-        public ImmutableArray<string> ExternalReferencePackages { get; }
+        public ImmutableArray<string> ExternalReferencePackages { get; } = ImmutableArray<string>.Empty;
 
         public ImmutableDictionary<string, FileAndType> AllSourceFiles { get; }
 
