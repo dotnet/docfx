@@ -130,7 +130,7 @@ namespace Microsoft.DocAsCode.Common
                             // type is a bash command, hence should be an argument to 'bash'
                             Name = "bash",
                             Arguments = $"-c \"type {commandName}\""
-                        }, outputStreamWriter, errorStreamWriter, timeoutInMilliseconds: 1000);
+                        }, outputStreamWriter, errorStreamWriter, timeoutInMilliseconds: 60000);
                     }
                     else
                     {
@@ -138,7 +138,7 @@ namespace Microsoft.DocAsCode.Common
                         {
                             Name = "where",
                             Arguments = commandName
-                        }, outputStreamWriter, errorStreamWriter, timeoutInMilliseconds: 1000);
+                        }, outputStreamWriter, errorStreamWriter, timeoutInMilliseconds: 60000);
                     }
 
                     // writer streams have to be flushed before reading from memory streams
