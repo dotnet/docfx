@@ -35,7 +35,7 @@ You can use one of the following syntax to cross reference a topic with UID defi
 
 1. Markdown link: `[link_text](xref:uid_of_the_topic)`
 2. Auto link: `<xref:uid_of_the_topic>`
-3. Shorthand form: `@uid_of_the_topic`
+3. Shorthand form: `@"uid_of_the_topic"`
 
 All will render to:
 
