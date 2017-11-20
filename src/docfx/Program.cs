@@ -19,7 +19,7 @@ namespace Microsoft.DocAsCode
             try
             {
                 var result = ExecSubCommand(args);
-                return Logger.HasError ? 1 : result;
+                return Logger.HasError || Logger.WarningCount >= Logger.WarningThrottling ? 1 : result;
             }
             finally
             {
