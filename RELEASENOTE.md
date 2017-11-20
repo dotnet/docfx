@@ -3,6 +3,12 @@
 
 v2.28 (Pre-release)
 -----------
+1. Add warning throttling. (#2187)
+2. Bug fixes:
+   1. Fix markdown link behavior. (#2181)
+   2. Fix xref map sorted comparer. (#2191)
+   3. Fix yaml deserialize for int64. (#2193)
+   4. Fix xref query filter. (#2195)
 
 v2.27
 -----------
