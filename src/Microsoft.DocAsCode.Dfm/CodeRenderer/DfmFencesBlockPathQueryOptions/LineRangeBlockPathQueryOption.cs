@@ -19,11 +19,13 @@ namespace Microsoft.DocAsCode.Dfm
 
             int startLine = StartLine ?? 1;
             int endLine = EndLine ?? lines.Length;
-
+            var included = new List<string>();
             for (int i = startLine; i <= Math.Min(endLine, lines.Length); i++)
             {
-                yield return lines[i - 1];
+                included.Add(lines[i - 1]);
             }
+
+            return ProcessIncludedLines(included, token);
         }
     }
 }

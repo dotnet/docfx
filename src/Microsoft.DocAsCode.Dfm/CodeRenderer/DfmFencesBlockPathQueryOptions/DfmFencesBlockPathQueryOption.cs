@@ -6,6 +6,8 @@ namespace Microsoft.DocAsCode.Dfm
     using System;
     using System.Collections.Generic;
 
+    using Microsoft.DocAsCode.Common;
+
     public abstract class DfmFencesBlockPathQueryOption : IDfmFencesBlockPathQueryOption
     {
         public string HighlightLines { get; set; }
@@ -26,10 +28,27 @@ namespace Microsoft.DocAsCode.Dfm
             throw new NotSupportedException();
         }
 
-        public bool ValidateHighlightLinesAndDedentLength(int totalLines)
+        bool IDfmFencesBlockPathQueryOption.ValidateHighlightLinesAndDedentLength(int totalLines)
+        {
+            throw new NotSupportedException();
+        }
+
+        protected IEnumerable<string> ProcessIncludedLines(List<string> lines, DfmFencesToken token)
+        {
+            var message = ValidateHighlightLinesAndDedentLength(lines.Count);
+            if (!string.IsNullOrEmpty(message))
+            {
+                Logger.LogWarning(
+                    DfmCodeExtractor.GenerateErrorMessage(token, message),
+                    line: token.SourceInfo.LineNumber.ToString());
+                ErrorMessage = message;
+
+            }
+            return DfmCodeExtractor.Dedent(lines, DedentLength);
+        }
+            protected string ValidateHighlightLinesAndDedentLength(int totalLines)
         {
             var warningMessages = new List<string>();
-            bool result = true;
 
             if (!string.IsNullOrEmpty(HighlightLines))
             {
@@ -56,14 +75,12 @@ namespace Microsoft.DocAsCode.Dfm
                         else
                         {
                             warningMessages.Add($"Illegal range `{range}` in query parameter `highlight`.");
-                            result = false;
                             continue;
                         }
                     }
                     if (!CheckLineRange(totalLines, startLine, endLine, false))
                     {
                         warningMessages.Add(ErrorMessage + " in query parameter `highlight`.");
-                        result = false;
                     }
                 }
             }
@@ -72,11 +89,9 @@ namespace Microsoft.DocAsCode.Dfm
             {
                 warningMessages.Add($"Dedent length {DedentLength} should be positive. Auto-dedent will be applied.");
                 DedentLength = null;
-                result = false;
             }
 
-            ErrorMessage = string.Join(" ", warningMessages);
-            return result;
+            return string.Join(" ", warningMessages);
         }
 
         protected bool CheckLineRange(int totalLines, int? startLine, int? endLine, bool needThrow = true)

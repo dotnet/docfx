@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Dfm
                 CheckLineRange(lines.Length, pair.Item1, pair.Item2);
             }
 
+            var included = new List<string>();
             foreach (var pair in LinePairs)
             {
                 int startLine = pair.Item1 ?? 1;
@@ -24,9 +25,11 @@ namespace Microsoft.DocAsCode.Dfm
 
                 for (int i = startLine; i <= Math.Min(endLine, lines.Length); i++)
                 {
-                    yield return lines[i - 1];
+                    included.Add(lines[i - 1]);
                 }
             }
+
+            return ProcessIncludedLines(included, token);
         }
     }
 }
