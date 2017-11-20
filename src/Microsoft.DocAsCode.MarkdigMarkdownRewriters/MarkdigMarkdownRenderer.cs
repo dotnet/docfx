@@ -3,14 +3,19 @@
 
 namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
 {
-    using System.Collections.Generic;
-    using System.IO;
-
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
 
     public class MarkdigMarkdownRenderer : DfmMarkdownRenderer
     {
+        public virtual StringBuffer Render(IMarkdownRenderer render, DfmXrefInlineToken token, MarkdownInlineContext context)
+        {
+            if (token.Rule is DfmXrefShortcutInlineRule)
+            {
+                return $"@\"{token.Href}\"";
+            }
+
+            return base.Render(render, token, context);
+        }
     }
 }
