@@ -87,6 +87,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("remarks")]
         public string Remarks { get; set; }
 
+        [YamlMember(Alias = "additional_notes")]
+        [JsonProperty("additional_notes")]
+        public AdditionalNotes AdditionalNotes { get; set; }
+
         [YamlMember(Alias = "example")]
         [JsonProperty("example")]
         public List<string> Examples { get; set; }
@@ -222,6 +226,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 AssemblyNameList = model.AssemblyNameList,
                 NamespaceName = ApiBuildOutputUtility.GetReferenceViewModel(model.NamespaceName, references, model.SupportedLanguages),
                 Summary = model.Summary,
+                AdditionalNotes = model.AdditionalNotes,
                 Remarks = model.Remarks,
                 Examples = model.Examples,
                 Syntax = ApiSyntaxBuildOutput.FromModel(model.Syntax, references, model.SupportedLanguages),

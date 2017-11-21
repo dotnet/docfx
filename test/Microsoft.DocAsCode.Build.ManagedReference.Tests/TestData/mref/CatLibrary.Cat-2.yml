@@ -48,6 +48,10 @@ items:
   namespace: CatLibrary
   summary: "\n<p>Here's main class of this <em>Demo</em>.</p>\n<p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>\n<p></p>\n<p>this class is a template class. It has two Generic parameter. they are: <span class=\"typeparamref\">T</span> and <span class=\"typeparamref\">K</span>.</p>\n<p>The extension method of this class can refer to <xref href=\"CatLibrary.ICatExtension\" data-throw-if-not-resolved=\"false\"></xref> class</p>\n"
   remarks: "<xref href=''/>"
+  additional_notes:
+    implementer: <p>[A](http://A/).</p>
+    inheritor: <p>[B](http://B/).</p>
+    caller: <p>[B](http://C/).</p>
   example:
   - "\n<p>Here's example of how to create an instance of **Cat** class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>\n<pre><code class=\"c#\">    var a = new Cat(object, int)();\n    int catNumber = new int();\n    unsafe\n    {\n        a.GetFeetLength(catNumber);\n    }</code></pre>\n<p>As you see, here we bring in <strong>pointer</strong> so we need to add <span class=\"languagekeyword\">unsafe</span> keyword.</p>\n"
   syntax:
@@ -153,6 +157,10 @@ items:
   - CatLibrary
   namespace: CatLibrary
   summary: "\nConstructor with one generic parameter.\n"
+  additional_notes:
+    implementer: <p>[A](http://A/).</p>
+    inheritor: <p>[B](http://B/).</p>
+    caller: <p>[B](http://C/).</p>
   example: []
   syntax:
     content: public Cat(T ownType)
