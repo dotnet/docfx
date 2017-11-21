@@ -92,7 +92,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
             Assert.Equal("<p>Here&#39;s example of how to create an instance of <strong>Cat</strong> class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>\n<pre><code class=\"c#\">    var a = new Cat(object, int)();\n    int catNumber = new int();\n    unsafe\n    {\n        a.GetFeetLength(catNumber);\n    }</code></pre>\n<p>As you see, here we bring in <strong>pointer</strong> so we need to add <span class=\"languagekeyword\">unsafe</span> keyword.</p>\n", model.Examples[0]);
 
             Assert.Equal(20, model.Children.Count);
-            var cm = model.Children[0];
+            var cm = model.Children[1];
             Assert.Equal("<p><a href=\"http://A/\" data-raw-source=\"[A](http://A/)\" sourcefile=\"TestData/mref/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">A</a>.</p>", cm.AdditionalNotes.Implementer);
             Assert.Equal("<p><a href=\"http://B/\" data-raw-source=\"[B](http://B/)\" sourcefile=\"TestData/mref/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">B</a>.</p>", cm.AdditionalNotes.Inheritor);
             Assert.Equal("<p><a href=\"http://C/\" data-raw-source=\"[C](http://C/)\" sourcefile=\"TestData/mref/CatLibrary.Cat-2.yml\" sourcestartlinenumber=\"1\" sourceendlinenumber=\"1\">C</a>.</p>", cm.AdditionalNotes.Caller);
