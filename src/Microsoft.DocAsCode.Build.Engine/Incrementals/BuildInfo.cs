@@ -50,9 +50,9 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// </summary>
         public PostProcessInfo PostProcessInfo { get; set; }
         /// <summary>
-        /// Is this cache invalid.
+        /// Is this cache valid.
         /// </summary>
-        public bool Invalid { get; set; }
+        public bool IsValid { get; set; }
 
         public static BuildInfo Load(string baseDir)
         {

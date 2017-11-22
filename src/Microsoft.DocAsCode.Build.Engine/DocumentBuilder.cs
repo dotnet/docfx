@@ -117,7 +117,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             try
             {
                 var lastBuildInfo = BuildInfo.Load(_intermediateFolder);
-                if (lastBuildInfo.Invalid)
+                if (!lastBuildInfo.IsValid)
                 {
                     lastBuildInfo = null;
                 }
@@ -275,7 +275,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             try
                             {
-                                currentBuildInfo.Invalid = Logger.WarningCount < Logger.WarningThrottling;
+                                currentBuildInfo.IsValid = Logger.WarningCount < Logger.WarningThrottling;
                                 currentBuildInfo.Save(_intermediateFolder);
                                 if (lastBuildInfo != null && _cleanupCacheHistory)
                                 {
