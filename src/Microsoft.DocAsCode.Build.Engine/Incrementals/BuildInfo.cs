@@ -49,6 +49,10 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
         /// The post process information
         /// </summary>
         public PostProcessInfo PostProcessInfo { get; set; }
+        /// <summary>
+        /// Is this cache invalid.
+        /// </summary>
+        public bool Invalid { get; set; }
 
         public static BuildInfo Load(string baseDir)
         {
