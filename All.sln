@@ -193,7 +193,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XRefService.Manage", "tools
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XRefService.Common", "tools\XRefService\XRefService.Common\XRefService.Common.csproj", "{A1EF5A35-D6C8-438F-9820-8889278BC847}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdownMigrateTool", "tools\MarkdownMigrate\MarkdownMigrateTool.csproj", "{9DB0109F-EC29-4593-A6E8-DD07C860E53E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkdownMigrateTool", "tools\MarkdownMigrateTool\MarkdownMigrateTool.csproj", "{9DB0109F-EC29-4593-A6E8-DD07C860E53E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
