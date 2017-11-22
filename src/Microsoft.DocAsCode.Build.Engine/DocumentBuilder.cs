@@ -116,7 +116,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             try
             {
-                var lastBuildInfo = BuildInfo.Load(_intermediateFolder);
+                var lastBuildInfo = BuildInfo.Load(_intermediateFolder, true);
 
                 currentBuildInfo.CommitFromSHA = _commitFromSHA;
                 currentBuildInfo.CommitToSHA = _commitToSHA;
@@ -267,12 +267,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                         EnvironmentContext.FileAbstractLayerImpl = null;
 
                         // overwrite intermediate cache files
-                        if (_intermediateFolder != null &&
-                            transformDocument &&
-                            Logger.WarningCount < Logger.WarningThrottling)
+                        if (_intermediateFolder != null && transformDocument)
                         {
                             try
                             {
+                                currentBuildInfo.IsValid = Logger.WarningCount < Logger.WarningThrottling;
                                 currentBuildInfo.Save(_intermediateFolder);
                                 if (lastBuildInfo != null && _cleanupCacheHistory)
                                 {
