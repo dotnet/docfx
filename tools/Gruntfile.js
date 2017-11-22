@@ -4,8 +4,6 @@ module.exports = function(grunt) {
   'use strict';
   var configKey = 'Configuration';
   var conf = grunt.option(configKey) || process.env[configKey] || 'Debug';
-  var docfxSrc = "../target/" + conf + "/docfx.msbuild.nuspec";
-  var docfxDest = "../artifacts/docfx.msbuild/" + conf;
 
   // Generate version
   var suffix = getDateTime();
@@ -22,22 +20,6 @@ module.exports = function(grunt) {
   // load all grunt tasks matching the `grunt-*` pattern
   require('load-grunt-tasks')(grunt);
   grunt.initConfig({
-    copy: {
-      'docfx.msbuild': {
-        files: [{
-          expand: true,
-          src: ['*.dll', '*docfx.exe*'],
-          cwd: "../target/" + conf + "/docfx",
-          dest: docfxSrc + "/tools",
-          nonull: true,
-        }, {
-          expand: true,
-          src: ['**'],
-          cwd: '../src/nuspec/docfx.msbuild',
-          dest: docfxSrc,
-        }]
-      },
-    },
     nugetpack: {
       'docfx.msbuild': {
         src: docfxSrc + "/docfx.msbuild.nuspec",
