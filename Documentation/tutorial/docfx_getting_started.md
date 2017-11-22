@@ -47,10 +47,13 @@ Now you can view the generated website on http://localhost:8080.
 3. Use *DocFX* integrated with Visual Studio
 ---------------
 
-*Step1.* Install the [`docfx.console`](https://www.nuget.org/packages/docfx.console/) (formerly `docfx.msbuild`) nuget package on the project that you want to document.
-It add itself to the build targets and add the `docfx.json` configuration file along with other files.
+*Step1.* Create a **Class Library (.NET Framework)** project
 
-*Step2.* Compile, a `_site` folder is generated with the documentation.
+*Step2.* Right click on the project and select **Manage NuGet Package**
+
+*Step3.* Search and install [`docfx.console`](https://www.nuget.org/packages/docfx.console/) NuGet package. It add itself to the build targets and add the `docfx.json` configuration file along with other files.
+
+*Step4.* **Build** the project, and a `_site` folder will be generated with the documentation.
 
 > [!NOTE]
 > *Possible warning*:

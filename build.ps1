@@ -192,8 +192,7 @@ $packages = @{
 }
 
 # Pack plugins and tools
-# TODO: clean up docfx.msbuild.csproj
-foreach ($proj in (Get-ChildItem -Path ("src", "plugins", "tools") -Include *.csproj -Exclude 'docfx.msbuild.csproj' -Recurse)) {
+foreach ($proj in (Get-ChildItem -Path ("src", "plugins", "tools") -Include *.csproj -Recurse)) {
     $name = $proj.BaseName
     if ($packages.ContainsKey($name)) {
         $packages[$name].proj = $proj
