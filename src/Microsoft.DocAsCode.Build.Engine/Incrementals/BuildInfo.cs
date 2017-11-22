@@ -56,6 +56,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
 
         public static BuildInfo Load(string baseDir)
         {
+            return Load(baseDir, false);
+        }
+
+        public static BuildInfo Load(string baseDir, bool onlyValid)
+        {
             if (baseDir == null)
             {
                 return null;
@@ -76,6 +81,11 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
             try
             {
                 buildInfo = JsonUtility.Deserialize<BuildInfo>(Path.Combine(baseDir, FileName));
+                if (onlyValid && !buildInfo.IsValid)
+                {
+                    return null;
+                }
+
                 var targetDirectory = Path.Combine(baseDir, buildInfo.DirectoryName);
                 foreach (var version in buildInfo.Versions)
                 {

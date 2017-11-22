@@ -116,11 +116,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             try
             {
-                var lastBuildInfo = BuildInfo.Load(_intermediateFolder);
-                if (!lastBuildInfo.IsValid)
-                {
-                    lastBuildInfo = null;
-                }
+                var lastBuildInfo = BuildInfo.Load(_intermediateFolder, true);
 
                 currentBuildInfo.CommitFromSHA = _commitFromSHA;
                 currentBuildInfo.CommitToSHA = _commitToSHA;
