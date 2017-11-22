@@ -32,12 +32,16 @@ We currently support C# and VB projects.
 2. Option 2: Open `All.sln` under *DocFX* code repo in Visual Studio and build All.sln.
 
 ## How do I play with *DocFX*?
-Please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
+1. Option 1: install docfx through [chocolatey package](https://chocolatey.org/packages/docfx): `choco install docfx -y`.
+2. Option 2: install docfx through nuget package: `nuget install docfx.console`, `docfx.exe` is under folder *docfx.console/tools/*.
+3. Option 3: play docfx inside Visual Studio: create a **Class Library (.NET Framework)** project, **Manage Nuget Packages** to install `docfx.console` nuget package on the project, **Build** to create the generated website under folder `_site`.
+
+For more information, please refer to [Getting Started](http://dotnet.github.io/docfx/tutorial/docfx_getting_started.html).
 
 ## Integrate with Continuous Integration environment
 
 1. Install docfx through [chocolatey package](https://chocolatey.org/packages/docfx)
-`cinst docfx -y`
+`choco install docfx -y`
 
 2. Call docfx
 `docfx docfx.json`
