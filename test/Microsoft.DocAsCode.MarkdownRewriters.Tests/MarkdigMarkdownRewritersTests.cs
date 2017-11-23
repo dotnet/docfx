@@ -42,6 +42,22 @@ namespace Microsoft.DocAsCode.MarkdownRewriters.Tests
             Assert.Equal(expected, result);
         }
 
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_NormalizeVideo()
+        {
+            var source = @"> [!VIDEO https://channel9.msdn.com]
+>
+>
+";
+            var expected = @"> [!VIDEO https://channel9.msdn.com]
+
+";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
         private string Rewrite(string source, string filePath)
         {
             return _engine.Markup(source, filePath);

@@ -17,5 +17,10 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
 
             return base.Render(render, token, context);
         }
+
+        public override StringBuffer Render(IMarkdownRenderer render, DfmVideoBlockToken token, MarkdownBlockContext context)
+        {
+            return $"[!VIDEO {token.Link}]";
+        }
     }
 }
