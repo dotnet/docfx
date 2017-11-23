@@ -51,7 +51,7 @@ items:
   additional_notes:
     implementer: <p>[A](http://A/).</p>
     inheritor: <p>[B](http://B/).</p>
-    caller: <p>[B](http://C/).</p>
+    caller: <p>[C](http://C/).</p>
   example:
   - "\n<p>Here's example of how to create an instance of **Cat** class. As T is limited with <code>class</code> and K is limited with <code>struct</code>.</p>\n<pre><code class=\"c#\">    var a = new Cat(object, int)();\n    int catNumber = new int();\n    unsafe\n    {\n        a.GetFeetLength(catNumber);\n    }</code></pre>\n<p>As you see, here we bring in <strong>pointer</strong> so we need to add <span class=\"languagekeyword\">unsafe</span> keyword.</p>\n"
   syntax:
@@ -160,7 +160,7 @@ items:
   additional_notes:
     implementer: <p>[A](http://A/).</p>
     inheritor: <p>[B](http://B/).</p>
-    caller: <p>[B](http://C/).</p>
+    caller: <p>[C](http://C/).</p>
   example: []
   syntax:
     content: public Cat(T ownType)
