@@ -39,12 +39,25 @@ namespace Microsoft.DocAsCode.Build.Engine
                 null,
                 processor,
                 parameters.Files.EnumerateFiles());
+            var context = new DocumentBuildContext(
+                Path.Combine(Directory.GetCurrentDirectory(), parameters.OutputBaseDir),
+                parameters.Files.EnumerateFiles(),
+                parameters.ExternalReferencePackages,
+                parameters.XRefMaps,
+                parameters.MaxParallelism,
+                parameters.Files.DefaultBaseDir,
+                parameters.VersionName,
+                parameters.ApplyTemplateSettings,
+                parameters.RootTocPath,
+                parameters.VersionDir,
+                parameters.XRefServiceUrls,
+                parameters.GroupInfo);
             var phaseProcessor = new PhaseProcessor
             {
                 Handlers =
                     {
-                        new CompilePhaseHandler(null),
-                        new LinkPhaseHandler(null, null),
+                        new CompilePhaseHandler(context),
+                        new LinkPhaseHandler(context, null),
                     }
             };
             phaseProcessor.Process(new List<HostService> { hostService }, parameters.MaxParallelism);
