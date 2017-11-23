@@ -199,11 +199,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                         toc.Value,
                         (k, v) =>
                         {
-                            foreach (var item in toc.Value)
-                            {
-                                v.Add(item);
-                            }
-                            return v;
+                            var union = new HashSet<string>(v, FilePathComparer.OSPlatformSensitiveComparer);
+                            union.UnionWith(toc.Value);
+                            return union;
                         });
                 }
             }
