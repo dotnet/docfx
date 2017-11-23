@@ -189,6 +189,10 @@ $packages = @{
         "proj" = $null;
         "nuspecs" = @("src\nuspec\TocConverter\TocConverter.nuspec");
     };
+    "MarkdownMigrateTool" = @{
+        "proj" = $null;
+        "nuspecs" = @("src\nuspec\MarkdownMigrateTool\MarkdownMigrateTool.nuspec");
+    }
 }
 
 # Pack plugins and tools
