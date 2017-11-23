@@ -39,5 +39,8 @@ namespace Microsoft.DocAsCode
 
         [Option("property", HelpText = "--property <n1>=<v1>;<n2>=<v2> An optional set of MSBuild properties used when interpreting project files. These are the same properties that are passed to msbuild via the /property:<n1>=<v1>;<n2>=<v2> command line argument")]
         public string MSBuildProperties { get; set; }
+
+        [Option("disableGitFeatures", HelpText = "Disable fetching Git related information for articles. By default it is enabled and may have side effect on performance when the repo is large.")]
+        public bool DisableGitFeatures { get; set; }
     }
 }

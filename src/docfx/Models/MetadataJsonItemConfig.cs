@@ -40,6 +40,8 @@ namespace Microsoft.DocAsCode
         /// </summary>
         [JsonProperty("properties")]
         public Dictionary<string, string> MSBuildProperties { get; set; }
-    }
 
+        [JsonProperty("disableGitFeatures")]
+        public bool DisableGitFeatures { get; set; }
+    }
 }
