@@ -81,6 +81,9 @@ namespace Microsoft.DocAsCode.Build.Engine
         [IncrementalIgnore]
         public SitemapOptions SitemapOptions { get; set; }
 
+        [IncrementalIgnore]
+        public string SchemaLicense { get; set; }
+
         public string FALName { get; set; }
 
         public bool DisableGitFeatures { get; set; }
