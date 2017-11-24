@@ -5,6 +5,7 @@
     <PreviewPort Condition=" '$(PreviewPort)' == '' ">8002</PreviewPort>
     <IsServing Condition="'$(IsServing)'==''">False</IsServing>
     <PreviewOutputFolder Condition=" '$(PreviewOutputFolder)' == '' ">$(OutputFolder)/_site</PreviewOutputFolder>
+    <MetadataOutputFolder Condition=" '$(MetadataOutputFolder)' == '' ">$(OutputFolder)</MetadataOutputFolder>
     <LogFile Condition=" '$(LogFile)' == '' ">log.txt</LogFile>
     <LogLevel Condition=" '$(LogLevel)' == '' ">Verbose</LogLevel>
 
@@ -43,7 +44,7 @@
   <!-- ************************************************************************* -->
   <Target Name="DocGenerateMetadata" >
     <PropertyGroup>
-      <DocGenerateCommand>&quot;$(BuildDocToolPath)&quot; &quot;$(DocfxConfigFile)&quot; -o &quot;$(OutputFolder)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;</DocGenerateCommand>
+      <DocGenerateCommand>&quot;$(BuildDocToolPath)&quot; &quot;$(DocfxConfigFile)&quot; -o &quot;$(MetadataOutputFolder)&quot; -l &quot;$(LogFile)&quot; --logLevel &quot;$(LogLevel)&quot;</DocGenerateCommand>
       <DocGenerateCommand Condition="$(RebuildDoc)">$(DocGenerateCommand) -f</DocGenerateCommand>
       <DocGenerateCommand Condition="'$(DocTemplate)' != ''">$(DocGenerateCommand) --template &quot;$(DocTemplate)&quot; </DocGenerateCommand>
       <DocGenerateCommand Condition="'$(DocParameters)' != ''">$(DocGenerateCommand) $(DocParameters)</DocGenerateCommand>
