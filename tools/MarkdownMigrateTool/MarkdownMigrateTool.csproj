@@ -4,9 +4,14 @@
     <TargetFramework>net461</TargetFramework>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Mono.Options" Version="5.3.0.1" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdigMarkdownRewriters\Microsoft.DocAsCode.MarkdigMarkdownRewriters.csproj" />
   </ItemGroup>
 
   <ItemGroup>
