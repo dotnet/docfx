@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Plugins
         private static string _baseDirectory;
         private static string _outputDirectory;
         private static string _version;
+        private static bool _disableGitFeatures = false;
 
         /// <summary>
         /// The directory path which contains docfx.json.
@@ -47,6 +48,14 @@ namespace Microsoft.DocAsCode.Plugins
         public static void SetVersion(string version)
         {
             _version = version;
+        }
+
+        public static bool GitFeaturesDisabled => _disableGitFeatures;
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static void SetGitFeaturesDisabled(bool disabled)
+        {
+            _disableGitFeatures = disabled;
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]

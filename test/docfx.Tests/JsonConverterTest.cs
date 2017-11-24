@@ -42,7 +42,8 @@ namespace Microsoft.DocAsCode.Tests
                 "}," +
                 "\"noLangKeyword\":false," +
                 "\"keepFileLink\":false," +
-                "\"cleanupCacheHistory\":false" +
+                "\"cleanupCacheHistory\":false," +
+                "\"disableGitFeatures\":false" +
             "}";
 
             BuildJsonConfig buildOptions = JsonConvert.DeserializeObject<BuildJsonConfig>(jsonString);

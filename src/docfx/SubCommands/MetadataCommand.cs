@@ -63,7 +63,9 @@ namespace Microsoft.DocAsCode.SubCommands
                 VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
 
                 var inputModel = ConvertToInputModel(item);
-                
+
+                EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
+
                 // TODO: Use plugin to generate metadata for files with different extension?
                 using (var worker = new ExtractMetadataWorker(inputModel))
                 {
@@ -107,6 +109,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 item.Force |= options.ForceRebuild;
                 item.Raw |= options.PreserveRawInlineComments;
                 item.ShouldSkipMarkup |= options.ShouldSkipMarkup;
+                item.DisableGitFeatures |= options.DisableGitFeatures;
                 if (!string.IsNullOrEmpty(options.FilterConfigFile))
                 {
                     item.FilterConfigFile = Path.GetFullPath(options.FilterConfigFile);

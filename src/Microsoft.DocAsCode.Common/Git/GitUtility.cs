@@ -43,20 +43,25 @@ namespace Microsoft.DocAsCode.Common.Git
 
         public static GitDetail TryGetFileDetail(string filePath)
         {
-            GitDetail detail = null;
+            if (EnvironmentContext.GitFeaturesDisabled)
+            {
+                return null;
+            }
+
             try
             {
-                detail = GetFileDetail(filePath);
+                return GetFileDetail(filePath);
             }
             catch (Exception ex)
             {
                 Logger.LogWarning($"Skipping GetFileDetail. Exception found: {ex.GetType()}, Message: {ex.Message}");
                 Logger.LogVerbose(ex.ToString());
             }
-            return detail;
+
+            return null;
         }
 
-        public static GitDetail GetFileDetail(string filePath)
+        private static GitDetail GetFileDetail(string filePath)
         {
             if (string.IsNullOrEmpty(filePath) || !ExistGitCommand())
             {
@@ -69,7 +74,7 @@ namespace Microsoft.DocAsCode.Common.Git
             return detail;
         }
 
-        public static GitRepoInfo GetRepoInfo(string directory)
+        private static GitRepoInfo GetRepoInfo(string directory)
         {
             if (directory == null)
             {

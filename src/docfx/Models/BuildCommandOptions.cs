@@ -120,5 +120,8 @@ namespace Microsoft.DocAsCode
 
         [Option("falName", HelpText = "Set the name of input file abstract layer builder.")]
         public string FALName { get; set; }
+
+        [Option("disableGitFeatures", HelpText = "Disable fetching Git related information for articles. By default it is enabled and may have side effect on performance when the repo is large.")]
+        public bool DisableGitFeatures { get; set; }
     }
 }

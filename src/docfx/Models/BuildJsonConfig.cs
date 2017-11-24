@@ -177,5 +177,8 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("falName")]
         public string FALName { get; set; }
+
+        [JsonProperty("disableGitFeatures")]
+        public bool DisableGitFeatures { get; set; }
     }
 }
