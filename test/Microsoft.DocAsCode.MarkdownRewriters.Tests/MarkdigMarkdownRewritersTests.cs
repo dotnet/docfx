@@ -22,10 +22,21 @@ namespace Microsoft.DocAsCode.MarkdownRewriters.Tests
 
         [Fact]
         [Trait("Related", "MarkdigMarkdownRewriters")]
-        public void TestMarkdigMarkdownRewriters_ShortcutXref()
+        public void TestMarkdigMarkdownRewriters_Resloved_ShortcutXref()
         {
-            var source = "@system.string";
-            var expected = "@\"system.string\"\n\n";
+            var source = "@System.String";
+            var expected = "@\"System.String\"\n\n";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_Unresloved_ShortcutXref()
+        {
+            var source = "@outlook.com";
+            var expected = "@outlook.com\n\n";
 
             var result = Rewrite(source, "topic.md");
             Assert.Equal(expected, result);
