@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
     using Xunit;
 
-    using static Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataWorker;
+    using static Microsoft.DocAsCode.Metadata.ManagedReference.IntermediateMetadataExtractor;
 
     [Trait("Owner", "qinezh")]
     [Trait("Language", "CSharp")]
