@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
 {
+    using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
 
@@ -19,6 +20,19 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
                 {
                     return $"@\"{token.Href}\"";
                 }
+            }
+
+            return base.Render(render, token, context);
+        }
+
+        public override StringBuffer Render(IMarkdownRenderer render, MarkdownLinkInlineToken token, MarkdownInlineContext context)
+        {
+            if (token.LinkType is MarkdownLinkType.AutoLink && 
+                token.SourceInfo.Markdown.StartsWith("<mailto:") &&
+                token.Content.Length == 1)
+            {
+                var content = token.Content.First();
+                return $"<{content.SourceInfo.Markdown}>";
             }
 
             return base.Render(render, token, context);
