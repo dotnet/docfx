@@ -3,6 +3,9 @@
 
 namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
 {
+    using System.Net.Http;
+    using System.Threading.Tasks;
+
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.MarkdownLite;
 
@@ -12,7 +15,10 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
         {
             if (token.Rule is DfmXrefShortcutInlineRule)
             {
-                return $"@\"{token.Href}\"";
+                if (TryResolveUid(token.Href))
+                {
+                    return $"@\"{token.Href}\"";
+                }
             }
 
             return base.Render(render, token, context);
@@ -21,6 +27,29 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
         public override StringBuffer Render(IMarkdownRenderer render, DfmVideoBlockToken token, MarkdownBlockContext context)
         {
             return $"[!VIDEO {token.Link}]";
+        }
+
+        private bool TryResolveUid(string uid)
+        {
+            var task = TryResolveUidAsync(uid);
+            return task.Result;
+        }
+
+        private async Task<bool> TryResolveUidAsync(string uid)
+        {
+            var page = $"https://xref.docs.microsoft.com/query?uid={uid}";
+            using (var client = new HttpClient())
+            using (var response = await client.GetAsync(page))
+            using (var content = response.Content)
+            {
+                var result = await content.ReadAsStringAsync();
+                if (!string.Equals("[]", result))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
