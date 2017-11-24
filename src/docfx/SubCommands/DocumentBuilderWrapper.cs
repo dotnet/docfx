@@ -212,7 +212,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 ForcePostProcess = config.ForcePostProcess ?? false,
                 SitemapOptions = config.SitemapOptions,
                 FALName = config.FALName,
-                DisableGitFeatures = config.DisableGitFeatures
+                DisableGitFeatures = config.DisableGitFeatures,
                 SchemaLicense = config.SchemaLicense,
             };
             if (config.GlobalMetadata != null)
