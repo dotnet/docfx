@@ -73,7 +73,7 @@ namespace Microsoft.DocAsCode.MarkdownRewriters.Tests
         [Trait("Related", "MarkdigMarkdownRewriters")]
         public void TestMarkdigMarkdownRewriters_MailTo()
         {
-            var source = "<mailto:docs@microsoft.com>";
+            var source = "<Mailto:docs@microsoft.com>";
             var expected = "<docs@microsoft.com>\n\n";
 
             var result = Rewrite(source, "topic.md");

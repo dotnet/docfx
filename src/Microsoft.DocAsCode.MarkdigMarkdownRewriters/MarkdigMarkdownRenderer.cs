@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
 {
+    using System;
     using System.Linq;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
         public override StringBuffer Render(IMarkdownRenderer render, MarkdownLinkInlineToken token, MarkdownInlineContext context)
         {
             if (token.LinkType is MarkdownLinkType.AutoLink && 
-                token.SourceInfo.Markdown.StartsWith("<mailto:") &&
+                token.SourceInfo.Markdown.StartsWith("<mailto:", StringComparison.OrdinalIgnoreCase) &&
                 token.Content.Length == 1)
             {
                 var content = token.Content.First();
