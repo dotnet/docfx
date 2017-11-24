@@ -26,7 +26,7 @@ namespace MarkdownMigrateTool
                 { "o|output=", "the output file or folder to save migrated markdown contents", o => Output = o },
                 { "f|file=", "the path of file that needed to be migrated", f => FilePath = f },
                 { "p|patterns=", "the glob pattern to find markdown files", p => Patterns.Add(p)},
-                { "e|excludepatterns=", "the glob pattern to exclude markdown files", e => ExcludePatterns.Add(e)},
+                { "e|excludePatterns=", "the glob pattern to exclude markdown files", e => ExcludePatterns.Add(e)},
                 { "c|cwd=", "the root path using for glob pattern searching", c => WorkingFolder = c }
             };
         }
