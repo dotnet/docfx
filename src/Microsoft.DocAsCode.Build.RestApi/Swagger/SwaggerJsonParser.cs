@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-    internal class SwaggerJsonParser
+    public class SwaggerJsonParser
     {
         private static readonly ThreadLocal<JsonSerializer> Serializer = new ThreadLocal<JsonSerializer>(
             () =>
