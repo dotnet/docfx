@@ -47,6 +47,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
         public void Exec(SubCommandRunningContext context)
         {
+            EnvironmentContext.SetGitFeaturesDisabled(Config.DisableGitFeatures);
             EnvironmentContext.SetBaseDirectory(Path.GetFullPath(string.IsNullOrEmpty(Config.BaseDirectory) ? Directory.GetCurrentDirectory() : Config.BaseDirectory));
             // TODO: remove BaseDirectory from Config, it may cause potential issue when abused
             var baseDirectory = EnvironmentContext.BaseDirectory;

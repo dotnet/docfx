@@ -83,6 +83,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public string FALName { get; set; }
 
+        public bool DisableGitFeatures { get; set; }
+
         public DocumentBuildParameters Clone() =>
             (DocumentBuildParameters)MemberwiseClone();
     }
