@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.Common;
@@ -15,10 +14,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
     public class SchemaValidateService
     {
-        private static ConcurrentDictionary<string, SchemaValidateService> _cache = new ConcurrentDictionary<string, SchemaValidateService>();
+        private static readonly object _sync = new object();
+        private static SchemaValidateService _service = null;
 
+        private readonly object _locker = new object();
         private bool _schemaValidationEnabled = true;
-        private object _locker = new object();
 
         private SchemaValidateService(string license = null)
         {
@@ -30,7 +30,18 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         public static SchemaValidateService GetInstance(string license = null)
         {
-            return _cache.GetOrAdd(license ?? string.Empty, s => new SchemaValidateService(s));
+            if (_service == null)
+            {
+                lock (_sync)
+                {
+                    if (_service == null)
+                    {
+                        _service = new SchemaValidateService(license);
+                    }
+                }
+            }
+
+            return _service;
         }
 
         public void Validate(object obj, JSchema schema)
@@ -45,7 +56,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             {
                 ValidateObject(obj, schema, (sender, args) => errors.Add(args.Message));
             }
-            catch (Exception e)
+            catch (JSchemaException e)
             {
                 if (_schemaValidationEnabled)
                 {
