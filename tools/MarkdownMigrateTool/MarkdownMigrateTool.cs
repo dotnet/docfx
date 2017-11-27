@@ -7,6 +7,7 @@ namespace MarkdownMigrateTool
     using System.Collections.Generic;
     using System.Linq;
     using System.IO;
+    using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Dfm;
     using Microsoft.DocAsCode.Glob;
@@ -55,20 +56,16 @@ namespace MarkdownMigrateTool
 
             if (string.IsNullOrEmpty(outputFolder))
             {
-                foreach (var file in files)
-                {
-                    MigrateFile(file, file);
-                }
+                Parallel.ForEach(files, file => MigrateFile(file, file));
+                return;
             }
-            else
+
+            Parallel.ForEach(files, file =>
             {
-                foreach (var file in files)
-                {
-                    var name = Path.GetFileName(file);
-                    var outputFile = Path.Combine(outputFolder, name);
-                    MigrateFile(file, outputFile);
-                }
-            }
+                var name = Path.GetFileName(file);
+                var outputFile = Path.Combine(outputFolder, name);
+                MigrateFile(file, outputFile);
+            });
         }
 
         private void MigrateFile(string inputFile, string outputFile)
