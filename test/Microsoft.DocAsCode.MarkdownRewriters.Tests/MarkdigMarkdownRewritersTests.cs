@@ -91,6 +91,17 @@ namespace Microsoft.DocAsCode.MarkdownRewriters.Tests
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_InlineEscapedLink()
+        {
+            var source = "[cool **text**](this%20is%20a%20link)";
+            var expected = "[cool **text**](this%20is%20a%20link)\n\n";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
         private string Rewrite(string source, string filePath)
         {
             return _engine.Markup(source, filePath);
