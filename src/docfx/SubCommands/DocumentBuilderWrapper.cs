@@ -33,6 +33,8 @@ namespace Microsoft.DocAsCode.SubCommands
         private readonly string _baseDirectory;
         private readonly string _outputDirectory;
         private readonly string _templateDirectory;
+        private readonly bool _disableGitFeatures;
+        private readonly string _version;
         private readonly BuildJsonConfig _config;
         private readonly CrossAppDomainListener _listener;
         private readonly TemplateManager _manager;
@@ -55,12 +57,18 @@ namespace Microsoft.DocAsCode.SubCommands
             _manager = manager;
             _logLevel = Logger.LogLevelThreshold;
             _templateDirectory = templateDirectory;
+
+            // pass EnvironmentContext into another domain
+            _disableGitFeatures = EnvironmentContext.GitFeaturesDisabled;
+            _version = EnvironmentContext.Version;
         }
 
         public void BuildDocument()
         {
             var sponsor = new ClientSponsor();
             EnvironmentContext.SetBaseDirectory(_baseDirectory);
+            EnvironmentContext.SetGitFeaturesDisabled(_disableGitFeatures);
+            EnvironmentContext.SetVersion(_version);
             if (_listener != null)
             {
                 Logger.LogLevelThreshold = _logLevel;
