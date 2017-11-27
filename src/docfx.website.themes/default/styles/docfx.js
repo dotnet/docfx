@@ -38,6 +38,7 @@ $(function () {
 
   function breakText() {
     $(".xref").addClass("text-break");
+    $("td em").addClass("text-break");
     var texts = $(".text-break");
     texts.each(function () {
       $(this).breakWord();
