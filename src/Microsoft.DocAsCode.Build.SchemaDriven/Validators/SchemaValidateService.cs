@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private static ConcurrentDictionary<string, SchemaValidateService> _cache = new ConcurrentDictionary<string, SchemaValidateService>();
 
         private bool _schemaValidationEnabled = true;
-        private object locker = new object();
+        private object _locker = new object();
 
         private SchemaValidateService(string license = null)
         {
@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             {
                 if (_schemaValidationEnabled)
                 {
-                    lock (locker)
+                    lock (_locker)
                     {
                         if (_schemaValidationEnabled)
                         {
