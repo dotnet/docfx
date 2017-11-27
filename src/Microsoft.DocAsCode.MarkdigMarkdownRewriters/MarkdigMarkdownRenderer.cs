@@ -4,7 +4,7 @@
 namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
 {
     using System;
-    using System.Linq;
+    using System.Collections.Immutable;
     using System.Net.Http;
     using System.Threading.Tasks;
 
@@ -28,20 +28,45 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
 
         public override StringBuffer Render(IMarkdownRenderer render, MarkdownLinkInlineToken token, MarkdownInlineContext context)
         {
-            if (token.LinkType is MarkdownLinkType.AutoLink && 
-                token.SourceInfo.Markdown.StartsWith("<mailto:", StringComparison.OrdinalIgnoreCase) &&
-                token.Content.Length == 1)
+            switch (token.LinkType)
             {
-                var content = token.Content.First();
-                return $"<{content.SourceInfo.Markdown}>";
-            }
+                case MarkdownLinkType.AutoLink:
+                    if (token.SourceInfo.Markdown.StartsWith("<mailto:", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var mailText = RenderInlineTokens(token.Content, render, context);
 
-            return base.Render(render, token, context);
+                        return $"<{mailText}>";
+                    }
+                    goto default;
+
+                case MarkdownLinkType.NormalLink:
+                    var href = Uri.EscapeDataString(Uri.UnescapeDataString(token.Href ?? string.Empty));
+                    var text = RenderInlineTokens(token.Content, render, context);
+
+                    return $"[{text}]({href})";
+
+                default:
+                    return base.Render(render, token, context);
+            }
         }
 
         public override StringBuffer Render(IMarkdownRenderer render, DfmVideoBlockToken token, MarkdownBlockContext context)
         {
             return $"[!VIDEO {token.Link}]";
+        }
+
+        private StringBuffer RenderInlineTokens(ImmutableArray<IMarkdownToken> tokens, IMarkdownRenderer render, MarkdownInlineContext context)
+        {
+            var result = StringBuffer.Empty;
+            if (tokens != null)
+            {
+                foreach (var t in tokens)
+                {
+                    result += base.Render(render, t, context);
+                }
+            }
+
+            return result;
         }
 
         private bool TryResolveUid(string uid)
