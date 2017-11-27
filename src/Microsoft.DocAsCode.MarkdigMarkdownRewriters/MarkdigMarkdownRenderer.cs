@@ -40,7 +40,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
                     goto default;
 
                 case MarkdownLinkType.NormalLink:
-                    var href = Uri.EscapeDataString(Uri.UnescapeDataString(token.Href));
+                    var href = Uri.EscapeDataString(Uri.UnescapeDataString(token.Href ?? string.Empty));
                     var text = RenderInlineTokens(token.Content, render, context);
 
                     return $"[{text}]({href})";
