@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
-    using static Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataWorker;
+    using static Microsoft.DocAsCode.Metadata.ManagedReference.IntermediateMetadataExtractor;
 
     [Trait("Owner", "vwxyzh")]
     [Trait("Language", "CSharp")]
@@ -137,7 +137,7 @@ namespace Test1
 }
 ";
             MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code));
-            MetadataItem output_preserveRaw = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), null, true);
+            MetadataItem output_preserveRaw = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), null, options: new ExtractMetadataOptions { PreserveRawInlineComments = true });
             Assert.Equal(1, output.Items.Count);
             {
                 var type = output.Items[0].Items[0];
@@ -1073,7 +1073,7 @@ namespace Test1
 }
 ";
             var compilation = CreateCompilationFromCSharpCode(code);
-            MetadataItem output = GenerateYamlMetadata(compilation, extensionMethods: GetAllExtensionMethodsFromCompilation(new[] { compilation }));
+            MetadataItem output = GenerateYamlMetadata(compilation, options: new ExtractMetadataOptions { ExtensionMethods = GetAllExtensionMethodsFromCompilation(new[] { compilation }) });
             Assert.Equal(1, output.Items.Count);
             // FooImple<T>
             {

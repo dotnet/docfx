@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
-    using static Microsoft.DocAsCode.Metadata.ManagedReference.ExtractMetadataWorker;
+    using static Microsoft.DocAsCode.Metadata.ManagedReference.IntermediateMetadataExtractor;
 
     [Trait("Owner", "vwxyzh")]
     [Trait("Language", "CSharp")]
@@ -107,7 +107,7 @@ namespace Test1
 
 ";
             string configFile = "TestData/filterconfig.yml";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), filterConfigFile: configFile);
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), options: new ExtractMetadataOptions { FilterConfigFile = configFile });
             Assert.Equal(2, output.Items.Count);
             var @namespace = output.Items[0];
             Assert.NotNull(@namespace);
@@ -169,7 +169,7 @@ namespace Test1
     }
 }";
             string configFile = "TestData/filterconfig_attribute.yml";
-            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), filterConfigFile: configFile);
+            MetadataItem output = GenerateYamlMetadata(CreateCompilationFromCSharpCode(code), options: new ExtractMetadataOptions { FilterConfigFile = configFile });
             var @namespace = output.Items[0];
             var class1 = @namespace.Items[0];
             Assert.Equal(1, class1.Attributes.Count);

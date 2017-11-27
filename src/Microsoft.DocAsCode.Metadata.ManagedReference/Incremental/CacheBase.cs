@@ -32,6 +32,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _configs = ReadCacheFile(path);
         }
 
+        public BuildInfo GetValidConfig(string key)
+        {
+            return GetConfig(key);
+        }
+
         public BuildInfo GetValidConfig(IEnumerable<string> inputProjects)
         {
             var key = StringExtension.GetNormalizedFullPathKey(inputProjects);
