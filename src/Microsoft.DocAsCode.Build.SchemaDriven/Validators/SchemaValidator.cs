@@ -16,11 +16,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private static readonly Uri SupportedMetaSchemaUri = new Uri("https://dotnet.github.io/docfx/schemas/v1.0/schema.json#");
         private readonly JSchema _jSchema;
         private readonly object _schemaObject;
-        private readonly SchemaValidateService _validateService;
+        private readonly SchemaValidateService _validateService = SchemaValidateService.Instance;
 
         public SchemaValidator(JObject schemaObj, JSchema schema, string license = null)
         {
-            _validateService = SchemaValidateService.GetInstance(license);
+            _validateService.RegisterLicense(license);
             _schemaObject = schemaObj;
             _jSchema = schema;
         }

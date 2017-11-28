@@ -15,33 +15,33 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     public class SchemaValidateService
     {
         private static readonly object _sync = new object();
-        private static SchemaValidateService _service = null;
 
         private readonly object _locker = new object();
         private bool _schemaValidationEnabled = true;
 
-        private SchemaValidateService(string license = null)
+        public static readonly SchemaValidateService Instance = new SchemaValidateService();
+
+        private SchemaValidateService()
         {
-            if (!string.IsNullOrEmpty(license))
-            {
-                RegisterLicense(license);
-            }
         }
 
-        public static SchemaValidateService GetInstance(string license = null)
+        public void RegisterLicense(string license)
         {
-            if (_service == null)
+            if (string.IsNullOrEmpty(license))
             {
-                lock (_sync)
-                {
-                    if (_service == null)
-                    {
-                        _service = new SchemaValidateService(license);
-                    }
-                }
+                return;
             }
 
-            return _service;
+            try
+            {
+                License.RegisterLicense(license);
+                _schemaValidationEnabled = true;
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning($"Encountered issue registering license for NewtonsoftJson.Schema, schema validation will be disabled: {e.Message}");
+                _schemaValidationEnabled = false;
+            }
         }
 
         public void Validate(object obj, JSchema schema)
@@ -90,19 +90,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 while (reader.Read())
                 {
                 }
-            }
-        }
-
-        private void RegisterLicense(string license)
-        {
-            try
-            {
-                License.RegisterLicense(license);
-            }
-            catch (Exception e)
-            {
-                Logger.LogWarning($"Encountered issue registering license for NewtonsoftJson.Schema, schema validation will be disabled: {e.Message}");
-                _schemaValidationEnabled = false;
             }
         }
     }
