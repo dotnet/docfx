@@ -144,8 +144,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     return JsonUtility.Deserialize<Dictionary<string, BuildInfo>>(path);
                 }
             }
-            catch
+            catch (Exception e)
             {
+                Logger.LogWarning($"Cache file {path} is invalid, ignored: {e.Message}.");
             }
 
             return new Dictionary<string, BuildInfo>();

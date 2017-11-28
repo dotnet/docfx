@@ -133,22 +133,25 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 // No matter is incremental or not, we have to load solutions into memory
                 foreach (var path in solutions)
                 {
-                    documentCache.AddDocument(path, path);
-                    var solution = await GetSolutionAsync(path);
-                    if (solution != null)
+                    using (new LoggerFileScope(path))
                     {
-                        foreach (var project in solution.Projects)
+                        documentCache.AddDocument(path, path);
+                        var solution = await GetSolutionAsync(path);
+                        if (solution != null)
                         {
-                            var projectFile = new FileInformation(project.FilePath);
+                            foreach (var project in solution.Projects)
+                            {
+                                var projectFile = new FileInformation(project.FilePath);
 
-                            // If the project is csproj/vbproj, add to project dictionary, otherwise, ignore
-                            if (projectFile.IsSupportedProject())
-                            {
-                                projectCache.GetOrAdd(projectFile.NormalizedPath, s => project);
-                            }
-                            else
-                            {
-                                Logger.LogWarning($"Project {projectFile.RawPath} inside solution {path} is ignored, supported projects are csproj and vbproj.");
+                                // If the project is csproj/vbproj, add to project dictionary, otherwise, ignore
+                                if (projectFile.IsSupportedProject())
+                                {
+                                    projectCache.GetOrAdd(projectFile.NormalizedPath, s => project);
+                                }
+                                else
+                                {
+                                    Logger.LogWarning($"Project {projectFile.RawPath} inside solution {path} is ignored, supported projects are csproj and vbproj.");
+                                }
                             }
                         }
                     }
@@ -279,6 +282,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
+            Logger.LogInfo("Generating metadata for each project...");
+
             // Build all the projects to get the output and save to cache
             List<MetadataItem> projectMetadataList = new List<MetadataItem>();
             ConcurrentDictionary<string, bool> projectRebuildInfo = new ConcurrentDictionary<string, bool>();
@@ -356,10 +361,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
-            var allMemebers = MergeYamlProjectMetadata(projectMetadataList);
-            var allReferences = MergeYamlProjectReferences(projectMetadataList);
+            Dictionary<string, MetadataItem> allMembers;
+            Dictionary<string, ReferenceItem> allReferences;
+            using (new PerformanceScope("MergeMetadata", LogLevel.Info))
+            {
+                allMembers = MergeYamlProjectMetadata(projectMetadataList);
+            }
 
-            if (allMemebers == null || allMemebers.Count == 0)
+            using (new PerformanceScope("MergeReference", LogLevel.Info))
+            {
+                allReferences = MergeYamlProjectReferences(projectMetadataList);
+            }
+
+            if (allMembers == null || allMembers.Count == 0)
             {
                 var value = StringExtension.ToDelimitedString(projectMetadataList.Select(s => s.Name));
                 Logger.Log(LogLevel.Warning, $"No metadata is generated for {value}.");
@@ -369,7 +383,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 // TODO: need an intermediate folder? when to clean it up?
                 // Save output to output folder
-                var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, options.PreserveRawInlineComments, options.ShouldSkipMarkup, _useCompatibilityFileName).ToList();
+                List<string> outputFiles;
+                using (new PerformanceScope("ResolveAndExport", LogLevel.Info))
+                {
+                    outputFiles = ResolveAndExportYamlMetadata(allMembers, allReferences, outputFolder, options.PreserveRawInlineComments, options.ShouldSkipMarkup, _useCompatibilityFileName).ToList();
+                }
+
                 applicationCache.SaveToCache(cacheKey, documentCache.Cache, triggeredTime, outputFolder, outputFiles, options);
             }
         }
@@ -446,11 +465,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             DateTime triggeredTime = DateTime.UtcNow;
             var projectLevelCache = key.Cache;
             var projectConfig = key.BuildInfo;
-            var rebuildProject = true;
-            if (projectConfig != null)
-            {
-                rebuildProject = key.HasChanged(projectConfig);
-            }
+            var rebuildProject = _rebuild || (projectConfig != null && key.HasChanged(projectConfig));
 
             MetadataItem projectMetadata;
             if (!rebuildProject)
@@ -742,9 +757,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             try
             {
-                Logger.LogVerbose($"Loading solution {path}", file: path);
+                Logger.LogVerbose("Loading solution...");
                 var solution = await _workspace.Value.OpenSolutionAsync(path);
                 _workspace.Value.CloseSolution();
+                Logger.LogInfo($"Solution {solution.FilePath} loaded.");
                 return solution;
             }
             catch (Exception e)
@@ -758,44 +774,49 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             return cache.GetOrAdd(path.ToNormalizedFullPath(), s =>
             {
-                try
+                using (new LoggerFileScope(s))
                 {
-                    Logger.LogVerbose($"Loading project {s}", file: s);
-                    var project = _workspace.Value.CurrentSolution.Projects.FirstOrDefault(
-                        p => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(p.FilePath, s));
-
-                    if (project != null)
+                    try
                     {
-                        return project;
-                    }
+                        Logger.LogVerbose("Loading project...");
+                        var project = _workspace.Value.CurrentSolution.Projects.FirstOrDefault(
+                            p => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(p.FilePath, s));
+                        var result = project ?? _workspace.Value.OpenProjectAsync(s).Result;
 
-                    return _workspace.Value.OpenProjectAsync(s).Result;
-                }
-                catch (AggregateException e)
-                {
-                    Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.GetBaseException()?.Message}. Ignored.");
-                    return null;
-                }
-                catch (Exception e)
-                {
-                    Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.Message}. Ignored.");
-                    return null;
+                        Logger.LogInfo($"Project {result.FilePath} loaded.");
+                        return result;
+                    }
+                    catch (AggregateException e)
+                    {
+                        Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.GetBaseException()?.Message}. Ignored.");
+                        return null;
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.Message}. Ignored.");
+                        return null;
+                    }
                 }
             });
         }
 
         private Project GetProjectJsonProject(string path)
         {
-            try
+            using (new LoggerFileScope(path))
             {
-                Logger.LogVerbose($"Loading project {path}", file: path);
-                var workspace = new ProjectJsonWorkspace(path);
-                return workspace.CurrentSolution.Projects.FirstOrDefault(p => p.FilePath == Path.GetFullPath(path));
-            }
-            catch (Exception e)
-            {
-                Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.Message}. Ignored.");
-                return null;
+                try
+                {
+                    Logger.LogVerbose("Loading project...");
+                    var workspace = new ProjectJsonWorkspace(path);
+                    var result = workspace.CurrentSolution.Projects.FirstOrDefault(p => p.FilePath == Path.GetFullPath(path));
+                    Logger.LogInfo($"Project {result.FilePath} loaded.");
+                    return result;
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(LogLevel.Warning, $"Error opening project {path}: {e.Message}. Ignored.");
+                    return null;
+                }
             }
         }
 

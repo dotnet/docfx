@@ -7,18 +7,24 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.CodeAnalysis;
 
+    using Newtonsoft.Json;
+
     internal class ExtractMetadataOptions
     {
         public bool ShouldSkipMarkup { get; set; }
+
         public bool PreserveRawInlineComments { get; set; }
+
         public string FilterConfigFile { get; set; }
-        public IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> ExtensionMethods { get; set; }
 
         public Dictionary<string, string> MSBuildProperties { get; set; }
 
+        [JsonIgnore]
+        public IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> ExtensionMethods { get; set; }
+
         public bool HasChanged(IncrementalCheck check, bool careMSBuildProperties)
         {
-            return
+            return check.BuildInfo.Options == null ||
                 check.BuildInfo.Options.ShouldSkipMarkup != ShouldSkipMarkup ||
                 check.BuildInfo.Options.PreserveRawInlineComments != PreserveRawInlineComments ||
                 check.BuildInfo.Options.FilterConfigFile != FilterConfigFile ||

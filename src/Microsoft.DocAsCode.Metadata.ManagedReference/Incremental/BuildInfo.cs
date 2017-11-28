@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public DateTime CompleteUtcTime { get; set; }
 
         public string OutputFolder { get; set; }
-        
+
         public ExtractMetadataOptions Options { get; set; }
 
         public IEnumerable<string> RelatvieOutputFiles { get; set; }

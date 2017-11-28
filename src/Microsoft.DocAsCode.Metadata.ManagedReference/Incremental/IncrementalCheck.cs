@@ -22,6 +22,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private readonly BuildInfo _buildInfo;
 
         public BuildInfo BuildInfo => _buildInfo;
+
         public IncrementalCheck(BuildInfo buildInfo)
         {
             var checkUtcTime = buildInfo.TriggeredUtcTime;
