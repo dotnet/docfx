@@ -93,13 +93,35 @@ namespace Microsoft.DocAsCode.MarkdownRewriters.Tests
 
         [Fact]
         [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_InlineExternalLink()
+        {
+            var source = "[cool](https://dotnet.github.io/docfx)";
+            var expected = "[cool](https://dotnet.github.io/docfx)\n\n";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_InlineRelativeLink()
+        {
+            var source = "[cool](~/a.txt)";
+            var expected = "[cool](~/a.txt)\n\n";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
         public void TestMarkdigMarkdownRewriters_InlineEscapedLink()
         {
             var source = "[cool **text**](this%20is%20a%20link)";
             var expected = "[cool **text**](this%20is%20a%20link)\n\n";
 
             var result = Rewrite(source, "topic.md");
-            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+            Assert.Equal(expected, result);
         }
 
         private string Rewrite(string source, string filePath)
