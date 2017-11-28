@@ -31,17 +31,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             // Use the folder for the first file as the cache folder
             var firstFile = normalizedFiles.First();
-
-            string path = GetProjectLevelConfig(firstFile);
-            return _cache.GetOrAdd(path, p => new ProjectLevelCache(p));
+            return Get(firstFile);
         }
 
-        public static ProjectLevelCache Get(string path)
+        public static ProjectLevelCache Get(string firstFile)
         {
-            if (path == null)
+            if (firstFile == null)
             {
                 return null;
             }
+
+            string path = GetProjectLevelConfig(firstFile);
 
             return _cache.GetOrAdd(path, p => new ProjectLevelCache(p));
         }

@@ -3,27 +3,25 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
-    using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.MSBuild;
 
     using Microsoft.DocAsCode.Common;
 
     internal class IncrementalCheck
     {
-        private static readonly Lazy<MSBuildWorkspace> Workspace = new Lazy<MSBuildWorkspace>(() => MSBuildWorkspace.Create());
-
         private VersionStamp _versionToBeCompared;
 
         private ConcurrentDictionary<string, VersionStamp> _metadataVersionCache;
         private AsyncConcurrentCache<string, bool> _projectUpToDateSnapshot;
         private bool _versionChanged;
         private readonly BuildInfo _buildInfo;
+
+        public BuildInfo BuildInfo => _buildInfo;
         public IncrementalCheck(BuildInfo buildInfo)
         {
             var checkUtcTime = buildInfo.TriggeredUtcTime;
@@ -62,7 +60,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public bool MSBuildPropertiesUpdated(IDictionary<string, string> newProperties)
         {
-            return !DictionaryEqual(_buildInfo.MSBuildProperties, newProperties);
+            return !DictionaryEqual(_buildInfo.Options.MSBuildProperties, newProperties);
         }
 
         /// <summary>
@@ -71,12 +69,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        private bool IsFileModified(string file)
+        public bool IsFileModified(string file)
         {
-            if (_versionChanged)
-            {
-                return true;
-            }
             if (string.IsNullOrEmpty(file))
             {
                 return false;

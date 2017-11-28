@@ -25,12 +25,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private const string XmlCommentFileExtension = "xml";
         private readonly Dictionary<FileType, List<FileInformation>> _files;
         private readonly bool _rebuild;
-        private readonly bool _shouldSkipMarkup;
-        private readonly bool _preserveRawInlineComments;
         private readonly bool _useCompatibilityFileName;
-        private readonly string _filterConfigFile;
         private readonly string _outputFolder;
-        private readonly Dictionary<string, string> _msbuildProperties;
+        private readonly ExtractMetadataOptions _options;
 
         //Lacks UT for shared workspace
         private readonly Lazy<MSBuildWorkspace> _workspace;
@@ -53,25 +50,27 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 .GroupBy(f => f.Type)
                 .ToDictionary(s => s.Key, s => s.Distinct().ToList());
             _rebuild = input.ForceRebuild;
-            _shouldSkipMarkup = input.ShouldSkipMarkup;
-            _preserveRawInlineComments = input.PreserveRawInlineComments;
+
+            var msbuildProperties = input.MSBuildProperties ?? new Dictionary<string, string>();
+            if (!msbuildProperties.ContainsKey("Configuration"))
+            {
+                msbuildProperties["Configuration"] = "Release";
+            }
+
+            _options = new ExtractMetadataOptions
+            {
+                ShouldSkipMarkup = input.ShouldSkipMarkup,
+                PreserveRawInlineComments = input.PreserveRawInlineComments,
+                FilterConfigFile = input.FilterConfigFile != null ? new FileInformation(input.FilterConfigFile).NormalizedPath : null,
+                MSBuildProperties = msbuildProperties,
+            };
+
             _useCompatibilityFileName = input.UseCompatibilityFileName;
             _outputFolder = input.OutputFolder;
 
-            if (input.FilterConfigFile != null)
-            {
-                _filterConfigFile = new FileInformation(input.FilterConfigFile).NormalizedPath;
-            }
-
-            _msbuildProperties = input.MSBuildProperties ?? new Dictionary<string, string>();
-            if (!_msbuildProperties.ContainsKey("Configuration"))
-            {
-                _msbuildProperties["Configuration"] = "Release";
-            }
-
             _workspace = new Lazy<MSBuildWorkspace>(() =>
             {
-                var workspace = MSBuildWorkspace.Create(_msbuildProperties);
+                var workspace = MSBuildWorkspace.Create(msbuildProperties);
                 workspace.WorkspaceFailed += (s, e) =>
                 {
                     Logger.LogWarning($"Workspace failed with: {e.Diagnostic}");
@@ -113,8 +112,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         #region Private
 
-        
-
         private async Task SaveAllMembersFromCacheAsync()
         {
             var forceRebuild = _rebuild;
@@ -129,13 +126,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             // Exclude not supported files from inputs
             var cacheKey = GetCacheKey(_files.SelectMany(s => s.Value));
-
-            // Add filter config file into inputs and cache
-            if (!string.IsNullOrEmpty(_filterConfigFile))
-            {
-                cacheKey = cacheKey.Concat(new string[] { _filterConfigFile });
-                documentCache.AddDocument(_filterConfigFile, _filterConfigFile);
-            }
 
             if (_files.TryGetValue(FileType.Solution, out var sln))
             {
@@ -231,64 +221,63 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             // Incremental check for inputs as a whole:
             var applicationCache = ApplicationLevelCache.Get(cacheKey);
+
+            var options = _options;
+
             if (!forceRebuild)
             {
                 var buildInfo = applicationCache.GetValidConfig(cacheKey);
-                if (buildInfo != null && buildInfo.ShouldSkipMarkup == _shouldSkipMarkup)
+                if (buildInfo != null)
                 {
                     IncrementalCheck check = new IncrementalCheck(buildInfo);
-                    // 1. Check if sln files/ project files and its contained documents/ source files are modified
-                    var projectModified = check.AreFilesModified(documentCache.Documents) || check.MSBuildPropertiesUpdated(_msbuildProperties);
-
-                    if (!projectModified)
+                    if (!options.HasChanged(check, true))
                     {
-                        // 2. Check if documents/ assembly references are changed in a project
-                        // e.g. <Compile Include="*.cs* /> and file added/deleted
-                        foreach (var project in projectCache.Values)
-                        {
-                            var key = StringExtension.ToNormalizedFullPath(project.FilePath);
-                            IEnumerable<string> currentContainedFiles = documentCache.GetDocuments(project.FilePath);
-                            var previousDocumentCache = new ProjectDocumentCache(buildInfo.ContainedFiles);
+                        // 1. Check if sln files/ project files and its contained documents/ source files are modified
+                        var projectModified = check.AreFilesModified(documentCache.Documents);
 
-                            IEnumerable<string> previousContainedFiles = previousDocumentCache.GetDocuments(project.FilePath);
-                            if (previousContainedFiles != null && currentContainedFiles != null)
+                        if (!projectModified)
+                        {
+                            // 2. Check if documents/ assembly references are changed in a project
+                            // e.g. <Compile Include="*.cs* /> and file added/deleted
+                            foreach (var project in projectCache.Values)
                             {
-                                projectModified = !previousContainedFiles.SequenceEqual(currentContainedFiles);
-                            }
-                            else
-                            {
-                                // When one of them is not null, project is modified
-                                if (!object.Equals(previousContainedFiles, currentContainedFiles))
+                                var key = StringExtension.ToNormalizedFullPath(project.FilePath);
+                                IEnumerable<string> currentContainedFiles = documentCache.GetDocuments(project.FilePath);
+                                var previousDocumentCache = new ProjectDocumentCache(buildInfo.ContainedFiles);
+
+                                IEnumerable<string> previousContainedFiles = previousDocumentCache.GetDocuments(project.FilePath);
+                                if (previousContainedFiles != null && currentContainedFiles != null)
                                 {
-                                    projectModified = true;
+                                    projectModified = !previousContainedFiles.SequenceEqual(currentContainedFiles);
                                 }
+                                else
+                                {
+                                    // When one of them is not null, project is modified
+                                    if (!object.Equals(previousContainedFiles, currentContainedFiles))
+                                    {
+                                        projectModified = true;
+                                    }
+                                }
+                                if (projectModified) break;
                             }
-                            if (projectModified) break;
                         }
-                    }
 
-                    if (!projectModified)
-                    {
-                        // Nothing modified, use the result in cache
-                        try
+                        if (!projectModified)
                         {
-                            CopyFromCachedResult(buildInfo, cacheKey, outputFolder);
-                            return;
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.Log(LogLevel.Warning, $"Unable to copy results from cache: {e.Message}. Rebuild starts.");
+                            // Nothing modified, use the result in cache
+                            try
+                            {
+                                CopyFromCachedResult(buildInfo, cacheKey, outputFolder);
+                                return;
+                            }
+                            catch (Exception e)
+                            {
+                                Logger.Log(LogLevel.Warning, $"Unable to copy results from cache: {e.Message}. Rebuild starts.");
+                            }
                         }
                     }
                 }
             }
-
-            var options = new ExtractMetadataOptions
-            {
-                ShouldSkipMarkup = _shouldSkipMarkup,
-                PreserveRawInlineComments = _preserveRawInlineComments,
-                FilterConfigFile = _filterConfigFile,
-            };
 
             // Build all the projects to get the output and save to cache
             List<MetadataItem> projectMetadataList = new List<MetadataItem>();
@@ -299,12 +288,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             foreach (var key in GetTopologicalSortedItems(projectDependencyGraph))
             {
                 var dependencyRebuilt = projectDependencyGraph[key].Any(r => projectRebuildInfo[r]);
-                var projectMetadataResult = await GetProjectMetadataFromCacheAsync(
-                    projectCache[key], compilationCache[key],
-                    documentCache,
-                    forceRebuild,
-                    options,
-                    dependencyRebuilt);
+                var k = documentCache.GetDocuments(key);
+                var input = new ProjectFileInputParameters(options, k, key, dependencyRebuilt);
+                var controller = new SourceFileBuildController(compilationCache[key]);
+
+                var projectMetadataResult = GetMetadataFromProjectLevelCache(controller, input);
                 var projectMetadata = projectMetadataResult.Item1;
                 if (projectMetadata != null) projectMetadataList.Add(projectMetadata);
                 projectRebuildInfo[key] = projectMetadataResult.Item2;
@@ -316,11 +304,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var csCompilation = CompilationUtility.CreateCompilationFromCsharpCode(csContent);
                 if (csCompilation != null)
                 {
-                    var csMetadata = await GetFileMetadataFromCacheAsync(
-                        csFiles, 
-                        csCompilation,
-                        forceRebuild,
-                        options);
+                    var input = new SourceFileInputParameters(options, csFiles);
+                    var controller = new SourceFileBuildController(csCompilation);
+
+                    var csMetadata = GetMetadataFromProjectLevelCache(controller, input);
                     if (csMetadata != null) projectMetadataList.Add(csMetadata.Item1);
                 }
             }
@@ -331,11 +318,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var vbCompilation = CompilationUtility.CreateCompilationFromVBCode(vbContent);
                 if (vbCompilation != null)
                 {
-                    var vbMetadata = await GetFileMetadataFromCacheAsync(
-                        vbFiles, 
-                        vbCompilation,
-                        forceRebuild,
-                        options);
+                    var input = new SourceFileInputParameters(options, vbFiles);
+                    var controller = new SourceFileBuildController(vbCompilation);
+
+                    var vbMetadata = GetMetadataFromProjectLevelCache(controller, input);
                     if (vbMetadata != null) projectMetadataList.Add(vbMetadata.Item1);
                 }
             }
@@ -356,13 +342,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     options.ExtensionMethods = assemblyExtension;
                     foreach (var assembly in referencedAssemblyList)
                     {
-                        var mta = await GetAssemblyMetadataFromCacheAsync(
-                            new string[] { assembly.Item1.Display }, 
-                            assemblyCompilation, 
-                            assembly.Item2, 
-                            forceRebuild,
-                            options
-                            );
+                        var input = new AssemblyFileInputParameters(options, assembly.Item1.Display);
+                        var controller = new SourceFileBuildController(assemblyCompilation, assembly.Item2);
+
+                        var mta = GetMetadataFromProjectLevelCache(controller, input);
+                        
                         if (mta != null)
                         {
                             MergeCommentsHelper.MergeComments(mta.Item1, commentFiles);
@@ -379,14 +363,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 var value = StringExtension.ToDelimitedString(projectMetadataList.Select(s => s.Name));
                 Logger.Log(LogLevel.Warning, $"No metadata is generated for {value}.");
-                applicationCache.SaveToCache(cacheKey, null, triggeredTime, outputFolder, null, _shouldSkipMarkup, _msbuildProperties);
+                applicationCache.SaveToCache(cacheKey, null, triggeredTime, outputFolder, null, options);
             }
             else
             {
                 // TODO: need an intermediate folder? when to clean it up?
                 // Save output to output folder
-                var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, _preserveRawInlineComments, _shouldSkipMarkup, _useCompatibilityFileName).ToList();
-                applicationCache.SaveToCache(cacheKey, documentCache.Cache, triggeredTime, outputFolder, outputFiles, _shouldSkipMarkup, _msbuildProperties);
+                var outputFiles = ResolveAndExportYamlMetadata(allMemebers, allReferences, outputFolder, options.PreserveRawInlineComments, options.ShouldSkipMarkup, _useCompatibilityFileName).ToList();
+                applicationCache.SaveToCache(cacheKey, documentCache.Cache, triggeredTime, outputFolder, outputFiles, options);
             }
         }
 
@@ -443,7 +427,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return compilations;
         }
 
-
         private static void CopyFromCachedResult(BuildInfo buildInfo, IEnumerable<string> inputs, string outputFolder)
         {
             var outputFolderSource = buildInfo.OutputFolder;
@@ -458,75 +441,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             PathUtility.CopyFilesToFolder(relativeFiles.Select(s => Path.Combine(outputFolderSource, s)), outputFolderSource, outputFolder, true, s => Logger.Log(LogLevel.Info, s), null);
         }
 
-        private Task<Tuple<MetadataItem, bool>> GetProjectMetadataFromCacheAsync(
-            Project project, Compilation compilation, 
-            ProjectDocumentCache documentCache, bool forceRebuild, 
-            ExtractMetadataOptions options,
-            bool isReferencedProjectRebuilt)
-        {
-            var projectFilePath = project.FilePath;
-            var k = documentCache.GetDocuments(projectFilePath);
-            return GetMetadataFromProjectLevelCacheAsync(
-                project,
-                new[] { projectFilePath, options.FilterConfigFile },
-                new SourceFileBuildController(compilation),
-                new SourceFileInputParameters(options),
-                s => Task.FromResult(forceRebuild || s.AreFilesModified(k.Concat(new string[] { options.FilterConfigFile })) || isReferencedProjectRebuilt || s.MSBuildPropertiesUpdated(_msbuildProperties)),
-                s =>
-                {
-                    return new Dictionary<string, List<string>> { { StringExtension.ToNormalizedFullPath(s.FilePath), k.ToList() } };
-                }
-                );
-        }
-
-        private Task<Tuple<MetadataItem, bool>> GetAssemblyMetadataFromCacheAsync(
-            IEnumerable<string> files, 
-            Compilation compilation, IAssemblySymbol assembly, 
-            bool forceRebuild, 
-            ExtractMetadataOptions options)
-        {
-            if (files == null || !files.Any()) return null;
-            return GetMetadataFromProjectLevelCacheAsync(
-                files,
-                files.Concat(new string[] { options.FilterConfigFile }),
-                new SourceFileBuildController(compilation, assembly),
-                new SourceFileInputParameters(options),
-                s => Task.FromResult(forceRebuild || s.AreFilesModified(files.Concat(new string[] { options.FilterConfigFile }))),
-                s => null);
-        }
-
-        private Task<Tuple<MetadataItem, bool>> GetFileMetadataFromCacheAsync(IEnumerable<string> files,
-            Compilation compilation, bool forceRebuild,
-            ExtractMetadataOptions options)
-        {
-            if (files == null || !files.Any()) return null;
-            
-            return GetMetadataFromProjectLevelCacheAsync(
-                files,
-                files.Concat(new string[] { options.FilterConfigFile }),
-                new SourceFileBuildController(compilation),
-                new SourceFileInputParameters(options),
-                s => Task.FromResult(forceRebuild || s.AreFilesModified(files.Concat(new string[] { options.FilterConfigFile })) || s.MSBuildPropertiesUpdated(_msbuildProperties)),
-                s => null);
-        }
-
-        private async Task<Tuple<MetadataItem, bool>> GetMetadataFromProjectLevelCacheAsync<T>(
-            T input,
-            IEnumerable<string> inputKey,
-            IBuildController controller,
-            IInputParameters key,
-            Func<IncrementalCheck, Task<bool>> rebuildChecker,
-            Func<T, IDictionary<string, List<string>>> containedFilesProvider
-            )
+        private Tuple<MetadataItem, bool> GetMetadataFromProjectLevelCache(IBuildController controller, IInputParameters key)
         {
             DateTime triggeredTime = DateTime.UtcNow;
-            var projectLevelCache = ProjectLevelCache.Get(inputKey);
-            var projectConfig = projectLevelCache.GetValidConfig(inputKey);
+            var projectLevelCache = key.Cache;
+            var projectConfig = key.BuildInfo;
             var rebuildProject = true;
             if (projectConfig != null)
             {
-                var projectCheck = new IncrementalCheck(projectConfig);
-                rebuildProject = await rebuildChecker(projectCheck);
+                rebuildProject = key.HasChanged(projectConfig);
             }
 
             MetadataItem projectMetadata;
@@ -544,7 +467,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     Logger.Log(LogLevel.Info, $"'{projectConfig.InputFilesKey}' is invalid, rebuild needed.");
                 }
             }
-            
+
             projectMetadata = new IntermediateMetadataExtractor(controller).Extract(key);
             var file = Path.GetRandomFileName();
             var cacheOutputFolder = projectLevelCache.OutputFolder;
@@ -552,15 +475,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             YamlUtility.Serialize(path, projectMetadata);
             Logger.Log(LogLevel.Verbose, $"Successfully generated metadata {cacheOutputFolder} for {projectMetadata.Name}");
 
-            IDictionary<string, List<string>> containedFiles = null;
-
-            if (containedFilesProvider != null)
-            {
-                containedFiles = containedFilesProvider(input);
-            }
-
             // Save to cache
-            projectLevelCache.SaveToCache(inputKey, containedFiles, triggeredTime, cacheOutputFolder, new List<string>() { file }, key.Options?.ShouldSkipMarkup ?? false, _msbuildProperties);
+            projectLevelCache.SaveToCache(key.Key, key.Files, triggeredTime, cacheOutputFolder, new List<string>() { file }, key.Options);
 
             return Tuple.Create(projectMetadata, rebuildProject);
         }

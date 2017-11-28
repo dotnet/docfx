@@ -43,9 +43,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return GetConfig(key);
         }
 
-        public void SaveToCache(IEnumerable<string> inputProjects, IDictionary<string, List<string>> containedFiles, DateTime triggeredTime, string outputFolder, IList<string> fileRelativePaths, bool shouldSkipMarkup, IDictionary<string, string> msbuildProperties)
+        public void SaveToCache(string key, IDictionary<string, List<string>> containedFiles, DateTime triggeredTime, string outputFolder, IList<string> fileRelativePaths, ExtractMetadataOptions options)
         {
-            var key = StringExtension.GetNormalizedFullPathKey(inputProjects);
             DateTime completeTime = DateTime.UtcNow;
             BuildInfo info = new BuildInfo
             {
@@ -56,10 +55,21 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 OutputFolder = StringExtension.ToNormalizedFullPath(Path.Combine(EnvironmentContext.OutputDirectory, outputFolder)),
                 RelatvieOutputFiles = StringExtension.GetNormalizedPathList(fileRelativePaths),
                 BuildAssembly = AssemblyName,
-                ShouldSkipMarkup = shouldSkipMarkup,
-                MSBuildProperties = msbuildProperties,
+                Options = options,
             };
             SaveConfig(key, info);
+        }
+
+        public void SaveToCache(IEnumerable<string> inputProjects, IDictionary<string, List<string>> containedFiles, DateTime triggeredTime, string outputFolder, IList<string> fileRelativePaths, ExtractMetadataOptions options)
+        {
+            var key = StringExtension.GetNormalizedFullPathKey(inputProjects);
+            SaveToCache(key, containedFiles, triggeredTime, outputFolder, fileRelativePaths, options);
+        }
+
+        public void SaveToCache(string key, IEnumerable<string> containedFiles, DateTime triggeredTime, string outputFolder, IList<string> fileRelativePaths, ExtractMetadataOptions options)
+        {
+            var dict = new Dictionary<string, List<string>> { { key, containedFiles.ToList() } };
+            SaveToCache(key, dict, triggeredTime, outputFolder, fileRelativePaths, options);
         }
 
         #region Virtual Methods
