@@ -71,6 +71,33 @@ namespace Microsoft.DocAsCode.MarkdownRewriters.Tests
 
         [Fact]
         [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_NormalizeMultipleVideo()
+        {
+            var source = @"> Video Sample
+> [!VIDEO https://channel9.msdn.com]
+>
+>[!VIDEO https://channel9.msdn.com]
+>
+> *abc*
+";
+            var expected = @"> Video Sample
+> 
+> [!VIDEO https://channel9.msdn.com]
+> 
+> [!VIDEO https://channel9.msdn.com]
+> 
+> *abc*
+> 
+> 
+
+";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
         public void TestMarkdigMarkdownRewriters_MailTo()
         {
             var source = "<Mailto:docs@microsoft.com>";
