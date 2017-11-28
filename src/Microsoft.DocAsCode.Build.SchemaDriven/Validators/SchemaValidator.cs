@@ -18,9 +18,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private readonly object _schemaObject;
         private readonly SchemaValidateService _validateService = SchemaValidateService.Instance;
 
-        public SchemaValidator(JObject schemaObj, JSchema schema, string license = null)
+        public SchemaValidator(JObject schemaObj, JSchema schema)
         {
-            _validateService.RegisterLicense(license);
             _schemaObject = schemaObj;
             _jSchema = schema;
         }

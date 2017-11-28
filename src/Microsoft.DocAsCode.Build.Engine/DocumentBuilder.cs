@@ -321,6 +321,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private IEnumerable<IDocumentProcessor> LoadSchemaDrivenDocumentProcessors(DocumentBuildParameters parameter)
         {
+            SchemaValidateService.Instance.RegisterLicense(parameter.SchemaLicense);
             using (var resource = parameter?.TemplateManager?.CreateTemplateResource())
             {
                 if (resource == null || resource.IsEmpty)
@@ -340,7 +341,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 DocumentSchema schema;
                                 try
                                 {
-                                    schema = DocumentSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length), parameter.SchemaLicense);
+                                    schema = DocumentSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
                                 }
                                 catch (Exception e)
                                 {

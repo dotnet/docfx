@@ -34,7 +34,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         /// </summary>
         public bool AllowOverwrite { get; private set; }
 
-        public static DocumentSchema Load(TextReader reader, string title, string license = null)
+        public static DocumentSchema Load(TextReader reader, string title)
         {
             DocumentSchema schema;
             using (var jtr = new JsonTextReader(reader))
@@ -42,7 +42,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 var jObject = JObject.Load(jtr);
                 var jSchema = JSchema.Load(jObject.CreateReader());
 
-                var validator = new SchemaValidator(jObject, jSchema, license);
+                var validator = new SchemaValidator(jObject, jSchema);
 
                 // validate schema here
                 validator.ValidateMetaSchema();
