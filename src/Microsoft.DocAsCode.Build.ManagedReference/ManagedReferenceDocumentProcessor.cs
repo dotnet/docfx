@@ -61,7 +61,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             "conceptual",
             "platform",
             "attributes",
-            "additional_notes"
+            Constants.PropertyName.AdditionalNotes
         };
         #endregion
 

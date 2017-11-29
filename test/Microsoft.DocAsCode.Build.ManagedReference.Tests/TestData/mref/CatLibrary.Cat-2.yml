@@ -48,7 +48,7 @@ items:
   namespace: CatLibrary
   summary: "\n<p>Here's main class of this <em>Demo</em>.</p>\n<p>You can see mostly type of article within this class and you for more detail, please see the remarks.</p>\n<p></p>\n<p>this class is a template class. It has two Generic parameter. they are: <span class=\"typeparamref\">T</span> and <span class=\"typeparamref\">K</span>.</p>\n<p>The extension method of this class can refer to <xref href=\"CatLibrary.ICatExtension\" data-throw-if-not-resolved=\"false\"></xref> class</p>\n"
   remarks: "<xref href=''/>"
-  additional_notes:
+  additionalNotes:
     implementer: <p>[A](http://A/).</p>
     inheritor: <p>[B](http://B/).</p>
     caller: <p>[C](http://C/).</p>
@@ -157,7 +157,7 @@ items:
   - CatLibrary
   namespace: CatLibrary
   summary: "\nConstructor with one generic parameter.\n"
-  additional_notes:
+  additionalNotes:
     implementer: <p>[A](http://A/).</p>
     inheritor: <p>[B](http://B/).</p>
     caller: <p>[C](http://C/).</p>

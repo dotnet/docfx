@@ -87,8 +87,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("remarks")]
         public string Remarks { get; set; }
 
-        [YamlMember(Alias = "additional_notes")]
-        [JsonProperty("additional_notes")]
+        [YamlMember(Alias = Constants.PropertyName.AdditionalNotes)]
+        [JsonProperty(Constants.PropertyName.AdditionalNotes)]
         public AdditionalNotes AdditionalNotes { get; set; }
 
         [YamlMember(Alias = "example")]
