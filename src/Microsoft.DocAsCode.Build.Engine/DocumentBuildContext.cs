@@ -584,9 +584,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                 new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { tocFileKey },
                 (k, v) =>
                 {
-                    var union = new HashSet<string>(v, FilePathComparer.OSPlatformSensitiveComparer);
-                    union.Add(tocFileKey);
-                    return union;
+                    if (v.Contains(tocFileKey))
+                    {
+                        return v;
+                    }
+                    return new HashSet<string>(v, FilePathComparer.OSPlatformSensitiveComparer) { tocFileKey };
                 });
         }
 
