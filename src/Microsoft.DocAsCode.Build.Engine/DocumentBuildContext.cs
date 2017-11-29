@@ -582,7 +582,12 @@ namespace Microsoft.DocAsCode.Build.Engine
             TocMap.AddOrUpdate(
                 fileKey,
                 new HashSet<string>(FilePathComparer.OSPlatformSensitiveComparer) { tocFileKey },
-                (k, v) => { v.Add(tocFileKey); return v; });
+                (k, v) =>
+                {
+                    var union = new HashSet<string>(v, FilePathComparer.OSPlatformSensitiveComparer);
+                    union.Add(tocFileKey);
+                    return union;
+                });
         }
 
         public void RegisterTocInfo(TocInfo toc)
