@@ -321,7 +321,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private IEnumerable<IDocumentProcessor> LoadSchemaDrivenDocumentProcessors(DocumentBuildParameters parameter)
         {
-            SchemaValidateService.Instance.RegisterLicense(parameter.SchemaLicense);
+            SchemaValidateService.RegisterLicense(parameter.SchemaLicense);
             using (var resource = parameter?.TemplateManager?.CreateTemplateResource())
             {
                 if (resource == null || resource.IsEmpty)

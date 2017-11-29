@@ -15,17 +15,18 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     public class SchemaValidateService
     {
         private static readonly object _sync = new object();
+        private static SchemaValidateService _instance = new SchemaValidateService();
 
         private readonly object _locker = new object();
         private bool _schemaValidationEnabled = true;
 
-        public static readonly SchemaValidateService Instance = new SchemaValidateService();
+        public static SchemaValidateService Instance => _instance;
 
         private SchemaValidateService()
         {
         }
 
-        public void RegisterLicense(string license)
+        public static void RegisterLicense(string license)
         {
             if (string.IsNullOrEmpty(license))
             {
@@ -35,12 +36,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             try
             {
                 License.RegisterLicense(license);
-                _schemaValidationEnabled = true;
+                _instance = new SchemaValidateService();
             }
             catch (Exception e)
             {
-                Logger.LogWarning($"Encountered issue registering license for NewtonsoftJson.Schema, schema validation will be disabled: {e.Message}");
-                _schemaValidationEnabled = false;
+                Logger.LogWarning($"Encountered issue registering license for NewtonsoftJson.Schema: {e.Message}");
             }
         }
 
