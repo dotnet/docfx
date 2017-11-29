@@ -3,8 +3,20 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
+    using System.Collections.Generic;
+
     interface IInputParameters
     {
         ExtractMetadataOptions Options { get; }
+
+        IEnumerable<string> Files { get; }
+
+        bool HasChanged(BuildInfo buildInfo);
+        
+        string Key { get; }
+
+        ProjectLevelCache Cache { get; }
+
+        BuildInfo BuildInfo { get; }
     }
 }

@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public string OutputFolder { get; set; }
 
-        public bool ShouldSkipMarkup { get; set; }
+        public ExtractMetadataOptions Options { get; set; }
 
         public IEnumerable<string> RelatvieOutputFiles { get; set; }
 
@@ -26,8 +26,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         /// Save the files involved in the build
         /// </summary>
         public IDictionary<string, List<string>> ContainedFiles { get; set; }
-
-        public IDictionary<string, string> MSBuildProperties { get; set; }
 
         public string CheckSum { get; set; }
     }
