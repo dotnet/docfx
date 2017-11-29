@@ -15,7 +15,7 @@
 {{#properties}}
     <tr>
       <td>{{{type.specName.0.value}}}</td>
-      <td><em>{{{id}}}</em></td>
+      <td><em class="text-break">{{{id}}}</em></td>
       <td>
         {{{description}}}
         {{>partials/parameters}}
