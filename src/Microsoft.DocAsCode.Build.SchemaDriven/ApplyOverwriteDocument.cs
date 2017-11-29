@@ -89,7 +89,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                     }
 
                     // 1. Validate schema after the merge
-                    // ((SchemaDrivenDocumentProcessor)host.Processor).SchemaValidator.Validate(model.Content);
+                    ((SchemaDrivenDocumentProcessor)host.Processor).SchemaValidator.Validate(model.Content);
 
                     // 2. Re-export xrefspec after the merge
                     var context = new ProcessContext(host, model);

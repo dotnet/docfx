@@ -304,6 +304,7 @@ namespace Microsoft.DocAsCode.SubCommands
             config.FileMetadata = GetFileMetadataFromOption(config.FileMetadata, options.FileMetadataFilePath, config.FileMetadataFilePaths);
             config.GlobalMetadata = GetGlobalMetadataFromOption(config.GlobalMetadata, options.GlobalMetadataFilePath, config.GlobalMetadataFilePaths, options.GlobalMetadata);
             config.FALName = options.FALName ?? config.FALName;
+            config.SchemaLicense = options.SchemaLicense ?? config.SchemaLicense;
         }
 
         internal static Dictionary<string, FileMetadataPairs> GetFileMetadataFromOption(Dictionary<string, FileMetadataPairs> fileMetadataFromConfig, string fileMetadataFilePath, ListWithStringFallback fileMetadataFilePaths)

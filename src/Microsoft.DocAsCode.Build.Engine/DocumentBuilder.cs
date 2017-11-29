@@ -321,6 +321,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private IEnumerable<IDocumentProcessor> LoadSchemaDrivenDocumentProcessors(DocumentBuildParameters parameter)
         {
+            SchemaValidateService.RegisterLicense(parameter.SchemaLicense);
             using (var resource = parameter?.TemplateManager?.CreateTemplateResource())
             {
                 if (resource == null || resource.IsEmpty)
@@ -337,7 +338,16 @@ namespace Microsoft.DocAsCode.Build.Engine
                         {
                             using (var sr = new StreamReader(stream))
                             {
-                                var schema = DocumentSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
+                                DocumentSchema schema;
+                                try
+                                {
+                                    schema = DocumentSchema.Load(sr, fileName.Remove(fileName.Length - ".schema.json".Length));
+                                }
+                                catch (Exception e)
+                                {
+                                    Logger.LogError(e.Message);
+                                    throw;
+                                }
                                 var sdp = new SchemaDrivenDocumentProcessor(schema, new CompositionContainer(CompositionContainer.DefaultContainer));
                                 Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
                                 yield return sdp;

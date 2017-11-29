@@ -27,9 +27,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         public JsonPointer MetadataReference { get; private set; }
 
-        public JSchema InnerJSchema { get; private set; }
-
-        public JObject InnerJObject { get; private set; }
+        public SchemaValidator Validator { get; private set; }
 
         /// <summary>
         /// Overwrites are only allowed when the schema contains "uid" definition
@@ -38,24 +36,29 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         public static DocumentSchema Load(TextReader reader, string title)
         {
+            DocumentSchema schema;
             using (var jtr = new JsonTextReader(reader))
             {
                 var jObject = JObject.Load(jtr);
-                DocumentSchema schema;
+                var jSchema = JSchema.Load(jObject.CreateReader());
+
+                var validator = new SchemaValidator(jObject, jSchema);
+
+                // validate schema here
+                validator.ValidateMetaSchema();
+
                 try
                 {
-                    var jschema = JSchema.Load(jObject.CreateReader());
-                    schema = LoadSchema<DocumentSchema>(jschema, new Dictionary<JSchema, BaseSchema>());
-                    schema.InnerJSchema = jschema;
-                    schema.InnerJObject = jObject;
-                    schema.SchemaVersion = jschema.SchemaVersion;
-                    schema.Id = jschema.Id;
-                    schema.Version = GetValueFromJSchemaExtensionData<string>(jschema, "version");
-                    schema.Metadata = GetValueFromJSchemaExtensionData<string>(jschema, "metadata");
+                    schema = LoadSchema<DocumentSchema>(jSchema, new Dictionary<JSchema, BaseSchema>());
+                    schema.SchemaVersion = jSchema.SchemaVersion;
+                    schema.Id = jSchema.Id;
+                    schema.Version = GetValueFromJSchemaExtensionData<string>(jSchema, "version");
+                    schema.Metadata = GetValueFromJSchemaExtensionData<string>(jSchema, "metadata");
+                    schema.Validator = validator;
                 }
                 catch (Exception e)
                 {
-                    throw new InvalidSchemaException($"Not a valid schema: {e.Message}", e);
+                    throw new InvalidSchemaException($"{title} is not a valid schema: {e.Message}", e);
                 }
 
                 if (string.IsNullOrWhiteSpace(schema.Title))
@@ -86,30 +89,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 schema.MetadataReference = pointer;
                 schema.AllowOverwrite = CheckOverwriteAbility(schema);
                 return schema;
-            }
-        }
-
-        public static DocumentSchema Load(string schemaPath)
-        {
-            if (string.IsNullOrEmpty(schemaPath))
-            {
-                throw new ArgumentNullException(nameof(schemaPath));
-            }
-            if (!schemaPath.EndsWith(SchemaFileEnding, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new InvalidSchemaException($"Schema path {schemaPath} does not end with {SchemaFileEnding}");
-            }
-
-            var fileName = Path.GetFileName(schemaPath);
-            var name = fileName.Substring(0, fileName.Length - SchemaFileEnding.Length);
-            if (string.IsNullOrEmpty(name))
-            {
-                throw new InvalidSchemaException($"Schema path {schemaPath} is invalid");
-            }
-
-            using (var fr = new StreamReader(schemaPath))
-            {
-                return Load(fr, name);
             }
         }
 
