@@ -465,7 +465,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             DateTime triggeredTime = DateTime.UtcNow;
             var projectLevelCache = key.Cache;
             var projectConfig = key.BuildInfo;
-            var rebuildProject = _rebuild || (projectConfig != null && key.HasChanged(projectConfig));
+            var rebuildProject = _rebuild || projectConfig == null || key.HasChanged(projectConfig);
 
             MetadataItem projectMetadata;
             if (!rebuildProject)
