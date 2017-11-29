@@ -14,11 +14,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
     public class SchemaValidateService
     {
-        private static readonly object _sync = new object();
         private static SchemaValidateService _instance = new SchemaValidateService();
 
         private readonly object _locker = new object();
-        private bool _schemaValidationEnabled = true;
+        private volatile bool _schemaValidationEnabled = true;
 
         public static SchemaValidateService Instance => _instance;
 
