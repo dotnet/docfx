@@ -88,6 +88,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
         [JsonProperty("remarks")]
         public string Remarks { get; set; }
 
+        [YamlMember(Alias = Constants.PropertyName.AdditionalNotes)]
+        [JsonProperty(Constants.PropertyName.AdditionalNotes)]
+        public AdditionalNotes AdditionalNotes { get; set; }
+
         [YamlMember(Alias = "example")]
         [JsonProperty("example")]
         public List<string> Examples { get; set; }
@@ -228,6 +232,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.BuildOutputs
                 AssemblyNameList = vm.AssemblyNameList,
                 NamespaceName = vm.NamespaceName,
                 Remarks = vm.Remarks,
+                AdditionalNotes = vm.AdditionalNotes,
                 Examples = vm.Examples,
                 Overridden = ApiNames.FromUid(vm.Overridden),
                 Overload = ApiNames.FromUid(vm.Overload),
