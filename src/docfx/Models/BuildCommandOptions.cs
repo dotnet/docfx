@@ -123,5 +123,8 @@ namespace Microsoft.DocAsCode
 
         [Option("disableGitFeatures", HelpText = "Disable fetching Git related information for articles. By default it is enabled and may have side effect on performance when the repo is large.")]
         public bool DisableGitFeatures { get; set; }
+
+        [Option("schemaLicense", HelpText = "Please provide the license key for validating schema using NewtonsoftJson.Schema here.")]
+        public string SchemaLicense { get; set; }
     }
 }

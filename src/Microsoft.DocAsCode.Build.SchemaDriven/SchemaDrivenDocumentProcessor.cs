@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             _schemaName = schema.Title;
             _schema = schema;
-            _schemaValidator = new SchemaValidator(_schema);
+            _schemaValidator = schema.Validator;
             _allowOverwrite = schema.AllowOverwrite;
             _serializerPool = new ResourcePoolManager<JsonSerializer>(GetSerializer, 0x10);
             if (container != null)
@@ -104,9 +104,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         var obj = YamlUtility.Deserialize<Dictionary<string, object>>(file.File);
 
                         // Validate against the schema first
-                        // Temporarily disable schema validation as Json.NET schema has limitation of 1000 calls per hour
-                        // TODO: Reenable schema validation
-                        // _schemaValidator.Validate(obj);
+                        _schemaValidator.Validate(obj);
 
                         var content = ConvertToObjectHelper.ConvertToDynamic(obj);
                         var pageMetadata = _schema.MetadataReference.GetValue(content) as IDictionary<string, object>;

@@ -180,5 +180,8 @@ namespace Microsoft.DocAsCode
 
         [JsonProperty("disableGitFeatures")]
         public bool DisableGitFeatures { get; set; }
+
+        [JsonProperty("schemaLicense")]
+        public string SchemaLicense { get; set; }
     }
 }

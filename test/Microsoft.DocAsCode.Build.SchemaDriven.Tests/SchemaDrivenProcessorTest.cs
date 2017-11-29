@@ -340,7 +340,41 @@ title: Web Apps Documentation
             }
         }
 
-        [Fact(Skip = "Temporarily disable schema validation as Json.NET schema has limitation of 1000 calls per hour")]
+        [Fact]
+        public void TestInvalidSchemaDefinition()
+        {
+            // Json.NET schema has limitation of 1000 calls per hour
+            using (var listener = new TestListenerScope("TestInvalidMetadataReference"))
+            {
+                var schemaFile = CreateFile("template/schemas/mta.reference.test.schema.json", @"
+{
+  ""$schema"": ""http://dotnet.github.io/docfx/schemas/v1.0/schema.json#"",
+  ""version"": ""1.0.0"",
+  ""title"": ""MetadataReferenceTest"",
+  ""description"": ""A simple test schema for sdp"",
+  ""type"": ""object"",
+  ""properties"": {
+      ""metadata"": {
+            ""type"": ""string"",
+            ""contentType"": ""unknown""
+      }
+  }
+}
+", _templateFolder);
+
+                var inputFiles = Enumerable.Range(0, 1)
+                    .Select(s => 
+                    CreateFile($"normal{s}.yml", @"### YamlMime:MetadataReferenceTest
+metadata: Web Apps Documentation
+", _inputFolder)).ToArray();
+
+                FileCollection files = new FileCollection(_defaultFiles);
+                files.Add(DocumentType.Article, inputFiles, _inputFolder);
+                Assert.Throws<InvalidSchemaException>(() => BuildDocument(files));
+            }
+        }
+
+        [Fact]
         public void TestInvalidObjectAgainstSchema()
         {
             using (var listener = new TestListenerScope("TestInvalidMetadataReference"))
