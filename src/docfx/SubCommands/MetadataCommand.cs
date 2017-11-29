@@ -58,6 +58,7 @@ namespace Microsoft.DocAsCode.SubCommands
 
             // If Root Output folder is specified from command line, use it instead of the base directory
             EnvironmentContext.SetOutputDirectory(OutputFolder ?? BaseDirectory);
+            PrepareEnvironment.Prepare();
             foreach (var item in Config)
             {
                 VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
