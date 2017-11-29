@@ -14,6 +14,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
     public class MarkdigMarkdownRenderer : DfmMarkdownRenderer
     {
         private static HttpClient _client = new HttpClient();
+        private static readonly string _requestTemplate = "https://xref.docs.microsoft.com/query?uid={0}";
 
         public virtual StringBuffer Render(IMarkdownRenderer render, DfmXrefInlineToken token, MarkdownInlineContext context)
         {
@@ -107,8 +108,8 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
 
         private async Task<bool> CanResolveUidAsync(string uid)
         {
-            var page = $"https://xref.docs.microsoft.com/query?uid={uid}";
-            using (var response = await _client.GetAsync(page))
+            var requestUrl = string.Format(_requestTemplate, Uri.EscapeDataString(uid));
+            using (var response = await _client.GetAsync(requestUrl))
             {
                 response.EnsureSuccessStatusCode();
                 using (var content = response.Content)
