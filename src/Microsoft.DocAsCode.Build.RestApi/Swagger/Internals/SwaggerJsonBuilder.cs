@@ -18,9 +18,7 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
     internal class SwaggerJsonBuilder
     {
         private readonly IDictionary<JsonLocationInfo, SwaggerObjectBase> _documentObjectCache;
-        private const string DefinitionsKey = "definitions";
         private const string ReferenceKey = "$ref";
-        private const string ParametersKey = "parameters";
         private const string InternalRefNameKey = "x-internal-ref-name";
         private const string InternalLoopRefNameKey = "x-internal-loop-ref-name";
 
@@ -32,7 +30,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
         public SwaggerObjectBase Read(string swaggerPath)
         {
             var swagger = Load(swaggerPath);
-            RemoveReferenceDefinitions((SwaggerObject) swagger);
             return ResolveReferences(swagger, swaggerPath, new Stack<JsonLocationInfo>());
         }
 
@@ -167,19 +164,6 @@ namespace Microsoft.DocAsCode.Build.RestApi.Swagger.Internals
             using (JsonReader reader = new JsonTextReader(EnvironmentContext.FileAbstractLayer.OpenReadText(externalSwaggerPath)))
             {
                 return JObject.Load(reader);
-            }
-        }
-
-        private static void RemoveReferenceDefinitions(SwaggerObject root)
-        {
-            // Remove definitions and parameters which has been added into _documentObjectCache
-            if (root.Dictionary.ContainsKey(DefinitionsKey))
-            {
-                root.Dictionary.Remove(DefinitionsKey);
-            }
-            if (root.Dictionary.ContainsKey(ParametersKey))
-            {
-                root.Dictionary.Remove(ParametersKey);
             }
         }
 
