@@ -243,6 +243,10 @@ namespace Microsoft.DocAsCode.DataContracts.ManagedReference
         [MarkdownContent]
         public string Summary { get; set; }
 
+        [YamlMember(Alias = Constants.PropertyName.AdditionalNotes)]
+        [JsonProperty(Constants.PropertyName.AdditionalNotes)]
+        public AdditionalNotes AdditionalNotes { get; set; }
+
         [YamlMember(Alias = "remarks")]
         [JsonProperty("remarks")]
         [MarkdownContent]

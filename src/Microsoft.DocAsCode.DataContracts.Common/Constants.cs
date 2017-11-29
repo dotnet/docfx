@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.DataContracts.Common
             public const string Return = "return";
             public const string SeeAlsoContent = "seealsoContent";
             public const string Syntax = "syntax";
-
+            public const string AdditionalNotes = "additionalNotes";
             public const string SystemKeys = "_systemKeys";
 
             public const string OutputFileName = "outputFileName";

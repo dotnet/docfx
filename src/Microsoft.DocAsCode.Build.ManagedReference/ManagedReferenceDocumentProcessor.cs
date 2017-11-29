@@ -60,7 +60,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             "extensionMethods",
             "conceptual",
             "platform",
-            "attributes"
+            "attributes",
+            Constants.PropertyName.AdditionalNotes
         };
         #endregion
 
