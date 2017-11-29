@@ -39,6 +39,7 @@ log.txt
 debugSettings.json
 launchSettings.json
 project.lock.json
+package-lock.json
 *.sublime-workspace
 *.nuget.targets
 
