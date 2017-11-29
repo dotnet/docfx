@@ -83,7 +83,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
             var delay = TimeSpan.FromSeconds(3);
 
             var count = 1;
-            for (; ; )
+            while (true)
             {
                 try
                 {
