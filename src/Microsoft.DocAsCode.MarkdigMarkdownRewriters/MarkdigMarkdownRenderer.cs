@@ -53,9 +53,40 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
             }
         }
 
-        public override StringBuffer Render(IMarkdownRenderer render, DfmVideoBlockToken token, MarkdownBlockContext context)
+        public override StringBuffer Render(IMarkdownRenderer render, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
         {
-            return $"[!VIDEO {token.Link}]";
+            const string BlockQuoteStartString = "> ";
+            const string BlockQuoteJoinString = "\n" + BlockQuoteStartString;
+
+            var content = StringBuffer.Empty;
+            for (var index = 0; index < token.Tokens.Length; index++)
+            {
+                var t = token.Tokens[index];
+                if (index == token.Tokens.Length - 1 && t is DfmVideoBlockToken videoToken)
+                {
+                    content += render.Render(t).ToString().TrimEnd();
+                }
+                else
+                {
+                    content += render.Render(t);
+                }
+            }
+            var contents = content.ToString().Split('\n');
+            content = StringBuffer.Empty;
+            foreach (var item in contents)
+            {
+                if (content == StringBuffer.Empty)
+                {
+                    content += BlockQuoteStartString;
+                    content += item;
+                }
+                else
+                {
+                    content += BlockQuoteJoinString;
+                    content += item;
+                }
+            }
+            return content + "\n\n";
         }
 
         private StringBuffer RenderInlineTokens(ImmutableArray<IMarkdownToken> tokens, IMarkdownRenderer render, MarkdownInlineContext context)
