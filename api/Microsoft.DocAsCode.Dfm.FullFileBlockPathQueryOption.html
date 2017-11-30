@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class FullFileBlockPathQueryOption
    | DocFX website ">
-    <meta name="generator" content="docfx 2.27.1.0">
+    <meta name="generator" content="docfx 2.28.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -105,31 +105,43 @@
       <a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockPathQueryOption_ErrorMessage">DfmFencesBlockPathQueryOption.ErrorMessage</a>
     </div>
     <div>
+      <a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockPathQueryOption_GetQueryLines_System_String___">DfmFencesBlockPathQueryOption.GetQueryLines(String[])</a>
+    </div>
+    <div>
+      <a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockPathQueryOption_ValidateAndPrepare_System_String___Microsoft_DocAsCode_Dfm_DfmFencesToken_">DfmFencesBlockPathQueryOption.ValidateAndPrepare(String[], DfmFencesToken)</a>
+    </div>
+    <div>
+      <a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockPathQueryOption_Microsoft_DocAsCode_Dfm_IDfmFencesBlockPathQueryOption_ValidateHighlightLinesAndDedentLength_System_Int32_">DfmFencesBlockPathQueryOption.IDfmFencesBlockPathQueryOption.ValidateHighlightLinesAndDedentLength(Int32)</a>
+    </div>
+    <div>
+      <a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockPathQueryOption_ProcessIncludedLines_System_Collections_Generic_List_System_String__Microsoft_DocAsCode_Dfm_DfmFencesToken_">DfmFencesBlockPathQueryOption.ProcessIncludedLines(List&lt;String&gt;, DfmFencesToken)</a>
+    </div>
+    <div>
       <a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockPathQueryOption_ValidateHighlightLinesAndDedentLength_System_Int32_">DfmFencesBlockPathQueryOption.ValidateHighlightLinesAndDedentLength(Int32)</a>
     </div>
     <div>
-      <a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockPathQueryOption_CheckLineRange_System_Int32_System_Nullable_System_Int32__System_Nullable_System_Int32__">DfmFencesBlockPathQueryOption.CheckLineRange(Int32, Nullable&lt;Int32&gt;, Nullable&lt;Int32&gt;)</a>
+      <a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockPathQueryOption_CheckLineRange_System_Int32_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Boolean_">DfmFencesBlockPathQueryOption.CheckLineRange(Int32, Nullable&lt;Int32&gt;, Nullable&lt;Int32&gt;, Boolean)</a>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">Object.ToString()</a>
+      <span class="xref">System.Object.ToString()</span>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Object.Equals(Object)</a>
+      <span class="xref">System.Object.Equals(System.Object)</span>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Object.Equals(Object, Object)</a>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">Object.ReferenceEquals(Object, Object)</a>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">Object.GetHashCode()</a>
+      <span class="xref">System.Object.GetHashCode()</span>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">Object.GetType()</a>
+      <span class="xref">System.Object.GetType()</span>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">Object.MemberwiseClone()</a>
+      <span class="xref">System.Object.MemberwiseClone()</span>
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.DocAsCode.Dfm.html">Microsoft.DocAsCode.Dfm</a></h6>
@@ -142,67 +154,18 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_FullFileBlockPathQueryOption_GetQueryLines_System_String___.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.FullFileBlockPathQueryOption.GetQueryLines(System.String%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_FullFileBlockPathQueryOption_GetQueryLines_System_String___Microsoft_DocAsCode_Dfm_DfmFencesToken_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.FullFileBlockPathQueryOption.GetQueryLines(System.String%5B%5D%2CMicrosoft.DocAsCode.Dfm.DfmFencesToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/CodeRenderer/DfmFencesBlockPathQueryOptions/FullFileBlockPathQueryOption.cs/#L15">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/CodeRenderer/DfmFencesBlockPathQueryOptions/FullFileBlockPathQueryOption.cs/#L11">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Dfm_FullFileBlockPathQueryOption_GetQueryLines_" data-uid="Microsoft.DocAsCode.Dfm.FullFileBlockPathQueryOption.GetQueryLines*"></a>
-  <h4 id="Microsoft_DocAsCode_Dfm_FullFileBlockPathQueryOption_GetQueryLines_System_String___" data-uid="Microsoft.DocAsCode.Dfm.FullFileBlockPathQueryOption.GetQueryLines(System.String[])">GetQueryLines(String[])</h4>
+  <h4 id="Microsoft_DocAsCode_Dfm_FullFileBlockPathQueryOption_GetQueryLines_System_String___Microsoft_DocAsCode_Dfm_DfmFencesToken_" data-uid="Microsoft.DocAsCode.Dfm.FullFileBlockPathQueryOption.GetQueryLines(System.String[],Microsoft.DocAsCode.Dfm.DfmFencesToken)">GetQueryLines(String[], DfmFencesToken)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override IEnumerable&lt;string&gt; GetQueryLines(string[] lines)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>[]</td>
-        <td><span class="parametername">lines</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="returns">Returns</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/9eekhta0(v=vs.110).aspx">IEnumerable</a>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <h5 class="overrides">Overrides</h5>
-  <div><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockPathQueryOption_GetQueryLines_System_String___">DfmFencesBlockPathQueryOption.GetQueryLines(String[])</a></div>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_FullFileBlockPathQueryOption_ValidateAndPrepare_System_String___Microsoft_DocAsCode_Dfm_DfmFencesToken_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.FullFileBlockPathQueryOption.ValidateAndPrepare(System.String%5B%5D%2CMicrosoft.DocAsCode.Dfm.DfmFencesToken)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/CodeRenderer/DfmFencesBlockPathQueryOptions/FullFileBlockPathQueryOption.cs/#L10">View Source</a>
-  </span>
-  <a id="Microsoft_DocAsCode_Dfm_FullFileBlockPathQueryOption_ValidateAndPrepare_" data-uid="Microsoft.DocAsCode.Dfm.FullFileBlockPathQueryOption.ValidateAndPrepare*"></a>
-  <h4 id="Microsoft_DocAsCode_Dfm_FullFileBlockPathQueryOption_ValidateAndPrepare_System_String___Microsoft_DocAsCode_Dfm_DfmFencesToken_" data-uid="Microsoft.DocAsCode.Dfm.FullFileBlockPathQueryOption.ValidateAndPrepare(System.String[],Microsoft.DocAsCode.Dfm.DfmFencesToken)">ValidateAndPrepare(String[], DfmFencesToken)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public override bool ValidateAndPrepare(string[] lines, DfmFencesToken token)</code></pre>
+    <pre><code class="lang-csharp hljs">public override IEnumerable&lt;string&gt; GetQueryLines(string[] lines, DfmFencesToken token)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -236,13 +199,13 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://msdn.microsoft.com/en-us/library/system.boolean(v=vs.110).aspx">Boolean</a></td>
+        <td><span class="xref">System.Collections.Generic.IEnumerable</span>&lt;<a class="xref" href="https://msdn.microsoft.com/en-us/library/system.string(v=vs.110).aspx">String</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
   </table>
   <h5 class="overrides">Overrides</h5>
-  <div><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockPathQueryOption_ValidateAndPrepare_System_String___Microsoft_DocAsCode_Dfm_DfmFencesToken_">DfmFencesBlockPathQueryOption.ValidateAndPrepare(String[], DfmFencesToken)</a></div>
+  <div><a class="xref" href="Microsoft.DocAsCode.Dfm.DfmFencesBlockPathQueryOption.html#Microsoft_DocAsCode_Dfm_DfmFencesBlockPathQueryOption_GetQueryLines_System_String___Microsoft_DocAsCode_Dfm_DfmFencesToken_">DfmFencesBlockPathQueryOption.GetQueryLines(String[], DfmFencesToken)</a></div>
   <h3 id="implements">Implements</h3>
   <div>
       <a class="xref" href="Microsoft.DocAsCode.Dfm.IDfmFencesBlockPathQueryOption.html">IDfmFencesBlockPathQueryOption</a>
@@ -272,7 +235,7 @@
                     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Dfm_FullFileBlockPathQueryOption.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Dfm.FullFileBlockPathQueryOption%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/CodeRenderer/DfmFencesBlockPathQueryOptions/FullFileBlockPathQueryOption.cs/#L8" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Dfm/CodeRenderer/DfmFencesBlockPathQueryOptions/FullFileBlockPathQueryOption.cs/#L9" class="contribution-link">View Source</a>
                   </li>
                   <li>
                     <a href="#disqus_thread" class="contribution-link">0 Comments</a>

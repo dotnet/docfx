@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Class SchemaValidator
    | DocFX website ">
-    <meta name="generator" content="docfx 2.27.1.0">
+    <meta name="generator" content="docfx 2.28.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -91,25 +91,25 @@
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/7bxwbwt2(v=vs.110).aspx">Object.ToString()</a>
+      <span class="xref">System.Object.ToString()</span>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/bsc2ak47(v=vs.110).aspx">Object.Equals(Object)</a>
+      <span class="xref">System.Object.Equals(System.Object)</span>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/w4hkze5k(v=vs.110).aspx">Object.Equals(Object, Object)</a>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/hz2a0b8x(v=vs.110).aspx">Object.ReferenceEquals(Object, Object)</a>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/zdee4b3y(v=vs.110).aspx">Object.GetHashCode()</a>
+      <span class="xref">System.Object.GetHashCode()</span>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/dfwy45w9(v=vs.110).aspx">Object.GetType()</a>
+      <span class="xref">System.Object.GetType()</span>
     </div>
     <div>
-      <a class="xref" href="https://msdn.microsoft.com/en-us/library/57ctke0a(v=vs.110).aspx">Object.MemberwiseClone()</a>
+      <span class="xref">System.Object.MemberwiseClone()</span>
     </div>
   </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Microsoft.DocAsCode.Build.SchemaDriven.html">Microsoft.DocAsCode.Build.SchemaDriven</a></h6>
@@ -122,18 +122,18 @@
   </h3>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaValidator__ctor_Microsoft_DocAsCode_Build_SchemaDriven_DocumentSchema_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidator.%23ctor(Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaValidator__ctor_Newtonsoft_Json_Linq_JObject_Newtonsoft_Json_Schema_JSchema_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidator.%23ctor(Newtonsoft.Json.Linq.JObject%2CNewtonsoft.Json.Schema.JSchema)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Validators/SchemaValidator.cs/#L23">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Validators/SchemaValidator.cs/#L21">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaValidator__ctor_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidator.#ctor*"></a>
-  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaValidator__ctor_Microsoft_DocAsCode_Build_SchemaDriven_DocumentSchema_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidator.#ctor(Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema)">SchemaValidator(DocumentSchema)</h4>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaValidator__ctor_Newtonsoft_Json_Linq_JObject_Newtonsoft_Json_Schema_JSchema_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidator.#ctor(Newtonsoft.Json.Linq.JObject,Newtonsoft.Json.Schema.JSchema)">SchemaValidator(JObject, JSchema)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public SchemaValidator(DocumentSchema schema)</code></pre>
+    <pre><code class="lang-csharp hljs">public SchemaValidator(JObject schemaObj, JSchema schema)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -146,7 +146,12 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Microsoft.DocAsCode.Build.SchemaDriven.DocumentSchema.html">DocumentSchema</a></td>
+        <td><span class="xref">Newtonsoft.Json.Linq.JObject</span></td>
+        <td><span class="parametername">schemaObj</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">Newtonsoft.Json.Schema.JSchema</span></td>
         <td><span class="parametername">schema</span></td>
         <td></td>
       </tr>
@@ -159,7 +164,7 @@
     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaValidator_Validate_System_Object_.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidator.Validate(System.Object)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Validators/SchemaValidator.cs/#L31">View Source</a>
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Validators/SchemaValidator.cs/#L27">View Source</a>
   </span>
   <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaValidator_Validate_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidator.Validate*"></a>
   <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaValidator_Validate_System_Object_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidator.Validate(System.Object)">Validate(Object)</h4>
@@ -186,6 +191,21 @@
       </tr>
     </tbody>
   </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaValidator_ValidateMetaSchema.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidator.ValidateMetaSchema%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Validators/SchemaValidator.cs/#L32">View Source</a>
+  </span>
+  <a id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaValidator_ValidateMetaSchema_" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidator.ValidateMetaSchema*"></a>
+  <h4 id="Microsoft_DocAsCode_Build_SchemaDriven_SchemaValidator_ValidateMetaSchema" data-uid="Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidator.ValidateMetaSchema">ValidateMetaSchema()</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ValidateMetaSchema()</code></pre>
+  </div>
   <h3 id="extensionmethods">Extension Methods</h3>
   <div>
       <a class="xref" href="Microsoft.DocAsCode.Common.JsonUtility.html#Microsoft_DocAsCode_Common_JsonUtility_ToJsonString_System_Object_Newtonsoft_Json_Formatting_Newtonsoft_Json_JsonSerializer_">JsonUtility.ToJsonString(Object, Formatting, JsonSerializer)</a>
@@ -211,7 +231,7 @@
                     <a href="https://github.com/dotnet/docfx/new/dev/apiSpec/new?filename=Microsoft_DocAsCode_Build_SchemaDriven_SchemaValidator.md&amp;value=---%0Auid%3A%20Microsoft.DocAsCode.Build.SchemaDriven.SchemaValidator%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Validators/SchemaValidator.cs/#L16" class="contribution-link">View Source</a>
+                    <a href="https://github.com/dotnet/docfx/blob/master/src/Microsoft.DocAsCode.Build.SchemaDriven/Validators/SchemaValidator.cs/#L14" class="contribution-link">View Source</a>
                   </li>
                   <li>
                     <a href="#disqus_thread" class="contribution-link">0 Comments</a>
