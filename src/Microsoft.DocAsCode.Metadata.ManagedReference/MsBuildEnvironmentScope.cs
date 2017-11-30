@@ -22,7 +22,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var latest = instances.FirstOrDefault(a => a.Version.Major == 15);
             if (latest != null)
             {
-                Logger.LogInfo($"Using msbuild {latest.MSBuildPath} as inner comipiler.");
+                Logger.LogInfo($"Using msbuild {latest.MSBuildPath} as inner compiler.");
 
                 _innerScope = new EnvironmentScope(new Dictionary<string, string>
                 {
