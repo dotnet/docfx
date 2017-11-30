@@ -4,11 +4,15 @@
 v2.28 (Pre-release)
 -----------
 1. Add warning throttling. (#2187)
+2. Enable schema validation for SDP.
 2. Bug fixes:
    1. Fix markdown link behavior. (#2181)
    2. Fix xref map sorted comparer. (#2191)
    3. Fix yaml deserialize for int64. (#2193)
    4. Fix xref query filter. (#2195)
+   5. Fix `docfx metadata` failure after VS2017 Update 15.3. (#1969)
+   6. Provide `MetadataOutputFolder` MSBuild parameter with `docfx.console`. (#2194)
+
 
 v2.27
 -----------
@@ -29,7 +33,7 @@ v2.26
    ```
    ````
    Renders to:
-   
+
    # [Csharp](#tab/csharp)
    ```cs
    Console.WriteLine("Hello world");
@@ -38,7 +42,7 @@ v2.26
    ```js
    console.log('hello world');
    ```
-   
+
 2. Fix bugs:
    1. Update DFM XREF short format.
    2. Update Markdown EM rule.
