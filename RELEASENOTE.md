@@ -1,7 +1,10 @@
-﻿Version Notes (Current Version: v2.28)
+﻿Version Notes (Current Version: v2.29)
 =======================================
 
-v2.28 (Pre-release)
+v2.29 (Pre-release)
+-----------
+
+v2.28
 -----------
 1. Add warning throttling. (#2187)
 2. Enable schema validation for SDP.
