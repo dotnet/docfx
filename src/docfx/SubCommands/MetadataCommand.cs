@@ -58,24 +58,27 @@ namespace Microsoft.DocAsCode.SubCommands
 
             // If Root Output folder is specified from command line, use it instead of the base directory
             EnvironmentContext.SetOutputDirectory(OutputFolder ?? BaseDirectory);
-            PrepareEnvironment.Prepare();
-            foreach (var item in Config)
+            using (new MSBuildEnvironmentScope())
             {
-                VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
-
-                var inputModel = ConvertToInputModel(item);
-
-                EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
-
-                // TODO: Use plugin to generate metadata for files with different extension?
-                using (var worker = new ExtractMetadataWorker(inputModel))
+                foreach (var item in Config)
                 {
-                    // Use task.run to get rid of current context (causing deadlock in xunit)
-                    var task = Task.Run(worker.ExtractMetadataAsync);
-                    task.Wait();
+                    VisitorHelper.GlobalNamespaceId = item.GlobalNamespaceId;
+
+                    var inputModel = ConvertToInputModel(item);
+
+                    EnvironmentContext.SetGitFeaturesDisabled(item.DisableGitFeatures);
+
+                    // TODO: Use plugin to generate metadata for files with different extension?
+                    using (var worker = new ExtractMetadataWorker(inputModel))
+                    {
+                        // Use task.run to get rid of current context (causing deadlock in xunit)
+                        var task = Task.Run(worker.ExtractMetadataAsync);
+                        task.Wait();
+                    }
                 }
+
+                VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
             }
-            VisitorHelper.GlobalNamespaceId = originalGlobalNamespaceId;
         }
 
         private MetadataJsonConfig ParseOptions(MetadataCommandOptions options, out string baseDirectory, out string outputFolder)
