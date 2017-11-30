@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
                     return $"[{text}]({href})";
 
                 default:
-                    return Render(render, token, context);
+                    return base.Render(render, token, context);
             }
         }
 
