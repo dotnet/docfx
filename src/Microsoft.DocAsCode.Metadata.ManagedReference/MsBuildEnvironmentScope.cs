@@ -4,14 +4,17 @@
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using Microsoft.Build.MSBuildLocator;
     using Microsoft.DocAsCode.Common;
 
-    public static class PrepareEnvironment
+    public class MSBuildEnvironmentScope : IDisposable
     {
-        public static void Prepare()
+        private readonly EnvironmentScope _innerScope;
+
+        public MSBuildEnvironmentScope()
         {
             // workaround for https://github.com/dotnet/docfx/issues/1969
             // FYI https://github.com/dotnet/roslyn/issues/21799#issuecomment-343695700
@@ -20,9 +23,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (latest != null)
             {
                 Logger.LogInfo($"Using msbuild {latest.MSBuildPath} as inner comipiler.");
-                Environment.SetEnvironmentVariable("VSINSTALLDIR", latest.VisualStudioRootPath);
-                Environment.SetEnvironmentVariable("VisualStudioVersion", "15.0");
+
+                _innerScope = new EnvironmentScope(new Dictionary<string, string>
+                {
+                    ["VSINSTALLDIR"] = latest.VisualStudioRootPath,
+                    ["VisualStudioVersion"] = "15.0"
+                });
             }
+        }
+
+        public void Dispose()
+        {
+            _innerScope?.Dispose();
         }
     }
 }
