@@ -34,23 +34,37 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
             switch (token.LinkType)
             {
                 case MarkdownLinkType.AutoLink:
-                    if (token.SourceInfo.Markdown.StartsWith("<mailto:", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var mailText = RenderInlineTokens(token.Content, render, context);
-
-                        return $"<{mailText}>";
-                    }
-                    goto default;
-
+                    return RenderAutoLink(render, token, context);
                 case MarkdownLinkType.NormalLink:
-                    var href = Uri.EscapeUriString(Uri.UnescapeDataString(token.Href ?? string.Empty));
-                    var text = RenderInlineTokens(token.Content, render, context);
-
-                    return $"[{text}]({href})";
-
+                    return RenderLinkNormalLink(render, token, context);
                 default:
                     return base.Render(render, token, context);
             }
+        }
+
+        private StringBuffer RenderAutoLink(IMarkdownRenderer render, MarkdownLinkInlineToken token, MarkdownInlineContext context)
+        {
+            var content = RenderInlineTokens(token.Content, render, context);
+            return $"<{content}>";
+        }
+
+        private StringBuffer RenderLinkNormalLink(IMarkdownRenderer render, MarkdownLinkInlineToken token, MarkdownInlineContext context)
+        {
+            var content = StringBuffer.Empty;
+            content += "[";
+            content += RenderInlineTokens(token.Content, render, context);
+            content += "](";
+            content += token.Href.Replace(" ", "%20");
+
+            if (!string.IsNullOrEmpty(token.Title))
+            {
+                content += " \"";
+                content += token.Title;
+                content += "\"";
+            }
+            content += ")";
+
+            return content;
         }
 
         public override StringBuffer Render(IMarkdownRenderer render, MarkdownBlockquoteBlockToken token, MarkdownBlockContext context)
