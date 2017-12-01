@@ -4,7 +4,6 @@
 namespace Microsoft.DocAsCode.Common
 {
     using System;
-    using System.Runtime.Remoting.Messaging;
     using System.Threading;
 
     [Serializable]
@@ -106,17 +105,17 @@ namespace Microsoft.DocAsCode.Common
 
         private static object[] GetCurrentContextRaw()
         {
-            return CallContext.LogicalGetData(AMBCTX_NAME) as object[];
+            return LogicalCallContext.GetData(AMBCTX_NAME) as object[];
         }
 
         private static void SetCurrentContextRaw(object[] raw)
         {
-            CallContext.LogicalSetData(AMBCTX_NAME, raw);
+            LogicalCallContext.SetData(AMBCTX_NAME, raw);
         }
 
         private static void RemoveAmbientContext()
         {
-            CallContext.FreeNamedDataSlot(AMBCTX_NAME);
+            LogicalCallContext.FreeData(AMBCTX_NAME);
         }
 
         private object[] ToObjectArray()
