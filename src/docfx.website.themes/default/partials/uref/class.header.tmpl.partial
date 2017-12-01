@@ -21,10 +21,10 @@
 {{#inheritedMembers}}
   <div>
   {{#definition}}
-    <xref href="{{definition}}" altProperty="fullName" displayProperty="nameWithType"/>
+    <xref uid="{{definition}}" altProperty="fullName" displayProperty="name"/>
   {{/definition}}
   {{^definition}}
-    <xref href="{{uid}}" altProperty="fullName" displayProperty="nameWithType"/>
+    <xref uid="{{uid}}" altProperty="fullName" displayProperty="name"/>
   {{/definition}}
   </div>
 {{/inheritedMembers}}
