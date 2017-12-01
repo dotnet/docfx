@@ -60,11 +60,19 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 using (var outputStreamWriter = new StreamWriter(outputStream))
                 {
-                        var exitCode = CommandUtility.RunCommand(new CommandInfo
+                    try
+                    {
+                        CommandUtility.RunCommand(new CommandInfo
                         {
                             Name = "dotnet",
                             Arguments = "--info"
                         }, outputStreamWriter, timeoutInMilliseconds: 60000);
+                    }
+                    catch
+                    {
+                        // when error running dotnet command, consilder dotnet as not available
+                        return null;
+                    }
 
                     // writer streams have to be flushed before reading from memory streams
                     // make sure that streamwriter is not closed before reading from memory stream
