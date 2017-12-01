@@ -4,6 +4,11 @@
 v2.29 (Pre-release)
 -----------
 
+v2.28.1
+-----------
+1. Bug fixes:
+   1. Fix .NET core .csproj files support (#1752)
+   
 v2.28
 -----------
 1. Add warning throttling. (#2187)
