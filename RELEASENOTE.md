@@ -1,5 +1,10 @@
-﻿Version Notes (Current Version: v2.28)
+﻿Version Notes (Current Version: v2.28.1)
 =======================================
+
+v2.28.1
+-----------
+1. Bug fixes:
+   1. Fix .NET core .csproj files support (#1752)
 
 v2.28
 -----------
