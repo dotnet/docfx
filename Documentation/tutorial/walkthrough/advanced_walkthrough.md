@@ -61,6 +61,8 @@ To create the permanent template reference, add this code under the PDF section 
 
 ```"template": "_exported_templates/<name of your pdf template folder>",```
 
+To change the look of the table of contents, modify this file: `_exported_templates/<name of your pdf template folder>/toc.html.tmpl`
+
 ## See a list of all your templates
 
 ```docfx template list```
