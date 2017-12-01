@@ -64,8 +64,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
 
         public static string EscapeMarkdownHref(string text)
         {
-            text = text.Replace(" ", "%20");
-            return Regexes.Helper.MarkdownHrefEscape.Replace(text, m => "\\" + m.Value);
+            return Regexes.Helper.MarkdownHrefEscape.Replace(text, m => "\\" + m.Value)
+                                                    .Replace(" ", "%20");
         }
 
         [Obsolete]
