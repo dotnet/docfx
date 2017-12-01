@@ -132,7 +132,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             DocumentException.RunAll(
                 () => CheckFileLink(model, hostService, result),
                 () => HandleUids(result),
-                () => HandleToc(result),
                 () => RegisterXRefSpec(result));
 
             return GetManifestItem(model, result);
@@ -185,25 +184,6 @@ namespace Microsoft.DocAsCode.Build.Engine
             if (result.LinkToUids.Count > 0)
             {
                 Context.XRef.UnionWith(result.LinkToUids.Where(s => s != null));
-            }
-        }
-
-        private void HandleToc(SaveResult result)
-        {
-            if (result.TocMap?.Count > 0)
-            {
-                foreach (var toc in result.TocMap)
-                {
-                    Context.TocMap.AddOrUpdate(
-                        toc.Key,
-                        toc.Value,
-                        (k, v) =>
-                        {
-                            var union = new HashSet<string>(v, FilePathComparer.OSPlatformSensitiveComparer);
-                            union.UnionWith(toc.Value);
-                            return union;
-                        });
-                }
             }
         }
 
