@@ -104,7 +104,10 @@ namespace Microsoft.DocAsCode.MarkdownRewriters.Tests
             var expected = "<docs@microsoft.com>\n\n";
 
             var result = Rewrite(source, "topic.md");
-            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+            Assert.Equal(expected, result);
+
+            result = Rewrite(result, "topic.md");
+            Assert.Equal(expected, result);
         }
 
         [Fact]
