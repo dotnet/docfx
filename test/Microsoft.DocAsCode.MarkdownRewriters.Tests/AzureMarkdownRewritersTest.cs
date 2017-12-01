@@ -738,7 +738,7 @@ this is absolute link [text](c:/this/is/markdown ""Local File"") file ref
         public void TestAzureMarkdownRewriters_AutoLink()
         {
             var source = @" See [http://www.openldap.org/doc/admin24/overlays.html#Access Logging](http://www.openldap.org/doc/admin24/overlays.html#Access Logging)";
-            var expected = @" See [http://www.openldap.org/doc/admin24/overlays.html#Access Logging](http://www.openldap.org/doc/admin24/overlays.html#Access Logging)
+            var expected = @" See [http://www.openldap.org/doc/admin24/overlays.html#Access Logging](http://www.openldap.org/doc/admin24/overlays.html#Access%20Logging)
 
 ";
             var result = AzureMarked.Markup(source);
