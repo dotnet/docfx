@@ -54,7 +54,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
             content += "[";
             content += RenderInlineTokens(token.Content, render, context);
             content += "](";
-            content += token.Href.Replace(" ", "%20");
+            content += StringHelper.EscapeMarkdownHref(token.Href);
 
             if (!string.IsNullOrEmpty(token.Title))
             {
