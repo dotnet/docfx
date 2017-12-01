@@ -112,17 +112,6 @@ namespace Microsoft.DocAsCode.MarkdownRewriters.Tests
 
         [Fact]
         [Trait("Related", "MarkdigMarkdownRewriters")]
-        public void TestMarkdigMarkdownRewriters_MailTo2()
-        {
-            var source = "<Mailto:docs@microsoft.com>";
-            var expected = "<docs@microsoft.com>\n\n";
-
-            var result = Rewrite(source, "topic.md");
-            Assert.Equal(expected.Replace("\r\n", "\n"), result);
-        }
-
-        [Fact]
-        [Trait("Related", "MarkdigMarkdownRewriters")]
         public void TestMarkdigMarkdownRewriters_InlineLink()
         {
             var source = "[cool **text**](this is a link)";
