@@ -71,7 +71,11 @@ namespace MarkdownMigrateTool
         private void MigrateFile(string inputFile, string outputFile)
         {
             var result = Convert(inputFile, File.ReadAllText(inputFile));
-            Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
+            var dir = Path.GetDirectoryName(outputFile);
+            if (!string.IsNullOrEmpty(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
             File.WriteAllText(outputFile, result);
             Console.WriteLine($"{inputFile} has been migrated to {outputFile}.");
         }
