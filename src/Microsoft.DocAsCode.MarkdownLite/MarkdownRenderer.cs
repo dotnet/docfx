@@ -350,7 +350,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             {
                 content += render.Render(t);
             }
-            var contents = content.ToString().TrimEnd().Split('\n');
+            var contents = content.ToString().TrimEnd('\n').Split('\n');
             content = StringBuffer.Empty;
             foreach (var item in contents)
             {
