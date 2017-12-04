@@ -154,6 +154,31 @@ namespace Microsoft.DocAsCode.MarkdownRewriters.Tests
             Assert.Equal(expected, result);
         }
 
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_Html()
+        {
+            var source = @"
+**markdown**
+
+<div>
+This is **markdown** content.
+</div>
+
+# header";
+            var expected = @"**markdown**
+
+<div>
+This is <strong>markdown</strong> content.
+</div>
+
+# header
+";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
         private string Rewrite(string source, string filePath)
         {
             return _engine.Markup(source, filePath);

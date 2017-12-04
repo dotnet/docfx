@@ -15,6 +15,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
     {
         private static HttpClient _client = new HttpClient();
         private static readonly string _requestTemplate = "https://xref.docs.microsoft.com/query?uid={0}";
+        private static DfmRenderer _dfmHtmlRender = new DfmRenderer();
 
         public virtual StringBuffer Render(IMarkdownRenderer render, DfmXrefInlineToken token, MarkdownInlineContext context)
         {
@@ -101,6 +102,46 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
                 }
             }
             return content + "\n\n";
+        }
+
+        public override StringBuffer Render(IMarkdownRenderer render, MarkdownHtmlBlockToken token, MarkdownBlockContext context)
+        {
+            var result = StringBuffer.Empty;
+            var inside = false;
+            foreach (var inline in token.Content.Tokens)
+            {
+                if (inline is MarkdownTagInlineToken)
+                {
+                    inside = !inside;
+                    result += MarkupInlineToken(render, inline);
+                }
+                else
+                {
+                    result += inside ? MarkupInlineToken(render, inline)
+                                     : Render(render, inline, inline.Context);
+                }
+            }
+
+            return result;
+        }
+
+        private StringBuffer MarkupInlineTokens(IMarkdownRenderer render, ImmutableArray<IMarkdownToken> tokens)
+        {
+            var result = StringBuffer.Empty;
+            if (tokens != null)
+            {
+                foreach (var t in tokens)
+                {
+                    result += MarkupInlineToken(render, t);
+                }
+            }
+
+            return result;
+        }
+
+        private StringBuffer MarkupInlineToken(IMarkdownRenderer render, IMarkdownToken token)
+        {
+            return _dfmHtmlRender.Render((dynamic)render, (dynamic)token, (dynamic)token.Context);
         }
 
         private StringBuffer RenderInlineTokens(ImmutableArray<IMarkdownToken> tokens, IMarkdownRenderer render, MarkdownInlineContext context)
