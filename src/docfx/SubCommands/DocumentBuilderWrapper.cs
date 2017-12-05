@@ -22,6 +22,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Build.RestApi;
     using Microsoft.DocAsCode.Build.SchemaDriven;
     using Microsoft.DocAsCode.Build.TableOfContents;
+    using Microsoft.DocAsCode.Build.UniversalReference;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
@@ -153,6 +154,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 typeof(RestApiDocumentProcessor).Assembly,
                 typeof(TocDocumentProcessor).Assembly,
                 typeof(SchemaDrivenDocumentProcessor).Assembly,
+                typeof(UniversalReferenceDocumentProcessor).Assembly,
             };
             foreach (var assem in defaultPluggedAssemblies)
             {
