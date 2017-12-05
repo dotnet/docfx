@@ -107,6 +107,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Processors = Processors.Union(sdps);
             }
 
+            BuildInfo lastBuildInfo = null;
             var currentBuildInfo =
                 new BuildInfo
                 {
@@ -116,7 +117,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
             try
             {
-                var lastBuildInfo = BuildInfo.Load(_intermediateFolder, true);
+                lastBuildInfo = BuildInfo.Load(_intermediateFolder, true);
 
                 currentBuildInfo.CommitFromSHA = _commitFromSHA;
                 currentBuildInfo.CommitToSHA = _commitToSHA;
@@ -275,7 +276,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                                 currentBuildInfo.Save(_intermediateFolder);
                                 if (lastBuildInfo != null && _cleanupCacheHistory)
                                 {
-                                    ClearCacheWithNoThrow(lastBuildInfo.DirectoryName, true);
+                                    ClearCacheExcept(currentBuildInfo.DirectoryName);
                                 }
                             }
                             catch (Exception ex)
@@ -293,7 +294,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 // however the cache file created by this build will never be cleaned up with DisableIncrementalFolderCleanup option
                 if (_intermediateFolder != null && _cleanupCacheHistory)
                 {
-                    ClearCacheWithNoThrow(currentBuildInfo.DirectoryName, true);
+                    ClearCacheExcept(lastBuildInfo?.DirectoryName);
                 }
                 throw;
             }
@@ -358,21 +359,24 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
         }
 
-        private void ClearCacheWithNoThrow(string subFolder, bool recursive)
+        private void ClearCacheExcept(string subFolder)
         {
-            if (string.IsNullOrEmpty(subFolder))
+            string folder = Environment.ExpandEnvironmentVariables(_intermediateFolder);
+            string except = string.IsNullOrEmpty(subFolder) ? string.Empty : Path.Combine(folder, subFolder);
+            foreach (var f in Directory.EnumerateDirectories(folder))
             {
-                return;
-            }
-
-            try
-            {
-                string fullPath = Path.Combine(Environment.ExpandEnvironmentVariables(_intermediateFolder), subFolder);
-                Directory.Delete(fullPath, recursive);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning($"Failed to delete cache files in path: {subFolder}. Details: {ex.Message}.");
+                if (FilePathComparer.OSPlatformSensitiveStringComparer.Equals(f, except))
+                {
+                    continue;
+                }
+                try
+                {
+                    Directory.Delete(f, true);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogWarning($"Failed to delete cache files in path: {subFolder}. Details: {ex.Message}.");
+                }
             }
         }
 
