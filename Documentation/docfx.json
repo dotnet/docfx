@@ -37,10 +37,10 @@
       }
     ],
     "overwrite": "apispec/*.md",
-    "xref": [
-      "../src/nuspec/msdn.4.5.2/content/msdn.4.5.2.zip"
+    "xrefService": [
+      "https://xref.docs.microsoft.com/query?uid={uid}"
     ],
-    "postProcessors": ["ExtractSearchIndex"],
+    "postProcessors": [ "ExtractSearchIndex" ],
     "globalMetadata": {
       "_appTitle": "DocFX website",
       "_gitContribute": {
@@ -55,9 +55,9 @@
         "tutorial/**.md": 1.2
       },
       "keywords": {
-        "obj/docfx/**": ["API", "Reference"],
-        "spec/**.md": ["Spec", "Conceptual"],
-        "**/*markdown.md": ["DFM", "Spec"]
+        "obj/docfx/**": [ "API", "Reference" ],
+        "spec/**.md": [ "Spec", "Conceptual" ],
+        "**/*markdown.md": [ "DFM", "Spec" ]
       }
     },
     "dest": "_site",

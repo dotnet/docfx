@@ -51,11 +51,11 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             PreHandle(hostServices);
             _inner.PostbuildAndSave(hostServices, maxParallelism);
+            _inner.ProcessManifest(hostServices, maxParallelism);
             using (new LoggerPhaseScope("SaveExternalXRefSpec", LogLevel.Verbose))
             {
                 SaveExternalXRefSpec();
             }
-            _inner.ProcessManifest(hostServices, maxParallelism);
             PostHandle(hostServices, maxParallelism);
         }
 
