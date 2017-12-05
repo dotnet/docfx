@@ -1,6 +1,6 @@
 {{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
 
-{{>partials/class.header}}
+{{>partials/uref/class.header}}
 {{#children}}
 <h3 id="{{id}}">{{>partials/classSubtitle}}</h3>
 {{#children}}
@@ -44,7 +44,7 @@
       <td><em>{{{id}}}</em></td>
       <td>
         {{{description}}}
-        {{>partials/parameters}}
+        {{>partials/uref/parameters}}
       </td>
     </tr>
 {{/parameters}}

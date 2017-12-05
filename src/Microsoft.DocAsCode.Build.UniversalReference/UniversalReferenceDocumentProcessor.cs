@@ -77,7 +77,6 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
                         switch (mime)
                         {
                             case UniversalReferenceConstants.UniversalReferenceYamlMime:
-                            case UniversalReferenceConstants.PythonReferenceYamlMime:
                                 return ProcessingPriority.Normal;
                             default:
                                 return ProcessingPriority.NotSupported;

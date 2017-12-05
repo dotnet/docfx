@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Microsoft.DocAsCode.Build.RestApi\Microsoft.DocAsCode.Build.RestApi.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Build.SchemaDriven\Microsoft.DocAsCode.Build.SchemaDriven.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Build.TableOfContents\Microsoft.DocAsCode.Build.TableOfContents.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.Build.UniversalReference\Microsoft.DocAsCode.Build.UniversalReference.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.HtmlToPdf\Microsoft.DocAsCode.HtmlToPdf.csproj" />
