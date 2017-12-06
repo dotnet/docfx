@@ -11,7 +11,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Reflection;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
 
     internal abstract class CacheBase
     {
