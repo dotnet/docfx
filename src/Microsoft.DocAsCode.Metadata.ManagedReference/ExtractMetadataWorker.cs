@@ -19,6 +19,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.DocAsCode.Plugins;
 
     public sealed class ExtractMetadataWorker : IDisposable
     {
@@ -66,7 +67,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             };
 
             _useCompatibilityFileName = input.UseCompatibilityFileName;
-            _outputFolder = input.OutputFolder;
+            _outputFolder = StringExtension.ToNormalizedFullPath(Path.Combine(EnvironmentContext.OutputDirectory, input.OutputFolder));
 
             _workspace = new Lazy<MSBuildWorkspace>(() =>
             {
@@ -531,7 +532,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var fileName = useCompatibilityFileName ? memberModel.Name : memberModel.Name.Replace('`', '-');
                 var outputFileName = GetUniqueFileNameWithSuffix(fileName + Constants.YamlExtension, outputFileNames);
                 string itemFilePath = Path.Combine(folder, outputFileName);
-                Directory.CreateDirectory(Path.GetDirectoryName(itemFilePath));
                 var memberViewModel = memberModel.ToPageViewModel();
                 memberViewModel.ShouldSkipMarkup = shouldSkipMarkup;
                 YamlUtility.Serialize(itemFilePath, memberViewModel, YamlMime.ManagedReference);

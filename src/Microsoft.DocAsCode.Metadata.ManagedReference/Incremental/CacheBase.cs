@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ContainedFiles = containedFiles,
                 TriggeredUtcTime = triggeredTime,
                 CompleteUtcTime = completeTime,
-                OutputFolder = StringExtension.ToNormalizedFullPath(Path.Combine(EnvironmentContext.OutputDirectory, outputFolder)),
+                OutputFolder = StringExtension.ToNormalizedFullPath(outputFolder),
                 RelatvieOutputFiles = StringExtension.GetNormalizedPathList(fileRelativePaths),
                 BuildAssembly = AssemblyName,
                 Options = options,
