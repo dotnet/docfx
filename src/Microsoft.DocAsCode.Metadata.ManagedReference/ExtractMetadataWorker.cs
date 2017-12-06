@@ -127,6 +127,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // Exclude not supported files from inputs
             var cacheKey = GetCacheKey(_files.SelectMany(s => s.Value));
 
+            Logger.LogInfo("Loading projects...");
             if (_files.TryGetValue(FileType.Solution, out var sln))
             {
                 var solutions = sln.Select(s => s.NormalizedPath);
@@ -363,12 +364,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             Dictionary<string, MetadataItem> allMembers;
             Dictionary<string, ReferenceItem> allReferences;
-            using (new PerformanceScope("MergeMetadata", LogLevel.Info))
+            using (new PerformanceScope("MergeMetadata"))
             {
                 allMembers = MergeYamlProjectMetadata(projectMetadataList);
             }
 
-            using (new PerformanceScope("MergeReference", LogLevel.Info))
+            using (new PerformanceScope("MergeReference"))
             {
                 allReferences = MergeYamlProjectReferences(projectMetadataList);
             }
@@ -384,7 +385,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 // TODO: need an intermediate folder? when to clean it up?
                 // Save output to output folder
                 List<string> outputFiles;
-                using (new PerformanceScope("ResolveAndExport", LogLevel.Info))
+                using (new PerformanceScope("ResolveAndExport"))
                 {
                     outputFiles = ResolveAndExportYamlMetadata(allMembers, allReferences, outputFolder, options.PreserveRawInlineComments, options.ShouldSkipMarkup, _useCompatibilityFileName).ToList();
                 }
@@ -760,7 +761,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Logger.LogVerbose("Loading solution...");
                 var solution = await _workspace.Value.OpenSolutionAsync(path);
                 _workspace.Value.CloseSolution();
-                Logger.LogInfo($"Solution {solution.FilePath} loaded.");
+                Logger.LogVerbose($"Solution {solution.FilePath} loaded.");
                 return solution;
             }
             catch (Exception e)
@@ -783,7 +784,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             p => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(p.FilePath, s));
                         var result = project ?? _workspace.Value.OpenProjectAsync(s).Result;
 
-                        Logger.LogInfo($"Project {result.FilePath} loaded.");
+                        Logger.LogVerbose($"Project {result.FilePath} loaded.");
                         return result;
                     }
                     catch (AggregateException e)
@@ -809,7 +810,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     Logger.LogVerbose("Loading project...");
                     var workspace = new ProjectJsonWorkspace(path);
                     var result = workspace.CurrentSolution.Projects.FirstOrDefault(p => p.FilePath == Path.GetFullPath(path));
-                    Logger.LogInfo($"Project {result.FilePath} loaded.");
+                    Logger.LogVerbose($"Project {result.FilePath} loaded.");
                     return result;
                 }
                 catch (Exception e)
