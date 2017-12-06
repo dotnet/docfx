@@ -18,9 +18,19 @@ export class requestProxy {
     private _requestArray = new RequestArray();
     private _spawn: childProcess.ChildProcess;
     private _serverPort = "4002";
+    private _isDfmLatest = false;
+    private _workspacePath;
 
     public static getInstance(): requestProxy {
         return requestProxy._instance;
+    }
+
+    public setLegacyMode(isDfmLatest: boolean){
+        this._isDfmLatest = isDfmLatest;
+    }
+
+    public setWorkspacePath(workspacePath: string){
+        this._workspacePath = workspacePath;
     }
 
     public newRequest(request: ProxyRequest) {
@@ -54,13 +64,13 @@ export class requestProxy {
             let res;
             switch (request.previewType) {
                 case PreviewType.dfmPreview:
-                    res = await DfmService.previewAsync(this._serverPort, request.content, request.workspacePath, request.relativePath);
+                    res = await DfmService.previewAsync(this._serverPort, request.content, request.relativePath);
                     break;
                 case PreviewType.tokenTreePreview:
-                    res = await DfmService.getTokenTreeAsync(this._serverPort, request.content, request.workspacePath, request.relativePath);
+                    res = await DfmService.getTokenTreeAsync(this._serverPort, request.content, request.relativePath);
                     break;
                 case PreviewType.docFXPreview:
-                    res = await DfmService.previewAsync(this._serverPort, request.content, request.workspacePath, request.relativePath, true, request.tempPreviewFilePath, request.pageRefreshJsFilePath, request.originalHtmlPath, request.navigationPort);
+                    res = await DfmService.previewAsync(this._serverPort, request.content, request.relativePath, true, request.tempPreviewFilePath, request.pageRefreshJsFilePath, request.originalHtmlPath, request.navigationPort);
                     break;
             }
             request.callback(null, new ProxyResponse(res ? res.data : "", request.relativePath, request.documentUri));
@@ -103,7 +113,7 @@ export class requestProxy {
         this._serverPort = port.toString();
         let exePath = context.asAbsolutePath("./DfmHttpService/DfmHttpService.exe");
         try {
-            this._spawn = ChildProcessManagement.spawn(exePath + " " + this._serverPort, {});
+            this._spawn = ChildProcessManagement.spawn(exePath + " -w " + this._workspacePath + " -p " + this._serverPort + (this._isDfmLatest ? " --isDfmLatest" : ""), {});
         }
         catch (err) {
             window.showErrorMessage(`[Extension Error]: ${err}`);

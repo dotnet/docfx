@@ -10,7 +10,6 @@ export class ProxyRequest {
     content: string;
     oldPid: number;
     relativePath: string;
-    workspacePath: string;
     tempPreviewFilePath: string;
     originalHtmlPath: string;
     pageRefreshJsFilePath: string;
@@ -18,12 +17,11 @@ export class ProxyRequest {
     context: ExtensionContext;
     callback;
 
-    constructor(documentUri: Uri, previewType: number, content: string, relativePath: string, workspacePath: string, context: ExtensionContext, callback) {
+    constructor(documentUri: Uri, previewType: number, content: string, relativePath: string, context: ExtensionContext, callback) {
         this.documentUri = documentUri;
         this.previewType = previewType;
         this.content = content;
         this.relativePath = relativePath;
-        this.workspacePath = workspacePath;
         this.context = context;
         this.callback = callback;
     }

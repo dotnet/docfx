@@ -30,7 +30,10 @@ export class DocFXPreviewProcessor extends PreviewProcessor {
         let docfxConfigFilePath = this.validConfig();
         if (docfxConfigFilePath != undefined && docfxConfigFilePath != null) {
             try {
-                this._tempPreviewFileInformation = TempPreviewFileProcessor.initializeTempFileInformation(PreviewProcessor.context, this.navigationPort, this.parseConfig(docfxConfigFilePath));
+                var config = this.parseConfig(docfxConfigFilePath);
+                PreviewProcessor.proxy.setLegacyMode(config.isDfmLatest);
+
+                this._tempPreviewFileInformation = TempPreviewFileProcessor.initializeTempFileInformation(PreviewProcessor.context, this.navigationPort, config);
             } catch (err) {
                 window.showErrorMessage(`[Environment Error]: ${err}`);
             }
@@ -73,14 +76,29 @@ export class DocFXPreviewProcessor extends PreviewProcessor {
     }
 
     private parseConfig(docfxConfigFilePath) {
+        var defaultConfig = {
+            "outputFolder": "_site",
+            "isDfmLatest": false
+        };
+
         // The first char maybe \uFEFF
         let docfxConfig = JSON.parse(fs.readFileSync(docfxConfigFilePath).toString().replace(/^\uFEFF/, ''));
-        let outputFolder = "_site";
+
+        // OutputFolder
+        var outputFolder = defaultConfig["outputFolder"];
         if (docfxConfig.build.dest != undefined) {
             outputFolder = docfxConfig.build.dest;
         }
+
+        // LagacyMode
+        var isDfmLatest = defaultConfig["isDfmLatest"];
+        if(docfxConfig.build.markdownEngineName === "dfm-latest"){
+            isDfmLatest = true;
+        }
+
         return {
-            "outputFolder": outputFolder
+            "outputFolder": outputFolder,
+            "isDfmLatest": isDfmLatest
         };
     }
 
