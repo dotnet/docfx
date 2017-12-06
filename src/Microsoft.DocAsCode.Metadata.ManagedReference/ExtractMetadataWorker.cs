@@ -450,7 +450,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static void CopyFromCachedResult(BuildInfo buildInfo, IEnumerable<string> inputs, string outputFolder)
         {
             var outputFolderSource = buildInfo.OutputFolder;
-            var relativeFiles = buildInfo.RelatvieOutputFiles;
+            var relativeFiles = buildInfo.RelativeOutputFiles;
             if (relativeFiles == null)
             {
                 Logger.Log(LogLevel.Warning, $"No metadata is generated for '{StringExtension.ToDelimitedString(inputs)}'.");
@@ -472,7 +472,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (!rebuildProject)
             {
                 // Load from cache
-                var cacheFile = Path.Combine(projectConfig.OutputFolder, projectConfig.RelatvieOutputFiles.First());
+                var cacheFile = Path.Combine(projectConfig.OutputFolder, projectConfig.RelativeOutputFiles.First());
                 Logger.Log(LogLevel.Info, $"'{projectConfig.InputFilesKey}' keep up-to-date since '{projectConfig.TriggeredUtcTime.ToString()}', cached intermediate result '{cacheFile}' is used.");
                 if (TryParseYamlMetadataFile(cacheFile, out projectMetadata))
                 {

@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public ExtractMetadataOptions Options { get; set; }
 
-        public IEnumerable<string> RelatvieOutputFiles { get; set; }
+        public IEnumerable<string> RelativeOutputFiles { get; set; }
 
         /// <summary>
         /// Save the files involved in the build
