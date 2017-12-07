@@ -113,7 +113,7 @@ export class requestProxy {
         this._serverPort = port.toString();
         let exePath = context.asAbsolutePath("./DfmHttpService/DfmHttpService.exe");
         try {
-            this._spawn = ChildProcessManagement.spawn(exePath + " -w " + this._workspacePath + " -p " + this._serverPort + (this._isDfmLatest ? " --isDfmLatest" : ""), {});
+            this._spawn = ChildProcessManagement.spawn(exePath + " -w \"" + this._workspacePath + "\" -p " + this._serverPort + (this._isDfmLatest ? " --isDfmLatest" : ""), {});
         }
         catch (err) {
             window.showErrorMessage(`[Extension Error]: ${err}`);

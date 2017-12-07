@@ -20,9 +20,10 @@ export class PreviewProcessor {
     constructor(context: ExtensionContext) {
         PreviewProcessor.context = context;
 
-        let environmentVariables;
-        if (!(environmentVariables = Utility.getEnvironmentVariables()))
+        let environmentVariables = Utility.getEnvironmentVariables();
+        if (environmentVariables == null) {
             return;
+        }
 
         PreviewProcessor.proxy.setWorkspacePath(environmentVariables.workspacePath);
     }
@@ -57,9 +58,10 @@ export class PreviewProcessor {
     }
 
     private prepareRequestData(documentUri: Uri, previewType: number, context, callback): ProxyRequest {
-        let environmentVariables;
-        if (!(environmentVariables = Utility.getEnvironmentVariables()))
+        let environmentVariables = Utility.getEnvironmentVariables();
+        if (environmentVariables == null) {
             return;
+        }
 
         let request = new ProxyRequest(documentUri, previewType, environmentVariables.docContent, environmentVariables.relativePath, context, callback);
         return this.appendTempPreviewFileInformation(request);
