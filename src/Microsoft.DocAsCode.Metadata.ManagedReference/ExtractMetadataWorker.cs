@@ -199,6 +199,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 documentCache.AddDocument(_filterConfigFile, _filterConfigFile);
             }
 
+            Logger.LogInfo("Loading projects...");
             if (_files.TryGetValue(FileType.Solution, out var sln))
             {
                 var solutions = sln.Select(s => s.NormalizedPath);
@@ -907,6 +908,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 Logger.LogVerbose($"Loading solution {path}", file: path);
                 var solution = await _workspace.Value.OpenSolutionAsync(path);
                 _workspace.Value.CloseSolution();
+                Logger.LogVerbose($"Solution {solution.FilePath} loaded.");
                 return solution;
             }
             catch (Exception e)
