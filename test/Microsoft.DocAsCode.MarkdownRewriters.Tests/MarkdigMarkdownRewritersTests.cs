@@ -179,6 +179,17 @@ This is <strong>markdown</strong> content.
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_StrongAndEm()
+        {
+            var source = "__a__ and _b_ and **a** and **b** and *__ab__*";
+            var expected = "__a__ and _b_ and **a** and **b** and *__ab__*\n\n";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected, result);
+        }
+
         private string Rewrite(string source, string filePath)
         {
             return _engine.Markup(source, filePath);
