@@ -1,5 +1,11 @@
-﻿Version Notes (Current Version: v2.28.1)
+﻿Version Notes (Current Version: v2.28.2)
 =======================================
+
+v2.28.2
+-----------
+1. Bug fixes:
+   1. Fix issues running under mono (#2262, #1856)
+   2. Fix VS17 15.5 support (#2265)
 
 v2.28.1
 -----------
