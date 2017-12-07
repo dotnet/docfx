@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
 
         private StringBuffer RenderAutoLink(IMarkdownRenderer render, MarkdownLinkInlineToken token, MarkdownInlineContext context)
         {
-            var content = RenderInlineTokens(token.Content, render, context);
+            var content = RenderInlineTokens(token.Content, render);
             return $"<{content}>";
         }
 
@@ -53,7 +53,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
         {
             var content = StringBuffer.Empty;
             content += "[";
-            content += RenderInlineTokens(token.Content, render, context);
+            content += RenderInlineTokens(token.Content, render);
             content += "](";
             content += StringHelper.EscapeMarkdownHref(token.Href);
 
@@ -125,6 +125,28 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
             return result;
         }
 
+        public override StringBuffer Render(IMarkdownRenderer render, MarkdownStrongInlineToken token, MarkdownInlineContext context)
+        {
+            var source = token.SourceInfo.Markdown;
+            var symbol = source.StartsWith("_") ? "__" : "**";
+            var content = StringBuffer.Empty;
+            content += symbol;
+            content += RenderInlineTokens(token.Content, render);
+            content += symbol;
+            return content;
+        }
+
+        public override StringBuffer Render(IMarkdownRenderer render, MarkdownEmInlineToken token, MarkdownInlineContext context)
+        {
+            var source = token.SourceInfo.Markdown;
+            var symbol = source.StartsWith("_") ? "_" : "*";
+            var content = StringBuffer.Empty;
+            content += symbol;
+            content += RenderInlineTokens(token.Content, render);
+            content += symbol;
+            return content;
+        }
+
         private StringBuffer MarkupInlineTokens(IMarkdownRenderer render, ImmutableArray<IMarkdownToken> tokens)
         {
             var result = StringBuffer.Empty;
@@ -144,14 +166,14 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
             return _dfmHtmlRender.Render((dynamic)render, (dynamic)token, (dynamic)token.Context);
         }
 
-        private StringBuffer RenderInlineTokens(ImmutableArray<IMarkdownToken> tokens, IMarkdownRenderer render, MarkdownInlineContext context)
+        private StringBuffer RenderInlineTokens(ImmutableArray<IMarkdownToken> tokens, IMarkdownRenderer render)
         {
             var result = StringBuffer.Empty;
             if (tokens != null)
             {
                 foreach (var t in tokens)
                 {
-                    result += base.Render(render, t, context);
+                    result += render.Render(t);
                 }
             }
 
