@@ -20,8 +20,6 @@ namespace Microsoft.DocAsCode.Common.Git
         private static readonly string GetLocalBranchCommand = "rev-parse --abbrev-ref HEAD";
         private static readonly string GetLocalBranchCommitIdCommand = "rev-parse HEAD";
         private static readonly string GetRemoteBranchCommand = "rev-parse --abbrev-ref @{u}";
-        private static readonly string GetDeletedFileContentCommand = "show {0}^:{1}";
-        private static readonly string GetFileLastCommitIdCommand = "rev-list --max-count=1 --all -- {0}";
 
         // TODO: only get default remote's url currently.
         private static readonly string GetOriginUrlCommand = "config --get remote.origin.url";
