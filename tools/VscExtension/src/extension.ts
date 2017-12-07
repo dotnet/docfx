@@ -199,6 +199,11 @@ function showPreview(dfmPreviewProcessor: DfmPreviewProcessor, uri?: Uri, sideBy
 
 function showDocFXPreview(docFXPreviewProcessor: DocFXPreviewProcessor, uri?: Uri, sideBySide: boolean = false) {
     PreviewProcessor.previewType = PreviewType.docFXPreview;
+
+    // Restart dfmHttpService
+    // For docfx-preview, we support config in docfx.json, which requires service restart
+    PreviewProcessor.stopPreview();
+
     let resource = checkUri(uri)
     if (!resource) {
         return commands.executeCommand("DocFX.showSource");
