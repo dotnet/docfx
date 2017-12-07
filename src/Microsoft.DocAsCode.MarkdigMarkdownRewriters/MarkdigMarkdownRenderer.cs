@@ -202,6 +202,110 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
             return base.Render(render, token, context);
         }
 
+        public override StringBuffer Render(IMarkdownRenderer render, MarkdownTableBlockToken token, MarkdownBlockContext context)
+        {
+            var nSpace = 2;
+            var nRow = token.Cells.Length + 2;
+            var nCol = token.Header.Length;
+            var maxLengths = new int[nCol];
+            var matrix = new StringBuffer[nRow, nCol];
+
+            for (var j = 0; j < nCol; j++)
+            {
+                var header = token.Header[j];
+                var content = RenderInlineTokens(header.Content.Tokens, render);
+                matrix[0, j] = content;
+                maxLengths[j] = Math.Max(3, content.GetLength()) + nSpace;
+            }
+
+            for (var i = 0; i < token.Cells.Length; i++)
+            {
+                var cell = token.Cells[i];
+                for (var j = 0; j < nCol; j++)
+                {
+                    var item = cell[j];
+                    var content = RenderInlineTokens(item.Content.Tokens, render);
+                    matrix[i + 2, j] = content;
+                    maxLengths[j] = Math.Max(maxLengths[j], content.GetLength() + nSpace);
+                }
+            }
+
+            for (var j = 0; j < nCol; j++)
+            {
+                var align = token.Align[j];
+                switch (align)
+                {
+                    case Align.NotSpec:
+                       matrix[1, j] = "---";
+                        break;
+                    case Align.Left:
+                        matrix[1, j] = ":--";
+                        break;
+                    case Align.Right:
+                        matrix[1, j] = "--:";
+                        break;
+                    case Align.Center:
+                        matrix[1, j] = ":-:";
+                        break;
+                    default:
+                        throw new NotSupportedException($"align:{align} doesn't support in GFM table");
+                }
+            }
+
+            return BuildTable(matrix, maxLengths, nRow, nCol);
+        }
+
+        private StringBuffer BuildTable(StringBuffer[,] matrix, int[] maxLenths, int nRow, int nCol)
+        {
+            var content = StringBuffer.Empty;
+            for (var i = 0; i < nRow; i++)
+            {
+                content += "|";
+                for (var j = 0; j < nCol; j++)
+                {
+                    if (i == 1)
+                    {
+                        content += BuildAlign(matrix[i, j], maxLenths[j]);
+                    }
+                    else
+                    {
+                        content += BuildItem(matrix[i, j], maxLenths[j]);
+                    }
+                    content += "|";
+                }
+                content += "\n";
+            }
+
+            return content + "\n";
+        }
+
+        private StringBuffer BuildAlign(StringBuffer align, int maxLength)
+        {
+            switch (align)
+            {
+                case "---":
+                    return new string('-', maxLength);
+                case ":--":
+                    return ":" + new string('-', maxLength - 1);
+                case "--:":
+                    return new string('-', maxLength - 1) + ":";
+                case ":-:":
+                    return ":" + new string('-', maxLength - 2) + ":";
+                default:
+                    throw new NotSupportedException($"align:{align} doesn't support in GFM table");
+            }
+        }
+
+        private StringBuffer BuildItem(StringBuffer value, int maxLength)
+        {
+            var leftPad = (maxLength - value.GetLength()) / 2;
+            var rightPad = maxLength - leftPad - value.GetLength();
+
+            var leftValue = new string(' ', leftPad);
+            var rightValue = new string(' ', rightPad);
+            return leftValue + value + rightValue;
+        }
+
         private StringBuffer MarkupInlineTokens(IMarkdownRenderer render, ImmutableArray<IMarkdownToken> tokens)
         {
             var result = StringBuffer.Empty;
