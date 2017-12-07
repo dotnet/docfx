@@ -19,6 +19,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
     using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.DocAsCode.Plugins;
 
     public sealed class ExtractMetadataWorker : IDisposable
     {
@@ -66,7 +67,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             };
 
             _useCompatibilityFileName = input.UseCompatibilityFileName;
-            _outputFolder = input.OutputFolder;
+            _outputFolder = StringExtension.ToNormalizedFullPath(Path.Combine(EnvironmentContext.OutputDirectory, input.OutputFolder));
 
             _workspace = new Lazy<MSBuildWorkspace>(() =>
             {
@@ -450,7 +451,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private static void CopyFromCachedResult(BuildInfo buildInfo, IEnumerable<string> inputs, string outputFolder)
         {
             var outputFolderSource = buildInfo.OutputFolder;
-            var relativeFiles = buildInfo.RelatvieOutputFiles;
+            var relativeFiles = buildInfo.RelativeOutputFiles;
             if (relativeFiles == null)
             {
                 Logger.Log(LogLevel.Warning, $"No metadata is generated for '{StringExtension.ToDelimitedString(inputs)}'.");
@@ -472,7 +473,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             if (!rebuildProject)
             {
                 // Load from cache
-                var cacheFile = Path.Combine(projectConfig.OutputFolder, projectConfig.RelatvieOutputFiles.First());
+                var cacheFile = Path.Combine(projectConfig.OutputFolder, projectConfig.RelativeOutputFiles.First());
                 Logger.Log(LogLevel.Info, $"'{projectConfig.InputFilesKey}' keep up-to-date since '{projectConfig.TriggeredUtcTime.ToString()}', cached intermediate result '{cacheFile}' is used.");
                 if (TryParseYamlMetadataFile(cacheFile, out projectMetadata))
                 {
@@ -532,7 +533,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var fileName = useCompatibilityFileName ? memberModel.Name : memberModel.Name.Replace('`', '-');
                 var outputFileName = GetUniqueFileNameWithSuffix(fileName + Constants.YamlExtension, outputFileNames);
                 string itemFilePath = Path.Combine(folder, outputFileName);
-                Directory.CreateDirectory(Path.GetDirectoryName(itemFilePath));
                 var memberViewModel = memberModel.ToPageViewModel();
                 memberViewModel.ShouldSkipMarkup = shouldSkipMarkup;
                 YamlUtility.Serialize(itemFilePath, memberViewModel, YamlMime.ManagedReference);

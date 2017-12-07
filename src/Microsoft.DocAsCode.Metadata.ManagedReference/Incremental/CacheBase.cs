@@ -11,7 +11,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.Reflection;
 
     using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
 
     internal abstract class CacheBase
     {
@@ -52,8 +51,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 ContainedFiles = containedFiles,
                 TriggeredUtcTime = triggeredTime,
                 CompleteUtcTime = completeTime,
-                OutputFolder = StringExtension.ToNormalizedFullPath(Path.Combine(EnvironmentContext.OutputDirectory, outputFolder)),
-                RelatvieOutputFiles = StringExtension.GetNormalizedPathList(fileRelativePaths),
+                OutputFolder = StringExtension.ToNormalizedFullPath(outputFolder),
+                RelativeOutputFiles = StringExtension.GetNormalizedPathList(fileRelativePaths),
                 BuildAssembly = AssemblyName,
                 Options = options,
             };
@@ -81,7 +80,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 var checksum = buildInfo.CheckSum;
                 try
                 {
-                    var resultCorrupted = GetMd5(buildInfo.OutputFolder, buildInfo.RelatvieOutputFiles) != checksum;
+                    var resultCorrupted = GetMd5(buildInfo.OutputFolder, buildInfo.RelativeOutputFiles) != checksum;
 
                     if (!resultCorrupted && checksum != null)
                     {
@@ -109,7 +108,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         protected virtual void SaveConfig(string key, BuildInfo config)
         {
-            config.CheckSum = GetMd5(config.OutputFolder, config.RelatvieOutputFiles);
+            config.CheckSum = GetMd5(config.OutputFolder, config.RelativeOutputFiles);
             _configs[key] = config;
             CleanupConfig();
 
