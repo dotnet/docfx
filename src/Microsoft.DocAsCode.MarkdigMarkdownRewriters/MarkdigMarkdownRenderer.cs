@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
     using System;
     using System.Collections.Immutable;
     using System.Net.Http;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
     using Microsoft.DocAsCode.Dfm;
@@ -16,6 +17,8 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
         private static HttpClient _client = new HttpClient();
         private static readonly string _requestTemplate = "https://xref.docs.microsoft.com/query?uid={0}";
         private static DfmRenderer _dfmHtmlRender = new DfmRenderer();
+        private static readonly Regex _headingRegex = new Regex(@"^(?<pre> *#{1,6}(?<whitespace> *))(?<text>[^\n]+?)(?<post>(?: +#*)? *(?:\n+|$))", RegexOptions.Compiled);
+        private static readonly Regex _lheading = new Regex(@"^(?<text>[^\n]+)(?<post>\n *(?:=|-){2,} *(?:\n+|$))", RegexOptions.Compiled);
 
         public virtual StringBuffer Render(IMarkdownRenderer render, DfmXrefInlineToken token, MarkdownInlineContext context)
         {
@@ -145,6 +148,58 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
             content += RenderInlineTokens(token.Content, render);
             content += symbol;
             return content;
+        }
+
+        public override StringBuffer Render(IMarkdownRenderer render, MarkdownHeadingBlockToken token, MarkdownBlockContext context)
+        {
+            if (token.Rule is MarkdownLHeadingBlockRule)
+            {
+                return RenderLHeadingToken(render, token, context);
+            }
+            else
+            {
+                return RenderHeadingToken(render, token, context);
+            }
+        }
+
+        private StringBuffer RenderHeadingToken(IMarkdownRenderer render, MarkdownHeadingBlockToken token, MarkdownBlockContext context)
+        {
+            var source = token.SourceInfo.Markdown;
+            var match = _headingRegex.Match(source);
+            if (match.Success)
+            {
+                var result = StringBuffer.Empty;
+                var whitespace = match.Groups["whitespace"].Value;
+                var content = RenderInlineTokens(token.Content.Tokens, render);
+
+                result += match.Groups["pre"].Value;
+                if (string.IsNullOrEmpty(whitespace))
+                {
+                    result += " ";
+                }
+                result += content;
+                result += match.Groups["post"].Value;
+
+                return result;
+            }
+
+            return base.Render(render, token, context);
+
+        }
+
+        private StringBuffer RenderLHeadingToken(IMarkdownRenderer render, MarkdownHeadingBlockToken token, MarkdownBlockContext context)
+        {
+            var source = token.SourceInfo.Markdown;
+            var match = _lheading.Match(source);
+            if (match.Success)
+            {
+                var result = RenderInlineTokens(token.Content.Tokens, render);
+                result += match.Groups["post"].Value;
+
+                return result;
+            }
+
+            return base.Render(render, token, context);
         }
 
         private StringBuffer MarkupInlineTokens(IMarkdownRenderer render, ImmutableArray<IMarkdownToken> tokens)

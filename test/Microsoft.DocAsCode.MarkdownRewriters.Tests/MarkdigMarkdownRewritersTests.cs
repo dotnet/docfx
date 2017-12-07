@@ -172,7 +172,58 @@ This is **markdown** content.
 This is <strong>markdown</strong> content.
 </div>
 
-# header
+# header";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_HeadingWithWhitespace()
+        {
+            var source = @" #    Heading with whitespace    #
+
+content...";
+            var expected = @" #    Heading with whitespace    #
+
+content...
+
+";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_HeadingWithoutWhitespace()
+        {
+            var source = @" #Heading with whitespace
+
+content...";
+            var expected = @" # Heading with whitespace
+
+content...
+
+";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_LHeading()
+        {
+            var source = @"Heading with whitespace
+===
+
+content...";
+            var expected = @"Heading with whitespace
+===
+
+content...
+
 ";
 
             var result = Rewrite(source, "topic.md");
