@@ -296,13 +296,15 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
         private StringBuffer BuildItem(StringBuffer align, StringBuffer value, int maxLength)
         {
             var length = value.GetLength();
-            var leftPad = (maxLength - value.GetLength()) / 2;
-            Func<int, int> GetRightPad = left => maxLength - left - length;
+            var totalPad = maxLength - value.GetLength();
+            Func<int, int> GetRightPad = left => totalPad - left;
+            int leftPad;
 
             switch (align)
             {
                 case "---":
                 case ":-:":
+                    leftPad = totalPad / 2;
                     return BuildItem(value, leftPad, GetRightPad(leftPad));
                 case ":--":
                     leftPad = 1;
@@ -317,9 +319,9 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
 
         private StringBuffer BuildItem(StringBuffer value, int leftPad, int rightPad)
         {
-            var leftValue = new string(' ', leftPad);
-            var rightValue = new string(' ', rightPad);
-            return leftValue + value + rightValue;
+            var leftValue = leftPad == 1 ? " " : new string(' ', leftPad);
+            var rightValue = rightPad == 1 ? " " : new string(' ', rightPad);
+            return leftValue + value.ToString() + rightValue;
         }
 
         private StringBuffer MarkupInlineTokens(IMarkdownRenderer render, ImmutableArray<IMarkdownToken> tokens)

@@ -262,6 +262,27 @@ content...
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_UnalignedTable()
+        {
+            var source = @"|Tables|Are|Cool|
+|---|:--:|--:|
+|col 1 is|  left-aligned | $1600 |
+| col 2 is |      centered 
+| col 3 is";
+            var expected = @"|  Tables  |     Are      |  Cool |
+|----------|:------------:|------:|
+| col 1 is | left-aligned | $1600 |
+| col 2 is |   centered   |       |
+| col 3 is |              |       |
+
+";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
         private string Rewrite(string source, string filePath)
         {
             return _engine.Markup(source, filePath);
