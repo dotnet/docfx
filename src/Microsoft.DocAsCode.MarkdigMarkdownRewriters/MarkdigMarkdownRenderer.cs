@@ -263,14 +263,11 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
                 content += "|";
                 for (var j = 0; j < nCol; j++)
                 {
-                    if (i == 1)
-                    {
-                        content += BuildAlign(matrix[i, j], maxLenths[j]);
-                    }
-                    else
-                    {
-                        content += BuildItem(matrix[i, j], maxLenths[j]);
-                    }
+                    var align = matrix[1, j];
+                    var item = i == 1 ? BuildAlign(align, maxLenths[j])
+                                      : BuildItem(align, matrix[i, j], maxLenths[j]);
+ 
+                    content += item;
                     content += "|";
                 }
                 content += "\n";
@@ -296,11 +293,30 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
             }
         }
 
-        private StringBuffer BuildItem(StringBuffer value, int maxLength)
+        private StringBuffer BuildItem(StringBuffer align, StringBuffer value, int maxLength)
         {
+            var length = value.GetLength();
             var leftPad = (maxLength - value.GetLength()) / 2;
-            var rightPad = maxLength - leftPad - value.GetLength();
+            Func<int, int> GetRightPad = left => maxLength - left - length;
 
+            switch (align)
+            {
+                case "---":
+                case ":-:":
+                    return BuildItem(value, leftPad, GetRightPad(leftPad));
+                case ":--":
+                    leftPad = 1;
+                    return BuildItem(value, leftPad, GetRightPad(leftPad));
+                case "--:":
+                    leftPad = 1;
+                    return BuildItem(value, GetRightPad(leftPad), leftPad);
+                default:
+                    throw new NotSupportedException($"align:{align} doesn't support in GFM table");
+            }
+        }
+
+        private StringBuffer BuildItem(StringBuffer value, int leftPad, int rightPad)
+        {
             var leftValue = new string(' ', leftPad);
             var rightValue = new string(' ', rightPad);
             return leftValue + value + rightValue;
