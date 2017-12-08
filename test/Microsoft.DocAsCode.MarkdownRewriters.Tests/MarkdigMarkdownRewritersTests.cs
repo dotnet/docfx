@@ -241,6 +241,65 @@ content...
             Assert.Equal(expected, result);
         }
 
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_Table()
+        {
+            var source = @"|Tables|Are|Cool|
+|---|:--:|--:|
+|col 1 is|  left-aligned | $1600 |
+| col 2 is |      centered |   $12 |
+| col 3 is | right-aligned |$1|";
+            var expected = @"|  Tables  |      Are      |  Cool |
+|----------|:-------------:|------:|
+| col 1 is | left-aligned  | $1600 |
+| col 2 is |   centered    |   $12 |
+| col 3 is | right-aligned |    $1 |
+
+";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_UnalignedTable00()
+        {
+            var source = @"|Tables|Are|Cool|
+|---|:--:|--:|
+|col 1 is|  left-aligned | $1600 |
+| col 2 is |      centered 
+| col 3 is";
+            var expected = @"|  Tables  |     Are      |  Cool |
+|----------|:------------:|------:|
+| col 1 is | left-aligned | $1600 |
+| col 2 is |   centered   |       |
+| col 3 is |              |       |
+
+";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_UnalignedTable01()
+        {
+            var source = @"| | a |
+|---|---|
+| |a| ";
+            var expected = @"|   | a |
+|---|---|
+|   | a |
+
+";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
         private string Rewrite(string source, string filePath)
         {
             return _engine.Markup(source, filePath);
