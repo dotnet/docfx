@@ -165,11 +165,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
         private void AddToTree(ItemViewModel item, List<TreeItem> tree)
         {
-            if (!item.IsExplicitInterfaceImplementation)
-            {
-                var treeItem = ConvertToTreeItem(item);
-                tree.Add(treeItem);
-            }
+            var treeItem = ConvertToTreeItem(item);
+            tree.Add(treeItem);
         }
 
         private ItemViewModel GenerateOverloadPage(PageViewModel page, IGrouping<string, ItemViewModel> overload)
