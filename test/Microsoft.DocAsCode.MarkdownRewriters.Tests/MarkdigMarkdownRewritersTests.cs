@@ -264,7 +264,7 @@ content...
 
         [Fact]
         [Trait("Related", "MarkdigMarkdownRewriters")]
-        public void TestMarkdigMarkdownRewriters_UnalignedTable()
+        public void TestMarkdigMarkdownRewriters_UnalignedTable00()
         {
             var source = @"|Tables|Are|Cool|
 |---|:--:|--:|
@@ -276,6 +276,23 @@ content...
 | col 1 is | left-aligned | $1600 |
 | col 2 is |   centered   |       |
 | col 3 is |              |       |
+
+";
+
+            var result = Rewrite(source, "topic.md");
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_UnalignedTable01()
+        {
+            var source = @"| | a |
+|---|---|
+| |a| ";
+            var expected = @"|   | a |
+|---|---|
+|   | a |
 
 ";
 

@@ -215,7 +215,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
                 var header = token.Header[j];
                 var content = RenderInlineTokens(header.Content.Tokens, render);
                 matrix[0, j] = content;
-                maxLengths[j] = Math.Max(3, content.GetLength()) + nSpace;
+                maxLengths[j] = Math.Max(1, content.GetLength()) + nSpace;
             }
 
             for (var i = 0; i < token.Cells.Length; i++)
@@ -236,7 +236,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
                 switch (align)
                 {
                     case Align.NotSpec:
-                       matrix[1, j] = "---";
+                        matrix[1, j] = "---";
                         break;
                     case Align.Left:
                         matrix[1, j] = ":--";
@@ -264,10 +264,14 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
                 for (var j = 0; j < nCol; j++)
                 {
                     var align = matrix[1, j];
-                    var item = i == 1 ? BuildAlign(align, maxLenths[j])
-                                      : BuildItem(align, matrix[i, j], maxLenths[j]);
- 
-                    content += item;
+                    if (i == 1)
+                    {
+                        content += BuildAlign(align, maxLenths[j]);
+                    }
+                    else
+                    {
+                        content += BuildItem(align, matrix[i, j], maxLenths[j]);
+                    }
                     content += "|";
                 }
                 content += "\n";
@@ -276,7 +280,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
             return content + "\n";
         }
 
-        private StringBuffer BuildAlign(StringBuffer align, int maxLength)
+        private string BuildAlign(StringBuffer align, int maxLength)
         {
             switch (align)
             {
@@ -297,21 +301,17 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
         {
             var length = value.GetLength();
             var totalPad = maxLength - value.GetLength();
-            Func<int, int> GetRightPad = left => totalPad - left;
-            int leftPad;
 
             switch (align)
             {
                 case "---":
                 case ":-:":
-                    leftPad = totalPad / 2;
-                    return BuildItem(value, leftPad, GetRightPad(leftPad));
+                    var leftPad = totalPad / 2;
+                    return BuildItem(value, leftPad, totalPad - leftPad);
                 case ":--":
-                    leftPad = 1;
-                    return BuildItem(value, leftPad, GetRightPad(leftPad));
+                    return BuildItem(value, 1, totalPad - 1);
                 case "--:":
-                    leftPad = 1;
-                    return BuildItem(value, GetRightPad(leftPad), leftPad);
+                    return BuildItem(value, totalPad - 1, 1);
                 default:
                     throw new NotSupportedException($"align:{align} doesn't support in GFM table");
             }
@@ -321,7 +321,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
         {
             var leftValue = leftPad == 1 ? " " : new string(' ', leftPad);
             var rightValue = rightPad == 1 ? " " : new string(' ', rightPad);
-            return leftValue + value.ToString() + rightValue;
+            return StringBuffer.Empty + leftValue + value + rightValue;
         }
 
         private StringBuffer MarkupInlineTokens(IMarkdownRenderer render, ImmutableArray<IMarkdownToken> tokens)
