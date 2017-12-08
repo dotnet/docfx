@@ -127,11 +127,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.NotNull(model);
                 Assert.Equal(1, model.Items.Count);
                 Assert.Equal("CatLibrary.Cat%602.html", model.Items[0].TopicHref);
-                Assert.Equal(13, model.Items[0].Items.Count);
+                Assert.Equal(16, model.Items[0].Items.Count);
                 Assert.Equal("CatLibrary.Cat-2.op_Addition.html", model.Items[0].Items[0].TopicHref);
                 Assert.Equal("Addition", model.Items[0].Items[0].Name);
-                Assert.Equal("CatLibrary.Cat-2.op_Subtraction.html", model.Items[0].Items[12].TopicHref);
-                Assert.Equal("Subtraction", model.Items[0].Items[12].Name);
+                Assert.Equal("CatLibrary.Cat-2.op_Subtraction.html", model.Items[0].Items[15].TopicHref);
+                Assert.Equal("Subtraction", model.Items[0].Items[15].Name);
 
                 var ctor = model.Items[0].Items.FirstOrDefault(s => s.Name == "Cat");
                 Assert.NotNull(ctor);
@@ -197,7 +197,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
                 Assert.NotNull(model);
                 Assert.Equal(1, model.Items.Count);
                 Assert.Equal("../System.Activities.Presentation.Model.ModelItemDictionary.html", model.Items[0].TopicHref);
-                Assert.Equal(19, model.Items[0].Items.Count);
+                Assert.Equal(38, model.Items[0].Items.Count);
 
                 Assert.Equal("../System.Activities.Presentation.Model.ModelItemDictionary.Add.html", model.Items[0].Items[0].TopicHref);
                 Assert.Equal("Add", model.Items[0].Items[0].Name);
