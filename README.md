@@ -4,14 +4,18 @@
 [![Github All Releases](https://img.shields.io/github/downloads/dotnet/docfx/total.svg?maxAge=600)](https://github.com/dotnet/docfx/releases/latest)
 [![Twitter Follow](https://img.shields.io/twitter/follow/docfxmsft.svg?style=social&label=Follow)](https://twitter.com/docfxmsft)
 
+* Build Status
+
 |            | Build Status  |  Package   |  Chocolatey |
 | ---------- | ------------- | ---------- | ----------- |
 | **master** |[![masterstatus](https://img.shields.io/teamcity/http/docfx-ci-0.cloudapp.net/s/DocfxCiWithScripts_DocfxCiForMasterBranch.svg?label=master)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCiWithScripts_DocfxCiForMasterBranch) |[![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/) |[![Chocolatey](https://img.shields.io/chocolatey/v/docfx.svg)](https://chocolatey.org/packages/docfx)
 |  **dev**   |[![devstatus](https://img.shields.io/teamcity/http/docfx-ci-0.cloudapp.net/s/DocfxCiWithScripts_DocfxCiForDevBranch.svg?label=dev)](http://docfx-ci-0.cloudapp.net/viewType.html?buildTypeId=DocfxCiWithScripts_DocfxCiForDevBranch) |[![MyGet](https://img.shields.io/myget/docfx-dev/v/docfx.svg?label=myget)](https://www.myget.org/feed/Packages/docfx-dev)
 
-| Test Status| .NET Core 2.0  |
-| ---------- | ------------- |
-| [![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/)|[![.NET CORE](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/1/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=1&_a=completed)
+* Running Status
+
+| Running Status| Windows with .NET Core v2.0.3| Windows with VS2017 | [Ubuntu Linux with Mono](https://github.com/Microsoft/vsts-agent-docker/blob/master/ubuntu/16.04/standard/Dockerfile) | [Mac with Mono]() 
+| ---------- | ------------- |---------- | ------------- |---------- 
+| [![NuGet](https://img.shields.io/nuget/v/docfx.svg)](http://www.nuget.org/packages/docfx/)|[![.NET CORE](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/1/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=1&_a=completed)|[![VS](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/2/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=2&_a=completed)|[![Ubuntu](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/3/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=3&_a=completed)|[![Mac](https://docascode.visualstudio.com/_apis/public/build/definitions/c8f1f4cb-74cb-4c89-a2db-6c3438796b0a/4/badge)](https://docascode.visualstudio.com/docfx/_build/index?context=mine&path=%5C&definitionId=4&_a=completed)
 
 ## Collecting feedbacks and proposals for DocFX
 
