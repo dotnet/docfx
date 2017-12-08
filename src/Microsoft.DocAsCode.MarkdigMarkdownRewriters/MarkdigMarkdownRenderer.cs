@@ -204,73 +204,73 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
 
         public override StringBuffer Render(IMarkdownRenderer render, MarkdownTableBlockToken token, MarkdownBlockContext context)
         {
-            var nSpace = 2;
-            var nRow = token.Cells.Length + 2;
-            var nCol = token.Header.Length;
-            var maxLengths = new int[nCol];
-            var matrix = new StringBuffer[nRow, nCol];
+            const int SpaceCount = 2;
+            var rowCount = token.Cells.Length + 2;
+            var columnCount = token.Header.Length;
+            var maxLengths = new int[columnCount];
+            var matrix = new StringBuffer[rowCount, columnCount];
 
-            for (var j = 0; j < nCol; j++)
+            for (var column = 0; column < columnCount; column++)
             {
-                var header = token.Header[j];
+                var header = token.Header[column];
                 var content = RenderInlineTokens(header.Content.Tokens, render);
-                matrix[0, j] = content;
-                maxLengths[j] = Math.Max(1, content.GetLength()) + nSpace;
+                matrix[0, column] = content;
+                maxLengths[column] = Math.Max(1, content.GetLength()) + SpaceCount;
             }
 
-            for (var i = 0; i < token.Cells.Length; i++)
+            for (var row = 0; row < token.Cells.Length; row++)
             {
-                var cell = token.Cells[i];
-                for (var j = 0; j < nCol; j++)
+                var cell = token.Cells[row];
+                for (var column = 0; column < columnCount; column++)
                 {
-                    var item = cell[j];
+                    var item = cell[column];
                     var content = RenderInlineTokens(item.Content.Tokens, render);
-                    matrix[i + 2, j] = content;
-                    maxLengths[j] = Math.Max(maxLengths[j], content.GetLength() + nSpace);
+                    matrix[row + 2, column] = content;
+                    maxLengths[column] = Math.Max(maxLengths[column], content.GetLength() + SpaceCount);
                 }
             }
 
-            for (var j = 0; j < nCol; j++)
+            for (var column = 0; column < columnCount; column++)
             {
-                var align = token.Align[j];
+                var align = token.Align[column];
                 switch (align)
                 {
                     case Align.NotSpec:
-                        matrix[1, j] = "---";
+                        matrix[1, column] = "---";
                         break;
                     case Align.Left:
-                        matrix[1, j] = ":--";
+                        matrix[1, column] = ":--";
                         break;
                     case Align.Right:
-                        matrix[1, j] = "--:";
+                        matrix[1, column] = "--:";
                         break;
                     case Align.Center:
-                        matrix[1, j] = ":-:";
+                        matrix[1, column] = ":-:";
                         break;
                     default:
                         throw new NotSupportedException($"align:{align} doesn't support in GFM table");
                 }
             }
 
-            return BuildTable(matrix, maxLengths, nRow, nCol);
+            return BuildTable(matrix, maxLengths, rowCount, columnCount);
         }
 
-        private StringBuffer BuildTable(StringBuffer[,] matrix, int[] maxLenths, int nRow, int nCol)
+        private StringBuffer BuildTable(StringBuffer[,] matrix, int[] maxLenths, int rowCount, int nCol)
         {
             var content = StringBuffer.Empty;
-            for (var i = 0; i < nRow; i++)
+            for (var row = 0; row < rowCount; row++)
             {
                 content += "|";
                 for (var j = 0; j < nCol; j++)
                 {
                     var align = matrix[1, j];
-                    if (i == 1)
+                    if (row == 1)
                     {
                         content += BuildAlign(align, maxLenths[j]);
                     }
                     else
                     {
-                        content += BuildItem(align, matrix[i, j], maxLenths[j]);
+                        content += BuildItem(align, matrix[row, j], maxLenths[j]);
                     }
                     content += "|";
                 }
