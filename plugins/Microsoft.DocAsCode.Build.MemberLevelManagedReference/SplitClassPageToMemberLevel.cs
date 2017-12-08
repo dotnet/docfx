@@ -147,7 +147,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 {
                     foreach (var item in overload)
                     {
-                        yield return ExtractPageViewModel(page, new List <ItemViewModel> { item });
+                        if (item.Type != MemberType.Enum)
+                        {
+                            yield return ExtractPageViewModel(page, new List<ItemViewModel> { item });
+                        }
                     }
                 }
                 else
