@@ -3,43 +3,14 @@
 
 namespace Microsoft.DocAsCode
 {
-    using System;
     using System.Collections.Generic;
 
-    using Microsoft.DocAsCode.Common;
-
-    using Newtonsoft.Json;
-
-    [Serializable]
-    public class MergeJsonConfig
+    public class MergeJsonConfig : List<MergeJsonItemConfig>
     {
-        [JsonIgnore]
-        public string BaseDirectory { get; set; }
+        public MergeJsonConfig(IEnumerable<MergeJsonItemConfig> configs) : base(configs) { }
 
-        [JsonIgnore]
-        public string OutputFolder { get; set; }
-
-        [JsonProperty("content")]
-        public FileMapping Content { get; set; }
-
-        [JsonProperty("dest")]
-        public string Destination { get; set; }
-
-        [JsonProperty("globalMetadata")]
-        [JsonConverter(typeof(JObjectDictionaryToObjectDictionaryConverter))]
-        public Dictionary<string, object> GlobalMetadata { get; set; }
-
-        /// <summary>
-        /// Metadata that applies to some specific files.
-        /// The key is the metadata name.
-        /// For each item of the value:
-        ///     The key is the glob pattern to match the files.
-        ///     The value is the value of the metadata.
-        /// </summary>
-        [JsonProperty("fileMetadata")]
-        public Dictionary<string, FileMetadataPairs> FileMetadata { get; set; }
-
-        [JsonProperty("tocMetadata")]
-        public ListWithStringFallback TocMetadata { get; set; }
+        public MergeJsonConfig(params MergeJsonItemConfig[] configs) : base(configs)
+        {
+        }
     }
 }
