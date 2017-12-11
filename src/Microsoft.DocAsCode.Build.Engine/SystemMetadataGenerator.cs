@@ -71,7 +71,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 // when item is toc, its toc is always itself
                 attrs.TocPath = item.FileWithoutExtension + item.Extension;
-                attrs.RelativePathToToc = "toc" + item.Extension;
+                attrs.RelativePathToToc = System.IO.Path.GetFileName(item.FileWithoutExtension) + item.Extension;
                 attrs.TocKey = item.Key;
                 return attrs;
             }
