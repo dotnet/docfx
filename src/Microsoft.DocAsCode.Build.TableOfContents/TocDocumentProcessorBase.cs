@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
         {
             return new SaveResult
             {
-                DocumentType = "Toc",
+                DocumentType = Constants.DocumentType.Toc,
                 FileWithoutExtension = Path.ChangeExtension(model.File, null),
                 LinkToFiles = model.LinkToFiles.ToImmutableArray(),
                 LinkToUids = model.LinkToUids,

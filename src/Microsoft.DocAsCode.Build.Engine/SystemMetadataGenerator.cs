@@ -10,6 +10,8 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Plugins;
 
+    using CommonConstants = DataContracts.Common.Constants;
+
     internal sealed class SystemMetadataGenerator
     {
         private readonly IDocumentBuildContext _context;
@@ -63,6 +65,15 @@ namespace Microsoft.DocAsCode.Build.Engine
             else
             {
                 GetRootTocFromOutputRoot(attrs, file);
+            }
+
+            if (item.DocumentType == CommonConstants.DocumentType.Toc)
+            {
+                // when item is toc, its toc is always itself
+                attrs.TocPath = item.FileWithoutExtension + item.Extension;
+                attrs.RelativePathToToc = System.IO.Path.GetFileName(item.FileWithoutExtension) + item.Extension;
+                attrs.TocKey = item.Key;
+                return attrs;
             }
 
             // 2. The algorithm of toc current article belongs to:
