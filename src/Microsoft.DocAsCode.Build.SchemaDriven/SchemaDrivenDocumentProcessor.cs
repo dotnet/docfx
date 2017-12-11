@@ -202,6 +202,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 SerializeModel,
                 SerializeProperties,
                 null);
+            model.Properties.Schema = _schema;
         }
 
         public virtual FileModel LoadIntermediateModel(Stream stream)
