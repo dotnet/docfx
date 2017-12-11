@@ -50,7 +50,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             var model = ConvertObjectToDictionary(item.Model.Content);
             AppendGlobalMetadata(model);
 
-            if (_settings.Options.HasFlag(ApplyTemplateOptions.ExportRawModel))
+            if (_settings != null && _settings.Options.HasFlag(ApplyTemplateOptions.ExportRawModel))
             {
                 ExportModel(model, item.FileWithoutExtension, _settings.RawModelExportSettings);
             }
@@ -63,7 +63,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 Version = _context.VersionName,
                 Group = _context.GroupInfo?.Name,
             };
-            var outputDirectory = _settings.OutputFolder ?? Directory.GetCurrentDirectory();
+            var outputDirectory = _settings?.OutputFolder ?? Directory.GetCurrentDirectory();
 
             // 1. process resource
             if (item.ResourceFile != null)
@@ -143,12 +143,12 @@ namespace Microsoft.DocAsCode.Build.Engine
                         throw new DocumentException(message, e);
                     }
 
-                    if (_settings.Options.HasFlag(ApplyTemplateOptions.ExportViewModel))
+                    if (_settings != null && _settings.Options.HasFlag(ApplyTemplateOptions.ExportViewModel))
                     {
                         ExportModel(viewModel, outputFile, _settings.ViewModelExportSettings);
                     }
 
-                    if (_settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
+                    if (_settings != null && _settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
                     {
                         if (string.IsNullOrWhiteSpace(result))
                         {
@@ -421,7 +421,7 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
 
             var fli = FileLinkInfo.Create(sourceFilePath, destFilePath, originalPath, context);
-            var href = _settings.HrefGenerator?.GenerateHref(fli) ?? fli.Href;
+            var href = _settings?.HrefGenerator?.GenerateHref(fli) ?? fli.Href;
             link.SetAttributeValue(attribute, href + UriUtility.GetQueryString(originalHref) + (anchor ?? UriUtility.GetFragment(originalHref)));
         }
     }

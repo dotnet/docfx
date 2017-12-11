@@ -86,7 +86,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         internal void ProcessDependencies(HashSet<string> documentTypes, ApplyTemplateSettings settings)
         {
-            if (settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
+            if (settings != null && settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
             {
                 var notSupportedDocumentTypes = documentTypes.Where(s => s != "Resource" && _templateCollection[s] == null);
                 if (notSupportedDocumentTypes.Any())
