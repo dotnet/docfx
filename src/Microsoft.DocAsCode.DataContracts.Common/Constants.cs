@@ -10,6 +10,11 @@ namespace Microsoft.DocAsCode.DataContracts.Common
         public const string PrefixSeparator = ".";
         public const string TocYamlFileName = "toc.yml";
 
+        public static class DocumentType
+        {
+            public const string Toc = "Toc";
+        }
+
         /// <summary>
         /// TODO: add other property name const
         /// </summary>
