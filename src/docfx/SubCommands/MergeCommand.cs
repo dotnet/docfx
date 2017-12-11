@@ -133,6 +133,12 @@ namespace Microsoft.DocAsCode.SubCommands
                 Logger.LogWarning("No files found, nothing is to be generated");
                 return;
             }
+
+            foreach (var file in parameters.Files.EnumerateFiles())
+            {
+                file.DestinationDir = parameters.OutputBaseDir;
+            }
+
             try
             {
                 new MetadataMerger().Merge(parameters);
