@@ -462,7 +462,7 @@ searchScope:
                 TemplateManager = _templateManager,
             };
 
-            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null))
+            using (var builder = new DocumentBuilder(LoadAssemblies(), ImmutableArray<string>.Empty, null, "obj"))
             {
                 builder.Build(parameters);
             }
@@ -509,7 +509,7 @@ searchScope:
 
         [Export(nameof(SchemaDrivenDocumentProcessor), typeof(IDocumentBuildStep))]
         [Export(nameof(SchemaDrivenDocumentProcessor) + ".LandingPage", typeof(IDocumentBuildStep))]
-        public class TestBuildStep1 : IDocumentBuildStep
+        public class TestBuildStep1 : IDocumentBuildStep, ISupportIncrementalBuildStep
         {
             public string Name => nameof(TestBuildStep1);
 
@@ -518,6 +518,21 @@ searchScope:
             public void Build(FileModel model, IHostService host)
             {
                 Logger.LogWarning(Name + " loaded");
+            }
+
+            public bool CanIncrementalBuild(FileAndType fileAndType)
+            {
+                return true;
+            }
+
+            public IEnumerable<DependencyType> GetDependencyTypesToRegister()
+            {
+                yield break;
+            }
+
+            public string GetIncrementalContextHash()
+            {
+                return "TestBuildStep1";
             }
 
             public void Postbuild(ImmutableList<FileModel> models, IHostService host)

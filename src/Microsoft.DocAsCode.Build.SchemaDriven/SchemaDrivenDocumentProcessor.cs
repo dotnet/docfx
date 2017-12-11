@@ -194,6 +194,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         public virtual void SaveIntermediateModel(FileModel model, Stream stream)
         {
+            // no need to save schema
+            model.Properties.Schema = null;
             FileModelPropertySerialization.Serialize(
                 model,
                 stream,
@@ -204,12 +206,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         public virtual FileModel LoadIntermediateModel(Stream stream)
         {
-            return FileModelPropertySerialization.Deserialize(
+            var loaded = FileModelPropertySerialization.Deserialize(
                 stream,
                 new BinaryFormatter(),
                 DeserializeModel,
                 DeserializeProperties,
                 null);
+            loaded.Properties.Schema = _schema;
+            return loaded;
         }
 
         #endregion
