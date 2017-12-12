@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.DataContracts.UniversalReference;
     using Microsoft.DocAsCode.Plugins;
 
     using AutoMapper;

@@ -4,7 +4,8 @@
 namespace Microsoft.DocAsCode.Build.UniversalReference
 {
     using System;
-    using System.Collections.Generic;
+
+    using Microsoft.DocAsCode.DataContracts.UniversalReference;
 
     using Newtonsoft.Json;
     using YamlDotNet.Serialization;

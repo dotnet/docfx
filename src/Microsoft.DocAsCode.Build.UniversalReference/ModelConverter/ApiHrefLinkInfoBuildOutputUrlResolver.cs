@@ -5,6 +5,8 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
 {
     using System.Web;
 
+    using Microsoft.DocAsCode.DataContracts.UniversalReference;
+
     using AutoMapper;
 
     public class ApiHrefLinkInfoBuildOutputUrlResolver : IValueResolver<LinkInfo, ApiLinkInfoBuildOutput, string>

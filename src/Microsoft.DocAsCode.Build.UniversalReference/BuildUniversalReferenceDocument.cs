@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     using System.Composition;
 
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.DataContracts.UniversalReference;
     using Microsoft.DocAsCode.Plugins;
 
     [Export(nameof(UniversalReferenceDocumentProcessor), typeof(IDocumentBuildStep))]
