@@ -23,7 +23,7 @@ Let's make DocFX better together!
 
 **Vote** for the proposals you like, and **add** yours:
 
-[![Feature Requests](http://feathub.com/docascode/docfx-feature-proposals?format=svg)](http://feathub.com/docascode/docfx-feature-proposals)
+[![Feature Requests](https://docfx-issue.azurewebsites.net/api/get/issues?tag=feature-request&repo=dotnet/docfx&format=svg)](https://docascode.github.io)
 
 ## What is it?
 *DocFX* makes it extremely easy to generate your developer hub with API reference, landing page, and how-to.
