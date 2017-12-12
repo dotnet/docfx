@@ -1,12 +1,11 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace Microsoft.DocAsCode.Build.UniversalReference
+namespace Microsoft.DocAsCode.DataContracts.UniversalReference
 {
     using System;
     using System.Collections.Generic;
 
-    using Microsoft.DocAsCode.Common.EntityMergers;
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.YamlSerialization;
 
@@ -14,21 +13,24 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     using YamlDotNet.Serialization;
 
     [Serializable]
-    public class InheritanceTree
+    public class AttributeInfo
     {
-        [YamlMember(Alias = Constants.PropertyName.Type)]
-        [JsonProperty(Constants.PropertyName.Type)]
+        [YamlMember(Alias = "type")]
+        [JsonProperty("type")]
         [UniqueIdentityReference]
         public string Type { get; set; }
 
-        /// <summary>
-        /// item's inheritance
-        /// multiple inheritance is allowed in languages like Python
-        /// </summary>
-        [YamlMember(Alias = Constants.PropertyName.Inheritance)]
-        [MergeOption(MergeOption.Ignore)]
-        [JsonProperty(Constants.PropertyName.Inheritance)]
-        public List<InheritanceTree> Inheritance { get; set; }
+        [YamlMember(Alias = "ctor")]
+        [JsonProperty("ctor")]
+        public string Constructor { get; set; }
+
+        [YamlMember(Alias = "arguments")]
+        [JsonProperty("arguments")]
+        public List<ArgumentInfo> Arguments { get; set; }
+
+        [YamlMember(Alias = "namedArguments")]
+        [JsonProperty("namedArguments")]
+        public List<NamedArgumentInfo> NamedArguments { get; set; }
 
         [ExtensibleMember]
         [JsonExtensionData]

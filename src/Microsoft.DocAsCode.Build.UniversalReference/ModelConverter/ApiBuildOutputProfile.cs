@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     using System.Collections.Generic;
 
     using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.DataContracts.UniversalReference;
 
     using AutoMapper;
 

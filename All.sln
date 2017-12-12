@@ -193,7 +193,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XRefService.Common", "tools
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdownMigrateTool", "tools\MarkdownMigrateTool\MarkdownMigrateTool.csproj", "{9DB0109F-EC29-4593-A6E8-DD07C860E53E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.UniversalReference", "src\Microsoft.DocAsCode.Build.UniversalReference\Microsoft.DocAsCode.Build.UniversalReference.csproj", "{DF88D1C8-1139-4174-8325-DD8166D6C3A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.UniversalReference", "src\Microsoft.DocAsCode.Build.UniversalReference\Microsoft.DocAsCode.Build.UniversalReference.csproj", "{DF88D1C8-1139-4174-8325-DD8166D6C3A4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UniversalReference", "UniversalReference", "{4114BF4C-CE17-4BFB-8047-823EEC2A7A7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.DataContracts.UniversalReference", "src\Microsoft.DocAsCode.DataContracts.UniversalReference\Microsoft.DocAsCode.DataContracts.UniversalReference.csproj", "{8C31E8EB-0CCB-4442-9DDB-79822BB7D8C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -667,6 +671,14 @@ Global
 		{DF88D1C8-1139-4174-8325-DD8166D6C3A4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DF88D1C8-1139-4174-8325-DD8166D6C3A4}.Release|x86.ActiveCfg = Release|Any CPU
 		{DF88D1C8-1139-4174-8325-DD8166D6C3A4}.Release|x86.Build.0 = Release|Any CPU
+		{8C31E8EB-0CCB-4442-9DDB-79822BB7D8C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C31E8EB-0CCB-4442-9DDB-79822BB7D8C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C31E8EB-0CCB-4442-9DDB-79822BB7D8C3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8C31E8EB-0CCB-4442-9DDB-79822BB7D8C3}.Debug|x86.Build.0 = Debug|Any CPU
+		{8C31E8EB-0CCB-4442-9DDB-79822BB7D8C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C31E8EB-0CCB-4442-9DDB-79822BB7D8C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C31E8EB-0CCB-4442-9DDB-79822BB7D8C3}.Release|x86.ActiveCfg = Release|Any CPU
+		{8C31E8EB-0CCB-4442-9DDB-79822BB7D8C3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -760,6 +772,8 @@ Global
 		{A1EF5A35-D6C8-438F-9820-8889278BC847} = {6241C3CE-51DB-4CAB-B04B-2EE6DBC10496}
 		{9DB0109F-EC29-4593-A6E8-DD07C860E53E} = {A1E9EC3A-A95A-493F-9053-DEDD078244A2}
 		{DF88D1C8-1139-4174-8325-DD8166D6C3A4} = {C76BB20F-8216-414F-A76E-DF2A5F80451A}
+		{4114BF4C-CE17-4BFB-8047-823EEC2A7A7D} = {C3023E7B-AA8B-469E-8333-5737093A9D60}
+		{8C31E8EB-0CCB-4442-9DDB-79822BB7D8C3} = {4114BF4C-CE17-4BFB-8047-823EEC2A7A7D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C12271F-8093-4D5D-8BEE-3318BFE40E23}

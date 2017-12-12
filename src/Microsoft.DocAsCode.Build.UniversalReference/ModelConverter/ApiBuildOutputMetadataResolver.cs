@@ -6,6 +6,8 @@ namespace Microsoft.DocAsCode.Build.UniversalReference
     using System.Collections.Generic;
     using System.Linq;
 
+    using Microsoft.DocAsCode.DataContracts.UniversalReference;
+
     using AutoMapper;
 
     public class ApiBuildOutputMetadataResolver : IValueResolver<ItemViewModel, ApiBuildOutput, Dictionary<string, object>>
