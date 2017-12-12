@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.28.2)
+﻿Version Notes (Current Version: v2.28.3)
 =======================================
+
+v2.28.3
+-----------
+1. Fix toc race condition and improve perf
 
 v2.28.2
 -----------
