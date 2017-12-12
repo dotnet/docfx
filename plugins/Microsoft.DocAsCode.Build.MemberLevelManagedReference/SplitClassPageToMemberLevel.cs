@@ -137,6 +137,11 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         private IEnumerable<PageViewModel> GetNewPages(PageViewModel page)
         {
             var primaryItem = page.Items[0];
+            if (primaryItem.Type == MemberType.Enum)
+            {
+                yield break;
+            }
+
             var itemsToSplit = page.Items.Skip(1);
             var group = (from item in itemsToSplit group item by item.Overload).ToList();
 
@@ -147,10 +152,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 {
                     foreach (var item in overload)
                     {
-                        if (item.Type != MemberType.Enum)
-                        {
-                            yield return ExtractPageViewModel(page, new List<ItemViewModel> { item });
-                        }
+                        yield return ExtractPageViewModel(page, new List<ItemViewModel> { item });
                     }
                 }
                 else
