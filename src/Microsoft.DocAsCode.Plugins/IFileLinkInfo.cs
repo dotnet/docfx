@@ -37,5 +37,9 @@ namespace Microsoft.DocAsCode.Plugins
         /// Is resolved by DocFX.
         /// </summary>
         bool IsResolved { get; }
+        /// <summary>
+        /// The group that current link belongs to
+        /// </summary>
+        string Group { get; }
     }
 }

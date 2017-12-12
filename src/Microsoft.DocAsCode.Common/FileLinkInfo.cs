@@ -25,6 +25,8 @@ namespace Microsoft.DocAsCode.Common
 
         public bool IsResolved => ToFileInDest != null;
 
+        public string Group { get; set; }
+
         public static FileLinkInfo Create(string fromFileInSource, string fromFileInDest, string href, IDocumentBuildContext context)
         {
             if (fromFileInSource == null)
