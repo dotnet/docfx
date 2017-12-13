@@ -2,7 +2,7 @@
   "name": "DocFX",
   "displayName": "DocFX",
   "description": "An amazing tool that makes authoring of DocFX-based documentation even more convenient, the main features include previewing DocFX generated conceptual documents, generating token tree of markdown file",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "ms-docfx",
   "preview": true,
   "engines": {

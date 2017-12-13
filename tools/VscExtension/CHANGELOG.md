@@ -1,6 +1,5 @@
-## Current Version **0.1.0**
-### new features
-* Publish extension under Microsoft
+## Current Version **0.1.1**
+* Improve: support config extension markdown engine(Default to be `LegacyMode`) in docfx.json
 
 ## Known Issues
 * When markdown use *file include* feature or there are multiple opened editors, preview match can't provide a good performance
@@ -11,6 +10,9 @@
 * Docs template preview support
 
 ## Verison History
+* **0.1.0**
+  * Publish extension under Microsoft
+
 * **0.0.25**
   * Improve: rename extension from "DocFXPreview" to "DocFX" because more features will be added to this extension
 
