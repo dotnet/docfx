@@ -156,7 +156,6 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
 
             r.Additional["summary"] = item.Summary;
             r.Additional["type"] = item.Type;
-            r.Additional["syntax"] = item.Syntax;
             r.Additional["platform"] = item.Platform;
             r.Additional[Constants.PropertyName.IsEii] = item.IsExplicitInterfaceImplementation;
         }
