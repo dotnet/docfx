@@ -52,7 +52,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 }
                 else
                 {
-                    externalXRefSpec.TryAdd(tuple.Item1, tuple.Item2);
+                    externalXRefSpec.AddOrUpdate(tuple.Item1, tuple.Item2, (s, x) => x + tuple.Item2);
                 }
             }
             return unresolvedUidList;
