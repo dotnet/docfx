@@ -9,7 +9,7 @@
 * IntelliSense
 * Docs template preview support
 
-## Verison History
+## Version History
 * **0.1.0**
   * Publish extension under Microsoft
 
