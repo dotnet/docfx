@@ -59,7 +59,8 @@ namespace Microsoft.DocAsCode.Common
             var fli = new FileLinkInfo
             {
                 FromFileInSource = fromFileInSource,
-                FromFileInDest = fromFileInDest
+                FromFileInDest = fromFileInDest,
+                Group = context.GroupInfo?.Name,
             };
             if (path.IsFromWorkingFolder())
             {

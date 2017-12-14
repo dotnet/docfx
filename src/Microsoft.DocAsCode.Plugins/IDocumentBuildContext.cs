@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Plugins
 {
+    using System;
     using System.Collections.Immutable;
 
     public interface IDocumentBuildContext
@@ -76,14 +77,21 @@ namespace Microsoft.DocAsCode.Plugins
         string RootTocPath { get; }
 
         /// <summary>
-        /// Current file's version name
+        /// Current context's version name
         /// </summary>
+        [Obsolete("use GroupInfo")]
         string VersionName { get; }
 
         /// <summary>
-        /// Current file's version root path from ~ ROOT
+        /// Current context's version root output path from ~ ROOT
         /// </summary>
+        [Obsolete("use GroupInfo")]
         string VersionFolder { get; }
+
+        /// <summary>
+        /// Current context's group information
+        /// </summary>
+        GroupInfo GroupInfo { get; }
 
         /// <summary>
         /// Custom href generator
