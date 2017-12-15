@@ -3,6 +3,8 @@
 
 v2.29 (Pre-release)
 -----------
+1. Bug fixes:
+   1. Fix bug for query xref service (#2283)
 
 v2.28.2
 -----------
