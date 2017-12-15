@@ -202,7 +202,9 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
         private IEnumerable<string> GetUidsToFill(PageViewModel pageViewModel)
         {
             return (from i in pageViewModel.Items
-                    from c in (i.Children ?? Enumerable.Empty<string>()).Concat(i.ExtensionMethods ?? Enumerable.Empty<string>())
+                    from c in (i.Children ?? Enumerable.Empty<string>())
+                        .Concat(i.ExtensionMethods ?? Enumerable.Empty<string>())
+                        .Concat(i.InheritedMembers ?? Enumerable.Empty<string>())
                     select c);
         }
 
