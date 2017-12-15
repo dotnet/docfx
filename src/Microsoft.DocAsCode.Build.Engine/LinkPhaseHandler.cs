@@ -152,7 +152,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             FromFileInDest = model.File,
                             ToFileInSource = ((RelativePath)fileLink).RemoveWorkingFolder().ToString(),
                             FileLinkInSource = path,
-                            Group = Context.GroupInfo?.Name,
+                            GroupInfo = Context.GroupInfo,
                         };
                         fli.Href = path.UrlEncode();
                         if (Context.ApplyTemplateSettings.HrefGenerator.GenerateHref(fli) != null)

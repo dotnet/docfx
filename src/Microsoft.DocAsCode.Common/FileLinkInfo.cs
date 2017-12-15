@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Common
 
         public bool IsResolved => ToFileInDest != null;
 
-        public string Group { get; set; }
+        public GroupInfo GroupInfo { get;set; }
 
         public static FileLinkInfo Create(string fromFileInSource, string fromFileInDest, string href, IDocumentBuildContext context)
         {
@@ -60,7 +60,7 @@ namespace Microsoft.DocAsCode.Common
             {
                 FromFileInSource = fromFileInSource,
                 FromFileInDest = fromFileInDest,
-                Group = context.GroupInfo?.Name,
+                GroupInfo = context.GroupInfo,
             };
             if (path.IsFromWorkingFolder())
             {

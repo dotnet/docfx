@@ -46,8 +46,8 @@ namespace Microsoft.DocAsCode.Plugins
         bool IsResolved { get; }
 
         /// <summary>
-        /// The group that current link belongs to
+        /// The group information that current link belongs to
         /// </summary>
-        string Group { get; }
+        GroupInfo GroupInfo { get; }
     }
 }
