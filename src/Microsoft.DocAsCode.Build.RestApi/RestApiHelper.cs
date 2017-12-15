@@ -142,7 +142,7 @@ namespace Microsoft.DocAsCode.Build.RestApi
             }
 
             // Reuse relative path, to decode the values inside '/'.
-            var decodedPath = ((RelativePath)path).UrlDecode();
+            var decodedPath = ((RelativePath)path).UrlDecodeUnsafe();
 
             return Tuple.Create(decodedPath.ToString(), decodedPath.FileName);
         }
