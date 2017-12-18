@@ -327,17 +327,20 @@ namespace Microsoft.DocAsCode.SubCommands
             foreach (var pair in fileMappingParametersDictionary)
             {
                 var p = parameters.Clone();
-                if (config.Groups != null && !string.IsNullOrEmpty(pair.Key) && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
+                if (!string.IsNullOrEmpty(pair.Key))
                 {
                     p.GroupInfo = new GroupInfo()
                     {
                         Name = pair.Key,
-                        Destination = gi.Destination,
-                        Metadata = gi.Metadata,
                     };
-                    if (!string.IsNullOrEmpty(gi.Destination))
+                    if (config.Groups != null && config.Groups.TryGetValue(pair.Key, out GroupConfig gi))
                     {
-                        p.VersionDir = gi.Destination;
+                        p.GroupInfo.Destination = gi.Destination;
+                        p.GroupInfo.Metadata = gi.Metadata;
+                        if (!string.IsNullOrEmpty(gi.Destination))
+                        {
+                            p.VersionDir = gi.Destination;
+                        }
                     }
                 }
                 p.Files = GetFileCollectionFromFileMapping(
