@@ -82,7 +82,7 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
         private TocItemViewModel ConvertFromObject(object model)
         {
-            using (var jr = new ObjectJsonReader(model))
+            using (var jr = new IgnoreStrongTypeObjectJsonReader(model))
             {
                 return JsonUtility.DefaultSerializer.Value.Deserialize<TocItemViewModel>(jr);
             }

@@ -66,9 +66,41 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
             AssertEqual(model4);
         }
 
-        private void AssertEqual(object model)
+        [Fact]
+        public void TestComplexJsonReaderWithStrongTypeObject()
         {
-            Assert.Equal(GetExpectedLines(model), GetActualLines(model));
+            var model = new Dictionary<string, object>
+            {
+                ["a"] = new StrongTypeClass { Value = "A" },
+                ["b"] = new Dictionary<string, object>
+                {
+                    ["a"] = "A"
+                },
+                ["c"] = null,
+            };
+
+            var expectedModel = new Dictionary<string, object>
+            {
+                ["a"] = null,
+                ["b"] = new Dictionary<string, object>
+                {
+                    ["a"] = "A"
+                },
+                ["c"] = null,
+            };
+
+            AssertEqual(model, expectedModel);
+        }
+
+        private class StrongTypeClass
+        {
+            public string Value { get; set; }
+        }
+
+        private void AssertEqual(object model, object expectedModel = null)
+        {
+            expectedModel = expectedModel ?? model;
+            Assert.Equal(GetExpectedLines(expectedModel), GetActualLines(model));
 
         }
 
@@ -83,7 +115,7 @@ namespace Microsoft.DocAsCode.Build.Common.Tests
 
         static IEnumerable<string> GetActualLines(object model)
         {
-            var reader = new ObjectJsonReader(model);
+            var reader = new IgnoreStrongTypeObjectJsonReader(model);
 
             while (reader.Read())
             {

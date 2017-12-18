@@ -9,13 +9,13 @@ namespace Microsoft.DocAsCode.Common
 
     using Newtonsoft.Json;
 
-    public class ObjectJsonReader : JsonReader
+    public class IgnoreStrongTypeObjectJsonReader : JsonReader
     {
         private object _current => _currentNode?.Value;
         private Node _currentNode;
         private Node _parentNode;
 
-        public ObjectJsonReader(object obj)
+        public IgnoreStrongTypeObjectJsonReader(object obj)
         {
             _currentNode = new Node(obj, null);
             _parentNode = null;
@@ -48,7 +48,17 @@ namespace Microsoft.DocAsCode.Common
             else
             {
                 var token = _currentNode.Token ?? GetJsonToken(_current);
-                SetToken(token.Value, _current);
+                if (token == JsonToken.StartObject)
+                {
+                    _currentNode = new Node(_current, _parentNode);
+                    // ignore strong type object in case plugins create some
+                    SetToken(JsonToken.Null, null);
+                }
+                else
+                {
+                    SetToken(token.Value, _current);
+                }
+
                 return MoveToNext();
             }
         }
@@ -131,8 +141,10 @@ namespace Microsoft.DocAsCode.Common
                 case TypeCode.Char:
                 case TypeCode.String:
                     return JsonToken.String;
+                case TypeCode.Object:
+                    return JsonToken.StartObject;
                 default:
-                    throw new NotSupportedException($"{code} is not supported in {nameof(ObjectJsonReader)}");
+                    throw new NotSupportedException($"{code} is not supported in {nameof(IgnoreStrongTypeObjectJsonReader)}");
             }
         }
 
