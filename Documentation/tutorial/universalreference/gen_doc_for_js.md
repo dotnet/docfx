@@ -3,7 +3,7 @@
 ## 1. Prerequisite
 
 * [DocFX](https://dotnet.github.io/docfx/tutorial/docfx_getting_started.html#2-use-docfx-as-a-command-line-tool)
-* [Nod.js](https://nodejs.org/en/download/) (includes npm)
+* [Node.js](https://nodejs.org/en/download/) (includes npm)
 
 ## 2. Steps
 
