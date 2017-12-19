@@ -405,6 +405,11 @@ namespace Microsoft.DocAsCode.MarkdownLite
             return content + "\n";
         }
 
+        public virtual StringBuffer Render(IMarkdownRenderer render, MarkdownNewLineBlockToken token, IMarkdownContext context)
+        {
+            return StringBuffer.Empty;
+        }
+
         protected virtual StringBuffer Render(IMarkdownRenderer render, MarkdownListItemBlockToken token, string indent)
         {
             var content = StringBuffer.Empty;

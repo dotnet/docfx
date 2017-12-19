@@ -147,7 +147,14 @@ P2",
         {
             protected override bool AggregateCore(MarkdownParagraphBlockToken headToken, IMarkdownTokenAggregateContext context)
             {
-                var next = context.LookAhead(1);
+                var tokenCount = 1;
+                var next = context.LookAhead(tokenCount);
+                while (next is MarkdownNewLineBlockToken)
+                {
+                    tokenCount++;
+                    next = context.LookAhead(tokenCount);
+                }
+
                 if (next is MarkdownParagraphBlockToken nextPara)
                 {
                     context.AggregateTo(
@@ -159,7 +166,7 @@ P2",
                                     .Add(new MarkdownBrInlineToken(headToken.Rule, headToken.InlineTokens.Tokens[0].Context, headToken.SourceInfo))
                                     .AddRange(nextPara.InlineTokens.Tokens)),
                             headToken.SourceInfo),
-                        2);
+                        tokenCount+1);
                     return true;
                 }
                 return false;
