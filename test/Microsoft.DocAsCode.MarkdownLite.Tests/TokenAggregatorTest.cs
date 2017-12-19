@@ -166,7 +166,7 @@ P2",
                                     .Add(new MarkdownBrInlineToken(headToken.Rule, headToken.InlineTokens.Tokens[0].Context, headToken.SourceInfo))
                                     .AddRange(nextPara.InlineTokens.Tokens)),
                             headToken.SourceInfo),
-                        tokenCount+1);
+                        tokenCount + 1);
                     return true;
                 }
                 return false;
