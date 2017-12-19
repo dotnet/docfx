@@ -5,6 +5,7 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
 {
     using System;
     using System.Collections.Immutable;
+    using System.Linq;
     using System.Net.Http;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
@@ -77,10 +78,13 @@ namespace Microsoft.DocAsCode.MarkdigMarkdownRewriters
             const string BlockQuoteJoinString = "\n" + BlockQuoteStartString;
 
             var content = StringBuffer.Empty;
-            for (var index = 0; index < token.Tokens.Length; index++)
+            var tokens = (from t in token.Tokens
+                          where !(t is MarkdownNewLineBlockToken)
+                          select t).ToList();
+            for (var index = 0; index < tokens.Count; index++)
             {
-                var t = token.Tokens[index];
-                if (index == token.Tokens.Length - 1 && t is DfmVideoBlockToken videoToken)
+                var t = tokens[index];
+                if (index == tokens.Count - 1 && t is DfmVideoBlockToken videoToken)
                 {
                     content += render.Render(t).ToString().TrimEnd();
                 }
