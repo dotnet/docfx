@@ -300,6 +300,19 @@ content...
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
         }
 
+        [Fact]
+        [Trait("Related", "MarkdigMarkdownRewriters")]
+        public void TestMarkdigMarkdownRewriters_InclusionPath()
+        {
+            var source = @"[!INCLUDE [title](.\..\..\..\includes\a.md)]";
+            var expected = @"[!INCLUDE [title](./../../../includes/a.md)]
+
+";
+            var result = Rewrite(source, "topic.md");
+
+            Assert.Equal(expected.Replace("\r\n", "\n"), result);
+        }
+
         private string Rewrite(string source, string filePath)
         {
             return _engine.Markup(source, filePath);
