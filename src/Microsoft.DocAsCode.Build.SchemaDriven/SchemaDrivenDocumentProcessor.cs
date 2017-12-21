@@ -196,6 +196,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         {
             // no need to save schema
             model.Properties.Schema = null;
+            model.Properties.Metadata = null;
             FileModelPropertySerialization.Serialize(
                 model,
                 stream,
@@ -203,6 +204,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 SerializeProperties,
                 null);
             model.Properties.Schema = _schema;
+            model.Properties.Metadata = _schema.MetadataReference.GetValue(model.Content);
         }
 
         public virtual FileModel LoadIntermediateModel(Stream stream)
@@ -214,6 +216,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 DeserializeProperties,
                 null);
             loaded.Properties.Schema = _schema;
+            loaded.Properties.Metadata = _schema.MetadataReference.GetValue(loaded.Content); 
             return loaded;
         }
 

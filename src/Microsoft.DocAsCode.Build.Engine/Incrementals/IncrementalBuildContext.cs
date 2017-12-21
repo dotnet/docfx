@@ -640,17 +640,6 @@ namespace Microsoft.DocAsCode.Build.Engine.Incrementals
                 Logger.LogVerbose(message);
                 return false;
             }
-            if (_parameters.ApplyTemplateSettings != null)
-            {
-                var options = _parameters.ApplyTemplateSettings.Options;
-                if ((options & (ApplyTemplateOptions.ExportRawModel | ApplyTemplateOptions.ExportViewModel)) != ApplyTemplateOptions.None)
-                {
-                    string message = $"Disable incremental build because ExportRawModel/ExportViewModel option enabled.";
-                    IncrementalInfo.ReportStatus(false, IncrementalPhase.Build, message);
-                    Logger.LogVerbose(message);
-                    return false;
-                }
-            }
             IncrementalInfo.ReportStatus(true, IncrementalPhase.Build);
             return true;
         }
