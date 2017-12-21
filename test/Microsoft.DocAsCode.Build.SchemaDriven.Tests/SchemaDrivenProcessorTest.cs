@@ -275,7 +275,7 @@ File.ReadAllLines(outputFilePath));
         }
 
         [Fact]
-        public void TestValidMetadataReference()
+        public void TestValidMetadataReferenceWithIncremental()
         {
             using (var listener = new TestListenerScope("TestGeneralFeaturesInSDP"))
             {
@@ -289,8 +289,12 @@ File.ReadAllLines(outputFilePath));
   ""properties"": {
       ""metadata"": {
             ""type"": ""object""
+      },
+      ""href"": {
+            ""type"": ""string"",
+            ""contentType"": ""href""
       }
-            },
+  },
   ""metadata"": ""/metadata""
 }
 ", _templateFolder);
@@ -303,6 +307,7 @@ metadata:
   ms.service: app-service
   ms.tgt_pltfrm: na
   ms.author: carolz
+href: toc.md
 sections:
 - title: 5-Minute Quickstarts
 toc_rel: ../a b/toc.md
@@ -310,17 +315,22 @@ uhfHeaderId: MSDocsHeader-DotNet
 searchScope:
   - .NET
 ", _inputFolder);
+                var dependentMarkdown = CreateFile("toc.md", "# Hello", _inputFolder);
+                
                 var inputFileName2 = "page2.yml";
                 var inputFile2 = CreateFile(inputFileName2, @"### YamlMime:MetadataReferenceTest
 title: Web Apps Documentation
 ", _inputFolder);
 
                 FileCollection files = new FileCollection(_defaultFiles);
-                files.Add(DocumentType.Article, new[] { inputFile1, inputFile2 }, _inputFolder);
-                BuildDocument(files);
+                files.Add(DocumentType.Article, new[] { inputFile1, inputFile2, dependentMarkdown }, _inputFolder);
+                using (new LoggerPhaseScope("FirstRound"))
+                {
+                    BuildDocument(files);
+                }
 
                 Assert.Equal(3, listener.Items.Count);
-                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): MetadataReferenceTest")));
+                // Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): Toc,MetadataReferenceTest")));
                 listener.Items.Clear();
 
                 var rawModelFilePath = GetRawModelFilePath(inputFileName1);
@@ -328,6 +338,7 @@ title: Web Apps Documentation
                 var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
 
                 Assert.Equal("overwritten", rawModel["metadata"]["meta"].ToString());
+                Assert.Equal("postbuild1", rawModel["metadata"]["postMeta"].ToString());
                 Assert.Equal("1", rawModel["metadata"]["another"].ToString());
                 Assert.Equal("app-service", rawModel["metadata"]["ms.service"].ToString());
 
@@ -337,6 +348,27 @@ title: Web Apps Documentation
 
                 Assert.Equal("Hello world!", rawModel2["metadata"]["meta"].ToString());
                 Assert.Equal("2", rawModel2["metadata"]["another"].ToString());
+                Assert.Equal("postbuild2", rawModel2["metadata"]["postMeta"].ToString());
+
+                // change dependent markdown
+                UpdateFile("toc.md", new string[] { "# Updated" }, _inputFolder);
+                using (new LoggerPhaseScope("SecondRound"))
+                {
+                    BuildDocument(files);
+                }
+
+                rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
+
+                Assert.Equal("overwritten", rawModel["metadata"]["meta"].ToString());
+                Assert.Equal("1", rawModel["metadata"]["another"].ToString());
+                Assert.Equal("app-service", rawModel["metadata"]["ms.service"].ToString());
+                Assert.Equal("postbuild1", rawModel["metadata"]["postMeta"].ToString());
+
+                rawModel2 = JsonUtility.Deserialize<JObject>(rawModelFilePath2);
+
+                Assert.Equal("Hello world!", rawModel2["metadata"]["meta"].ToString());
+                Assert.Equal("2", rawModel2["metadata"]["another"].ToString());
+                Assert.Equal("postbuild2", rawModel2["metadata"]["postMeta"].ToString());
             }
         }
 
@@ -546,9 +578,9 @@ searchScope:
         }
 
         [Export(nameof(SchemaDrivenDocumentProcessor) + ".MetadataReferenceTest", typeof(IDocumentBuildStep))]
-        public class MetadataAddTestProcessor : IDocumentBuildStep
+        public class MetadataAddTestProcessor : IDocumentBuildStep, ISupportIncrementalBuildStep
         {
-            public string Name => nameof(TestBuildStep1);
+            public string Name => nameof(MetadataAddTestProcessor);
 
             public int BuildOrder => 1;
 
@@ -565,8 +597,34 @@ searchScope:
                 }
             }
 
+            public bool CanIncrementalBuild(FileAndType fileAndType)
+            {
+                return true;
+            }
+
+            public IEnumerable<DependencyType> GetDependencyTypesToRegister()
+            {
+                yield break;
+            }
+
+            public string GetIncrementalContextHash()
+            {
+                return null;
+            }
+
             public void Postbuild(ImmutableList<FileModel> models, IHostService host)
             {
+                foreach(var model in models)
+                {
+                    if (Path.GetFileNameWithoutExtension(model.File) == "page1")
+                    {
+                        ((dynamic)model.Properties.Metadata).postMeta = "postbuild1";
+                    }
+                    else
+                    {
+                        ((dynamic)model.Properties.Metadata).postMeta = "postbuild2";
+                    }
+                }
             }
 
             public IEnumerable<FileModel> Prebuild(ImmutableList<FileModel> models, IHostService host)
