@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             if (settings.Options.HasFlag(ApplyTemplateOptions.TransformDocument))
             {
-                var notSupportedDocumentTypes = documentTypes.Where(s => s != "Resource" && _templateCollection[s] == null);
+                var notSupportedDocumentTypes = documentTypes.Where(s => s != "Resource" && _templateCollection[s] == null).OrderBy(s => s);
                 if (notSupportedDocumentTypes.Any())
                 {
                     Logger.LogWarning($"There is no template processing document type(s): {StringExtension.ToDelimitedString(notSupportedDocumentTypes)}");

@@ -330,7 +330,7 @@ title: Web Apps Documentation
                 }
 
                 Assert.Equal(3, listener.Items.Count);
-                // Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): Toc,MetadataReferenceTest")));
+                Assert.NotNull(listener.Items.FirstOrDefault(s => s.Message.StartsWith("There is no template processing document type(s): MetadataReferenceTest,TOC")));
                 listener.Items.Clear();
 
                 var rawModelFilePath = GetRawModelFilePath(inputFileName1);
