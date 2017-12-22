@@ -1,7 +1,7 @@
 ﻿Version Notes (Current Version: v2.29)
 =======================================
 
-v2.29 (Pre-release)
+v2.29
 -----------
 1. Support generating API reference for JavaScript (#2220)
 2. Bug fixes:
