@@ -114,7 +114,7 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                 return null;
             }
 
-            foreach (var newPage in GetNewPages(page))
+            foreach (var newPage in pages)
             {
                 var newPrimaryItem = newPage.Items[0];
 
