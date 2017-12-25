@@ -80,6 +80,29 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
         }
 
         [Fact]
+        public void ProcessMrefEnumShouldSucceed()
+        {
+            var files = new FileCollection(Directory.GetCurrentDirectory());
+            files.Add(DocumentType.Article, new[] { "TestData/mref/Microsoft.DocAsCode.Build.SchemaDriven.MergeType.yml" }, "TestData/");
+            BuildDocument(files);
+            {
+                var outputRawModelPath = GetRawModelFilePath("Microsoft.DocAsCode.Build.SchemaDriven.MergeType.yml");
+                Assert.True(File.Exists(outputRawModelPath));
+                var model = JsonUtility.Deserialize<ApiBuildOutput>(outputRawModelPath);
+                Assert.NotNull(model);
+
+                Assert.Equal("Hello world!", model.Metadata["meta"]);
+                Assert.False(model.Metadata.TryGetValue("_splitReference", out var split));
+                Assert.False(model.Metadata.TryGetValue("_splitFrom", out var from));
+                Assert.Equal(4, model.Children.Count);
+            }
+            {
+                var xrefmap = YamlUtility.Deserialize<XRefMap>(Path.Combine(_outputFolder, "xrefmap.yml"));
+                Assert.Equal(5, xrefmap.References.Count);
+            }
+        }
+
+        [Fact]
         public void ProcessMrefWithTocShouldSucceed()
         {
             var files = new FileCollection(Directory.GetCurrentDirectory());

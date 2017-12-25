@@ -108,6 +108,12 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
             var itemsToSplit = page.Items.Skip(1);
             var children = new List<TreeItem>();
             var splittedModels = new List<FileModel>();
+            var pages = GetNewPages(page).ToList();
+            if (pages.Count == 0)
+            {
+                return null;
+            }
+
             foreach (var newPage in GetNewPages(page))
             {
                 var newPrimaryItem = newPage.Items[0];
