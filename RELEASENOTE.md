@@ -1,5 +1,9 @@
-﻿Version Notes (Current Version: v2.29)
+﻿Version Notes (Current Version: v2.29.1)
 =======================================
+
+v2.29.1
+-----------
+1. Fix split member plugin's bug for enum page
 
 v2.29
 -----------
