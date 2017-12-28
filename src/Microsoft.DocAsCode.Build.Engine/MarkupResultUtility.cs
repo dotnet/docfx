@@ -102,9 +102,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                     anchor = linkFile.Substring(index);
                     linkFile = linkFile.Remove(index);
                 }
+                linkFile = Uri.UnescapeDataString(linkFile);
                 if (RelativePath.IsRelativePath(linkFile))
                 {
-                    var path = (RelativePath)currentFile + RelativePath.FromUrl(linkFile);
+                    var path = (RelativePath)currentFile + (RelativePath)linkFile;
                     var file = path.GetPathFromWorkingFolder();
                     if (sourceFiles.ContainsKey(file))
                     {

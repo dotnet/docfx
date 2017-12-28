@@ -470,6 +470,7 @@ exports.getOptions = function (){
                     "# Hello World",
                     "Test link: [link text](test/test.md)",
                     "test",
+                    "link containing invalid file name chars shouldn't fail: [\\<random\\>](../Topic/%3Crandom%3E.md).",
                 },
                 _inputFolder);
             var conceptualFile2 = CreateFile("test/test.md",
@@ -596,7 +597,7 @@ exports.getOptions = function (){
                         "rawTitle",
                         "wordCount"
                     },
-                    ["conceptual"] = $"\n<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"6\">Test link: <a href=\"~/{_inputFolder}/test/test.md\" data-raw-source=\"[link text](test/test.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">link text</a>\ntest</p>\n",
+                    ["conceptual"] = $"\n<p sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"7\">Test link: <a href=\"~/{_inputFolder}/test/test.md\" data-raw-source=\"[link text](test/test.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"5\" sourceendlinenumber=\"5\">link text</a>\ntest\nlink containing invalid file name chars shouldn&#39;t fail: <a href=\"../Topic/%3Crandom%3E.md\" data-raw-source=\"[\\&lt;random\\&gt;](../Topic/%3Crandom%3E.md)\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"7\" sourceendlinenumber=\"7\">&lt;random></a>.</p>\n",
                     ["type"] = "Conceptual",
                     ["source"] = model["source"], // reuse model's source, not testing this
                     ["documentation"] = model["source"],
@@ -605,7 +606,7 @@ exports.getOptions = function (){
                     ["title"] = "Hello World",
                     ["rawTitle"] = $"<h1 id=\"hello-world\" sourcefile=\"{_inputFolder}/test.md\" sourcestartlinenumber=\"4\" sourceendlinenumber=\"4\">Hello World</h1>",
                     ["uid"] = "XRef1",
-                    ["wordCount"] = 5,
+                    ["wordCount"] = 14,
                     ["__global"] = new
                     {
                         _shared = new Dictionary<string, object>
