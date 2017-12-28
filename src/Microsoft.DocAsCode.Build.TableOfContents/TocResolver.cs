@@ -50,13 +50,6 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
 
             var item = wrapper.Content;
 
-            if (!isRoot && string.IsNullOrEmpty(item.Name))
-            {
-                Logger.LogWarning(
-                    $"TOC item ({item.ToString()}) with empty name found. Missing a name?",
-                    code: WarningCodes.Build.EmptyTocItemName);
-            }
-
             // HomepageUid and Uid is deprecated, unified to TopicUid
             if (string.IsNullOrEmpty(item.TopicUid))
             {
@@ -86,6 +79,14 @@ namespace Microsoft.DocAsCode.Build.TableOfContents
             }
             // validate href
             ValidateHref(item);
+
+            // validate if name is missing
+            if (!isRoot && string.IsNullOrEmpty(item.Name) && string.IsNullOrEmpty(item.TopicUid))
+            {
+                Logger.LogWarning(
+                    $"TOC item ({item.ToString()}) with empty name found. Missing a name?",
+                    code: WarningCodes.Build.EmptyTocItemName);
+            }
 
             // TocHref supports 2 forms: absolute path and local toc file.
             // When TocHref is set, using TocHref as Href in output, and using Href as Homepage in output
