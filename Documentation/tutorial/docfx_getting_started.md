@@ -4,7 +4,7 @@ Getting Started with *DocFX*
 1. What is *DocFX*
 ---------------
 
-*DocFX* is an API documentation generator for .NET, and currently it supports C# and VB.
+*DocFX* is an API documentation generator for .NET, which currently supports C# and VB.
 It generates API reference documentation from triple-slash comments in your source code.
 It also allows you to use Markdown files to create additional topics such as tutorials and how-tos, and to customize the generated reference documentation.
 *DocFX* builds a static HTML website from your source code and Markdown files, which can be easily hosted on any web servers (for example, *github.io*).
@@ -14,13 +14,13 @@ If you are interested in creating your own website with your own styles, you can
 *DocFX* also has the following cool features:
 
 * Integration with your source code. You can click "View Source" on an API to navigate to the source code in GitHub (your source code must be pushed to GitHub).
-* Cross-platform support. We have exe version that runs under Windows. It can also runs cross platforms on Linux/macOS with Mono.
+* Cross-platform support. We have an exe version that runs natively on Windows and with Mono it can also run on Linux and macOS.
 * Integration with Visual Studio. You can seamlessly use *DocFX* within Visual Studio.
 * Markdown extensions. We introduced *DocFX Flavored Markdown(DFM)* to help you write API documentation. DFM is *100%* compatible with *GitHub Flavored Markdown(GFM)* with some useful extensions, like *file inclusion*, *code snippet*, *cross reference*, and *yaml header*.
 For detailed description about DFM, please refer to [DFM](../spec/docfx_flavored_markdown.md).
 
 > [!Warning]
-> **Prerequisites** [Visual Studio 2017](https://www.visualstudio.com/downloads/) is needed for `docfx metadata` msbuild projects. It is not required when generating metadata directly from source code (`.cs`, `.vb`) or assemblies (`.dll`)
+> **Prerequisites** [Visual Studio 2017](https://www.visualstudio.com/downloads/) is needed for `docfx metadata` msbuild projects. It's not required when generating metadata directly from source code (`.cs`, `.vb`) or assemblies (`.dll`)
 
 2. Use *DocFX* as a command-line tool
 -----------------------
@@ -51,7 +51,7 @@ Now you can view the generated website on http://localhost:8080.
 
 *Step2.* Right click on the project and select **Manage NuGet Package**
 
-*Step3.* Search and install [`docfx.console`](https://www.nuget.org/packages/docfx.console/) NuGet package. It add itself to the build targets and add the `docfx.json` configuration file along with other files.
+*Step3.* Search and install the [`docfx.console`](https://www.nuget.org/packages/docfx.console/) NuGet package. It adds itself to the build targets and adds the `docfx.json` configuration file along with other files.
 
 *Step4.* **Build** the project, and a `_site` folder will be generated with the documentation.
 
@@ -75,8 +75,7 @@ Now you can view the generated website on http://localhost:8080.
 
 *DocFX* can be used in a Continuous Integration environment.
 
-Most build systems do not checkout the branch that is being built, but
-use a `detached head` for the specific commit.  DocFX needs the the branch name to implement the `View Source` link in the API documentation.
+Most build systems do not checkout the branch that is being built, but use a `detached head` for the specific commit.  DocFX needs the branch name to implement the `View Source` link in the API documentation.
 
 Setting the environment variable `DOCFX_SOURCE_BRANCH_NAME` tells DocFX which branch name to use.
 
@@ -109,7 +108,7 @@ As a prerequisite, you need:
 
 6. A seed project to play with *DocFX*
 -------------------------
-Here is a seed project https://github.com/docascode/docfx-seed. It contains
+Here is a seed project: https://github.com/docascode/docfx-seed. It contains
 
 1. A basic C# project under `src`.
 2. Several conceptual files under `articles`.
@@ -118,7 +117,7 @@ Here is a seed project https://github.com/docascode/docfx-seed. It contains
 5. `docfx.json` under root folder. It is the configuration file that `docfx` depends upon.
 
 > [!Tip]
-> It is a good practice to separate files with different type into different folders.
+> It's good practice to separate files with different types into different folders.
 
 7. Q&A
 -------------------------
