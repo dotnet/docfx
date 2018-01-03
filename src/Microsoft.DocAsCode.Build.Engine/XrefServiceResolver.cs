@@ -9,6 +9,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using System.Collections.Immutable;
     using System.Linq;
     using System.Net.Http;
+    using System.Text;
     using System.Threading.Tasks;
     using System.Web;
 
@@ -55,6 +56,19 @@ namespace Microsoft.DocAsCode.Build.Engine
                     externalXRefSpec.AddOrUpdate(tuple.Item1, tuple.Item2, (s, x) => x + tuple.Item2);
                 }
             }
+            if (unresolvedUidList.Count > 0 && Logger.LogLevelThreshold <= LogLevel.Verbose)
+            {
+                var sb = new StringBuilder("Cannot resolve  uids by xref service:", 100 + 64 * (Math.Min(100, unresolvedUidList.Count)));
+                sb.Append("Cannot resolve ");
+                sb.Append(unresolvedUidList.Count);
+                sb.Append(" uids by xref service, top 100:");
+                foreach (var uid in unresolvedUidList.Take(100))
+                {
+                    sb.AppendLine();
+                    sb.Append(uid);
+                }
+                Logger.LogVerbose(sb.ToString());
+            }
             return unresolvedUidList;
         }
 
@@ -77,7 +91,6 @@ namespace Microsoft.DocAsCode.Build.Engine
                     return value[0];
                 }
             }
-            Logger.LogVerbose($"Cannot resolve uid({uid}).");
             return null;
         }
 
