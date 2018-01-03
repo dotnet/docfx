@@ -274,7 +274,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                             {
                                 currentBuildInfo.IsValid = Logger.WarningCount < Logger.WarningThrottling;
                                 currentBuildInfo.Save(_intermediateFolder);
-                                if (lastBuildInfo != null && _cleanupCacheHistory)
+                                if (_cleanupCacheHistory)
                                 {
                                     ClearCacheExcept(currentBuildInfo.DirectoryName);
                                 }
