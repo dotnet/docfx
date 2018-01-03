@@ -77,6 +77,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     return value[0];
                 }
             }
+            Logger.LogVerbose($"Cannot resolve uid({uid}).");
             return null;
         }
 
