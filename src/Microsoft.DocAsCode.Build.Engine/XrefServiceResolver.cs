@@ -58,14 +58,19 @@ namespace Microsoft.DocAsCode.Build.Engine
             }
             if (unresolvedUidList.Count > 0 && Logger.LogLevelThreshold <= LogLevel.Verbose)
             {
-                var sb = new StringBuilder("Cannot resolve  uids by xref service:", 100 + 64 * (Math.Min(100, unresolvedUidList.Count)));
+                var capacity = 256 + 64 * (Math.Min(100, unresolvedUidList.Count)) + 64 * _uriTemplates.Count;
+                var sb = new StringBuilder(capacity);
                 sb.Append("Cannot resolve ");
                 sb.Append(unresolvedUidList.Count);
                 sb.Append(" uids by xref service, top 100:");
                 foreach (var uid in unresolvedUidList.Take(100))
                 {
-                    sb.AppendLine();
-                    sb.Append(uid);
+                    sb.AppendLine().Append("    ").Append(uid);
+                }
+                sb.AppendLine().Append("  ").Append("xref service:");
+                foreach (var t in _uriTemplates)
+                {
+                    sb.AppendLine().Append("    ").Append(t.Template);
                 }
                 Logger.LogVerbose(sb.ToString());
             }
