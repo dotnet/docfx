@@ -3,6 +3,7 @@
 
 v2.30 (Pre-release)
 -----------
+1. Improve DFM performance for em rule (#2339)
 
 v2.29
 -----------
