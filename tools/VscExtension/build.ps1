@@ -16,6 +16,7 @@ $configuration = "Release"
 $framework = "net461"
 $httpServiceFolder = "DfmHttpService"
 $httpServiceFolderPath = "..\$httpServiceFolder"
+$language_serverLocation = ".\src\servers\xrefIntellisenseServer"
 
 function ProcessLastExitCode {
     param($exitCode, $msg)
@@ -33,6 +34,17 @@ $outputFolder = Join-Path $scriptHome $httpServiceFolder
 & dotnet publish $httpServiceFolderPath -c $configuration -f $framework -o $outputFolder
 ProcessLastExitCode $lastexitcode "Error occurs when building $httpServiceFolder"
 
+Pop-Location
+Push-Location $language_serverLocation
+
+Write-Host "Build language server to the target folder"
+## build server command
+npm install
+npm run compile
+ProcessLastExitCode $lastexitcode "Error occurs when building language server"
+
+Pop-Location
+Push-Location $scriptHome
 Write-Host "`n$command extension"
 & vsce $command $version
 ProcessLastExitCode $lastexitcode "Error occurs when $command extension"

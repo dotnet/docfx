@@ -28,7 +28,8 @@
     "onCommand:DocFX.showDfmPreviewToSide",
     "onCommand:DocFX.showDocFXPreviewToSide",
     "oncommand:DocFX.showSource",
-    "onCommand:DocFX.showTokenTreeToSide"
+    "onCommand:DocFX.showTokenTreeToSide",
+    "onLanguage:markdown"
   ],
   "contributes": {
     "commands": [
@@ -85,6 +86,7 @@
     "axios": "^0.15.3",
     "d3": "^3.5.17",
     "highlightjs": "^8.7.0",
-    "jquery": "^3.1.0"
+    "jquery": "^3.1.0",
+    "vscode-languageclient": "^3.3.0"
   }
 }
