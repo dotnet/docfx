@@ -39,16 +39,33 @@ namespace Microsoft.DocAsCode.Build.Engine
                 null,
                 processor,
                 parameters.Files.EnumerateFiles());
-            var phaseProcessor = new PhaseProcessor
+            var context = new DocumentBuildContext(
+                Path.Combine(Directory.GetCurrentDirectory(), parameters.OutputBaseDir),
+                parameters.Files.EnumerateFiles(),
+                parameters.ExternalReferencePackages,
+                parameters.XRefMaps,
+                parameters.MaxParallelism,
+                parameters.Files.DefaultBaseDir,
+                parameters.VersionName,
+                parameters.ApplyTemplateSettings,
+                parameters.RootTocPath,
+                parameters.VersionDir,
+                parameters.XRefServiceUrls,
+                parameters.GroupInfo);
+            using (var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(context, parameters.MaxParallelism)
+                        ?? new TemplateProcessor(new EmptyResourceReader(), context, 16))
             {
-                Handlers =
+                var phaseProcessor = new PhaseProcessor
+                {
+                    Handlers =
                     {
-                        new CompilePhaseHandler(null),
-                        new LinkPhaseHandler(null, null),
+                        new CompilePhaseHandler(context),
+                        new LinkPhaseHandler(context, templateProcessor),
                     }
-            };
-            phaseProcessor.Process(new List<HostService> { hostService }, parameters.MaxParallelism);
-            return hostService.Models;
+                };
+                phaseProcessor.Process(new List<HostService> { hostService }, parameters.MaxParallelism);
+                return hostService.Models;
+            }
         }
 
         public Manifest Build(DocumentBuildParameters parameters)
