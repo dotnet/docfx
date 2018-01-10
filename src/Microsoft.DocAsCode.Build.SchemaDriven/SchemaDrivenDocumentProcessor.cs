@@ -106,6 +106,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         // Validate against the schema first
                         _schemaValidator.Validate(obj);
 
+                        // load overwrite segments
+                        string overwriteSegmentsContent = null;
+                        var overwriteSegmentsFile = file.File + ".md";
+                        if (EnvironmentContext.FileAbstractLayer.Exists(overwriteSegmentsFile))
+                        {
+                            overwriteSegmentsContent = EnvironmentContext.FileAbstractLayer.ReadAllText(overwriteSegmentsFile);
+                        }
+
                         var content = ConvertToObjectHelper.ConvertToDynamic(obj);
                         var pageMetadata = _schema.MetadataReference.GetValue(content) as IDictionary<string, object>;
                         if (pageMetadata == null)
@@ -129,6 +137,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                             serializer: new BinaryFormatter())
                         {
                             LocalPathFromRoot = localPathFromRoot,
+                            OverwriteSegmentsModel = overwriteSegmentsContent,
                         };
 
                         fm.Properties.Schema = _schema;

@@ -197,7 +197,13 @@ namespace Microsoft.DocAsCode.Build.Engine
                          group file by p).ToList();
 
             var toHandleItems = files.Where(s => s.Key != null);
-            var notToHandleItems = files.Where(s => s.Key == null).SelectMany(s => s).Where(s => s.Type != DocumentType.Overwrite).ToList();
+            var notToHandleItems = files
+                .Where(s => s.Key == null)
+                .SelectMany(s => s)
+                .Where(s => s.Type != DocumentType.Overwrite &&
+                    !s.File.EndsWith(".yaml.md", StringComparison.OrdinalIgnoreCase) &&
+                    !s.File.EndsWith(".yml.md", StringComparison.OrdinalIgnoreCase))
+                .ToList();
             if (notToHandleItems.Count > 0)
             {
                 Logger.LogWarning($"Unable to handle following files: {notToHandleItems.Select(s => s.File).ToDelimitedString()}");
