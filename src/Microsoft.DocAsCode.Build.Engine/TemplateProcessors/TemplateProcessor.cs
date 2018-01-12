@@ -150,11 +150,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     using (new LoggerFileScope(item.LocalPathFromRoot))
                     {
-                        var manifestItem = transformer.Transform(item);
-                        if (manifestItem.OutputFiles?.Count > 0)
-                        {
-                            manifest.Add(manifestItem);
-                        }
+                        manifest.Add(transformer.Transform(item));
                     }
                 },
                 _maxParallelism);
