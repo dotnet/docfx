@@ -4,7 +4,7 @@
 v2.30
 -----------
 1. Improve DFM performance for em rule (#2339)
-2. Added multiple merge operation support (#2287)
+2. Added multiple merge operation support (#2287) [by @lextm]
 3. Bug fixes:
    1. Fix bug for reading xrefmap with base url. (#2349)
 
