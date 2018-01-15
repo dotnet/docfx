@@ -122,7 +122,7 @@ namespace Microsoft.DocAsCode.Build.Engine
 
                         BuildCore(phaseProcessor, hostServices, context);
 
-                        var manifest = new Manifest(context.ManifestItems)
+                        var manifest = new Manifest(context.ManifestItems.Where(m => m.OutputFiles?.Count > 0))
                         {
                             Homepages = GetHomepages(context),
                             XRefMap = ExportXRefMap(parameters, context),
