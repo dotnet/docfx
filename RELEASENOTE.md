@@ -1,7 +1,10 @@
-﻿Version Notes (Current Version: v2.30)
+﻿Version Notes (Current Version: v2.31)
 =======================================
 
-v2.30 (Pre-release)
+v2.31 (Pre-release)
+-----------
+
+v2.30
 -----------
 1. Improve DFM performance for em rule (#2339)
 
@@ -20,12 +23,12 @@ v2.28.2
 1. Bug fixes:
    1. Fix issues running under mono (#2262, #1856)
    2. Fix VS17 15.5 support (#2265)
-   
+
 v2.28.1
 -----------
 1. Bug fixes:
    1. Fix .NET core .csproj files support (#1752)
-   
+
 v2.28
 -----------
 1. Add warning throttling. (#2187)
