@@ -3,16 +3,18 @@
 
 namespace Microsoft.DocAsCode.Build.MarkdownFragments
 {
+    using System;
     using System.Collections.Generic;
 
     using Markdig.Syntax;
 
+    [Serializable]
     public class MarkdownPropertyModel
     {
-        string PropertyName { get; set; }
+        public string PropertyName { get; set; }
 
-        Block PropertyNameSource { get; set; }
+        public Block PropertyNameSource { get; set; }
 
-        List<Block> PropertyValue { get; set; }
+        public List<Block> PropertyValue { get; set; }
     }
 }
