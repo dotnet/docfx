@@ -224,6 +224,10 @@ namespace Microsoft.DocAsCode.Build.ManagedReference.Tests
 
                 Assert.Equal("../System.Activities.Presentation.Model.ModelItemDictionary.Add.html", model.Items[0].Items[0].TopicHref);
                 Assert.Equal("Add", model.Items[0].Items[0].Name);
+
+                var eiiItem = model.Items[0].Items[20];
+                Assert.Equal(5, eiiItem.Metadata.Count);
+                Assert.True(eiiItem.Metadata["isEii"] as bool?);
             }
         }
 

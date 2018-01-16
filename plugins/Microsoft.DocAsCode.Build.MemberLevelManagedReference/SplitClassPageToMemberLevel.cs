@@ -413,7 +413,8 @@ namespace Microsoft.DocAsCode.Build.ManagedReference
                     [Constants.PropertyName.FullName] = item.FullName,
                     [Constants.PropertyName.TopicUid] = item.Uid,
                     [Constants.PropertyName.NameWithType] = item.NameWithType,
-                    [Constants.PropertyName.Type] = item.Type.ToString()
+                    [Constants.PropertyName.Type] = item.Type.ToString(),
+                    ["isEii"] = item.IsExplicitInterfaceImplementation
                 }
             };
             if (item.Platform != null)
