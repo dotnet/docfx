@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Build.MarkdownFragments
 
     public class OverwriteDocumentModelCreater
     {
-        OverwriteDocumentModel Create(MarkdownFragmentModel model)
+        public OverwriteDocumentModel Create(MarkdownFragmentModel model)
         {
             throw new System.NotImplementedException();
         }

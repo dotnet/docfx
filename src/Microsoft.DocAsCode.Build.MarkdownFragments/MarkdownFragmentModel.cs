@@ -13,8 +13,12 @@ namespace Microsoft.DocAsCode.Build.MarkdownFragments
     {
         public string Uid { get; set; }
 
-        public string YamlCodeBlockHeader { get; set; }
+        public Block UidSource { get; set; }
 
-        public Dictionary<string, List<Block>> Contents { get; set; }
+        public string YamlCodeBlock { get; set; }
+
+        public Block YamlCodeBlockSource { get; set; }
+
+        public List<MarkdownPropertyModel> Contents { get; set; }
     }
 }
