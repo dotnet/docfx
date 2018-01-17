@@ -33,5 +33,10 @@ namespace Microsoft.DocAsCode.Common
             public const string DuplicateTabId = "DuplicateTabId";
             public const string DifferentTabIdSet = "DifferentTabIdSet";
         }
+
+        public static class Overwrite
+        {
+            public const string InvalidYamlCodeBlockLanguage = "InvalidYamlCodeBlockLanguage";
+        }
     }
 }
