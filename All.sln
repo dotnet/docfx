@@ -203,6 +203,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OverwriteDocuments", "Overw
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.OverwriteDocuments", "src\Microsoft.DocAsCode.Build.OverwriteDocuments\Microsoft.DocAsCode.Build.OverwriteDocuments.csproj", "{085AB724-DC2D-4133-AC0F-87BD1A1743F9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.OverwriteDocuments.Tests", "test\Microsoft.DocAsCode.Build.OverwriteDocuments.Tests\Microsoft.DocAsCode.Build.OverwriteDocuments.Tests.csproj", "{B3843152-55A6-4BF0-B774-18E05F0B99AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -691,6 +693,14 @@ Global
 		{085AB724-DC2D-4133-AC0F-87BD1A1743F9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{085AB724-DC2D-4133-AC0F-87BD1A1743F9}.Release|x86.ActiveCfg = Release|Any CPU
 		{085AB724-DC2D-4133-AC0F-87BD1A1743F9}.Release|x86.Build.0 = Release|Any CPU
+		{B3843152-55A6-4BF0-B774-18E05F0B99AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3843152-55A6-4BF0-B774-18E05F0B99AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3843152-55A6-4BF0-B774-18E05F0B99AF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B3843152-55A6-4BF0-B774-18E05F0B99AF}.Debug|x86.Build.0 = Debug|Any CPU
+		{B3843152-55A6-4BF0-B774-18E05F0B99AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3843152-55A6-4BF0-B774-18E05F0B99AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3843152-55A6-4BF0-B774-18E05F0B99AF}.Release|x86.ActiveCfg = Release|Any CPU
+		{B3843152-55A6-4BF0-B774-18E05F0B99AF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -788,6 +798,7 @@ Global
 		{8C31E8EB-0CCB-4442-9DDB-79822BB7D8C3} = {4114BF4C-CE17-4BFB-8047-823EEC2A7A7D}
 		{FDB3DE48-B609-4FAB-9003-02DE2576E6AD} = {F922E543-9AD4-4031-8BD1-8A7AA9771D1E}
 		{085AB724-DC2D-4133-AC0F-87BD1A1743F9} = {FDB3DE48-B609-4FAB-9003-02DE2576E6AD}
+		{B3843152-55A6-4BF0-B774-18E05F0B99AF} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C12271F-8093-4D5D-8BEE-3318BFE40E23}
