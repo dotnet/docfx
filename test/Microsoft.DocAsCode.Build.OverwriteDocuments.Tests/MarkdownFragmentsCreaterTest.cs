@@ -37,5 +37,61 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments.Tests
             Assert.Equal(6, model[0].Contents[1].PropertyValue.Count);
             Assert.Equal("System.String.#ctor(System.Char*)", model[1].Uid);
         }
+
+        [Fact]
+        public void MissingStartingH1CodeHeadingShouldFail()
+        {
+            var markdown = @"## `summary`
+markdown content
+## `description`
+markdown content
+";
+            var ast = Markdown.Parse(markdown);
+
+            var ex = Assert.Throws<MarkdownFragmentsException>(() => new MarkdownFragmentsCreater().Create(ast).ToList());
+            Assert.Equal("Failed when apply rule L1InlineCodeHeadingRule", ex.Message);
+            Assert.Equal(0, ex.Position);
+        }
+
+        [Fact]
+        public void MarkdownContentAfterL1CodeHeadingShouldFail()
+        {
+            var markdown = @"# `Lesson_1`
+
+## `Lesson_1_1`
+
+markdown content
+
+# `Lesson_2`
+
+markdown content
+";
+            var ast = Markdown.Parse(markdown);
+
+            var ex = Assert.Throws<MarkdownFragmentsException>(() => new MarkdownFragmentsCreater().Create(ast).ToList());
+            Assert.Equal("Failed when apply rule L1InlineCodeHeadingRule", ex.Message);
+            Assert.Equal(8, ex.Position);
+        }
+
+        [Fact]
+        public void YamlCodeBlockShouldBeNextToL1CodeHeading()
+        {
+            var markdown = @"# `YAML`
+
+## `Introduction`
+
+This is just a normal yaml fences block:
+``` yaml
+a: b
+c: d
+```
+";
+            var ast = Markdown.Parse(markdown);
+            var model = new MarkdownFragmentsCreater().Create(ast).ToList();
+
+            Assert.Null(model[0].YamlCodeBlock);
+            Assert.Null(model[0].YamlCodeBlockSource);
+            Assert.IsType<FencedCodeBlock>(model[0].Contents[0].PropertyValue[1]);
+        }
     }
 }

@@ -98,7 +98,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             }
             else
             {
-                throw new MarkdownFragmentsException($"Failed when apply rule {parser.Name}", _position);
+                throw new MarkdownFragmentsException($"Failed when apply rule {parser.Name}", block.Line);
             }
         }
 
