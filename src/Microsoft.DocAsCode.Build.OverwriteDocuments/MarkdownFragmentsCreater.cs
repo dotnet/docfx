@@ -91,15 +91,16 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
         private Block Eat(IOverwriteBlockRule parser, out string value)
         {
             var block = Peek();
+            if (block == null)
+            {
+                throw new MarkdownFragmentsException($"Expect {parser.TokenName}, but end reached");
+            }
             if (parser.Parse(block, out value))
             {
                 _position++;
                 return block;
             }
-            else
-            {
-                throw new MarkdownFragmentsException($"Failed when apply rule {parser.Name}", block.Line);
-            }
+            throw new MarkdownFragmentsException($"Expect {parser.TokenName}", block.Line);
         }
 
         private Block Next()

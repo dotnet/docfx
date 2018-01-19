@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
     public sealed class YamlCodeBlockRule : IOverwriteBlockRule
     {
-        public string Name => nameof(YamlCodeBlockRule);
+        public string TokenName => "YamlCodeBlock";
 
         private static readonly List<string> _allowedLanguages = new List<string> { "yaml", "yml" };
 
