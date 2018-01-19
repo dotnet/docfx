@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.14.7" />
+    <PackageReference Include="Microsoft.DocAsCode.Common" Version="2.29.1" />
+  </ItemGroup>
+
+</Project>

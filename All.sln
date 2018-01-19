@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6A65A769-DAC3-4E99-96F9-991F4CE8D164}"
 EndProject
@@ -203,7 +203,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OverwriteDocuments", "Overw
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.OverwriteDocuments", "src\Microsoft.DocAsCode.Build.OverwriteDocuments\Microsoft.DocAsCode.Build.OverwriteDocuments.csproj", "{085AB724-DC2D-4133-AC0F-87BD1A1743F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.DocAsCode.Build.OverwriteDocuments.Tests", "test\Microsoft.DocAsCode.Build.OverwriteDocuments.Tests\Microsoft.DocAsCode.Build.OverwriteDocuments.Tests.csproj", "{B3843152-55A6-4BF0-B774-18E05F0B99AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Build.OverwriteDocuments.Tests", "test\Microsoft.DocAsCode.Build.OverwriteDocuments.Tests\Microsoft.DocAsCode.Build.OverwriteDocuments.Tests.csproj", "{B3843152-55A6-4BF0-B774-18E05F0B99AF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdigEngine", "src\Microsoft.DocAsCode.MarkdigEngine\MarkdigEngine.csproj", "{EA44B820-4C3A-476C-A514-C89CAA6A0F46}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdigEngine.Extensions", "src\Microsoft.DocAsCode.MarkdigEngine.Extensions\MarkdigEngine.Extensions.csproj", "{FD0365CB-3F03-43B0-9FB2-FB50047BF3E5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdigEngine.Tests", "test\Microsoft.DocAsCode.MarkdigEngine.Tests\MarkdigEngine.Tests.csproj", "{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -701,6 +707,30 @@ Global
 		{B3843152-55A6-4BF0-B774-18E05F0B99AF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B3843152-55A6-4BF0-B774-18E05F0B99AF}.Release|x86.ActiveCfg = Release|Any CPU
 		{B3843152-55A6-4BF0-B774-18E05F0B99AF}.Release|x86.Build.0 = Release|Any CPU
+		{EA44B820-4C3A-476C-A514-C89CAA6A0F46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA44B820-4C3A-476C-A514-C89CAA6A0F46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA44B820-4C3A-476C-A514-C89CAA6A0F46}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EA44B820-4C3A-476C-A514-C89CAA6A0F46}.Debug|x86.Build.0 = Debug|Any CPU
+		{EA44B820-4C3A-476C-A514-C89CAA6A0F46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA44B820-4C3A-476C-A514-C89CAA6A0F46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA44B820-4C3A-476C-A514-C89CAA6A0F46}.Release|x86.ActiveCfg = Release|Any CPU
+		{EA44B820-4C3A-476C-A514-C89CAA6A0F46}.Release|x86.Build.0 = Release|Any CPU
+		{FD0365CB-3F03-43B0-9FB2-FB50047BF3E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD0365CB-3F03-43B0-9FB2-FB50047BF3E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD0365CB-3F03-43B0-9FB2-FB50047BF3E5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FD0365CB-3F03-43B0-9FB2-FB50047BF3E5}.Debug|x86.Build.0 = Debug|Any CPU
+		{FD0365CB-3F03-43B0-9FB2-FB50047BF3E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD0365CB-3F03-43B0-9FB2-FB50047BF3E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD0365CB-3F03-43B0-9FB2-FB50047BF3E5}.Release|x86.ActiveCfg = Release|Any CPU
+		{FD0365CB-3F03-43B0-9FB2-FB50047BF3E5}.Release|x86.Build.0 = Release|Any CPU
+		{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}.Debug|x86.Build.0 = Debug|Any CPU
+		{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}.Release|x86.ActiveCfg = Release|Any CPU
+		{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -799,6 +829,9 @@ Global
 		{FDB3DE48-B609-4FAB-9003-02DE2576E6AD} = {F922E543-9AD4-4031-8BD1-8A7AA9771D1E}
 		{085AB724-DC2D-4133-AC0F-87BD1A1743F9} = {FDB3DE48-B609-4FAB-9003-02DE2576E6AD}
 		{B3843152-55A6-4BF0-B774-18E05F0B99AF} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
+		{EA44B820-4C3A-476C-A514-C89CAA6A0F46} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
+		{FD0365CB-3F03-43B0-9FB2-FB50047BF3E5} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
+		{DD9736B2-8AA2-44AE-B0B3-57510FF0D634} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C12271F-8093-4D5D-8BEE-3318BFE40E23}
