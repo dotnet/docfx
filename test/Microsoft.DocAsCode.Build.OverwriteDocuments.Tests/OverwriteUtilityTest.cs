@@ -15,20 +15,21 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments.Tests
         [Fact]
         public void ParseOPathTest()
         {
-            var OPathstring = "a/f[c= \"d\"]/g/b[c =\"d/d_d d\"]/e[c = 2.5]/h";
+            var OPathstring = "a/f [c= \"d\"]/g/b[c =\"d/d_d d\"]/e";
             var OPathSegments = OverwriteUtility.ParseOPath(OPathstring);
-            Assert.Equal(6, OPathSegments.Count);
-            Assert.Equal("a,f,g,b,e,h", OPathSegments.Select(o => o.SegmentName).Aggregate((a, b) => a + "," + b));
+            Assert.Equal(5, OPathSegments.Count);
+            Assert.Equal("a,f,g,b,e", OPathSegments.Select(o => o.SegmentName).Aggregate((a, b) => a + "," + b));
             Assert.Equal("c", OPathSegments[1].Key);
             Assert.Equal("d", OPathSegments[1].Value);
             Assert.Equal("d/d_d d", OPathSegments[3].Value);
-            Assert.Equal(2.5, OPathSegments[4].Value);
         }
 
         [Theory]
         [InlineData("abc[]d=\"e\"/g]")]
         [InlineData("abc[d='e']/g")]
         [InlineData("abc[d=\"e\"]/g/")]
+        [InlineData("abc[d=2]/g/")]
+        [InlineData("abc[d=true]/g/")]
         [InlineData("abc[a=\"b]\b")]
         [InlineData("abc/efg[a=\"b\"]")]
         [InlineData("abc/efg[a=\"b\"]e/g")]

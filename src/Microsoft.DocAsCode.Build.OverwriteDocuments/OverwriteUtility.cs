@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
     {
         private static readonly Regex OPathRegex =
             new Regex(
-                @"^(?<propertyName>[:A-Za-z_][\w\.\-:]*)(\[(?<key>[:A-Za-z_][\w\.\-:]*)=((""(?<stringValue>[\w\(\)\.\{\}\[\]\|\/@ `<>:]+)"")|(?<numberValue>[-+]?[0-9]*(\.[0-9]+)?))\])?/?",
+                @"^\s*(?<propertyName>[:A-Za-z_](?>[\w\.\-:]*))\s*(?:\[\s*(?<key>[:A-Za-z_](?>[\w\.\-:]*))\s*=\s*(?:""(?<value>(?:(?>[^""\\]*)|\\.)*)"")\s*\])?\s*(?:\/|$)",
                 RegexOptions.Compiled);
 
         public static List<OPathSegment> ParseOPath(string OPathString)
@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
             var OPathSegments = new List<OPathSegment>();
 
-            var leftString = Regex.Replace(OPathString, @"\s+(?=([^""]*""[^""]*"")*[^""]*$)", "");
+            var leftString = OPathString;
             while (leftString.Length > 0)
             {
                 var match = OPathRegex.Match(leftString);
@@ -42,22 +42,13 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                     throw new ArgumentException($"{OPathString} is not a valid OPath");
                 }
 
-                var newSegment = match.Groups["numberValue"].Success
-                    ? new OPathSegment
-                    {
-                        SegmentName = match.Groups["propertyName"].Value,
-                        Key = match.Groups["key"].Value,
-                        Value = double.Parse(match.Groups["numberValue"].Value),
-                        OriginalSegmentString = match.Value.TrimEnd('/')
-                    }
-                    : new OPathSegment
-                    {
-                        SegmentName = match.Groups["propertyName"].Value,
-                        Key = match.Groups["key"].Value,
-                        Value = match.Groups["stringValue"].Value,
-                        OriginalSegmentString = match.Value.TrimEnd('/')
-                    };
-                OPathSegments.Add(newSegment);
+                OPathSegments.Add(new OPathSegment
+                {
+                    SegmentName = match.Groups["propertyName"].Value,
+                    Key = match.Groups["key"].Value,
+                    Value = match.Groups["value"].Value,
+                    OriginalSegmentString = match.Value.TrimEnd('/')
+                });
                 leftString = leftString.Substring(match.Length);
             }
             return OPathSegments;
