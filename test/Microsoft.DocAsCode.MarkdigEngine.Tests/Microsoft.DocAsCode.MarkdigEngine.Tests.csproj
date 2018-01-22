@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdigEngine.Extensions\MarkdigEngine.Extensions.csproj" />
-    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdigEngine\MarkdigEngine.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdigEngine.Extensions\Microsoft.DocAsCode.MarkdigEngine.Extensions.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.DocAsCode.MarkdigEngine\Microsoft.DocAsCode.MarkdigEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

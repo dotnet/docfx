@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-namespace MarkdigEngine.Tests
+namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
     using System.IO;
 
@@ -186,7 +186,7 @@ content-a
 # <a id=""x""></a>[title-b](#tab/b/c)
 content-b
 - - -";
-            var groupId = "w61hnTEDJ7";
+            var groupId = "CeZOj-G++Q";
             var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""test.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""5"">
 <ul role=""tablist"">
 <li role=""presentation"">
@@ -221,7 +221,7 @@ content-a
 # [title-b](#tab/b/a)
 content-b
 - - -";
-            var groupId = "w61hnTEDJ7";
+            var groupId = "CeZOj-G++Q";
             var expected = $@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""test.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""5"">
 <ul role=""tablist"">
 <li role=""presentation"">

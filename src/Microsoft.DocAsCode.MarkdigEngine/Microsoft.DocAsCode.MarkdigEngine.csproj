@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdigEngine.Extensions\MarkdigEngine.Extensions.csproj" />
+    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdigEngine.Extensions\Microsoft.DocAsCode.MarkdigEngine.Extensions.csproj" />
   </ItemGroup>
 
 </Project>
