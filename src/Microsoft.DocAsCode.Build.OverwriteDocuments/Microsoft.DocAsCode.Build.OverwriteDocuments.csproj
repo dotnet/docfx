@@ -4,7 +4,7 @@
   </PropertyGroup>
   <Import Project="../Shared/base.props" />
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.14.9" />
+    <PackageReference Include="Markdig" Version="0.14.8" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj" />
