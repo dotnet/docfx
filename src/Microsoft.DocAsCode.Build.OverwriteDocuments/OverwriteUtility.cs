@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
     {
         private static readonly Regex OPathRegex =
             new Regex(
-                @"^(?<propertyName>[\w]+)(\[(?<key>[\w]+)=""(?<value>[\w\(\)\.\{\}\[\]\|\*\^/~#@!`,_<>:]+)""\])?/?",
+                @"^(?<propertyName>[\w\.\-]+)(\[(?<key>[\w\.\-]+)=""(?<value>[\w\(\)\.\{\}\[\]\|\/@`<>: ]+)""\])?/?",
                 RegexOptions.Compiled);
 
         public static List<OPathSegment> ParseOPath(string OPathString)
@@ -28,7 +28,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
             var OPathSegments = new List<OPathSegment>();
 
-            var leftString = OPathString;
+            var leftString = Regex.Replace(OPathString, @"\s+(?=([^""]*""[^""]*"")*[^""]*$)", "");
             while (leftString.Length > 0)
             {
                 var match = OPathRegex.Match(leftString);
@@ -37,7 +37,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                     throw new ArgumentException($"{OPathString} is not a valid OPath");
                 }
 
-                if (!match.Value.EndsWith("/") && (match.Groups["key"].Success || match.Groups["value"].Success))
+                if (!match.Value.EndsWith("/") && match.Groups["key"].Success)
                 {
                     throw new ArgumentException($"{OPathString} is not a valid OPath");
                 }
