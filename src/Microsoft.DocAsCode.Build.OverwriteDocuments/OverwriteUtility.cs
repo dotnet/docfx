@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
     {
         private static readonly Regex OPathRegex =
             new Regex(
-                @"^\s*(?<propertyName>[:A-Za-z_](?>[\w\.\-:]*))\s*(?:\[\s*(?<key>[:A-Za-z_](?>[\w\.\-:]*))\s*=\s*(?:""(?<value>(?:(?>[^""\\]*)|\\.)*)"")\s*\])?\s*(?:\/|$)",
+                @"^(?<propertyName>[:A-Za-z_](?>[\w\.\-:]*))(?:\[\s*(?<key>[:A-Za-z_](?>[\w\.\-:]*))\s*=\s*(?:""(?<value>(?:(?>[^""\\]*)|\\.)*)"")\s*\])?(?:\/|$)",
                 RegexOptions.Compiled);
 
         public static List<OPathSegment> ParseOPath(string OPathString)
