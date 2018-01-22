@@ -1,11 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
+  <Import Project="../Shared/base.props" />
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.14.7" />
+    <PackageReference Include="Markdig" Version="0.14.9" />
     <PackageReference Include="Microsoft.Composition" Version="1.0.31" />
     <PackageReference Include="Microsoft.DocAsCode.Common" Version="2.29.1" />
     <PackageReference Include="Microsoft.DocAsCode.YamlSerialization" Version="2.29.1" />
