@@ -10,14 +10,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using Microsoft.DocAsCode.Plugins;
     using Xunit;
 
-    
+
     public class TabGroupTest
     {
         [Fact]
         [Trait("Related", "TabGroup")]
         public void Test_General()
         {
-            var groupId = "w61hnTEDJ7";
+            var groupId = "CeZOj-G++Q";
             TestDfmInGeneral(
                 @"Tab group test case
 # [title-a](#tab/a)
@@ -52,7 +52,7 @@ content-b
         [Trait("Related", "TabGroup")]
         public void Test_TabGroup_Combining()
         {
-            var groupId = "w61hnTEDJ7";
+            var groupId = "CeZOj-G++Q";
             TestDfmInGeneral(
                 @"# [title-a or b](#tab/a+b)
 content-a or b

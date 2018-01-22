@@ -209,7 +209,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Markdig
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Extensions", "src\Microsoft.DocAsCode.MarkdigEngine.Extensions\Microsoft.DocAsCode.MarkdigEngine.Extensions.csproj", "{FD0365CB-3F03-43B0-9FB2-FB50047BF3E5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdigEngine.Tests", "test\Microsoft.DocAsCode.MarkdigEngine.Tests\MarkdigEngine.Tests.csproj", "{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Tests", "test\Microsoft.DocAsCode.MarkdigEngine.Tests\Microsoft.DocAsCode.MarkdigEngine.Tests.csproj", "{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
