@@ -10,9 +10,9 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
     {
         public string SegmentName { get; set; }
 
-        public string key { get; set; }
+        public string Key { get; set; }
 
-        public string Value { get; set; }
+        public object Value { get; set; }
 
         public string OriginalSegmentString { get; set; }
     }

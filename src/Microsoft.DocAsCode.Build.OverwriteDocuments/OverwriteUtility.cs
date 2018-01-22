@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
     {
         private static readonly Regex OPathRegex =
             new Regex(
-                @"^(?<propertyName>[\w\.\-]+)(\[(?<key>[\w\.\-]+)=""(?<value>[\w\(\)\.\{\}\[\]\|\/@`<>: ]+)""\])?/?",
+                @"^(?<propertyName>[:A-Za-z_][\w\.\-:]*)(\[(?<key>[:A-Za-z_][\w\.\-:]*)=((""(?<stringValue>[\w\(\)\.\{\}\[\]\|\/@ `<>:]+)"")|(?<numberValue>[-+]?[0-9]*(\.[0-9]+)?))\])?/?",
                 RegexOptions.Compiled);
 
         public static List<OPathSegment> ParseOPath(string OPathString)
@@ -42,13 +42,22 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                     throw new ArgumentException($"{OPathString} is not a valid OPath");
                 }
 
-                OPathSegments.Add(new OPathSegment
-                {
-                    SegmentName = match.Groups["propertyName"].Value,
-                    key = match.Groups["key"].Value,
-                    Value = match.Groups["value"].Value,
-                    OriginalSegmentString = match.Value.TrimEnd('/')
-                });
+                var newSegment = match.Groups["numberValue"].Success
+                    ? new OPathSegment
+                    {
+                        SegmentName = match.Groups["propertyName"].Value,
+                        Key = match.Groups["key"].Value,
+                        Value = double.Parse(match.Groups["numberValue"].Value),
+                        OriginalSegmentString = match.Value.TrimEnd('/')
+                    }
+                    : new OPathSegment
+                    {
+                        SegmentName = match.Groups["propertyName"].Value,
+                        Key = match.Groups["key"].Value,
+                        Value = match.Groups["stringValue"].Value,
+                        OriginalSegmentString = match.Value.TrimEnd('/')
+                    };
+                OPathSegments.Add(newSegment);
                 leftString = leftString.Substring(match.Length);
             }
             return OPathSegments;
