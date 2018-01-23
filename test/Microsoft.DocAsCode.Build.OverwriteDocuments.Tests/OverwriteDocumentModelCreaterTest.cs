@@ -146,7 +146,7 @@ e: f
             var ex = Assert.Throws<MarkdownFragmentsException>(() =>
                 OverwriteDocumentModelCreater.ConvertContents(contents));
             Assert.Equal(
-                "OPath function/parameters[id=\"para1\"]/type can not be appended to existing object since there is already an OPath like function/parameters/...",
+                "A(parameters) is expected to be an object with \"A/B\", however it is used as an array in line 0 with \"A[c=d]/C\" OPath syntax",
                 ex.Message);
             Assert.Equal(0, ex.Position);
         }
@@ -174,9 +174,45 @@ e: f
             var ex = Assert.Throws<MarkdownFragmentsException>(() =>
                 OverwriteDocumentModelCreater.ConvertContents(contents));
             Assert.Equal(
-                "OPath function/parameters/description can not be appended to existing object since there is already an OPath like function/parameters[xx=xx]/...",
+                "A(parameters) is expected to be an array with \"A[c=d]/B\", however it is used as an object in line 0 with \"A/C\" OPath syntax",
                 ex.Message);
             Assert.Equal(0, ex.Position);
+        }
+
+        [Fact]
+        public void DuplicateOPathsInYamlCodeBlockAndContentsBlock()
+        {
+            var yamlCodeMatadata = new Dictionary<string, object>
+            {
+                {"a", "b"},
+                {"c", "d"},
+                {"e", "f"}
+            };
+            var contentsMetadata = new Dictionary<string, object>
+            {
+                {"a", "k"},
+                {"g", "h"},
+                {"i", "j"},
+            };
+            Dictionary<string, object> mergedMetadata;
+            Logger.RegisterListener(_listener);
+            try
+            {
+                using (new LoggerPhaseScope("overwrite_document_model_creater"))
+                {
+                    mergedMetadata = OverwriteDocumentModelCreater.MergeYamlCodeMetadataWithContentsMetadata(yamlCodeMatadata, contentsMetadata);
+                }
+            }
+            finally
+            {
+                Logger.UnregisterListener(_listener);
+            }
+
+            var logs = _listener.Items;
+            Assert.Equal(1, logs.Count);
+            Assert.Equal(1, logs.Where(l => l.Code == WarningCodes.Overwrite.DuplicateOPaths).Count());
+            Assert.Equal(5, mergedMetadata.Count);
+            Assert.Equal("k", mergedMetadata["a"]);
         }
 
         private string ExtractDictionaryKeys(Dictionary<string, object> dict)

@@ -10,26 +10,26 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
     using Markdig.Syntax;
 
-    using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Build.Common;
+    using Microsoft.DocAsCode.Common;
 
     public class OverwriteDocumentModelCreater
     {
         public static OverwriteDocumentModel Create(MarkdownFragmentModel model)
         {
-            var yamlCocdeBlockMetadata = ConvertYamlCodeBlock(model.YamlCodeBlock, model.YamlCodeBlockSource);
+            var yamlCodeBlockMetadata = ConvertYamlCodeBlock(model.YamlCodeBlock, model.YamlCodeBlockSource);
             var contentsMetadata = ConvertContents(model.Contents);
+
             return new OverwriteDocumentModel
             {
                 Uid = model.Uid,
-                Metadata = yamlCocdeBlockMetadata.Concat(contentsMetadata).GroupBy(p => p.Key)
-                    .ToDictionary(g => g.Key, g => g.Last().Value)
+                Metadata = MergeYamlCodeMetadataWithContentsMetadata(yamlCodeBlockMetadata, contentsMetadata)
             };
         }
 
-        public static Dictionary<string, object> ConvertYamlCodeBlock(string yamlCodeBlock, Block yamlCodeBlockSource)
+        internal static Dictionary<string, object> ConvertYamlCodeBlock(string yamlCodeBlock, Block yamlCodeBlockSource)
         {
-            if (string.IsNullOrEmpty(yamlCodeBlock))
+            if (string.IsNullOrEmpty(yamlCodeBlock) || yamlCodeBlockSource == null)
             {
                 return new Dictionary<string, object>();
             }
@@ -43,13 +43,14 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 catch (Exception ex)
                 {
                     throw new MarkdownFragmentsException(
-                        $"Failed when convert yaml code block to `Dictionary<string, object>` with  error: {ex.Message}",
-                        yamlCodeBlockSource.Line);
+                        $"Encountered an invalid YAML code block in line {yamlCodeBlockSource.Line}: {ex.Message}",
+                        yamlCodeBlockSource.Line,
+                        ex);
                 }
             }
         }
 
-        public static Dictionary<string, object> ConvertContents(List<MarkdownPropertyModel> contents)
+        internal static Dictionary<string, object> ConvertContents(List<MarkdownPropertyModel> contents)
         {
             var contentsMetadata = new Dictionary<string, object>();
             List<OPathSegment> OPathSegments;
@@ -61,7 +62,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 }
                 catch (ArgumentException ex)
                 {
-                    throw new MarkdownFragmentsException(ex.Message, content.PropertyNameSource.Line);
+                    throw new MarkdownFragmentsException(ex.Message, content.PropertyNameSource.Line, ex);
                 }
 
                 AppendNewObject(OPathSegments, content.PropertyNameSource, content.PropertyValue, contentsMetadata);
@@ -70,10 +71,25 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             return contentsMetadata;
         }
 
+        internal static Dictionary<string, object> MergeYamlCodeMetadataWithContentsMetadata(Dictionary<string, object> yamlCodeMetadata, Dictionary<string, object> contentsMetadata)
+        {
+            var metadata = yamlCodeMetadata.Concat(contentsMetadata).GroupBy(p => p.Key);
+            var metadatasWithSameOPath = from meta in metadata
+                where meta.Count() > 1
+                select meta;
+            foreach (var meta in metadatasWithSameOPath)
+            {
+                Logger.LogWarning(
+                    $"There are two duplicate OPaths `{meta.Key}` in yaml code block and contents block, the item in yaml code block will be overwritten by contents block item",
+                    code: WarningCodes.Overwrite.DuplicateOPaths);
+            }
+
+            return metadata.ToDictionary(g => g.Key, g => g.Last().Value);
+        }
+
         private static void AppendNewObject(List<OPathSegment> OPathSegments, Block codeHeaderBlock, List<Block> propertyValue, Dictionary<string, object> contentsMetadata)
         {
             var objectValue = contentsMetadata;
-            var leftSegments = new List<OPathSegment>(OPathSegments);
             foreach (var segment in OPathSegments)
             {
                 if (objectValue.ContainsKey(segment.SegmentName))
@@ -85,18 +101,16 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                         {
                             var goodItems = (from item in listObject
                                 where item.ContainsKey(segment.Key) &&
-                                      item[segment.Key].ToString().Equals(segment.Value.ToString(),
-                                          StringComparison.OrdinalIgnoreCase)
+                                      item[segment.Key].ToString().Equals(segment.Value.ToString())
                                 select item).ToList();
                             if (goodItems.Count > 0)
                             {
                                 objectValue = goodItems.First();
-                                leftSegments.Remove(segment);
                             }
                             else
                             {
                                 ((List<Dictionary<string, object>>) objectValue[segment.SegmentName]).Add(
-                                    ((List<Dictionary<string, object>>) ((Dictionary<string, object>) CreateObject(leftSegments, propertyValue))[segment.SegmentName])
+                                    ((List<Dictionary<string, object>>) ((Dictionary<string, object>) CreateObject(OPathSegments.Skip(OPathSegments.IndexOf(segment)).ToList(), propertyValue))[segment.SegmentName])
                                     .First());
                                 return;
                             }
@@ -109,20 +123,17 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                             var sameSegments = new List<OPathSegment>(OPathSegments);
                             sameSegments.RemoveRange(OPathSegments.IndexOf(segment), OPathSegments.Count - OPathSegments.IndexOf(segment));
                             throw new MarkdownFragmentsException(
-                                $"OPath {OPathSegments.Select(o => o.OriginalSegmentString).Aggregate((a, b) => a + "/" + b)} " +
-                                $"can not be appended to existing object since there is already an OPath like " +
-                                $"{sameSegments.Select(o => o.OriginalSegmentString).Aggregate((a, b) => a + "/" + b) + "/" + segment.SegmentName + "/..."}",
+                                $"A({segment.SegmentName}) is expected to be an object with \"A/B\", however it is used as an array in line {codeHeaderBlock.Line} with \"A[c=d]/C\" OPath syntax",
                                 codeHeaderBlock.Line);
                         }
                     }
                     else
                     {
-                        leftSegments.Remove(segment);
                         if (objectValue[segment.SegmentName] is List<Block>)
                         {
                             // Duplication
                             Logger.LogWarning(
-                                $"There is two duplicate OPaths {OPathSegments.Select(o => o.OriginalSegmentString).Aggregate((a, b) => a + "/" + b)}, the previous one will be overwritten",
+                                $"There are two duplicate OPaths {OPathSegments.Select(o => o.OriginalSegmentString).Aggregate((a, b) => a + "/" + b)}, the previous one will be overwritten",
                                 line: codeHeaderBlock.Line.ToString(),
                                 code: WarningCodes.Overwrite.InvalidOPaths);
                             objectValue[segment.SegmentName] = propertyValue;
@@ -136,9 +147,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                             var sameSegment = new List<OPathSegment>(OPathSegments);
                             sameSegment.RemoveRange(OPathSegments.IndexOf(segment), OPathSegments.Count - OPathSegments.IndexOf(segment));
                             throw new MarkdownFragmentsException(
-                                $"OPath {OPathSegments.Select(o => o.OriginalSegmentString).Aggregate((a, b) => a + "/" + b)} " +
-                                $"can not be appended to existing object since there is already an OPath like " +
-                                $"{sameSegment.Select(o => o.OriginalSegmentString).Aggregate((a, b) => a + "/" + b) + "/" + segment.SegmentName + "[xx=xx]/..."}",
+                                $"A({segment.SegmentName}) is expected to be an array with \"A[c=d]/B\", however it is used as an object in line {codeHeaderBlock.Line} with \"A/C\" OPath syntax",
                                 codeHeaderBlock.Line);
                         }
                         else
@@ -149,8 +158,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 }
                 else
                 {
-                    leftSegments.Remove(segment);
-                    objectValue[segment.SegmentName] = CreateObject(leftSegments, propertyValue);
+                    objectValue[segment.SegmentName] = CreateObject(OPathSegments.Skip(OPathSegments.IndexOf(segment) + 1).ToList(), propertyValue);
                     return;
                 }
             }

@@ -19,7 +19,16 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
         {
         }
 
+        public MarkdownFragmentsException(string message, Exception inner) : base(message, inner)
+        {
+        }
+
         public MarkdownFragmentsException(string message, int position) : base(message)
+        {
+            Position = position;
+        }
+
+        public MarkdownFragmentsException(string message, int position, Exception inner) : base(message, inner)
         {
             Position = position;
         }
