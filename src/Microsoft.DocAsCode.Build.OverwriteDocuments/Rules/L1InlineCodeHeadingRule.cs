@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 {
     public sealed class L1InlineCodeHeadingRule :InlineCodeHeadingRule
     {
-        public override string Name => nameof(L1InlineCodeHeadingRule);
+        public override string TokenName => "L1InlineCodeHeading";
 
         protected override bool NeedCheckLevel => true;
 
