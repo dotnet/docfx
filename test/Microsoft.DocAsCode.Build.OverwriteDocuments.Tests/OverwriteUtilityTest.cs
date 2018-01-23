@@ -15,7 +15,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments.Tests
         [Fact]
         public void ParseOPathTest()
         {
-            var OPathstring = "a/f [c= \"d\"]/g/b[c =\"d/d_d d\"]/e";
+            var OPathstring = "a/f[c= \"d\"]/g/b[c =\"d/d_d d\"]/e";
             var OPathSegments = OverwriteUtility.ParseOPath(OPathstring);
             Assert.Equal(5, OPathSegments.Count);
             Assert.Equal("a,f,g,b,e", OPathSegments.Select(o => o.SegmentName).Aggregate((a, b) => a + "," + b));
