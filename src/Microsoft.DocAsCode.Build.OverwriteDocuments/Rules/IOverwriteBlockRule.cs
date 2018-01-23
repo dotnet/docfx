@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
     public interface IOverwriteBlockRule
     {
-        string Name { get; }
+        string TokenName{ get; }
 
         bool Parse(Block block, out string value);
     }

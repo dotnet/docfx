@@ -49,7 +49,7 @@ markdown content
             var ast = Markdown.Parse(markdown);
 
             var ex = Assert.Throws<MarkdownFragmentsException>(() => new MarkdownFragmentsCreater().Create(ast).ToList());
-            Assert.Equal("Failed when apply rule L1InlineCodeHeadingRule", ex.Message);
+            Assert.Equal("Expect L1InlineCodeHeading", ex.Message);
             Assert.Equal(0, ex.Position);
         }
 
@@ -69,7 +69,7 @@ markdown content
             var ast = Markdown.Parse(markdown);
 
             var ex = Assert.Throws<MarkdownFragmentsException>(() => new MarkdownFragmentsCreater().Create(ast).ToList());
-            Assert.Equal("Failed when apply rule L1InlineCodeHeadingRule", ex.Message);
+            Assert.Equal("Expect L1InlineCodeHeading", ex.Message);
             Assert.Equal(8, ex.Position);
         }
 

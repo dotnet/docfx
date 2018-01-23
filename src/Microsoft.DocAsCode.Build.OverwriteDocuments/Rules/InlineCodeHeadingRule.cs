@@ -10,7 +10,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
     public class InlineCodeHeadingRule : IOverwriteBlockRule
     {
-        public virtual string Name => nameof(InlineCodeHeadingRule);
+        public virtual string TokenName => "InlineCodeHeading";
 
         protected virtual bool NeedCheckLevel { get; set; }
 
