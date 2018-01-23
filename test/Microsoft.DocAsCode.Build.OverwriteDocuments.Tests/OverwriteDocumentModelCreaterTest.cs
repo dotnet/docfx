@@ -143,8 +143,7 @@ e: f
                 });
             }
 
-            var ex = Assert.Throws<MarkdownFragmentsException>(() =>
-                OverwriteDocumentModelCreater.ConvertContents(contents));
+            var ex = Assert.Throws<MarkdownFragmentsException>(() => OverwriteDocumentModelCreater.ConvertContents(contents));
             Assert.Equal(
                 "A(parameters) is expected to be an object with \"A/B\", however it is used as an array in line 0 with \"A[c=d]/C\" OPath syntax",
                 ex.Message);
@@ -171,8 +170,7 @@ e: f
                 });
             }
 
-            var ex = Assert.Throws<MarkdownFragmentsException>(() =>
-                OverwriteDocumentModelCreater.ConvertContents(contents));
+            var ex = Assert.Throws<MarkdownFragmentsException>(() => OverwriteDocumentModelCreater.ConvertContents(contents));
             Assert.Equal(
                 "A(parameters) is expected to be an array with \"A[c=d]/B\", however it is used as an object in line 0 with \"A/C\" OPath syntax",
                 ex.Message);
