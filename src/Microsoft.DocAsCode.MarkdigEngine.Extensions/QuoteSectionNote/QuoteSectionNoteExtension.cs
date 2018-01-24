@@ -3,17 +3,13 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
 
     using Markdig;
     using Markdig.Parsers;
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
 
     public class QuoteSectionNoteExtension : IMarkdownExtension
     {

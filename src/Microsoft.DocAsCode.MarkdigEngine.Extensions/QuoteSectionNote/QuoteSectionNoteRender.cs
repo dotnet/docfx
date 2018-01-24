@@ -4,15 +4,10 @@
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
-    using Markdig.Syntax;
 
     public class QuoteSectionNoteRender : HtmlObjectRenderer<QuoteSectionNoteBlock>
     {
@@ -26,50 +21,112 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         protected override void Write(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
         {
             renderer.EnsureLine();
-            bool savedImplicitParagraph;
             switch (obj.QuoteType)
             {
                 case QuoteSectionNoteType.MarkdownQuote:
-                    renderer.Write("<blockquote").WriteAttributes(obj).WriteLine(">");
-                    savedImplicitParagraph = renderer.ImplicitParagraph;
-                    renderer.ImplicitParagraph = false;
-                    renderer.WriteChildren(obj);
-                    renderer.ImplicitParagraph = savedImplicitParagraph;
-                    renderer.WriteLine("</blockquote>");
+                    WriteQuote(renderer, obj);
                     break;
                 case QuoteSectionNoteType.DFMSection:
-                    string attribute = string.IsNullOrEmpty(obj.SectionAttributeString) ?
-                                       string.Empty :
-                                       $" {obj.SectionAttributeString}";
-                    renderer.Write("<div").Write(attribute).WriteAttributes(obj).WriteLine(">");
-                    savedImplicitParagraph = renderer.ImplicitParagraph;
-                    renderer.ImplicitParagraph = false;
-                    renderer.WriteChildren(obj);
-                    renderer.ImplicitParagraph = savedImplicitParagraph;
-                    renderer.WriteLine("</div>");
+                    WriteSection(renderer, obj);
                     break;
                 case QuoteSectionNoteType.DFMNote:
-                    string noteHeading = string.Empty;
-                    if (_tokens?.TryGetValue(obj.NoteTypeString.ToLower(), out noteHeading) != true)
-                    {
-                        noteHeading = $"<h5>{obj.NoteTypeString.ToUpper()}</h5>";
-                    };
-                    renderer.Write("<div").Write($" class=\"{obj.NoteTypeString.ToUpper()}\"").WriteAttributes(obj).WriteLine(">");
-                    savedImplicitParagraph = renderer.ImplicitParagraph;
-                    renderer.ImplicitParagraph = false;
-                    renderer.WriteLine(noteHeading);
-                    renderer.WriteChildren(obj);
-                    renderer.ImplicitParagraph = savedImplicitParagraph;
-                    renderer.WriteLine("</div>");
+                    WriteNote(renderer, obj);
                     break;
                 case QuoteSectionNoteType.DFMVideo:
-                    renderer.Write("<div class=\"embeddedvideo\"").WriteAttributes(obj).Write(">");
-                    renderer.Write($"<iframe src=\"{obj.VideoLink}\" frameborder=\"0\" allowfullscreen=\"true\"></iframe>");
-                    renderer.WriteLine("</div>");
+                    WriteVideo(renderer, obj);
                     break;
                 default:
                     break;
             }
+        }
+
+        private void WriteNote(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
+        {
+            string noteHeading = string.Empty;
+            if (_tokens?.TryGetValue(obj.NoteTypeString.ToLower(), out noteHeading) != true)
+            {
+                noteHeading = $"<h5>{obj.NoteTypeString.ToUpper()}</h5>";
+            };
+            renderer.Write("<div").Write($" class=\"{obj.NoteTypeString.ToUpper()}\"").WriteAttributes(obj).WriteLine(">");
+            var savedImplicitParagraph = renderer.ImplicitParagraph;
+            renderer.ImplicitParagraph = false;
+            renderer.WriteLine(noteHeading);
+            renderer.WriteChildren(obj);
+            renderer.ImplicitParagraph = savedImplicitParagraph;
+            renderer.WriteLine("</div>");
+        }
+
+        private void WriteSection(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
+        {
+            string attribute = string.IsNullOrEmpty(obj.SectionAttributeString) ?
+                        string.Empty :
+                        $" {obj.SectionAttributeString}";
+            renderer.Write("<div").Write(attribute).WriteAttributes(obj).WriteLine(">");
+            var savedImplicitParagraph = renderer.ImplicitParagraph;
+            renderer.ImplicitParagraph = false;
+            renderer.WriteChildren(obj);
+            renderer.ImplicitParagraph = savedImplicitParagraph;
+            renderer.WriteLine("</div>");
+        }
+
+        private void WriteQuote(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
+        {
+            renderer.Write("<blockquote").WriteAttributes(obj).WriteLine(">");
+            var savedImplicitParagraph = renderer.ImplicitParagraph;
+            renderer.ImplicitParagraph = false;
+            renderer.WriteChildren(obj);
+            renderer.ImplicitParagraph = savedImplicitParagraph;
+            renderer.WriteLine("</blockquote>");
+        }
+
+        private void WriteVideo(HtmlRenderer renderer, QuoteSectionNoteBlock obj)
+        {
+            var modifiedLink = string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(obj?.VideoLink))
+            {
+                modifiedLink = FixUpLink(obj.VideoLink);
+            }
+
+            renderer.Write("<div class=\"embeddedvideo\"").WriteAttributes(obj).Write(">");
+            renderer.Write($"<iframe src=\"{modifiedLink}\" frameborder=\"0\" allowfullscreen=\"true\"></iframe>");
+            renderer.WriteLine("</div>");
+        }
+
+        private static string FixUpLink(string link)
+        {
+            if (Uri.TryCreate(link, UriKind.Absolute, out Uri videoLink))
+            {
+                var host = videoLink.Host;
+                var query = videoLink.Query;
+                if (query.Length > 1)
+                {
+                    query = query.Substring(1);
+                }
+
+                if (host.Equals("channel9.msdn.com", StringComparison.OrdinalIgnoreCase))
+                {
+                    // case 1, Channel 9 video, need to add query string param
+                    if (string.IsNullOrWhiteSpace(query))
+                    {
+                        query = "nocookie=true";
+                    }
+                    else
+                    {
+                        query = query + "&nocookie=true";
+                    }
+                }
+                else if (host.Equals("youtube.com", StringComparison.OrdinalIgnoreCase) || host.Equals("www.youtube.com", StringComparison.OrdinalIgnoreCase))
+                {
+                    // case 2, YouTube video
+                    host = "www.youtube-nocookie.com";
+                }
+
+                var builder = new UriBuilder(videoLink) { Host = host, Query = query };
+                link = builder.Uri.ToString();
+            }
+
+            return link;
         }
     }
 }

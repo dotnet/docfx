@@ -30,7 +30,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 > [!TIP
 > [!di-no-v class=""whatever""]
 > [!WARNING]";
-            var expected = @"<div class=""embeddedvideo""><iframe src=""https://test"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+            var expected = @"<div class=""embeddedvideo""><iframe src=""https://test/"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 <blockquote>
 <p>[!Video]
 [!NOTE] no text here
@@ -421,6 +421,58 @@ no-note text 2-2</p>
 <p>[!div class=&quot;All&quot; id=&quot;All&quot;] Followed text
 We should support that.</p>
 </blockquote>
+";
+            TestMarkup(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestVideoBlock_Normal()
+        {
+            var source = @"# Article 2
+> [!VIDEO https://microsoft.com:8080?query=value+A#bookmark]
+";
+            var expected = $@"<h1 id=""article-2"">Article 2</h1>
+<div class=""embeddedvideo""><iframe src=""https://microsoft.com:8080/?query=value+A#bookmark"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+";
+            TestMarkup(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestVideoBlock_Channel9()
+        {
+            var source = @"# Article 2
+> [!VIDEO https://channel9.msdn.com]
+";
+            var expected = $@"<h1 id=""article-2"">Article 2</h1>
+<div class=""embeddedvideo""><iframe src=""https://channel9.msdn.com/?nocookie=true"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+";
+            TestMarkup(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestVideoBlock_Channel9WithQueryString()
+        {
+            var source = @"# Article 2
+> [!VIDEO https://channel9.msdn.com?query=value+A]
+";
+            var expected = $@"<h1 id=""article-2"">Article 2</h1>
+<div class=""embeddedvideo""><iframe src=""https://channel9.msdn.com/?query=value+A&nocookie=true"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
+";
+            TestMarkup(source, expected);
+        }
+
+        [Fact]
+        [Trait("Related", "DfmMarkdown")]
+        public void TestVideoBlock_YouTube()
+        {
+            var source = @"# Article 2
+> [!VIDEO https://youtube.com/foo]
+";
+            var expected = $@"<h1 id=""article-2"">Article 2</h1>
+<div class=""embeddedvideo""><iframe src=""https://www.youtube-nocookie.com/foo"" frameborder=""0"" allowfullscreen=""true""></iframe></div>
 ";
             TestMarkup(source, expected);
         }
