@@ -31,13 +31,10 @@ c: d
 e: f
 ```")[0];
             var actual = OverwriteDocumentModelCreater.ConvertYamlCodeBlock(yamlCodeBlockString, testYamlCodeBlock);
-            var expected = new Dictionary<string, object>()
-            {
-                {"a", "b"},
-                {"c", "d"},
-                {"e", "f"}
-            };
-            Assert.Equal(actual.ToString(), expected.ToString());
+            Assert.Equal("a,c,e", ExtractDictionaryKeys(actual));
+            Assert.Equal("b", actual["a"]);
+            Assert.Equal("d", actual["c"]);
+            Assert.Equal("f", actual["e"]);
         }
 
         [Fact]

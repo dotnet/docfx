@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
     {
         public static OverwriteDocumentModel Create(MarkdownFragmentModel model)
         {
+            // TODO: support multi-layer yaml
             var yamlCodeBlockMetadata = ConvertYamlCodeBlock(model.YamlCodeBlock, model.YamlCodeBlockSource);
             var contentsMetadata = ConvertContents(model.Contents);
 
@@ -89,36 +90,19 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
         private static void AppendNewObject(List<OPathSegment> OPathSegments, Block codeHeaderBlock, List<Block> propertyValue, Dictionary<string, object> contentsMetadata)
         {
-            var currentObject = contentsMetadata;
-            for (int index = 0; index < OPathSegments.Count - 1; index++)
-            {
-                currentObject = FindOrCreateSegment(currentObject, codeHeaderBlock, OPathSegments[index]);
-            }
-
-            var lastSegment = OPathSegments.Last();
-            if (currentObject.TryGetValue(lastSegment.SegmentName, out object value))
-            {
-                if (value is List<Block>)
-                {
-                    // Duplicate
-                    Logger.LogWarning(
-                        $"There are two duplicate OPaths {OPathSegments.Select(o => o.OriginalSegmentString).Aggregate((a, b) => a + "/" + b)}, the previous one will be overwritten",
-                        line: codeHeaderBlock.Line.ToString(),
-                        code: WarningCodes.Overwrite.InvalidOPaths);
-                }
-                else
-                {
-                    throw new MarkdownFragmentsException(
-                        $"A({lastSegment.SegmentName}) is expected to be an dictionary like \"A/B\" or an array of dictionaries like \"A[c=d]/C\", however it is used as an array of Blocks in line {codeHeaderBlock.Line} like \"../A\" OPath syntax",
-                        codeHeaderBlock.Line);
-                }
-            }
-
-            currentObject[lastSegment.SegmentName] = propertyValue;
+            FindOrCreateObject(contentsMetadata, codeHeaderBlock, OPathSegments, propertyValue,
+                OPathSegments.Select(o => o.OriginalSegmentString).Aggregate((a, b) => a + "/" + b));
         }
 
-        private static Dictionary<string, object> FindOrCreateSegment(Dictionary<string, object> currentObject, Block codeHeaderBlock, OPathSegment segment)
+        private static void FindOrCreateObject(Dictionary<string, object> currentObject, Block codeHeaderBlock, List<OPathSegment> leftOPathSegments, List<Block> propertyValue, string originalOPathString)
         {
+            var segment = leftOPathSegments[0];
+            if (leftOPathSegments.Count == 1)
+            {
+                CreateCoreObject(segment, codeHeaderBlock, currentObject, propertyValue, originalOPathString);
+                return;
+            }
+
             Dictionary<string, object> nextObject;
             if (currentObject.TryGetValue(segment.SegmentName, out object childObject))
             {
@@ -127,7 +111,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                     nextObject = childObject as Dictionary<string, object>;
                     if (nextObject != null)
                     {
-                        return nextObject;
+                        FindOrCreateObject(nextObject, codeHeaderBlock, leftOPathSegments.Skip(1).ToList(), propertyValue, originalOPathString);
                     }
                     else
                     {
@@ -147,11 +131,13 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                             select item).ToList();
                         if (goodItems.Count > 0)
                         {
-                            return goodItems[0];
+                            FindOrCreateObject(goodItems[0], codeHeaderBlock, leftOPathSegments.Skip(1).ToList(), propertyValue, originalOPathString);
                         }
-
-                        listObject.Add(((List<Dictionary<string, object>>)CreateObject(segment, out nextObject))[0]);
-                        return nextObject;
+                        else
+                        {
+                            listObject.Add(((List<Dictionary<string, object>>) CreateObject(segment, out nextObject))[0]);
+                            FindOrCreateObject(nextObject, codeHeaderBlock, leftOPathSegments.Skip(1).ToList(), propertyValue, originalOPathString);
+                        }
                     }
                     else
                     {
@@ -164,8 +150,31 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             else
             {
                 currentObject[segment.SegmentName] = CreateObject(segment, out nextObject);
-                return nextObject;
+                FindOrCreateObject(nextObject, codeHeaderBlock, leftOPathSegments.Skip(1).ToList(), propertyValue, originalOPathString);
             }
+        }
+
+        private static void CreateCoreObject(OPathSegment lastSegment, Block codeHeaderBlock, Dictionary<string, object> currentObject, List<Block> propertyValue, string originalOPathString)
+        {
+            if (currentObject.TryGetValue(lastSegment.SegmentName, out object value))
+            {
+                if (value is List<Block>)
+                {
+                    // Duplicate
+                    Logger.LogWarning(
+                        $"There are two duplicate OPaths {originalOPathString}, the previous one will be overwritten",
+                        line: codeHeaderBlock.Line.ToString(),
+                        code: WarningCodes.Overwrite.InvalidOPaths);
+                }
+                else
+                {
+                    throw new MarkdownFragmentsException(
+                        $"A({lastSegment.SegmentName}) is expected to be an dictionary like \"A/B\" or an array of dictionaries like \"A[c=d]/C\", however it is used as an array of Blocks in line {codeHeaderBlock.Line} like \"../A\" OPath syntax",
+                        codeHeaderBlock.Line);
+                }
+            }
+
+            currentObject[lastSegment.SegmentName] = propertyValue;
         }
 
         private static object CreateObject(OPathSegment segment, out Dictionary<string, object> nextObject)
