@@ -17,6 +17,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Microsoft.DocAsCode.Build.Common;
     using Microsoft.DocAsCode.Build.SchemaDriven.Processors;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
 
     public class SchemaDrivenDocumentProcessor
@@ -29,12 +30,13 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         private readonly DocumentSchema _schema;
         private readonly SchemaValidator _schemaValidator;
         private readonly bool _allowOverwrite;
+        private readonly MarkdigMarkdownService _markdigMarkdownService;
         #endregion
 
         public SchemaValidator SchemaValidator => _schemaValidator;
         #region Constructors
 
-        public SchemaDrivenDocumentProcessor(DocumentSchema schema, ICompositionContainer container)
+        public SchemaDrivenDocumentProcessor(DocumentSchema schema, ICompositionContainer container, MarkdigMarkdownService markdigMarkdownService)
         {
             if (string.IsNullOrWhiteSpace(schema.Title))
             {
@@ -46,6 +48,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             _schemaValidator = schema.Validator;
             _allowOverwrite = schema.AllowOverwrite;
             _serializerPool = new ResourcePoolManager<JsonSerializer>(GetSerializer, 0x10);
+            _markdigMarkdownService = markdigMarkdownService ?? throw new ArgumentNullException(nameof(MarkdigMarkdownService));
             if (container != null)
             {
                 var commonSteps = container.GetExports<IDocumentBuildStep>(nameof(SchemaDrivenDocumentProcessor));
@@ -206,6 +209,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             // no need to save schema
             model.Properties.Schema = null;
             model.Properties.Metadata = null;
+            model.Properties.MarkdigMarkdownService = null;
             FileModelPropertySerialization.Serialize(
                 model,
                 stream,
@@ -214,6 +218,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 null);
             model.Properties.Schema = _schema;
             model.Properties.Metadata = _schema.MetadataReference.GetValue(model.Content);
+            model.Properties.MarkdigMarkdownService = _markdigMarkdownService;
         }
 
         public virtual FileModel LoadIntermediateModel(Stream stream)
@@ -226,6 +231,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 null);
             loaded.Properties.Schema = _schema;
             loaded.Properties.Metadata = _schema.MetadataReference.GetValue(loaded.Content); 
+            loaded.Properties.MarkdigMarkdownService = _markdigMarkdownService;
             return loaded;
         }
 

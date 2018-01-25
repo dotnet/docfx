@@ -23,7 +23,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
                 return value;
             }
 
-            // If *content is from a included file, it should be marked instead of consider it as a placeholder
+            // If *content is from an included file, it should be marked instead of consider it as a placeholder
             if ((schema == null || schema.Reference == ReferenceType.None) && context.ContentAnchorParser != null)
             {
                 return context.ContentAnchorParser.Parse(val);

@@ -4,8 +4,8 @@
 namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 {
     using System.Collections.Generic;
-    using System.Dynamic;
 
+    using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
 
     public interface IProcessContext
@@ -33,6 +33,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
         FileAndType FileAndType { get; }
 
         Dictionary<string, Dictionary<string, object>> PathProperties { get; }
+
+        MarkdigMarkdownService MarkdigMarkdownService { get; }
 
         T GetModel<T>();
     }
