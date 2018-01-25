@@ -67,7 +67,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
             Host = hs;
             BuildContext = bc;
-            MarkdigMarkdownService = fm.Properties.MarkdigMarkdownService;
+            if (((IDictionary<string, object>)(fm.Properties)).TryGetValue("MarkdigMarkdownService", out var service))
+            {
+                MarkdigMarkdownService = (MarkdigMarkdownService)service;
+            }
         }
     }
 }

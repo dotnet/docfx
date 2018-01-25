@@ -145,6 +145,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
                         fm.Properties.Schema = _schema;
                         fm.Properties.Metadata = pageMetadata;
+                        fm.Properties.MarkdigMarkdownService = _markdigMarkdownService;
                         return fm;
                     }
                     catch (YamlDotNet.Core.YamlException e)
