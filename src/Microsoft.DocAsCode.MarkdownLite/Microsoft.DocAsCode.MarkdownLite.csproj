@@ -1,11 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="../Shared/base.props" />
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="../Shared/base.netstandard.props" />
 
   <ItemGroup>
     <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
     <PackageReference Include="Microsoft.CSharp" Version="4.0.1" />
   </ItemGroup>
 
