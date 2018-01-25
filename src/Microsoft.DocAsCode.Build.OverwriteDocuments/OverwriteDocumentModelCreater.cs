@@ -96,9 +96,9 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             }
 
             var lastSegment = OPathSegments.Last();
-            if (currentObject.ContainsKey(lastSegment.SegmentName))
+            if (currentObject.TryGetValue(lastSegment.SegmentName, out object value))
             {
-                if (currentObject[lastSegment.SegmentName] is List<Block>)
+                if (value is List<Block>)
                 {
                     // Duplicate
                     Logger.LogWarning(
@@ -109,7 +109,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 else
                 {
                     throw new MarkdownFragmentsException(
-                        $"A({lastSegment.SegmentName}) is expected to be an dictionary with \"A/B\" or an array of dictionaries with \"A[c=d]/C\", however it is used as an array of Blocks in line {codeHeaderBlock.Line} with \"../A\" OPath syntax",
+                        $"A({lastSegment.SegmentName}) is expected to be an dictionary like \"A/B\" or an array of dictionaries like \"A[c=d]/C\", however it is used as an array of Blocks in line {codeHeaderBlock.Line} like \"../A\" OPath syntax",
                         codeHeaderBlock.Line);
                 }
             }
@@ -120,51 +120,46 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
         private static Dictionary<string, object> FindOrCreateSegment(Dictionary<string, object> currentObject, Block codeHeaderBlock, OPathSegment segment)
         {
             Dictionary<string, object> nextObject;
-            if (currentObject.ContainsKey(segment.SegmentName))
+            if (currentObject.TryGetValue(segment.SegmentName, out object childObject))
             {
-                if (currentObject[segment.SegmentName] is List<Block>)
+                if (string.IsNullOrEmpty(segment.Key))
                 {
-                    throw new MarkdownFragmentsException(
-                        $"A({segment.SegmentName}) is expected to be an array of Blocks with \"../A\", however it is used as an dictionary or an array of dictionaries in line {codeHeaderBlock.Line} with \"A/B\" or \"A[c=d]/B\" OPath syntax",
-                        codeHeaderBlock.Line);
-                }
-
-                nextObject = currentObject[segment.SegmentName] as Dictionary<string, object>;
-                if (nextObject != null)
-                {
-                    if (!string.IsNullOrEmpty(segment.Key))
+                    nextObject = childObject as Dictionary<string, object>;
+                    if (nextObject != null)
+                    {
+                        return nextObject;
+                    }
+                    else
                     {
                         throw new MarkdownFragmentsException(
-                            $"A({segment.SegmentName}) is expected to be an object with \"A/B\", however it is used as an array in line {codeHeaderBlock.Line} with \"A[c=d]/C\" OPath syntax",
+                            $"A({segment.SegmentName}) is not expected to be an object like \"A/B\", however it is used as an object in line {codeHeaderBlock.Line} with `{segment.SegmentName}/...`",
                             codeHeaderBlock.Line);
                     }
-                    return nextObject;
                 }
-
-                var listObject = currentObject[segment.SegmentName] as List<Dictionary<string, object>>;
-                if (listObject != null)
+                else
                 {
-                    if (string.IsNullOrEmpty(segment.Key))
+                    var listObject = childObject as List<Dictionary<string, object>>;
+                    if (listObject != null)
+                    {
+                        object value;
+                        var goodItems = (from item in listObject
+                            where item.TryGetValue(segment.Key, out value) && (value as string).Equals(segment.Value)
+                            select item).ToList();
+                        if (goodItems.Count > 0)
+                        {
+                            return goodItems[0];
+                        }
+
+                        listObject.Add(((List<Dictionary<string, object>>)CreateObject(segment, out nextObject))[0]);
+                        return nextObject;
+                    }
+                    else
                     {
                         throw new MarkdownFragmentsException(
-                            $"A({segment.SegmentName}) is expected to be an array with \"A[c=d]/B\", however it is used as an object in line {codeHeaderBlock.Line} with \"A/C\" OPath syntax",
+                            $"A({segment.SegmentName}) is not expected to be an array like \"A[c=d]/B\", however it is used as an array in line {codeHeaderBlock.Line} with `{segment.SegmentName}[{segment.Key}=\"{segment.Value}\"]/...`",
                             codeHeaderBlock.Line);
                     }
-                    var goodItems = (from item in listObject
-                        where item.ContainsKey(segment.Key) && item[segment.Key].ToString().Equals(segment.Value)
-                        select item).ToList();
-                    if (goodItems.Count > 0)
-                    {
-                        return goodItems[0];
-                    }
-
-                    ((List<Dictionary<string, object>>) currentObject[segment.SegmentName]).Add(((List<Dictionary<string, object>>) CreateObject(segment, out nextObject))[0]);
-                    return nextObject;
                 }
-
-                throw new MarkdownFragmentsException(
-                    "Current OBject is not invalid",
-                    codeHeaderBlock.Line);
             }
             else
             {
