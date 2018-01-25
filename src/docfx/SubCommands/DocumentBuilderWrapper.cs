@@ -26,6 +26,7 @@ namespace Microsoft.DocAsCode.SubCommands
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.MarkdigEngine;
 
     [Serializable]
     internal sealed class DocumentBuilderWrapper
@@ -155,6 +156,7 @@ namespace Microsoft.DocAsCode.SubCommands
                 typeof(TocDocumentProcessor).Assembly,
                 typeof(SchemaDrivenDocumentProcessor).Assembly,
                 typeof(UniversalReferenceDocumentProcessor).Assembly,
+                typeof(MarkdigServiceProvider).Assembly
             };
             foreach (var assem in defaultPluggedAssemblies)
             {
