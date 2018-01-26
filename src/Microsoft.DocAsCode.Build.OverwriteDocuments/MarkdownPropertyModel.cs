@@ -15,6 +15,6 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
         public Block PropertyNameSource { get; set; }
 
-        public List<Block> PropertyValue { get; set; }
+        public MarkdownDocument PropertyValue { get; set; }
     }
 }

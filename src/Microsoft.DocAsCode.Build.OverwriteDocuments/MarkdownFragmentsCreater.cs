@@ -68,12 +68,13 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 {
                     PropertyName = key,
                     PropertyNameSource = Next(),
-                    PropertyValue = new List<Block>(),
+                    PropertyValue = new MarkdownDocument()
                 };
                 Block block;
                 while ((block = Peek()) != null && !_inlineCodeHeadingRule.Parse(block, out var _))
                 {
-                    item.PropertyValue.Add(Next());
+                    block.Parent?.Remove(block);
+                    item.PropertyValue.Add(block);
                 }
                 result.Add(item);
             }
