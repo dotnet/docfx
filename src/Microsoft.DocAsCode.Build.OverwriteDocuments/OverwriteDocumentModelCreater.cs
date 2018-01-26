@@ -90,14 +90,14 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
         private static void AppendNewObject(List<OPathSegment> OPathSegments, Block codeHeaderBlock, List<Block> propertyValue, Dictionary<string, object> contentsMetadata)
         {
-            FindOrCreateObject(contentsMetadata, codeHeaderBlock, OPathSegments, propertyValue,
+            FindOrCreateObject(contentsMetadata, codeHeaderBlock, OPathSegments, 0, propertyValue,
                 OPathSegments.Select(o => o.OriginalSegmentString).Aggregate((a, b) => a + "/" + b));
         }
 
-        private static void FindOrCreateObject(Dictionary<string, object> currentObject, Block codeHeaderBlock, List<OPathSegment> leftOPathSegments, List<Block> propertyValue, string originalOPathString)
+        private static void FindOrCreateObject(Dictionary<string, object> currentObject, Block codeHeaderBlock, List<OPathSegment> OPathSegments, int index, List<Block> propertyValue, string originalOPathString)
         {
-            var segment = leftOPathSegments[0];
-            if (leftOPathSegments.Count == 1)
+            var segment = OPathSegments[index];
+            if (index == OPathSegments.Count - 1)
             {
                 CreateCoreObject(segment, codeHeaderBlock, currentObject, propertyValue, originalOPathString);
                 return;
@@ -111,7 +111,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                     nextObject = childObject as Dictionary<string, object>;
                     if (nextObject != null)
                     {
-                        FindOrCreateObject(nextObject, codeHeaderBlock, leftOPathSegments.Skip(1).ToList(), propertyValue, originalOPathString);
+                        FindOrCreateObject(nextObject, codeHeaderBlock, OPathSegments, ++index, propertyValue, originalOPathString);
                     }
                     else
                     {
@@ -131,12 +131,12 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                             select item).ToList();
                         if (goodItems.Count > 0)
                         {
-                            FindOrCreateObject(goodItems[0], codeHeaderBlock, leftOPathSegments.Skip(1).ToList(), propertyValue, originalOPathString);
+                            FindOrCreateObject(goodItems[0], codeHeaderBlock, OPathSegments, ++index, propertyValue, originalOPathString);
                         }
                         else
                         {
                             listObject.Add(((List<Dictionary<string, object>>) CreateObject(segment, out nextObject))[0]);
-                            FindOrCreateObject(nextObject, codeHeaderBlock, leftOPathSegments.Skip(1).ToList(), propertyValue, originalOPathString);
+                            FindOrCreateObject(nextObject, codeHeaderBlock, OPathSegments, ++index, propertyValue, originalOPathString);
                         }
                     }
                     else
@@ -150,7 +150,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             else
             {
                 currentObject[segment.SegmentName] = CreateObject(segment, out nextObject);
-                FindOrCreateObject(nextObject, codeHeaderBlock, leftOPathSegments.Skip(1).ToList(), propertyValue, originalOPathString);
+                FindOrCreateObject(nextObject, codeHeaderBlock, OPathSegments, ++index, propertyValue, originalOPathString);
             }
         }
 
