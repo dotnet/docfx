@@ -212,7 +212,7 @@ e: f
 
         private string ExtractDictionaryKeys(Dictionary<string, object> dict)
         {
-            return dict.Keys.ToList().Aggregate((a, b) => a + "," + b);
+            return string.Join(",", dict.Keys.ToArray());
         }
     }
 }
