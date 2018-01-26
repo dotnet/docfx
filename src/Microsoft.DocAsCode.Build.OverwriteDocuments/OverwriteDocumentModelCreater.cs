@@ -91,7 +91,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
         private static void AppendNewObject(List<OPathSegment> OPathSegments, Block codeHeaderBlock, List<Block> propertyValue, Dictionary<string, object> contentsMetadata)
         {
             FindOrCreateObject(contentsMetadata, codeHeaderBlock, OPathSegments, 0, propertyValue,
-                OPathSegments.Select(o => o.OriginalSegmentString).Aggregate((a, b) => a + "/" + b));
+                string.Join("/", OPathSegments.Select(o => o.OriginalSegmentString)));
         }
 
         private static void FindOrCreateObject(Dictionary<string, object> currentObject, Block codeHeaderBlock, List<OPathSegment> OPathSegments, int index, List<Block> propertyValue, string originalOPathString)
