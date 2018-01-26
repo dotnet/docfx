@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.Build.Engine
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Dfm.MarkdownValidators;
     using Microsoft.DocAsCode.Exceptions;
+    using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
 
     public class DocumentBuilder : IDisposable
@@ -330,6 +331,7 @@ namespace Microsoft.DocAsCode.Build.Engine
                     yield break;
                 }
 
+                var markdigMarkdownService = CreateMarkdigMarkdownService(parameter);
                 foreach (var pair in resource.GetResourceStreams(@"^schemas/.*\.schema\.json"))
                 {
                     var fileName = Path.GetFileName(pair.Key);
@@ -349,7 +351,10 @@ namespace Microsoft.DocAsCode.Build.Engine
                                     Logger.LogError(e.Message);
                                     throw;
                                 }
-                                var sdp = new SchemaDrivenDocumentProcessor(schema, new CompositionContainer(CompositionContainer.DefaultContainer));
+                                var sdp = new SchemaDrivenDocumentProcessor(
+                                    schema,
+                                    new CompositionContainer(CompositionContainer.DefaultContainer),
+                                    markdigMarkdownService);
                                 Logger.LogVerbose($"\t{sdp.Name} with build steps ({string.Join(", ", from bs in sdp.BuildSteps orderby bs.BuildOrder select bs.Name)})");
                                 yield return sdp;
                             }
@@ -357,6 +362,21 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                 }
             }
+        }
+
+        private MarkdigMarkdownService CreateMarkdigMarkdownService(DocumentBuildParameters parameters)
+        {
+            var templateProcessor = parameters.TemplateManager?.GetTemplateProcessor(new DocumentBuildContext(parameters), parameters.MaxParallelism);
+
+            return new MarkdigMarkdownService(
+                new MarkdownServiceParameters
+                {
+                    BasePath = parameters.Files.DefaultBaseDir,
+                    TemplateDir = parameters.TemplateDir,
+                    Extensions = parameters.MarkdownEngineParameters,
+                    Tokens = templateProcessor?.Tokens?.ToImmutableDictionary(),
+                },
+                new CompositionContainer(CompositionContainer.DefaultContainer));
         }
 
         private void ClearCacheExcept(string subFolder)

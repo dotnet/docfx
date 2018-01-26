@@ -7,6 +7,7 @@
     <EmbeddedResource Include="..\..\schemas\v1.0\schema.json" Link="schemas\v1.0\schema.json" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Microsoft.DocAsCode.MarkdigEngine\Microsoft.DocAsCode.MarkdigEngine.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.MarkdownLite\Microsoft.DocAsCode.MarkdownLite.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Build.Common\Microsoft.DocAsCode.Build.Common.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Common\Microsoft.DocAsCode.Common.csproj" />
@@ -16,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.4.9" />
+    <PackageReference Include="Markdig" Version="0.14.9" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="2.0.10" />
   </ItemGroup>
 

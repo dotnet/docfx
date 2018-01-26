@@ -6,6 +6,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
     using System;
     using System.Collections.Generic;
 
+    using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
 
     public class ProcessContext : IProcessContext
@@ -36,6 +37,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
         public IContentAnchorParser ContentAnchorParser { get; set; }
 
+        public MarkdigMarkdownService MarkdigMarkdownService { get; set; }
+
         public T GetModel<T>()
         {
             return (T)_model.Content;
@@ -64,6 +67,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
             Host = hs;
             BuildContext = bc;
+            if (((IDictionary<string, object>)(fm.Properties)).TryGetValue("MarkdigMarkdownService", out var service))
+            {
+                MarkdigMarkdownService = (MarkdigMarkdownService)service;
+            }
         }
     }
 }
