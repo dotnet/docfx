@@ -16,6 +16,7 @@ After completing walkthrough part II, our `D:\docfx_walkthrough\docfx_project` f
 ```
 
 Step0. Install prerequisite 
+---------------------------
 We leverage [wkhtmltopdf](https://wkhtmltopdf.org/) to generate PDF. [Download wkhtmltopdf](https://wkhtmltopdf.org/downloads.html) to some folder, e.g. `E:\Program Files\wkhtmltopdf\`, and save the executable folder path to **%PATH%** by: `set PATH=%PATH%;E:\Program Files\wkhtmltopdf\bin`.
 
 > [!NOTE]
