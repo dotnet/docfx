@@ -33,5 +33,43 @@ namespace Microsoft.DocAsCode.Common.Tests
             var info = GitUtility.TryGetFileDetail(Directory.GetCurrentDirectory());
             Assert.Equal("special-branch", info.RemoteBranch);
         }
+
+        [Fact]
+        public void TestParseGitRepoInfo()
+        {
+            var repoInfo = GitUtility.Parse("git@github.com:dotnet/docfx");
+            Assert.Equal("dotnet", repoInfo.RepoAccount);
+            Assert.Equal("docfx", repoInfo.RepoName);
+            Assert.Equal(RepoType.GitHub, repoInfo.RepoType);
+
+            repoInfo = GitUtility.Parse("https://github.com/dotnet/docfx");
+            Assert.Equal("dotnet", repoInfo.RepoAccount);
+            Assert.Equal("docfx", repoInfo.RepoName);
+            Assert.Equal(RepoType.GitHub, repoInfo.RepoType);
+
+            repoInfo = GitUtility.Parse("ssh://mseng@vs-ssh.visualstudio.com:22/FakeProject/_ssh/DocAsCode");
+            Assert.Equal("mseng", repoInfo.RepoAccount);
+            Assert.Equal("DocAsCode", repoInfo.RepoName);
+            Assert.Equal("FakeProject", repoInfo.RepoProject);
+            Assert.Equal(RepoType.Vso, repoInfo.RepoType);
+
+            repoInfo = GitUtility.Parse("https://mseng.visualstudio.com/FakeProject/_git/DocAsCode");
+            Assert.Equal("mseng", repoInfo.RepoAccount);
+            Assert.Equal("DocAsCode", repoInfo.RepoName);
+            Assert.Equal("FakeProject", repoInfo.RepoProject);
+            Assert.Equal(RepoType.Vso, repoInfo.RepoType);
+        }
+
+        [Fact]
+        public void TestCombineGitUrl()
+        {
+            var repoInfo = GitUtility.Parse("git@github.com:dotnet/docfx");
+            var url = GitUtility.CombineUrl(repoInfo.NormalizedRepoUrl.AbsoluteUri, "dev", "src/docfx/Program.cs", RepoType.GitHub);
+            Assert.Equal("https://github.com/dotnet/docfx/blob/dev/src/docfx/Program.cs", url.AbsoluteUri);
+
+            repoInfo = GitUtility.Parse("https://mseng.visualstudio.com/FakeProject/_git/DocAsCode");
+            url = GitUtility.CombineUrl(repoInfo.NormalizedRepoUrl.AbsoluteUri, "dev", "src/docfx/Program.cs", RepoType.Vso);
+            Assert.Equal("https://mseng.visualstudio.com/DefaultCollection/FakeProject/_git/DocAsCode?path=%2fsrc%2fdocfx%2fProgram.cs&version=GBdev&_a=contents", url.AbsoluteUri);
+        }
     }
 }
