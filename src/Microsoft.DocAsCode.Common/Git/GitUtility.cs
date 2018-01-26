@@ -8,6 +8,8 @@ namespace Microsoft.DocAsCode.Common.Git
     using System.Diagnostics;
     using System.IO;
     using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Web;
 
     using Microsoft.DocAsCode.Plugins;
 
@@ -20,6 +22,15 @@ namespace Microsoft.DocAsCode.Common.Git
         private static readonly string GetLocalBranchCommand = "rev-parse --abbrev-ref HEAD";
         private static readonly string GetLocalBranchCommitIdCommand = "rev-parse HEAD";
         private static readonly string GetRemoteBranchCommand = "rev-parse --abbrev-ref @{u}";
+
+        private static readonly Regex GitHubRepoUrlRegex =
+            new Regex(@"^((https|http):\/\/(.+@)?github\.com\/|git@github\.com:)(?<account>\S+)\/(?<repository>[A-Za-z0-9_.-]+)(\.git)?\/?$", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.RightToLeft);
+
+        private static readonly Regex VsoGitRepoUrlRegex =
+            new Regex(@"^(((https|http):\/\/(?<account>\S+))|((ssh:\/\/)(?<account>\S+)@(?:\S+)))\.visualstudio\.com(?<port>:\d+)?(?:\/DefaultCollection)?(\/(?<project>[^\/]+)(\/.*)*)*\/(?:_git|_ssh)\/(?<repository>([^._,]|[^._,][^@~;{}'+=,<>|\/\\?:&$*""#[\]]*[^.,]))$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly string GitHubNormalizedRepoUrlTemplate = "https://github.com/{0}/{1}";
+        private static readonly string VsoNormalizedRepoUrlTemplate = "https://{0}.visualstudio.com/DefaultCollection/{1}/_git/{2}";
 
         // TODO: only get default remote's url currently.
         private static readonly string GetOriginUrlCommand = "config --get remote.origin.url";
@@ -59,6 +70,67 @@ namespace Microsoft.DocAsCode.Common.Git
             return null;
         }
 
+        public static GitRepoInfo Parse(string repoUrl)
+        {
+            if (string.IsNullOrEmpty(repoUrl))
+            {
+                throw new ArgumentNullException(nameof(repoUrl));
+            }
+
+            var githubMatch = GitHubRepoUrlRegex.Match(repoUrl);
+            if (githubMatch.Success)
+            {
+                var gitRepositoryAccount = githubMatch.Groups["account"].Value;
+                var gitRepositoryName = githubMatch.Groups["repository"].Value;
+                return new GitRepoInfo
+                {
+                    RepoType = RepoType.GitHub,
+                    RepoAccount = gitRepositoryAccount,
+                    RepoName = gitRepositoryName,
+                    RepoProject = null,
+                    NormalizedRepoUrl = new Uri(string.Format(GitHubNormalizedRepoUrlTemplate, gitRepositoryAccount, gitRepositoryName))
+                };
+            }
+
+            var vsoMatch = VsoGitRepoUrlRegex.Match(repoUrl);
+            if (vsoMatch.Success)
+            {
+                var gitRepositoryAccount = vsoMatch.Groups["account"].Value;
+                var gitRepositoryName = vsoMatch.Groups["repository"].Value;
+
+                // VSO has this logic: if the project name and repository name are same, then VSO will return the url without project name.
+                // Sample: if you visit https://cpubwin.visualstudio.com/drivers/_git/drivers, it will return https://cpubwin.visualstudio.com/_git/drivers
+                // We need to normalize it to keep same behavior with other projects. Always return https://<account>.visualstudio.com/<collection>/<project>/_git/<repository>
+                var gitRepositoryProject = string.IsNullOrEmpty(vsoMatch.Groups["project"].Value) ? gitRepositoryName : vsoMatch.Groups["project"].Value;
+                return new GitRepoInfo
+                {
+                    RepoType = RepoType.Vso,
+                    RepoAccount = gitRepositoryAccount,
+                    RepoName = Uri.UnescapeDataString(gitRepositoryName),
+                    RepoProject = gitRepositoryProject,
+                    NormalizedRepoUrl = new Uri(string.Format(VsoNormalizedRepoUrlTemplate, gitRepositoryAccount, gitRepositoryProject, gitRepositoryName))
+                };
+            }
+
+            throw new NotSupportedException($"'{repoUrl}' is not a valid Vso/GitHub repository url");
+        }
+
+        public static Uri CombineUrl(string normalizedRepoUrl, string refName, string relativePathToRepoRoot, RepoType repoType)
+        {
+            switch (repoType)
+            {
+                case RepoType.GitHub:
+                    return new Uri(Path.Combine(normalizedRepoUrl, "blob", refName, relativePathToRepoRoot));
+                case RepoType.Vso:
+                    var rootedPathToRepo = "/" + relativePathToRepoRoot.ToNormalizedPath();
+                    return new Uri($"{normalizedRepoUrl}?path={HttpUtility.UrlEncode(rootedPathToRepo)}&version=GB{HttpUtility.UrlEncode(refName)}&_a=contents");
+                default:
+                    throw new NotSupportedException($"RepoType '{repoType}' is not supported.");
+            }
+        }
+
+        #region Private Methods
+
         private static GitDetail GetFileDetail(string filePath)
         {
             if (string.IsNullOrEmpty(filePath) || !ExistGitCommand())
@@ -92,8 +164,6 @@ namespace Microsoft.DocAsCode.Common.Git
 
             return Cache.GetOrAdd(directory, d => GetRepoInfo(parentDirInfo.FullName));
         }
-
-        #region Private Methods
 
         private static bool IsGitRoot(string directory)
         {
