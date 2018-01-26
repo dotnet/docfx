@@ -117,7 +117,7 @@ e: f
             Assert.Equal(1, logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidOPaths).Count());
             Assert.Equal(1, contentsMetadata.Count);
             Assert.Equal("test2",
-                ((ParagraphBlock) ((List<Block>) ((Dictionary<string, object>) contentsMetadata["function"])["parameters"])[0]).Inline.FirstChild.ToString());
+                ((ParagraphBlock) ((MarkdownDocument) ((Dictionary<string, object>) contentsMetadata["function"])["parameters"])[0]).Inline.FirstChild.ToString());
         }
 
         [Fact]

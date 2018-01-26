@@ -170,7 +170,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
         {
             if (currentObject.TryGetValue(lastSegment.SegmentName, out object value))
             {
-                if (value is List<Block>)
+                if (value is MarkdownDocument)
                 {
                     // Duplicate
                     Logger.LogWarning(
@@ -186,7 +186,18 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 }
             }
 
-            currentObject[lastSegment.SegmentName] = propertyValue;
+            currentObject[lastSegment.SegmentName] = CreateDocument(propertyValue);
+        }
+
+        private static MarkdownDocument CreateDocument(List<Block> blocks)
+        {
+            var result = new MarkdownDocument();
+            foreach (var block in blocks)
+            {
+                block.Parent?.Remove(block);
+                result.Add(block);
+            }
+            return result;
         }
 
         private static object CreateObject(OPathSegment segment)
