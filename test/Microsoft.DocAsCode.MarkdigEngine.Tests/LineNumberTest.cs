@@ -70,7 +70,7 @@ line1
             var marked = service.Markup(@"[!code[tag-test](LineNumber/Program.cs#Tag)]", "Topic.md");
 
             // assert
-            var expected = @"<pre><code name=""tag-test"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1"">line1
+            var expected = @"<pre><code sourceFile=""Topic.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1"" name=""tag-test"">line1
 </code></pre>";
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }
