@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
         public string Key { get; set; }
 
-        public object Value { get; set; }
+        public string Value { get; set; }
 
         public string OriginalSegmentString { get; set; }
     }
