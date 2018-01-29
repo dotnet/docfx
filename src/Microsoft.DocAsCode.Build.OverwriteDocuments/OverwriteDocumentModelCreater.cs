@@ -135,7 +135,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                         }
                         else
                         {
-                            nextObject = ((List<Dictionary<string, object>>)CreateObject(segment))[0];
+                            nextObject = CreateDictionaryArrayObject(segment)[0];
                             listObject.Add(nextObject);
                             FindOrCreateObject(nextObject, codeHeaderBlock, OPathSegments, ++index, propertyValue, originalOPathString);
                         }
@@ -150,14 +150,14 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             }
             else
             {
-                nextObject = CreateObject(segment) as Dictionary<string, object>;
-                if (nextObject != null)
+                if (string.IsNullOrEmpty(segment.Key))
                 {
+                    nextObject = CreateDictionaryObject(segment);
                     currentObject[segment.SegmentName] = nextObject;
                 }
                 else
                 {
-                    var newObject = (List<Dictionary<string, object>>) CreateObject(segment);
+                    var newObject = CreateDictionaryArrayObject(segment);
                     nextObject = newObject[0];
                     currentObject[segment.SegmentName] = newObject;
                 }
@@ -200,23 +200,21 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             return result;
         }
 
-        private static object CreateObject(OPathSegment segment)
+        private static Dictionary<string, object> CreateDictionaryObject(OPathSegment segment)
         {
-            if (string.IsNullOrEmpty(segment.Key))
+            return new Dictionary<string, object>();
+        }
+
+        private static List<Dictionary<string, object>> CreateDictionaryArrayObject(OPathSegment segment)
+        {
+            var newObject = new List<Dictionary<string, object>>
             {
-                return new Dictionary<string, object>();
-            }
-            else
-            {
-                var newObject = new List<Dictionary<string, object>>
+                new Dictionary<string, object>
                 {
-                    new Dictionary<string, object>
-                    {
-                        {segment.Key, segment.Value}
-                    }
-                };
-                return newObject;
-            }
+                    {segment.Key, segment.Value}
+                }
+            };
+            return newObject;
         }
     }
 }
