@@ -11,7 +11,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.DocAsCode.Common;
 
-    internal class ApplicationLevelCache : CacheBase
+    public class ApplicationLevelCache : CacheBase
     {
         private static Func<string, string, string> GetApplicationLevelCacheFilePath = (projectPath, fileName) => Path.Combine(Path.GetDirectoryName(projectPath) ?? string.Empty, "obj", "xdoc", "cache", "final", fileName);
         private static ConcurrentDictionary<string, ApplicationLevelCache> _cache = new ConcurrentDictionary<string, ApplicationLevelCache>();
