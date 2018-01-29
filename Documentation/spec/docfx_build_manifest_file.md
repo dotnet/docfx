@@ -31,7 +31,7 @@ Property            | Type                  | Description
 `source_base_path`  | string              | the directory path which contains `docfx.json`
 `files`             | List<[ManifestItem](#manifestitem)> | contains the information of all the output files. (*doesn't include templates and themes*)
 `incremental_info`  | List<[IncrementalInfo](#incrementalinfo)> | contains incremental infomation.
-`groups`            | List<[ManifestGroupInfo](manifestgroupinfo)> | contains information of groups.
+`groups`            | List<[ManifestGroupInfo](#manifestgroupinfo)> | contains information of groups.
 `sitemap`           | object                | *contains options for generating site map for post processor use*
 `xrefmap`           | object                | **deprecated, use `xrefmap` in `groups`**
 `version_info`      | List\<VersionInfo\> | **deprecated, use `groups`**

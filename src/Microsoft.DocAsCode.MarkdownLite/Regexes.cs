@@ -125,8 +125,8 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 public static readonly Regex Url = new Regex(@"^(https?:\/\/[^\s<]+[^<.,:;""')\]\s])", RegexOptionCompiled, RegexTimeOut);
                 public static readonly Regex Del = new Regex(@"^~~(?=\S)([\s\S]*?\S)~~", RegexOptionCompiled, RegexTimeOut);
                 public static readonly Regex StrongEm = new Regex(@"^(\**?)\*{3}(?!\*)(?=\S)([\s\S]*?\S)\*([\s\S]*?(?<=\S))?\*{2}", RegexOptionCompiled, RegexTimeOut);
-                public static readonly Regex Strong = new Regex(@"^__([\s\S]+?)__\b|^\*{2}(?!\*|\s)((?:[^*]|(?<=\s)\*{2,}|(?<!\*)\*(?!\*))+)(?<!\*|\s)\*{2}", RegexOptionCompiled, RegexTimeOut);
-                public static readonly Regex Em = new Regex(@"^_((?:__|[\s\S])+?)_\b|^\*(\**(?!\s)(?:[^\\*]|\\[\s\S]|(?<=\s)\*+)+(?<!\s|\*))\*", RegexOptionCompiled, RegexTimeOut);
+                public static readonly Regex Strong = new Regex(@"^__((?:_|(?>[^_]+))+?)__\b|^\*{2}(?!\*|\s)((?:[^*]|(?<=\s)\*{2,}|(?<!\*)\*(?!\*))+)(?<!\*|\s)\*{2}", RegexOptionCompiled, RegexTimeOut);
+                public static readonly Regex Em = new Regex(@"^_((?:_|(?>[^_]+))+?)_\b|^\*(\**(?!\s)(?:[^\\*]|\\[\s\S]|(?<=\s)\*+)+(?<!\s|\*))\*", RegexOptionCompiled, RegexTimeOut);
                 public static readonly Regex Emoji = new Regex(@"^\:([a-z0-9_\+\-]+)\:", RegexOptionCompiled, RegexTimeOut);
                 public static readonly Regex Text = new Regex(@"^[\s\S]+?(?=[\\<!\[*`~\:]|\b_|\bhttps?:\/\/| {2,}\n|$)", RegexOptionCompiled, RegexTimeOut);
             }

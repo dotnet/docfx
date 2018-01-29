@@ -1,6 +1,4 @@
-- name: Introduction to Multiple Languages Support
+- name: Introduction
   href: intro_multiple_langs_support.md
-- name: Languages
-  items:
-  - name: Generate API Documentation for JavaScript
-    href: gen_doc_for_js.md
+- name: JavaScript
+  href: gen_doc_for_js.md
