@@ -8,6 +8,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
     public class CodeSnippetExtension : IMarkdownExtension
     {
+        public static readonly string DisableInteractiveCode = "no-interactive";
+
         private IMarkdownEngine _engine;
         private MarkdownContext _context;
 

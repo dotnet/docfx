@@ -250,6 +250,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 renderer.Write($"<!-- Dedent length {obj.DedentLength} should be positive. Auto-dedent will be applied. -->\n");
             }
 
+            obj.SetAttributeString();
+
             renderer.Write("<pre><code").WriteAttributes(obj).Write(">");
             renderer.WriteEscape(GetContent(obj));
             renderer.Write("</code></pre>");

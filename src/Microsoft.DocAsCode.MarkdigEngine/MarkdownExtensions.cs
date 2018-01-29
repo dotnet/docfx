@@ -6,13 +6,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine
     using System.IO;
 
     using MarkdigEngine.Extensions;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
 
     using Markdig;
     using Markdig.Extensions.AutoIdentifiers;
     using Markdig.Extensions.CustomContainers;
     using Markdig.Parsers;
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
 
     public static class MarkdownExtensions
     {
@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return pipeline
                 .UseHeadingIdRewriter()
                 .UseIncludeFile(engine, context, parameters)
-                .UseCodeSnippet(engine, context)
+                .UseCodeSnippet(engine, context, parameters)
                 .UseYamlHeader()
                 .UseDFMCodeInfoPrefix()
                 .UseQuoteSectionNote(parameters)
@@ -171,9 +171,27 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdownEngine compositor, MarkdownContext context)
+        public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdownEngine compositor, MarkdownContext context, MarkdownServiceParameters parameters)
         {
             pipeline.Extensions.Insert(0, new CodeSnippetExtension(compositor, context));
+
+            object disableInteractive = null;
+            parameters?.Extensions?.TryGetValue(CodeSnippetExtension.DisableInteractiveCode, out disableInteractive);
+
+            var disabled = disableInteractive as bool?;
+            if (disabled != null && disabled == true)
+            {
+                return pipeline;
+            }
+
+            var rewriter = new CodeSnippetRewriter();
+            var visitor = new MarkdownDocumentVisitor(rewriter);
+
+            pipeline.DocumentProcessed += document =>
+            {
+                visitor.Visit(document);
+            };
+
             return pipeline;
         }
 
