@@ -110,11 +110,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         _schemaValidator.Validate(obj);
 
                         // load overwrite segments
-                        string overwriteSegmentsContent = null;
-                        var overwriteSegmentsFile = file.File + ".md";
-                        if (EnvironmentContext.FileAbstractLayer.Exists(overwriteSegmentsFile))
+                        string markdownFragmentsContent = null;
+                        var markdownFragmentsFile = file.File + ".md";
+                        if (EnvironmentContext.FileAbstractLayer.Exists(markdownFragmentsFile))
                         {
-                            overwriteSegmentsContent = EnvironmentContext.FileAbstractLayer.ReadAllText(overwriteSegmentsFile);
+                            markdownFragmentsContent = EnvironmentContext.FileAbstractLayer.ReadAllText(markdownFragmentsFile);
                         }
 
                         var content = ConvertToObjectHelper.ConvertToDynamic(obj);
@@ -140,7 +140,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                             serializer: new BinaryFormatter())
                         {
                             LocalPathFromRoot = localPathFromRoot,
-                            OverwriteSegmentsModel = overwriteSegmentsContent,
+                            MarkdownFragmentsModel = markdownFragmentsContent,
                         };
 
                         fm.Properties.Schema = _schema;

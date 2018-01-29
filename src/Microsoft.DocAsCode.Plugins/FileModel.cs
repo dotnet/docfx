@@ -104,7 +104,7 @@ namespace Microsoft.DocAsCode.Plugins
 
         public dynamic ManifestProperties { get; } = new ExpandoObject();
 
-        public object OverwriteSegmentsModel { get; set; }
+        public object MarkdownFragmentsModel { get; set; }
 
         public string LocalPathFromRoot
         {
