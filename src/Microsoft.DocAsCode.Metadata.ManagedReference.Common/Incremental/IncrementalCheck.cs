@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.DocAsCode.Common;
 
-    internal class IncrementalCheck
+    public class IncrementalCheck
     {
         private VersionStamp _versionToBeCompared;
 

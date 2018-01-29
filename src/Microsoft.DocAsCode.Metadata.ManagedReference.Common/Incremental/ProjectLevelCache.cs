@@ -9,11 +9,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System.IO;
     using System.Linq;
 
-    using Microsoft.CodeAnalysis;
-
     using Microsoft.DocAsCode.Common;
 
-    internal class ProjectLevelCache : CacheBase
+    public class ProjectLevelCache : CacheBase
     {
         public static Func<string, string> GetProjectLevelConfig = projectPath => Path.Combine(Path.GetDirectoryName(projectPath) ?? string.Empty, "obj", "xdoc", "cache", "obj", ".inter").ToNormalizedFullPath();
         private static ConcurrentDictionary<string, ProjectLevelCache> _cache = new ConcurrentDictionary<string, ProjectLevelCache>();
