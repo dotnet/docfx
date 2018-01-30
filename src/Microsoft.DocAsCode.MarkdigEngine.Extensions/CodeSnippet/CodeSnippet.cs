@@ -6,8 +6,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-
-    using Microsoft.DocAsCode.MarkdownLite;
+    using System.Net;
 
     using Markdig.Parsers;
     using Markdig.Renderers.Html;
@@ -56,12 +55,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (IsInteractive)
             {
-                attributes.AddProperty("data-interactive", StringHelper.HtmlEncode(Language));
+                attributes.AddProperty("data-interactive", WebUtility.HtmlEncode(Language));
             }
 
             if (GitUrl != null && GitUrl.StartsWith("https://github.com"))
             {
-                attributes.AddProperty("data-src", StringHelper.HtmlEncode(GitUrl));
+                attributes.AddProperty("data-src", WebUtility.HtmlEncode(GitUrl));
             }
 
             if (!string.IsNullOrEmpty(Name))

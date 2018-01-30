@@ -233,27 +233,27 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             _context = context;
         }
 
-        protected override void Write(HtmlRenderer renderer, CodeSnippet obj)
+        protected override void Write(HtmlRenderer renderer, CodeSnippet codeSnippet)
         {
-            var refFileRelativePath = ((RelativePath)obj.CodePath).BasedOn((RelativePath)_context.FilePath);
+            var refFileRelativePath = ((RelativePath)codeSnippet.CodePath).BasedOn((RelativePath)_context.FilePath);
             var refPath = Path.Combine(_context.BasePath, refFileRelativePath.RemoveWorkingFolder());
             if (!File.Exists(refPath))
             {
                 string tag = "ERROR CODESNIPPET";
                 string message = $"Unable to find {refFileRelativePath}";
-                ExtensionsHelper.GenerateNodeWithCommentWrapper(renderer, tag, message, obj.Raw, obj.Line);
+                ExtensionsHelper.GenerateNodeWithCommentWrapper(renderer, tag, message, codeSnippet.Raw, codeSnippet.Line);
                 return;
             }
             
-            if(obj.DedentLength != null && obj.DedentLength < 0)
+            if(codeSnippet.DedentLength != null && codeSnippet.DedentLength < 0)
             {
-                renderer.Write($"<!-- Dedent length {obj.DedentLength} should be positive. Auto-dedent will be applied. -->\n");
+                renderer.Write($"<!-- Dedent length {codeSnippet.DedentLength} should be positive. Auto-dedent will be applied. -->\n");
             }
 
-            obj.SetAttributeString();
+            codeSnippet.SetAttributeString();
 
-            renderer.Write("<pre><code").WriteAttributes(obj).Write(">");
-            renderer.WriteEscape(GetContent(obj));
+            renderer.Write("<pre><code").WriteAttributes(codeSnippet).Write(">");
+            renderer.WriteEscape(GetContent(codeSnippet));
             renderer.Write("</code></pre>");
         }
 

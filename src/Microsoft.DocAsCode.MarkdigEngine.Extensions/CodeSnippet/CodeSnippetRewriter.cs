@@ -21,20 +21,20 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public IMarkdownObject Rewrite(IMarkdownObject markdownObject)
         {
-            if (markdownObject is CodeSnippet obj)
+            if (markdownObject is CodeSnippet codeSnippet)
             {
-                obj.Language = GetLanguage(obj.Language, out bool isInteractive);
-                obj.IsInteractive = isInteractive;
+                codeSnippet.Language = GetLanguage(codeSnippet.Language, out bool isInteractive);
+                codeSnippet.IsInteractive = isInteractive;
 
                 if (isInteractive)
                 {
-                    var url = GetGitUrl(obj);
+                    var url = GetGitUrl(codeSnippet);
                     if (!string.IsNullOrEmpty(url))
                     {
-                        obj.GitUrl = url;
+                        codeSnippet.GitUrl = url;
                     }
 
-                    return obj;
+                    return codeSnippet;
                 }
             }
 

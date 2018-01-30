@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return pipeline
                 .UseHeadingIdRewriter()
                 .UseIncludeFile(engine, context, parameters)
-                .UseCodeSnippet(engine, context, parameters)
+                .UseCodeSnippet(engine, context)
                 .UseYamlHeader()
                 .UseDFMCodeInfoPrefix()
                 .UseQuoteSectionNote(parameters)
@@ -171,18 +171,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             return pipeline;
         }
 
-        public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdownEngine compositor, MarkdownContext context, MarkdownServiceParameters parameters)
+        public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdownEngine compositor, MarkdownContext context)
         {
             pipeline.Extensions.Insert(0, new CodeSnippetExtension(compositor, context));
-
-            object disableInteractive = null;
-            parameters?.Extensions?.TryGetValue(CodeSnippetExtension.DisableInteractiveCode, out disableInteractive);
-
-            var disabled = disableInteractive as bool?;
-            if (disabled != null && disabled == true)
-            {
-                return pipeline;
-            }
 
             var rewriter = new CodeSnippetRewriter();
             var visitor = new MarkdownDocumentVisitor(rewriter);
