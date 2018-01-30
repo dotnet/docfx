@@ -70,6 +70,7 @@ var gitUrlPatternItems = {
         'testRegex': /^(https?:\/\/)?(\S+\@)?(\S+\.)?github\.com(\/|:).*/i,
         'generateUrl': function (gitInfo) {
             var url = normalizeGitUrlToHttps(gitInfo.repo);
+            url = getRepoWithoutGitExtension(url);
             url += '/blob' + '/' + gitInfo.branch + '/' + gitInfo.path;
             if (gitInfo.startLine && gitInfo.startLine > 0) {
                 url += '/#L' + gitInfo.startLine;
@@ -78,6 +79,7 @@ var gitUrlPatternItems = {
         },
         'generateNewFileUrl': function (gitInfo, uid) {
             var url = normalizeGitUrlToHttps(gitInfo.repo);
+            url = getRepoWithoutGitExtension(url);
             url += '/new';
             url += '/' + gitInfo.branch;
             url += '/' + getOverrideFolder(gitInfo.apiSpecFolder);
@@ -105,6 +107,13 @@ var gitUrlPatternItems = {
     }
 }
 
+function getRepoWithoutGitExtension(repo) {
+    if (repo.substr(-4) === '.git') {
+        repo = repo.substr(0, repo.length - 4);
+    }
+    return repo;
+}
+
 function normalizeGitUrlToHttps(repo) {
     var pos = repo.indexOf('@');
     if (pos == -1) return repo;
@@ -122,10 +131,6 @@ function getNewFileUrl(item, gitContribute, gitUrlPattern) {
         return '';
     }
 
-    if (gitInfo.repo.substr(-4) === '.git') {
-        gitInfo.repo = gitInfo.repo.substr(0, gitInfo.repo.length - 4);
-    }
-
     var patternName = getPatternName(gitInfo.repo, gitUrlPattern);
     if (!patternName) return patternName;
     return gitUrlPatternItems[patternName].generateNewFileUrl(gitInfo, item.uid);
@@ -135,10 +140,6 @@ function getRemoteUrl(remote, startLine, gitContribute, gitUrlPattern) {
     var gitInfo = getGitInfo(gitContribute, remote);
     if (!gitInfo.repo || !gitInfo.branch || !gitInfo.path) {
         return '';
-    }
-
-    if (gitInfo.repo.substr(-4) === '.git') {
-        gitInfo.repo = gitInfo.repo.substr(0, gitInfo.repo.length - 4);
     }
 
     var patternName = getPatternName(gitInfo.repo, gitUrlPattern);
