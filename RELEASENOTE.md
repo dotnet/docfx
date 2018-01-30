@@ -3,6 +3,7 @@
 
 v2.31 (Pre-release)
 -----------
+1. Upgrade Roslyn's CodeAnalysis assemblies to latest 2.6.1
 
 v2.30
 -----------
