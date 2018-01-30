@@ -33,5 +33,29 @@ test
 </code></pre>
 ".Replace("\r\n", "\n"), marked.Html);
         }
+
+        [Fact]
+        [Trait("Related", "InteractiveCode")]
+        public void TestInteractiveCode_FencedCodeNonInteractiveSimple()
+        {
+            var source0 = @"```csharp
+test
+```";
+            var source1 = @"```
+test
+```";
+            var marked0 = TestUtility.MarkupWithoutSourceInfo(source0, "Topic.md");
+            var marked1 = TestUtility.MarkupWithoutSourceInfo(source1, "Topic.md");
+
+            Assert.Equal(
+                @"<pre><code class=""lang-csharp"">test
+</code></pre>
+".Replace("\r\n", "\n"), marked0.Html);
+
+            Assert.Equal(
+                @"<pre><code>test
+</code></pre>
+".Replace("\r\n", "\n"), marked1.Html);
+        }
     }
 }
