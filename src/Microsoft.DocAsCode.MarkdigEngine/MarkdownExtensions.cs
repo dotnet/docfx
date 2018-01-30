@@ -46,7 +46,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 .UseInineParserOnly(context)
                 .UseLineNumber(context, parameters)
                 .UseMonikerRange()
-                .UseValidators(context, parameters);
+                .UseValidators(context, parameters)
+                .UseInteractiveCode();
         }
 
         public static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
@@ -125,12 +126,12 @@ namespace Microsoft.DocAsCode.MarkdigEngine
             var fencedCodeBlockParser = pipeline.BlockParsers.FindExact<FencedCodeBlockParser>();
             if (fencedCodeBlockParser != null)
             {
-                fencedCodeBlockParser.InfoPrefix = "lang-";
+                fencedCodeBlockParser.InfoPrefix = Constants.FencedCodePrefix;
             }
             else
             {
                 Logger.LogWarning($"Can't find FencedCodeBlockParser to set InfoPrefix, insert DFMFencedCodeBlockParser directly.");
-                pipeline.BlockParsers.Insert(0, new FencedCodeBlockParser() { InfoPrefix = "lang-" });
+                pipeline.BlockParsers.Insert(0, new FencedCodeBlockParser() { InfoPrefix = Constants.FencedCodePrefix });
             }
             return pipeline;
         }
@@ -175,12 +176,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine
         {
             pipeline.Extensions.Insert(0, new CodeSnippetExtension(compositor, context));
 
-            var rewriter = new CodeSnippetRewriter();
-            var visitor = new MarkdownDocumentVisitor(rewriter);
+            return pipeline;
+        }
+
+        public static MarkdownPipelineBuilder UseInteractiveCode(this MarkdownPipelineBuilder pipeline)
+        {
+            var codeSnippetInteractiveRewriter = new CodeSnippetInteractiveRewriter();
+            var fencedCodeInteractiveRewrtier = new FencedCodeInteractiveRewriter();
+
+            var codeSnippetVisitor = new MarkdownDocumentVisitor(codeSnippetInteractiveRewriter);
+            var fencedCodeVisitor = new MarkdownDocumentVisitor(fencedCodeInteractiveRewrtier);
 
             pipeline.DocumentProcessed += document =>
             {
-                visitor.Visit(document);
+                codeSnippetVisitor.Visit(document);
+                fencedCodeVisitor.Visit(document);
             };
 
             return pipeline;
