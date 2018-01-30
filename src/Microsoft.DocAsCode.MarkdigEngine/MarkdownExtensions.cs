@@ -6,13 +6,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine
     using System.IO;
 
     using MarkdigEngine.Extensions;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
 
     using Markdig;
     using Markdig.Extensions.AutoIdentifiers;
     using Markdig.Extensions.CustomContainers;
     using Markdig.Parsers;
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
 
     public static class MarkdownExtensions
     {
@@ -174,6 +174,15 @@ namespace Microsoft.DocAsCode.MarkdigEngine
         public static MarkdownPipelineBuilder UseCodeSnippet(this MarkdownPipelineBuilder pipeline, MarkdownEngine compositor, MarkdownContext context)
         {
             pipeline.Extensions.Insert(0, new CodeSnippetExtension(compositor, context));
+
+            var rewriter = new CodeSnippetRewriter();
+            var visitor = new MarkdownDocumentVisitor(rewriter);
+
+            pipeline.DocumentProcessed += document =>
+            {
+                visitor.Visit(document);
+            };
+
             return pipeline;
         }
 

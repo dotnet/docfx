@@ -3,16 +3,14 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
-    using System.Threading.Tasks;
+    using System.Net;
 
     using Markdig.Parsers;
     using Markdig.Renderers.Html;
     using Markdig.Syntax;
-    using Markdig.Syntax.Inlines;
 
     public class CodeSnippet : LeafBlock
     {
@@ -42,23 +40,37 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
         public string Raw { get; set; }
 
+        public string GitUrl { get; set; }
+
+        public bool IsInteractive { get; set; }
+
         public void SetAttributeString()
         {
             var attributes = this.GetAttributes();
 
-            if (!string.IsNullOrEmpty(this.Language))
+            if (!string.IsNullOrEmpty(Language))
             {
-                attributes.AddClass($"lang-{this.Language}");
+                attributes.AddClass($"lang-{Language}");
             }
 
-            if (!string.IsNullOrEmpty(this.Name))
+            if (IsInteractive)
             {
-                attributes.AddProperty("name", this.Name);
+                attributes.AddProperty("data-interactive", WebUtility.HtmlEncode(Language));
             }
 
-            if (!string.IsNullOrEmpty(this.Title))
+            if (GitUrl != null && GitUrl.StartsWith("https://github.com"))
             {
-                attributes.AddProperty("title", this.Title);
+                attributes.AddProperty("data-src", WebUtility.HtmlEncode(GitUrl));
+            }
+
+            if (!string.IsNullOrEmpty(Name))
+            {
+                attributes.AddProperty("name", Name);
+            }
+
+            if (!string.IsNullOrEmpty(Title))
+            {
+                attributes.AddProperty("title", Title);
             }
 
             var highlightRangesString = GetHighlightLinesString();

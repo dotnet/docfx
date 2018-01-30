@@ -5,13 +5,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     using Markdig.Helpers;
     using Markdig.Parsers;
-    using Markdig.Syntax;
 
     public class CodeSnippetParser : BlockParser
     {
@@ -72,7 +68,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                         codeSnippet.Raw = slice.ToString();
                         codeSnippet.Column = processor.Column;
 
-                        codeSnippet.SetAttributeString();
                         processor.NewBlocks.Push(codeSnippet);
                         return BlockState.BreakDiscard;
                     }
