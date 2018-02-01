@@ -12,46 +12,69 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Microsoft.DocAsCode.DataContracts.Common;
     using Microsoft.DocAsCode.Plugins;
 
-    public class ApplyOverwriteUtility
+    public class ApplyOverwriteHelper
     {
-        private static readonly SchemaProcessor OverwriteProcessor = new SchemaProcessor(
-            new FileIncludeInterpreter(),
-            new MarkdownWithContentAnchorInterpreter(new MarkdownInterpreter()),
-            new FileInterpreter(true, false),
-            new HrefInterpreter(true, false),
-            new XrefInterpreter()
-        );
-
         private static readonly SchemaProcessor XrefSpecUpdater = new SchemaProcessor(
             new XrefPropertiesInterpreter()
         );
 
         private static readonly Merger Merger = new Merger();
 
-        public static void ReExportXrefSpec(FileModel fileModel, IHostService host, BaseSchema schema)
+        private readonly IHostService _host;
+        private readonly SchemaProcessor _overwriteProcessor;
+        private readonly OverwriteModelType _overwriteModelType;
+
+        public ApplyOverwriteHelper(IHostService host, OverwriteModelType type)
         {
-            var context = new ProcessContext(host, fileModel);
+            _host = host ?? throw new ArgumentException("host");
+            _overwriteModelType = type;
+            switch (type)
+            {
+                case OverwriteModelType.OverwriteDocument:
+                    _overwriteProcessor = new SchemaProcessor(
+                        new FileIncludeInterpreter(),
+                        new MarkdownWithContentAnchorInterpreter(new MarkdownInterpreter()),
+                        new FileInterpreter(true, false),
+                        new HrefInterpreter(true, false),
+                        new XrefInterpreter()
+                    );
+                    break;
+                case OverwriteModelType.MarkdownFragments:
+                    _overwriteProcessor = new SchemaProcessor(
+                        new FileIncludeInterpreter(),
+                        new FileInterpreter(true, false),
+                        new HrefInterpreter(true, false),
+                        new MarkdownAstInterpreter(new MarkdownInterpreter()),
+                        new XrefInterpreter()
+                    );
+                    break;
+            }
+        }
+
+        public void ReexportXrefSpec(FileModel fileModel, BaseSchema schema)
+        {
+            if (fileModel == null)
+            {
+                return;
+            }
+
+            if (schema == null)
+            {
+                throw new ArgumentException("schema");
+            }
+
+            var context = new ProcessContext(_host, fileModel);
             XrefSpecUpdater.Process(fileModel.Content, schema, context);
 
             UpdateXRefSpecs((List<XRefSpec>)fileModel.Properties.XRefSpecs, context.XRefSpecs);
             UpdateXRefSpecs((List<XRefSpec>)fileModel.Properties.ExternalXRefSpecs, context.ExternalXRefSpecs);
         }
 
-        public static void MergeContentWithOverwrite(ref object source, object overwrite, string uid, string path, BaseSchema schema)
-        {
-            Merger.Merge(ref source, overwrite, uid, path, schema);
-        }
-
-        public static object BuildOverwriteWithSchema(FileModel owModel, OverwriteDocumentModel overwrite, IHostService host, BaseSchema schema)
+        public object BuildOverwriteWithSchema(FileModel owModel, OverwriteDocumentModel overwrite, BaseSchema schema)
         {
             if (overwrite == null || owModel == null)
             {
                 return null;
-            }
-
-            if (host == null)
-            {
-                throw new ArgumentException("host");
             }
 
             if (schema == null)
@@ -62,13 +85,15 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             dynamic overwriteObject = ConvertToObjectHelper.ConvertToDynamic(overwrite.Metadata);
             overwriteObject.uid = overwrite.Uid;
             var overwriteModel = new FileModel(owModel.FileAndType, overwriteObject, owModel.OriginalFileAndType);
-            var context = new ProcessContext(host, overwriteModel)
-            {
-                ContentAnchorParser = new ContentAnchorParser(overwrite.Conceptual)
-            };
 
-            var transformed = OverwriteProcessor.Process(overwriteObject, schema, context) as IDictionary<string, object>;
-            if (!context.ContentAnchorParser.ContainsAnchor)
+            var context = new ProcessContext(_host, overwriteModel);
+            if (_overwriteModelType == OverwriteModelType.OverwriteDocument)
+            {
+                context.ContentAnchorParser = new ContentAnchorParser(overwrite.Conceptual);
+            }
+
+            var transformed = _overwriteProcessor.Process(overwriteObject, schema, context) as IDictionary<string, object>;
+            if (_overwriteModelType == OverwriteModelType.OverwriteDocument && !context.ContentAnchorParser.ContainsAnchor)
             {
                 transformed["conceptual"] = context.ContentAnchorParser.Content;
             }
@@ -97,9 +122,14 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             foreach (var d in context.Dependency)
             {
-                host.ReportDependencyTo(owModel, d, DependencyTypeName.Include);
+                _host.ReportDependencyTo(owModel, d, DependencyTypeName.Include);
             }
             return transformed;
+        }
+
+        public static void MergeContentWithOverwrite(ref object source, object overwrite, string uid, string path, BaseSchema schema)
+        {
+            Merger.Merge(ref source, overwrite, uid, path, schema);
         }
 
         private static void UpdateXRefSpecs(List<XRefSpec> original, List<XRefSpec> overwrite)

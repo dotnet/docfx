@@ -9,7 +9,6 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using System.Linq;
 
     using Microsoft.DocAsCode.Build.Common;
-    using Microsoft.DocAsCode.Build.SchemaDriven.Processors;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.Exceptions;
     using Microsoft.DocAsCode.Plugins;
@@ -23,6 +22,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         public override void Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
+            var ApplyOverwriteHelper = new ApplyOverwriteHelper(host, OverwriteModelType.OverwriteDocument);
             foreach (var uid in host.GetAllUids())
             {
                 var ms = host.LookupByUid(uid);
@@ -61,8 +61,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                                 foreach (var fm in ((IEnumerable<OverwriteDocumentModel>)od.Content).Where(s => s.Uid == uid))
                                 {
                                     // Suppose that BuildOverwriteWithSchema do the validation of the overwrite object
-                                    var overwriteObject = ApplyOverwriteUtility.BuildOverwriteWithSchema(od, fm, host, schemaForCurrentUid);
-                                    ApplyOverwriteUtility.MergeContentWithOverwrite(ref source, overwriteObject, ud.Name, string.Empty, schemaForCurrentUid);
+                                    var overwriteObject = ApplyOverwriteHelper.BuildOverwriteWithSchema(od, fm, schemaForCurrentUid);
+                                    ApplyOverwriteHelper.MergeContentWithOverwrite(ref source, overwriteObject, ud.Name, string.Empty, schemaForCurrentUid);
 
                                     model.LinkToUids = model.LinkToUids.Union(od.LinkToUids);
                                     model.LinkToFiles = model.LinkToFiles.Union(od.LinkToFiles);
@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                     ((SchemaDrivenDocumentProcessor)host.Processor).SchemaValidator.Validate(model.Content);
 
                     // 2. Re-export xrefspec after the merge
-                    ApplyOverwriteUtility.ReExportXrefSpec(model, host, schema);
+                    ApplyOverwriteHelper.ReexportXrefSpec(model, schema);
                 }
             }
         }
