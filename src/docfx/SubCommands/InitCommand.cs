@@ -25,182 +25,13 @@ namespace Microsoft.DocAsCode.SubCommands
         private static readonly string[] DefaultExcludeFiles = new string[] { "obj/**" };
         private static readonly string[] DefaultSrcExcludeFiles = new string[] { "**/obj/**", "**/bin/**" };
         private readonly InitCommandOptions _options;
-        private static readonly IEnumerable<IQuestion> _metadataQuestions = new IQuestion[]
-        {
-            new MultiAnswerQuestion(
-                "What are the locations of your source code files?",
-                (s, m, c) =>
-                {
-                    if (s != null)
-                    {
-                        var exclude = new FileItems(DefaultSrcExcludeFiles);
-                        if(!string.IsNullOrEmpty(m.Build.Destination))
-                        {
-                            exclude.Add($"{m.Build.Destination}/**");
-                        }
-                        var item = new FileMapping(new FileMappingItem(s) { Exclude = exclude });
-                        m.Metadata.Add(new MetadataJsonItemConfig
-                        {
-                             Source = item,
-                             Destination = DefaultMetadataOutputFolder,
-                        });
-                        m.Build.Content = new FileMapping(new FileMappingItem("api/**.yml", "api/index.md"));
-                    }
-                },
-                new string[] { "src/**.csproj" })
-            {
-                Descriptions = new string[]
-                {
-                    "Supported project files could be .sln, .csproj, .vbproj project files or .cs, .vb source files",
-                    Hints.Glob,
-                    Hints.Enter,
-                }
-            },
-            new MultiAnswerQuestion(
-                "What are the locations of your markdown files overwriting triple slash comments?",
-                (s, m, c) =>
-                {
-                    if (s != null)
-                    {
-                        var exclude = new FileItems(DefaultExcludeFiles);
-                        if(!string.IsNullOrEmpty(m.Build.Destination))
-                        {
-                            exclude.Add($"{m.Build.Destination}/**");
-                        }
-                        m.Build.Overwrite = new FileMapping(new FileMappingItem(s) { Exclude = exclude });
-                    }
-                },
-                new string[] { "apidoc/**.md" })
-            {
-                Descriptions = new string[]
-                {
-                    "You can specify markdown files with a YAML header to overwrite summary, remarks and description for parameters",
-                    Hints.Glob,
-                    Hints.Enter,
-                }
-            },
-        };
+        private readonly IEnumerable<IQuestion> _metadataQuestions;
 
-        private static readonly IEnumerable<IQuestion> _overallQuestion = new IQuestion[]
-        {
-            new SingleAnswerQuestion(
-                "Where to save the generated documentation?",
-                (s, m, c) => {
-                    m.Build.Destination = s;
-                },
-                "_site")
-            {
-                Descriptions = new string[]
-                {
-                    Hints.Enter,
-                }
-            },
-        };
+        private readonly IEnumerable<IQuestion> _overallQuestion;
 
-        private static readonly IEnumerable<IQuestion> _buildQuestions = new IQuestion[]
-        {
-            // TODO: Check if the input glob pattern matches any files
-            // IF no matching: WARN [init]: There is no file matching this pattern.
-            new MultiAnswerQuestion(
-                "What are the locations of your conceptual files?",
-                (s, m, c) =>
-                {
-                    if (s != null)
-                    {
-                        if (m.Build.Content == null)
-                        {
-                            m.Build.Content = new FileMapping();
-                        }
+        private readonly IEnumerable<IQuestion> _buildQuestions;
 
-                        var exclude = new FileItems(DefaultExcludeFiles);
-                        if(!string.IsNullOrEmpty(m.Build.Destination))
-                        {
-                            exclude.Add($"{m.Build.Destination}/**");
-                        }
-
-                        m.Build.Content.Add(new FileMappingItem(s) { Exclude = exclude });
-                    }
-                },
-                new string[] { "articles/**.md", "articles/**/toc.yml", "toc.yml", "*.md" })
-            {
-                Descriptions = new string[]
-                {
-                    "Supported conceptual files could be any text files. Markdown format is also supported.",
-                    Hints.Glob,
-                    Hints.Enter,
-                }
-            },
-            new MultiAnswerQuestion(
-                "What are the locations of your resource files?",
-                (s, m, c) =>
-                {
-                    if (s != null)
-                    {
-                        var exclude = new FileItems(DefaultExcludeFiles);
-                        if(!string.IsNullOrEmpty(m.Build.Destination))
-                        {
-                            exclude.Add($"{m.Build.Destination}/**");
-                        }
-                        m.Build.Resource = new FileMapping(new FileMappingItem(s) { Exclude = exclude });
-                    }
-                },
-                new string[] { "images/**" })
-            {
-                Descriptions = new string[]
-                {
-                    "The resource files which conceptual files are referencing, e.g. images.",
-                    Hints.Glob,
-                    Hints.Enter,
-                }
-            },
-            new MultiAnswerQuestion(
-                "Do you want to specify external API references?",
-                (s, m, c) =>
-                {
-                    if (s != null)
-                    {
-                        m.Build.XRefMaps = new ListWithStringFallback(s);
-                    }
-                },
-                null)
-            {
-                Descriptions = new string[]
-                {
-                    "Supported external API references can be in either JSON or YAML format.",
-                    Hints.Enter,
-                }
-            },
-            new MultiAnswerQuestion(
-                "What documentation templates do you want to use?",
-                (s, m, c) => { if (s != null) m.Build.Templates.AddRange(s); },
-                new string[] { "default" })
-            {
-                Descriptions = new string[]
-                {
-                    "You can define multiple templates in order. The latter one will overwrite the former one if names collide",
-                    "Predefined templates in docfx are now: default, statictoc",
-                    Hints.Enter,
-                }
-            }
-        };
-
-        private static readonly IEnumerable<IQuestion> _selectorQuestions = new IQuestion[]
-        {
-            new YesOrNoQuestion(
-                "Does the website contain API documentation from source code?", (s, m, c) =>
-                {
-                    m.Build = new BuildJsonConfig();
-                    if (s)
-                    {
-                        m.Metadata = new MetadataJsonConfig();
-                        c.ContainsMetadata = true;
-                    }
-                    else
-                    {
-                        c.ContainsMetadata = false;
-                    }
-                }),
-        };
+        private readonly IEnumerable<IQuestion> _selectorQuestions;
         #endregion
 
         public string Name { get; } = nameof(InitCommand);
@@ -210,6 +41,167 @@ namespace Microsoft.DocAsCode.SubCommands
         public InitCommand(InitCommandOptions options)
         {
             _options = options;
+            _metadataQuestions = new IQuestion[]
+            {
+                new MultiAnswerQuestion(
+                    "What are the locations of your source code files?",
+                    (s, m, c) =>
+                    {
+                        if (s != null)
+                        {
+                            var item = new FileMapping(
+                                new FileMappingItem(s)
+                                {
+                                    SourceFolder = options.ApiSourceFolder
+                                });
+                            m.Metadata.Add(new MetadataJsonItemConfig
+                            {
+                                 Source = item,
+                                 Destination = DefaultMetadataOutputFolder,
+                            });
+                            m.Build.Content = new FileMapping(new FileMappingItem("api/**.yml", "api/index.md"));
+                        }
+                    },
+                    new string[] { options.ApiSourceGlobPattern ?? "src/**.csproj" })
+                    {
+                        Descriptions = new string[]
+                        {
+                            "Supported project files could be .sln, .csproj, .vbproj project files, or assembly files .dll, or .cs, .vb source files",
+                            Hints.Glob,
+                            Hints.Enter,
+                        }
+                    },
+                new MultiAnswerQuestion(
+                    "What are the locations of your markdown files overwriting triple slash comments?",
+                    (s, m, c) =>
+                    {
+                        if (s != null)
+                        {
+                            var exclude = new FileItems(DefaultExcludeFiles);
+                            if(!string.IsNullOrEmpty(m.Build.Destination))
+                            {
+                                exclude.Add($"{m.Build.Destination}/**");
+                            }
+                            m.Build.Overwrite = new FileMapping(new FileMappingItem(s) { Exclude = exclude });
+                        }
+                    },
+                    new string[] { "apidoc/**.md" })
+                    {
+                        Descriptions = new string[]
+                        {
+                            "You can specify markdown files with a YAML header to overwrite summary, remarks and description for parameters",
+                            Hints.Glob,
+                            Hints.Enter,
+                        }
+                    },
+            };
+            _overallQuestion = new IQuestion[]
+             {
+                new SingleAnswerQuestion(
+                    "Where to save the generated documentation?",
+                    (s, m, c) => {
+                        m.Build.Destination = s;
+                    },
+                    "_site")
+                {
+                    Descriptions = new string[]
+                    {
+                        Hints.Enter,
+                    }
+                },
+             };
+            _buildQuestions = new IQuestion[]
+             {
+                // TODO: Check if the input glob pattern matches any files
+                // IF no matching: WARN [init]: There is no file matching this pattern.
+                new MultiAnswerQuestion(
+                    "What are the locations of your conceptual files?",
+                    (s, m, c) =>
+                    {
+                        if (s != null)
+                        {
+                            if (m.Build.Content == null)
+                            {
+                                m.Build.Content = new FileMapping();
+                            }
+
+                            m.Build.Content.Add(new FileMappingItem(s));
+                        }
+                    },
+                    new string[] { "articles/**.md", "articles/**/toc.yml", "toc.yml", "*.md" })
+                {
+                    Descriptions = new string[]
+                    {
+                        "Supported conceptual files could be any text files. Markdown format is also supported.",
+                        Hints.Glob,
+                        Hints.Enter,
+                    }
+                },
+                new MultiAnswerQuestion(
+                    "What are the locations of your resource files?",
+                    (s, m, c) =>
+                    {
+                        if (s != null)
+                        {
+                            m.Build.Resource = new FileMapping(new FileMappingItem(s));
+                        }
+                    },
+                    new string[] { "images/**" })
+                {
+                    Descriptions = new string[]
+                    {
+                        "The resource files which conceptual files are referencing, e.g. images.",
+                        Hints.Glob,
+                        Hints.Enter,
+                    }
+                },
+                new MultiAnswerQuestion(
+                    "Do you want to specify external API references?",
+                    (s, m, c) =>
+                    {
+                        if (s != null)
+                        {
+                            m.Build.XRefMaps = new ListWithStringFallback(s);
+                        }
+                    },
+                    null)
+                {
+                    Descriptions = new string[]
+                    {
+                        "Supported external API references can be in either JSON or YAML format.",
+                        Hints.Enter,
+                    }
+                },
+                new MultiAnswerQuestion(
+                    "What documentation templates do you want to use?",
+                    (s, m, c) => { if (s != null) m.Build.Templates.AddRange(s); },
+                    new string[] { "default" })
+                {
+                    Descriptions = new string[]
+                    {
+                        "You can define multiple templates in order. The latter one will overwrite the former one if names collide",
+                        "Predefined templates in docfx are now: default, statictoc",
+                        Hints.Enter,
+                    }
+                }
+             };
+            _selectorQuestions = new IQuestion[]
+             {
+                new YesOrNoQuestion(
+                    "Does the website contain API documentation from source code?", (s, m, c) =>
+                    {
+                        m.Build = new BuildJsonConfig();
+                        if (s)
+                        {
+                            m.Metadata = new MetadataJsonConfig();
+                            c.ContainsMetadata = true;
+                        }
+                        else
+                        {
+                            c.ContainsMetadata = false;
+                        }
+                    }),
+             };
         }
 
         public void Exec(SubCommandRunningContext context)
@@ -247,12 +239,12 @@ namespace Microsoft.DocAsCode.SubCommands
 
                 if (_options.OnlyConfigFile)
                 {
-                    GenerateConfigFile(_options.OutputFolder, config);
+                    GenerateConfigFile(_options.OutputFolder, config, _options.Quiet, _options.Overwrite);
                 }
                 else
                 {
                     outputFolder = StringExtension.ToDisplayPath(Path.GetFullPath(string.IsNullOrEmpty(_options.OutputFolder) ? DefaultOutputFolder : _options.OutputFolder));
-                    GenerateSeedProject(outputFolder, config);
+                    GenerateSeedProject(outputFolder, config, _options.Quiet, _options.Overwrite);
                 }
             }
             catch (Exception e)
@@ -261,12 +253,12 @@ namespace Microsoft.DocAsCode.SubCommands
             }
         }
 
-        private static void GenerateConfigFile(string outputFolder, object config)
+        private void GenerateConfigFile(string outputFolder, object config, bool quiet, bool overwrite)
         {
             var path = StringExtension.ToDisplayPath(Path.Combine(outputFolder ?? string.Empty, ConfigName));
             if (File.Exists(path))
             {
-                if (!ProcessOverwriteQuestion($"Config file \"{path}\" already exists, do you want to overwrite this file?"))
+                if (!ProcessOverwriteQuestion($"Config file \"{path}\" already exists, do you want to overwrite this file?", quiet, overwrite))
                 {
                     return;
                 }
@@ -276,11 +268,11 @@ namespace Microsoft.DocAsCode.SubCommands
             $"Successfully generated default docfx config file to {path}".WriteLineToConsole(ConsoleColor.Green);
         }
 
-        private static void GenerateSeedProject(string outputFolder, DefaultConfigModel config)
+        private void GenerateSeedProject(string outputFolder, DefaultConfigModel config, bool quiet, bool overwrite)
         {
             if (Directory.Exists(outputFolder))
             {
-                if (!ProcessOverwriteQuestion($"Output folder \"{outputFolder}\" already exists. Do you still want to generate files into this folder? You can use -o command option to specify the folder name"))
+                if (!ProcessOverwriteQuestion($"Output folder \"{outputFolder}\" already exists. Do you still want to generate files into this folder? You can use -o command option to specify the folder name", quiet, true))
                 {
                     return;
                 }
@@ -299,8 +291,11 @@ namespace Microsoft.DocAsCode.SubCommands
             var folders = new string[] { srcFolder, apiFolder, apidocFolder, articleFolder, imageFolder };
             foreach (var folder in folders)
             {
-                Directory.CreateDirectory(folder);
-                $"Created folder {StringExtension.ToDisplayPath(folder)}".WriteLineToConsole(ConsoleColor.Gray);
+                if (!Directory.Exists(folder))
+                {
+                    Directory.CreateDirectory(folder);
+                    $"Created folder {StringExtension.ToDisplayPath(folder)}".WriteLineToConsole(ConsoleColor.Gray);
+                }
             }
 
             // 2. Create default files
@@ -353,20 +348,29 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
             foreach (var file in files)
             {
                 var filePath = Path.Combine(outputFolder, file.Item1);
-                var content = file.Item2;
-                var dir = Path.GetDirectoryName(filePath);
-                if (!string.IsNullOrEmpty(dir))
+
+                if (overwrite || !File.Exists(filePath))
                 {
-                    Directory.CreateDirectory(dir);
+                    var content = file.Item2;
+                    var dir = Path.GetDirectoryName(filePath);
+                    if (!string.IsNullOrEmpty(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                    }
+
+                    File.WriteAllText(filePath, content);
+                    $"Created File {StringExtension.ToDisplayPath(filePath)}".WriteLineToConsole(ConsoleColor.Gray);
                 }
-                File.WriteAllText(filePath, content);
-                $"Created File {StringExtension.ToDisplayPath(filePath)}".WriteLineToConsole(ConsoleColor.Gray);
             }
 
             // 2. Create docfx.json
             var path = Path.Combine(outputFolder ?? string.Empty, ConfigName);
-            SaveConfigFile(path, config);
-            $"Created config file {StringExtension.ToDisplayPath(path)}".WriteLineToConsole(ConsoleColor.Gray);
+            if (overwrite || !File.Exists(path))
+            {
+                SaveConfigFile(path, config);
+                $"Created config file {StringExtension.ToDisplayPath(path)}".WriteLineToConsole(ConsoleColor.Gray);
+            }
+
             $"Successfully generated default docfx project to {StringExtension.ToDisplayPath(outputFolder)}".WriteLineToConsole(ConsoleColor.Green);
             "Please run:".WriteLineToConsole(ConsoleColor.Gray);
             $"\tdocfx \"{StringExtension.ToDisplayPath(path)}\" --serve".WriteLineToConsole(ConsoleColor.White);
@@ -378,10 +382,14 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
             JsonUtility.Serialize(path, config, Formatting.Indented);
         }
 
-        private static bool ProcessOverwriteQuestion(string message)
+        private static bool ProcessOverwriteQuestion(string message, bool quiet, bool overwriteResult)
         {
             bool overwrited = true;
-            var overwriteQuestion = new NoOrYesQuestion(
+
+            IQuestion overwriteQuestion;
+            if (overwriteResult)
+            {
+                overwriteQuestion = new YesOrNoQuestion(
                 message,
                 (s, m, c) =>
                 {
@@ -390,8 +398,21 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
                         overwrited = false;
                     }
                 });
+            }
+            else
+            {
+                overwriteQuestion = new NoOrYesQuestion(
+                message,
+                (s, m, c) =>
+                {
+                    if (!s)
+                    {
+                        overwrited = false;
+                    }
+                });
+            }
 
-            overwriteQuestion.Process(null, new QuestionContext { NeedWarning = overwrited });
+            overwriteQuestion.Process(null, new QuestionContext { NeedWarning = overwrited, Quiet = quiet });
 
             return overwrited;
         }
@@ -449,8 +470,7 @@ TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL**
                 : base(content, setter)
             {
                 if (options == null || options.Length == 0) throw new ArgumentNullException(nameof(options));
-                if (converter == null) throw new ArgumentNullException(nameof(converter));
-                _converter = converter;
+                _converter = converter ?? throw new ArgumentNullException(nameof(converter));
                 Options = options;
                 DefaultAnswer = options[0];
                 DefaultValue = converter(DefaultAnswer);
