@@ -26,7 +26,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         public ApplyOverwriteHelper(IHostService host, OverwriteModelType type)
         {
-            _host = host ?? throw new ArgumentException("host");
+            _host = host ?? throw new ArgumentNullException(nameof(host));
             _overwriteModelType = type;
             switch (type)
             {
@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             }
         }
 
-        public void ReexportXrefSpec(FileModel fileModel, BaseSchema schema)
+        public void UpdateXrefSpec(FileModel fileModel, BaseSchema schema)
         {
             if (fileModel == null)
             {
@@ -60,7 +60,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             if (schema == null)
             {
-                throw new ArgumentException("schema");
+                throw new ArgumentNullException(nameof(schema));
             }
 
             var context = new ProcessContext(_host, fileModel);
@@ -79,7 +79,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             if (schema == null)
             {
-                throw new ArgumentException("schema");
+                throw new ArgumentNullException(nameof(schema));
             }
 
             dynamic overwriteObject = ConvertToObjectHelper.ConvertToDynamic(overwrite.Metadata);

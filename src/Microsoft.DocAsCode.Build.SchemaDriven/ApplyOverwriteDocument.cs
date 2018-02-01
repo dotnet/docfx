@@ -77,7 +77,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                     ((SchemaDrivenDocumentProcessor)host.Processor).SchemaValidator.Validate(model.Content);
 
                     // 2. Re-export xrefspec after the merge
-                    ApplyOverwriteHelper.ReexportXrefSpec(model, schema);
+                    ApplyOverwriteHelper.UpdateXrefSpec(model, schema);
                 }
             }
         }
