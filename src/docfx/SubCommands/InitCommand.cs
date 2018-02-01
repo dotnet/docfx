@@ -318,7 +318,7 @@ Refer to [Markdown](http://daringfireball.net/projects/markdown/) for how to wri
 1. Add images to the *images* folder if the file is referencing an image.
 ");
             var apiTocFile = Tuple.Create("api/toc.yml", @"- name: TO BE REPLACED
-- href: index.md
+  href: index.md
 ");
             var apiIndexFile = Tuple.Create("api/index.md", @"# PLACEHOLDER
 TODO: Add .NET projects to the *src* folder and run `docfx` to generate **REAL** *API Documentation*!
