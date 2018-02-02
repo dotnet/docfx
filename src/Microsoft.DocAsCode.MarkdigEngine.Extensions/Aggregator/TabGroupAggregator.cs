@@ -9,9 +9,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using System.Linq;
     using System.Text.RegularExpressions;
 
+    using Microsoft.DocAsCode.Common;
+
     using Markdig.Syntax;
     using Markdig.Syntax.Inlines;
-    using Microsoft.DocAsCode.Common;
 
     public class TabGroupAggregator : BlockAggregator<HeadingBlock>
     {
@@ -85,9 +86,10 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             List<Block> blocks,
             ref int offset)
         {
+            var parent = headBlock.Parent;
             foreach (var block in blocks)
             {
-                block.Parent.Remove(block);
+                parent?.Remove(block);
             }
             offset -= blocks.Count;
 
