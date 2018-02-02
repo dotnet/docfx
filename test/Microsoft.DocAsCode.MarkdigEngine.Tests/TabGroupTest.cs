@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         public void Test_General()
         {
             var groupId = "CeZOj-G++Q";
-            TestDfmInGeneral(
+            TestMarkupInGeneral(
                 @"Tab group test case
 # [title-a](#tab/a)
 content-a
@@ -53,7 +53,7 @@ content-b
         public void Test_TabGroup_Combining()
         {
             var groupId = "CeZOj-G++Q";
-            TestDfmInGeneral(
+            TestMarkupInGeneral(
                 @"# [title-a or b](#tab/a+b)
 content-a or b
 # [title-c](#tab/c)
@@ -102,7 +102,58 @@ content-b or c
             );
         }
 
-        private static void TestDfmInGeneral(string source, string expected)
+        [Fact]
+        public void TestTableInTabGroup()
+        {
+            var groupId = "CeZOj-G++Q";
+            TestMarkupInGeneral(@"# [title](#tab/id)
+
+a | b
+- | -
+c | d",
+$@"<div class=""tabGroup"" id=""tabgroup_{groupId}"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""5"">
+<ul role=""tablist"">
+<li role=""presentation"">
+<a href=""#tabpanel_{groupId}_id"" role=""tab"" aria-controls=""tabpanel_{groupId}_id"" data-tab=""id"" tabindex=""0"" aria-selected=""true"" sourceFile=""Topic.md"" sourceStartLineNumber=""1"" sourceEndLineNumber=""1"">title</a>
+</li>
+</ul>
+<section id=""tabpanel_{groupId}_id"" role=""tabpanel"" data-tab=""id"">
+
+<table sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""5"">
+<thead>
+<tr>
+<th sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">a</th>
+<th sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">b</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td sourceFile=""Topic.md"" sourceStartLineNumber=""5"" sourceEndLineNumber=""5"">c</td>
+<td sourceFile=""Topic.md"" sourceStartLineNumber=""5"" sourceEndLineNumber=""5"">d</td>
+</tr>
+</tbody>
+</table>
+</section>
+</div>
+
+<table sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""5"">
+<thead>
+<tr>
+<th sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">a</th>
+<th sourceFile=""Topic.md"" sourceStartLineNumber=""3"" sourceEndLineNumber=""3"">b</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td sourceFile=""Topic.md"" sourceStartLineNumber=""5"" sourceEndLineNumber=""5"">c</td>
+<td sourceFile=""Topic.md"" sourceStartLineNumber=""5"" sourceEndLineNumber=""5"">d</td>
+</tr>
+</tbody>
+</table>
+");
+        }
+
+        private static void TestMarkupInGeneral(string source, string expected)
         {
             var result = SimpleMarkup(source).Html;
             Assert.Equal(expected.Replace("\r\n", "\n"), result);
