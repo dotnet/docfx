@@ -3,7 +3,10 @@
 
 namespace Microsoft.DocAsCode.Tools.YamlSplitter.Models
 {
+    using Microsoft.DocAsCode.Common;
+
     using System.Collections.Generic;
+    using System.IO;
     using System.Text;
 
     public class MarkdownFragment
@@ -25,10 +28,12 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter.Models
             {
                 SerializeYamlHeader(Metadata, sb);
             }
+            sb.AppendLine();
 
-            foreach(var prop in Properties.Values)
+            foreach (var prop in Properties.Values)
             {
                 prop.SerializeTo(sb);
+                sb.AppendLine();
             }
 
             return sb.ToString();
@@ -39,8 +44,7 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter.Models
             if (metadata?.Count > 0)
             {
                 sb.AppendLine("```yaml");
-                var serializer = new YamlDotNet.Serialization.Serializer();
-                sb.AppendLine(serializer.Serialize(metadata));
+                YamlUtility.Serialize(new StringWriter(sb), metadata);
                 sb.AppendLine("```");
             }
         }

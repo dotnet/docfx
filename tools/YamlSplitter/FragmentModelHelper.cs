@@ -3,9 +3,10 @@
 
 namespace Microsoft.DocAsCode.Tools.YamlSplitter
 {
-    using Markdig;
-
     using Microsoft.DocAsCode.Build.OverwriteDocuments;
+    using Microsoft.DocAsCode.MarkdigEngine;
+    using Microsoft.DocAsCode.MarkdigEngine.Extensions;
+    using Microsoft.DocAsCode.Plugins;
     using Microsoft.DocAsCode.Tools.YamlSplitter.Models;
 
     using System;
@@ -18,6 +19,16 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
 
     public static class FragmentModelHelper
     {
+        public static MarkdigMarkdownService MDService = new MarkdigMarkdownService(
+            new MarkdownServiceParameters
+            {
+                BasePath = ".",
+                Extensions = new Dictionary<string, object>
+                    {
+                        { LineNumberExtension.EnableSourceInfo, false }
+                    }
+            });
+
         public static Dictionary<string, FragmentFile> LoadMarkdownFolder(string path)
         {
             ConcurrentBag<FragmentFile> fileBag = new ConcurrentBag<FragmentFile>();
@@ -85,7 +96,7 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
                 return new Dictionary<string, MarkdownFragment>();
             }
             var markdown = File.ReadAllText(fileName);
-            var ast = Markdown.Parse(markdown);
+            var ast = MDService.Parse(markdown, fileName);
             var models = new MarkdownFragmentsCreater().Create(ast).ToList();
             return models.ToDictionary(m => m.Uid, m => m.ToMarkdownFragment(markdown));
         }
