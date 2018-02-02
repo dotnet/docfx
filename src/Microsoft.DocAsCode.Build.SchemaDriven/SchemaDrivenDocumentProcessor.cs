@@ -140,7 +140,16 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                             serializer: new BinaryFormatter())
                         {
                             LocalPathFromRoot = localPathFromRoot,
-                            MarkdownFragmentsModel = markdownFragmentsContent,
+                            MarkdownFragmentsModel = new MarkdownFragmentsFileModel(
+                                file,
+                                markdownFragmentsContent,
+                                new FileAndType(
+                                    file.BaseDir,
+                                    PathUtility.MakeRelativePath(file.BaseDir, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(markdownFragmentsFile)),
+                                    DocumentType.Overwrite,
+                                    file.SourceDir,
+                                    file.DestinationDir),
+                                new BinaryFormatter()),
                         };
 
                         fm.Properties.Schema = _schema;
@@ -231,7 +240,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 DeserializeProperties,
                 null);
             loaded.Properties.Schema = _schema;
-            loaded.Properties.Metadata = _schema.MetadataReference.GetValue(loaded.Content); 
+            loaded.Properties.Metadata = _schema.MetadataReference.GetValue(loaded.Content);
             loaded.Properties.MarkdigMarkdownService = _markdigMarkdownService;
             return loaded;
         }
