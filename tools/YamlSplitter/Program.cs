@@ -119,8 +119,18 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
                 {
                     sb.AppendLine(fragment.ToString());
                 }
+                var mdFolder = Path.GetDirectoryName(mdFile);
+                if (!Directory.Exists(mdFolder))
+                {
+                    Directory.CreateDirectory(mdFolder);
+                }
                 File.WriteAllText(mdFile, sb.ToString());
 
+                var ymlFolder = Path.GetDirectoryName(ymlOutputFile);
+                if (!Directory.Exists(ymlFolder))
+                {
+                    Directory.CreateDirectory(ymlFolder);
+                }
                 YamlUtility.Serialize(ymlOutputFile, yamlStream.Documents[0].RootNode, mime);
             }
         }
