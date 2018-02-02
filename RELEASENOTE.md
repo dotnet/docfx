@@ -1,7 +1,7 @@
 ﻿Version Notes (Current Version: v2.31)
 =======================================
 
-v2.31 (Pre-release)
+v2.31
 -----------
 1. Upgrade Roslyn's CodeAnalysis assemblies to latest 2.6.1
 2. Bug fixes:
