@@ -5,10 +5,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Version Notes (Current Version: v2.30) | DocFX website </title>
+    <title>Version Notes (Current Version: v2.31) | DocFX website </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="Version Notes (Current Version: v2.30) | DocFX website ">
-    <meta name="generator" content="docfx 2.30.0.0">
+    <meta name="title" content="Version Notes (Current Version: v2.31) | DocFX website ">
+    <meta name="generator" content="docfx 2.31.0.0">
     
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -68,16 +68,22 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h1 id="version-notes-current-version-v230">Version Notes (Current Version: v2.30)</h1>
+<h1 id="version-notes-current-version-v231">Version Notes (Current Version: v2.31)</h1>
 
+<h2 id="v231">v2.31</h2>
+<ol>
+<li>Upgrade Roslyn&#39;s CodeAnalysis assemblies to latest 2.6.1</li>
+<li>Bug fixes:<ol>
+<li>Fix bug for missing <code>seealso</code> section in enum pages (#2402)</li>
+<li>Fix bug for supporting <code>in</code> keyword which is introduced in by C# 7.2 (#2385)</li>
+<li>Fix runtime error when EII name hits VB preserved keywords (#2379)</li>
+<li>Fix <code>docfx.console</code> so that it can support the new netstandard csproj format (#2142)</li>
+</ol>
+</li>
+</ol>
 <h2 id="v230">v2.30</h2>
 <ol>
 <li>Improve DFM performance for em rule (#2339)</li>
-<li>Added multiple merge operation support (#2287) [by @lextm]</li>
-<li>Bug fixes:<ol>
-<li>Fix bug for reading xrefmap with base url. (#2349)</li>
-</ol>
-</li>
 </ol>
 <h2 id="v229">v2.29</h2>
 <ol>
