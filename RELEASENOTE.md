@@ -4,6 +4,11 @@
 v2.31 (Pre-release)
 -----------
 1. Upgrade Roslyn's CodeAnalysis assemblies to latest 2.6.1
+2. Bug fixes:
+   1. Fix bug for missing `seealso` section in enum pages (#2402)
+   2. Fix bug for supporting `in` keyword which is introduced in by C# 7.2 (#2385)
+   3. Fix runtime error when EII name hits VB preserved keywords (#2379)
+   4. Fix `docfx.console` so that it can support the new netstandard csproj format (#2142)
 
 v2.30
 -----------
