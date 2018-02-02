@@ -8,13 +8,13 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter.Models
     public class CommonOptions
     {
         [Option("inputYamlFolder", Required = true, HelpText = "Folder that contains input Yaml files to be processed.")]
-        public string InputYamlPath { get; set; }
+        public string InputYamlFolder { get; set; }
 
         [Option("outputYamlFolder", Required = false, HelpText = "Generated skeleton Yaml will be written to this folder.")]
-        public string OutputYamlPath { get; set; }
+        public string OutputYamlFolder { get; set; }
 
         [Option("mdFolder", Required = false, HelpText = "Folder that contains fragment Markdown files to be processed. If not specified, will use the Yaml path.")]
-        public string MDPath { get; set; }
+        public string MDFolder { get; set; }
 
         [Option("schemaFolder", Required = true, HelpText = "Folder that contains all schema.json files")]
         public string SchemaFolder { get; set; }

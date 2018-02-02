@@ -12,15 +12,12 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter.Models
         public string Content { get; set; }
         public Dictionary<string, object> Metadata { get; set; }
 
-        public override string ToString()
+        public void SerializeTo(StringBuilder sb)
         {
-            StringBuilder sb = new StringBuilder();
             sb.Append("## `");
             sb.Append(OPath);
             sb.AppendLine("`");
             sb.AppendLine(Content);
-
-            return sb.ToString();
         }
     }
 }

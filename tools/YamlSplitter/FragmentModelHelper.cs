@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     public static class FragmentModelHelper
@@ -38,7 +39,7 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
                 catch (Exception ex)
                 {
                     Console.WriteLine("Error loading " + filePath + ": " + ex.ToString());
-                    errorHappened++;
+                    Interlocked.Increment(ref errorHappened);
                 }
             });
             if (errorHappened > 0)

@@ -23,29 +23,26 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter.Models
 
             if (Metadata?.Count > 0)
             {
-                sb.AppendLine(SerializeYamlHeader(Metadata));
+                SerializeYamlHeader(Metadata, sb);
             }
 
             foreach(var prop in Properties.Values)
             {
-                sb.AppendLine(prop.ToString());
+                prop.SerializeTo(sb);
             }
 
             return sb.ToString();
         }
 
-        private static string SerializeYamlHeader(Dictionary<string, object> metadata)
+        private static void SerializeYamlHeader(Dictionary<string, object> metadata, StringBuilder sb)
         {
-            if (metadata == null)
+            if (metadata?.Count > 0)
             {
-                return null;
+                sb.AppendLine("```yaml");
+                var serializer = new YamlDotNet.Serialization.Serializer();
+                sb.AppendLine(serializer.Serialize(metadata));
+                sb.AppendLine("```");
             }
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("```yaml");
-            var serializer = new YamlDotNet.Serialization.Serializer();
-            sb.AppendLine(serializer.Serialize(metadata));
-            sb.AppendLine("```");
-            return sb.ToString();
         }
     }
 }

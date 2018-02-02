@@ -36,32 +36,33 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
 
         public static int RunUpdate(UpdateOptions opt)
         {
-            opt.InputYamlPath = Path.GetFullPath(opt.InputYamlPath);
-            if (!string.IsNullOrEmpty(opt.MDPath))
+            opt.InputYamlFolder = Path.GetFullPath(opt.InputYamlFolder);
+            if (!string.IsNullOrEmpty(opt.OutputYamlFolder))
             {
-                opt.MDPath = Path.GetFullPath(opt.MDPath);
+                opt.OutputYamlFolder = Path.GetFullPath(opt.OutputYamlFolder);
             }
-            if (!string.IsNullOrEmpty(opt.OutputYamlPath))
+            else
             {
-                opt.OutputYamlPath = Path.GetFullPath(opt.OutputYamlPath);
+                opt.OutputYamlFolder = opt.InputYamlFolder;
+            }
+            if (!string.IsNullOrEmpty(opt.MDFolder))
+            {
+                opt.MDFolder = Path.GetFullPath(opt.MDFolder);
+            }
+            else
+            {
+                opt.MDFolder = opt.OutputYamlFolder;
             }
             var schemas = LoadSchemas(opt.SchemaFolder);
-            foreach (var ymlFile in Directory.EnumerateFiles(opt.InputYamlPath, "*.yml", SearchOption.AllDirectories))
+            foreach (var ymlFile in Directory.EnumerateFiles(opt.InputYamlFolder, "*.yml", SearchOption.AllDirectories))
             {
-                if (ymlFile.ToLower().EndsWith("/toc.yml"))
+                if (ymlFile.EndsWith("/toc.yml", StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
-                var ymlOutputFile = ymlFile;
-                if (!string.IsNullOrEmpty(opt.OutputYamlPath))
-                {
-                    ymlOutputFile = ymlOutputFile.Replace(opt.InputYamlPath, opt.OutputYamlPath);
-                }
-                var mdFile = ymlOutputFile + ".md";
-                if (!string.IsNullOrEmpty(opt.MDPath))
-                {
-                    mdFile = mdFile.Replace(opt.InputYamlPath, opt.MDPath);
-                }
+                var relativeYmlPath = PathUtility.MakeRelativePath(opt.InputYamlFolder, ymlFile);
+                var ymlOutputFile = Path.Combine(opt.OutputYamlFolder, relativeYmlPath);
+                var mdFile = Path.Combine(opt.MDFolder, relativeYmlPath + ".md");
                 ProcessFilePair(ymlFile, ymlOutputFile, mdFile, schemas);
             }
             return 0;
@@ -98,6 +99,11 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
                 return;
             }
             var schemaName = mime.Substring(YamlMime.YamlMimePrefix.Length);
+            if (!schemas.ContainsKey(schemaName))
+            {
+                Console.WriteLine("Schema {0} not found", schemaName);
+                return;
+            }
             var schema = schemas[schemaName];
 
             var mdFragments = FragmentModelHelper.LoadMarkdownFragment(mdFile);
