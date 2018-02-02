@@ -140,7 +140,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                             serializer: new BinaryFormatter())
                         {
                             LocalPathFromRoot = localPathFromRoot,
-                            MarkdownFragmentsModel = new MarkdownFragmentsFileModel(
+                        };
+                        if (markdownFragmentsContent != null)
+                        {
+                            fm.MarkdownFragmentsModel = new MarkdownFragmentsFileModel(
                                 file,
                                 markdownFragmentsContent,
                                 new FileAndType(
@@ -149,8 +152,8 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                                     DocumentType.Overwrite,
                                     file.SourceDir,
                                     file.DestinationDir),
-                                new BinaryFormatter()),
-                        };
+                                new BinaryFormatter());
+                        }
 
                         fm.Properties.Schema = _schema;
                         fm.Properties.Metadata = pageMetadata;
