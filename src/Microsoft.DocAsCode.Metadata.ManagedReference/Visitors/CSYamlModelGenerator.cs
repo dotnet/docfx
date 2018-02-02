@@ -766,6 +766,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 case RefKind.Out:
                     yield return SyntaxFactory.Token(SyntaxKind.OutKeyword);
                     break;
+                case RefKind.In:
+                    yield return SyntaxFactory.Token(SyntaxKind.InKeyword);
+                    break;
                 default:
                     break;
             }
