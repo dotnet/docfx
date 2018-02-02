@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
     public enum OverwriteModelType
     {
-        OverwriteDocument,
+        Classic,
         MarkdownFragments
     }
 }
