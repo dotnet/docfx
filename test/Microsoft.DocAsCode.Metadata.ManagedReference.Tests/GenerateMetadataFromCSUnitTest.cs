@@ -848,11 +848,13 @@ namespace Test1
         int IFoo<string>.this[string x] { get { return 1; } }
         int IFoo<T>.this[T x] { get { return 1; } }
         event EventHandler IFoo.E { add { } remove { } }
+        public bool IFoo.Global { get; set; }
     }
     public interface IFoo
     {
         object Bar(ref int x);
         event EventHandler E;
+        bool Global { get; set;}
     }
     public interface IFoo<out T>
     {

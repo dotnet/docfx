@@ -1030,7 +1030,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             var list = (from eii in symbol.ExplicitInterfaceImplementations
                         where filterVisitor.CanVisitApi(eii)
-                        select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), (SimpleNameSyntax)SyntaxFactory.ParseName(eii.Name))).ToList();
+                        select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), SyntaxFactory.IdentifierName(eii.Name))).ToList();
             if (list.Count == 0)
             {
                 return null;
@@ -1046,7 +1046,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             var list = (from eii in symbol.ExplicitInterfaceImplementations
                         where filterVisitor.CanVisitApi(eii)
-                        select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), (SimpleNameSyntax)SyntaxFactory.ParseName(eii.Name))).ToList();
+                        select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), SyntaxFactory.IdentifierName(eii.Name))).ToList();
             if (list.Count == 0)
             {
                 return null;
@@ -1062,7 +1062,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
             var list = (from eii in symbol.ExplicitInterfaceImplementations
                         where filterVisitor.CanVisitApi(eii)
-                        select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), (SimpleNameSyntax)SyntaxFactory.ParseName(eii.Name))).ToList();
+                        select SyntaxFactory.QualifiedName(GetQualifiedNameSyntax(eii.ContainingType), (SimpleNameSyntax)SyntaxFactory.IdentifierName(eii.Name))).ToList();
             if (list.Count == 0)
             {
                 return null;
