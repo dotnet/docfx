@@ -148,7 +148,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                                 markdownFragmentsContent,
                                 new FileAndType(
                                     file.BaseDir,
-                                    PathUtility.MakeRelativePath(file.BaseDir, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(markdownFragmentsFile)),
+                                    markdownFragmentsFile,
+                                    // TODO: when log warning, it should use physical path instead of logic path:
+                                    // PathUtility.MakeRelativePath(file.BaseDir, EnvironmentContext.FileAbstractLayer.GetPhysicalPath(markdownFragmentsFile)),
                                     DocumentType.Overwrite,
                                     file.SourceDir,
                                     file.DestinationDir),
