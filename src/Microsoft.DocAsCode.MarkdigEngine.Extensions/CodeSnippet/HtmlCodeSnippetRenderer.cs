@@ -13,6 +13,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
 
     public class HtmlCodeSnippetRenderer : HtmlObjectRenderer<CodeSnippet>
     {
@@ -236,16 +237,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
         protected override void Write(HtmlRenderer renderer, CodeSnippet codeSnippet)
         {
             var refFileRelativePath = ((RelativePath)codeSnippet.CodePath).BasedOn((RelativePath)_context.FilePath);
-            var refPath = Path.Combine(_context.BasePath, refFileRelativePath.RemoveWorkingFolder());
-            if (!File.Exists(refPath))
+
+            if (!EnvironmentContext.FileAbstractLayer.Exists(refFileRelativePath))
             {
                 string tag = "ERROR CODESNIPPET";
                 string message = $"Unable to find {refFileRelativePath}";
                 ExtensionsHelper.GenerateNodeWithCommentWrapper(renderer, tag, message, codeSnippet.Raw, codeSnippet.Line);
                 return;
             }
-            
-            if(codeSnippet.DedentLength != null && codeSnippet.DedentLength < 0)
+
+            if (codeSnippet.DedentLength != null && codeSnippet.DedentLength < 0)
             {
                 renderer.Write($"<!-- Dedent length {codeSnippet.DedentLength} should be positive. Auto-dedent will be applied. -->\n");
             }
@@ -262,24 +263,23 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var currentFilePath = ((RelativePath)_context.FilePath).GetPathFromWorkingFolder();
             var refFileRelativePath = ((RelativePath)obj.CodePath).BasedOn(currentFilePath);
             _engine.ReportDependency(refFileRelativePath);
-            
+
             var refPath = Path.Combine(_context.BasePath, refFileRelativePath.RemoveWorkingFolder());
-            var allLines = File.ReadAllLines(refPath);
+            var allLines = EnvironmentContext.FileAbstractLayer.ReadAllLines(refFileRelativePath);
 
             // code range priority: tag > #L1 > start/end > range > default
             if (!string.IsNullOrEmpty(obj.TagName))
             {
                 var lang = obj.Language ?? Path.GetExtension(refPath);
-                List<CodeSnippetExtrator> extrators;
-                if(!CodeLanguageExtractors.TryGetValue(lang, out extrators))
+                if (!CodeLanguageExtractors.TryGetValue(lang, out List<CodeSnippetExtrator> extrators))
                 {
                     Logger.LogError($"{lang} is not supported languaging name, alias or extension for parsing code snippet with tag name, you can use line numbers instead");
                 }
 
-                if(extrators != null)
+                if (extrators != null)
                 {
                     var tagWithPrefix = tagPrefix + obj.TagName;
-                    foreach(var extrator in extrators)
+                    foreach (var extrator in extrators)
                     {
                         HashSet<int> tagLines = new HashSet<int>();
                         var tagToCoderangeMapping = extrator.GetAllTags(allLines, ref tagLines);

@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System.IO;
-
     using Markdig.Renderers;
     using Markdig.Renderers.Html;
     using Microsoft.DocAsCode.Common;
@@ -43,19 +41,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             }
 
             var currentFilePath = ((RelativePath)_context.FilePath).GetPathFromWorkingFolder();
-            var includeFilePath = ((RelativePath)inclusion.Context.IncludedFilePath).BasedOn(currentFilePath);
+            var includedFilePath = ((RelativePath)inclusion.Context.IncludedFilePath).BasedOn(currentFilePath);
 
-            var filePath = Path.Combine(_context.BasePath, includeFilePath.RemoveWorkingFolder());
-            if (!File.Exists(filePath))
+            if (!EnvironmentContext.FileAbstractLayer.Exists(includedFilePath))
             {
-                Logger.LogWarning($"Can't find {includeFilePath}.");
+                Logger.LogWarning($"Can't find {includedFilePath}.");
                 renderer.Write(inclusion.Context.GetRaw());
 
                 return;
             }
 
             var parents = _context.InclusionSet;
-            if (parents != null && parents.Contains(includeFilePath))
+            if (parents != null && parents.Contains(includedFilePath))
             {
                 string tag = "ERROR INCLUDE";
                 string message = $"Unable to resolve {inclusion.Context.GetRaw()}: Circular dependency found in \"{_context.FilePath}\"";
@@ -64,16 +61,16 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return;
             }
 
-            var content = File.ReadAllText(filePath);
+            var content = EnvironmentContext.FileAbstractLayer.ReadAllText(includedFilePath);
             var context = new MarkdownContextBuilder()
                             .WithContext(_context)
-                            .WithFilePath(includeFilePath.RemoveWorkingFolder())
+                            .WithFilePath(includedFilePath.RemoveWorkingFolder())
                             .WithContent(content)
                             .WithIsInline(true)
                             .WithAddingIncludedFile(currentFilePath)
                             .Build();
 
-            _engine.ReportDependency(includeFilePath);
+            _engine.ReportDependency(includedFilePath);
             // Do not need to check if content is a single paragragh
             // context.IsInline = true will force it into a single paragragh and render with no <p></p>
             var result = _engine.Markup(context, _parameters);

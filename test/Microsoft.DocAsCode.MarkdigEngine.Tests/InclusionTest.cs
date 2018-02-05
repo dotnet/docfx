@@ -9,9 +9,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using System.Linq;
 
     using Microsoft.DocAsCode.Plugins;
+
     using Xunit;
 
-    public class InclusionTest
+    [Collection("docfx STA")]
+    public class InclusionTest : TestBase
     {
         [Fact]
         [Trait("Related", "Inclusion")]

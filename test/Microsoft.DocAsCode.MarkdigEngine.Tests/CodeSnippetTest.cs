@@ -8,9 +8,11 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using System.Linq;
 
     using Microsoft.DocAsCode.Plugins;
+
     using Xunit;
 
-    public class CodeSnippetTest
+    [Collection("docfx STA")]
+    public class CodeSnippetTest : TestBase
     {
         private static MarkupResult SimpleMarkup(string source)
         {

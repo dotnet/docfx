@@ -3,7 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 {
-    using System.IO;
     using System.Text.RegularExpressions;
 
     using Markdig.Renderers;
@@ -47,8 +46,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var currentFilePath = ((RelativePath)_context.FilePath).GetPathFromWorkingFolder();
             var includedFilePath = ((RelativePath)inclusion.Context.IncludedFilePath).BasedOn(currentFilePath);
 
-            var filePath = Path.Combine(_context.BasePath, includedFilePath.RemoveWorkingFolder());
-            if (!File.Exists(filePath))
+            if (!EnvironmentContext.FileAbstractLayer.Exists(includedFilePath))
             {
                 Logger.LogWarning($"Can't find {includedFilePath}.");
                 renderer.Write(inclusion.Context.GetRaw());
@@ -66,7 +64,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return;
             }
 
-            var content = File.ReadAllText(filePath);
+            var content = EnvironmentContext.FileAbstractLayer.ReadAllText(includedFilePath);
             var context = new MarkdownContextBuilder()
                             .WithContext(_context)
                             .WithFilePath(includedFilePath.RemoveWorkingFolder())

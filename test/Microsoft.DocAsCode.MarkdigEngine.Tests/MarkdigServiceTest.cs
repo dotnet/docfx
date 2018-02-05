@@ -6,11 +6,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
     using System.Collections.Generic;
     using System.Collections.Immutable;
     
-    using Markdig.Syntax;
     using MarkdigEngine.Extensions;
+
+    using Markdig.Syntax;
     using Xunit;
 
-    public class MarkdigServiceTest
+    [Collection("docfx STA")]
+    public class MarkdigServiceTest : TestBase
     {
         [Fact]
         [Trait("Related", "MarkdigService")]
