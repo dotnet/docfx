@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Common
                 m =>
                 {
                     pipeline.Add(pipelineProvider(m.Groups[1].Value));
-                    parameters.Add(m.Groups[2].Value.Split(' '));
+                    parameters.Add(m.Groups[2].Value.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries));
                     return string.Empty;
                 });
             return new UriTemplate<T>(t, func, pipeline.ToArray(), parameters.ToArray());
