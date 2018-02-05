@@ -129,7 +129,11 @@ namespace Microsoft.DocAsCode.Build.Engine
                     }
                     if (Uri.TryCreate(item.Href, UriKind.Absolute, out var uri))
                     {
-                        item.Href = item.Href.Substring(uri.GetLeftPart(UriPartial.Authority).Length);
+                        if (parameters.Length == 0 ||
+                            Array.IndexOf(parameters, uri.Host) != -1)
+                        {
+                            item.Href = item.Href.Substring(uri.GetLeftPart(UriPartial.Authority).Length);
+                        }
                     }
                 }
                 return list;
