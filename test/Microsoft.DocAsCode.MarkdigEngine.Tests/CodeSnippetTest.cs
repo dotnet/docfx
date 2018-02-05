@@ -3,15 +3,29 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Plugins;
+    using Microsoft.DocAsCode.Common;
+
     using Xunit;
 
-    public class CodeSnippetTest
+    [Collection("docfx STA")]
+    public class CodeSnippetTest : IDisposable
     {
+        public CodeSnippetTest()
+        {
+            EnvironmentContext.FileAbstractLayerImpl = FileAbstractLayerBuilder.Default.ReadFromRealFileSystem(".").WriteToRealFileSystem(".").Create();
+        }
+
+        public void Dispose()
+        {
+            EnvironmentContext.Clean();
+        }
+
         private static MarkupResult SimpleMarkup(string source)
         {
             return TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
