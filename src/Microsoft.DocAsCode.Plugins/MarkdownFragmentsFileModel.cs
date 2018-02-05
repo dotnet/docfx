@@ -13,6 +13,18 @@ namespace Microsoft.DocAsCode.Plugins
 
         public ModelWithCache ModelWithCache { get; }
 
+        public string LocalPathFromRoot
+        {
+            get
+            {
+                return ModelWithCache.File;
+            }
+            set
+            {
+                ModelWithCache.File = value;
+            }
+        }
+
         public MarkdownFragmentsFileModel(FileAndType ft, object content, FileAndType original = null, IFormatter serializer = null)
         {
             OriginalFileAndType = original ?? ft;
