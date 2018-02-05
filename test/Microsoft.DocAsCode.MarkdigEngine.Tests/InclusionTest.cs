@@ -3,29 +3,18 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
     using System.Linq;
 
     using Microsoft.DocAsCode.Plugins;
-    using Microsoft.DocAsCode.Common;
+
     using Xunit;
 
     [Collection("docfx STA")]
-    public class InclusionTest : IDisposable
+    public class InclusionTest : TestBase
     {
-        public InclusionTest()
-        {
-            EnvironmentContext.FileAbstractLayerImpl = FileAbstractLayerBuilder.Default.ReadFromRealFileSystem(".").WriteToRealFileSystem(".").Create();
-        }
-
-        public void Dispose()
-        {
-            EnvironmentContext.Clean();
-        }
-
         [Fact]
         [Trait("Related", "Inclusion")]
         public void TestBlockLevelInclusion_General()

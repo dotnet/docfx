@@ -5,7 +5,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
     using Xunit;
 
-    public class InteractiveCodeTest
+    [Collection("docfx STA")]
+    public class InteractiveCodeTest : TestBase
     {
         [Fact]
         [Trait("Related", "InteractiveCode")]
