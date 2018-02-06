@@ -24,7 +24,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             var overwriteApplier = new OverwriteApplier(host, OverwriteModelType.MarkdownFragments);
             foreach (var fileModel in models)
             {
-                var overwriteDocumentModels = fileModel.MarkdownFragmentsModel.ModelWithCache.Content as List<OverwriteDocumentModel>;
+                var overwriteDocumentModels = fileModel.MarkdownFragmentsModel?.ModelWithCache.Content as List<OverwriteDocumentModel>;
                 if (overwriteDocumentModels == null)
                 {
                     continue;
