@@ -13,6 +13,12 @@ namespace Microsoft.DocAsCode.Plugins
 
         public ModelWithCache ModelWithCache { get; }
 
+        public object Content
+        {
+            get { return ModelWithCache.Content; }
+            set { ModelWithCache.Content = value; }
+        }
+
         public string LocalPathFromRoot
         {
             get
