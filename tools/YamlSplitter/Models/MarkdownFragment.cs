@@ -19,10 +19,11 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter.Models
 
         public override string ToString()
         {
+            string uidWrapper = FragmentModelHelper.GetUidWrapper(Uid);
             StringBuilder sb = new StringBuilder();
-            sb.Append("# `");
+            sb.Append("# " + uidWrapper);
             sb.Append(Uid);
-            sb.AppendLine("`");
+            sb.AppendLine(uidWrapper);
 
             if (Metadata?.Count > 0)
             {

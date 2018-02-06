@@ -19,6 +19,8 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
 
     public static class FragmentModelHelper
     {
+        private static readonly string[] UidWrappers = { "`", "``", "```", "````", "`````", "``````" };
+
         public static MarkdigMarkdownService MDService = new MarkdigMarkdownService(
             new MarkdownServiceParameters
             {
@@ -28,62 +30,6 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
                         { LineNumberExtension.EnableSourceInfo, false }
                     }
             });
-
-        public static Dictionary<string, FragmentFile> LoadMarkdownFolder(string path)
-        {
-            ConcurrentBag<FragmentFile> fileBag = new ConcurrentBag<FragmentFile>();
-            int errorHappened = 0;
-            Parallel.ForEach(Directory.EnumerateFiles(path, "*.md", SearchOption.AllDirectories), filePath =>
-            {
-                try
-                {
-                    var fragments = LoadMarkdownFragment(filePath);
-                    if (fragments != null)
-                    {
-                        fileBag.Add(new FragmentFile()
-                        {
-                            FilePath = filePath,
-                            FragmentsByUid = fragments
-                        });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Error loading " + filePath + ": " + ex.ToString());
-                    Interlocked.Increment(ref errorHappened);
-                }
-            });
-            if (errorHappened > 0)
-            {
-                Console.WriteLine("Error loading {0} files, aborting...", errorHappened);
-                return null;
-            }
-            errorHappened = 0;
-            var filesByUid = new Dictionary<string, FragmentFile>();
-            foreach (var fragmentFile in fileBag)
-            {
-                foreach (var fragmentPair in fragmentFile.FragmentsByUid)
-                {
-                    if (filesByUid.ContainsKey(fragmentPair.Key))
-                    {
-                        Console.WriteLine("Dup Uid found in below two files:");
-                        Console.WriteLine(fragmentFile.FilePath);
-                        Console.WriteLine(filesByUid[fragmentPair.Key].FilePath);
-                        errorHappened++;
-                    }
-                    else
-                    {
-                        filesByUid.Add(fragmentPair.Key, fragmentFile);
-                    }
-                }
-            }
-            if (errorHappened > 0)
-            {
-                Console.WriteLine("Dup Uid found in {0} files, aborting...", errorHappened);
-                return null;
-            }
-            return filesByUid;
-        }
 
         public static Dictionary<string, MarkdownFragment> LoadMarkdownFragment(string fileName)
         {
@@ -187,6 +133,24 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
                 }
             }
             return left;
+        }
+
+        public static string GetUidWrapper(string uid)
+        {
+            int wrapperCount = 0;
+            int lastPos = 0;
+            for (int i = 0; i < uid.Length; i++)
+            {
+                if (uid[i] == '`')
+                {
+                    wrapperCount = System.Math.Max(wrapperCount, i - lastPos);
+                }
+                else
+                {
+                    lastPos = i;
+                }
+            }
+            return UidWrappers[wrapperCount];
         }
     }
 }

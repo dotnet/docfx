@@ -14,9 +14,10 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter.Models
 
         public void SerializeTo(StringBuilder sb)
         {
-            sb.Append("## `");
+            string wrapper = FragmentModelHelper.GetUidWrapper(OPath);
+            sb.Append("## " + wrapper);
             sb.Append(OPath);
-            sb.AppendLine("`");
+            sb.AppendLine(wrapper);
             sb.AppendLine(Content);
         }
     }

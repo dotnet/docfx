@@ -20,6 +20,7 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
     class Program
     {
         static HashSet<string> missingMergeKey = new HashSet<string>();
+        static readonly string[] SupportedYamlExtensions = { ".yml", ".yaml" };
 
         static void Main(string[] args)
         {
@@ -28,13 +29,13 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
                 (InitOptions opts) => { Console.WriteLine("init mode is not supported right now."); return 0; },
                 (UpdateOptions opts) => RunUpdate(opts),
                 errs => -1);
-            foreach(var key in missingMergeKey)
+            foreach (var key in missingMergeKey)
             {
                 Console.WriteLine(key + " does not have a merge key defined in schema, skipping...");
             }
         }
 
-        public static int RunUpdate(UpdateOptions opt)
+        private static int RunUpdate(UpdateOptions opt)
         {
             opt.InputYamlFolder = Path.GetFullPath(opt.InputYamlFolder);
             if (!string.IsNullOrEmpty(opt.OutputYamlFolder))
@@ -54,7 +55,8 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
                 opt.MDFolder = opt.OutputYamlFolder;
             }
             var schemas = LoadSchemas(opt.SchemaFolder);
-            foreach (var ymlFile in Directory.EnumerateFiles(opt.InputYamlFolder, "*.yml", SearchOption.AllDirectories))
+            foreach (var ymlFile in Directory.EnumerateFiles(opt.InputYamlFolder, "*.*", SearchOption.AllDirectories)
+                .Where(f => SupportedYamlExtensions.Any(ext => string.Equals(ext, Path.GetExtension(f), StringComparison.OrdinalIgnoreCase))))
             {
                 if (ymlFile.EndsWith("/toc.yml", StringComparison.OrdinalIgnoreCase))
                 {
@@ -68,7 +70,7 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
             return 0;
         }
 
-        public static Dictionary<string, DocumentSchema> LoadSchemas(string schemaFolderPath)
+        private static Dictionary<string, DocumentSchema> LoadSchemas(string schemaFolderPath)
         {
             var schemas = new Dictionary<string, DocumentSchema>();
             foreach (var schemaFile in Directory.EnumerateFiles(schemaFolderPath, "*.schema.json"))
@@ -83,21 +85,19 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
             return schemas;
         }
 
-        public static void ProcessFilePair(string ymlInputFile, string ymlOutputFile, string mdFile, Dictionary<string, DocumentSchema> schemas)
+        private static void ProcessFilePair(string ymlInputFile, string ymlOutputFile, string mdFile, Dictionary<string, DocumentSchema> schemas)
         {
             var yamlStream = new YamlStream();
             using (var sr = new StreamReader(ymlInputFile))
             {
                 yamlStream.Load(sr);
             }
-            if (yamlStream.Documents.Count != 1) throw new NotSupportedException("Does not support mutiple YAML documents");
+            if (yamlStream.Documents.Count != 1)
+            {
+                throw new NotSupportedException("Does not support mutiple YAML documents");
+            }
 
             var mime = YamlMime.ReadMime(ymlInputFile);
-            if (!mime.StartsWith(YamlMime.YamlMimePrefix))
-            {
-                Console.WriteLine("Invalid Yaml Mime found in " + ymlInputFile + ", should start with " + YamlMime.YamlMimePrefix);
-                return;
-            }
             var schemaName = mime.Substring(YamlMime.YamlMimePrefix.Length);
             if (!schemas.ContainsKey(schemaName))
             {
