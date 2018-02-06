@@ -7,7 +7,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 
     using Xunit;
 
-    public class GeneralTest
+    [Collection("docfx STA")]
+    public class GeneralTest : TestBase
     {
         [Fact]
         [Trait("Related", "DfmMarkdown")]
