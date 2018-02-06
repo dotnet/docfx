@@ -254,7 +254,7 @@ And we allow to add some plug-ins to validate metadata written in markdown files
 
 Metadata is coming from multiple sources, the following metadata will be validated during build: 
 1.  YAML header in markdown.
-2.  Global metadata and file metaata in `docfx.json`.
+2.  Global metadata and file metadata in `docfx.json`.
 3.  Global metadata and file metadata defined in separate `.json` files.
 
 > [!Tip]
