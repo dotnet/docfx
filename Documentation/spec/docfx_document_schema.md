@@ -230,7 +230,7 @@ Here's the schema to describe these operations:
             "tags": [ "metadata" ]
         },
         "uid": {
-            "type": "string"
+            "type": "string",
             "contentType": "uid"
         },
         "sections": {
