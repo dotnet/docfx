@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6A65A769-DAC3-4E99-96F9-991F4CE8D164}"
 EndProject
@@ -210,6 +210,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Extensions", "src\Microsoft.DocAsCode.MarkdigEngine.Extensions\Microsoft.DocAsCode.MarkdigEngine.Extensions.csproj", "{FD0365CB-3F03-43B0-9FB2-FB50047BF3E5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.MarkdigEngine.Tests", "test\Microsoft.DocAsCode.MarkdigEngine.Tests\Microsoft.DocAsCode.MarkdigEngine.Tests.csproj", "{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MarkdownFragments", "MarkdownFragments", "{12B398BA-5002-40BE-A863-5B51FEB6EC68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YamlSplitter", "tools\YamlSplitter\YamlSplitter.csproj", "{2CA09972-F737-459A-A79E-EB96CC726200}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -731,6 +735,14 @@ Global
 		{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}.Release|x86.ActiveCfg = Release|Any CPU
 		{DD9736B2-8AA2-44AE-B0B3-57510FF0D634}.Release|x86.Build.0 = Release|Any CPU
+		{2CA09972-F737-459A-A79E-EB96CC726200}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CA09972-F737-459A-A79E-EB96CC726200}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CA09972-F737-459A-A79E-EB96CC726200}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2CA09972-F737-459A-A79E-EB96CC726200}.Debug|x86.Build.0 = Debug|Any CPU
+		{2CA09972-F737-459A-A79E-EB96CC726200}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CA09972-F737-459A-A79E-EB96CC726200}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CA09972-F737-459A-A79E-EB96CC726200}.Release|x86.ActiveCfg = Release|Any CPU
+		{2CA09972-F737-459A-A79E-EB96CC726200}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -832,6 +844,8 @@ Global
 		{EA44B820-4C3A-476C-A514-C89CAA6A0F46} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{FD0365CB-3F03-43B0-9FB2-FB50047BF3E5} = {6A65A769-DAC3-4E99-96F9-991F4CE8D164}
 		{DD9736B2-8AA2-44AE-B0B3-57510FF0D634} = {926A0726-B806-4215-82EF-AF8E22D0FACF}
+		{12B398BA-5002-40BE-A863-5B51FEB6EC68} = {5AED685E-6E0F-451D-AD5E-F88B0BE74ACD}
+		{2CA09972-F737-459A-A79E-EB96CC726200} = {12B398BA-5002-40BE-A863-5B51FEB6EC68}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6C12271F-8093-4D5D-8BEE-3318BFE40E23}
