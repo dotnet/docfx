@@ -961,6 +961,40 @@ exports.getOptions = function (){
         }
 
         [Fact]
+        public async Task TestBuildWithXrefServiceRemoveHostWithParameters()
+        {
+            var fakeResponseHandler = new FakeResponseHandler();
+            var httpClient = new HttpClient(fakeResponseHandler);
+
+            fakeResponseHandler.AddFakeResponse(new Uri("http://example.org/test1"), new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("[{'uid':'csharp_coding_standards', 'name':'C# Coding Standards', 'href':'http://dotnet.github.io/docfx/guideline/csharp_coding_standards.html'}]")
+            });
+            var result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test1|> removeHost www.microsoft.com"), 1).ResolveAsync("xx");
+            Assert.Equal("csharp_coding_standards", result.Uid);
+            Assert.Equal("http://dotnet.github.io/docfx/guideline/csharp_coding_standards.html", result.Href);
+
+            fakeResponseHandler.AddFakeResponse(new Uri("http://example.org/test2"), new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("[{'uid':'csharp_coding_standards', 'name':'C# Coding Standards', 'href':'http://www.microsoft.com/docfx/guideline/csharp_coding_standards.html'}]")
+            });
+            result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test2|> removeHost www.microsoft.com"), 1).ResolveAsync("xx");
+            Assert.Equal("csharp_coding_standards", result.Uid);
+            Assert.Equal("/docfx/guideline/csharp_coding_standards.html", result.Href);
+
+            fakeResponseHandler.AddFakeResponse(new Uri("http://example.org/test3"), new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent("[{'uid':'csharp_coding_standards', 'name':'C# Coding Standards', 'href':'http://dotnet.github.io/docfx/guideline/csharp_coding_standards.html'}]")
+            });
+            result = await new XrefServiceResolver(httpClient, ImmutableArray.Create("http://example.org/test3|> removeHost www.microsoft.com dotnet.github.io"), 1).ResolveAsync("xx");
+            Assert.Equal("csharp_coding_standards", result.Uid);
+            Assert.Equal("/docfx/guideline/csharp_coding_standards.html", result.Href);
+        }
+
+        [Fact]
         public void TestBuildWithMultipleVersion()
         {
             #region Prepare test data
