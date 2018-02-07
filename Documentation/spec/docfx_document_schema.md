@@ -159,8 +159,17 @@ When someone references this uid using `<xref uid="webapp" template="partials/ov
 ```html
 Web Apps Documentation: <p>This is description</p>
 ```
-In this way, users can not only *cross reference* others to get the target url, but also *cross reference* other properties as they like. A common usage of this is the **Namespace** page in ManagedReference. The **Namespace** page shows a table of its **Classes** with the `summary` of the **Class**, with the help of `xrefProperties`, the source of truth `summary` is always from **Class**, and the **Namespace** page, for example, defines a `class.tr.tmpl` template `<tr><td>{{name}}</td><td>{{{summary}}}</td></tr>` to render the `xref` properly.
+In this way, users can not only *cross reference* others to get the target url, but also *cross reference* other properties as they like.
 
+A common usage of this is the **Namespace** page in ManagedReference. The **Namespace** page shows a table of its **Classes** with the `summary` of the **Class**, with the help of `xrefProperties`, the source of truth `summary` is always from **Class**. For the **Namespace** page, it can, for example:
+1. Define a `class.tr.tmpl` template: `<tr><td>{{name}}</td><td>{{{summary}}}</td></tr>`
+2. The namespace `namespace.tmpl` template, use `xref` to render its children classes: 
+    ```mustache
+    {{#children}}
+      <xref uid="{{uid}}" template="class.tr.tmpl" />
+    {{/children}}
+    ```
+    
 ## 7. Samples
 Here's an sample of the schema. Assume we have the following YAML file:
 ```yaml
