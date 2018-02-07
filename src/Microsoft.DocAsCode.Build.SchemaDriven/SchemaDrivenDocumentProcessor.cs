@@ -143,13 +143,13 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         };
                         if (markdownFragmentsContent != null)
                         {
-                            fm.MarkdownFragmentsModel = new MarkdownFragmentsFileModel(
+                            fm.MarkdownFragmentsModel = new FileModel(
                                 file,
                                 markdownFragmentsContent,
                                 new FileAndType(
                                     file.BaseDir,
                                     markdownFragmentsFile,
-                                    DocumentType.Overwrite,
+                                    DocumentType.MarkdownFragments,
                                     file.SourceDir,
                                     file.DestinationDir),
                                 new BinaryFormatter())
