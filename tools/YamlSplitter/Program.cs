@@ -140,19 +140,16 @@ namespace Microsoft.DocAsCode.Tools.YamlSplitter
             var oPathPrefix = string.IsNullOrEmpty(parentOPath) ? "" : (parentOPath + "/");
             if (node is YamlMappingNode map)
             {
-                if (string.IsNullOrEmpty(uid))
+                var uidKey = schema.Properties.Keys.FirstOrDefault(k => schema.Properties[k].ContentType == ContentType.Uid);
+                if (!string.IsNullOrEmpty(uidKey))
                 {
-                    var uidKey = schema.Properties.Keys.FirstOrDefault(k => schema.Properties[k].ContentType == ContentType.Uid);
-                    if (!string.IsNullOrEmpty(uidKey))
-                    {
-                        uid = map.Children[uidKey].ToString();
-                        fragments.AddOrUpdateFragmentEntity(uid);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Cannot find Uid, aborting...");
-                        return;
-                    }
+                    uid = map.Children[uidKey].ToString();
+                    fragments.AddOrUpdateFragmentEntity(uid);
+                }
+                else if (string.IsNullOrEmpty(uid))
+                {
+                    Console.WriteLine("Cannot find Uid, aborting...");
+                    return;
                 }
 
                 var keys = map.Children.Keys.Select(k => k.ToString()).ToList();
