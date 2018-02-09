@@ -8,7 +8,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.CodeAnalysis;
 
-    internal class IntermediateMetadataExtractor : IExtractor
+    public class IntermediateMetadataExtractor : IExtractor
     {
         private IBuildController _controller;
         public IntermediateMetadataExtractor(IBuildController controller)
@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return new MetadataExtractor(compilation, assembly).Extract(options);
         }
 
-        internal static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethodsFromCompilation(IEnumerable<Compilation> compilations)
+        public static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethodsFromCompilation(IEnumerable<Compilation> compilations)
         {
             var methods = new Dictionary<Compilation, IEnumerable<IMethodSymbol>>();
             foreach (var compilation in compilations)
@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return methods;
         }
 
-        internal static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethodsFromAssembly(Compilation compilation, IEnumerable<IAssemblySymbol> assemblies)
+        public static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethodsFromAssembly(Compilation compilation, IEnumerable<IAssemblySymbol> assemblies)
         {
             var methods = new Dictionary<Compilation, IEnumerable<IMethodSymbol>>();
             foreach (var assembly in assemblies)

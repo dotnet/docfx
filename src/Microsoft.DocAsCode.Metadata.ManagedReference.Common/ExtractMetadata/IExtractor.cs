@@ -3,7 +3,7 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
-    interface IExtractor
+    public interface IExtractor
     {
         MetadataItem Extract(IInputParameters key);
     }

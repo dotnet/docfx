@@ -9,7 +9,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Newtonsoft.Json;
 
-    internal class ExtractMetadataOptions
+    public class ExtractMetadataOptions
     {
         public bool ShouldSkipMarkup { get; set; }
 

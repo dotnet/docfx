@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.DocAsCode.Common;
 
-    internal class AssemblyFileInputParameters : IInputParameters
+    public class AssemblyFileInputParameters : IInputParameters
     {
         public ExtractMetadataOptions Options { get; }
 

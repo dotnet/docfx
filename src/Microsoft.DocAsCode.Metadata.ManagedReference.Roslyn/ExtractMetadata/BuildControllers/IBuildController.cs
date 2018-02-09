@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using Microsoft.CodeAnalysis;
 
-    internal interface IBuildController
+    public interface IBuildController
     {
         Compilation GetCompilation(IInputParameters key);
         IAssemblySymbol GetAssembly(IInputParameters key);
