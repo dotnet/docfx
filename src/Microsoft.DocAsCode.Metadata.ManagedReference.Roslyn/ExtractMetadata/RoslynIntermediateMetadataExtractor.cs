@@ -8,10 +8,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.CodeAnalysis;
 
-    public class IntermediateMetadataExtractor : IExtractor
+    public class RoslynIntermediateMetadataExtractor : IExtractor
     {
-        private IBuildController _controller;
-        public IntermediateMetadataExtractor(IBuildController controller)
+        private IRoslynBuildController _controller;
+        public RoslynIntermediateMetadataExtractor(IRoslynBuildController controller)
         {
             _controller = controller;
         }
@@ -33,7 +33,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             options = options ?? new ExtractMetadataOptions();
 
-            return new MetadataExtractor(compilation, assembly).Extract(options);
+            return new RoslynMetadataExtractor(compilation, assembly).Extract(options);
         }
 
         public static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethodsFromCompilation(IEnumerable<Compilation> compilations)
