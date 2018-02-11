@@ -192,6 +192,10 @@ $packages = @{
     "MarkdownMigrateTool" = @{
         "proj" = $null;
         "nuspecs" = @("src\nuspec\MarkdownMigrateTool\MarkdownMigrateTool.nuspec");
+    };
+    "YamlSplitter" = @{
+        "proj" = $null;
+        "nuspecs" = @("src\nuspec\YamlSplitter\YamlSplitter.nuspec");
     }
 }
 
