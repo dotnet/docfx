@@ -15,7 +15,14 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
 
     public class OverwriteDocumentModelCreater
     {
-        public static OverwriteDocumentModel Create(MarkdownFragmentModel model)
+        string _file;
+
+        public OverwriteDocumentModelCreater(string file)
+        {
+            _file = file ?? throw new ArgumentNullException(nameof(file));
+        }
+
+        public OverwriteDocumentModel Create(MarkdownFragmentModel model)
         {
             // TODO: support multi-layer yaml
             var yamlCodeBlockMetadata = ConvertYamlCodeBlock(model.YamlCodeBlock, model.YamlCodeBlockSource);
@@ -51,7 +58,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             }
         }
 
-        internal static Dictionary<string, object> ConvertContents(List<MarkdownPropertyModel> contents)
+        internal Dictionary<string, object> ConvertContents(List<MarkdownPropertyModel> contents)
         {
             var contentsMetadata = new Dictionary<string, object>();
             List<OPathSegment> OPathSegments;
@@ -76,8 +83,8 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
         {
             var metadata = yamlCodeMetadata.Concat(contentsMetadata).GroupBy(p => p.Key);
             var metadatasWithSameOPath = from meta in metadata
-                where meta.Count() > 1
-                select meta;
+                                         where meta.Count() > 1
+                                         select meta;
             foreach (var meta in metadatasWithSameOPath)
             {
                 Logger.LogWarning(
@@ -88,13 +95,13 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             return metadata.ToDictionary(g => g.Key, g => g.Last().Value);
         }
 
-        private static void AppendNewObject(List<OPathSegment> OPathSegments, Block codeHeaderBlock, List<Block> propertyValue, Dictionary<string, object> contentsMetadata)
+        private void AppendNewObject(List<OPathSegment> OPathSegments, Block codeHeaderBlock, List<Block> propertyValue, Dictionary<string, object> contentsMetadata)
         {
             FindOrCreateObject(contentsMetadata, codeHeaderBlock, OPathSegments, 0, propertyValue,
                 string.Join("/", OPathSegments.Select(o => o.OriginalSegmentString)));
         }
 
-        private static void FindOrCreateObject(Dictionary<string, object> currentObject, Block codeHeaderBlock, List<OPathSegment> OPathSegments, int index, List<Block> propertyValue, string originalOPathString)
+        private void FindOrCreateObject(Dictionary<string, object> currentObject, Block codeHeaderBlock, List<OPathSegment> OPathSegments, int index, List<Block> propertyValue, string originalOPathString)
         {
             var segment = OPathSegments[index];
             if (index == OPathSegments.Count - 1)
@@ -122,20 +129,22 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 }
                 else
                 {
-                    var listObject = childObject as List<Dictionary<string, object>>;
+                    var listObject = childObject as List<object>;
                     if (listObject != null)
                     {
                         object value;
                         var goodItems = (from item in listObject
-                            where item.TryGetValue(segment.Key, out value) && (value as string).Equals(segment.Value)
-                            select item).ToList();
+                                         where item is Dictionary<string, object> 
+                                            && ((Dictionary<string, object>)item).TryGetValue(segment.Key, out value) 
+                                            && (value as string).Equals(segment.Value)
+                                         select (Dictionary<string, object>)item).ToList();
                         if (goodItems.Count > 0)
                         {
                             FindOrCreateObject(goodItems[0], codeHeaderBlock, OPathSegments, ++index, propertyValue, originalOPathString);
                         }
                         else
                         {
-                            nextObject = CreateDictionaryArrayObject(segment)[0];
+                            nextObject = (Dictionary<string, object>)CreateDictionaryArrayObject(segment)[0];
                             listObject.Add(nextObject);
                             FindOrCreateObject(nextObject, codeHeaderBlock, OPathSegments, ++index, propertyValue, originalOPathString);
                         }
@@ -158,7 +167,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 else
                 {
                     var newObject = CreateDictionaryArrayObject(segment);
-                    nextObject = newObject[0];
+                    nextObject = (Dictionary<string, object>)newObject[0];
                     currentObject[segment.SegmentName] = newObject;
                 }
 
@@ -166,7 +175,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             }
         }
 
-        private static void CreateCoreObject(OPathSegment lastSegment, Block codeHeaderBlock, Dictionary<string, object> currentObject, List<Block> propertyValue, string originalOPathString)
+        private void CreateCoreObject(OPathSegment lastSegment, Block codeHeaderBlock, Dictionary<string, object> currentObject, List<Block> propertyValue, string originalOPathString)
         {
             if (currentObject.TryGetValue(lastSegment.SegmentName, out object value))
             {
@@ -189,7 +198,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             currentObject[lastSegment.SegmentName] = CreateDocument(propertyValue);
         }
 
-        private static MarkdownDocument CreateDocument(List<Block> blocks)
+        private MarkdownDocument CreateDocument(List<Block> blocks)
         {
             var result = new MarkdownDocument();
             foreach (var block in blocks)
@@ -197,6 +206,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 block.Parent?.Remove(block);
                 result.Add(block);
             }
+            result.SetData("filePath", _file);
             return result;
         }
 
@@ -205,9 +215,9 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
             return new Dictionary<string, object>();
         }
 
-        private static List<Dictionary<string, object>> CreateDictionaryArrayObject(OPathSegment segment)
+        private static List<object> CreateDictionaryArrayObject(OPathSegment segment)
         {
-            var newObject = new List<Dictionary<string, object>>
+            var newObject = new List<object>
             {
                 new Dictionary<string, object>
                 {

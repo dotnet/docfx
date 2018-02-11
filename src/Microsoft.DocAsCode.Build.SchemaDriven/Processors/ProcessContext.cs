@@ -45,6 +45,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
         }
 
         public ProcessContext(IHostService hs, FileModel fm, IDocumentBuildContext bc = null)
+            : this(hs, fm, bc, null) { }
+
+        public ProcessContext(IHostService hs, FileModel fm, IDocumentBuildContext bc, MarkdigMarkdownService markdigMarkdownService = null)
         {
             _model = fm;
             OriginalFileAndType = fm.OriginalFileAndType;
@@ -67,10 +70,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven.Processors
 
             Host = hs;
             BuildContext = bc;
-            if (((IDictionary<string, object>)(fm.Properties)).TryGetValue("MarkdigMarkdownService", out var service))
-            {
-                MarkdigMarkdownService = (MarkdigMarkdownService)service;
-            }
+            MarkdigMarkdownService = markdigMarkdownService;
         }
     }
 }

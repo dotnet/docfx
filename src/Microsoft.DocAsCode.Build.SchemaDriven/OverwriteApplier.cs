@@ -10,6 +10,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Microsoft.DocAsCode.Build.SchemaDriven.Processors;
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.Common;
+    using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
 
     public class OverwriteApplier
@@ -85,8 +86,9 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             dynamic overwriteObject = ConvertToObjectHelper.ConvertToDynamic(overwrite.Metadata);
             overwriteObject.uid = overwrite.Uid;
             var overwriteModel = new FileModel(owModel.FileAndType, overwriteObject, owModel.OriginalFileAndType);
-
-            var context = new ProcessContext(_host, overwriteModel);
+            var context = (((IDictionary<string, object>)(owModel.Properties)).TryGetValue("MarkdigMarkdownService", out var service))
+                ? new ProcessContext(_host, overwriteModel, null, (MarkdigMarkdownService)service)
+                : new ProcessContext(_host, overwriteModel);
             if (_overwriteModelType == OverwriteModelType.Classic)
             {
                 context.ContentAnchorParser = new ContentAnchorParser(overwrite.Conceptual);
@@ -99,18 +101,21 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             }
 
             // add SouceDetail back to transformed, in week type
-            transformed[Constants.PropertyName.Documentation] = new Dictionary<string, object>
+            if (overwrite.Documentation != null)
             {
-                ["remote"] = overwrite.Documentation.Remote == null ? null : new Dictionary<string, object>
+                transformed[Constants.PropertyName.Documentation] = new Dictionary<string, object>
                 {
-                    ["path"] = overwrite.Documentation.Remote.RelativePath,
-                    ["branch"] = overwrite.Documentation.Remote.RemoteBranch,
-                    ["repo"] = overwrite.Documentation.Remote.RemoteRepositoryUrl,
-                }
-                ["path"] = overwrite.Documentation?.Path,
-                ["startLine"] = overwrite.Documentation?.StartLine ?? 0,
-                ["endLine"] = overwrite.Documentation?.EndLine ?? 0,
-            };
+                    ["remote"] = overwrite.Documentation.Remote == null ? null : new Dictionary<string, object>
+                    {
+                        ["path"] = overwrite.Documentation.Remote.RelativePath,
+                        ["branch"] = overwrite.Documentation.Remote.RemoteBranch,
+                        ["repo"] = overwrite.Documentation.Remote.RemoteRepositoryUrl,
+                    }
+                    ["path"] = overwrite.Documentation?.Path,
+                    ["startLine"] = overwrite.Documentation?.StartLine ?? 0,
+                    ["endLine"] = overwrite.Documentation?.EndLine ?? 0,
+                };
+            }
 
             owModel.LinkToUids = owModel.LinkToUids.Union((context.UidLinkSources).Keys);
             owModel.LinkToFiles = owModel.LinkToFiles.Union((context.FileLinkSources).Keys);

@@ -39,6 +39,7 @@ namespace Microsoft.DocAsCode.Common
             public const string InvalidYamlCodeBlockLanguage = "InvalidYamlCodeBlockLanguage";
             public const string InvalidOPaths = "InvalidOPaths";
             public const string DuplicateOPaths = "DuplicateOPaths";
+            public const string InvalidMarkdownFragments = "InvalidMarkdownFragments";
         }
     }
 }
