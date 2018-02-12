@@ -136,7 +136,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                         var goodItems = (from item in listObject
                                          where item is Dictionary<string, object> 
                                             && ((Dictionary<string, object>)item).TryGetValue(segment.Key, out value) 
-                                            && (value as string).Equals(segment.Value)
+                                            && ((string)value).Equals(segment.Value)
                                          select (Dictionary<string, object>)item).ToList();
                         if (goodItems.Count > 0)
                         {

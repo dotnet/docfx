@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 Logger.LogError(message);
                 throw new DocfxException(message);
             }
-            if (model.Properties.Schema == null || !(model.Properties.Schema is DocumentSchema))
+            if (!(model.Properties.Schema is DocumentSchema))
             {
                 var message = "Unable to find schema in file model.";
                 Logger.LogError(message);
@@ -93,14 +93,17 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 {
                     throw new DocfxException($"Unable to find UidDefinition for Uid {overwriteDocumentModel.Uid}");
                 }
-                foreach (var ud in uidDefinitons)
+                if (uidDefinitons.Count > 1)
                 {
-                    var jsonPointer = new JsonPointer(ud.Path).GetParentPointer();
-                    var schemaForCurrentUid = jsonPointer.FindSchema(schema);
-                    var source = jsonPointer.GetValue(model.Content);
-                    overwriteApplier.BuildOverwriteWithSchema(model.MarkdownFragmentsModel, overwriteDocumentModel, schema);
-                    overwriteApplier.MergeContentWithOverwrite(ref source, overwriteDocumentModel.Metadata, ud.Name, string.Empty, schemaForCurrentUid);
+                    Logger.LogWarning($"There are more than one UidDefinitions found for Uid {overwriteDocumentModel.Uid} in lines {string.Join(", ", uidDefinitons.Select(uid => uid.Line).ToList())}");
                 }
+
+                var ud = uidDefinitons[0];
+                var jsonPointer = new JsonPointer(ud.Path).GetParentPointer();
+                var schemaForCurrentUid = jsonPointer.FindSchema(schema);
+                var source = jsonPointer.GetValue(model.Content);
+                overwriteApplier.BuildOverwriteWithSchema(model.MarkdownFragmentsModel, overwriteDocumentModel, schema);
+                overwriteApplier.MergeContentWithOverwrite(ref source, overwriteDocumentModel.Metadata, ud.Name, string.Empty, schemaForCurrentUid);
             }
 
             // 5. Validate schema after the merge
