@@ -18,7 +18,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     public class MSBuildEnvironmentScope : IDisposable
     {
         private const string VSInstallDirKey = "VSINSTALLDIR";
-        private const string MSBuildExePathKey = "MSBuild_EXE_PATH";
+        private const string MSBuildExePathKey = "MSBUILD_EXE_PATH";
         private static readonly Regex DotnetBasePathRegex = new Regex("Base Path:(.*)$", RegexOptions.Compiled | RegexOptions.Multiline);
         private readonly EnvironmentScope _innerScope;
 
