@@ -1,13 +1,16 @@
-﻿using System;
-using System.IO;
-
-using Microsoft.CodeAnalysis.MSBuild;
-
-using Microsoft.DocAsCode.Common;
-
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
+    using System;
+    using System.IO;
+
+    using Microsoft.CodeAnalysis.MSBuild;
+
+    using Microsoft.DocAsCode.Common;
+
+
     public class RoslynProjectLoader : IProjectLoader
     {
         Lazy<MSBuildWorkspace> _workspace;
