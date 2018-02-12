@@ -88,7 +88,7 @@ An object to describe the schema of the value of the property.
 | contentType  | string | Defines the content type of the property. Refer to [contentType](#63-contenttype) for detailed explanation.
 | tags       | array  | Defines the tags of the property. Refer to [tags](#64-tags) for detailed explanation.
 | mergeType      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [mergeType](#65-mergetype) for detailed explanation.
-| xrefProperties  | array | Defines the properties of current object when it is cross referenced by others. Each item is the name of the property in the instance.
+| xrefProperties  | array | Defines the properties of current object when it is cross referenced by others. Each item is the name of the property in the instance. Refer to [xrefProperties](#66-xrefProperties) for detailed description of how to leverage this property.
 
 ##### Patterned Field
 | Field Name | Type | Description
@@ -143,11 +143,40 @@ The value MUST be one of the following:
 | `replace`  | `target` replaces `source`.
 | `ignore`   | `source` is not allowed to be merged.
 
+### 6.6 xrefProperties
+The value of this keyword MUST be an array of `string`. Each `string` value is the property name of current object that will be exported to be [Cross Referenced](docfx_flavored_markdown.md#cross-reference) by others.
+To leverage this feature, a new `xref` syntax with `template` attribute is support:
+```html
+<xref uid="{uid}" template="{path_of_partial_template}" />
+```
+For the parital template, the input model is the object containing properties `xrefProperties` defines.
+
+For example, in the sample schema defined by [7. Samples](7-samples), ` "xrefProperties": [ "title", "description" ],`, `title` and `description` are `xrefProperties` for uid `webapp`. A partial template to render this xref, for example, named `partials/overview.tmpl`, looks like:
+```mustache
+{{title}}: {{{description}}}
+```
+When someone references this uid using `<xref uid="webapp" template="partials/overview.tmpl"`, `docfx` expand this `xref` into the following html:
+```html
+Web Apps Documentation: <p>This is description</p>
+```
+In this way, users can not only *cross reference* others to get the target url, but also *cross reference* other properties as they like.
+
+A common usage of this is the **Namespace** page in ManagedReference. The **Namespace** page shows a table of its **Classes** with the `summary` of the **Class**, with the help of `xrefProperties`, the source of truth `summary` is always from **Class**. For the **Namespace** page, it can, for example:
+1. Define a `class.tr.tmpl` template: `<tr><td>{{name}}</td><td>{{{summary}}}</td></tr>`
+2. The namespace `namespace.tmpl` template, use `xref` to render its children classes: 
+    ```mustache
+    {{#children}}
+      <xref uid="{{uid}}" template="class.tr.tmpl" />
+    {{/children}}
+    ```
+    
 ## 7. Samples
 Here's an sample of the schema. Assume we have the following YAML file:
 ```yaml
 ### YamlMime:LandingPage
 title: Web Apps Documentation
+description: This is description
+uid: webapp
 metadata:
   title: Azure Web Apps Documentation - Tutorials, API Reference
   meta.description: Learn how to use App Service Web Apps to build and host websites and web applications.
@@ -194,10 +223,15 @@ Here's the schema to describe these operations:
     "title": "LandingPage",
     "description": "The schema for landing page",
     "type": "object",
+    "xrefProperties": [ "title", "description" ],
     "properties": {
         "metadata": {
             "type": "object",
             "tags": [ "metadata" ]
+        },
+        "uid": {
+            "type": "string",
+            "contentType": "uid"
         },
         "sections": {
             "type": "array",
@@ -238,15 +272,9 @@ Here's the schema to describe these operations:
 }
 ```
 
-## 8. Open Issues
+## 8. Q & A
 1. DocFX fills `_global` metadata into the processed data model, should the schema reflect this behavior?
-   * If YES: 
-        * Pros:
-            1. Users are aware of the existence of `_global` metadata, they can overwrite the property if they want.
-            2. Template writers are aware of it, they can completely rely on the schema to write the template.
-        * Cons:
-            1. Schema writers need aware of the existence of `_global` metadata, it should always exists for any schema. (Should we introduce in a concept of base schema?)
-    * Decision: *NOT* include, this schema is for **general purpose**, use documents to describe the changes introduced by DocFX.
+    * Decision: *NOT* include, this schema is for **input model**, use another schema for output model.
 2. Is it necessary to prefix `d-` to every field that DocFX introduces in?
     * If keep `d-`
         * Pros:
@@ -257,13 +285,4 @@ Here's the schema to describe these operations:
             2. Little chance that keywords DocFX defines duplicate with what JSON schema defines, after all, JSON schema defines a finite set of reserved keywords.
             3. For example[Swagger spec](http://swagger.io/) is also based on JSON schema and the fields it introduces in has no prefix. 
     * Decision: *Remove* `d-` prefix.
-3. What's remaining work if to apply schema to the complex data model, for example, ManagedReference, or UniversalReference?
-    * 1. OPS plugin framework, to insert metadata into the data model, for example, git commit id, git contributers.
-      Solution: A TagInterpreter plugin framework to insert metadata if the property contains `metadata` tag
-    * 2. The schema is able to support complex Json Schema syntax, such as definition reference `#/definiton/commonobject`
-    * 3. Support complex syntax in `<xref>` to support specify the html content to be rendered. Current `xref` always renders to `<a/> if `uid` can be resolved
-      Idea: One idea is to support syntax similar to `<xref uid="uid" template="a.tmpl">` that template writer can specify the template used to render `xref`
-    * 4. Support overwrite the object with given `uid`
-        Challenge: The schema can define multiple `uid`s inside one document.
-    * 5. Support incremental build
     
