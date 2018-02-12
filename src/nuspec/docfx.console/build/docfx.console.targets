@@ -49,8 +49,8 @@
       <DocGenerateCommand Condition="'$(DocTemplate)' != ''">$(DocGenerateCommand) --template &quot;$(DocTemplate)&quot; </DocGenerateCommand>
       <DocGenerateCommand Condition="'$(DocParameters)' != ''">$(DocGenerateCommand) $(DocParameters)</DocGenerateCommand>
     </PropertyGroup>
-    <Message Text="Init docfx config files" />
-    <Exec Command="&quot;$(BuildDocToolPath)&quot; init -o &quot;$(MSBuildProjectDirectory)&quot; -q --apiGlobPattern **.csproj --apiSourceFolder &quot;$(MSBuildProjectDirectory)&quot;" />
+    <Message Condition="!Exists($(DocfxConfigFile))" Text="Init docfx config files" />
+    <Exec Condition="!Exists($(DocfxConfigFile))" Command="&quot;$(BuildDocToolPath)&quot; init -o &quot;$(MSBuildProjectDirectory)&quot; -q --apiGlobPattern **.csproj --apiSourceFolder &quot;$(MSBuildProjectDirectory)&quot;" />
     <Message Text="Executing $(DocGenerateCommand)" />
     <Exec Command="$(DocGenerateCommand)"></Exec>
   </Target>
