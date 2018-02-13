@@ -55,7 +55,9 @@
             var rawModelFilePath = GetRawModelFilePath("Suppressions.yml");
             Assert.True(File.Exists(rawModelFilePath));
             var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
+            Assert.Equal("bob", rawModel["author"]);
             Assert.Contains("Enables the snoozed or dismissed attribute", rawModel["operations"][0]["summary"].ToString());
+            Assert.Contains("Some empty lines between H2 and this paragraph is tolerant", rawModel["definitions"][0]["properties"][0]["description"].ToString());
         }
 
         private void BuildDocument(FileCollection files)
@@ -75,7 +77,7 @@
         }
 
         // TODO: remove this class when ApplyOverwriteFragments supports incremental and exports to all schemas
-        [Export("SchemaDrivenDocumentProcessor.RESTOperationGroupTest", typeof(IDocumentBuildStep))]
+        [Export("SchemaDrivenDocumentProcessor.RESTMixedTest", typeof(IDocumentBuildStep))]
         public class ApplyOverwriteFragmentsForTest : ApplyOverwriteFragments
         {
         }
