@@ -18,6 +18,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private sealed class GfmService : IMarkdownService
         {
+            public string Name => "gfm";
+
             private static GfmEngineBuilder Builder { get; } = new GfmEngineBuilder(new Options { XHtml = true, Mangle = false });
             private static HtmlRenderer Renderer { get; } = new HtmlRenderer();
 

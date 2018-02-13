@@ -83,6 +83,8 @@ namespace Microsoft.DocAsCode.Plugins
         bool HasMetadataValidation { get; }
         void ValidateInputMetadata(string file, ImmutableDictionary<string, object> metadata);
 
+        string MarkdownServiceName { get; }
+
         #region Log
         void LogDiagnostic(string message, string file = null, string line = null);
         void LogVerbose(string message, string file = null, string line = null);

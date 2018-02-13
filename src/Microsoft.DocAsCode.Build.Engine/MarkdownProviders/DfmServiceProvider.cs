@@ -69,6 +69,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public sealed class DfmService : IMarkdownService, IHasIncrementalContext, IDisposable
         {
+            public string Name => "dfm";
+
             public DfmEngineBuilder Builder { get; }
 
             public object Renderer { get; }
