@@ -158,11 +158,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                                     EnvironmentContext.BaseDirectory,
                                     EnvironmentContext.FileAbstractLayer.GetPhysicalPath(markdownFragmentsFile))
                             };
+                            fm.MarkdownFragmentsModel.Properties.MarkdigMarkdownService = _markdigMarkdownService;
                         }
 
                         fm.Properties.Schema = _schema;
                         fm.Properties.Metadata = pageMetadata;
-                        fm.Properties.MarkdigMarkdownService = _markdigMarkdownService;
                         return fm;
                     }
                     catch (YamlDotNet.Core.YamlException e)

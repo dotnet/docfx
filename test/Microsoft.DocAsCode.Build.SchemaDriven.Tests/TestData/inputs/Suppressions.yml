@@ -1,0 +1,5 @@
+﻿### YamlMime:RESTOperationGroupTest
+uid: management.azure.com.advisor.suppressions
+name: Suppressions
+operations:
+- id: management.azure.com.advisor.suppressions.create

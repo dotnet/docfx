@@ -62,21 +62,21 @@ e: f
                 });
             }
 
-            var contentsMetadata = OverwriteDocumentModelCreater.ConvertContents(contents);
+            var contentsMetadata = new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(contents);
             Assert.Equal(3, contentsMetadata.Count);
             Assert.Equal("summary,return,function", ExtractDictionaryKeys(contentsMetadata));
-            Assert.Equal(2, ((Dictionary<string, object>) contentsMetadata["return"]).Count);
+            Assert.Equal(2, ((Dictionary<string, object>)contentsMetadata["return"]).Count);
             Assert.Equal("description,type",
-                ExtractDictionaryKeys((Dictionary<string, object>) contentsMetadata["return"]));
-            Assert.Single((Dictionary<string, object>) contentsMetadata["function"]);
+                ExtractDictionaryKeys((Dictionary<string, object>)contentsMetadata["return"]));
+            Assert.Single((Dictionary<string, object>)contentsMetadata["function"]);
             Assert.Equal(2,
-                ((List<Dictionary<string, object>>) ((Dictionary<string, object>) contentsMetadata["function"])["parameters"]).Count);
+                ((List<object>)((Dictionary<string, object>)contentsMetadata["function"])["parameters"]).Count);
             Assert.Equal("id,description,type",
                 ExtractDictionaryKeys(
-                    ((List<Dictionary<string, object>>) ((Dictionary<string, object>) contentsMetadata["function"])["parameters"])[0]));
+                    (Dictionary<string, object>)((List<object>)((Dictionary<string, object>)contentsMetadata["function"])["parameters"])[0]));
             Assert.Equal("id,description",
                 ExtractDictionaryKeys(
-                    ((List<Dictionary<string, object>>) ((Dictionary<string, object>) contentsMetadata["function"])["parameters"])[1]));
+                    (Dictionary<string, object>)((List<object>)((Dictionary<string, object>)contentsMetadata["function"])["parameters"])[1]));
         }
 
         [Fact]
@@ -104,7 +104,7 @@ e: f
             {
                 using (new LoggerPhaseScope("overwrite_document_model_creater"))
                 {
-                    contentsMetadata = OverwriteDocumentModelCreater.ConvertContents(contents);
+                    contentsMetadata = new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(contents);
                 }
             }
             finally
@@ -117,7 +117,7 @@ e: f
             Assert.Equal(1, logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidOPaths).Count());
             Assert.Equal(1, contentsMetadata.Count);
             Assert.Equal("test2",
-                ((ParagraphBlock) ((MarkdownDocument) ((Dictionary<string, object>) contentsMetadata["function"])["parameters"])[0]).Inline.FirstChild.ToString());
+                ((ParagraphBlock)((MarkdownDocument)((Dictionary<string, object>)contentsMetadata["function"])["parameters"])[0]).Inline.FirstChild.ToString());
         }
 
         [Fact]
@@ -140,7 +140,7 @@ e: f
                 });
             }
 
-            var ex = Assert.Throws<MarkdownFragmentsException>(() => OverwriteDocumentModelCreater.ConvertContents(contents));
+            var ex = Assert.Throws<MarkdownFragmentsException>(() => new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(contents));
             Assert.Equal(
                 "A(parameters) is not expected to be an array like \"A[c=d]/B\", however it is used as an array in line 0 with `parameters[id=\"para1\"]/...`",
                 ex.Message);
@@ -167,7 +167,7 @@ e: f
                 });
             }
 
-            var ex = Assert.Throws<MarkdownFragmentsException>(() => OverwriteDocumentModelCreater.ConvertContents(contents));
+            var ex = Assert.Throws<MarkdownFragmentsException>(() => new OverwriteDocumentModelCreater("test.yml.md").ConvertContents(contents));
             Assert.Equal(
                 "A(parameters) is not expected to be an object like \"A/B\", however it is used as an object in line 0 with `parameters/...`",
                 ex.Message);
