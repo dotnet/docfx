@@ -42,7 +42,7 @@
         void TestMergeMarkdownFragments()
         {
             // Arrange
-            var schemaFile = CreateFile("template/schemas/rest.operationgroup.schema.json", File.ReadAllText("TestData/schemas/rest.operationgroup.schema.json"), _templateFolder);
+            var schemaFile = CreateFile("template/schemas/rest.mixed.schema.json", File.ReadAllText("TestData/schemas/rest.mixed.schema.json"), _templateFolder);
             var yamlFile = CreateFile("Suppressions.yml", File.ReadAllText("TestData/inputs/Suppressions.yml"), _inputFolder);
             var mdFile = CreateFile("Suppressions.yml.md", File.ReadAllText("TestData/inputs/Suppressions.yml.md"), _inputFolder);
             FileCollection files = new FileCollection(_defaultFiles);
@@ -58,6 +58,7 @@
             Assert.Equal("bob", rawModel["author"]);
             Assert.Contains("Enables the snoozed or dismissed attribute", rawModel["operations"][0]["summary"].ToString());
             Assert.Contains("Some empty lines between H2 and this paragraph is tolerant", rawModel["definitions"][0]["properties"][0]["description"].ToString());
+            Assert.Contains("This is a summary at YAML's", rawModel["summary"].ToString());
         }
 
         private void BuildDocument(FileCollection files)
