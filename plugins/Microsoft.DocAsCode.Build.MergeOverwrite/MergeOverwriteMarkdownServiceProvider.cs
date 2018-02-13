@@ -61,7 +61,6 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite
                 _renderer = new YamlHeaderMarkdownRenderer();
             }
 
-
             public MarkupResult Markup(string src, string path)
             {
                 var dependency = new HashSet<string>();
