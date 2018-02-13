@@ -18,6 +18,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private sealed class JsonTokenTreeService : IMarkdownService
         {
+            public string Name => "jsonTokenTree";
+
             private static GfmEngineBuilder builder { get; } = new GfmEngineBuilder(new Options { XHtml = true, Mangle = false });
 
             private static JsonTokenTreeRenderer Renderer { get; } = new JsonTokenTreeRenderer();
