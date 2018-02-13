@@ -134,7 +134,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                     {
                         if (host.MarkdownServiceName != "markdig")
                         {
-                            Logger.LogWarning("Markdownfragments depend on Markdig Markdown Engine. To avoid markup result inconsistency, please set `\"markdownEngineName\": \"dfm - latest\"` in docfx.json's build section.");
+                            Logger.LogWarning("Markdownfragments depend on Markdig Markdown Engine. To avoid markup result inconsistency, please set `\"markdownEngineName\": \"markdig\"` in docfx.json's build section.");
                         }
                     }
                 }

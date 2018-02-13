@@ -27,6 +27,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         private sealed class DfmJsonTokenTreeService : IMarkdownService
         {
+            public string Name => "dfmJsonTokenTree";
+
             private readonly DfmEngineBuilder _builder;
 
             private readonly ImmutableDictionary<string, string> _tokens;
