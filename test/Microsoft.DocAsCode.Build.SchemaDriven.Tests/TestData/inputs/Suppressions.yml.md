@@ -10,3 +10,7 @@ Enables the snoozed or dismissed attribute of a **recommendation**.
 
 
 Some empty lines between H2 and this paragraph is tolerant
+
+## `summary`
+
+This is a summary at YAML's **ROOT** level...

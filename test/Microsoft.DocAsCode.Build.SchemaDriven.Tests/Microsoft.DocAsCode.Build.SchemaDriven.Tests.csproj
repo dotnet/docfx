@@ -54,7 +54,7 @@
     <None Update="TestData\schemas\contextobject.test.schema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TestData\schemas\rest.operationgroup.schema.json">
+    <None Update="TestData\schemas\rest.mixed.schema.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
