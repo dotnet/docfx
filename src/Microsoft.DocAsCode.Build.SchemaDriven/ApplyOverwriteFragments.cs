@@ -26,12 +26,17 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         public override int BuildOrder => 0x08;
 
+        private static bool? IsUsingMarkdigMarkdownService = null;
+        private static object SyncRoot = new object();
+
         public override void Build(FileModel model, IHostService host)
         {
             if (model.MarkdownFragmentsModel == null)
             {
                 return;
             }
+
+            CheckMarkdownService(host);
             if (!(model.MarkdownFragmentsModel.Content is string))
             {
                 var message = "Unable to parse markdown fragments. Expect string content.";
@@ -117,6 +122,23 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             model.FileLinkSources = model.FileLinkSources.Merge(model.MarkdownFragmentsModel.FileLinkSources);
             model.UidLinkSources = model.UidLinkSources.Merge(model.MarkdownFragmentsModel.UidLinkSources);
             model.MarkdownFragmentsModel.Content = overwriteDocumentModels;
+        }
+
+        private void CheckMarkdownService(IHostService host)
+        {
+            if (IsUsingMarkdigMarkdownService == null)
+            {
+                lock (SyncRoot)
+                {
+                    if (IsUsingMarkdigMarkdownService == null)
+                    {
+                        if (host.MarkdownServiceName != "markdig")
+                        {
+                            Logger.LogWarning("Markdownfragments depend on Markdig Markdown Engine. To avoid markup result inconsistency, please set `\"markdownEngineName\": \"markdig\"` in docfx.json's build section.");
+                        }
+                    }
+                }
+            }
         }
 
         #region ISupportIncrementalBuildStep Members

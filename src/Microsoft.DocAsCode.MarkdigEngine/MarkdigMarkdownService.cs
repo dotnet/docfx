@@ -14,6 +14,8 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
     public class MarkdigMarkdownService : IMarkdownService
     {
+        public string Name => "markdig";
+
         private readonly MarkdownServiceParameters _parameters;
         private readonly MarkdownValidatorBuilder _mvb;
 

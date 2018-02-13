@@ -44,6 +44,8 @@ namespace Microsoft.DocAsCode.Build.MergeOverwrite
 
         private sealed class DfmService : IMarkdownService
         {
+            public string Name => "dfm";
+
             private readonly DfmEngineBuilder _builder;
 
             private readonly ImmutableDictionary<string, string> _tokens;

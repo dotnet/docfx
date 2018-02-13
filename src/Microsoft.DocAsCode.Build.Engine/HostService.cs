@@ -264,6 +264,8 @@ namespace Microsoft.DocAsCode.Build.Engine
 
         public bool HasMetadataValidation => Validators.Count > 0;
 
+        public string MarkdownServiceName => MarkdownService.Name;
+
         public void ValidateInputMetadata(string sourceFile, ImmutableDictionary<string, object> metadata)
         {
             foreach (var v in Validators)
