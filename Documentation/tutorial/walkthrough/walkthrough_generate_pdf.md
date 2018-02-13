@@ -102,6 +102,17 @@ Parameters are similar to `build` section, definitely it is using a different te
 Now, let's run `docfx`, and you can find pdf file walkthrough3_pdf.pdf generated under `_site_pdf` folder:
 ![PDF Preview](images/walkthrough3.png)
 
+*Optional* Step3. Enable plugins
+----------------------------------------------------
+If you wish to use plugins with pdf as well, you need to add a `template` node to the pdf section. It needs to start with the `pdf.template` followed by the path to the plugins you want to use:
+
+```json
+"template": [
+  "pdf.default",
+  "pluginPackages/rest.tagpage.2.31.0/content" 
+],
+```
+
 Conclusion
 ---------
 In this walkthrough, we build a PDF file according to the TOC file under `pdf` folder. Note that TOC plays an important role in PDF generation, it not only determines the files included in the PDF, but also the cover page for this PDF file. One TOC file generates one PDF file, so don't forget to exclude TOC files you don't want from docfx.json.
