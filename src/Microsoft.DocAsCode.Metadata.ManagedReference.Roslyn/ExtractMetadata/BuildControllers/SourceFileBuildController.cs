@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using Microsoft.CodeAnalysis;
 
-    internal class SourceFileBuildController : IBuildController
+    public class SourceFileBuildController : IBuildController
     {
         private readonly Compilation _compilation;
         private readonly IAssemblySymbol _assembly;
