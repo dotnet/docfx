@@ -10,6 +10,9 @@ open Microsoft.FSharp.Compiler.SourceCodeServices
 open Microsoft.DocAsCode.Metadata.ManagedReference
 open Microsoft.DocAsCode.DataContracts.ManagedReference
 open Microsoft.DocAsCode.DataContracts.Common
+open System.Reflection
+open System
+open System.Reflection.Metadata
 
 
 /// List extensions
@@ -49,7 +52,10 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
 
     /// adds a reference
     let addReference name (ref: ReferenceItem) =
-        references.[name] <- ref
+        if references.ContainsKey name then
+            references.[name].Merge ref
+        else
+            references.[name] <- ref
 
     /// Adds a reference for the specified MetadataItem.
     let addReferenceFromMetadata (md: MetadataItem) =
@@ -65,7 +71,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
     /// Creates a SourceDetail from an F# compiler range.
     let srcDetail name (declLoc: Range.range) =
         SourceDetail(Name=name, Path=declLoc.FileName, StartLine=declLoc.StartLine)
-    
+        
     /// LinkItems for an F# type reference.
     let rec typeRefParts (typ: FSharpType) : LinkItem list =
         let postfixTypes = ["option"; "FSharp.Collections.list"]
@@ -117,12 +123,21 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
     /// A reference to an F# type.
     let typeRef (typ: FSharpType) =
         let parts = typeRefParts typ
-        let name = parts |> List.map (fun li -> li.DisplayQualifiedNames) |> String.concat ""
+        let name = 
+            parts 
+            |> List.map (fun li -> if li.Name <> null then li.Name else li.DisplayQualifiedNames) 
+            |> String.concat ""
+        // Parts must consist of more than one element, otherwise the link name is not honored.
+        let parts =
+            if List.length parts > 1 then parts
+            else [LinkItem()] @ parts @ [LinkItem()]
         let ri = ReferenceItem(Parts=SortedList(Map[SyntaxLanguage.FSharp, List(parts);
-                                                    SyntaxLanguage.CSharp, List(parts)]),
-                               CommentId="T:" + name)
-        addReference name ri
-        name       
+                                                    SyntaxLanguage.CSharp, List(parts)]))
+        // References to types must not have the name of the type they reference, as this would clash with the 
+        // references for the TOC, that use special display names including the containing module.
+        let refName = "TypeRef:" + name
+        addReference refName ri
+        refName       
 
     /// F# syntax for an F# type.
     let typeSyntax fullTypes (typ: FSharpType) =
@@ -206,18 +221,19 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         else
             displayGenName
 
-    /// Reference to an (non-extension) F# member within the specified entity.
-    let memberRefWithEntity (mem: FSharpMemberOrFunctionOrValue) (ent: FSharpEntity) useIas =
+    /// Reference to an (non-extension) F# member.
+    let memberRef (mem: FSharpMemberOrFunctionOrValue) =
         if mem.IsExtensionMember then failwithf "%A must not be an extension" mem
+        let ent = mem.EnclosingEntity.Value
 
         // generate name
-        let baseName = 
-            ent.FullName + "." + 
-            (try match Seq.tryHead mem.ImplementedAbstractSignatures with
-                 | Some ias when useIas -> ias.DeclaringType.TypeDefinition.FullName + "." 
-                 | _ -> ""
-             with _ -> "") +
-            mem.DisplayName
+        let iasName =
+            try 
+                match Seq.tryHead mem.ImplementedAbstractSignatures with
+                | Some ias -> ias.DeclaringType.TypeDefinition.FullName + "." 
+                | _ -> ""
+             with _ -> ""
+        let baseName = ent.FullName + "." + iasName + mem.DisplayName
         let name = baseName + "(" + curriedParamSyntax false true mem.CurriedParameterGroups + ")"
         let dispName = mem.DisplayName
         let nameWithType = ent.DisplayName + "." + mem.DisplayName
@@ -250,14 +266,9 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
 
         // generate ReferenceItem and add reference
         let ri = ReferenceItem(Parts=SortedList(Map[SyntaxLanguage.FSharp, List(parts);
-                                                    SyntaxLanguage.CSharp, List(parts)]),
-                               CommentId="M:" + name)
+                                                    SyntaxLanguage.CSharp, List(parts)]))
         addReference name ri
         name
-
-    /// Reference to an (non-extension) F# member
-    let memberRef mem =
-        memberRefWithEntity mem mem.EnclosingEntity.Value true
 
     /// Extract MetadataItem for an F# attribute.
     let attrMetadata (attr: FSharpAttribute) =
@@ -439,7 +450,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             symMd.Attributes <- List(mem.Attributes |> Seq.map attrMetadata)
             extractXmlDoc symMd mem.XmlDoc mem.XmlDocSig
 
-            // add overload and override references
+            // add overload reference
             if mem.FullType.IsFunctionType then
                 symMd.Overload <- baseName + "*"
                 let refParts = 
@@ -447,9 +458,39 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 let ref = ReferenceItem(CommentId = "Overload:" + symMd.Overload,
                                         Parts = SortedList(Map[SyntaxLanguage.FSharp, List(refParts)]))            
                 addReference symMd.Overload ref
+
+            // add override reference
             match Seq.tryHead mem.ImplementedAbstractSignatures with
             | Some ias -> 
-                symMd.Overridden <- memberRefWithEntity mem ias.DeclaringType.TypeDefinition false
+                // Determining the overridden member of the base class or interface is non-trivial,
+                // because it requires substitution and matching of generic parameters and arguments.
+                // Since we cannot do it reliably, for now we just choose the candidate member that
+                // best matches the remaining (non-generic) parameters.
+                let candMems = 
+                    ias.DeclaringType.TypeDefinition.MembersFunctionsAndValues
+                    |> Seq.filter (fun iasMem -> iasMem.IsInstanceMember && iasMem.IsProperty = mem.IsProperty && 
+                                                 not (iasMem.IsPropertyGetterMethod || iasMem.IsPropertySetterMethod ||
+                                                      iasMem.IsEventAddMethod || iasMem.IsEventRemoveMethod) &&
+                                                 iasMem.DisplayName = mem.DisplayName)
+                let matchingParmsCount (cpgs: IList<IList<FSharpParameter>>) =
+                    Seq.zip cpgs mem.CurriedParameterGroups |> Seq.sumBy (fun (cpg, memCpg) ->
+                        Seq.zip cpg memCpg |> Seq.sumBy (fun (p, memP) ->
+                            if p.IsOptionalArg = memP.IsOptionalArg && p.IsOutArg = memP.IsOutArg &&
+                               p.IsParamArrayArg = memP.IsParamArrayArg &&
+                               typeSyntax true p.Type = typeSyntax true memP.Type then 1
+                            else 0))
+                let bestMatchingCount = 
+                    candMems 
+                    |> Seq.groupBy (fun cm -> matchingParmsCount cm.CurriedParameterGroups) 
+                    |> Seq.sortByDescending fst
+                match Seq.tryHead bestMatchingCount with
+                | Some (_, bestMatching) when Seq.length bestMatching = 1 ->
+                    symMd.Overridden <- memberRef (Seq.exactlyOne bestMatching)
+                | Some (_, bestMatching) ->
+                    Log.warning "Cannot uniquely determine what member is overriden by %s" symMd.Name
+                    symMd.Overridden <- memberRef (Seq.head bestMatching)
+                | None ->
+                    Log.warning "Cannot determine what member is overridden by %s" symMd.Name
             | None -> ()          
 
             // generate names and syntax
