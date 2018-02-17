@@ -516,10 +516,10 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 | Some (_, bestMatching) when Seq.length bestMatching = 1 ->
                     symMd.Overridden <- memberRef (Seq.exactlyOne bestMatching)
                 | Some (_, bestMatching) ->
-                    Log.warning "Cannot uniquely determine what member is overriden by %s" symMd.Name
+                    Log.verbose "Cannot uniquely determine what member is overriden by %s" symMd.Name
                     symMd.Overridden <- memberRef (Seq.head bestMatching)
                 | None ->
-                    Log.warning "Cannot determine what member is overridden by %s" symMd.Name
+                    Log.verbose "Cannot determine what member is overridden by %s" symMd.Name
             | None -> ()          
 
             // generate names and syntax
