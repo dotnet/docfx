@@ -767,8 +767,12 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         elif ent.IsFSharpAbbreviation then
             md.Syntax.Content <- sprintf "%stype %s = %s" atrStr dispName (typeSyntax false ent.AbbreviatedType) |> syn
     
-        addReferenceFromMetadata md
-        md   
+        // Skip modules that only contain nested types.
+        if ent.IsFSharpModule && Seq.isEmpty md.Items then
+            None
+        else
+            addReferenceFromMetadata md
+            Some md   
 
     /// Generate MetadataItem for namespace containing the specified entities.    
     let namespaceMetadata name (containedMds: seq<MetadataItem>) =
@@ -807,7 +811,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             let ent = toProcess.Pop()
             if ent.Accessibility.IsPublic then
                 if (entityNamespace ent).Length > 0 then
-                    topLevelMds.Add (entityMetadata ent)
+                    entityMetadata ent |> Option.iter topLevelMds.Add 
                     for subEnt in ent.PublicNestedEntities do
                         toProcess.Push subEnt
                 else
