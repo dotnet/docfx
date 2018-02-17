@@ -44,6 +44,18 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             let filename = Path.GetFileNameWithoutExtension projPath
             filename, filename
 
+    /// all (nested) modules within the specified entity
+    let rec containedModules (ents: FSharpEntity seq) = seq {
+        for ent in ents do
+            if ent.IsFSharpModule then
+                yield ent
+                yield! containedModules ent.NestedEntities        
+    }
+
+    /// all (nested) modules within this F# compilation
+    let allModules =
+        containedModules compilation.AssemblySignature.Entities
+
     /// references used within this assembly
     let mutable references = Dictionary<string, ReferenceItem>()
 
@@ -207,6 +219,17 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             if pos = -1 then ""
             else (entityQualifiedName ent).[0 .. pos-1]
 
+    /// Resolve module path, i.e. remove "Module"-suffix if necessary.                
+    let rec resolveModulePath fullName =
+        let ent =
+            allModules 
+            |> Seq.find (fun ent -> ent.IsFSharpModule && ent.FullName = fullName)
+        let ns = entityNamespace ent
+        if ent.AccessPath.Length > ns.Length then
+            resolveModulePath ent.AccessPath + "." + ent.DisplayName
+        else
+            ns + "." + ent.DisplayName
+
     /// Display name of an F# entity.
     let entityDisplayName (ent: FSharpEntity) =
         let genStr =
@@ -217,7 +240,9 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         let displayGenName = ent.DisplayName + genStr
         let ns = entityNamespace ent
         if ent.AccessPath.Length > ns.Length then
-            ent.AccessPath.[ns.Length+1..] + "." + displayGenName
+            // entity is located within an F# module
+            let ap = resolveModulePath ent.AccessPath
+            ap.[ns.Length+1..] + "." + displayGenName
         else
             displayGenName
 
@@ -633,11 +658,11 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             if ent.IsFSharpModule then MemberType.Class, " (mod)"
             elif ent.IsFSharpRecord then MemberType.Class, " (rec)"
             elif ent.IsFSharpUnion then MemberType.Class, " (union)"
-            elif ent.IsEnum then MemberType.Enum, " (enum)"
-            elif ent.IsFSharpExceptionDeclaration then MemberType.Class, " (excp)"
+            elif ent.IsEnum then MemberType.Enum, ""
+            elif ent.IsFSharpExceptionDeclaration then MemberType.Class, ""
             elif ent.IsFSharpAbbreviation then MemberType.Class, " (abrv)"
             elif ent.IsMeasure then MemberType.Class, " (meas)"
-            elif ent.IsDelegate then MemberType.Delegate, " (del)"
+            elif ent.IsDelegate then MemberType.Delegate, ""
             elif ent.IsClass then MemberType.Class, ""
             elif ent.IsInterface then MemberType.Interface, ""
             elif ent.IsValueType then MemberType.Struct, ""
