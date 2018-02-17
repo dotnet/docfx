@@ -253,11 +253,11 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
 
         // generate name
         let iasName =
-            try 
+            if mem.IsOverrideOrExplicitInterfaceImplementation then 
                 match Seq.tryHead mem.ImplementedAbstractSignatures with
                 | Some ias -> ias.DeclaringType.TypeDefinition.FullName + "." 
                 | _ -> ""
-             with _ -> ""
+             else ""
         let baseName = ent.FullName + "." + iasName + mem.DisplayName
         let name = baseName + "(" + curriedParamSyntax false true mem.CurriedParameterGroups + ")"
         let dispName = mem.DisplayName
