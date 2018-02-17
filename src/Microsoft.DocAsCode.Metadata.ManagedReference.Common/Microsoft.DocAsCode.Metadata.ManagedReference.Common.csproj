@@ -3,6 +3,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Transform\**" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+    <EmbeddedResource Include="Filters\defaultfilterconfig.yml" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
   </ItemGroup>
 
   <ItemGroup>

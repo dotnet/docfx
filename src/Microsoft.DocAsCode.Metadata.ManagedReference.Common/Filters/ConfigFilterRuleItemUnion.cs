@@ -49,7 +49,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        internal ConfigFilterRuleItem Rule
+        public ConfigFilterRuleItem Rule
         {
             get
             {
