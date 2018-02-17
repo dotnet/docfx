@@ -3,8 +3,6 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
-    using Microsoft.CodeAnalysis;
-
     public enum ExtendedSymbolKind
     {
         Assembly = 0x100,
@@ -24,67 +22,15 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     public static class ExtendedSymbolKindHelper
     {
-        public static bool Contains(this ExtendedSymbolKind kind, ISymbol symbol)
+        public static bool Contains(this ExtendedSymbolKind kind, SymbolFilterData symbol)
         {
-            ExtendedSymbolKind? k = GetExtendedSymbolKindFromSymbol(symbol);
+            ExtendedSymbolKind? k = symbol.Kind;
 
             if (k == null)
             {
                 return false;
             }
             return (kind & k.Value) == kind;
-        }
-
-        private static ExtendedSymbolKind? GetExtendedSymbolKindFromSymbol(ISymbol symbol)
-        {
-            if (symbol == null)
-            {
-                return null;
-            }
-
-            switch (symbol.Kind)
-            {
-                case SymbolKind.Assembly:
-                    return ExtendedSymbolKind.Assembly;
-                case SymbolKind.Namespace:
-                    return ExtendedSymbolKind.Namespace;
-                case SymbolKind.Event:
-                    return ExtendedSymbolKind.Event;
-                case SymbolKind.Field:
-                    return ExtendedSymbolKind.Field;
-                case SymbolKind.Method:
-                    return ExtendedSymbolKind.Method;
-                case SymbolKind.Property:
-                    return ExtendedSymbolKind.Property;
-                case SymbolKind.NamedType:
-                    return GetExtendedSymbolKindFromINamedTypeSymbol(symbol as INamedTypeSymbol);
-                default:
-                    return null;
-            }
-        }
-
-        private static ExtendedSymbolKind? GetExtendedSymbolKindFromINamedTypeSymbol(INamedTypeSymbol symbol)
-        {
-            if (symbol == null)
-            {
-                return null;
-            }
-
-            switch (symbol.TypeKind)
-            {
-                case TypeKind.Class:
-                    return ExtendedSymbolKind.Class;
-                case TypeKind.Struct:
-                    return ExtendedSymbolKind.Struct;
-                case TypeKind.Delegate:
-                    return ExtendedSymbolKind.Delegate;
-                case TypeKind.Enum:
-                    return ExtendedSymbolKind.Enum;
-                case TypeKind.Interface:
-                    return ExtendedSymbolKind.Interface;
-                default:
-                    return null;
-            }
         }
     }
 }

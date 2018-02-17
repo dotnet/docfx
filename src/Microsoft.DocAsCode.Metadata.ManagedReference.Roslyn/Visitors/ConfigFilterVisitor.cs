@@ -4,12 +4,8 @@
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System;
-    using System.Collections.Generic;
-    using System.IO;
 
     using Microsoft.CodeAnalysis;
-
-    using Microsoft.DocAsCode.Common;
 
     public class ConfigFilterVisitor : DelegatingFilterVisitor
     {
@@ -20,7 +16,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             : base(inner)
         {
             _configFile = configFile;
-            _configRule = LoadRules(configFile);
+            _configRule = ConfigFilterRule.Load(configFile);
         }
 
         public ConfigFilterVisitor(IFilterVisitor inner, ConfigFilterRule rule)
@@ -41,7 +37,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return false;
             }
 
-            return CanVisitCore(_configRule.ApiRules, symbol);
+            var symbolFilterData = RoslynFilterData.GetSymbolFilterData(symbol);
+            return _configRule.CanVisitApi(symbolFilterData);
         }
 
         protected override bool CanVisitAttributeCore(ISymbol symbol, bool wantProtectedMember, IFilterVisitor outer)
@@ -56,45 +53,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 return false;
             }
 
-            return CanVisitCore(_configRule.AttributeRules, symbol);
+            var symbolFilterData = RoslynFilterData.GetSymbolFilterData(symbol);
+            return _configRule.CanVisitAttribute(symbolFilterData);
         }
 
-        private bool CanVisitCore(IEnumerable<ConfigFilterRuleItemUnion> ruleItems, ISymbol symbol)
-        {
-            foreach (var ruleUnion in ruleItems)
-            {
-                ConfigFilterRuleItem rule = ruleUnion.Rule;
-                if (rule != null && rule.IsMatch(symbol))
-                {
-                    return rule.CanVisit;
-                }
-            }
-            return true;
-        }
-
-        public static ConfigFilterRule LoadRules(string configFile)
-        {
-            if (string.IsNullOrEmpty(configFile))
-            {
-                return new ConfigFilterRule();
-            }
-            if (!File.Exists(configFile)) throw new FileNotFoundException($"Filter Config file {configFile} does not exist!");
-
-            ConfigFilterRule rule = null;
-            try
-            {
-                rule = YamlUtility.Deserialize<ConfigFilterRule>(configFile);
-            }
-            catch (Exception e)
-            {
-                throw new InvalidDataException($"Error parsing filter config file {configFile}: {e.Message}");
-            }
-
-            if (rule == null)
-            {
-                throw new InvalidDataException($"Unable to deserialize filter config {configFile}.");
-            }
-            return rule;
-        }
     }
 }

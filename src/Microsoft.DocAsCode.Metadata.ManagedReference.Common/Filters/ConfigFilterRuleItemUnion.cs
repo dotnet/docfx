@@ -6,7 +6,6 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System;
     using System.IO;
 
-    using Microsoft.DocAsCode.DataContracts.Common;
     using YamlDotNet.Serialization;
 
     [Serializable]
