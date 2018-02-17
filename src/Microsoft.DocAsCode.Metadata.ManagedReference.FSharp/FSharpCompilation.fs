@@ -326,10 +326,14 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         if attrsStr.Length > 0 then "[<" + attrsStr + ">]" + newline
         else ""        
 
+    /// True if specified type is unit type.
+    let isUnitType (typ: FSharpType) =
+        if typ.HasTypeDefinition then typ.TypeDefinition.DisplayName = "unit"
+        else false
+
     /// True if specified parameter has unit type.
     let isUnit (p: FSharpParameter) =
-        if p.Type.HasTypeDefinition then p.Type.TypeDefinition.DisplayName = "unit"
-        else false
+        isUnitType p.Type
 
     /// Metadata for an F# parameter.
     let paramMetadata (p: FSharpParameter) =                    
@@ -521,15 +525,12 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             // generate names and syntax
             let nonIndexProp = mem.IsProperty && mem.CurriedParameterGroups.[0].Count = 0
             let arrow = if mem.CurriedParameterGroups.Count > 0 && not nonIndexProp then " -> " else ""
-            let dispType = 
-                (if nonIndexProp then "" else curriedParamSyntax false false mem.CurriedParameterGroups) + 
-                arrow + (typeSyntax false mem.ReturnParameter.Type)
-            let fullType = 
-                (if nonIndexProp then "" else curriedParamSyntax false true mem.CurriedParameterGroups) + 
-                arrow + (typeSyntax true mem.ReturnParameter.Type)
-            let syntaxType =
-                (if nonIndexProp then "" else curriedParamSyntax true false mem.CurriedParameterGroups) + 
-                arrow + (typeSyntax false mem.ReturnParameter.Type)
+            let dispParams = if nonIndexProp then "" else curriedParamSyntax false false mem.CurriedParameterGroups
+            let fullParams = if nonIndexProp then "" else curriedParamSyntax false true mem.CurriedParameterGroups
+            let syntaxParams = if nonIndexProp then "" else curriedParamSyntax true false mem.CurriedParameterGroups
+            let dispType = dispParams + arrow + (typeSyntax false mem.ReturnParameter.Type)
+            let fullType = fullParams + arrow + (typeSyntax true mem.ReturnParameter.Type)
+            let syntaxType = syntaxParams + arrow + (typeSyntax false mem.ReturnParameter.Type)
             let propertyOps =
                 [if mem.HasGetterMethod then yield "get"
                  if mem.HasSetterMethod then yield "set"]
@@ -600,6 +601,32 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                         if encMd.CommentModel.Parameters.ContainsKey p.Name then
                             p.Description <- encMd.CommentModel.Parameters.[p.Name]
                     symMd.Syntax.Return.Description <- encMd.CommentModel.Returns
+            elif mem.IsActivePattern then
+                symMd.Type <- MemberType.Method               
+                if mem.ReturnParameter.Type.HasTypeDefinition && 
+                   mem.ReturnParameter.Type.TypeDefinition.TryFullName 
+                   |> Option.forall (fun fn -> fn.StartsWith "Microsoft.FSharp.Core.FSharpChoice") then
+                    // active pattern with multiple choices
+                    let choiceNames = mem.DisplayName.Trim('|', '(', ')', ' ').Split('|')
+                    let choiceTypes = mem.ReturnParameter.Type.GenericArguments                    
+                    let choiceSyntax =
+                        Seq.zip choiceNames choiceTypes
+                        |> Seq.map (fun (choiceName, choiceType) ->
+                            if isUnitType choiceType then
+                                sprintf "    | %s" choiceName
+                            else
+                                sprintf "    | %s of %s" choiceName (typeSyntax false choiceType))
+                        |> String.concat "\n"                   
+                    symMd.DisplayNames <- sprintf "val %s: %s" dispName dispParams |> syn
+                    symMd.DisplayNamesWithType <- sprintf "val %s: %s" nameWithType dispParams |> syn
+                    symMd.DisplayQualifiedNames <- sprintf "val %s: %s" fullName fullParams |> syn
+                    symMd.Syntax.Content <- sprintf "%sval %s: %s ->\n%s" atrStr dispName syntaxParams choiceSyntax |> syn                
+                else
+                    // active pattern with single choice
+                    symMd.DisplayNames <- sprintf "val %s: %s" dispName dispType |> syn
+                    symMd.DisplayNamesWithType <- sprintf "val %s: %s" nameWithType dispType |> syn
+                    symMd.DisplayQualifiedNames <- sprintf "val %s: %s" fullName fullType |> syn
+                    symMd.Syntax.Content <- sprintf "%sval %s: %s" atrStr dispName syntaxType |> syn                
             elif mem.FullType.IsFunctionType then
                 symMd.Type <- MemberType.Method
                 symMd.DisplayNames <- sprintf "val %s: %s" dispName dispType |> syn
