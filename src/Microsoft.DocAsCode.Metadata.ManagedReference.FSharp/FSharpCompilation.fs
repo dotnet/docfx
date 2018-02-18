@@ -711,21 +711,23 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         extractXmlDoc md ent.XmlDoc ent.XmlDocSig
 
         // extract inheritance and implementation information
-        let filteredIfs = ["IEquatable"; "IComparable"; "ISerializable"; "Exception"; "ValueType";
-                           "IStructuralEquatable"; "IStructuralComparable"; "Object"]
+        let filteredIfs = ["Object"; "ValueType"]
+        let fsFilteredIfs = 
+            filteredIfs @ ["IEquatable"; "IComparable"; "ISerializable"; "Exception";
+                           "IStructuralEquatable"; "IStructuralComparable"]
         if not ent.IsFSharpModule && not ent.IsFSharpAbbreviation && not ent.IsMeasure && not ent.IsDelegate then
             md.Inheritance <- List(inheritanceHierarchy ent.BaseType)
             if ent.IsFSharpRecord || ent.IsFSharpUnion || ent.IsFSharpExceptionDeclaration then
-                md.InheritedMembers <- List(inheritedMembers filteredIfs ent.BaseType |> Seq.sort)
+                md.InheritedMembers <- List(inheritedMembers fsFilteredIfs ent.BaseType |> Seq.sort)
                 md.Implements <- List(ent.AllInterfaces 
-                                      |> Seq.filter (fun i -> not (filteredIfs |> List.contains i.TypeDefinition.DisplayName))
+                                      |> Seq.filter (fun i -> not (fsFilteredIfs |> List.contains i.TypeDefinition.DisplayName))
                                       |> Seq.map typeRef |> Seq.sort)
             elif ent.IsInterface then
                 let implIfs = ent.AllInterfaces |> Seq.filter (fun ift -> ift.TypeDefinition.FullName <> ent.FullName)
                 md.InheritedMembers <- List(implIfs |> Seq.collect inhertiableMembers |> Seq.sort)
                 md.Implements <- List(implIfs |> Seq.map typeRef |> Seq.sort)
             else
-                md.InheritedMembers <- List(inheritedMembers [] ent.BaseType |> Seq.sort)
+                md.InheritedMembers <- List(inheritedMembers filteredIfs ent.BaseType |> Seq.sort)
                 md.Implements <- List(ent.AllInterfaces |> Seq.map typeRef |> Seq.sort)
 
         // gather metadata for contained members, fields, functions, union cases, etc.
@@ -771,13 +773,13 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                             if md.CommentModel.Parameters.ContainsKey p.Name then
                                 p.Description <- md.CommentModel.Parameters.[p.Name]
         elif ent.IsInterface then
-            md.Syntax.Content <- sprintf "%sinterface %s%s%s" atrStr dispName inheritStr (ifStr filteredIfs) |> syn
+            md.Syntax.Content <- sprintf "%sinterface %s%s%s" atrStr dispName inheritStr (ifStr fsFilteredIfs) |> syn
         elif ent.IsFSharpModule then
             md.Syntax.Content <- sprintf "%smodule %s" atrStr dispName |> syn
         elif ent.IsFSharpRecord then
-            md.Syntax.Content <- sprintf "%srecord %s%s%s" atrStr dispName (ifStr filteredIfs) (defStr fieldMds) |> syn
+            md.Syntax.Content <- sprintf "%srecord %s%s%s" atrStr dispName (ifStr fsFilteredIfs) (defStr fieldMds) |> syn
         elif ent.IsFSharpUnion then
-            md.Syntax.Content <- sprintf "%sunion %s%s%s" atrStr dispName (ifStr filteredIfs) (defStr caseMds) |> syn
+            md.Syntax.Content <- sprintf "%sunion %s%s%s" atrStr dispName (ifStr fsFilteredIfs) (defStr caseMds) |> syn
         elif ent.IsEnum then
             md.Syntax.Content <- sprintf "%senum %s%s" atrStr dispName (defStr fieldMds) |> syn
         elif ent.IsFSharpExceptionDeclaration then
