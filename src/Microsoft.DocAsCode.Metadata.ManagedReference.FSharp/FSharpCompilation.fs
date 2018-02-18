@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference.FSharp
+open System
 open System.IO
 open System.Collections.Generic
 open System.Text.RegularExpressions
@@ -10,9 +11,6 @@ open Microsoft.FSharp.Compiler.SourceCodeServices
 open Microsoft.DocAsCode.Metadata.ManagedReference
 open Microsoft.DocAsCode.DataContracts.ManagedReference
 open Microsoft.DocAsCode.DataContracts.Common
-open System.Reflection
-open System
-open System.Reflection.Metadata
 
 
 /// List extensions
@@ -72,6 +70,9 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
 
     /// namespaces defined within this assembly
     let mutable knownNamespaces = HashSet<string>()
+
+    /// visibility filter
+    let mutable filter = ConfigFilterRule()
 
     /// adds a reference
     let addReference name (ref: ReferenceItem) =
@@ -467,6 +468,14 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         compilation.AssemblySignature.Entities
         |> Seq.collect enclosedSymbolNames
 
+    /// Returns true, if specified F# attribute is allowed by attribute filter.
+    let attrAllowedByFilter (attr: FSharpAttribute) =
+        let filterData = SymbolFilterData()
+        filterData.Id <- attr.AttributeType.FullName
+        filterData.Kind <- Nullable ExtendedSymbolKind.Class
+        filterData.Attributes <- Seq.empty
+        filter.CanVisitAttribute filterData
+
     /// Extract MetadataItem for an F# attribute.
     let attrMetadata (attr: FSharpAttribute) =
         let ai = AttributeInfo()
@@ -475,13 +484,15 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             List(attr.ConstructorArguments |> Seq.map (fun (t,v) -> ArgumentInfo(Type=typeFullName t, Value=v)))
         ai.NamedArguments <-
             List(attr.NamedArguments |> Seq.map (fun (t,n,_,v) -> NamedArgumentInfo(Type=typeFullName t, Name=n, Value=v)))
-        ai
+        if attrAllowedByFilter attr then Some ai
+        else None
 
     /// F# syntax for specified attributes.
     let attrsSyntax withNewline (attrs: seq<FSharpAttribute>) = 
         let newline = if withNewline then "\n" else ""
         let attrsStr =
             attrs
+            |> Seq.filter attrAllowedByFilter
             |> Seq.map (fun a -> 
                 let dispName = 
                     if a.AttributeType.DisplayName.EndsWith("Attribute") then
@@ -498,6 +509,21 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         if attrsStr.Length > 0 then "[<" + attrsStr + ">]" + newline
         else ""        
 
+    /// AttributeFilterData for F# attributes.
+    let attrsFilterData (attrs: seq<FSharpAttribute>) =
+        attrs
+        |> Seq.map (fun attr ->
+            let data = AttributeFilterData()
+            data.Id <- attr.AttributeType.FullName
+            data.ConstructorArguments <- 
+                attr.ConstructorArguments 
+                |> Seq.map (fun (_,value) -> sprintf "%A" value)
+            data.ConstructorNamedArguments <-
+                attr.NamedArguments 
+                |> Seq.map (fun (_,name,_,value) -> name, sprintf "%A" value)
+                |> Map.ofSeq
+            data)
+
     /// True if specified type is unit type.
     let rec isUnitType (typ: FSharpType) =
         if typ.HasTypeDefinition then 
@@ -511,7 +537,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
 
     /// Metadata for an F# parameter.
     let paramMetadata (p: FSharpParameter) =                    
-        ApiParameter(Name=p.DisplayName, Type=typeRef p.Type, Attributes=List(p.Attributes |> Seq.map attrMetadata))
+        ApiParameter(Name=p.DisplayName, Type=typeRef p.Type, Attributes=List(p.Attributes |> Seq.choose attrMetadata))
 
     /// Metadata for an F# generic parameter.
     let genericParamMetadata (gp: FSharpGenericParameter) =
@@ -611,7 +637,10 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         | Some dl -> symMd.Source <- srcDetail symMd.Name dl
         | None -> ()
 
+        let filterData = SymbolFilterData()
+
         // extract type-specific information
+        let mutable skip = false
         match sym with
         | :? FSharpField as field when field.Accessibility.IsPublic && field.DisplayName <> "value__"  ->   
             // F# field
@@ -622,9 +651,11 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 | None -> sprintf "val %s: %s" dispName (typeSyntax false field.FieldType)                 
                 |> syn
             symMd.Syntax.Return <- 
-                ApiParameter(Type=typeRef field.FieldType, Attributes=List(field.FieldAttributes |> Seq.map attrMetadata))
+                ApiParameter(Type=typeRef field.FieldType, Attributes=List(field.FieldAttributes |> Seq.choose attrMetadata))
             extractXmlDoc symMd field.XmlDoc field.XmlDocSig
-            Some symMd
+            
+            filterData.Kind <- Nullable ExtendedSymbolKind.Field
+            filterData.Attributes <- attrsFilterData field.PropertyAttributes
 
         | :? FSharpUnionCase as case when case.Accessibility.IsPublic ->
             // F# union case
@@ -637,7 +668,9 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                                                     Type=typeRef f.FieldType))
                 |> List
             extractXmlDoc symMd case.XmlDoc case.XmlDocSig
-            Some symMd   
+
+            filterData.Kind <- Nullable ExtendedSymbolKind.Member
+            filterData.Attributes <- attrsFilterData case.Attributes
 
         | :? FSharpMemberOrFunctionOrValue as mem when 
                 mem.Accessibility.IsPublic && 
@@ -659,7 +692,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             if not (isUnitType mem.ReturnParameter.Type) then 
                 symMd.Syntax.Return <- paramMetadata mem.ReturnParameter
             symMd.IsExplicitInterfaceImplementation <- mem.IsExplicitInterfaceImplementation
-            symMd.Attributes <- List(mem.Attributes |> Seq.map attrMetadata)
+            symMd.Attributes <- List(mem.Attributes |> Seq.choose attrMetadata)
             extractXmlDoc symMd mem.XmlDoc mem.XmlDocSig
 
             // add overload reference
@@ -741,6 +774,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                     for p in symMd.Syntax.Parameters do
                         if encMd.CommentModel.Parameters.ContainsKey p.Name then
                             p.Description <- encMd.CommentModel.Parameters.[p.Name]
+                filterData.Kind <- Nullable ExtendedSymbolKind.Member
             elif mem.IsExtensionMember then 
                 symMd.Type <- if mem.IsProperty then MemberType.Property else MemberType.Method
                 symMd.IsExtensionMethod <- true
@@ -748,15 +782,18 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                     symMd.Syntax.Content <- sprintf "%sextension %s.%s: %s with %s" atrStr logicalName dispName dispType propertyOps |> syn
                 else
                     symMd.Syntax.Content <- sprintf "%sextension %s.%s: %s" atrStr logicalName dispName syntaxType |> syn
+                filterData.Kind <- Nullable ExtendedSymbolKind.Member                    
             elif isEvent then
                 symMd.Type <- MemberType.Event
                 let evtType = mem.ReturnParameter.Type.GenericArguments.[0]
                 let dispType = typeSyntax false evtType
                 symMd.Syntax.Content <- sprintf "%s%s%sevent %s: %s" atrStr ifDispType mods dispName dispType |> syn                    
                 symMd.Syntax.Return <- ApiParameter(Type=typeRef evtType)                    
+                filterData.Kind <- Nullable ExtendedSymbolKind.Event
             elif mem.IsProperty then
                 symMd.Type <- MemberType.Property
                 symMd.Syntax.Content <- sprintf "%s%s%sproperty %s: %s with %s" atrStr ifDispType mods dispName dispType propertyOps |> syn                    
+                filterData.Kind <- Nullable ExtendedSymbolKind.Property
             elif mem.IsMember then
                 symMd.Type <- if mem.CompiledName.StartsWith("op_") then MemberType.Operator else MemberType.Method
                 symMd.Syntax.Content <- sprintf "%s%s%smember %s: %s" atrStr ifDispType mods dispName syntaxType |> syn
@@ -765,6 +802,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                         if encMd.CommentModel.Parameters.ContainsKey p.Name then
                             p.Description <- encMd.CommentModel.Parameters.[p.Name]
                     symMd.Syntax.Return.Description <- encMd.CommentModel.Returns
+                filterData.Kind <- Nullable ExtendedSymbolKind.Method
             elif mem.IsActivePattern then
                 symMd.Type <- MemberType.Method               
                 if mem.ReturnParameter.Type.HasTypeDefinition && 
@@ -785,15 +823,23 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 else
                     // active pattern with single choice
                     symMd.Syntax.Content <- sprintf "%sval %s: %s" atrStr dispName syntaxType |> syn                
+                filterData.Kind <- Nullable ExtendedSymbolKind.Member
             elif mem.FullType.IsFunctionType then
                 symMd.Type <- MemberType.Method
                 symMd.Syntax.Content <- sprintf "%sval %s: %s" atrStr dispName syntaxType |> syn
+                filterData.Kind <- Nullable ExtendedSymbolKind.Method
             else
                 symMd.Type <- MemberType.Field
                 symMd.Syntax.Content <- sprintf "%sval %s: %s" atrStr dispName (typeSyntax false mem.FullType) |> syn
+                filterData.Kind <- Nullable ExtendedSymbolKind.Field
 
-            Some symMd
-        | _ -> None
+            filterData.Attributes <- attrsFilterData mem.Attributes
+        | _ -> skip <- true
+
+        filterData.Id <- symMd.Name
+        if not skip && filter.CanVisitApi filterData then Some symMd
+        else None
+
 
     /// The inheritance hierarchy of the specified F# type returned as references.
     let rec inheritanceHierarchy (t: FSharpType option) = seq {
@@ -851,7 +897,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         // extract basic information
         md.Name <- names.Name
         md.Source <- srcDetail md.Name ent.DeclarationLocation
-        md.Attributes <- List(ent.Attributes |> Seq.map attrMetadata)
+        md.Attributes <- List(ent.Attributes |> Seq.choose attrMetadata)
         md.NamespaceName <- entityNamespace ent
         md.AssemblyNameList <- List([assemblyName])
         md.Type <- typ
@@ -947,8 +993,18 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         elif ent.IsFSharpAbbreviation then
             md.Syntax.Content <- sprintf "%stype %s = %s" atrStr dispName (typeSyntax false ent.AbbreviatedType) |> syn
     
-        // Skip modules that only contain nested types.
+        // prepare filter data
+        let filterData = SymbolFilterData()
+        filterData.Id <- md.Name     
+        filterData.Kind <- Nullable extendedSymbolKind
+        filterData.Attributes <- attrsFilterData ent.Attributes              
+
+        // check if entity should be filtered out
         if ent.IsFSharpModule && Seq.isEmpty md.Items then
+            // skip modules that only contain nested types
+            None
+        elif not (filter.CanVisitApi filterData) then
+            // filtered out by user specified filter
             None
         else
             addReferenceFromMetadata md
@@ -968,8 +1024,17 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         md.AssemblyNameList <- List([assemblyName])
         md.Items <- List(containedMds)
 
-        addReferenceFromMetadata md
-        md
+        // prepare filter data
+        let filterData = SymbolFilterData()
+        filterData.Id <- md.Name     
+        filterData.Kind <- Nullable ExtendedSymbolKind.Namespace
+        filterData.Attributes <- Seq.empty   
+
+        if filter.CanVisitApi filterData then
+            addReferenceFromMetadata md
+            Some md
+        else
+            None
 
     /// Metadata for the assembly of this F# compilation.
     let assemblyMetadata() =
@@ -1002,7 +1067,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         md.Items <-
             topLevelMds
             |> Seq.groupBy (fun md -> md.NamespaceName)
-            |> Seq.map (fun (nsName, mds) -> namespaceMetadata nsName mds)                
+            |> Seq.choose (fun (nsName, mds) -> namespaceMetadata nsName mds)                
             |> List
         md
 
@@ -1011,6 +1076,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
     member __.ExtractMetadata (parameters: IInputParameters) =
         Log.verbose "Extracting F# metadata for assembly %s" assemblyName
 
+        filter <- ConfigFilterRule.LoadWithDefaults parameters.Options.FilterConfigFile
         references <- Dictionary<string, ReferenceItem>()
         knownNamespaces <- HashSet<string>()
         let md = assemblyMetadata()
