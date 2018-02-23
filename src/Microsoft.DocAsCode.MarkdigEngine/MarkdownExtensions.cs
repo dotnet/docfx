@@ -3,16 +3,14 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine
 {
-    using System.IO;
-
-    using MarkdigEngine.Extensions;
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
-
     using Markdig;
     using Markdig.Extensions.AutoIdentifiers;
     using Markdig.Extensions.CustomContainers;
     using Markdig.Parsers;
+    using MarkdigEngine.Extensions;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
+    using System.IO;
 
     public static class MarkdownExtensions
     {
