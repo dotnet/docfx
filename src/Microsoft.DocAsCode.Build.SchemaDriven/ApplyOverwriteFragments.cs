@@ -96,7 +96,10 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                 var uidDefinitons = model.Uids.Where(s => s.Name == overwriteDocumentModel.Uid).ToList();
                 if (uidDefinitons.Count == 0)
                 {
-                    throw new DocfxException($"Unable to find UidDefinition for Uid {overwriteDocumentModel.Uid}");
+                    Logger.LogWarning(
+                        $"Unable to find UidDefinition for Uid: { overwriteDocumentModel.Uid}",
+                        code: WarningCodes.Overwrite.InvalidMarkdownFragments);
+                    continue;
                 }
                 if (uidDefinitons.Count > 1)
                 {
