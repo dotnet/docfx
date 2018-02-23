@@ -3,16 +3,14 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine
 {
-    using System.IO;
-
-    using MarkdigEngine.Extensions;
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
-
     using Markdig;
     using Markdig.Extensions.AutoIdentifiers;
     using Markdig.Extensions.CustomContainers;
     using Markdig.Parsers;
+    using MarkdigEngine.Extensions;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
+    using System.IO;
 
     public static class MarkdownExtensions
     {
@@ -47,7 +45,9 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 .UseLineNumber(context, parameters)
                 .UseMonikerRange()
                 .UseValidators(context, parameters)
-                .UseInteractiveCode();
+                .UseInteractiveCode()
+                .UseRow()
+                .UseNestedColumn();
         }
 
         public static MarkdownPipelineBuilder RemoveUnusedExtensions(this MarkdownPipelineBuilder pipeline)
@@ -211,6 +211,18 @@ namespace Microsoft.DocAsCode.MarkdigEngine
         public static MarkdownPipelineBuilder UseYamlHeader(this MarkdownPipelineBuilder pipeline)
         {
             pipeline.Extensions.Insert(0, new YamlHeaderExtension());
+            return pipeline;
+        }
+
+        public static MarkdownPipelineBuilder UseRow(this MarkdownPipelineBuilder pipeline)
+        {
+            pipeline.Extensions.Insert(0, new RowExtension());
+            return pipeline;
+        }
+
+        public static MarkdownPipelineBuilder UseNestedColumn(this MarkdownPipelineBuilder pipeline)
+        {
+            pipeline.Extensions.Insert(0, new NestedColumnExtension());
             return pipeline;
         }
     }
