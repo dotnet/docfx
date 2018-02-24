@@ -27,6 +27,8 @@ namespace Microsoft.DocAsCode.Build.Engine
             {
                 _baseFolder = Path.Combine(Directory.GetCurrentDirectory(), baseFolder);
             }
+            // GitHub doesn't support TLS 1.1 since Feb 23, 2018. See: https://github.com/blog/2507-weak-cryptographic-standards-removed
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         }
 
         /// <summary>
