@@ -51,7 +51,7 @@ namespace Microsoft.DocAsCode.Build.OverwriteDocuments
                 catch (Exception ex)
                 {
                     throw new MarkdownFragmentsException(
-                        $"Encountered an invalid YAML code block in line {yamlCodeBlockSource.Line}: {ex.Message}",
+                        $"Encountered an invalid YAML code block: {ex.Message}",
                         yamlCodeBlockSource.Line,
                         ex);
                 }

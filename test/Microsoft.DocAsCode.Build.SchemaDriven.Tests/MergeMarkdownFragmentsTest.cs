@@ -97,7 +97,7 @@ markdown content
             var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
             Assert.Single(warningLogs);
             Assert.Equal("Unable to parse markdown fragments: Expect L1InlineCodeHeading", warningLogs.First().Message);
-            Assert.Equal("0", warningLogs.First().Line);
+            Assert.Equal("1", warningLogs.First().Line);
             Assert.Null(rawModel["summary"]);
         }
 
@@ -131,7 +131,7 @@ markdown content
             var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
             Assert.Single(warningLogs);
             Assert.Equal("Unable to parse markdown fragments: Expect L1InlineCodeHeading", warningLogs.First().Message);
-            Assert.Equal("0", warningLogs.First().Line);
+            Assert.Equal("1", warningLogs.First().Line);
             Assert.Null(rawModel["summary"]);
         }
 
@@ -191,8 +191,8 @@ markdown content
             Assert.True(File.Exists(_rawModelFilePath));
             var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
             Assert.Single(warningLogs);
-            Assert.Equal("Unable to parse markdown fragments: Encountered an invalid YAML code block in line 1: (Line: 1, Col: 1, Idx: 0) - (Line: 1, Col: 28, Idx: 27): Exception during deserialization", warningLogs.First().Message);
-            Assert.Equal("1", warningLogs.First().Line);
+            Assert.Equal("Unable to parse markdown fragments: Encountered an invalid YAML code block: (Line: 1, Col: 1, Idx: 0) - (Line: 1, Col: 28, Idx: 27): Exception during deserialization", warningLogs.First().Message);
+            Assert.Equal("2", warningLogs.First().Line);
             Assert.Null(rawModel["summary"]);
         }
 
@@ -230,7 +230,7 @@ markdown content
             var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
             Assert.Single(warningLogs);
             Assert.Equal("Unable to parse markdown fragments: operations[id=]/summary is not a valid OPath", warningLogs.First().Message);
-            Assert.Equal("2", warningLogs.First().Line);
+            Assert.Equal("3", warningLogs.First().Line);
             Assert.Null(rawModel["summary"]);
         }
 
