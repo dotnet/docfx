@@ -4,6 +4,7 @@
     using System.Collections.Immutable;
     using System.Composition;
     using System.IO;
+    using System.Linq;
 
     using Microsoft.DocAsCode.Build.Engine;
     using Microsoft.DocAsCode.Common;
@@ -24,6 +25,10 @@
         private FileCollection _defaultFiles;
         private ApplyTemplateSettings _applyTemplateSettings;
         private TemplateManager _templateManager;
+        private FileCollection _files;
+   
+        private TestLoggerListener _listener;
+        private string _rawModelFilePath;
 
         private const string RawModelFileExtension = ".raw.json";
 
@@ -36,29 +41,230 @@
             _applyTemplateSettings = new ApplyTemplateSettings(_inputFolder, _outputFolder) { RawModelExportSettings = { Export = true }, TransformDocument = true, };
 
             _templateManager = new TemplateManager(null, null, new List<string> { "template" }, null, _templateFolder);
+
+            _listener = TestLoggerListener.CreateLoggerListenerWithPhaseEqualFilter(null);
+            _rawModelFilePath = GetRawModelFilePath("Suppressions.yml");
+
+            var schemaFile = CreateFile("template/schemas/rest.mixed.schema.json", File.ReadAllText("TestData/schemas/rest.mixed.schema.json"), _templateFolder);
+            var yamlFile = CreateFile("Suppressions.yml", File.ReadAllText("TestData/inputs/Suppressions.yml"), _inputFolder);
+            _files = new FileCollection(_defaultFiles);
+            _files.Add(DocumentType.Article, new[] { yamlFile }, _inputFolder);
         }
 
         [Fact]
         void TestMergeMarkdownFragments()
         {
             // Arrange
-            var schemaFile = CreateFile("template/schemas/rest.mixed.schema.json", File.ReadAllText("TestData/schemas/rest.mixed.schema.json"), _templateFolder);
-            var yamlFile = CreateFile("Suppressions.yml", File.ReadAllText("TestData/inputs/Suppressions.yml"), _inputFolder);
             var mdFile = CreateFile("Suppressions.yml.md", File.ReadAllText("TestData/inputs/Suppressions.yml.md"), _inputFolder);
-            FileCollection files = new FileCollection(_defaultFiles);
-            files.Add(DocumentType.Article, new[] { yamlFile }, _inputFolder);
 
             // Act
-            BuildDocument(files);
+            BuildDocument(_files);
 
             // Assert
-            var rawModelFilePath = GetRawModelFilePath("Suppressions.yml");
-            Assert.True(File.Exists(rawModelFilePath));
-            var rawModel = JsonUtility.Deserialize<JObject>(rawModelFilePath);
+            Assert.True(File.Exists(_rawModelFilePath));
+            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
             Assert.Equal("bob", rawModel["author"]);
             Assert.Contains("Enables the snoozed or dismissed attribute", rawModel["operations"][0]["summary"].ToString());
             Assert.Contains("Some empty lines between H2 and this paragraph is tolerant", rawModel["definitions"][0]["properties"][0]["description"].ToString());
             Assert.Contains("This is a summary at YAML's", rawModel["summary"].ToString());
+        }
+
+        [Fact]
+        public void TestMissingStartingH1CodeHeading()
+        {
+            // Arrange
+            var mdFile = CreateFile(
+                "Suppressions.yml.md",
+                @"## `summary`
+markdown content
+",
+                _inputFolder);
+
+            // Act
+            Logger.RegisterListener(_listener);
+            try
+            {
+                BuildDocument(_files);
+            }
+            finally
+            {
+                Logger.UnregisterListener(_listener);
+            }
+
+            var logs = _listener.Items;
+            var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
+            Assert.True(File.Exists(_rawModelFilePath));
+            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+            Assert.Single(warningLogs);
+            Assert.Equal("Unable to parse markdown fragments: Expect L1InlineCodeHeading", warningLogs.First().Message);
+            Assert.Equal("1", warningLogs.First().Line);
+            Assert.Null(rawModel["summary"]);
+        }
+
+        [Fact]
+        public void TestInvalidSpaceMissing()
+        {
+            // Arrange
+            var mdFile = CreateFile(
+                "Suppressions.yml.md",
+                @"#head_1_without_space
+
+## `summary`
+markdown content
+",
+                _inputFolder);
+
+            // Act
+            Logger.RegisterListener(_listener);
+            try
+            {
+                BuildDocument(_files);
+            }
+            finally
+            {
+                Logger.UnregisterListener(_listener);
+            }
+
+            var logs = _listener.Items;
+            var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
+            Assert.True(File.Exists(_rawModelFilePath));
+            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+            Assert.Single(warningLogs);
+            Assert.Equal("Unable to parse markdown fragments: Expect L1InlineCodeHeading", warningLogs.First().Message);
+            Assert.Equal("1", warningLogs.First().Line);
+            Assert.Null(rawModel["summary"]);
+        }
+
+        [Fact]
+        public void TestValidSpaceMissing()
+        {
+            // Arrange
+            var mdFile = CreateFile(
+                "Suppressions.yml.md",
+                @"# `management.azure.com.advisor.suppressions`
+
+## `summary`
+markdown content
+
+##head_3_without_space
+markdown content
+",
+                _inputFolder);
+
+            // Act
+            BuildDocument(_files);
+
+            Assert.True(File.Exists(_rawModelFilePath));
+            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+            Assert.Contains("##head_3_without_space", rawModel["summary"].ToString());
+        }
+
+        [Fact]
+        public void TestInvalidYaml()
+        {
+            // Arrange
+            var mdFile = CreateFile(
+                "Suppressions.yml.md",
+                @"# `management.azure.com.advisor.suppressions`
+```
+author:author_without_space
+```
+
+## `summary`
+markdown content
+",
+                _inputFolder);
+
+            // Act
+            Logger.RegisterListener(_listener);
+            try
+            {
+                BuildDocument(_files);
+            }
+            finally
+            {
+                Logger.UnregisterListener(_listener);
+            }
+
+            var logs = _listener.Items;
+            var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
+            Assert.True(File.Exists(_rawModelFilePath));
+            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+            Assert.Single(warningLogs);
+            Assert.Equal("Unable to parse markdown fragments: Encountered an invalid YAML code block: (Line: 1, Col: 1, Idx: 0) - (Line: 1, Col: 28, Idx: 27): Exception during deserialization", warningLogs.First().Message);
+            Assert.Equal("2", warningLogs.First().Line);
+            Assert.Null(rawModel["summary"]);
+        }
+
+        [Fact]
+        public void TestInvalidOPath()
+        {
+            // Arrange
+            var mdFile = CreateFile(
+                "Suppressions.yml.md",
+                @"# `management.azure.com.advisor.suppressions`
+
+## `operations[id=]/summary`
+
+markdown_content
+
+## `summary`
+markdown content
+",
+                _inputFolder);
+
+            // Act
+            Logger.RegisterListener(_listener);
+            try
+            {
+                BuildDocument(_files);
+            }
+            finally
+            {
+                Logger.UnregisterListener(_listener);
+            }
+
+            var logs = _listener.Items;
+            var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
+            Assert.True(File.Exists(_rawModelFilePath));
+            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+            Assert.Single(warningLogs);
+            Assert.Equal("Unable to parse markdown fragments: operations[id=]/summary is not a valid OPath", warningLogs.First().Message);
+            Assert.Equal("3", warningLogs.First().Line);
+            Assert.Null(rawModel["summary"]);
+        }
+
+        [Fact]
+        public void TestNotExistedUid()
+        {
+            // Arrange
+            var mdFile = CreateFile(
+                "Suppressions.yml.md",
+                @"# `uid_not_exist`
+
+## `summary`
+markdown content
+",
+                _inputFolder);
+
+            // Act
+            Logger.RegisterListener(_listener);
+            try
+            {
+                BuildDocument(_files);
+            }
+            finally
+            {
+                Logger.UnregisterListener(_listener);
+            }
+
+            var logs = _listener.Items;
+            var warningLogs = logs.Where(l => l.Code == WarningCodes.Overwrite.InvalidMarkdownFragments);
+            Assert.True(File.Exists(_rawModelFilePath));
+            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+            Assert.Single(warningLogs);
+            Assert.Equal("Unable to find UidDefinition for Uid: uid_not_exist", warningLogs.First().Message);
+            Assert.Null(rawModel["summary"]);
         }
 
         private void BuildDocument(FileCollection files)
