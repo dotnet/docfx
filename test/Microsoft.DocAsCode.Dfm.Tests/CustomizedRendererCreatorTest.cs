@@ -117,7 +117,7 @@ using System.IO;
                     result += StringHelper.Escape(token.Lang.Remove(token.Lang.Length - 2), true);
                     result += "\">";
                     result += token.Code;
-                    result += "\n</code></pre>";
+                    result += "</code></pre>";
                     return result;
                 }
             }
