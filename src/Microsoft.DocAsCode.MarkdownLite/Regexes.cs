@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             [Obsolete]
             public static readonly Regex Newline = new Regex(@"^\n+", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]
-            public static readonly Regex Code = new Regex(@"^( {4}[^\n]+\n*)+", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex Code = new Regex(@"^ {4}.+(?:\n+ {4}.+)*\n?", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]
             public static readonly Regex Hr = new Regex(@"^( *[-*_]){3,} *(?:\n+|$)", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]
