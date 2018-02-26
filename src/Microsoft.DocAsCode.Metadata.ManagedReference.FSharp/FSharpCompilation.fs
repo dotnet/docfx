@@ -26,6 +26,17 @@ module List =
         | [] -> []
 
 
+/// The names associated with an F# symbol or entity.
+/// Useful for generating a MetadataItem or LinkItem.
+type private SymbolNames = {
+    Name:                   string
+    DisplayName:            string
+    DisplayNameWithType:    string
+    DisplayQualifiedName:   string
+    XmlDocSig:              string
+}
+
+
 /// <summary>An F# compilation of an F# project. Can extract metadata from the F# project.</summary>
 /// <param name="compilation">The compilation output from the F# compiler service.</param>
 /// <param name="projPath">The path to the F# project file.</param>
@@ -230,70 +241,231 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         else
             ns + "." + ent.DisplayName
 
-    /// Display name of an F# entity.
-    let entityDisplayName (ent: FSharpEntity) =
+    /// Syntax string for the fields of an F# union case.
+    let unionCaseFieldsSyntax fullType (cfs: seq<FSharpField>) = 
+        cfs
+        |> Seq.map (fun cf -> 
+            if cf.Name.Length > 0 && cf.Name <> "Item" then
+                sprintf "%s: %s" cf.Name (typeSyntax fullType cf.FieldType)
+            else
+                typeSyntax fullType cf.FieldType)
+        |> String.concat " * "
+        |> fun s -> if s.Length > 0 then " of " + s else ""
+
+    /// Generates the names of an F# entity used for a MetadataItem and LinkItem.
+    let entityNames (ent: FSharpEntity) : SymbolNames =
+        let name =
+            if ent.IsFSharpAbbreviation then ent.AccessPath + "." + ent.DisplayName
+            else ent.FullName    
         let genStr =
             ent.GenericParameters
             |> Seq.map (fun gp -> "'" + gp.Name)
             |> String.concat ", "
             |> fun s -> if s.Length > 0 then "<" + s + ">" else s
         let displayGenName = ent.DisplayName + genStr
-        let ns = entityNamespace ent
-        if ent.AccessPath.Length > ns.Length then
-            // entity is located within an F# module
-            let ap = resolveModulePath ent.AccessPath
-            ap.[ns.Length+1..] + "." + displayGenName
-        else
-            displayGenName
+        let ns = entityNamespace ent           
+        let dispName =
+            if ent.AccessPath.Length > ns.Length then
+                // entity is located within an F# module
+                let ap = resolveModulePath ent.AccessPath
+                ap.[ns.Length+1..] + "." + displayGenName
+            else
+                displayGenName                    
+        let dispSuffix =
+            if ent.IsFSharpModule then " (mod)"
+            elif ent.IsFSharpRecord then " (rec)"
+            elif ent.IsFSharpUnion then " (union)"
+            elif ent.IsEnum then ""
+            elif ent.IsFSharpExceptionDeclaration then ""
+            elif ent.IsFSharpAbbreviation then " (abrv)"
+            elif ent.IsMeasure then " (meas)"
+            elif ent.IsDelegate then ""
+            elif ent.IsClass then ""
+            elif ent.IsInterface then ""
+            elif ent.IsValueType then ""
+            else ""           
+        {
+            Name = name     
+            DisplayName = dispName + dispSuffix
+            DisplayNameWithType = name 
+            DisplayQualifiedName = name
+            XmlDocSig = ent.XmlDocSig                  
+        }    
 
-    /// Reference to an (non-extension) F# member.
-    let memberRef (mem: FSharpMemberOrFunctionOrValue) =
-        if mem.IsExtensionMember then failwithf "%A must not be an extension" mem
-        let ent = mem.EnclosingEntity.Value
+    /// Generates the names of an F# symbol used for a MetadataItem and LinkItem.
+    let symbolNames (sym: FSharpSymbol) (encEnt: FSharpEntity) : SymbolNames =
+        let dispName = sym.DisplayName
+        let nameWithType = encEnt.DisplayName + "." + sym.DisplayName
+        let fullName = sym.FullName
+        let encEntName = (entityNames encEnt).Name
 
-        // generate name
-        let iasName =
-            if mem.IsOverrideOrExplicitInterfaceImplementation then 
-                match Seq.tryHead mem.ImplementedAbstractSignatures with
-                | Some ias -> ias.DeclaringType.TypeDefinition.FullName + "." 
-                | _ -> ""
-             else ""
-        let baseName = ent.FullName + "." + iasName + mem.DisplayName
-        let name = baseName + "(" + curriedParamSyntax false true mem.CurriedParameterGroups + ")"
-        let dispName = mem.DisplayName
-        let nameWithType = ent.DisplayName + "." + mem.DisplayName
-        let fullName = mem.FullName
+        match sym with
+        | :? FSharpField as field ->   
+            {
+                Name = encEntName + "." + sym.DisplayName     
+                DisplayName = sprintf "val %s: %s" dispName (typeSyntax false field.FieldType) 
+                DisplayNameWithType = sprintf "val %s: %s" nameWithType (typeSyntax false field.FieldType)
+                DisplayQualifiedName = sprintf "val %s: %s" fullName (typeSyntax true field.FieldType) 
+                XmlDocSig = field.XmlDocSig
+            }
+        | :? FSharpUnionCase as case ->
+            {
+                Name = encEntName + "." + sym.DisplayName     
+                DisplayName = sprintf "%s%s" dispName (unionCaseFieldsSyntax false case.UnionCaseFields) 
+                DisplayNameWithType = sprintf "%s%s" nameWithType (unionCaseFieldsSyntax false case.UnionCaseFields) 
+                DisplayQualifiedName = sprintf "%s%s" fullName (unionCaseFieldsSyntax true case.UnionCaseFields)                
+                XmlDocSig = case.XmlDocSig
+            }
+        | :? FSharpMemberOrFunctionOrValue as mem ->
+            let logicalName = 
+                mem.LogicalEnclosingEntity.AccessPath + "." + (entityNames mem.LogicalEnclosingEntity).DisplayName
+            let iasName =
+                if mem.IsOverrideOrExplicitInterfaceImplementation then 
+                    match Seq.tryHead mem.ImplementedAbstractSignatures with
+                    | Some ias -> ias.DeclaringType.TypeDefinition.FullName + "." 
+                    | _ -> ""
+                 else ""                
+            let baseName = 
+                encEntName + "." + 
+                (if mem.IsExtensionMember then "___" + logicalName + "." else "") +
+                iasName +
+                (if mem.IsConstructor then "#ctor" else mem.DisplayName)
+            let name =
+                if mem.CompiledName.StartsWith("op_Explicit") then
+                    encEntName + "->" + (typeSyntax true mem.ReturnParameter.Type)
+                else
+                    baseName + "(" + curriedParamSyntax false true mem.CurriedParameterGroups + ")"                
+            let nonIndexProp = mem.IsProperty && mem.CurriedParameterGroups.[0].Count = 0
+            let arrow = if mem.CurriedParameterGroups.Count > 0 && not nonIndexProp then " -> " else ""
+            let dispParams = if nonIndexProp then "" else curriedParamSyntax false false mem.CurriedParameterGroups
+            let fullParams = if nonIndexProp then "" else curriedParamSyntax false true mem.CurriedParameterGroups
+            let dispType = dispParams + arrow + (typeSyntax false mem.ReturnParameter.Type)
+            let fullType = fullParams + arrow + (typeSyntax true mem.ReturnParameter.Type)
+            let mods = 
+                [if not mem.IsInstanceMember then yield "static "
+                 if mem.IsDispatchSlot then yield "abstract "]
+                |> String.concat ""            
+            let ifType fullType = 
+                if mem.IsOverrideOrExplicitInterfaceImplementation then
+                    match Seq.tryHead mem.ImplementedAbstractSignatures with
+                    | Some ias when ias.DeclaringType.TypeDefinition.IsInterface -> 
+                        sprintf "interface %s with " (typeSyntax fullType ias.DeclaringType)
+                    | Some ias when ias.DeclaringType.TypeDefinition.FullName = encEnt.FullName -> 
+                        "default "
+                    | Some _ -> "override "
+                    | None -> ""
+                else ""
+            let isEvent = 
+                mem.Attributes |> Seq.exists (fun a -> a.AttributeType.DisplayName = "CLIEventAttribute")
+            let ifDispType = ifType false
+            let ifFullType = ifType true
+            if mem.IsConstructor then         
+                {
+                    Name = name
+                    DisplayName = sprintf "new: %s" dispType 
+                    DisplayNameWithType = sprintf "new: %s" dispType 
+                    DisplayQualifiedName = sprintf "new: %s" fullType 
+                    XmlDocSig = mem.XmlDocSig
+                }
+            elif mem.IsExtensionMember then 
+                {
+                    Name = name
+                    DisplayName = sprintf "extension %s.%s: %s" logicalName dispName dispType 
+                    DisplayNameWithType = sprintf "extension %s.%s: %s" logicalName dispName dispType 
+                    DisplayQualifiedName = sprintf "extension %s: %s" mem.FullName fullType 
+                    XmlDocSig = mem.XmlDocSig
+                }           
+            elif isEvent then
+                {
+                    Name = name
+                    DisplayName = sprintf "%s%sevent %s: %s" ifDispType mods dispName dispType
+                    DisplayNameWithType = sprintf "%s%sevent %s: %s" ifDispType mods nameWithType dispType 
+                    DisplayQualifiedName = sprintf "%s%sevent %s: %s" ifFullType mods fullName fullType
+                    XmlDocSig = mem.XmlDocSig
+                }                         
+            elif mem.IsProperty then
+                {
+                    Name = name
+                    DisplayName = sprintf "%s%sproperty %s: %s" ifDispType mods dispName dispType
+                    DisplayNameWithType = sprintf "%s%sproperty %s: %s" ifDispType mods nameWithType dispType 
+                    DisplayQualifiedName = sprintf "%s%sproperty %s: %s" ifFullType mods fullName fullType
+                    XmlDocSig = mem.XmlDocSig
+                }        
+            elif mem.IsMember then
+                {
+                    Name = name
+                    DisplayName = sprintf "%s%smember %s: %s" ifDispType mods dispName dispType
+                    DisplayNameWithType = sprintf "%s%smember %s: %s" ifDispType mods nameWithType dispType 
+                    DisplayQualifiedName = sprintf "%s%smember %s: %s" ifFullType mods fullName fullType                    
+                    XmlDocSig = mem.XmlDocSig
+                }       
+            elif mem.IsActivePattern then
+                if mem.ReturnParameter.Type.HasTypeDefinition && 
+                   mem.ReturnParameter.Type.TypeDefinition.TryFullName 
+                   |> Option.forall (fun fn -> fn.StartsWith "Microsoft.FSharp.Core.FSharpChoice") then            
+                    {
+                        Name = name                  
+                        DisplayName = sprintf "val %s: %s" dispName dispParams 
+                        DisplayNameWithType = sprintf "val %s: %s" nameWithType dispParams
+                        DisplayQualifiedName = sprintf "val %s: %s" fullName fullParams    
+                        XmlDocSig = mem.XmlDocSig                    
+                    }   
+                else
+                    {
+                        Name = name                  
+                        DisplayName = sprintf "val %s: %s" dispName dispType 
+                        DisplayNameWithType = sprintf "val %s: %s" nameWithType dispType
+                        DisplayQualifiedName = sprintf "val %s: %s" fullName fullType                       
+                        XmlDocSig = mem.XmlDocSig
+                    }   
+            elif mem.FullType.IsFunctionType then
+                {
+                    Name = name     
+                    DisplayName = sprintf "val %s: %s" dispName dispType 
+                    DisplayNameWithType = sprintf "val %s: %s" nameWithType dispType
+                    DisplayQualifiedName = sprintf "val %s: %s" fullName fullType           
+                    XmlDocSig = mem.XmlDocSig
+                }     
+            else
+                {
+                    Name = name     
+                    DisplayName = sprintf "val %s" dispName
+                    DisplayNameWithType = sprintf "val %s: %s" nameWithType (typeSyntax false mem.FullType)
+                    DisplayQualifiedName =  sprintf "val %s: %s" fullName (typeSyntax true mem.FullType)                   
+                    XmlDocSig = mem.XmlDocSig
+                }     
+        | _ -> failwithf "Unsupported symbol: %A" sym
 
-        // generate display names
-        let typeStr = 
-            if mem.IsProperty then "property"
-            elif mem.IsMember then "member"
-            else failwithf "%A must be method or property" mem 
-        let nonIndexProp = mem.IsProperty && mem.CurriedParameterGroups.[0].Count = 0
-        let arrow = if mem.CurriedParameterGroups.Count > 0 && not nonIndexProp then " -> " else ""
-        let dispType = 
-            (if nonIndexProp then "" else curriedParamSyntax false false mem.CurriedParameterGroups) + 
-            arrow + (typeSyntax false mem.ReturnParameter.Type)
-        let fullType = 
-            (if nonIndexProp then "" else curriedParamSyntax false true mem.CurriedParameterGroups) + 
-            arrow + (typeSyntax true mem.ReturnParameter.Type)
-        let ifDispType, ifFullType =
-            if mem.IsExplicitInterfaceImplementation then
-                let ias = mem.ImplementedAbstractSignatures.[0]
-                sprintf "interface %s with " (typeSyntax false ias.DeclaringType),
-                sprintf "interface %s with " (typeSyntax true ias.DeclaringType)
-            else "", ""
-        let parts =
-            [LinkItem(Name=name, 
-                      DisplayName=sprintf "%s%s %s: %s" ifDispType typeStr dispName dispType,
-                      DisplayNamesWithType=sprintf "%s%s %s: %s" ifDispType typeStr nameWithType dispType,
-                      DisplayQualifiedNames=sprintf "%s%s %s: %s" ifFullType typeStr fullName fullType)]               
-
-        // generate ReferenceItem and add reference
+    /// Returns the reference string to an F# entity or symbol.
+    let symbolRef (names: SymbolNames) =
+        let parts = [LinkItem(Name=names.Name, DisplayName=names.DisplayName, DisplayNamesWithType=names.DisplayNameWithType,
+                              DisplayQualifiedNames=names.DisplayQualifiedName)]
         let ri = ReferenceItem(Parts=SortedList(Map[SyntaxLanguage.FSharp, List(parts);
                                                     SyntaxLanguage.CSharp, List(parts)]))
-        addReference name ri
-        name
+        addReference names.Name ri
+        names.Name                                              
+
+    /// A sequence of the names of all symbols and entities within the specified F# entity.
+    let rec enclosedSymbolNames (ent: FSharpEntity) = seq {
+        yield entityNames ent
+        if not ent.IsFSharpAbbreviation then
+            for mem in ent.MembersFunctionsAndValues do
+                if mem.Accessibility.IsPublic then
+                    yield symbolNames mem ent
+            for field in ent.FSharpFields do 
+                if field.Accessibility.IsPublic then
+                    yield symbolNames field ent
+            for case in ent.UnionCases do 
+                if case.Accessibility.IsPublic then
+                    yield symbolNames case ent
+        for subEnt in ent.PublicNestedEntities do
+            yield! enclosedSymbolNames subEnt
+    }
+
+    /// A sequences of all symbol names within this compilation.
+    let allSymbolNames =
+        compilation.AssemblySignature.Entities
+        |> Seq.collect enclosedSymbolNames
 
     /// Extract MetadataItem for an F# attribute.
     let attrMetadata (attr: FSharpAttribute) =
@@ -332,7 +504,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         else false
 
     /// True if specified parameter has unit type.
-    let isUnit (p: FSharpParameter) =
+    let isUnitParameter (p: FSharpParameter) =
         isUnitType p.Type
 
     /// Metadata for an F# parameter.
@@ -350,18 +522,45 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
 
     /// Extracts documentation from XML docstrings and adds it to the specified MetadataItem.
     let extractXmlDoc (md: MetadataItem) (xmlDoc: IList<string>) (xmlDocSig: string) =
+        
+        /// Resolves a cref within the XML documenation.
+        let resolveCRef xmlRef =
+            let result = 
+                if Regex.Match(xmlRef, @"^[A-Z]:").Success then
+                    // If an XML comment id of the form "?:xxx" was specified, then we perform an exact 
+                    // search over all comment ids.
+                    allSymbolNames |> Seq.tryFind (fun s -> s.XmlDocSig = xmlRef)
+                else
+                    // Otherwise we assume that a (partial) identifier was specified.
+                    let isMethodRef = xmlRef.Contains "("
+                    // Remove type identifier and argument list of own XML comment id.
+                    let pp = md.CommentId.[2..]
+                    let pp = if pp.Contains "(" then pp.[0 .. pp.IndexOf('(')-1] else pp
+                    let parts = pp.Split '.'                   
+                    // Try prefixed identifier.
+                    [parts.Length .. -1 .. 0]
+                    |> Seq.tryPick (fun numParts ->
+                        let prefixedRef = 
+                            Array.append parts.[0 .. numParts-1] [|xmlRef|] |> String.concat "."
+                        allSymbolNames |> Seq.tryFind (fun s ->
+                            let cand = s.XmlDocSig.[2..]
+                            let cand =
+                                if not isMethodRef && cand.Contains "(" then cand.[0 .. cand.IndexOf("(")-1]
+                                else cand
+                            cand = prefixedRef))
+            match result with
+            | Some s -> CRefTarget(Id=symbolRef s, CommentId=s.XmlDocSig)
+            | None -> null
+
         md.CommentId <- xmlDocSig
         md.RawComment <- xmlDoc |> String.concat "\n"
 
         if Regex.Match(md.RawComment, @"</.+>").Success then
             // If comment contains tags, try to process it as XML documentation comment.
             let fullXml = sprintf "<member name=\"%s\">%s</member>" md.CommentId md.RawComment
-            let addDocRef a b =
-                // TODO: add reference
-                Log.warning "XmlDoc AddRef: %s %s" a b
             let context = 
-                TripleSlashCommentParserContext(PreserveRawInlineComments=true,
-                                                AddReferenceDelegate=(fun a b -> addDocRef a b),
+                TripleSlashCommentParserContext(PreserveRawInlineComments=false,
+                                                ResolveCRef=(fun cRef -> resolveCRef cRef),
                                                 Source=md.Source)
             match TripleSlashCommentModel.CreateModel(fullXml, SyntaxLanguage.FSharp, context) with
             | null -> 
@@ -375,16 +574,16 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 md.SeeAlsos <- cm.SeeAlsos
                 md.Examples <- cm.Examples
                 md.IsInheritDoc <- cm.IsInheritDoc
-                if md.Syntax <> null then
-                    if md.Syntax.Parameters <> null then
+                if not (isNull md.Syntax) then
+                    if not (isNull md.Syntax.Parameters) then
                         for pmd in md.Syntax.Parameters do
                             if cm.Parameters.ContainsKey pmd.Name then
                                 pmd.Description <- cm.Parameters.[pmd.Name]
-                    if md.Syntax.TypeParameters <> null then
+                    if not (isNull md.Syntax.TypeParameters) then
                         for pmd in md.Syntax.TypeParameters do
                             if cm.TypeParameters.ContainsKey pmd.Name then
                                 pmd.Description <- cm.TypeParameters.[pmd.Name]
-                    if md.Syntax.Return <> null then
+                    if not (isNull md.Syntax.Return) then
                         md.Syntax.Return.Description <- cm.Returns
         elif md.RawComment.Length > 0 then
             /// Otherwise treat whole comment as summary.
@@ -392,6 +591,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
 
     /// Extract MetadataItem for an F# symbol.
     let symbolMetadata (encEnt: FSharpEntity) (encMd: MetadataItem) (sym: FSharpSymbol) =
+        let names = symbolNames sym encEnt
         let dispName = sym.DisplayName
         let nameWithType = encEnt.DisplayName + "." + sym.DisplayName
         let fullName = sym.FullName
@@ -399,7 +599,10 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         // extract information common to all symbol types
         let symMd = MetadataItem()
         symMd.Syntax <- SyntaxDetail()
-        symMd.Name <- encMd.Name + "." + sym.DisplayName
+        symMd.Name <- names.Name
+        symMd.DisplayNames <- names.DisplayName |> syn
+        symMd.DisplayNamesWithType <- names.DisplayNameWithType |> syn
+        symMd.DisplayQualifiedNames <- names.DisplayQualifiedName |> syn
         symMd.NamespaceName <- encMd.NamespaceName
         symMd.AssemblyNameList <- encMd.AssemblyNameList
         match sym.DeclarationLocation with
@@ -411,12 +614,6 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         | :? FSharpField as field when field.Accessibility.IsPublic && field.DisplayName <> "value__"  ->   
             // F# field
             symMd.Type <- MemberType.Field
-            symMd.DisplayNames <- 
-                sprintf "val %s: %s" dispName (typeSyntax false field.FieldType) |> syn
-            symMd.DisplayNamesWithType <- 
-                sprintf "val %s: %s" nameWithType (typeSyntax false field.FieldType) |> syn
-            symMd.DisplayQualifiedNames <-
-                sprintf "val %s: %s" fullName (typeSyntax true field.FieldType) |> syn
             symMd.Syntax.Content <- 
                 match field.LiteralValue with
                 | Some lv -> sprintf "val %s = %A" dispName lv 
@@ -429,24 +626,9 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
 
         | :? FSharpUnionCase as case when case.Accessibility.IsPublic ->
             // F# union case
-            let caseFieldsStr fullType (cfs: seq<FSharpField>) = 
-                cfs
-                |> Seq.map (fun cf -> 
-                    if cf.Name.Length > 0 && cf.Name <> "Item" then
-                        sprintf "%s: %s" cf.Name (typeSyntax fullType cf.FieldType)
-                    else
-                        typeSyntax fullType cf.FieldType)
-                |> String.concat " * "
-                |> fun s -> if s.Length > 0 then " of " + s else ""
             symMd.Type <- MemberType.Property
-            symMd.DisplayNames <- 
-                sprintf "%s%s" dispName (caseFieldsStr false case.UnionCaseFields) |> syn
-            symMd.DisplayNamesWithType <- 
-                sprintf "%s%s" nameWithType (caseFieldsStr false case.UnionCaseFields) |> syn
-            symMd.DisplayQualifiedNames <-
-                sprintf "%s%s" fullName (caseFieldsStr true case.UnionCaseFields) |> syn
             symMd.Syntax.Content <- 
-                sprintf "| %s%s" dispName (caseFieldsStr false case.UnionCaseFields) |> syn
+                sprintf "| %s%s" dispName (unionCaseFieldsSyntax false case.UnionCaseFields) |> syn
             symMd.Syntax.Parameters <-
                 case.UnionCaseFields
                 |> Seq.map (fun f -> ApiParameter(Name=(if f.Name <> "Item" then f.Name else ""), 
@@ -462,7 +644,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             // F# member of module, class or interface 
             // (module function, module value, constructor, method, property, event)
             let logicalName = 
-                mem.LogicalEnclosingEntity.AccessPath + "." + entityDisplayName mem.LogicalEnclosingEntity
+                mem.LogicalEnclosingEntity.AccessPath + "." + (entityNames mem.LogicalEnclosingEntity).DisplayName
             let baseName = 
                 encMd.Name + "." + 
                 (if mem.IsExtensionMember then "___" + logicalName + "." else "") +
@@ -470,10 +652,9 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                     | Some ias -> ias.DeclaringType.TypeDefinition.FullName + "." 
                     | None -> "") +
                 (if mem.IsConstructor then "#ctor" else mem.DisplayName)
-            symMd.Name <- baseName + "(" + curriedParamSyntax false true mem.CurriedParameterGroups + ")"
             symMd.Syntax.Parameters <- curriedParamsMetadata mem.CurriedParameterGroups
             symMd.Syntax.TypeParameters <- List(mem.GenericParameters |> Seq.map genericParamMetadata)
-            if not (isUnit mem.ReturnParameter) then 
+            if not (isUnitParameter mem.ReturnParameter) then 
                 symMd.Syntax.Return <- paramMetadata mem.ReturnParameter
             symMd.IsExplicitInterfaceImplementation <- mem.IsExplicitInterfaceImplementation
             symMd.Attributes <- List(mem.Attributes |> Seq.map attrMetadata)
@@ -514,10 +695,12 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                     |> Seq.sortByDescending fst
                 match Seq.tryHead bestMatchingCount with
                 | Some (_, bestMatching) when Seq.length bestMatching = 1 ->
-                    symMd.Overridden <- memberRef (Seq.exactlyOne bestMatching)
+                    let overridden = Seq.exactlyOne bestMatching
+                    symMd.Overridden <- symbolRef (symbolNames overridden overridden.EnclosingEntity.Value)
                 | Some (_, bestMatching) ->
                     Log.verbose "Cannot uniquely determine what member is overriden by %s" symMd.Name
-                    symMd.Overridden <- memberRef (Seq.head bestMatching)
+                    let overridden = Seq.head bestMatching
+                    symMd.Overridden <- symbolRef (symbolNames overridden overridden.EnclosingEntity.Value)
                 | None ->
                     Log.verbose "Cannot determine what member is overridden by %s" symMd.Name
             | None -> ()          
@@ -526,10 +709,8 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             let nonIndexProp = mem.IsProperty && mem.CurriedParameterGroups.[0].Count = 0
             let arrow = if mem.CurriedParameterGroups.Count > 0 && not nonIndexProp then " -> " else ""
             let dispParams = if nonIndexProp then "" else curriedParamSyntax false false mem.CurriedParameterGroups
-            let fullParams = if nonIndexProp then "" else curriedParamSyntax false true mem.CurriedParameterGroups
             let syntaxParams = if nonIndexProp then "" else curriedParamSyntax true false mem.CurriedParameterGroups
             let dispType = dispParams + arrow + (typeSyntax false mem.ReturnParameter.Type)
-            let fullType = fullParams + arrow + (typeSyntax true mem.ReturnParameter.Type)
             let syntaxType = syntaxParams + arrow + (typeSyntax false mem.ReturnParameter.Type)
             let propertyOps =
                 [if mem.HasGetterMethod then yield "get"
@@ -550,13 +731,9 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             let isEvent = 
                 mem.Attributes |> Seq.exists (fun a -> a.AttributeType.DisplayName = "CLIEventAttribute")
             let ifDispType = ifType false
-            let ifFullType = ifType true
             let atrStr = attrsSyntax true mem.Attributes   
             if mem.IsConstructor then 
                 symMd.Type <- MemberType.Constructor
-                symMd.DisplayNames <- sprintf "new: %s" dispType |> syn
-                symMd.DisplayNamesWithType <- sprintf "new: %s" dispType |> syn
-                symMd.DisplayQualifiedNames <- sprintf "new: %s" fullType |> syn
                 symMd.Syntax.Content <- sprintf "new: %s" syntaxType |> syn
                 if mem.IsImplicitConstructor && encMd.CommentModel <> null then
                     for p in symMd.Syntax.Parameters do
@@ -565,9 +742,6 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             elif mem.IsExtensionMember then 
                 symMd.Type <- if mem.IsProperty then MemberType.Property else MemberType.Method
                 symMd.IsExtensionMethod <- true
-                symMd.DisplayNames <- sprintf "extension %s.%s: %s" logicalName dispName dispType |> syn
-                symMd.DisplayNamesWithType <- sprintf "extension %s.%s: %s" logicalName dispName dispType |> syn
-                symMd.DisplayQualifiedNames <- sprintf "extension %s: %s" mem.FullName fullType |> syn 
                 if mem.IsProperty then
                     symMd.Syntax.Content <- sprintf "%sextension %s.%s: %s with %s" atrStr logicalName dispName dispType propertyOps |> syn
                 else
@@ -576,25 +750,13 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 symMd.Type <- MemberType.Event
                 let evtType = mem.ReturnParameter.Type.GenericArguments.[0]
                 let dispType = typeSyntax false evtType
-                let fullType = typeSyntax true evtType
-                symMd.DisplayNames <- sprintf "%s%sevent %s: %s" ifDispType mods dispName dispType |> syn
-                symMd.DisplayNamesWithType <- sprintf "%s%sevent %s: %s" ifDispType mods nameWithType dispType |> syn
-                symMd.DisplayQualifiedNames <- sprintf "%s%sevent %s: %s" ifFullType mods fullName fullType |> syn
                 symMd.Syntax.Content <- sprintf "%s%s%sevent %s: %s" atrStr ifDispType mods dispName dispType |> syn                    
                 symMd.Syntax.Return <- ApiParameter(Type=typeRef evtType)                    
             elif mem.IsProperty then
                 symMd.Type <- MemberType.Property
-                symMd.DisplayNames <- sprintf "%s%sproperty %s: %s" ifDispType mods dispName dispType |> syn
-                symMd.DisplayNamesWithType <- sprintf "%s%sproperty %s: %s" ifDispType mods nameWithType dispType |> syn
-                symMd.DisplayQualifiedNames <- sprintf "%s%sproperty %s: %s" ifFullType mods fullName fullType |> syn
                 symMd.Syntax.Content <- sprintf "%s%s%sproperty %s: %s with %s" atrStr ifDispType mods dispName dispType propertyOps |> syn                    
             elif mem.IsMember then
                 symMd.Type <- if mem.CompiledName.StartsWith("op_") then MemberType.Operator else MemberType.Method
-                if mem.CompiledName.StartsWith("op_Explicit") then
-                    symMd.Name <- encMd.Name + "->" + (typeSyntax true mem.ReturnParameter.Type)
-                symMd.DisplayNames <- sprintf "%s%smember %s: %s" ifDispType mods dispName dispType |> syn
-                symMd.DisplayNamesWithType <- sprintf "%s%smember %s: %s" ifDispType mods nameWithType dispType |> syn
-                symMd.DisplayQualifiedNames <- sprintf "%s%smember %s: %s" ifFullType mods fullName fullType |> syn 
                 symMd.Syntax.Content <- sprintf "%s%s%smember %s: %s" atrStr ifDispType mods dispName syntaxType |> syn
                 if encEnt.IsDelegate && mem.DisplayName = "Invoke" && encMd.CommentModel <> null then
                     for p in symMd.Syntax.Parameters do
@@ -617,27 +779,15 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                             else
                                 sprintf "    | %s of %s" choiceName (typeSyntax false choiceType))
                         |> String.concat "\n"                   
-                    symMd.DisplayNames <- sprintf "val %s: %s" dispName dispParams |> syn
-                    symMd.DisplayNamesWithType <- sprintf "val %s: %s" nameWithType dispParams |> syn
-                    symMd.DisplayQualifiedNames <- sprintf "val %s: %s" fullName fullParams |> syn
                     symMd.Syntax.Content <- sprintf "%sval %s: %s ->\n%s" atrStr dispName syntaxParams choiceSyntax |> syn                
                 else
                     // active pattern with single choice
-                    symMd.DisplayNames <- sprintf "val %s: %s" dispName dispType |> syn
-                    symMd.DisplayNamesWithType <- sprintf "val %s: %s" nameWithType dispType |> syn
-                    symMd.DisplayQualifiedNames <- sprintf "val %s: %s" fullName fullType |> syn
                     symMd.Syntax.Content <- sprintf "%sval %s: %s" atrStr dispName syntaxType |> syn                
             elif mem.FullType.IsFunctionType then
                 symMd.Type <- MemberType.Method
-                symMd.DisplayNames <- sprintf "val %s: %s" dispName dispType |> syn
-                symMd.DisplayNamesWithType <- sprintf "val %s: %s" nameWithType dispType |> syn
-                symMd.DisplayQualifiedNames <- sprintf "val %s: %s" fullName fullType |> syn
                 symMd.Syntax.Content <- sprintf "%sval %s: %s" atrStr dispName syntaxType |> syn
             else
                 symMd.Type <- MemberType.Field
-                symMd.DisplayNames <- sprintf "val %s" dispName |> syn
-                symMd.DisplayNamesWithType <- sprintf "val %s: %s" nameWithType (typeSyntax false mem.FullType) |> syn
-                symMd.DisplayQualifiedNames <- sprintf "val %s: %s" fullName (typeSyntax true mem.FullType) |> syn
                 symMd.Syntax.Content <- sprintf "%sval %s: %s" atrStr dispName (typeSyntax false mem.FullType) |> syn
 
             Some symMd
@@ -661,7 +811,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                                     not mem.IsConstructor && not mem.IsPropertyGetterMethod && 
                                     not mem.IsPropertySetterMethod &&
                                     (mem.IsProperty || mem.IsMember))
-        |> Seq.map memberRef
+        |> Seq.map (fun mem -> symbolRef (symbolNames mem mem.EnclosingEntity.Value))
 
     /// All members (transitively) inherited by the specified F# type returned as references.
     let rec inheritedMembers filter (t: FSharpType option) = seq {
@@ -678,35 +828,34 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
     /// Creates a MetadataItem for an F# entity.
     let entityMetadata (ent: FSharpEntity) =
         let md = MetadataItem(Syntax=SyntaxDetail(), Items=List())
+        let names = entityNames ent   
+        let dispName = names.DisplayName     
 
         // map F# type to DocFX member type
-        let dispName = entityDisplayName ent
-        let typ, dispSuffix =
-            if ent.IsFSharpModule then MemberType.Class, " (mod)"
-            elif ent.IsFSharpRecord then MemberType.Class, " (rec)"
-            elif ent.IsFSharpUnion then MemberType.Class, " (union)"
-            elif ent.IsEnum then MemberType.Enum, ""
-            elif ent.IsFSharpExceptionDeclaration then MemberType.Class, ""
-            elif ent.IsFSharpAbbreviation then MemberType.Class, " (abrv)"
-            elif ent.IsMeasure then MemberType.Class, " (meas)"
-            elif ent.IsDelegate then MemberType.Delegate, ""
-            elif ent.IsClass then MemberType.Class, ""
-            elif ent.IsInterface then MemberType.Interface, ""
-            elif ent.IsValueType then MemberType.Struct, ""
+        let typ, extendedSymbolKind =
+            if ent.IsFSharpModule then MemberType.Class, ExtendedSymbolKind.Class
+            elif ent.IsFSharpRecord then MemberType.Class, ExtendedSymbolKind.Class
+            elif ent.IsFSharpUnion then MemberType.Class, ExtendedSymbolKind.Class
+            elif ent.IsEnum then MemberType.Enum, ExtendedSymbolKind.Enum
+            elif ent.IsFSharpExceptionDeclaration then MemberType.Class, ExtendedSymbolKind.Class
+            elif ent.IsFSharpAbbreviation then MemberType.Class, ExtendedSymbolKind.Class
+            elif ent.IsMeasure then MemberType.Class, ExtendedSymbolKind.Class
+            elif ent.IsDelegate then MemberType.Delegate, ExtendedSymbolKind.Delegate
+            elif ent.IsClass then MemberType.Class, ExtendedSymbolKind.Class
+            elif ent.IsInterface then MemberType.Interface, ExtendedSymbolKind.Interface
+            elif ent.IsValueType then MemberType.Struct, ExtendedSymbolKind.Struct
             else failwithf "entity %A has unsupported type" ent            
 
         // extract basic information
-        md.Name <- 
-            if ent.IsFSharpAbbreviation then ent.AccessPath + "." + ent.DisplayName
-            else ent.FullName
+        md.Name <- names.Name
         md.Source <- srcDetail md.Name ent.DeclarationLocation
         md.Attributes <- List(ent.Attributes |> Seq.map attrMetadata)
         md.NamespaceName <- entityNamespace ent
         md.AssemblyNameList <- List([assemblyName])
         md.Type <- typ
-        md.DisplayNames <- dispName + dispSuffix |> syn
-        md.DisplayNamesWithType <- md.Name |> syn
-        md.DisplayQualifiedNames <- md.Name |> syn
+        md.DisplayNames <- names.DisplayName |> syn
+        md.DisplayNamesWithType <- names.DisplayNameWithType |> syn
+        md.DisplayQualifiedNames <- names.DisplayQualifiedName |> syn
         md.Syntax.TypeParameters <- List(ent.GenericParameters |> Seq.map genericParamMetadata)        
         extractXmlDoc md ent.XmlDoc ent.XmlDocSig
 
@@ -854,7 +1003,6 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             |> Seq.map (fun (nsName, mds) -> namespaceMetadata nsName mds)                
             |> List
         md
-
 
     /// Generates a MetadataItem for the assembly corresponding to this F# compilation.
     /// <param name="parameters">Build parameters.</param>
