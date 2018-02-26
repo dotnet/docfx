@@ -11,6 +11,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     {
         bool PreserveRawInlineComments { get; set; }
         Action<string, string> AddReferenceDelegate { get; set; }
+        Func<string, CRefTarget> ResolveCRef { get; }
         SourceDetail Source { get; set; }
     }
 }

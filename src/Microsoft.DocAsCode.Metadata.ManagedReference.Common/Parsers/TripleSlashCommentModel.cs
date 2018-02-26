@@ -58,8 +58,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             _context = context;
             if (!context.PreserveRawInlineComments)
             {
-                ResolveSeeCref(doc, context.AddReferenceDelegate);
-                ResolveSeeAlsoCref(doc, context.AddReferenceDelegate);
+                ResolveSeeCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
+                ResolveSeeAlsoCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
+                ResolveExceptionCref(doc, context.AddReferenceDelegate, context.ResolveCRef);
             }
             ResolveCodeSource(doc, context);
             var nav = doc.CreateNavigator();
@@ -418,19 +419,24 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return GetListContent(navigator, "/member/typeparam", "type parameter", context);
         }
 
-        private void ResolveSeeAlsoCref(XNode node, Action<string, string> addReference)
+        private void ResolveSeeAlsoCref(XNode node, Action<string, string> addReference, Func<string, CRefTarget> resolveCRef)
         {
             // Resolve <see cref> to <xref>
-            ResolveCrefLink(node, "//seealso[@cref]", addReference);
+            ResolveCrefLink(node, "//seealso[@cref]", addReference, resolveCRef);
         }
 
-        private void ResolveSeeCref(XNode node, Action<string, string> addReference)
+        private void ResolveSeeCref(XNode node, Action<string, string> addReference, Func<string, CRefTarget> resolveCRef)
         {
             // Resolve <see cref> to <xref>
-            ResolveCrefLink(node, "//see[@cref]", addReference);
+            ResolveCrefLink(node, "//see[@cref]", addReference, resolveCRef);
         }
 
-        private void ResolveCrefLink(XNode node, string nodeSelector, Action<string, string> addReference)
+        private void ResolveExceptionCref(XNode node, Action<string, string> addReference, Func<string, CRefTarget> resolveCRef)
+        {
+            ResolveCrefLink(node, "//exception[@cref]", addReference, resolveCRef);
+        }
+
+        private void ResolveCrefLink(XNode node, string nodeSelector, Action<string, string> addReference, Func<string, CRefTarget> resolveCRef)
         {
             if (node == null || string.IsNullOrEmpty(nodeSelector))
             {
@@ -443,29 +449,62 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 foreach (var item in nodes)
                 {
                     var cref = item.Attribute("cref").Value;
-                    // Strict check is needed as value could be an invalid href,
-                    // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
-                    var match = CommentIdRegex.Match(cref);
-                    if (match.Success)
+                    var success = false;
+
+                    if (resolveCRef != null)
                     {
-                        var id = match.Groups["id"].Value;
-                        var type = match.Groups["type"].Value;
-
-                        if (type == "Overload")
+                        // The resolveCRef delegate resolves the cref and returns the name of a reference if successful.
+                        var cRefTarget = resolveCRef.Invoke(cref);
+                        if (cRefTarget != null)
                         {
-                            id += '*';
+                            if (item.Parent?.Parent == null)
+                            {   
+                                // <see> or <seealso> is top-level tag. Keep it, but set resolved references.
+                                item.SetAttributeValue("refId", cRefTarget.Id);
+                                item.SetAttributeValue("cref", cRefTarget.CommentId);
+                            }
+                            else
+                            {
+                                // <see> occurs in text. Replace it with an <xref> node using the resolved reference.
+                                var replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(cRefTarget.Id)}\" data-throw-if-not-resolved=\"false\"></xref>");
+                                item.ReplaceWith(replacement);
+                            }
+                            success = true;
                         }
-
-                        // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
-                        if (item.Parent?.Parent != null)
+                        else
                         {
-                            var replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}\" data-throw-if-not-resolved=\"false\"></xref>");
-                            item.ReplaceWith(replacement);
+                            item.Remove();
+                            success = false;
                         }
-
-                        addReference?.Invoke(id, cref);
                     }
                     else
+                    {
+                        // Strict check is needed as value could be an invalid href,
+                        // e.g. !:Dictionary&lt;TKey, string&gt; when user manually changed the intellisensed generic type
+                        var match = CommentIdRegex.Match(cref);
+                        if (match.Success)
+                        {
+                            var id = match.Groups["id"].Value;
+                            var type = match.Groups["type"].Value;
+
+                            if (type == "Overload")
+                            {
+                                id += '*';
+                            }
+
+                            // When see and seealso are top level nodes in triple slash comments, do not convert it into xref node
+                            if (item.Parent?.Parent != null)
+                            {
+                                var replacement = XElement.Parse($"<xref href=\"{HttpUtility.UrlEncode(id)}\" data-throw-if-not-resolved=\"false\"></xref>");
+                                item.ReplaceWith(replacement);
+                            }
+
+                            addReference?.Invoke(id, cref);
+                            success = true;
+                        }
+                    }
+
+                    if (!success)
                     {
                         var detailedInfo = new StringBuilder();
                         if (_context != null && _context.Source != null)
@@ -562,7 +601,18 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
                 string commentId = nav.GetAttribute("cref", string.Empty);
                 string url = nav.GetAttribute("href", string.Empty);
-                if (!string.IsNullOrEmpty(commentId))
+                string refId = nav.GetAttribute("refId", string.Empty);
+                if (!string.IsNullOrEmpty(refId))
+                {
+                    yield return new LinkInfo
+                    {
+                        AltText = altText,
+                        LinkId = refId,
+                        CommentId = commentId,
+                        LinkType = LinkType.CRef
+                    };
+                }
+                else if (!string.IsNullOrEmpty(commentId))
                 {
                     // Check if cref type is valid and trim prefix
                     var match = CommentIdRegex.Match(commentId);

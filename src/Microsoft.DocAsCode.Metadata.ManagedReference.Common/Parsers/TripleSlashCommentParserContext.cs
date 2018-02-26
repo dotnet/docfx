@@ -13,6 +13,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
         public Action<string, string> AddReferenceDelegate { get; set; }
 
+        public Func<string, CRefTarget> ResolveCRef { get; set; }
+
         public SourceDetail Source { get; set; }
     }
 }
