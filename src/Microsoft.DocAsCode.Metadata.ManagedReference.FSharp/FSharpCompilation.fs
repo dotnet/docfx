@@ -499,13 +499,15 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
         else ""        
 
     /// True if specified type is unit type.
-    let isUnitType (typ: FSharpType) =
-        if typ.HasTypeDefinition then typ.TypeDefinition.DisplayName = "unit"
-        else false
-
-    /// True if specified parameter has unit type.
-    let isUnitParameter (p: FSharpParameter) =
-        isUnitType p.Type
+    let rec isUnitType (typ: FSharpType) =
+        if typ.HasTypeDefinition then 
+            if typ.TypeDefinition.IsFSharpAbbreviation then
+                isUnitType typ.TypeDefinition.AbbreviatedType
+            else 
+                match typ.TypeDefinition.TryFullName with
+                | Some name -> name = "Microsoft.FSharp.Core.Unit"
+                | _ -> false
+        else false        
 
     /// Metadata for an F# parameter.
     let paramMetadata (p: FSharpParameter) =                    
@@ -654,7 +656,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                 (if mem.IsConstructor then "#ctor" else mem.DisplayName)
             symMd.Syntax.Parameters <- curriedParamsMetadata mem.CurriedParameterGroups
             symMd.Syntax.TypeParameters <- List(mem.GenericParameters |> Seq.map genericParamMetadata)
-            if not (isUnitParameter mem.ReturnParameter) then 
+            if not (isUnitType mem.ReturnParameter.Type) then 
                 symMd.Syntax.Return <- paramMetadata mem.ReturnParameter
             symMd.IsExplicitInterfaceImplementation <- mem.IsExplicitInterfaceImplementation
             symMd.Attributes <- List(mem.Attributes |> Seq.map attrMetadata)
