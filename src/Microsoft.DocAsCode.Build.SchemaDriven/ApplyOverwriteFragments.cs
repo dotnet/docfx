@@ -18,6 +18,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     // [Export(nameof(SchemaDrivenDocumentProcessor), typeof(IDocumentBuildStep))]
     // TODO: export to the entire SchemaDrivenDocumentProcessor when incremental is ready
     [Export("SchemaDrivenDocumentProcessor.RESTComponentV3", typeof(IDocumentBuildStep))]
+    [Export("SchemaDrivenDocumentProcessor.RESTComponentGroupV3", typeof(IDocumentBuildStep))]
     [Export("SchemaDrivenDocumentProcessor.RESTOperationV3", typeof(IDocumentBuildStep))]
     [Export("SchemaDrivenDocumentProcessor.RESTOperationGroupV3", typeof(IDocumentBuildStep))]
     public class ApplyOverwriteFragments : BaseDocumentBuildStep, ISupportIncrementalBuildStep
