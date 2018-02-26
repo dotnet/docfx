@@ -16,7 +16,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             [Obsolete]
             public static readonly Regex Newline = new Regex(@"^\n+", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]
-            public static readonly Regex Code = new Regex(@"^( {4}[^\n]+\n*)+", RegexOptionCompiled, RegexTimeOut);
+            public static readonly Regex Code = new Regex(@"^ {4}.+(?:\n+ {4}.+)*\n?", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]
             public static readonly Regex Hr = new Regex(@"^( *[-*_]){3,} *(?:\n+|$)", RegexOptionCompiled, RegexTimeOut);
             [Obsolete]
@@ -45,7 +45,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static class Gfm
             {
                 [Obsolete]
-                public static readonly Regex Fences = new Regex(@"^ *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?)\s*\1 *(?:\n+|$)", RegexOptionCompiled, RegexTimeOut);
+                public static readonly Regex Fences = new Regex(@"^(?:(?> *(`{3,}) *(\S+)? *\n)((?:(?>.*)\n)*?) *\1`*|(?> *(~{3,}) *(\S+)? *\n)((?:(?>.*)\n)*?) *\1~*) *(?:\n+|$)", RegexOptionCompiled, RegexTimeOut);
                 [Obsolete]
                 public static readonly Regex Paragraph = new Regex(@"^((?:[^\n]+\n?(?! *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?)\s*\2 *(?:\n+|$)|( *)((?:[*+-]|\d+\.)) [\s\S]+?(?:\n+(?=\5?(?:[-*_] *){3,}(?:\n+|$))|\n+(?= *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$))|\n{2,}(?! )(?!\5(?:[*+-]|\d+\.) )\n*|\s*$)|( *[-*_]){3,} *(?:\n+|$)| *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)|([^\n]+)\n *(=|-){2,} *(?:\n+|$)|( *>[^\n]+(\n(?! *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$))[^\n]+)*\n*)+|<(?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\b)\w+(?!:\/|[^\w\s@]*@)\b| *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +[""(]([^\n]+)["")])? *(?:\n+|$)))+)\n*", RegexOptionCompiled, RegexTimeOut);
                 [Obsolete]
@@ -151,7 +151,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static readonly Regex WhiteSpaces = new Regex(@"\s+", RegexOptionCompiled);
 
             public static readonly Regex LeadingWhiteSpaces = new Regex(@"^ {4}", RegexOptions.Multiline | RegexOptionCompiled);
-            public static readonly Regex TailingEmptyLines = new Regex(@"\n+$", RegexOptionCompiled);
+            public static readonly Regex TailingEmptyLine = new Regex(@"\n$", RegexOptionCompiled);
 
             public static readonly Regex UselessTableHeader = new Regex(@"^ *| *\|? *$", RegexOptionCompiled);
             public static readonly Regex UselessTableAlign = new Regex(@"^ *|\|? *$", RegexOptionCompiled);

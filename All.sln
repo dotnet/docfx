@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6A65A769-DAC3-4E99-96F9-991F4CE8D164}"
 EndProject
@@ -213,7 +213,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.DocAsCode.Markdig
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MarkdownFragments", "MarkdownFragments", "{12B398BA-5002-40BE-A863-5B51FEB6EC68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YamlSplitter", "tools\YamlSplitter\YamlSplitter.csproj", "{2CA09972-F737-459A-A79E-EB96CC726200}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YamlSplitter", "tools\YamlSplitter\YamlSplitter.csproj", "{2CA09972-F737-459A-A79E-EB96CC726200}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

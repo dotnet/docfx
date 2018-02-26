@@ -1245,5 +1245,21 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
             TestLegacyGfmInGeneral(source, expected);
             TestGfmInGeneral(source, expected);
         }
+
+        [Fact]
+        [Trait("Related", "Markdown")]
+        public void TestGfmFences_WithEmptyFence()
+        {
+            var source = @"```
+```
+test";
+
+            var expected = @"<pre><code>
+</code></pre><p>test</p>
+";
+
+            TestGfmInGeneral(source, expected);
+            TestLegacyGfmInGeneral(source, expected);
+        }
     }
 }
