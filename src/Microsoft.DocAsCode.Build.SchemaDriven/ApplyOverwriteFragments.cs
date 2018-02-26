@@ -15,12 +15,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
     using Microsoft.DocAsCode.MarkdigEngine;
     using Microsoft.DocAsCode.Plugins;
 
-    // [Export(nameof(SchemaDrivenDocumentProcessor), typeof(IDocumentBuildStep))]
-    // TODO: export to the entire SchemaDrivenDocumentProcessor when incremental is ready
-    [Export("SchemaDrivenDocumentProcessor.RESTComponentV3", typeof(IDocumentBuildStep))]
-    [Export("SchemaDrivenDocumentProcessor.RESTComponentGroupV3", typeof(IDocumentBuildStep))]
-    [Export("SchemaDrivenDocumentProcessor.RESTOperationV3", typeof(IDocumentBuildStep))]
-    [Export("SchemaDrivenDocumentProcessor.RESTOperationGroupV3", typeof(IDocumentBuildStep))]
+    [Export(nameof(SchemaDrivenDocumentProcessor), typeof(IDocumentBuildStep))]
     public class ApplyOverwriteFragments : BaseDocumentBuildStep, ISupportIncrementalBuildStep
     {
         public override string Name => nameof(ApplyOverwriteFragments);
@@ -33,6 +28,13 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         public override void Build(FileModel model, IHostService host)
         {
             if (model.MarkdownFragmentsModel == null)
+            {
+                return;
+            }
+
+            host.ReportDependencyTo(model, model.MarkdownFragmentsModel.Key, DependencyTypeName.Include);
+
+            if (model.MarkdownFragmentsModel.Content == null)
             {
                 return;
             }
@@ -147,8 +149,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
         #region ISupportIncrementalBuildStep Members
 
-        // TODO: support incremental build
-        public bool CanIncrementalBuild(FileAndType fileAndType) => false;
+        public bool CanIncrementalBuild(FileAndType fileAndType) => true;
 
         public string GetIncrementalContextHash() => null;
 

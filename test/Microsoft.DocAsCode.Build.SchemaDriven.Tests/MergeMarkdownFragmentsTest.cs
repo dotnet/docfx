@@ -26,7 +26,7 @@
         private ApplyTemplateSettings _applyTemplateSettings;
         private TemplateManager _templateManager;
         private FileCollection _files;
-   
+
         private TestLoggerListener _listener;
         private string _rawModelFilePath;
 
@@ -267,6 +267,42 @@ markdown content
             Assert.Null(rawModel["summary"]);
         }
 
+        [Fact]
+        public void TestFragmentsWithIncremental()
+        {
+            // first build
+            BuildDocument(_files);
+            Assert.True(File.Exists(_rawModelFilePath));
+            var rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+            Assert.Null(rawModel["summary"]);
+
+            // add fragments
+            var mdFile = CreateFile(
+                "Suppressions.yml.md",
+                @"# `management.azure.com.advisor.suppressions`
+## ``summary``
+I add a summary.",
+                _inputFolder);
+            BuildDocument(_files);
+            Assert.True(File.Exists(_rawModelFilePath));
+            rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+            Assert.NotNull(rawModel["summary"]);
+            Assert.Contains("I add a summary", rawModel["summary"].ToString());
+
+            // modify fragments
+            UpdateFile(
+                "Suppressions.yml.md",
+                new string[] { @"# `management.azure.com.advisor.suppressions`",
+                    "## ``summary``",
+                    "I update a summary." },
+                _inputFolder);
+            BuildDocument(_files);
+            Assert.True(File.Exists(_rawModelFilePath));
+            rawModel = JsonUtility.Deserialize<JObject>(_rawModelFilePath);
+            Assert.NotNull(rawModel["summary"]);
+            Assert.Contains("I update a summary", rawModel["summary"].ToString());
+        }
+
         private void BuildDocument(FileCollection files)
         {
             var parameters = new DocumentBuildParameters
@@ -281,12 +317,6 @@ markdown content
             {
                 builder.Build(parameters);
             }
-        }
-
-        // TODO: remove this class when ApplyOverwriteFragments supports incremental and exports to all schemas
-        [Export("SchemaDrivenDocumentProcessor.RESTMixedTest", typeof(IDocumentBuildStep))]
-        public class ApplyOverwriteFragmentsForTest : ApplyOverwriteFragments
-        {
         }
 
         private static IEnumerable<System.Reflection.Assembly> LoadAssemblies()
