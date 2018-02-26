@@ -24,6 +24,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine
                 .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
                 .UseMediaLinks()
                 .UsePipeTables()
+                .UseListExtras()
                 .UseAutoLinks();
         }
 
