@@ -3,6 +3,9 @@
 
 v2.32 (Pre-release)
 -----------
+1. Support remove special host name from xref service.
+2. Bug fixes:
+   1. Fix empty code block in markdown(dfm, dfm-latest).
 
 v2.31
 -----------
