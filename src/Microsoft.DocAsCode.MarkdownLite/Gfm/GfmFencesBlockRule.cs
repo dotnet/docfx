@@ -46,7 +46,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 {
                     code = Regex.Replace(code, "^ {1," + match["spaces"].Count.ToString() + "}", string.Empty, RegexOptions.Multiline);
                 }
-                return new MarkdownCodeBlockToken(this, parser.Context, code, match["lang"].GetValue(), sourceInfo);
+                return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLine.Replace(code, string.Empty), match["lang"].GetValue(), sourceInfo);
             }
             return null;
         }

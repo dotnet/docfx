@@ -1254,12 +1254,8 @@ https://en.wikipedia.org/wiki/Draft:Microsoft_SQL_Server_Libraries/Drivers
 ```
 test";
 
-            var expected = @"<pre>
-  <code></code>
-</pre>
-<p>
-  test
-</p>
+            var expected = @"<pre><code>
+</code></pre><p>test</p>
 ";
 
             TestGfmInGeneral(source, expected);

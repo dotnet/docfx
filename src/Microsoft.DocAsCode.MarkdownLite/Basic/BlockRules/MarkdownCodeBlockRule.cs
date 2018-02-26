@@ -48,7 +48,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
                 }
                 else
                 {
-                    return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty), null, sourceInfo);
+                    return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLine.Replace(capStr, string.Empty), null, sourceInfo);
                 }
             }
             return null;
@@ -69,7 +69,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             else
             {
-                return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLines.Replace(capStr, string.Empty), null, sourceInfo);
+                return new MarkdownCodeBlockToken(this, parser.Context, Regexes.Lexers.TailingEmptyLine.Replace(capStr, string.Empty), null, sourceInfo);
             }
         }
     }

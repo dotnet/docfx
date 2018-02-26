@@ -43,7 +43,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             }
             result += ">";
             result += (escaped ? code : StringHelper.Escape(code, true));
-            result += "</code></pre>";
+            result += "\n</code></pre>";
             return result;
         }
 

@@ -151,7 +151,7 @@ namespace Microsoft.DocAsCode.MarkdownLite
             public static readonly Regex WhiteSpaces = new Regex(@"\s+", RegexOptionCompiled);
 
             public static readonly Regex LeadingWhiteSpaces = new Regex(@"^ {4}", RegexOptions.Multiline | RegexOptionCompiled);
-            public static readonly Regex TailingEmptyLines = new Regex(@"\n+$", RegexOptionCompiled);
+            public static readonly Regex TailingEmptyLine = new Regex(@"\n$", RegexOptionCompiled);
 
             public static readonly Regex UselessTableHeader = new Regex(@"^ *| *\|? *$", RegexOptionCompiled);
             public static readonly Regex UselessTableAlign = new Regex(@"^ *|\|? *$", RegexOptionCompiled);

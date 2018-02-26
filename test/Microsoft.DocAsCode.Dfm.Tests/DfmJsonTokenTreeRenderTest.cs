@@ -44,7 +44,7 @@ b:
              "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>1>Heading1\",\"children\":[{\"name\":\"1>1>Text>Hello \"},{\"name\":\"1>1>Xref>CrossLink1\",\"children\":[]},{\"name\":\"1>1>Text> \"},{\"name\":\"1>1>Xref>CrossLink2\",\"children\":[]},{\"name\":\"1>1>Text>dummy\"}]},{\"name\":\"2>2>Paragraph\",\"children\":[{\"name\":\"2>2>Xref>World\",\"children\":[]}]}]}"
          )]
         [InlineData("a\n```\nc\n```",
-             "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>1>Paragraph\",\"children\":[{\"name\":\"1>1>Text>a\"}]},{\"name\":\"2>4>Code>c\n\"}]}"
+             "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>1>Paragraph\",\"children\":[{\"name\":\"1>1>Text>a\"}]},{\"name\":\"2>4>Code>c\"}]}"
          )]
         [InlineData(@" *hello* abc @api__1",
              "{\"name\":\"0>0>markdown\",\"children\":[{\"name\":\"1>1>Paragraph\",\"children\":[{\"name\":\"1>1>Text> \"},{\"name\":\"1>1>Em\",\"children\":[{\"name\":\"1>1>Text>hello\"}]},{\"name\":\"1>1>Text> abc \"},{\"name\":\"1>1>Xref>api__1\",\"children\":[]}]}]}"
