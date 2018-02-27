@@ -3,6 +3,7 @@
 
 namespace Microsoft.DocAsCode.Build.SchemaDriven
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Composition;
@@ -23,31 +24,36 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
         public override void Postbuild(ImmutableList<FileModel> models, IHostService host)
         {
             var overwriteApplier = new OverwriteApplier(host, OverwriteModelType.Classic);
-            foreach (var uid in host.GetAllUids())
+            host.GetAllUids().RunAll(uid => ApplyOverwriteToModel(overwriteApplier, uid, host));
+        }
+
+        private void ApplyOverwriteToModel(OverwriteApplier overwriteApplier, string uid, IHostService host)
+        {
+            var ms = host.LookupByUid(uid);
+            var ods = ms.Where(m => m.Type == DocumentType.Overwrite).ToList();
+            var articles = ms.Except(ods).ToList();
+            if (articles.Count == 0 || ods.Count == 0)
             {
-                var ms = host.LookupByUid(uid);
-                var ods = ms.Where(m => m.Type == DocumentType.Overwrite).ToList();
-                var articles = ms.Except(ods).ToList();
-                if (articles.Count == 0 || ods.Count == 0)
+                return;
+            }
+
+            if (articles.Count > 1)
+            {
+                throw new DocumentException($"{uid} is defined in multiple articles {articles.Select(s => s.LocalPathFromRoot).ToDelimitedString()}");
+            }
+
+            var model = articles[0];
+            var schema = model.Properties.Schema as DocumentSchema;
+            using (new LoggerFileScope(model.LocalPathFromRoot))
+            {
+                var uidDefiniton = model.Uids.Where(s => s.Name == uid).ToList();
+                if (uidDefiniton.Count == 0)
                 {
-                    continue;
+                    throw new DocfxException($"Unable to find UidDefinition for Uid {uid}");
                 }
 
-                if (articles.Count > 1)
+                try
                 {
-                    throw new DocumentException($"{uid} is defined in multiple articles {articles.Select(s => s.LocalPathFromRoot).ToDelimitedString()}");
-                }
-
-                var model = articles[0];
-                var schema = model.Properties.Schema as DocumentSchema;
-                using (new LoggerFileScope(model.LocalPathFromRoot))
-                {
-                    var uidDefiniton = model.Uids.Where(s => s.Name == uid).ToList();
-                    if (uidDefiniton.Count == 0)
-                    {
-                        throw new DocfxException($"Unable to find UidDefinition for Uid {uid}");
-                    }
-
                     foreach (var ud in uidDefiniton)
                     {
                         var jsonPointer = new JsonPointer(ud.Path).GetParentPointer();
@@ -74,10 +80,18 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                     }
 
                     // 1. Validate schema after the merge
+                    // TODO: Issue exists - however unable to identify which overwrite document the issue is from
                     ((SchemaDrivenDocumentProcessor)host.Processor).SchemaValidator.Validate(model.Content);
 
                     // 2. Re-export xrefspec after the merge
                     overwriteApplier.UpdateXrefSpec(model, schema);
+
+                }
+                catch (DocumentException e)
+                {
+                    // Log error here to preserve file info
+                    Logger.LogError(e.Message);
+                    throw;
                 }
             }
         }

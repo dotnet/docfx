@@ -6,8 +6,10 @@ namespace Microsoft.DocAsCode.Exceptions
     using System;
     using System.Runtime.Serialization;
 
+    using Microsoft.DocAsCode.Plugins;
+
     [Serializable]
-    public class InvalidJsonPointerException : DocfxException
+    public class InvalidJsonPointerException : DocumentException
     {
         public InvalidJsonPointerException() : this("The value of json pointer is not valid")
         {

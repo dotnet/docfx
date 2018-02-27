@@ -6,8 +6,10 @@ namespace Microsoft.DocAsCode.Exceptions
     using System;
     using System.Runtime.Serialization;
 
+    using Microsoft.DocAsCode.Plugins;
+
     [Serializable]
-    public class InvalidSchemaException : DocfxException
+    public class InvalidSchemaException : DocumentException
     {
         public InvalidSchemaException() : this("Document schema is not valid")
         {

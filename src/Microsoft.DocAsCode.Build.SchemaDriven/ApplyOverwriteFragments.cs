@@ -71,6 +71,11 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
                         code: WarningCodes.Overwrite.InvalidMarkdownFragments);
                     return;
                 }
+                catch (DocumentException de)
+                {
+                    Logger.LogError(de.Message);
+                    throw;
+                }
             }
         }
 
