@@ -14,6 +14,7 @@
     <PackageLicenseUrl Condition=" '$(PackageLicenseUrl)' == '' ">https://github.com/dotnet/docfx/blob/dev/LICENSE</PackageLicenseUrl>
 
     <VersionCSFile Condition="'$(VersionCSFile)' == ''">$(MSBuildThisFileDirectory)..\..\TEMP\version.cs</VersionCSFile>
+    <VersionFSFile Condition="'$(VersionFSFile)' == ''">$(MSBuildThisFileDirectory)..\..\TEMP\version.fs</VersionFSFile>    
     <VersionFileExists Condition="Exists($(VersionCSFile))" >true</VersionFileExists>
 
     <GenerateAssemblyVersionAttribute Condition=" '$(VersionFileExists)' == 'true' ">false</GenerateAssemblyVersionAttribute>
@@ -49,8 +50,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Condition="Exists($(VersionCSFile))" Include="$(VersionCSFile)" />
+    <Compile Condition="Exists($(VersionCSFile)) And '$(MSBuildProjectExtension)' == '.csproj'" Include="$(VersionCSFile)" />
+    <Compile Condition="Exists($(VersionFSFile)) And '$(MSBuildProjectExtension)' == '.fsproj'" Include="$(VersionFSFile)" />
   </ItemGroup>
+  
   <ItemGroup Condition="'$(TargetFramework)' == 'net461' OR '$(TargetFramework)' == 'net46' OR '$(TargetFramework)' == 'net452'">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />

@@ -24,6 +24,7 @@ $scriptPath = $MyInvocation.MyCommand.Path
 $scriptHome = Split-Path $scriptPath
 $versionCsFolderPath = $scriptHome + "\TEMP\"
 $versionCsFilePath = $versionCsFolderPath + "version.cs"
+$versionFsFilePath = $versionCsFolderPath + "version.fs"
 
 $global:LASTEXITCODE = $null
 
@@ -126,6 +127,15 @@ if ($prod -eq $true) {
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute(""$assemblyFileVersion"")]
     " | Out-File -FilePath $versionCsFilePath
     Write-Host "Version file saved to $versionCsFilePath" -ForegroundColor Green
+
+    "
+namespace AssemblyInfo
+[<assembly: System.Reflection.AssemblyVersionAttribute(""$assemblyVersion"")>]
+[<assembly: System.Reflection.AssemblyFileVersionAttribute(""$assemblyFileVersion"")>]
+[<assembly: System.Reflection.AssemblyInformationalVersionAttribute(""$assemblyFileVersion"")>]
+do ()
+    " | Out-File -FilePath $versionFsFilePath
+    Write-Host "Version file saved to $versionFsFilePath" -ForegroundColor Green    
 }
 
 Write-Host "Using package version $packageVersion, and assembly version $assemblyVersion, assembly file version $assemblyFileVersion"
