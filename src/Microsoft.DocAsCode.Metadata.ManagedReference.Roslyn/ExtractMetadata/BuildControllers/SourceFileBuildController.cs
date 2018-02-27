@@ -5,20 +5,14 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using Microsoft.CodeAnalysis;
 
-    public class RoslynSourceFileBuildController : IRoslynBuildController
+    public class SourceFileBuildController : IBuildController
     {
         private readonly Compilation _compilation;
         private readonly IAssemblySymbol _assembly;
-        public RoslynSourceFileBuildController(Compilation compilation, IAssemblySymbol assembly = null)
+        public SourceFileBuildController(Compilation compilation, IAssemblySymbol assembly = null)
         {
             _compilation = compilation;
-            _assembly = assembly ?? compilation?.Assembly;
-        }
-
-        public MetadataItem ExtractMetadata(IInputParameters parameters)
-        {
-            var extractor = new RoslynIntermediateMetadataExtractor(this);
-            return extractor.Extract(parameters);
+            _assembly = assembly ?? _compilation?.Assembly;
         }
 
         public IAssemblySymbol GetAssembly(IInputParameters key)

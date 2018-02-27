@@ -36,7 +36,7 @@ namespace A {
 
 ";
             // act
-            MetadataItem output = RoslynIntermediateMetadataExtractor.GenerateYamlMetadata(CreateCompilationFromCSharpCode(code, "test.dll"));
+            MetadataItem output = IntermediateMetadataExtractor.GenerateYamlMetadata(CreateCompilationFromCSharpCode(code, "test.dll"));
 
             // assert
             Assert.NotNull(output);
