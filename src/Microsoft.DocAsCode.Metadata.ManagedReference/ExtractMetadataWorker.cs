@@ -29,6 +29,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         private readonly bool _useCompatibilityFileName;
         private readonly string _outputFolder;
         private readonly ExtractMetadataOptions _options;
+        private readonly AbstractProjectLoader _loader;
 
         //Lacks UT for shared workspace
         private readonly Lazy<MSBuildWorkspace> _workspace;
@@ -78,6 +79,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 };
                 return workspace;
             });
+
+            var roslynLoader = new RoslynProjectLoader(_workspace);
+            _loader = new AbstractProjectLoader(new IProjectLoader[] {roslynLoader});
         }
 
         public async Task ExtractMetadataAsync()
@@ -118,7 +122,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             var forceRebuild = _rebuild;
             var outputFolder = _outputFolder;
 
-            var projectCache = new ConcurrentDictionary<string, Project>();
+            var projectCache = new ConcurrentDictionary<string, AbstractProject>();
 
             // Project<=>Documents
             var documentCache = new ProjectDocumentCache();
@@ -145,10 +149,11 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                             {
                                 var projectFile = new FileInformation(project.FilePath);
 
-                                // If the project is csproj/vbproj, add to project dictionary, otherwise, ignore
+                                // If the project is supported, add to project dictionary, otherwise, ignore
                                 if (projectFile.IsSupportedProject())
                                 {
-                                    projectCache.GetOrAdd(projectFile.NormalizedPath, s => project);
+                                    projectCache.GetOrAdd(projectFile.NormalizedPath, 
+                                                          s => _loader.Load(projectFile.NormalizedPath));
                                 }
                                 else
                                 {
@@ -172,7 +177,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             {
                 await pjp.Select(s => s.NormalizedPath).ForEachInParallelAsync(path =>
                 {
-                    projectCache.GetOrAdd(path, s => GetProjectJsonProject(s));
+                    projectCache.GetOrAdd(path, s => new RoslynProject(GetProjectJsonProject(s)));
                     return Task.CompletedTask;
                 }, 60);
             }
@@ -190,16 +195,8 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 {
                     Logger.Log(LogLevel.Warning, $"Project '{project.FilePath}' does not contain any documents.");
                 }
-                documentCache.AddDocuments(path, project.MetadataReferences
-                    .Where(s => s is PortableExecutableReference)
-                    .Select(s => ((PortableExecutableReference)s).FilePath));
+                documentCache.AddDocuments(path, project.PortableExecutableMetadataReferences);
                 FillProjectDependencyGraph(projectCache, projectDependencyGraph, project);
-                // duplicate project references will fail Project.GetCompilationAsync
-                var groups = project.ProjectReferences.GroupBy(r => r);
-                if (groups.Any(g => g.Count() > 1))
-                {
-                    projectCache[path] = project.WithProjectReferences(groups.Select(g => g.Key));
-                }
             }
 
             var csFiles = new List<string>();
@@ -289,15 +286,17 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             // Build all the projects to get the output and save to cache
             List<MetadataItem> projectMetadataList = new List<MetadataItem>();
             ConcurrentDictionary<string, bool> projectRebuildInfo = new ConcurrentDictionary<string, bool>();
-            ConcurrentDictionary<string, Compilation> compilationCache = await GetProjectCompilationAsync(projectCache);
-            var extensionMethods = IntermediateMetadataExtractor.GetAllExtensionMethodsFromCompilation(compilationCache.Values);
-            options.ExtensionMethods = extensionMethods;
+            ConcurrentDictionary<string, AbstractCompilation> compilationCache = 
+                await GetProjectCompilationAsync(projectCache);
+            var roslynProjects = compilationCache.Values.OfType<RoslynCompilation>().Select(rc => rc.Compilation);
+            options.RoslynExtensionMethods = 
+                RoslynIntermediateMetadataExtractor.GetAllExtensionMethodsFromCompilation(roslynProjects); 
             foreach (var key in GetTopologicalSortedItems(projectDependencyGraph))
             {
                 var dependencyRebuilt = projectDependencyGraph[key].Any(r => projectRebuildInfo[r]);
                 var k = documentCache.GetDocuments(key);
                 var input = new ProjectFileInputParameters(options, k, key, dependencyRebuilt);
-                var controller = new SourceFileBuildController(compilationCache[key]);
+                var controller = compilationCache[key].GetBuildController();
 
                 var projectMetadataResult = GetMetadataFromProjectLevelCache(controller, input);
                 var projectMetadata = projectMetadataResult.Item1;
@@ -312,7 +311,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (csCompilation != null)
                 {
                     var input = new SourceFileInputParameters(options, csFiles);
-                    var controller = new SourceFileBuildController(csCompilation);
+                    var controller = new RoslynSourceFileBuildController(csCompilation);
 
                     var csMetadata = GetMetadataFromProjectLevelCache(controller, input);
                     if (csMetadata != null) projectMetadataList.Add(csMetadata.Item1);
@@ -326,7 +325,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 if (vbCompilation != null)
                 {
                     var input = new SourceFileInputParameters(options, vbFiles);
-                    var controller = new SourceFileBuildController(vbCompilation);
+                    var controller = new RoslynSourceFileBuildController(vbCompilation);
 
                     var vbMetadata = GetMetadataFromProjectLevelCache(controller, input);
                     if (vbMetadata != null) projectMetadataList.Add(vbMetadata.Item1);
@@ -345,12 +344,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
                     var referencedAssemblyList = CompilationUtility.GetAssemblyFromAssemblyComplation(assemblyCompilation).ToList();
                     // TODO: why not merge with compilation's extension methods?
-                    var assemblyExtension = IntermediateMetadataExtractor.GetAllExtensionMethodsFromAssembly(assemblyCompilation, referencedAssemblyList.Select(s => s.Item2));
-                    options.ExtensionMethods = assemblyExtension;
+                    var assemblyExtension = RoslynIntermediateMetadataExtractor.GetAllExtensionMethodsFromAssembly(assemblyCompilation, referencedAssemblyList.Select(s => s.Item2));
+                    options.RoslynExtensionMethods = assemblyExtension;
                     foreach (var assembly in referencedAssemblyList)
                     {
                         var input = new AssemblyFileInputParameters(options, assembly.Item1.Display);
-                        var controller = new SourceFileBuildController(assemblyCompilation, assembly.Item2);
+                        var controller = new RoslynSourceFileBuildController(assemblyCompilation, assembly.Item2);
 
                         var mta = GetMetadataFromProjectLevelCache(controller, input);
                         
@@ -395,25 +394,23 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private static void FillProjectDependencyGraph(ConcurrentDictionary<string, Project> projectCache, ConcurrentDictionary<string, List<string>> projectDependencyGraph, Project project)
+        private static void FillProjectDependencyGraph(ConcurrentDictionary<string, AbstractProject> projectCache, ConcurrentDictionary<string, List<string>> projectDependencyGraph, AbstractProject project)
         {
             projectDependencyGraph.GetOrAdd(project.FilePath.ToNormalizedFullPath(), _ => GetTransitiveProjectReferences(projectCache, project).Distinct().ToList());
         }
 
-        private static IEnumerable<string> GetTransitiveProjectReferences(ConcurrentDictionary<string, Project> projectCache, Project project)
+        private static IEnumerable<string> GetTransitiveProjectReferences(ConcurrentDictionary<string, AbstractProject> projectCache, AbstractProject project)
         {
-            var solution = project.Solution;
             foreach (var pr in project.ProjectReferences)
             {
-                var refProject = solution.GetProject(pr.ProjectId);
-                var path = StringExtension.ToNormalizedFullPath(refProject.FilePath);
+                var path = StringExtension.ToNormalizedFullPath(pr.FilePath);
                 if (projectCache.ContainsKey(path))
                 {
                     yield return path;
                 }
                 else
                 {
-                    foreach (var rpr in GetTransitiveProjectReferences(projectCache, refProject))
+                    foreach (var rpr in GetTransitiveProjectReferences(projectCache, pr))
                     {
                         yield return rpr;
                     }
@@ -421,9 +418,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private static async Task<ConcurrentDictionary<string, Compilation>> GetProjectCompilationAsync(ConcurrentDictionary<string, Project> projectCache)
+        private static async Task<ConcurrentDictionary<string, AbstractCompilation>> GetProjectCompilationAsync(ConcurrentDictionary<string, AbstractProject> projectCache)
         {
-            var compilations = new ConcurrentDictionary<string, Compilation>();
+            var compilations = new ConcurrentDictionary<string, AbstractCompilation>();
             var sb = new StringBuilder();
             foreach (var project in projectCache)
             {
@@ -485,7 +482,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                 }
             }
 
-            projectMetadata = new IntermediateMetadataExtractor(controller).Extract(key);
+            projectMetadata = controller.ExtractMetadata(key);
             var file = Path.GetRandomFileName();
             var cacheOutputFolder = projectLevelCache.OutputFolder;
             var path = Path.Combine(cacheOutputFolder, file);
@@ -771,7 +768,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             }
         }
 
-        private Project GetProject(ConcurrentDictionary<string, Project> cache, string path)
+        private AbstractProject GetProject(ConcurrentDictionary<string, AbstractProject> cache, string path)
         {
             return cache.GetOrAdd(path.ToNormalizedFullPath(), s =>
             {
@@ -780,11 +777,9 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
                     try
                     {
                         Logger.LogVerbose("Loading project...");
-                        var project = _workspace.Value.CurrentSolution.Projects.FirstOrDefault(
-                            p => FilePathComparer.OSPlatformSensitiveRelativePathComparer.Equals(p.FilePath, s));
-                        var result = project ?? _workspace.Value.OpenProjectAsync(s).Result;
-
-                        Logger.LogVerbose($"Project {result.FilePath} loaded.");
+                        var result = _loader.Load(s);
+                        if (result != null)
+                            Logger.LogVerbose($"Project {result.FilePath} loaded.");
                         return result;
                     }
                     catch (AggregateException e)
