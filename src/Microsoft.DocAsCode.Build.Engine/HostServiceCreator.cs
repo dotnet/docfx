@@ -70,9 +70,9 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     return processor.Load(file, metadata);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Logger.LogError($"Unable to load file: {file.File} via processor: {processor.Name}.");
+                    Logger.LogError($"Unable to load file: {file.File} via processor: {processor.Name}: {e.Message}");
                     throw;
                 }
             }
