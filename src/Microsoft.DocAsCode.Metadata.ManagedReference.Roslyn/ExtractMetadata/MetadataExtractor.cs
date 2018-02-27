@@ -10,12 +10,12 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using Microsoft.DocAsCode.Common;
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
-    internal class RoslynMetadataExtractor
+    internal class MetadataExtractor
     {
         private readonly Compilation _compilation;
         private readonly IAssemblySymbol _assembly;
 
-        public RoslynMetadataExtractor(Compilation compilation, IAssemblySymbol assembly = null)
+        public MetadataExtractor(Compilation compilation, IAssemblySymbol assembly = null)
         {
             _compilation = compilation ?? throw new ArgumentNullException(nameof(compilation));
             _assembly = assembly ?? compilation.Assembly;
@@ -25,7 +25,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             var preserveRawInlineComments = options.PreserveRawInlineComments;
             var filterConfigFile = options.FilterConfigFile;
-            var extensionMethods = options.RoslynExtensionMethods;
+            var extensionMethods = options.ExtensionMethods;
 
             object visitorContext = new object();
             SymbolVisitorAdapter visitor;

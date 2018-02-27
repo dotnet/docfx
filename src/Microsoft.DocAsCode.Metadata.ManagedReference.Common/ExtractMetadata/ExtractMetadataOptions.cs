@@ -20,7 +20,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         public Dictionary<string, string> MSBuildProperties { get; set; }
 
         [JsonIgnore]
-        public IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> RoslynExtensionMethods { get; set; }
+        public IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> ExtensionMethods { get; set; }
 
         public bool HasChanged(IncrementalCheck check, bool careMSBuildProperties)
         {
