@@ -233,4 +233,4 @@ By default, one *REST* API file generates one HTML file. For example, petstore.j
 2. With `rest.operationpage` plugin enabled, each operation is splitted into single page.
 3. With both `rest.tagpage` and `rest.operationpage` plugins enabled, the *REST* model will be splitted to tag level first, then split to operation level.
 
-Refer [Plugins dashboard](../templates-and-plugins/plugins-dashboard.md) for more details.
+Refer [Plugins dashboard](../templates-and-plugins/plugins-dashboard.yml) for more details.

@@ -49,10 +49,10 @@
           <a href="{{contributionLink}}" class="contribution-link">Add Your Own Template</a>
           </span>
           {{rawTitle}}
-          {{conceptual}}
-          {%- if templates -%}
+          {{description}}
+          {%- if items -%}
           <ul id="template-container">
-          {%- for template in templates -%}
+          {%- for template in items -%}
               <li class="template-item">
                 <div class="template-screenshot">
                   <img src= "{{template.thumbnail}}" class="template-screenshot-img"/>

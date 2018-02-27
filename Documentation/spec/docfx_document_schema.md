@@ -88,7 +88,7 @@ An object to describe the schema of the value of the property.
 | contentType  | string | Defines the content type of the property. Refer to [contentType](#63-contenttype) for detailed explanation.
 | tags       | array  | Defines the tags of the property. Refer to [tags](#64-tags) for detailed explanation.
 | mergeType      | string | Defines how to merge the property. Omitting this keyword has the same behavior as `merge`. Refer to [mergeType](#65-mergetype) for detailed explanation.
-| xrefProperties  | array | Defines the properties of current object when it is cross referenced by others. Each item is the name of the property in the instance. Refer to [xrefProperties](#66-xrefProperties) for detailed description of how to leverage this property.
+| xrefProperties  | array | Defines the properties of current object when it is cross referenced by others. Each item is the name of the property in the instance. Refer to [xrefProperties](#66-xrefproperties) for detailed description of how to leverage this property.
 
 ##### Patterned Field
 | Field Name | Type | Description
@@ -151,7 +151,7 @@ To leverage this feature, a new `xref` syntax with `template` attribute is suppo
 ```
 For the parital template, the input model is the object containing properties `xrefProperties` defines.
 
-For example, in the sample schema defined by [7. Samples](7-samples), ` "xrefProperties": [ "title", "description" ],`, `title` and `description` are `xrefProperties` for uid `webapp`. A partial template to render this xref, for example, named `partials/overview.tmpl`, looks like:
+For example, in the sample schema defined by [7. Samples](#7-samples), ` "xrefProperties": [ "title", "description" ],`, `title` and `description` are `xrefProperties` for uid `webapp`. A partial template to render this xref, for example, named `partials/overview.tmpl`, looks like:
 ```mustache
 {{title}}: {{{description}}}
 ```
