@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
-    using static Microsoft.DocAsCode.Metadata.ManagedReference.IntermediateMetadataExtractor;
+    using static Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor;
 
     [Trait("Owner", "vwxyzh")]
     [Trait("Language", "CSharp")]
@@ -1075,7 +1075,7 @@ namespace Test1
 }
 ";
             var compilation = CreateCompilationFromCSharpCode(code);
-            MetadataItem output = GenerateYamlMetadata(compilation, options: new ExtractMetadataOptions { ExtensionMethods = GetAllExtensionMethodsFromCompilation(new[] { compilation }) });
+            MetadataItem output = GenerateYamlMetadata(compilation, options: new ExtractMetadataOptions { RoslynExtensionMethods = GetAllExtensionMethodsFromCompilation(new[] { compilation }) });
             Assert.Equal(1, output.Items.Count);
             // FooImple<T>
             {

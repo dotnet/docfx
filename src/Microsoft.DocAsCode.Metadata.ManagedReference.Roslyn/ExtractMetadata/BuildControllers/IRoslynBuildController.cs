@@ -5,9 +5,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using Microsoft.CodeAnalysis;
 
-    public interface IBuildController
+    public interface IRoslynBuildController : IBuildController
     {
         Compilation GetCompilation(IInputParameters key);
         IAssemblySymbol GetAssembly(IInputParameters key);
     }
+
 }
