@@ -330,5 +330,35 @@ namespace Microsoft.DocAsCode.Common.Tests
             Assert.Equal("1", fal.GetProperty("temp1.txt", "from"));
             Assert.Equal("2", fal.GetProperty("temp2.txt", "from"));
         }
+
+        [Fact]
+        public void TestFileAbstractLayerWithRedirectionFolder()
+        {
+            // arrange
+            var input = GetRandomFolder();
+            Directory.CreateDirectory(Path.Combine(input, "structured"));
+            Directory.CreateDirectory(Path.Combine(input, "authored"));
+            Directory.CreateDirectory(Path.Combine(input, "standalone"));
+            File.WriteAllText(Path.Combine(input, "structured/temp1.yml"), "I pair with authored/temp1.yml.md");
+            File.WriteAllText(Path.Combine(input, "authored/temp1.yml.md"), "I am paired by structured/temp1.yml");
+            File.WriteAllText(Path.Combine(input, "structured/temp2.yml"), "I pair with authored/temp2.yml.md");
+            File.WriteAllText(Path.Combine(input, "structured/temp2.yml.md"), "I am not paired by authored/temp2.yml.md");
+            File.WriteAllText(Path.Combine(input, "standalone/temp3"), "I am not affected by folder redirection rules");
+            var fdm = new FolderRedirectionManager();
+            fdm.AddFolderRedirectionRule("structured", "authored");
+
+            // act
+            var fal = FileAbstractLayerBuilder.Default
+                .ReadFromRealFileSystem(input)
+                .ReadWithFolderRedirection(fdm)
+                .Create();
+
+            // assert
+            Assert.True(fal.Exists("structured/temp1.yml.md"));
+            Assert.Equal("I am paired by structured/temp1.yml", fal.ReadAllText("structured/temp1.yml.md"));
+            Assert.False(fal.Exists("structured/temp2.yml.md"));
+            Assert.True(fal.Exists("standalone/temp3"));
+            Assert.Equal("I am not affected by folder redirection rules", fal.ReadAllText("standalone/temp3"));
+        }
     }
 }
