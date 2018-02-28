@@ -8,7 +8,7 @@
     <title>Walkthrough Part III: Generate PDF Documentation | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="Walkthrough Part III: Generate PDF Documentation | DocFX website ">
-    <meta name="generator" content="docfx 2.31.0.0">
+    <meta name="generator" content="docfx 2.32.0.0">
     
     <link rel="shortcut icon" href="../../favicon.ico">
     <link rel="stylesheet" href="../../styles/docfx.vendor.css">
@@ -161,7 +161,13 @@
   }
 </code></pre><p>Now, let&#39;s run <code>docfx</code>, and you can find pdf file walkthrough3_pdf.pdf generated under <code>_site_pdf</code> folder:
 <img src="images/walkthrough3.png" alt="PDF Preview"></p>
-<h2 id="conclusion">Conclusion</h2>
+<h2 id="optional-step3-enable-plugins"><em>Optional</em> Step3. Enable plugins</h2>
+<p>If you wish to use plugins with pdf as well, you need to add a <code>template</code> node to the pdf section. It needs to start with the <code>pdf.template</code> followed by the path to the plugins you want to use:</p>
+<pre><code class="lang-json">&quot;template&quot;: [
+  &quot;pdf.default&quot;,
+  &quot;pluginPackages/rest.tagpage.2.31.0/content&quot; 
+],
+</code></pre><h2 id="conclusion">Conclusion</h2>
 <p>In this walkthrough, we build a PDF file according to the TOC file under <code>pdf</code> folder. Note that TOC plays an important role in PDF generation, it not only determines the files included in the PDF, but also the cover page for this PDF file. One TOC file generates one PDF file, so don&#39;t forget to exclude TOC files you don&#39;t want from docfx.json.</p>
 <h2 id="read-more">Read more</h2>
 <ul>

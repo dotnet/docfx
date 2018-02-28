@@ -7,7 +7,7 @@
   <title>Available plugins and templates | </title>
   <meta name="title" content="Available plugins and templates | ">
   <meta name="viewport" content="width=device-width">
-  <meta name="generator" content="docfx 2.31.0.0">
+  <meta name="generator" content="docfx 2.32.0.0">
   <link rel="shortcut icon" href="../favicon.ico">
   <link rel="stylesheet" href="../styles/docfx.vendor.css">
   <link rel="stylesheet" href="../styles/docfx.css">
@@ -89,8 +89,8 @@
           <span class="pull-right mobile-hide">
           <a href="contribute-your-template.html" class="contribution-link">Add Your Own Template</a>
           </span>
-          <h1 id="dashboard-for-plugins">Dashboard for Plugins</h1>
           
+          <h1 id="dashboard-for-plugins">Dashboard for Plugins</h1>
 <p>The plugins listed here mainly focus on the functionality of the generated website, it often contains a <em>plugins</em> folder containing assemblies for advanced processing of the data model. It usually also contains corresponding renderer files to further transform the processed data model to web pages. You can follow <a href="../tutorial/howto_build_your_own_type_of_documentation_with_custom_plug-in.html">How to Create Custom Document Processors</a> and <a href="../tutorial/howto_add_a_customized_post_processor.html">How to Create Custom PostProcessor</a> to create your own plugins. Add your own customized templates and plugins here for others to view and use!</p>
 
           <ul id="template-container">
@@ -99,7 +99,8 @@
                   <img src="images/memberpage.default.screenshot.png" class="template-screenshot-img">
                 </div>
                 <a class="template-title" href="https://www.nuget.org/packages/memberpage/">memberpage</a>
-                <p class="template-desc">It splits the *YAML* data model into member level. Currently it supports ManagedReference document type. With this template enabled, the class page contains lists of method overloads, fields, events and so on, while every method overload, field or event displays in a separated page.</p>
+                <p class="template-desc"><p>It splits the <em>YAML</em> data model into member level. Currently it supports ManagedReference document type. With this template enabled, the class page contains lists of method overloads, fields, events and so on, while every method overload, field or event displays in a separated page.</p>
+</p>
                 <ul>
                   <li><span>Init:<code>nuget install memberpage -OutputDirectory &lt;output&gt;</code></span></li>
                   <li><span>In command:<code>-t default,&lt;output&gt;/memberpage.&lt;version&gt;/content</code></span></li>
@@ -111,7 +112,8 @@
                   <img src="images/rest.tagpage.default.screenshot.png" class="template-screenshot-img">
                 </div>
                 <a class="template-title" href="https://www.nuget.org/packages/rest.tagpage/">rest.tagpage</a>
-                <p class="template-desc">It splits the *REST* model into tag level model. With this plugin enabled, operations with the same tag are grouped into one page. If the operation is in multiple tags, it would be included in first tag level page.</p>
+                <p class="template-desc"><p>It splits the <em>REST</em> model into tag level model. With this plugin enabled, operations with the same tag are grouped into one page. If the operation is in multiple tags, it would be included in first tag level page.</p>
+</p>
                 <ul>
                   <li><span>Init:<code>nuget install rest.tagpage -OutputDirectory &lt;output&gt;</code></span></li>
                   <li><span>In command:<code>-t default,&lt;output&gt;/rest.tagpage.&lt;version&gt;/content</code></span></li>
@@ -123,7 +125,8 @@
                   <img src="images/rest.operationpage.default.screenshot.png" class="template-screenshot-img">
                 </div>
                 <a class="template-title" href="https://www.nuget.org/packages/rest.operationpage/">rest.operationpage</a>
-                <p class="template-desc">It splits the *REST* model into operation level model. If it's enabled together with `rest.tagpage`, the *REST* model will split to tag level first, then split to operation level.</p>
+                <p class="template-desc"><p>It splits the <em>REST</em> model into operation level model. If it&#39;s enabled together with <code>rest.tagpage</code>, the <em>REST</em> model will split to tag level first, then split to operation level.</p>
+</p>
                 <ul>
                   <li><span>Init:<code>nuget install rest.operationpage -OutputDirectory &lt;output&gt;</code></span></li>
                   <li><span>In command:<code>-t default,&lt;output&gt;/rest.operationpage.&lt;version&gt;/content</code></span></li>

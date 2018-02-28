@@ -8,7 +8,7 @@
     <title>DocFX Document Schema v1.0 Specification | DocFX website </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="DocFX Document Schema v1.0 Specification | DocFX website ">
-    <meta name="generator" content="docfx 2.31.0.0">
+    <meta name="generator" content="docfx 2.32.0.0">
     
     <link rel="shortcut icon" href="../favicon.ico">
     <link rel="stylesheet" href="../styles/docfx.vendor.css">
@@ -260,7 +260,7 @@ For example, a property named <code>summary</code> contains value in Markdown fo
 <tr>
 <td>xrefProperties</td>
 <td>array</td>
-<td>Defines the properties of current object when it is cross referenced by others. Each item is the name of the property in the instance.</td>
+<td>Defines the properties of current object when it is cross referenced by others. Each item is the name of the property in the instance. Refer to <a href="#66-xrefproperties">xrefProperties</a> for detailed description of how to leverage this property.</td>
 </tr>
 </tbody>
 </table>
@@ -375,10 +375,30 @@ For example, a property named <code>summary</code> contains value in Markdown fo
 </tr>
 </tbody>
 </table>
+<h3 id="66-xrefproperties">6.6 xrefProperties</h3>
+<p>The value of this keyword MUST be an array of <code>string</code>. Each <code>string</code> value is the property name of current object that will be exported to be <a href="docfx_flavored_markdown.html#cross-reference">Cross Referenced</a> by others.
+To leverage this feature, a new <code>xref</code> syntax with <code>template</code> attribute is support:</p>
+<pre><code class="lang-html">&lt;xref uid=&quot;{uid}&quot; template=&quot;{path_of_partial_template}&quot; /&gt;
+</code></pre><p>For the parital template, the input model is the object containing properties <code>xrefProperties</code> defines.</p>
+<p>For example, in the sample schema defined by <a href="#7-samples">7. Samples</a>, <code>&quot;xrefProperties&quot;: [ &quot;title&quot;, &quot;description&quot; ],</code>, <code>title</code> and <code>description</code> are <code>xrefProperties</code> for uid <code>webapp</code>. A partial template to render this xref, for example, named <code>partials/overview.tmpl</code>, looks like:</p>
+<pre><code class="lang-mustache">{{title}}: {{{description}}}
+</code></pre><p>When someone references this uid using <code>&lt;xref uid=&quot;webapp&quot; template=&quot;partials/overview.tmpl&quot;</code>, <code>docfx</code> expand this <code>xref</code> into the following html:</p>
+<pre><code class="lang-html">Web Apps Documentation: &lt;p&gt;This is description&lt;/p&gt;
+</code></pre><p>In this way, users can not only <em>cross reference</em> others to get the target url, but also <em>cross reference</em> other properties as they like.</p>
+<p>A common usage of this is the <strong>Namespace</strong> page in ManagedReference. The <strong>Namespace</strong> page shows a table of its <strong>Classes</strong> with the <code>summary</code> of the <strong>Class</strong>, with the help of <code>xrefProperties</code>, the source of truth <code>summary</code> is always from <strong>Class</strong>. For the <strong>Namespace</strong> page, it can, for example:</p>
+<ol>
+<li>Define a <code>class.tr.tmpl</code> template: <code>&lt;tr&gt;&lt;td&gt;{{name}}&lt;/td&gt;&lt;td&gt;{{{summary}}}&lt;/td&gt;&lt;/tr&gt;</code></li>
+<li>The namespace <code>namespace.tmpl</code> template, use <code>xref</code> to render its children classes: <pre><code class="lang-mustache">{{#children}}
+  &lt;xref uid=&quot;{{uid}}&quot; template=&quot;class.tr.tmpl&quot; /&gt;
+{{/children}}
+</code></pre></li>
+</ol>
 <h2 id="7-samples">7. Samples</h2>
 <p>Here&#39;s an sample of the schema. Assume we have the following YAML file:</p>
 <pre><code class="lang-yaml">### YamlMime:LandingPage
 title: Web Apps Documentation
+description: This is description
+uid: webapp
 metadata:
   title: Azure Web Apps Documentation - Tutorials, API Reference
   meta.description: Learn how to use App Service Web Apps to build and host websites and web applications.
@@ -420,10 +440,15 @@ sections:
     &quot;title&quot;: &quot;LandingPage&quot;,
     &quot;description&quot;: &quot;The schema for landing page&quot;,
     &quot;type&quot;: &quot;object&quot;,
+    &quot;xrefProperties&quot;: [ &quot;title&quot;, &quot;description&quot; ],
     &quot;properties&quot;: {
         &quot;metadata&quot;: {
             &quot;type&quot;: &quot;object&quot;,
             &quot;tags&quot;: [ &quot;metadata&quot; ]
+        },
+        &quot;uid&quot;: {
+            &quot;type&quot;: &quot;string&quot;,
+            &quot;contentType&quot;: &quot;uid&quot;
         },
         &quot;sections&quot;: {
             &quot;type&quot;: &quot;array&quot;,
@@ -462,24 +487,10 @@ sections:
         }
     }
 }
-</code></pre><h2 id="8-open-issues">8. Open Issues</h2>
+</code></pre><h2 id="8-q--a">8. Q &amp; A</h2>
 <ol>
 <li>DocFX fills <code>_global</code> metadata into the processed data model, should the schema reflect this behavior?<ul>
-<li>If YES: <ul>
-<li>Pros:<ol>
-<li>Users are aware of the existence of <code>_global</code> metadata, they can overwrite the property if they want.</li>
-<li>Template writers are aware of it, they can completely rely on the schema to write the template.</li>
-</ol>
-</li>
-<li>Cons:<ol>
-<li>Schema writers need aware of the existence of <code>_global</code> metadata, it should always exists for any schema. (Should we introduce in a concept of base schema?)</li>
-</ol>
-<ul>
-<li>Decision: <em>NOT</em> include, this schema is for <strong>general purpose</strong>, use documents to describe the changes introduced by DocFX.</li>
-</ul>
-</li>
-</ul>
-</li>
+<li>Decision: <em>NOT</em> include, this schema is for <strong>input model</strong>, use another schema for output model.</li>
 </ul>
 </li>
 <li>Is it necessary to prefix <code>d-</code> to every field that DocFX introduces in?<ul>
@@ -498,32 +509,6 @@ sections:
 </ul>
 </li>
 <li>Decision: <em>Remove</em> <code>d-</code> prefix.</li>
-</ul>
-</li>
-<li>What&#39;s remaining work if to apply schema to the complex data model, for example, ManagedReference, or UniversalReference?<ul>
-<li><ol>
-<li>OPS plugin framework, to insert metadata into the data model, for example, git commit id, git contributers.
-Solution: A TagInterpreter plugin framework to insert metadata if the property contains <code>metadata</code> tag</li>
-</ol>
-</li>
-<li><ol start="2">
-<li>The schema is able to support complex Json Schema syntax, such as definition reference <code>#/definiton/commonobject</code></li>
-</ol>
-</li>
-<li><ol start="3">
-<li>Support complex syntax in <code>&lt;xref&gt;</code> to support specify the html content to be rendered. Current <code>xref</code> always renders to <code>&lt;a/&gt; if</code>uid<code>can be resolved
-Idea: One idea is to support syntax similar to</code><span class="xref"><code>that template writer can specify the template used to render</code>xref`</span></li>
-</ol>
-</li>
-<li><ol start="4">
-<li>Support overwrite the object with given <code>uid</code>
-Challenge: The schema can define multiple <code>uid</code>s inside one document.</li>
-</ol>
-</li>
-<li><ol start="5">
-<li>Support incremental build</li>
-</ol>
-</li>
 </ul>
 </li>
 </ol>
