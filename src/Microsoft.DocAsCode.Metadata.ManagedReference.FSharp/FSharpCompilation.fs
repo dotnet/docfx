@@ -592,6 +592,8 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
                                                 Source=md.Source)
             match TripleSlashCommentModel.CreateModel(fullXml, SyntaxLanguage.FSharp, context) with
             | null -> 
+                Log.warning "XML triple-slash-comment parsing error for %s defined in %s Line %d, treating raw text as summary."
+                            md.Source.Name md.Source.Path md.Source.StartLine
                 md.Summary <- md.RawComment
             | cm ->
                 md.CommentModel <- cm
