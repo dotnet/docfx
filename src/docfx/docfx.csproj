@@ -25,7 +25,6 @@
     <ProjectReference Include="..\Microsoft.DocAsCode.Dfm\Microsoft.DocAsCode.Dfm.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.HtmlToPdf\Microsoft.DocAsCode.HtmlToPdf.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.MarkdigEngine\Microsoft.DocAsCode.MarkdigEngine.csproj" />
-    <ProjectReference Include="..\Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn\Microsoft.DocAsCode.Metadata.ManagedReference.Roslyn.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Plugins\Microsoft.DocAsCode.Plugins.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Metadata.ManagedReference\Microsoft.DocAsCode.Metadata.ManagedReference.csproj" />
     <ProjectReference Include="..\Microsoft.DocAsCode.Glob\Microsoft.DocAsCode.Glob.csproj" />

@@ -6,7 +6,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
     using System;
     using System.Collections.Generic;
 
-    public class BuildInfo
+    internal class BuildInfo
     {
         public string BuildAssembly { get; set; }
 

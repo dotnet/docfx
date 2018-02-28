@@ -8,10 +8,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.CodeAnalysis;
 
-    public class RoslynIntermediateMetadataExtractor : IExtractor
+    internal class IntermediateMetadataExtractor : IExtractor
     {
-        private IRoslynBuildController _controller;
-        public RoslynIntermediateMetadataExtractor(IRoslynBuildController controller)
+        private IBuildController _controller;
+        public IntermediateMetadataExtractor(IBuildController controller)
         {
             _controller = controller;
         }
@@ -33,10 +33,10 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
             options = options ?? new ExtractMetadataOptions();
 
-            return new RoslynMetadataExtractor(compilation, assembly).Extract(options);
+            return new MetadataExtractor(compilation, assembly).Extract(options);
         }
 
-        public static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethodsFromCompilation(IEnumerable<Compilation> compilations)
+        internal static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethodsFromCompilation(IEnumerable<Compilation> compilations)
         {
             var methods = new Dictionary<Compilation, IEnumerable<IMethodSymbol>>();
             foreach (var compilation in compilations)
@@ -55,7 +55,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
             return methods;
         }
 
-        public static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethodsFromAssembly(Compilation compilation, IEnumerable<IAssemblySymbol> assemblies)
+        internal static IReadOnlyDictionary<Compilation, IEnumerable<IMethodSymbol>> GetAllExtensionMethodsFromAssembly(Compilation compilation, IEnumerable<IAssemblySymbol> assemblies)
         {
             var methods = new Dictionary<Compilation, IEnumerable<IMethodSymbol>>();
             foreach (var assembly in assemblies)

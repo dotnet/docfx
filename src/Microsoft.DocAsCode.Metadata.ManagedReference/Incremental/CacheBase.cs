@@ -12,7 +12,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.DocAsCode.Common;
 
-    public abstract class CacheBase
+    internal abstract class CacheBase
     {
         private static readonly int CleanupIntervalInDays = 5; // 5 days and clean up
         private static readonly int CleanupMaxCount = 100; // 100 items before clean up

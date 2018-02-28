@@ -7,7 +7,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.DocAsCode.Common;
 
-    public class ProjectFileInputParameters : IInputParameters
+    internal class ProjectFileInputParameters : IInputParameters
     {
         public ExtractMetadataOptions Options { get; }
 

@@ -3,8 +3,11 @@
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
-    public interface IExtractor
+    using Microsoft.CodeAnalysis;
+
+    internal interface IBuildController
     {
-        MetadataItem Extract(IInputParameters key);
+        Compilation GetCompilation(IInputParameters key);
+        IAssemblySymbol GetAssembly(IInputParameters key);
     }
 }

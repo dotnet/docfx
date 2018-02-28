@@ -7,24 +7,24 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 
     using Microsoft.DocAsCode.Common;
 
-    public class SourceFileInputParameters : IInputParameters
+    internal class AssemblyFileInputParameters : IInputParameters
     {
         public ExtractMetadataOptions Options { get; }
 
-        public IEnumerable<string> Files { get; }
+        public IEnumerable<string> Files { get; set; }
 
-        public string Key { get; } 
+        public string Key { get; }
 
         public ProjectLevelCache Cache { get; }
 
         public BuildInfo BuildInfo { get; }
 
-        public SourceFileInputParameters(ExtractMetadataOptions options, IEnumerable<string> files)
+        public AssemblyFileInputParameters(ExtractMetadataOptions options, string key)
         {
             Options = options;
-            Files = files;
+            Files = new string[] { key };
             Key = StringExtension.GetNormalizedFullPathKey(Files);
-            Cache = ProjectLevelCache.Get(files);
+            Cache = ProjectLevelCache.Get(key);
             BuildInfo = Cache?.GetValidConfig(Key);
         }
 
@@ -32,7 +32,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
         {
             var check = new IncrementalCheck(buildInfo);
 
-            return Options.HasChanged(check, true) || check.AreFilesModified(Files);
+            return Options.HasChanged(check, false) || check.AreFilesModified(Files);
         }
     }
 }

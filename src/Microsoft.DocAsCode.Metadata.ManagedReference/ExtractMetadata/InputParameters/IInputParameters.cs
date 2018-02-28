@@ -5,7 +5,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference
 {
     using System.Collections.Generic;
 
-    public interface IInputParameters
+    interface IInputParameters
     {
         ExtractMetadataOptions Options { get; }
 

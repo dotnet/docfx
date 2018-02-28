@@ -17,7 +17,7 @@ namespace Microsoft.DocAsCode.Metadata.ManagedReference.Tests
 
     using Microsoft.DocAsCode.DataContracts.ManagedReference;
 
-    using static Microsoft.DocAsCode.Metadata.ManagedReference.RoslynIntermediateMetadataExtractor;
+    using static Microsoft.DocAsCode.Metadata.ManagedReference.IntermediateMetadataExtractor;
 
     [Trait("Owner", "vwxyzh")]
     [Trait("Language", "CSharp")]
