@@ -36,7 +36,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var sourcePosition = processor.Start;
             var colonCount = 0;
 
-            SkipSpaces(ref slice);
+            ExtensionsHelper.SkipSpaces(ref slice);
 
             var columnWidth = StringBuilderCache.Local();
             var c = slice.CurrentChar;
@@ -49,14 +49,14 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (colonCount < 3) return BlockState.None;
 
-            SkipSpaces(ref slice);
+            ExtensionsHelper.SkipSpaces(ref slice);
 
             if (!ExtensionsHelper.MatchStart(ref slice, "column", false))
             {
                 return BlockState.None;
             }
 
-            SkipSpaces(ref slice);
+            ExtensionsHelper.SkipSpaces(ref slice);
 
             if (ExtensionsHelper.MatchStart(ref slice, "span=\"", false))
             {
@@ -88,7 +88,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
                 return BlockState.None;
             }
          
-                if (!c.IsZero())
+            if (!c.IsZero())
             {
                 Logger.LogWarning($"NestedColumn have some invalid chars in the starting.");
             }
@@ -114,21 +114,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var slice = processor.Line;
             var NestedColumn = (NestedColumnBlock)block;
 
-            SkipSpaces(ref slice);
+            ExtensionsHelper.SkipSpaces(ref slice);
 
             if (!ExtensionsHelper.MatchStart(ref slice, new string(':', NestedColumn.ColonCount)))
             {
                 return BlockState.Continue;
             }
 
-            SkipSpaces(ref slice);
+            ExtensionsHelper.SkipSpaces(ref slice);
 
             if (!ExtensionsHelper.MatchStart(ref slice, "column-end:::", false))
             {
                 return BlockState.Continue;
             }
 
-            var c = SkipSpaces(ref slice);
+            var c = ExtensionsHelper.SkipSpaces(ref slice);
 
             if (!c.IsZero())
             {
@@ -138,18 +138,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             block.UpdateSpanEnd(slice.End);
 
             return BlockState.BreakDiscard;
-        }
-
-        public char SkipSpaces(ref StringSlice slice)
-        {
-            var c = slice.CurrentChar;
-
-            while (c.IsSpaceOrTab())
-            {
-                c = slice.NextChar();
-            }
-
-            return c;
         }
     }
 }

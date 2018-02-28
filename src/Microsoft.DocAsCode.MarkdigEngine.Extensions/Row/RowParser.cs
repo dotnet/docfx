@@ -44,7 +44,7 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
 
             if (colonCount < 3) return BlockState.None;
 
-            SkipSpaces(ref slice);
+            ExtensionsHelper.SkipSpaces(ref slice);
 
             if (!ExtensionsHelper.MatchStart(ref slice, "row:::", false))
             {
@@ -71,21 +71,21 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             var slice = processor.Line;
             var Row = (RowBlock)block;
 
-            SkipSpaces(ref slice);
+            ExtensionsHelper.SkipSpaces(ref slice);
 
             if (!ExtensionsHelper.MatchStart(ref slice, new string(':', Row.ColonCount)))
             {
                 return BlockState.Continue;
             }
 
-            SkipSpaces(ref slice);
+            ExtensionsHelper.SkipSpaces(ref slice);
 
             if (!ExtensionsHelper.MatchStart(ref slice, "row-end:::", false))
             {
                 return BlockState.Continue;
             }
 
-            var c = SkipSpaces(ref slice);
+            var c = ExtensionsHelper.SkipSpaces(ref slice);
 
             if (!c.IsZero())
             {
@@ -95,18 +95,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Extensions
             block.UpdateSpanEnd(slice.End);
 
             return BlockState.BreakDiscard;
-        }
-
-        public char SkipSpaces(ref StringSlice slice)
-        {
-            var c = slice.CurrentChar;
-
-            while (c.IsSpaceOrTab())
-            {
-                c = slice.NextChar();
-            }
-
-            return c;
         }
     }
 }

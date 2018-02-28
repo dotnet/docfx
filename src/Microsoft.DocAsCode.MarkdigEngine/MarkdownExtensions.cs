@@ -3,14 +3,16 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine
 {
+    using System.IO;
+
+    using MarkdigEngine.Extensions;
+    using Microsoft.DocAsCode.Common;
+    using Microsoft.DocAsCode.Plugins;
+
     using Markdig;
     using Markdig.Extensions.AutoIdentifiers;
     using Markdig.Extensions.CustomContainers;
     using Markdig.Parsers;
-    using MarkdigEngine.Extensions;
-    using Microsoft.DocAsCode.Common;
-    using Microsoft.DocAsCode.Plugins;
-    using System.IO;
 
     public static class MarkdownExtensions
     {
@@ -216,13 +218,13 @@ namespace Microsoft.DocAsCode.MarkdigEngine
 
         public static MarkdownPipelineBuilder UseRow(this MarkdownPipelineBuilder pipeline)
         {
-            pipeline.Extensions.Insert(0, new RowExtension());
+            pipeline.Extensions.AddIfNotAlready<RowExtension>();
             return pipeline;
         }
 
         public static MarkdownPipelineBuilder UseNestedColumn(this MarkdownPipelineBuilder pipeline)
         {
-            pipeline.Extensions.Insert(0, new NestedColumnExtension());
+            pipeline.Extensions.AddIfNotAlready<NestedColumnExtension>();
             return pipeline;
         }
     }

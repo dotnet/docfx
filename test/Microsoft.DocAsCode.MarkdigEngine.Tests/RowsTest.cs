@@ -3,13 +3,6 @@
 
 namespace Microsoft.DocAsCode.MarkdigEngine.Tests
 {
-    using System.Collections.Generic;
-    using System.Collections.Immutable;
-    using System.Xml;
-
-    using MarkdigEngine.Extensions;
-
-    using Microsoft.DocAsCode.Plugins;
     using Xunit;
 
     public class RowTest
@@ -17,7 +10,6 @@ namespace Microsoft.DocAsCode.MarkdigEngine.Tests
         private void TestMarkup(string source, string expected)
         {
             var marked = TestUtility.MarkupWithoutSourceInfo(source, "Topic.md");
-            var message = source + "\r\n\r\n" + expected;
             Assert.Equal(expected.Replace("\r\n", "\n"), marked.Html);
         }
 
