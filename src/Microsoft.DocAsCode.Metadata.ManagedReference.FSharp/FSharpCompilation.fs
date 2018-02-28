@@ -467,6 +467,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
     let allSymbolNames =
         compilation.AssemblySignature.Entities
         |> Seq.collect enclosedSymbolNames
+        |> Seq.cache
 
     /// Returns true, if specified F# attribute is allowed by attribute filter.
     let attrAllowedByFilter (attr: FSharpAttribute) =
