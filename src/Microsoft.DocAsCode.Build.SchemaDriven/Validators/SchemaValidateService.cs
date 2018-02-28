@@ -72,7 +72,7 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
 
             if (errors.Count > 0)
             {
-                throw new InvalidSchemaException($"Validation against {schema.SchemaVersion.OriginalString} failed: \n{errors.ToDelimitedString("\n")}");
+                throw new InvalidSchemaException($"Validation against \"{schema.SchemaVersion.OriginalString}\" failed: \n{errors.ToDelimitedString("\n")}");
             }
         }
 

@@ -4,6 +4,7 @@
 namespace Microsoft.DocAsCode.Build.Engine
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.IO;
@@ -41,12 +42,7 @@ namespace Microsoft.DocAsCode.Build.Engine
         {
             var hostService = new HostService(
                 parameters.Files.DefaultBaseDir,
-                files == null
-                    ? Enumerable.Empty<FileModel>()
-                    : from file in files
-                      select Load(processor, parameters.Metadata, parameters.FileMetadata, file) into model
-                      where model != null
-                      select model,
+                LoadModels(files, parameters, processor),
                 parameters.VersionName,
                 parameters.VersionDir,
                 parameters.LruSize,
@@ -74,12 +70,32 @@ namespace Microsoft.DocAsCode.Build.Engine
                 {
                     return processor.Load(file, metadata);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Logger.LogError($"Unable to load file: {file.File} via processor: {processor.Name}.");
+                    Logger.LogError($"Unable to load file: {file.File} via processor: {processor.Name}: {e.Message}");
                     throw;
                 }
             }
+        }
+
+        private IEnumerable<FileModel> LoadModels(IEnumerable<FileAndType> files, DocumentBuildParameters parameters, IDocumentProcessor processor)
+        {
+            var models = new ConcurrentBag<FileModel>();
+            if (files == null)
+            {
+                return models;
+            }
+
+            files.RunAll(file =>
+            {
+                var model = Load(processor, parameters.Metadata, parameters.FileMetadata, file);
+                if (model != null)
+                {
+                    models.Add(model);
+                }
+            }, _context.MaxParallelism);
+
+            return models;
         }
 
         private static ImmutableDictionary<string, object> ApplyFileMetadata(

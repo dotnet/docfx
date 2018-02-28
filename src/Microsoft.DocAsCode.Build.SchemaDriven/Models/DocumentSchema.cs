@@ -39,8 +39,17 @@ namespace Microsoft.DocAsCode.Build.SchemaDriven
             DocumentSchema schema;
             using (var jtr = new JsonTextReader(reader))
             {
-                var jObject = JObject.Load(jtr);
-                var jSchema = JSchema.Load(jObject.CreateReader());
+                JSchema jSchema;
+                JObject jObject;
+                try
+                {
+                    jObject = JObject.Load(jtr);
+                    jSchema = JSchema.Load(jObject.CreateReader());
+                }
+                catch (Exception e) when (e is JSchemaException || e is JsonException)
+                {
+                    throw new InvalidSchemaException($"{title} is not a valid schema: {e.Message}", e);
+                }
 
                 var validator = new SchemaValidator(jObject, jSchema);
 
