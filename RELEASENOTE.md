@@ -1,7 +1,7 @@
 ﻿Version Notes (Current Version: v2.32)
 =======================================
 
-v2.32 (Pre-release)
+v2.32
 -----------
 1. Support remove special host name from xref service.
 2. Bug fixes:
