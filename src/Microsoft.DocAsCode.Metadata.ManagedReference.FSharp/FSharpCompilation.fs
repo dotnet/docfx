@@ -1,12 +1,12 @@
-﻿namespace Microsoft.DocAsCode.Metadata.ManagedReference.FSharp
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+namespace Microsoft.DocAsCode.Metadata.ManagedReference.FSharp
 open System.IO
 open System.Collections.Generic
 open System.Text.RegularExpressions
-
 open Microsoft.FSharp.Compiler
 open Microsoft.FSharp.Compiler.SourceCodeServices
-
 open Microsoft.DocAsCode.Metadata.ManagedReference
 open Microsoft.DocAsCode.DataContracts.ManagedReference
 open Microsoft.DocAsCode.DataContracts.Common
@@ -29,5 +29,4 @@ and FSharpBuildController (compilation: FSharpCompilation) =
         member __.ExtractMetadata parameters =
             // TODO: actual metadata extraction
             MetadataItem()
-
 

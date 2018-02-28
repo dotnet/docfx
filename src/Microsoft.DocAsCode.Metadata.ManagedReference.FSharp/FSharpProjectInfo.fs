@@ -1,11 +1,11 @@
-﻿// Based partially on dotnet-proj-info by Enrico Sada (https://github.com/enricosada/dotnet-proj-info).
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// Based partially on dotnet-proj-info by Enrico Sada (https://github.com/enricosada/dotnet-proj-info).
 
 namespace Microsoft.DocAsCode.Metadata.ManagedReference.FSharp
-
 open System
 open System.Collections.Concurrent
 open System.IO
-
 open Dotnet.ProjInfo.Inspect
 
 
@@ -141,5 +141,4 @@ module internal FSharpProjectInfo =
         Log.debug "compiler arguments: %A" fscArgs
 
         {Srcs=srcs; Refs=projectRefs; Args=fscArgs}
-
 
