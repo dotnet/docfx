@@ -699,7 +699,7 @@ type FSharpCompilation (compilation: FSharpCheckProjectResults, projPath: string
             extractXmlDoc symMd mem.XmlDoc mem.XmlDocSig
 
             // add overload reference
-            if mem.FullType.IsFunctionType then
+            if mem.FullType.IsFunctionType || mem.IsProperty then
                 symMd.Overload <- baseName + "*"
                 let refParts = 
                     [LinkItem(DisplayName=dispName, DisplayNamesWithType=nameWithType, DisplayQualifiedNames=fullName)]
